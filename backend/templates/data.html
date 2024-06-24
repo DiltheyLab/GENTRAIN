@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+<div class="container-fluid justify-content-start">
+
+    <!-- For testing: divs that willshow the alignment and other metadata of two sequences -->
+
+    <!-- <div class="row mt-2 mb-2">
+        <div class="col ">
+            <span id="seq1_id"> </span>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <span id="seq1"> </span>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <span id="seq2"> </span>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <span id="seq2_id"> </span>
+        </div>
+    </div>
+
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <span> Alignment </span>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <nobr>
+                <div id="align1" style="font-family: monospace;"> </div>
+
+            </nobr>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <nobr>
+                <div id="align2" style="font-family: monospace;"> </div>
+            </nobr>
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <div class="col ">
+            <div id="meta"> </div>
+        </div>
+    </div>
+ -->
+
+    <!-- ############################################## -->
+    <!--             Sequences edit block               -->
+    <!-- ############################################## -->
+
+    <!-- header -->
+    <!-- <div class="row mb-2 mb-5">
+        <div class="col ">
+            <h1>Fälle in den Datensatz hinzufügen oder bearbeiten</h1>
+        </div>
+    </div> -->
+
+
+
+
+
+    <!-- TODO    make code pretty and comment stuff -->
+
+
+
+
+
+
+    <!-- ######################## -->
+    <!--  add with IMS-IDs        -->
+    <!-- ######################## -->
+
+
+    <!-- header -->
+    <div class="row mt-4">
+        <div class="col ">
+            <h2 class="pb-2">Daten der nationalen RKI-Surveillance importieren: </h2>
+            <!-- <h1 class="pb-4">Add Samples</h1> -->
+            <p>
+                Wählen Sie eine Metadaten-Datei im .tsv-Format aus, die die zu importierenden IMS-IDs enthält (Format
+                siehe "Datei-Spezifikationen und Prozesse"). <br>
+                Die entsprechenden Sequenzen und Informationen werden aus der <a target="_blank"
+                    href="https://github.com/robert-koch-institut/SARS-CoV-2-Sequenzdaten_aus_Deutschland"> Datenbank
+                    des RKI</a> heruntergeladen und in den Datensatz importiert <br>
+            </p>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col ">
+
+        </div>
+    </div>
+
+    <!-- headers for filechooser -->
+    <div class="row  mt-2">
+        <div class="col-4 ">
+            <h5>Metadaten-Datei (.tsv-Format)</h5>
+        </div>
+    </div>
+
+    <!-- file choosers with error messages and example file link -->
+    <div class="row mb-3 mt-3">
+        <!-- tsv file -->
+        <div class="col-4 ">
+            <input class="form-control" type="file" id="seq_ims_tsv_file_chooser">
+            <span style="text-align:center">Beispiel-Datei <a
+                    href="example_files/example_sequence_background.tsv">herunterladen</a>.
+                <br></span>
+            <span style="color:red" id="seq_ims_tsv_error_message">&nbsp; </span>
+        </div>
+
+        <!-- start button -->
+        <div class="col-2">
+            <button type="button" class="btn btn-success" style="width:100%" id="seq_ims_start">Start</button>
+        </div>
+    </div>
+
+    <!-- Progress bar: hidden in the beginning. revealed when started -->
+    <div class="row " id="seq_ims_hidden_bar" hidden>
+        <div class="col-10">
+            <span><b>Fortschritt</b></span>
+            <div class="progress">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="seq_ims_progressbar"
+                    role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages from progressing the selected data: hidden in the beginning. revealed when started -->
+    <div class="row mt-3 " id="seq_ims_hidden_messages" hidden>
+        <div class="col-10">
+            <span><b>Nachrichten</b></span>
+            <div style="overflow:auto; height:350px;display: flex;flex-direction: column-reverse;">
+                <div id="seq_ims_messages">
+                    <!-- alert messages will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- ######################## -->
+    <!--  add with fasta and tsv   -->
+    <!-- ######################## -->
+
+    <!-- header -->
+    <div class="row mt-5">
+        <div class="col ">
+            <h2 class="pb-2">Eigene Sequenz- und Falldaten importieren: </h2>
+            <!-- <h1 class="pb-4">Add Samples</h1> -->
+            <p>
+                Wählen Sie eine Datei im FASTA-Format, die die zu importierenden viralen Sequenzdaten enthält, <br>
+                und eine Datei im .tsv-Format, die die Metadaten der zu importierenden Fälle enthält (Format siehe
+                "Datei-Spezifikationen und Prozesse"). <br>
+                Die Daten werden überprüft und in den Datensatz eingebaut. <br>
+            </p>
+        </div>
+    </div>
+
+    <!-- headers for filechooser -->
+    <div class="row  mt-2">
+        <div class="col-4 ">
+            <h5>Metadaten-Datei (.tsv-Format)</h5>
+            <!-- <h5>tsv file</h5> -->
+        </div>
+        <div class="col-4 ">
+            <h5>Virale Sequenzdaten (FASTA-Format)</h5>
+        </div>
+    </div>
+
+    <!-- file choosers with error messages and example file link -->
+    <div class="row mb-3 mt-3">
+        <!-- tsv file -->
+        <div class="col-4 ">
+            <input class="form-control" type="file" id="seq_fasta_tsv_file_chooser">
+            <span style="text-align:center">Beispiel-Datei <a
+                    href="example_files/example_sequence_outbreak.tsv">herunterladen</a>.
+                <br></span>
+            <span style="color:red" id="seq_fasta_tsv_error_message">&nbsp; </span>
+        </div>
+        <!-- fasta file -->
+        <div class="col-4 ">
+            <input class="form-control" type="file" id="seq_fasta_file_chooser">
+            <span style="text-align:center">Beispiel-Datei <a
+                    href="/example_files/example_sequence_outbreak.fa">herunterladen</a>.
+                <br></span>
+
+
+            <span style="color:red" id="seq_fasta_error_message">&nbsp;</span>
+
+
+        </div>
+        <!-- start button -->
+        <div class="col-2">
+            <button type="button" class="btn btn-success" style="width:100%" id="seq_fasta_start">Start</button>
+        </div>
+    </div>
+
+    <!-- Progress bar: hidden in the beginning. revealed when started -->
+    <div class="row " id="seq_fasta_hidden_bar" hidden>
+        <div class="col-10">
+            <span><b>Progress</b></span>
+            <div class="progress">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                    id="seq_fasta_progressbar" role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0"
+                    aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages from progressing the selected data: hidden in the beginning. revealed when started -->
+    <div class="row mt-3 " id="seq_fasta_hidden_messages" hidden>
+        <div class="col-10">
+            <span><b>Messages</b></span>
+            <div style="overflow:auto; height:350px;display: flex;flex-direction: column-reverse;">
+                <div id="seq_fasta_messages">
+                    <!-- alert messages will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row mt-5 mb-2">
+        <div class="col ">
+            <h2 class="pb-2">Datei-Spezifikationen und Prozesse</h2>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading_data_specifications">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_data_specifications" aria-expanded="true"
+                            aria-controls="collapse_data_specifications">
+
+                            <h5>
+                                Metadaten-Datei (.tsv-Format)
+                            </h5>
+
+
+                        </button>
+                    </h2>
+                    <div id="collapse_data_specifications" class="accordion-collapse collapse "
+                        aria-labelledby="heading_data_specifications" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+                            Diese Datei enthält verschiedene Informationen für ein oder mehrere Fälle die
+                            hinzugefügt / bearbeitet werden sollen. <br>
+
+                            Die Datei besteht aus einer Tabelle mit einer Kopfzeile und einer weitere Zeile pro Fall.
+                            Die
+                            Spalten sind durch Tabs getrennt. <br>
+
+                            Solch eine Datei kann zum Beispiel erstellt werden in dem man die Tabelle zuerst in Excel
+                            erstellt und dann in eine Textdatei kopiert. <br>
+
+                            <br>
+                            Die Spalten haben folgende Bedeutungen:
+                            <table class="table table-bordered" style="width: 50%;">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1. Action</th>
+                                        <td>
+                                            Gibt an welche Aktion mit dem entsprechendem Fall ausgeführt werden soll <br>
+                                            "a" : Neuen Fall hinzufügen oder bestehenden Fall mit gleichem Namen
+                                            (fasta_ID) überschreiben. <br>
+                                            "d" : Fall aus dem Datensatz löschen</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2. fasta_ID</th>
+                                        <td>
+                                            Name des Falles. Falls keine IMS-ID angegeben ist muss sich in der FASTA Datei eine sequenz mit dieser ID befinden. <br>
+                                            Wenn dieses Feld leer bleibt muss eine IMS-ID angegeben die als Namen übernommen wird.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3. IMS_ID</th>
+                                        <td>
+                                            IMS-ID des Falles. Wenn dieses Feld leer bleibt muss eine fasta_ID angegeben werden.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3. Group</th>
+                                        <td>
+                                            Anhand dieses Feldes können Fälle in Gruppen eingeordnet werden. <br>
+                                            Beispiel: "Hintergrund" oder "Ausbruch 1"
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4. Date</th>
+                                        <td>
+                                            Datum des Falles. Muss dem ISO Format folgen (also z.B. "YYYY-MM-DD")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5. other_metadata</th>
+                                        <td>
+                                            Freies Textfeld für Notizen.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <br>
+                            Dieses Format könnte sich in Zukunft verändern um neue Funktionen zu ermöglichen.
+                            <br>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading_data_specifications_2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse_data_specifications_2" aria-expanded="true"
+                                aria-controls="collapse_data_specifications_2">
+
+                                <h5>
+                                    Virale Sequenzdaten (FASTA-Format)
+
+                                </h5>
+
+                            </button>
+                        </h2>
+                        <div id="collapse_data_specifications_2" class="accordion-collapse collapse "
+                            aria-labelledby="heading_data_specifications_2" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                Diese Datei soll die genetischen Sequenzen enthalten die für das Hinzufügen von Fällen
+                                ohne IMS-ID benötigt werden. <br>
+                                FASTA Dateien haben die Dateiendugen ".fa" oder ".fasta". <br>
+                                Das Format ist <a target="_blank" href="https://en.wikipedia.org/wiki/FASTA_format">hier
+                                </a> beschrieben.
+
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading_data_specifications_3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse_data_specifications_3" aria-expanded="true"
+                                aria-controls="collapse_data_specifications_3">
+
+                                <h5>
+                                    Prozess des Fälle importieren
+
+                                </h5>
+
+                            </button>
+                        </h2>
+                        <div id="collapse_data_specifications_3" class="accordion-collapse collapse "
+                            aria-labelledby="heading_data_specifications_3" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                Nach dem Starten des Importier-Prozesses werden olgende Schritte passieren: <br>
+                                <br>
+
+                                <ol>
+                                    <li>Die Input Dateien werden auf Fehler in ihrem Format überprüft. </li>
+                                    <!-- <li>Input Files are checked for errors.</li> -->
+                                    <li>Falls nötig werden Sequenzen und andere Informationen aus dem RKI Datensatz heruntergeladen.</li>
+                                    <!-- <li>Collect data for IMS ids from the RKI.</li> -->
+                                    <li>Mit Nextclade werden die genetischen Varianten und die Lineage berechnet.
+                                    <!-- <li>Calculate lineage, variants and count of ambiguous characters using nextlade. -->
+                                        <br>
+                                        Die einzigen Daten die den PC des Nutzers verlassen sind anonymisierte Sequenzen.
+                                        <!-- The only data that leaves your pc are the sequences with anonymized ids. -->
+                                    </li>
+                                    <li>Die Fälle werden in die lokale Datenbank eingefügt / aus ihr gelöscht.</li>
+                                    <!-- <li>Samples are added to / removed from the local database.</li> -->
+                                    <li>Die paarweisen genetischen Distanzen werden berechnet indem aus den Varianten ein Alignment generiert wird und die Unterschiede gezählt werden.</li>
+                                    <!-- <li>Genetic distances are calculated by comparing the variants.</li> -->
+                                </ol>
+
+                                <br>
+                                Bei Fragen kontaktieren Sie und gerne.
+                                <br>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+
+
+
+
+        <!-- ############################################## -->
+        <!--             Contacts edit block                -->
+        <!-- ############################################## -->
+
+        <!-- this can be implemented later -->
+
+        <!-- ############################################## -->
+        <!--             Cases edit block                   -->
+        <!-- ############################################## -->
+
+        <!-- this can be implemented later -->
+
+
+
+
+
+
+
+
+
+
+        <!-- header with small explanation -->
+        <div class="row " hidden>
+            <div class="col ">
+                <h3>Edit with files</h3>
+                <p>
+                    Add new or edit or remove existing samples to the local Database. <br>
+                    Select a tab separated containing metadata and if needed a fasta file with the respective sequences.
+                    <br>
+                    When adding new samples there are two options. The first optoin is to give a fasta id with the
+                    corresponding sequence.
+                    Otherwise if the sample has been uploaded to the RKI, it is possible to simply give the IMS id. The
+                    sequence and other infromation will be collected from the RKI. <br>
+                    Example files can be downloaded below the input fields. The following columns are needed (more might
+                    be
+                    added in the future to allow new functions):
+
+                <table class="table table-bordered" style="width: 50%;">
+                    <tbody>
+                        <tr>
+                            <th scope="row">1. Action</th>
+                            <td>"a" : Add new or edit (overwrite) existing sample. <br>
+                                "d" : delete sample.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2. fasta_ID</th>
+                            <td>Fasta id of the sample to be found in fasta file. If empty then the IMS id
+                                is needed.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3. IMS_ID</th>
+                            <td>IMS id of the sample. If empty a fasta id is needed.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3. Group</th>
+                            <td>An identifier of a certain group. Can be any string. For example "Outbreak_1" or
+                                "Background"</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4. Date</th>
+                            <td>Sampling date following the ISO Date format "YYYY-MM-DD" .</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5. other_metadata</th>
+                            <td>Free text field for notes.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                After pressing "Start" the following steps are taken: <br>
+                <br>
+
+                <ol>
+                    <li>Input Files are checked for errors.</li>
+                    <li>Collect data for IMS ids from the RKI.</li>
+                    <li>Calculate lineage, variants and count of ambiguous characters using nextlade. <br>
+                        The only data that leaves your pc are the sequences with anonymized ids. </li>
+                    <li>Samples are added to / removed from the local database.</li>
+                    <li>Genetic distances are calculated by comparing the variants.</li>
+                </ol>
+
+
+                <p>
+            </div>
+        </div>
+
+        <!-- maybe also outbreaks. or just calculate them yourself -->
+
+    </div>
+
+    {% endblock %}
+
+
+    {% block css_imports %}
+    {% endblock %}
+
+
+    {% block js_imports %}
+    <script src="{{ url_for('static', filename='node_modules/@biowasm/aioli/dist/aioli.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/distance_calculation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reference_sequence.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/data_edit.js') }}"></script>
+    {% endblock %}

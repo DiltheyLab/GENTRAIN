@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="container-fluid justify-content-start">
+
+
+
+    <!-- ######################## -->
+    <!--  Graph and Options        -->
+    <!-- ######################## -->
+
+    <!-- Header -->
+
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Visualisierung (MST) der genetischen Struktur der im Datensatz enthaltenen Fälle</h3>
+            <!-- <h3>Genomic Graph</h3> -->
+        </div>
+    </div>
+
+    <div class="row">
+
+        <!-- Graph -->
+
+        <div class="col-7">
+            <!-- width will be changed when graph is drawn -->
+            <svg class="my-0" id="genomic_graph" width="780" height="750"></svg>
+            <!-- <img style="height: 750px;" src="{{url_for('static', filename='Graph_placeholder.png')}}"
+                alt="Placeholder for Graph (Image not found)"> -->
+        </div>
+
+
+        <!-- Options  -->
+
+        <div class="col-5">
+            <div class="row">
+                <div class="col">
+                    <div class="accordion" id="accordionPanelsStayOpenExample">
+
+                        <!-- Filter options header -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                <!-- remove collapsed class to have it open by default
+                                    Also add show to div class of panelsStayOpen-collapseOne
+                                    -->
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
+                                    aria-controls="panelsStayOpen-collapseOne">
+                                    Filteroptionen
+                                    <!-- Filter Options -->
+                                </button>
+                            </h2>
+                            <!-- Filter options body (scrollable) -->
+                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+                                aria-labelledby="panelsStayOpen-headingOne">
+                                <div style="overflow-y: auto;overflow-x: hidden; height: 300px;">
+
+                                    <!-- Actual filter options -->
+                                    <div class="accordion-body">
+                                        In Bearbeitung
+
+                                        <!-- in development -->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Color options header -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                    aria-controls="panelsStayOpen-collapseTwo">
+                                    Farboptionen
+                                    <!-- Color Options -->
+                                </button>
+                            </h2>
+                            <!-- Filter options body (scrollable) -->
+                            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                                aria-labelledby="panelsStayOpen-headingTwo">
+                                <div style="overflow-y: auto;overflow-x: hidden; height: 300px;">
+
+                                    <!-- Actual filter options -->
+                                    <div class="accordion-body">
+                                        In Bearbeitung
+                                        <!-- in development -->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ######################## -->
+    <!--  Sample Table        -->
+    <!-- ######################## -->
+
+    <!-- Header -->
+    <div class="row mt-5 mb-4">
+        <div class="col">
+            <h3>Informationen zu den im Datensatz enthaltenen Fällen</h3>
+            <!-- <h3>Samples</h3> -->
+        </div>
+    </div>
+
+
+
+    <!-- Sample info -->
+    <div class="row mb-2">
+        <div class="col">
+            <span id="samples_info"></span>
+        </div>
+    </div>
+
+
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading_samples">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_samples" aria-expanded="true" aria-controls="collapse_samples">
+
+                            Tabelle
+                            <!-- Table -->
+
+                        </button>
+                    </h2>
+                    <div id="collapse_samples" class="accordion-collapse collapse " aria-labelledby="heading_samples"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+
+                            <div class="table-responsive">
+                                <table class="table table-striped" style="text-align:start">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th>Fasta ID</th> -->
+                                            <th>Name</th>
+                                            <th>IMS-ID (RKI)</th>
+                                            <th>Gruppe</th>
+                                            <!-- <th>Group</th> -->
+                                            <th>Sampling Datum</th>
+                                            <!-- <th>Sampling Date</th> -->
+                                            <th>Ambiguous Characters</th>
+                                            <th>Lineage</th>
+                                            <th>Ort Sending Lab</th>
+                                            <!-- <th>Location Sending Lab</th> -->
+                                            <th>Ort Sequencing Lab</th>
+                                            <!-- <th>Location Sequencing Lab</th> -->
+                                            <th>Andere Metadata</th>
+                                            <!-- <th>Other Metadata</th> -->
+                                            <th>Letztes Änderungsdatum</th>
+                                            <!-- <th>Last Edited</th> -->
+                                            <!-- TODO other columns? -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="main_samples_table_body">
+                                        <!-- filled by main_view.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- ######################## -->
+    <!--  Distance Matrix Table   -->
+    <!-- ######################## -->
+
+
+    <!-- Header -->
+    <div class="row mt-5 mb-4">
+        <div class="col">
+            <h3> Genetische Distanzen der im Datensatz enthaltenen Fälle </h3>
+            <!-- <h3>Distancematrix</h3> -->
+        </div>
+    </div>
+    <!-- Edit timestamp -->
+    <div class="row mb-2">
+        <div class="col">
+            <span id="dm_last_edited"></span>
+        </div>
+    </div>
+
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading_dm">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse_dm" aria-expanded="true" aria-controls="collapse_dm">
+    
+                                Tabelle
+                                <!-- Table -->
+    
+                            </button>
+                        </h2>
+                        <div id="collapse_dm" class="accordion-collapse collapse " aria-labelledby="heading_dm"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+    
+    
+                                <div class="table-responsive">
+                                    <table class="table table-striped" style="text-align:start">
+                                        <thead>
+                                            <tr id="main_dm_table_header">
+                                                <!-- filled by main_view.js -->
+                                            </tr>
+                                        </thead>
+                                        <tbody id="main_dm_table_body">
+                                            <!-- filled by main_view.js -->
+                                        </tbody>
+                                    </table>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    <!-- End of content -->
+</div>
+{% endblock %}
+
+
+{% block css_imports %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/graph.css') }}">
+{% endblock %}
+
+
+{% block js_imports %}
+<script src="{{ url_for('static', filename='node_modules/js-graph-algorithms/build/jsgraphs.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/graph_draw.js') }}"></script>
+<script src="{{ url_for('static', filename='js/graph_prepare.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main_view.js') }}"></script>
+{% endblock %}

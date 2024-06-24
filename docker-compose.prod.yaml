@@ -1,0 +1,52 @@
+networks:
+  caddy:
+services:
+  reverse-proxy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile # change this to Caddyfile for production!
+      - ./caddy:/data
+      - ./frontend/dist:/srv # Mount the build directory to the Caddy service
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - caddy
+    depends_on:
+      - frontend
+      - backend
+
+  backend:
+    image: gentrain-backend
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    networks:
+      - caddy
+
+  frontend:
+    image: gentrain-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./frontend/dist:/app/dist # Mount the dist directory to the frontend service
+    networks:
+      - caddy
+    environment:
+      - VITE_API_BASE_URL=https://api.localhost # Change this to your domain name
+    depends_on:
+      - backend
+
+volumes:
+  caddy_data:
+  caddy_config:

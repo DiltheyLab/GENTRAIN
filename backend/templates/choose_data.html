@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="container-fluid">
+
+    <!-- Header with general information -->
+    <div class="row justify-content-center mt-5 mb-5">
+        <div class="col ">
+            <h1 class="pb-4" style="text-align:center"> Wähle Sie einen Datensatz aus: </h1>
+            <!-- <h1 class="pb-4" style="text-align:center">Choose a dataset</h1> -->
+            <!-- <p style="text-align:center">
+                You can either select a <b>existing dataset</b> from a previous session or start with an <b>example</b> or <b>empty dataset</b>. <br>
+                After working with a datasets, it can be saved into a json file and be reopened at a later point. <br>
+            </p> -->
+        </div>
+    </div>
+
+
+    <!-- Spacer  -->
+    <div class="row mt-5 mb-5">
+    </div>
+
+    <!-- Dataset Options -->
+    <div class="row mt-5 mb-5">
+        <!-- <div class="row justify-content-center mt-5 mb-5 align-items-center" style="display: grid;grid-auto-flow: column;"> -->
+
+
+        <div class="col-5">
+            <div class="card h-100">
+                <!-- <div class="card-title">
+                </div> -->
+                <div class="card-body">
+                    <h2 class="card-title"> Existierenden Datensatz öffnen </h2>
+                    <!-- <h2 class="card-title"> Load existing dataset </h2> -->
+                    <h6 class="card-subtitle mb-5 text-muted"> 
+                        Wenn bereits ein Datensatz bearbeitet und gespeichert wurde kann er hier wieder weiter benutzt werden. 
+                        Wählen Sie die entsprechende json Datei aus und drücken Sie auf "Start".
+                    </h6>
+
+                    <!-- <center> -->
+
+                    <input class="form-control w-100" type="file" id="json_file_chooser">
+                    <span class="w-100" style="color:red;text-align:center" id="error_message">&nbsp;</span>
+                    <button type="button" class="btn btn-success w-100" style="width:150px"
+                        id="load_data_button">Start</button>
+                        <!-- id="load_data_button">Load</button> -->
+                    <!-- </center> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-2 d-flex align-items-center justify-content-center">
+            <h4>oder</h4>
+            <!-- <h4>OR</h4> -->
+        </div>
+        <div class="col-5 ">
+            <div class="card h-100">
+                <!-- <div class="card-title mb-5"> -->
+                <!-- </div> -->
+
+                <div class="card-body">
+                    <h2 class="card-title"> Neue Analyse starten </h2>
+                    <!-- <h2 class="card-title"> Start new analysis </h2> -->
+                    <h6 class="card-subtitle mb-5 text-muted"> 
+                        Starten Sie entweder mit einem leeren Datensatz und fügen Ihre eigenen Fälle hinzu,  <br>
+                        oder testen Sie einen Beispieldatensatz.
+                    </h6>
+                    <center>
+
+                        <button type="button" class="btn btn-success" style="width:100%" id="empty_data_button">Leerer Datensatz</button>
+                        <!-- <button type="button" class="btn btn-success" style="width:100%" id="empty_data_button">Empty
+                            dataset</button> -->
+                        <p class="mb-4"> Oder <a href="/example_datasets/empty_dataset.json" download> hier herunterladen</a>.</p>
+                        <!-- <p class="mb-4"> Or download it <a href="/example_datasets/empty_dataset.json" download>here</a>.</p> -->
+
+                        <h4 class="mb-4" style="text-align:center">oder</h4>
+                        <!-- <h4 class="mb-4" style="text-align:center">OR</h4> -->
+
+
+                        <button type="button" class="btn btn-success" style="width:100%"
+                            id="example_data_button">Beispieldatensatz</button>
+                            <!-- id="example_data_button">Example dataset</button> -->
+                        <p class=" mb-5"> Oder <a href="/example_datasets/example_dataset.json" download>hier herunterladen</a>.</p>
+                        <!-- <p class=" mb-5"> Or download it <a href="/example_datasets/example_dataset.json" download>here</a>.</p> -->
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Spacer to bottom -->
+    <div class="row justify-content-center mt-5 mb-5">
+    </div>
+</div>
+{% endblock %}
+
+
+{% block css_imports %}
+{% endblock %}
+
+
+{% block js_imports %}
+<script src="{{ url_for('static', filename='js/choose_data.js') }}"></script>
+{% endblock %}

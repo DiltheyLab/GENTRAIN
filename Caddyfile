@@ -1,0 +1,30 @@
+# Backend API (FLASK) 
+api.gentrain.de {
+  tls philipp_vogel92@outlook.de
+  header Access-Control-Allow-Methods "*" # Change this for production
+  header Access-Control-Allow-Origin "*"  # Change this for production
+  header Access-Control-Allow-Headers "*" # Change this for production
+
+  @options {
+    method OPTIONS
+  }
+  respond @options 200
+
+  # Reverse proxy to the backend docker container
+  reverse_proxy backend:8080
+  
+  # Log 
+  log {
+    output stdout
+  }
+}
+
+# Frontend app (React)
+gentrain.de {
+  root * /srv
+  try_files {path} /index.html
+  file_server
+  log {
+    output stdout
+  }
+}
