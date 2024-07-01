@@ -1,6 +1,6 @@
 # Backend API (FLASK) 
 api.gentrain.de {
-  tls philipp_vogel92@outlook.de
+  tls philipp_vogel92@outlook.de # Use an email address for certificate notifications like expiration
   header Access-Control-Allow-Methods "*" # Change this for production
   header Access-Control-Allow-Origin "*"  # Change this for production
   header Access-Control-Allow-Headers "*" # Change this for production
@@ -21,6 +21,7 @@ api.gentrain.de {
 
 # Frontend app (React)
 gentrain.de {
+  tls philipp_vogel92@outlook.de
   root * /srv
   try_files {path} /index.html
   file_server
