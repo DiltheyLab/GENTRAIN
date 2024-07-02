@@ -123,8 +123,9 @@ export const DashboardGraphSettings = () => {
             </div>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="linkWidth">Anziehungskraft</Label>
+            <Label htmlFor="forceCharge">Anziehungskraft</Label>
             <Slider
+              id="forceCharge"
               defaultValue={[graphSettingsContext.settings.charge]}
               max={0}
               min={-100}
