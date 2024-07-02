@@ -14,7 +14,6 @@ export const DashboardVisualizationPanel = () => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
-<<<<<<< HEAD
   useLayoutEffect(() => {
     if (!containerRef.current) return;
     setHeight(containerRef.current.offsetHeight);
@@ -50,21 +49,8 @@ export const DashboardVisualizationPanel = () => {
           height={height}
         />
       );
-=======
-    useLayoutEffect(() => {
-        if (!containerRef.current) return;
-        console.log(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
-
-        setHeight(containerRef.current.offsetHeight);
-        setWidth(containerRef.current.offsetWidth - 8); // substract padding (8) from parent to avoid overflow
-    }, [containerRef]);
-
-    if (!graphSettingsContext) {
-        return <div>Loading...</div>;
->>>>>>> main
     }
 
-<<<<<<< HEAD
   return (
     <div
       ref={containerRef}
@@ -79,28 +65,4 @@ export const DashboardVisualizationPanel = () => {
       <div className="p-1">{getGraph()}</div>
     </div>
   );
-=======
-    const getGraph = () => {
-        if (graphSettingsContext.settings.graphDimension === "2D" && width && height) {
-            return <ForcedDirectedGraph2D graphDataJSON={mst} width={width} height={height} />;
-        } else if (graphSettingsContext.settings.graphDimension === "3D" && width && height) {
-            return <ForcedDirectedGraph3D graphDataJSON={mst} width={width} height={height} />;
-        }
-    };
-
-    return (
-        <div
-            ref={containerRef}
-            className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted lg:col-span-2"
-        >
-            <Badge variant="outline" className="absolute z-50 right-3 top-3">
-                {graphSettingsContext.settings.graphDimension}
-            </Badge>
-            <Button variant="outline" className="absolute z-50 bottom-3 right-3">
-                Reset
-            </Button>
-            <div className="p-1">{getGraph()}</div>
-        </div>
-    );
->>>>>>> main
 };

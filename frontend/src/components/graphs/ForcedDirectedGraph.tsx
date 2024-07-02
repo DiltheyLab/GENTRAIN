@@ -1,10 +1,7 @@
 import { deepCopyData } from "@/lib/utils";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import ForceGraph2D, {
-  ForceGraphMethods,
-  NodeObject,
-} from "react-force-graph-2d";
+import ForceGraph2D, { ForceGraphMethods, NodeObject } from "react-force-graph-2d";
 
 interface Node extends NodeObject {
     group: string;
@@ -27,17 +24,8 @@ type ForcedDirectedGraph2DProps = {
     height: number;
 };
 
-<<<<<<< HEAD
-export const ForcedDirectedGraph2D = ({
-  graphDataJSON,
-  width,
-  height,
-}: ForcedDirectedGraph2DProps) => {
-  const graphSettingsContext = useGraphSettings();
-=======
 export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDirectedGraph2DProps) => {
     const graphSettingsContext = useGraphSettings();
->>>>>>> main
 
     //copy the data to avoid mutation of the original data
     const [data, setData] = useState(deepCopyData(graphDataJSON));
@@ -49,27 +37,14 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         return <div>Loading...</div>;
     }
 
-<<<<<<< HEAD
-  // custom d3 force setup
-  useEffect(() => {
-    if (!forceRef.current) return;
-    forceRef.current
-      .d3Force("charge")
-      ?.strength(graphSettingsContext.settings.charge);
-    forceRef.current
-      .d3Force("link")
-      ?.distance(graphSettingsContext.settings.linkDistance);
-
-    forceRef.current.d3ReheatSimulation();
-  });
-=======
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current) return;
-        forceRef.current.d3Force("charge")?.strength(-50);
-        forceRef.current.d3Force("center");
+        forceRef.current.d3Force("charge")?.strength(graphSettingsContext.settings.charge);
+        forceRef.current.d3Force("link")?.distance(graphSettingsContext.settings.linkDistance);
+
+        forceRef.current.d3ReheatSimulation();
     });
->>>>>>> main
 
     const handleEngineStop = () => {
         if (!forceRef.current) return;
@@ -77,17 +52,8 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         forceRef.current?.zoomToFit(400);
     };
 
-<<<<<<< HEAD
-  const createCustomNodeCanvas = (
-    node: NodeObject,
-    ctx: CanvasRenderingContext2D,
-    globalScale: number
-  ) => {
-    if (!node.x || !node.y) return;
-=======
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
         if (!node.x || !node.y) return;
->>>>>>> main
 
         // Always draw the circle regardless of hideNodeLabel setting
         const radius = graphSettingsContext.settings.nodeSize;
@@ -116,29 +82,6 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
     };
 
-<<<<<<< HEAD
-  return (
-    <ForceGraph2D
-      ref={forceRef}
-      graphData={data}
-      nodeLabel={(node) => `(${node.id})`}
-      nodeRelSize={graphSettingsContext.settings.nodeSize}
-      width={width}
-      height={height}
-      cooldownTicks={100}
-      backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
-      onEngineStop={handleEngineStop}
-      linkLabel={(link) => {
-        return `${link.value}`;
-      }}
-      linkWidth={graphSettingsContext.settings.linkWidth}
-      d3VelocityDecay={0.3}
-      nodeCanvasObject={(node, ctx, globalScale) =>
-        createCustomNodeCanvas(node, ctx, globalScale)
-      }
-    />
-  );
-=======
     return (
         <ForceGraph2D
             ref={forceRef}
@@ -158,5 +101,4 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
             nodeCanvasObject={(node, ctx, globalScale) => createCustomNodeCanvas(node, ctx, globalScale)}
         />
     );
->>>>>>> main
 };
