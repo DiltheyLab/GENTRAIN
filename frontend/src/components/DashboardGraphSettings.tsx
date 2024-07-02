@@ -11,6 +11,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
+import { Slider } from "./ui/slider";
 
 export const DashboardGraphSettings = () => {
   const graphSettingsContext = useGraphSettings();
@@ -45,6 +46,10 @@ export const DashboardGraphSettings = () => {
 
   const changeNodeStyle = (checked: boolean) => {
     graphSettingsContext.updateSettings({ hideNodeLabel: checked });
+  };
+
+  const changeCharge = (value: number) => {
+    graphSettingsContext.updateSettings({ charge: value });
   };
 
   return (
@@ -118,7 +123,14 @@ export const DashboardGraphSettings = () => {
             </div>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="linkWidth">Kraft</Label>
+            <Label htmlFor="linkWidth">Anziehungskraft</Label>
+            <Slider
+              defaultValue={[graphSettingsContext.settings.charge]}
+              max={0}
+              min={-100}
+              step={1}
+              onValueChange={(value: [number]) => changeCharge(value[0])}
+            />
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox

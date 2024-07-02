@@ -1,7 +1,10 @@
 import { deepCopyData } from "@/lib/utils";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import ForceGraph2D, { ForceGraphMethods, NodeObject } from "react-force-graph-2d";
+import ForceGraph2D, {
+  ForceGraphMethods,
+  NodeObject,
+} from "react-force-graph-2d";
 
 interface Node extends NodeObject {
   group: string;
@@ -24,7 +27,11 @@ type ForcedDirectedGraph2DProps = {
   height: number;
 };
 
-export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDirectedGraph2DProps) => {
+export const ForcedDirectedGraph2D = ({
+  graphDataJSON,
+  width,
+  height,
+}: ForcedDirectedGraph2DProps) => {
   const graphSettingsContext = useGraphSettings();
 
   //copy the data to avoid mutation of the original data
@@ -40,9 +47,18 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
   // custom d3 force setup
   useEffect(() => {
     if (!forceRef.current) return;
-    forceRef.current.d3Force("charge")?.strength(-50);
-    forceRef.current.d3Force("center");
-  });
+    forceRef.current
+      .d3Force("charge")
+      ?.strength(graphSettingsContext.settings.charge);
+  }, []);
+
+  useEffect(() => {
+    if (!forceRef.current) return;
+    forceRef.current
+      .d3Force("charge")
+      ?.strength([graphSettingsContext.settings.charge]);
+    forceRef.current.d3ReheatSimulation();
+  }, [graphSettingsContext.settings.charge]);
 
   const handleEngineStop = () => {
     if (!forceRef.current) return;
@@ -50,7 +66,11 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
     forceRef.current?.zoomToFit(400);
   };
 
-  const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const createCustomNodeCanvas = (
+    node: NodeObject,
+    ctx: CanvasRenderingContext2D,
+    globalScale: number
+  ) => {
     if (!node.x || !node.y) return;
 
     // Always draw the circle regardless of hideNodeLabel setting
@@ -96,7 +116,9 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
       }}
       linkWidth={graphSettingsContext.settings.linkWidth}
       d3VelocityDecay={0.3}
-      nodeCanvasObject={(node, ctx, globalScale) => createCustomNodeCanvas(node, ctx, globalScale)}
+      nodeCanvasObject={(node, ctx, globalScale) =>
+        createCustomNodeCanvas(node, ctx, globalScale)
+      }
     />
   );
 };

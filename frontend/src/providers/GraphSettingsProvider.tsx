@@ -6,6 +6,7 @@ export type GraphSettings = {
   nodeSize: number;
   linkWidth: number;
   zoomToFit: boolean;
+  charge: number;
 };
 
 type GraphSettingsContextType = {
@@ -27,6 +28,7 @@ const defaultGraphSettings: GraphSettings = {
   nodeSize: 5,
   linkWidth: 2,
   zoomToFit: false,
+  charge: -50,
 };
 
 export const useGraphSettings = () => useContext(GraphSettingsContext);
