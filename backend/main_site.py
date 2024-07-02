@@ -345,4 +345,5 @@ def usher_nearest_k():
         return json.dumps([IMS_list_out])
 
 
-app.run(host="0.0.0.0", port=4000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=4000)
