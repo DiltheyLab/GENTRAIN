@@ -77,6 +77,17 @@ export const DashboardGraphSettings = () => {
                                         </div>
                                     </div>
                                 </SelectItem>
+                                <SelectItem value="3D">
+                                    <div className="flex items-start gap-3 text-muted-foreground">
+                                        <Workflow className="size-5" />
+                                        <div className="grid gap-0.5">
+                                            <p>3D-Darstellung</p>
+                                            <p className="text-xs" data-description>
+                                                Dreidimensionale Darstellung des Graphen
+                                            </p>
+                                        </div>
+                                    </div>
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
