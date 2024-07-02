@@ -1,5 +1,5 @@
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
 
 type nodes = {
@@ -42,6 +42,12 @@ export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDi
         if (graphSettingsContext.settings.zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
     };
+
+    useEffect(() => {
+        if (!forceRef.current) return;
+        forceRef.current.d3Force("charge")?.strength(graphSettingsContext.settings.charge);
+        forceRef.current.d3ReheatSimulation();
+    });
 
     return (
         <ForceGraph3D

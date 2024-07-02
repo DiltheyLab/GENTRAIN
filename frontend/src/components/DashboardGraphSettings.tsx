@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
+import { Slider } from "@/components/ui/slider";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
@@ -41,6 +42,14 @@ export const DashboardGraphSettings = () => {
         graphSettingsContext.updateSettings({ hideNodeLabel: checked });
     };
 
+    const changeCharge = (value: number) => {
+        graphSettingsContext.updateSettings({ charge: value });
+    };
+
+    const changeLinkDistance = (value: number) => {
+        graphSettingsContext.updateSettings({ linkDistance: value });
+    };
+
     return (
         <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
             <form className="grid w-full items-start gap-6">
@@ -65,16 +74,27 @@ export const DashboardGraphSettings = () => {
                                                 Zweidimensionale Darstellung des Graphen
                                             </p>
                                         </div>
-                                    </div>
-                                </SelectItem>
-                                <SelectItem value="3D">
-                                    <div className="flex items-start gap-3 text-muted-foreground">
-                                        <Box className="size-5" />
-                                        <div className="grid gap-0.5">
-                                            <p>3D-Darstellung</p>
-                                            <p className="text-xs" data-description>
-                                                Dreidimensionale Darstellung des Graphen
-                                            </p>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid gap-3">
+                                                <Label htmlFor="nodeSize">Knotengröße</Label>
+                                                <Input
+                                                    id="nodeSize"
+                                                    type="number"
+                                                    value={graphSettingsContext.settings.nodeSize}
+                                                    placeholder={`${graphSettingsContext.settings.nodeSize}`}
+                                                    onChange={(e) => changeNodeSize(e)}
+                                                />
+                                            </div>
+                                            <div className="grid gap-3">
+                                                <Label htmlFor="linkWidth">Kantenbreite</Label>
+                                                <Input
+                                                    id="linkWidth"
+                                                    type="number"
+                                                    value={graphSettingsContext.settings.linkWidth}
+                                                    placeholder={`${graphSettingsContext.settings.linkWidth}`}
+                                                    onChange={(e) => changelinkWidth(e)}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </SelectItem>
@@ -104,7 +124,24 @@ export const DashboardGraphSettings = () => {
                         </div>
                     </div>
                     <div className="grid gap-3">
-                        <Label htmlFor="linkWidth">Kraft</Label>
+                        <Label htmlFor="forceCharge">Anziehungskraft</Label>
+                        <Slider
+                            id="forceCharge"
+                            defaultValue={[graphSettingsContext.settings.charge]}
+                            max={0}
+                            min={-100}
+                            step={1}
+                            onValueChange={(value) => changeCharge(value[0])}
+                        />
+                        <Label htmlFor="forceLinkDistance">Kantenabstand</Label>
+                        <Slider
+                            id="forceLinkDistance"
+                            defaultValue={[graphSettingsContext.settings.linkDistance]}
+                            max={100}
+                            min={10}
+                            step={1}
+                            onValueChange={(value) => changeLinkDistance(value[0])}
+                        />
                     </div>
                     <div className="flex items-center space-x-2">
                         <Checkbox

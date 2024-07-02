@@ -40,8 +40,10 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current) return;
-        forceRef.current.d3Force("charge")?.strength(-50);
-        forceRef.current.d3Force("center");
+        forceRef.current.d3Force("charge")?.strength(graphSettingsContext.settings.charge);
+        forceRef.current.d3Force("link")?.distance(graphSettingsContext.settings.linkDistance);
+
+        forceRef.current.d3ReheatSimulation();
     });
 
     const handleEngineStop = () => {
