@@ -16,16 +16,25 @@ export const DashboardGraphSettings = () => {
         return <div>Loading...</div>; // Example fallback UI
     }
 
-    const changeNodeSize = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const changeNodeSize = (value: number) => {
+        console.log(value);
         graphSettingsContext.updateSettings({
-            nodeSize: parseInt(event.target.value),
+            nodeSize: value,
         });
     };
 
-    const changelinkWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const changeLinkWidth = (value: number) => {
         graphSettingsContext.updateSettings({
-            linkWidth: parseInt(event.target.value),
+            linkWidth: value,
         });
+    };
+
+    const changeCharge = (value: number) => {
+        graphSettingsContext.updateSettings({ charge: value });
+    };
+
+    const changeLinkDistance = (value: number) => {
+        graphSettingsContext.updateSettings({ linkDistance: value });
     };
 
     const changeGraphDimension = (selectValue: string) => {
@@ -40,14 +49,6 @@ export const DashboardGraphSettings = () => {
 
     const changeNodeStyle = (checked: boolean) => {
         graphSettingsContext.updateSettings({ hideNodeLabel: checked });
-    };
-
-    const changeCharge = (value: number) => {
-        graphSettingsContext.updateSettings({ charge: value });
-    };
-
-    const changeLinkDistance = (value: number) => {
-        graphSettingsContext.updateSettings({ linkDistance: value });
     };
 
     return (
@@ -74,56 +75,31 @@ export const DashboardGraphSettings = () => {
                                                 Zweidimensionale Darstellung des Graphen
                                             </p>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="grid gap-3">
-                                                <Label htmlFor="nodeSize">Knotengröße</Label>
-                                                <Input
-                                                    id="nodeSize"
-                                                    type="number"
-                                                    value={graphSettingsContext.settings.nodeSize}
-                                                    placeholder={`${graphSettingsContext.settings.nodeSize}`}
-                                                    onChange={(e) => changeNodeSize(e)}
-                                                />
-                                            </div>
-                                            <div className="grid gap-3">
-                                                <Label htmlFor="linkWidth">Kantenbreite</Label>
-                                                <Input
-                                                    id="linkWidth"
-                                                    type="number"
-                                                    value={graphSettingsContext.settings.linkWidth}
-                                                    placeholder={`${graphSettingsContext.settings.linkWidth}`}
-                                                    onChange={(e) => changelinkWidth(e)}
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                 </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-3">
-                            <Label htmlFor="nodeSize">Knotengröße</Label>
-                            <Input
-                                id="nodeSize"
-                                type="number"
-                                value={graphSettingsContext.settings.nodeSize}
-                                placeholder={`${graphSettingsContext.settings.nodeSize}`}
-                                onChange={(e) => changeNodeSize(e)}
-                            />
-                        </div>
-                        <div className="grid gap-3">
-                            <Label htmlFor="linkWidth">Kantenbreite</Label>
-                            <Input
-                                id="linkWidth"
-                                type="number"
-                                value={graphSettingsContext.settings.linkWidth}
-                                placeholder={`${graphSettingsContext.settings.linkWidth}`}
-                                onChange={(e) => changelinkWidth(e)}
-                            />
-                        </div>
-                    </div>
+
                     <div className="grid gap-3">
+                        <Label htmlFor="nodeSize">Knotengröße</Label>
+                        <Slider
+                            id="nodeSize"
+                            defaultValue={[5]}
+                            max={10}
+                            min={1}
+                            step={1}
+                            onValueChange={(value) => changeNodeSize(value[0])}
+                        />
+                        <Label htmlFor="linkWidth">Kantenbreite</Label>
+                        <Slider
+                            id="linkWidth"
+                            defaultValue={[2.5]}
+                            max={5}
+                            min={0}
+                            step={1}
+                            onValueChange={(value) => changeLinkWidth(value[0])}
+                        />
                         <Label htmlFor="forceCharge">Anziehungskraft</Label>
                         <Slider
                             id="forceCharge"
