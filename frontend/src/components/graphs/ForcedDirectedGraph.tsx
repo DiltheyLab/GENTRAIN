@@ -1,17 +1,7 @@
 import { deepCopyData } from "@/lib/utils";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import ForceGraph2D, { ForceGraphMethods, NodeObject } from "react-force-graph-2d";
-
-interface Node extends NodeObject {
-    group: string;
-    color: string;
-}
-type Link = {
-    source: string;
-    target: string;
-    value: number;
-};
+import { useEffect, useRef, useState } from "react";
+import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 
 type Data = {
     nodes: any[];
@@ -52,7 +42,7 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         forceRef.current?.zoomToFit(400);
     };
 
-    const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+    const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
         if (!node.x || !node.y) return;
 
         // Always draw the circle regardless of hideNodeLabel setting
@@ -67,8 +57,8 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
 
         // Draw the label above the circle
         const label = `${node.id}`;
-        const fontSize = 12 / globalScale;
-        ctx.font = `${fontSize}px Sans-Serif`;
+        const fontSize = 12;
+        ctx.font = `bold ${fontSize}px Sans-Serif`;
         const textWidth = ctx.measureText(label).width;
         const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
 
@@ -79,7 +69,38 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = "black";
+        //font bold
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
+    };
+
+    const createCustomLinkCanvas = (link: LinkObject, ctx: CanvasRenderingContext2D) => {
+        if (!link.source || !link.target) return;
+        // Get the source and target nodes
+        const source = link.source as NodeObject;
+        const target = link.target as NodeObject;
+
+        // Check if the source and target nodes have x and y values
+        if (!source.x || !source.y || !target.x || !target.y) return;
+
+        // Start line
+        ctx.beginPath();
+        ctx.moveTo(source.x, source.y);
+
+        // End line
+        ctx.lineTo(target.x, target.y);
+        ctx.strokeStyle = "#CCC"; // Line color
+        ctx.lineWidth = graphSettingsContext.settings.linkWidth; // Line width based on link value and scale
+        ctx.stroke();
+
+        // Calculate midpoint for text
+        const midX = (source.x + target.x) / 2;
+        const midY = (source.y + target.y) / 2;
+
+        // Draw text at midpoint
+        ctx.fillStyle = "black"; // Text color
+        const fontSize = 12;
+        ctx.font = `${fontSize}px Sans-Serif`;
+        ctx.fillText(link.value.toString(), midX, midY);
     };
 
     return (
@@ -90,15 +111,14 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
             nodeRelSize={graphSettingsContext.settings.nodeSize}
             width={width}
             height={height}
-            cooldownTicks={100}
+            cooldownTicks={100} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
             onEngineStop={handleEngineStop}
-            linkLabel={(link) => {
-                return `${link.value}`;
-            }}
+            linkLabel={(link) => `${link.value}`}
             linkWidth={graphSettingsContext.settings.linkWidth}
             d3VelocityDecay={0.3}
-            nodeCanvasObject={(node, ctx, globalScale) => createCustomNodeCanvas(node, ctx, globalScale)}
+            nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
+            linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
         />
     );
 };
