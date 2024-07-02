@@ -1,5 +1,3 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -79,7 +77,7 @@ export const DashboardGraphSettings = () => {
                                 </SelectItem>
                                 <SelectItem value="3D">
                                     <div className="flex items-start gap-3 text-muted-foreground">
-                                        <Workflow className="size-5" />
+                                        <Box className="size-5" />
                                         <div className="grid gap-0.5">
                                             <p>3D-Darstellung</p>
                                             <p className="text-xs" data-description>
