@@ -10,45 +10,41 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
-import { useDashboard } from "@/providers/DashboardProvider";
-import { Slider } from "./ui/slider";
+import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 
-export const DashboardSettings = () => {
-  const dashboardContext = useDashboard();
+export const DashboardGraphSettings = () => {
+  const graphSettingsContext = useGraphSettings();
 
-  if (!dashboardContext) {
-    // Handle the case where dashboardContext is null
+  if (!graphSettingsContext) {
+    // Handle the case where graphSettingsContext is null
     // This could be rendering a fallback UI or throwing an error
     return <div>Loading...</div>; // Example fallback UI
   }
 
   const changeNodeSize = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dashboardContext.updateSettings({ nodeSize: parseInt(event.target.value) });
+    graphSettingsContext.updateSettings({
+      nodeSize: parseInt(event.target.value),
+    });
   };
 
   const changelinkWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dashboardContext.updateSettings({
+    graphSettingsContext.updateSettings({
       linkWidth: parseInt(event.target.value),
     });
   };
 
   const changeGraphDimension = (selectValue: string) => {
-    dashboardContext.updateSettings({
+    graphSettingsContext.updateSettings({
       graphDimension: selectValue as "2D" | "3D",
     });
   };
 
   const changeZoomToFit = (checked: boolean) => {
-    dashboardContext.updateSettings({ zoomToFit: checked });
+    graphSettingsContext.updateSettings({ zoomToFit: checked });
   };
 
   const changeNodeStyle = (checked: boolean) => {
-    dashboardContext.updateSettings({ showIdAsNode: checked });
-  };
-
-  const changeForceCharge = (value: any) => {
-    console.log(value.target.value);
-    dashboardContext.updateSettings({ forceCharge: value.target.value });
+    graphSettingsContext.updateSettings({ showIdAsNode: checked });
   };
 
   return (
@@ -70,7 +66,7 @@ export const DashboardSettings = () => {
               >
                 <SelectValue
                   placeholder="Wähle ein Model aus"
-                  defaultValue={dashboardContext.settings.graphDimension}
+                  defaultValue={graphSettingsContext.settings.graphDimension}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -105,8 +101,8 @@ export const DashboardSettings = () => {
               <Input
                 id="nodeSize"
                 type="number"
-                value={dashboardContext.settings.nodeSize}
-                placeholder={`${dashboardContext.settings.nodeSize}`}
+                value={graphSettingsContext.settings.nodeSize}
+                placeholder={`${graphSettingsContext.settings.nodeSize}`}
                 onChange={(e) => changeNodeSize(e)}
               />
             </div>
@@ -115,29 +111,20 @@ export const DashboardSettings = () => {
               <Input
                 id="linkWidth"
                 type="number"
-                value={dashboardContext.settings.linkWidth}
-                placeholder={`${dashboardContext.settings.linkWidth}`}
+                value={graphSettingsContext.settings.linkWidth}
+                placeholder={`${graphSettingsContext.settings.linkWidth}`}
                 onChange={(e) => changelinkWidth(e)}
               />
             </div>
           </div>
           <div className="grid gap-3">
             <Label htmlFor="linkWidth">Kraft</Label>
-            <Slider
-              defaultValue={[dashboardContext.settings.forceCharge]}
-              min={-100}
-              max={0}
-              step={1}
-              onChange={(value: any) => changeForceCharge(value)}
-            />
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="nodeDescription"
-              checked={dashboardContext.settings.showIdAsNode}
-              onCheckedChange={(value: boolean) =>
-                changeNodeStyle(Boolean(value))
-              }
+              checked={graphSettingsContext.settings.showIdAsNode}
+              onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
             />
             <label
               htmlFor="nodeDescription"
@@ -149,10 +136,8 @@ export const DashboardSettings = () => {
           <div className="flex items-center space-x-2">
             <Checkbox
               id="zoomToFit"
-              checked={dashboardContext.settings.zoomToFit}
-              onCheckedChange={(value: boolean) =>
-                changeZoomToFit(Boolean(value))
-              }
+              checked={graphSettingsContext.settings.zoomToFit}
+              onCheckedChange={(value) => changeZoomToFit(Boolean(value))}
             />
             <label
               htmlFor="zoomToFit"

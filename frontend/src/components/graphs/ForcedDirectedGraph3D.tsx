@@ -1,4 +1,4 @@
-import { useDashboard } from "@/providers/DashboardProvider";
+import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
 
@@ -25,12 +25,12 @@ type ForcedDirectedGraph3DProps = {
 };
 
 export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDirectedGraph3DProps) => {
-  const dashboardContext = useDashboard();
+  const graphSettingsContext = useGraphSettings();
 
   // set ref to use own d3 force simulation
   const forceRef = useRef<ForceGraphMethods>();
 
-  if (!dashboardContext) {
+  if (!graphSettingsContext) {
     return <div>Loading...</div>;
   }
 
@@ -39,7 +39,7 @@ export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDi
 
   const handleEngineStop = () => {
     if (!forceRef.current) return;
-    if (dashboardContext.settings.zoomToFit === false) return;
+    if (graphSettingsContext.settings.zoomToFit === false) return;
     forceRef.current?.zoomToFit(100);
   };
 
@@ -54,14 +54,14 @@ export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDi
       width={width}
       height={height}
       backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color bg-muted
-      nodeRelSize={dashboardContext.settings.nodeSize}
+      nodeRelSize={graphSettingsContext.settings.nodeSize}
       linkLabel={(link) => {
         return `${link.value}`;
       }}
       nodeColor={(node) => {
         return node.color;
       }}
-      linkWidth={dashboardContext.settings.linkWidth}
+      linkWidth={graphSettingsContext.settings.linkWidth}
       linkColor="black"
       linkOpacity={0.7}
       cooldownTicks={100}

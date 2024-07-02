@@ -1,5 +1,5 @@
 import { deepCopyData } from "@/lib/utils";
-import { useDashboard } from "@/providers/DashboardProvider";
+import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import ForceGraph2D, {
   ForceGraphMethods,
@@ -32,7 +32,7 @@ export const ForcedDirectedGraph2D = ({
   width,
   height,
 }: ForcedDirectedGraph2DProps) => {
-  const dashboardContext = useDashboard();
+  const graphSettingsContext = useGraphSettings();
 
   //copy the data to avoid mutation of the original data
   const [data, setData] = useState(deepCopyData(graphDataJSON));
@@ -40,13 +40,12 @@ export const ForcedDirectedGraph2D = ({
   // set ref to use own d3 force simulation
   const forceRef = useRef<ForceGraphMethods>();
 
-  if (!dashboardContext) {
+  if (!graphSettingsContext) {
     return <div>Loading...</div>;
   }
 
   // custom d3 force setup
   useEffect(() => {
-    console.log(dashboardContext.settings.forceCharge);
     if (!forceRef.current) return;
     forceRef.current.d3Force("charge")?.strength(-50);
     forceRef.current.d3Force("center");
@@ -54,7 +53,7 @@ export const ForcedDirectedGraph2D = ({
 
   const handleEngineStop = () => {
     if (!forceRef.current) return;
-    if (dashboardContext.settings.zoomToFit === false) return;
+    if (graphSettingsContext.settings.zoomToFit === false) return;
     forceRef.current?.zoomToFit(400);
   };
 
@@ -65,8 +64,8 @@ export const ForcedDirectedGraph2D = ({
   ) => {
     if (!node.x || !node.y) return;
 
-    if (!dashboardContext.settings.showIdAsNode) {
-      const radius = dashboardContext.settings.nodeSize;
+    if (!graphSettingsContext.settings.showIdAsNode) {
+      const radius = graphSettingsContext.settings.nodeSize;
       ctx.beginPath();
       ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI, false);
       ctx.fillStyle =
@@ -102,7 +101,7 @@ export const ForcedDirectedGraph2D = ({
       ref={forceRef}
       graphData={data}
       nodeLabel={(node) => `(${node.id})`}
-      nodeRelSize={dashboardContext.settings.nodeSize}
+      nodeRelSize={graphSettingsContext.settings.nodeSize}
       width={width}
       height={height}
       cooldownTicks={100}
@@ -111,7 +110,7 @@ export const ForcedDirectedGraph2D = ({
       linkLabel={(link) => {
         return `${link.value}`;
       }}
-      linkWidth={dashboardContext.settings.linkWidth}
+      linkWidth={graphSettingsContext.settings.linkWidth}
       d3VelocityDecay={0.3}
       nodeCanvasObject={(node, ctx, globalScale) =>
         createCustomNodeCanvas(node, ctx, globalScale)
