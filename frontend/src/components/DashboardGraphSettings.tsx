@@ -109,15 +109,6 @@ export const DashboardGraphSettings = () => {
                             step={1}
                             onValueChange={(value) => changeLinkWidth(value[0])}
                         />
-                        <Label htmlFor="forceCharge">Anziehungskraft</Label>
-                        <Slider
-                            id="forceCharge"
-                            defaultValue={[graphSettingsContext.settings.charge]}
-                            max={0}
-                            min={-100}
-                            step={1}
-                            onValueChange={(value) => changeCharge(value[0])}
-                        />
                         <Label htmlFor="forceLinkDistance">Kantenabstand</Label>
                         <Slider
                             id="forceLinkDistance"
@@ -126,6 +117,15 @@ export const DashboardGraphSettings = () => {
                             min={10}
                             step={1}
                             onValueChange={(value) => changeLinkDistance(value[0])}
+                        />
+                        <Label htmlFor="forceCharge">Anziehungskraft</Label>
+                        <Slider
+                            id="forceCharge"
+                            defaultValue={[graphSettingsContext.settings.charge]}
+                            max={0}
+                            min={-100}
+                            step={1}
+                            onValueChange={(value) => changeCharge(value[0])}
                         />
                     </div>
                     <div className="flex items-center space-x-2">
