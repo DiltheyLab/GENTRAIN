@@ -3,6 +3,7 @@
 ## General Setup
 
 ### Conda
+
 Install libraries via [conda](https://docs.conda.io/en/latest/miniconda.html).
 Create environment and install packages:
 
@@ -38,18 +39,16 @@ Change modes of scripts
     chmod +x scripts/usher_nearest_k.sh
     chmod +x scripts/IMS_to_fasta.sh
 
-
 Download the RKI datasets:
 
     cd datasets/RKI
-    
+
     wget https://github.com/robert-koch-institut/SARS-CoV-2-Sequenzdaten_aus_Deutschland/raw/master/SARS-CoV-2-Sequenzdaten_Deutschland.fasta.xz
     unxz SARS-CoV-2-Sequenzdaten_Deutschland.fasta.xz
     samtools faidx SARS-CoV-2-Sequenzdaten_Deutschland.fasta
 
     wget https://github.com/robert-koch-institut/SARS-CoV-2-Sequenzdaten_aus_Deutschland/raw/master/SARS-CoV-2-Sequenzdaten_Deutschland.csv.xz
     unxz SARS-CoV-2-Sequenzdaten_Deutschland.csv.xz
-
 
 ## Run locally
 
@@ -61,7 +60,7 @@ Download the RKI datasets:
 
     flask run
 
-Open 'http://127.0.0.1:5000/' in your browser of choice.
+Open 'http://127.0.0.1:4000/' in your browser of choice.
 
 ## Run on server
 
@@ -88,11 +87,11 @@ The system services are located here: `/etc/systemd/system`.
 
 The ini file in the directory of this repository:
 
-    [uwsgi]                                                                                                                                   
-    wsgi-file = main_site.py                                              
+    [uwsgi]
+    wsgi-file = main_site.py
     callable = app
 
-    master = true                                                 
+    master = true
     processes = 5
 
     socket = /home/ubuntu/num-dashboard/mainsocket.sock
@@ -101,7 +100,6 @@ The ini file in the directory of this repository:
     buffer-size = 64000
 
     die-on-term = true
-
 
 The nginx config at `/etc/nginx/sites-available/dashboard`:
 
@@ -121,11 +119,9 @@ The nginx config at `/etc/nginx/sites-available/dashboard`:
 
 On the Server use the conda environment `num-dash`. When adding new packages, add them to the `environment.yaml` file and the documentation above.
 
-
 When the `environment.yaml` was updated when pulling the repository use this to update the enviroment on the server
 
     conda env update -f environment.yaml
-
 
 #### New commits
 
@@ -137,19 +133,12 @@ The status can be checked with:
 
     sudo systemctl status dashboard -n 50
 
-
-
 TODO: implement CI/CD elements to automate this
-
-
-
-
 
 ## Links
 
 [Ideas](https://docs.google.com/document/d/1wGQjhyARwbIx12TZwm1rZmsHJ9wGqqF6jZ6zu76jKRQ/edit?usp=sharing)
 
-
-
 ## Planned page layout
+
 ![](documentation/Page_layout.png)

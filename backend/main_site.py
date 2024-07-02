@@ -44,22 +44,23 @@ else:
 
 # all of these just render the corresponding template and return the hmtl
 
-@app.route("/",methods=["GET"])
+
+@app.route("/", methods=["GET"])
 def main_view():
     return render_template("main_view.html")
 
 
-@app.route("/data",methods=["GET"])
+@app.route("/data", methods=["GET"])
 def data_view():
     return render_template("data.html")
 
 
-@app.route("/choose_data",methods=["GET"])
+@app.route("/choose_data", methods=["GET"])
 def choose_data_view():
     return render_template("choose_data.html")
 
 
-@app.route("/export",methods=["GET"])
+@app.route("/export", methods=["GET"])
 def export_view():
     return render_template("export.html")
 
@@ -69,19 +70,21 @@ def export_view():
 #     return render_template("similar_cases.html")
 
 
-@app.route("/help",methods=["GET"])
+@app.route("/help", methods=["GET"])
 def help_view():
     return render_template("help.html")
 
 
-@app.route("/contact",methods=["GET"])
+@app.route("/contact", methods=["GET"])
 def contact_view():
     return render_template("contact.html")
 
-@app.route("/test",methods=["GET"])
+
+@app.route("/test", methods=["GET"])
 def test_view():
     # return a test json
-    return json.dumps({"test":"test"})
+    return json.dumps({"test": "test"})
+
 
 ################################
 #        data downloads        #
@@ -93,7 +96,7 @@ def test_view():
 def send_example_dataset(file):
     if file in ["example_dataset.json", "empty_dataset.json"]:
         try:
-            return send_file("datasets/example_datasets/"+file)
+            return send_file("datasets/example_datasets/" + file)
         except FileNotFoundError:
             abort(404)
     else:
@@ -103,15 +106,17 @@ def send_example_dataset(file):
 # sends example files for different upload functions
 @app.route("/example_files/<file>", methods=["GET"])
 def send_example_files(file):
-    if file in ["example_sequence_background.tsv", "example_sequence_outbreak.fa", "example_sequence_outbreak.tsv",]:
+    if file in [
+        "example_sequence_background.tsv",
+        "example_sequence_outbreak.fa",
+        "example_sequence_outbreak.tsv",
+    ]:
         try:
-            return send_file("datasets/example_files/"+file)
+            return send_file("datasets/example_files/" + file)
         except FileNotFoundError:
             abort(404)
     else:
         return abort(404)
-
-
 
 
 ################################
@@ -122,7 +127,7 @@ def send_example_files(file):
 # Process: calls script to run fasta with nextclade
 # Input: fasta of one or multiple sequences in json dict with key "fasta_content"
 # Returns: output json from nexclade
-@app.route("/data/nextclade",methods=["POST"])
+@app.route("/data/nextclade", methods=["POST"])
 def nextclade():
     fasta_content = request.get_json(force=True)["fasta_content"]
 
@@ -132,15 +137,14 @@ def nextclade():
 
     # Create temporary file names
     fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
-    json_tmp = fa_tmp[:-2]+"json"
+    json_tmp = fa_tmp[:-2] + "json"
 
     # save fasta in temp file
-    with open(fa_tmp,"w") as fa_file:
+    with open(fa_tmp, "w") as fa_file:
         fa_file.write(fasta_content)
 
     # call process
     process = subprocess.run(["./scripts/nextclade.sh", fa_tmp, json_tmp])
-
 
     # return a None if the process failed (may change this in future)
     if process.returncode != 0:
@@ -154,9 +158,8 @@ def nextclade():
     # if the process succeded
     else:
         # collect output data into lists
-        with open(json_tmp,"r") as json_file:
+        with open(json_tmp, "r") as json_file:
             content = json.load(json_file)
-
 
         # delete the temporary files. If they can not be found ignore it
         pathlib.Path(fa_tmp).unlink(missing_ok=True)
@@ -167,12 +170,10 @@ def nextclade():
         # return json.dumps({"header":header, "content":content})
 
 
-
-
 # Process: calls samtools to search for corresponding fastas in RKI download (+ metadata from csv)
 # Input: IMS-ID of one or multiple sequences
 # Returns: dictionary containing ims ids with values of sequence and other metadata
-@app.route("/data/IMS_to_fasta",methods=["POST"])
+@app.route("/data/IMS_to_fasta", methods=["POST"])
 def IMS_to_fasta():
     ids = request.get_json(force=True)["IMS-IDs"]
 
@@ -186,10 +187,19 @@ def IMS_to_fasta():
 
     # Create temporary file names
     fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
-    csv_tmp = fa_tmp[:-2]+"csv"
+    csv_tmp = fa_tmp[:-2] + "csv"
 
     # call process
-    process = subprocess.run(["./scripts/IMS_to_fasta.sh", " ".join(ids), fa_tmp, "|".join(ids), csv_tmp, config["RKI_data_directory"]])
+    process = subprocess.run(
+        [
+            "./scripts/IMS_to_fasta.sh",
+            " ".join(ids),
+            fa_tmp,
+            "|".join(ids),
+            csv_tmp,
+            config["RKI_data_directory"],
+        ]
+    )
 
     # return a None if the process failed (may change this in future)
     if process.returncode != 0:
@@ -207,29 +217,29 @@ def IMS_to_fasta():
         imsid_to_data = {}
 
         # collect sequences
-        fasta_sequences = SeqIO.parse(open(fa_tmp),'fasta')
+        fasta_sequences = SeqIO.parse(open(fa_tmp), "fasta")
         for fasta in fasta_sequences:
             imsid_to_seq[fasta.id] = str(fasta.seq)
 
         # collect metadata
-        with open(csv_tmp,"r") as csv_file:
+        with open(csv_tmp, "r") as csv_file:
             for line in csv_file:
                 line = line.strip().split(",")
 
                 imsid_to_data[line[0]] = {
-                    "sequence" : imsid_to_seq[line[0]],
-                    "sampling_date" : line[1], # when sampled   YYYY-MM-DD
-                    "seq_type" : line[2],
-                    "seq_reason" : line[3],
-                    "sample_type" : line[4],
-                    #"own_fasta_id" : line[5], # is encrypted. we just use imsid as fasta id
-                    "receive_date" : line[6], # when send to rki
-                    #"processing_date" : line[7],
-                    "sequencing_lab_zipcode" : line[8], # zip code of sequencing lab
-                    "sequencing_lab_city" : zipcode_to_city[line[8]],
-                    "sending_lab_zipcode" : line[9],
-                    "sending_lab_city" : zipcode_to_city[line[9]],
-                    #"gisaid_id" : line[10]
+                    "sequence": imsid_to_seq[line[0]],
+                    "sampling_date": line[1],  # when sampled   YYYY-MM-DD
+                    "seq_type": line[2],
+                    "seq_reason": line[3],
+                    "sample_type": line[4],
+                    # "own_fasta_id" : line[5], # is encrypted. we just use imsid as fasta id
+                    "receive_date": line[6],  # when send to rki
+                    # "processing_date" : line[7],
+                    "sequencing_lab_zipcode": line[8],  # zip code of sequencing lab
+                    "sequencing_lab_city": zipcode_to_city[line[8]],
+                    "sending_lab_zipcode": line[9],
+                    "sending_lab_city": zipcode_to_city[line[9]],
+                    # "gisaid_id" : line[10]
                 }
 
         # delete the temporary files. If they can not be found ignore it
@@ -240,19 +250,17 @@ def IMS_to_fasta():
         return json.dumps(imsid_to_data)
 
 
-
-
 # Disclaimer: this is not finished yet
+
 
 # Process: calls script to sort sample into UShER tree and search for k nearest samples
 # Input: fasta of one sequence and integer k in json dict
 # Returns: List of IMS-IDS of the k nearest samples
-@app.route("/data/usher_nearest_k",methods=["POST"])
+@app.route("/data/usher_nearest_k", methods=["POST"])
 def usher_nearest_k():
 
-
     fasta_content = request.get_json(force=True)["fasta_content"]
-    fasta_content2 = fasta_content.replace(">", ">querry_" )
+    fasta_content2 = fasta_content.replace(">", ">querry_")
 
     k = request.get_json(force=True)["k"]
 
@@ -262,21 +270,35 @@ def usher_nearest_k():
 
     # Create temporary file names
     out_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
-    tmp0 = out_tmp[:-3]+"_0.fa"
-    dir_tmp = out_tmp[:-3]+"/"
-    csv_tmp = out_tmp[:-3]+".csv"
-    fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".closest.fa", delete=False).name
+    tmp0 = out_tmp[:-3] + "_0.fa"
+    dir_tmp = out_tmp[:-3] + "/"
+    csv_tmp = out_tmp[:-3] + ".csv"
+    fa_tmp = tempfile.NamedTemporaryFile(
+        dir=temp_dir, suffix=".closest.fa", delete=False
+    ).name
     # Define   stderr
-    new_stderr = open("./temp_data/usher/test.stderr", 'w')
-    new_stdout = open("./temp_data/usher/test.stdout", 'w')
+    new_stderr = open("./temp_data/usher/test.stderr", "w")
+    new_stdout = open("./temp_data/usher/test.stdout", "w")
 
     # save fasta in temp file
-    with open(tmp0,"w") as tmp0_file:
-            tmp0_file.write(fasta_content2)
+    with open(tmp0, "w") as tmp0_file:
+        tmp0_file.write(fasta_content2)
 
     # call process
-    process = subprocess.run(["./scripts/usher_nearest_k.sh", tmp0, k, out_tmp,
-     dir_tmp, csv_tmp, config["RKI_data_directory"], fa_tmp], stdout=new_stderr, stderr=new_stdout)
+    process = subprocess.run(
+        [
+            "./scripts/usher_nearest_k.sh",
+            tmp0,
+            k,
+            out_tmp,
+            dir_tmp,
+            csv_tmp,
+            config["RKI_data_directory"],
+            fa_tmp,
+        ],
+        stdout=new_stderr,
+        stderr=new_stdout,
+    )
 
     # return a None if the process failed (may change this in future)
     if process.returncode != 0:
@@ -290,38 +312,38 @@ def usher_nearest_k():
     else:
 
         imsid_to_data = {}
-        with open(csv_tmp,"r") as csv_file:
-                for line in csv_file:
-                    line = line.strip().split(",")
+        with open(csv_tmp, "r") as csv_file:
+            for line in csv_file:
+                line = line.strip().split(",")
 
-                    imsid_to_data[line[0]] = {
-                                "sampling_date" : line[1], # when sampled   YYYY-MM-DD
-                                "sending_lab_city" : zipcode_to_city[line[9]]
-                            }
+                imsid_to_data[line[0]] = {
+                    "sampling_date": line[1],  # when sampled   YYYY-MM-DD
+                    "sending_lab_city": zipcode_to_city[line[9]],
+                }
 
         # delete the temporary files. If they can not be found ignore it
         pathlib.Path(csv_tmp).unlink(missing_ok=True)
         pathlib.Path(fa_tmp).unlink(missing_ok=True)
         pathlib.Path(out_tmp).unlink(missing_ok=True)
         pathlib.Path(tmp0).unlink(missing_ok=True)
-        pathlib.Path(tmp0+".aligned").unlink(missing_ok=True)
-        pathlib.Path(tmp0+".aligned.vcf").unlink(missing_ok=True)
+        pathlib.Path(tmp0 + ".aligned").unlink(missing_ok=True)
+        pathlib.Path(tmp0 + ".aligned.vcf").unlink(missing_ok=True)
         shutil.rmtree(dir_tmp)
 
-        IDs =[]
-        loc =[]
-        date =[]
+        IDs = []
+        loc = []
+        date = []
 
         for x in imsid_to_data:
             IDs.append(x)
             loc.append(imsid_to_data[x]["sending_lab_city"])
             date.append(imsid_to_data[x]["sampling_date"])
 
-        IMS_list_out= {
-            "IMS_ID" : IDs,
-            "loc" : loc,
-            "Seqdate" : date
-       }
+        IMS_list_out = {"IMS_ID": IDs, "loc": loc, "Seqdate": date}
 
         # finally return output in json format
         return json.dumps([IMS_list_out])
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=4000)

@@ -1,5 +1,5 @@
 # Use the official Miniconda3 image as the base image
-FROM continuumio/miniconda3:latest
+FROM --platform=linux/amd64 continuumio/miniconda3:latest
 
 # Set working directory in the container
 WORKDIR /app
@@ -25,4 +25,10 @@ ENV FLASK_ENV=development
 ENV FLASK_APP=main_site.py
 
 # Run the application
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0", "-p 4000"]
+
+
+
+
+
+

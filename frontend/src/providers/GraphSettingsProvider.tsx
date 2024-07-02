@@ -17,7 +17,9 @@ type GraphSettingsProviderProps = {
   children: React.ReactNode;
 };
 
-const GraphSettingsContext = createContext<GraphSettingsContextType | null>(null);
+const GraphSettingsContext = createContext<GraphSettingsContextType | null>(
+  null
+);
 
 const defaultGraphSettings: GraphSettings = {
   graphDimension: "2D",
@@ -29,7 +31,9 @@ const defaultGraphSettings: GraphSettings = {
 
 export const useGraphSettings = () => useContext(GraphSettingsContext);
 
-export const GraphSettingsProvider = ({ children }: GraphSettingsProviderProps) => {
+export const GraphSettingsProvider = ({
+  children,
+}: GraphSettingsProviderProps) => {
   const [settings, setSettings] = useState(defaultGraphSettings); // Initialize with the default settings structure
 
   const updateSettings = (newSettings: Partial<GraphSettings>) => {
@@ -37,7 +41,9 @@ export const GraphSettingsProvider = ({ children }: GraphSettingsProviderProps) 
   };
 
   return (
-    <GraphSettingsContext.Provider value={{ settings: settings, updateSettings: updateSettings }}>
+    <GraphSettingsContext.Provider
+      value={{ settings: settings, updateSettings: updateSettings }}
+    >
       {children}
     </GraphSettingsContext.Provider>
   );

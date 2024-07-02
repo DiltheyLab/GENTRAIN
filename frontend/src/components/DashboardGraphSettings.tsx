@@ -1,7 +1,13 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
@@ -16,15 +22,21 @@ export const DashboardGraphSettings = () => {
   }
 
   const changeNodeSize = (event: React.ChangeEvent<HTMLInputElement>) => {
-    graphSettingsContext.updateSettings({ nodeSize: parseInt(event.target.value) });
+    graphSettingsContext.updateSettings({
+      nodeSize: parseInt(event.target.value),
+    });
   };
 
   const changelinkWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    graphSettingsContext.updateSettings({ linkWidth: parseInt(event.target.value) });
+    graphSettingsContext.updateSettings({
+      linkWidth: parseInt(event.target.value),
+    });
   };
 
   const changeGraphDimension = (selectValue: string) => {
-    graphSettingsContext.updateSettings({ graphDimension: selectValue as "2D" | "3D" });
+    graphSettingsContext.updateSettings({
+      graphDimension: selectValue as "2D" | "3D",
+    });
   };
 
   const changeZoomToFit = (checked: boolean) => {
@@ -36,14 +48,22 @@ export const DashboardGraphSettings = () => {
   };
 
   return (
-    <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
+    <div
+      className="relative hidden flex-col items-start gap-8 md:flex"
+      x-chunk="dashboard-03-chunk-0"
+    >
       <form className="grid w-full items-start gap-6">
         <fieldset className="grid gap-6 rounded-lg border p-4">
-          <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
+          <legend className="-ml-1 px-1 text-sm font-medium">
+            Einstellungen
+          </legend>
           <div className="grid gap-3">
             <Label htmlFor="model">Model</Label>
             <Select onValueChange={(value) => changeGraphDimension(value)}>
-              <SelectTrigger id="model" className="items-start [&_[data-description]]:hidden">
+              <SelectTrigger
+                id="model"
+                className="items-start [&_[data-description]]:hidden"
+              >
                 <SelectValue
                   placeholder="Wähle ein Model aus"
                   defaultValue={graphSettingsContext.settings.graphDimension}
@@ -97,7 +117,9 @@ export const DashboardGraphSettings = () => {
               />
             </div>
           </div>
-
+          <div className="grid gap-3">
+            <Label htmlFor="linkWidth">Kraft</Label>
+          </div>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="nodeDescription"
