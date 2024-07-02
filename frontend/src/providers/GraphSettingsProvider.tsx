@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 export type GraphSettings = {
   graphDimension: "2D" | "3D";
-  showIdAsNode: boolean;
+  hideNodeLabel: boolean;
   nodeSize: number;
   linkWidth: number;
   zoomToFit: boolean;
@@ -21,7 +21,7 @@ const GraphSettingsContext = createContext<GraphSettingsContextType | null>(null
 
 const defaultGraphSettings: GraphSettings = {
   graphDimension: "2D",
-  showIdAsNode: false,
+  hideNodeLabel: false,
   nodeSize: 5,
   linkWidth: 2,
   zoomToFit: false,

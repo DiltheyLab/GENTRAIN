@@ -32,7 +32,7 @@ export const DashboardGraphSettings = () => {
   };
 
   const changeNodeStyle = (checked: boolean) => {
-    graphSettingsContext.updateSettings({ showIdAsNode: checked });
+    graphSettingsContext.updateSettings({ hideNodeLabel: checked });
   };
 
   return (
@@ -101,14 +101,14 @@ export const DashboardGraphSettings = () => {
           <div className="flex items-center space-x-2">
             <Checkbox
               id="nodeDescription"
-              checked={graphSettingsContext.settings.showIdAsNode}
+              checked={graphSettingsContext.settings.hideNodeLabel}
               onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
             />
             <label
               htmlFor="nodeDescription"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Knotenbeschreibung einblenden
+              Knotenbeschreibung ausblenden
             </label>
           </div>
           <div className="flex items-center space-x-2">

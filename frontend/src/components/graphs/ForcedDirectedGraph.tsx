@@ -53,33 +53,31 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
   const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
     if (!node.x || !node.y) return;
 
-    if (!graphSettingsContext.settings.showIdAsNode) {
-      const radius = graphSettingsContext.settings.nodeSize;
-      ctx.beginPath();
-      ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = node.group === "Outbreak 1" ? "hsl(137.508,50%,75%)" : "hsl(0,50%,75%)";
-      ctx.fill();
-    } else {
-      // Draw the label with background as currently implemented
-      const label = `${node.id}`;
-      const fontSize = 12 / globalScale;
-      ctx.font = `${fontSize}px Sans-Serif`;
-      const textWidth = ctx.measureText(label).width;
-      const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
+    // Always draw the circle regardless of hideNodeLabel setting
+    const radius = graphSettingsContext.settings.nodeSize;
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = node.color;
+    ctx.fill();
 
-      ctx.fillStyle = node.color;
-      ctx.fillRect(
-        node.x! - bckgDimensions[0] / 2,
-        node.y! - bckgDimensions[1] / 2,
-        bckgDimensions[0],
-        bckgDimensions[1]
-      );
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "black";
-      ctx.fillText(label, node.x!, node.y!);
-      node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
-    }
+    // Draw the label if setting is not hidden
+    if (graphSettingsContext.settings.hideNodeLabel) return;
+
+    // Draw the label above the circle
+    const label = `${node.id}`;
+    const fontSize = 12 / globalScale;
+    ctx.font = `${fontSize}px Sans-Serif`;
+    const textWidth = ctx.measureText(label).width;
+    const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
+
+    // Adjust label position to be above the circle
+    const labelY = node.y - radius - bckgDimensions[1] * 1; // Adjust this value as needed to position the label above the circle
+
+    // Draw the text
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "black";
+    ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
   };
 
   return (
@@ -102,32 +100,3 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
     />
   );
 };
-
-/*
-nodeCanvasObject={(node, ctx, globalScale) => {
-          if (useCircles) {
-            // Draw a circle
-            const radius = 5; // Set the radius of your circle
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = node.group === "Outbreak 1" ? "hsl(137.508,50%,75%)" : "hsl(0,50%,75%)";
-            ctx.fill();
-          } else {
-            // Draw the label with background as currently implemented
-            const label = node.id;
-            const fontSize = 12 / globalScale;
-            ctx.font = `${fontSize}px Sans-Serif`;
-            const textWidth = ctx.measureText(label).width;
-            const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.2); // some padding
-
-            ctx.fillStyle = node.color;
-            ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
-
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = "black";
-            ctx.fillText(label, node.x, node.y);
-            node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
-          }
-        }} 
-*/
