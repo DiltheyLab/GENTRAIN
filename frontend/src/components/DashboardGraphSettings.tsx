@@ -11,7 +11,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
-import { Slider } from "./ui/slider";
+import { Slider } from "@/components/ui/slider";
 
 export const DashboardGraphSettings = () => {
   const graphSettingsContext = useGraphSettings();
