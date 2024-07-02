@@ -1,24 +1,36 @@
-networks:
-  caddy:
 services:
   reverse-proxy:
+    # Use the caddy:latest image from Docker Hub
     image: caddy:latest
+    # Restart policy: restart the container unless explicitly stopped
     restart: unless-stopped
+    # ports for Caddy
     ports:
       - "80:80"
       - "443:443"
-      - "443:443/udp"
     volumes:
-      - ./Caddyfile.dev:/etc/caddy/Caddyfile # change this to Caddyfile for production!
-      - ./caddy:/data
-      - ./frontend/dist:/srv # Mount the build directory to the Caddy service
-      - caddy_data:/data
-      - caddy_config:/config
+      # Mount the host Caddyfile
+      - type: bind
+        source: ./Caddyfile.dev # change this to Caddyfile for production!
+        target: /etc/caddy/Caddyfile
+        read_only: true
+      - type: bind
+        source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
+        target: /srv
+        read_only: true
+      - type: volume
+        source: caddy_data
+        target: /data
+      - type: volume
+        source: caddy_config
+        target: /config
     networks:
       - caddy
     depends_on:
-      - frontend
-      - backend
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
 
   backend:
     image: gentrain-backend
@@ -39,14 +51,23 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
     volumes:
-      - ./frontend/dist:/app/dist # Mount the dist directory to the frontend service
+      - type: bind # Mount the dist directory to the frontend service
+        source: ./frontend/dist
+        target: /app/dist
     networks:
       - caddy
     environment:
       - VITE_API_BASE_URL=https://api.localhost # Change this to your domain name
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
 volumes:
+  # persist data caddy_data
   caddy_data:
+  # persist config caddy_config:
   caddy_config:
+
+networks:
+  # Docker network for Caddy
+  caddy:
