@@ -1,5 +1,5 @@
 # Use the official Miniconda3 image as the base image
-FROM continuumio/miniconda3:latest
+FROM --platform=linux/amd64 continuumio/miniconda3:latest
 
 # Set working directory in the container
 WORKDIR /app

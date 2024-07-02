@@ -1,7 +1,10 @@
 import { deepCopyData } from "@/lib/utils";
 import { useDashboard } from "@/providers/DashboardProvider";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import ForceGraph2D, { ForceGraphMethods, NodeObject } from "react-force-graph-2d";
+import ForceGraph2D, {
+  ForceGraphMethods,
+  NodeObject,
+} from "react-force-graph-2d";
 
 interface Node extends NodeObject {
   group: string;
@@ -24,7 +27,11 @@ type ForcedDirectedGraph2DProps = {
   height: number;
 };
 
-export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDirectedGraph2DProps) => {
+export const ForcedDirectedGraph2D = ({
+  graphDataJSON,
+  width,
+  height,
+}: ForcedDirectedGraph2DProps) => {
   const dashboardContext = useDashboard();
 
   //copy the data to avoid mutation of the original data
@@ -39,6 +46,7 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
 
   // custom d3 force setup
   useEffect(() => {
+    console.log(dashboardContext.settings.forceCharge);
     if (!forceRef.current) return;
     forceRef.current.d3Force("charge")?.strength(-50);
     forceRef.current.d3Force("center");
@@ -50,14 +58,19 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
     forceRef.current?.zoomToFit(400);
   };
 
-  const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const createCustomNodeCanvas = (
+    node: NodeObject,
+    ctx: CanvasRenderingContext2D,
+    globalScale: number
+  ) => {
     if (!node.x || !node.y) return;
 
     if (!dashboardContext.settings.showIdAsNode) {
       const radius = dashboardContext.settings.nodeSize;
       ctx.beginPath();
       ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = node.group === "Outbreak 1" ? "hsl(137.508,50%,75%)" : "hsl(0,50%,75%)";
+      ctx.fillStyle =
+        node.group === "Outbreak 1" ? "hsl(137.508,50%,75%)" : "hsl(0,50%,75%)";
       ctx.fill();
     } else {
       // Draw the label with background as currently implemented
@@ -65,7 +78,9 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
       const fontSize = 12 / globalScale;
       ctx.font = `${fontSize}px Sans-Serif`;
       const textWidth = ctx.measureText(label).width;
-      const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
+      const bckgDimensions = [textWidth, fontSize].map(
+        (n) => n + fontSize * 0.3
+      ); // some padding
 
       ctx.fillStyle = node.color;
       ctx.fillRect(
@@ -98,7 +113,9 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
       }}
       linkWidth={dashboardContext.settings.linkWidth}
       d3VelocityDecay={0.3}
-      nodeCanvasObject={(node, ctx, globalScale) => createCustomNodeCanvas(node, ctx, globalScale)}
+      nodeCanvasObject={(node, ctx, globalScale) =>
+        createCustomNodeCanvas(node, ctx, globalScale)
+      }
     />
   );
 };

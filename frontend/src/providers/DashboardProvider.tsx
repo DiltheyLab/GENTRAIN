@@ -6,6 +6,7 @@ export type Settings = {
   nodeSize: number;
   linkWidth: number;
   zoomToFit: boolean;
+  forceCharge: number;
 };
 
 type DashboardContextType = {
@@ -25,6 +26,7 @@ const initialSettings: Settings = {
   nodeSize: 5,
   linkWidth: 2,
   zoomToFit: false,
+  forceCharge: 50,
 };
 
 export const useDashboard = () => useContext(DashboardContext);
@@ -36,5 +38,9 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
     setSettings((prevSettings) => ({ ...prevSettings, ...newSettings }));
   };
 
-  return <DashboardContext.Provider value={{ settings, updateSettings }}>{children}</DashboardContext.Provider>;
+  return (
+    <DashboardContext.Provider value={{ settings, updateSettings }}>
+      {children}
+    </DashboardContext.Provider>
+  );
 };

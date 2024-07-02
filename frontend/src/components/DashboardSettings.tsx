@@ -1,10 +1,17 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useDashboard } from "@/providers/DashboardProvider";
+import { Slider } from "./ui/slider";
 
 export const DashboardSettings = () => {
   const dashboardContext = useDashboard();
@@ -20,11 +27,15 @@ export const DashboardSettings = () => {
   };
 
   const changelinkWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dashboardContext.updateSettings({ linkWidth: parseInt(event.target.value) });
+    dashboardContext.updateSettings({
+      linkWidth: parseInt(event.target.value),
+    });
   };
 
   const changeGraphDimension = (selectValue: string) => {
-    dashboardContext.updateSettings({ graphDimension: selectValue as "2D" | "3D" });
+    dashboardContext.updateSettings({
+      graphDimension: selectValue as "2D" | "3D",
+    });
   };
 
   const changeZoomToFit = (checked: boolean) => {
@@ -35,15 +46,28 @@ export const DashboardSettings = () => {
     dashboardContext.updateSettings({ showIdAsNode: checked });
   };
 
+  const changeForceCharge = (value: any) => {
+    console.log(value.target.value);
+    dashboardContext.updateSettings({ forceCharge: value.target.value });
+  };
+
   return (
-    <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
+    <div
+      className="relative hidden flex-col items-start gap-8 md:flex"
+      x-chunk="dashboard-03-chunk-0"
+    >
       <form className="grid w-full items-start gap-6">
         <fieldset className="grid gap-6 rounded-lg border p-4">
-          <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
+          <legend className="-ml-1 px-1 text-sm font-medium">
+            Einstellungen
+          </legend>
           <div className="grid gap-3">
             <Label htmlFor="model">Model</Label>
             <Select onValueChange={(value) => changeGraphDimension(value)}>
-              <SelectTrigger id="model" className="items-start [&_[data-description]]:hidden">
+              <SelectTrigger
+                id="model"
+                className="items-start [&_[data-description]]:hidden"
+              >
                 <SelectValue
                   placeholder="Wähle ein Model aus"
                   defaultValue={dashboardContext.settings.graphDimension}
@@ -97,12 +121,23 @@ export const DashboardSettings = () => {
               />
             </div>
           </div>
-
+          <div className="grid gap-3">
+            <Label htmlFor="linkWidth">Kraft</Label>
+            <Slider
+              defaultValue={[dashboardContext.settings.forceCharge]}
+              min={-100}
+              max={0}
+              step={1}
+              onChange={(value: any) => changeForceCharge(value)}
+            />
+          </div>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="nodeDescription"
               checked={dashboardContext.settings.showIdAsNode}
-              onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
+              onCheckedChange={(value: boolean) =>
+                changeNodeStyle(Boolean(value))
+              }
             />
             <label
               htmlFor="nodeDescription"
@@ -115,7 +150,9 @@ export const DashboardSettings = () => {
             <Checkbox
               id="zoomToFit"
               checked={dashboardContext.settings.zoomToFit}
-              onCheckedChange={(value) => changeZoomToFit(Boolean(value))}
+              onCheckedChange={(value: boolean) =>
+                changeZoomToFit(Boolean(value))
+              }
             />
             <label
               htmlFor="zoomToFit"
