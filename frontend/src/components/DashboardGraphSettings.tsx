@@ -52,6 +52,10 @@ export const DashboardGraphSettings = () => {
     graphSettingsContext.updateSettings({ charge: value });
   };
 
+  const changeLinkDistance = (value: number) => {
+    graphSettingsContext.updateSettings({ linkDistance: value });
+  };
+
   return (
     <div
       className="relative hidden flex-col items-start gap-8 md:flex"
@@ -130,7 +134,16 @@ export const DashboardGraphSettings = () => {
               max={0}
               min={-100}
               step={1}
-              onValueChange={(value: [number]) => changeCharge(value[0])}
+              onValueChange={(value) => changeCharge(value[0])}
+            />
+            <Label htmlFor="forceLinkDistance">Kantenabstand</Label>
+            <Slider
+              id="forceLinkDistance"
+              defaultValue={[graphSettingsContext.settings.linkDistance]}
+              max={100}
+              min={10}
+              step={1}
+              onValueChange={(value) => changeLinkDistance(value[0])}
             />
           </div>
           <div className="flex items-center space-x-2">

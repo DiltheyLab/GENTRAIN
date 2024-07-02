@@ -1,5 +1,5 @@
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
 
 type nodes = {
@@ -24,7 +24,11 @@ type ForcedDirectedGraph3DProps = {
   height: number;
 };
 
-export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDirectedGraph3DProps) => {
+export const ForcedDirectedGraph3D = ({
+  graphDataJSON,
+  width,
+  height,
+}: ForcedDirectedGraph3DProps) => {
   const graphSettingsContext = useGraphSettings();
 
   // set ref to use own d3 force simulation
@@ -42,6 +46,14 @@ export const ForcedDirectedGraph3D = ({ graphDataJSON, width, height }: ForcedDi
     if (graphSettingsContext.settings.zoomToFit === false) return;
     forceRef.current?.zoomToFit(100);
   };
+
+  useEffect(() => {
+    if (!forceRef.current) return;
+    forceRef.current
+      .d3Force("charge")
+      ?.strength(graphSettingsContext.settings.charge);
+    forceRef.current.d3ReheatSimulation();
+  });
 
   return (
     <ForceGraph3D

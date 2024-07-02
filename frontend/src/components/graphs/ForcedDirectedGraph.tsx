@@ -50,15 +50,12 @@ export const ForcedDirectedGraph2D = ({
     forceRef.current
       .d3Force("charge")
       ?.strength(graphSettingsContext.settings.charge);
-  }, []);
-
-  useEffect(() => {
-    if (!forceRef.current) return;
     forceRef.current
-      .d3Force("charge")
-      ?.strength([graphSettingsContext.settings.charge]);
+      .d3Force("link")
+      ?.distance(graphSettingsContext.settings.linkDistance);
+
     forceRef.current.d3ReheatSimulation();
-  }, [graphSettingsContext.settings.charge]);
+  });
 
   const handleEngineStop = () => {
     if (!forceRef.current) return;
