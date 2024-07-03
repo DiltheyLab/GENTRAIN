@@ -17,14 +17,10 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 # Copy the current directory contents into the container at the working directory
 COPY . .
 
-# Declare /app as a mount point
-VOLUME /app
-
 # Set the FLASK_APP environment variable
 ENV FLASK_ENV=development
 ENV FLASK_APP=main_site.py
 ENV PYTHONUNBUFFERED=1
-
 
 RUN chmod 777 ./scripts
 RUN nextclade dataset get --name 'sars-cov-2' --output-dir 'datasets/nextclade_covid/'
