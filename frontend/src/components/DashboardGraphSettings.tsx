@@ -15,7 +15,6 @@ export const DashboardGraphSettings = () => {
     }
 
     const changeNodeSize = (value: number) => {
-        console.log(value);
         graphSettingsContext.updateSettings({
             nodeSize: value,
         });
@@ -49,6 +48,20 @@ export const DashboardGraphSettings = () => {
         graphSettingsContext.updateSettings({ hideNodeLabel: checked });
     };
 
+    const getLegend = () => {
+        const nodes = graphSettingsContext.settings.graphData.nodes;
+        const uniqueGroups = nodes.filter((group, index, self) => {
+            return index === self.findIndex((t) => t.group === group.group);
+        });
+
+        // ToDo: Add color picker for each group
+        return uniqueGroups.map((node) => (
+            <div className="flex items-center gap-2" key={node.group}>
+                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                <p>{node.group}</p>
+            </div>
+        ));
+    };
     return (
         <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
             <form className="grid w-full items-start gap-6">
@@ -159,14 +172,7 @@ export const DashboardGraphSettings = () => {
                     <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
                     <div className="flex flex-col gap-3">
                         <Label htmlFor="role">Cluster</Label>
-                        <div className="flex items-center gap-2">
-                            <span className="rounded-full h-3 w-3 bg-green-500" />
-                            <p>Outbreak 1</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="rounded-full h-3 w-3 bg-red-700" />
-                            <p>Background</p>
-                        </div>
+                        {getLegend()}
                     </div>
                 </fieldset>
             </form>

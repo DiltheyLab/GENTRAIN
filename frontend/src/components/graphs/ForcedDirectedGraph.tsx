@@ -1,30 +1,25 @@
-import { deepCopyData } from "@/lib/utils";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-
-type Data = {
-    nodes: any[];
-    links: any[];
-};
+import type { GraphData } from "@/providers/GraphSettingsProvider";
 
 type ForcedDirectedGraph2DProps = {
-    graphDataJSON: Data;
+    data: GraphData;
     width: number;
     height: number;
 };
 
-export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDirectedGraph2DProps) => {
+export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGraph2DProps) => {
     const graphSettingsContext = useGraphSettings();
 
-    //copy the data to avoid mutation of the original data
-    const [data, setData] = useState(deepCopyData(graphDataJSON));
-
-    // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();
 
     if (!graphSettingsContext) {
         return <div>Loading...</div>;
+    }
+
+    if (data.nodes.length === 0) {
+        return <div>Es sind keine Knoten vorhanden</div>;
     }
 
     // custom d3 force setup
@@ -34,7 +29,7 @@ export const ForcedDirectedGraph2D = ({ graphDataJSON, width, height }: ForcedDi
         forceRef.current.d3Force("link")?.distance(graphSettingsContext.settings.linkDistance);
 
         forceRef.current.d3ReheatSimulation();
-    });
+    }, [graphSettingsContext.settings.charge, graphSettingsContext.settings.linkDistance]);
 
     const handleEngineStop = () => {
         if (!forceRef.current) return;

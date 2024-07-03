@@ -1,14 +1,13 @@
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
-import mst from "../data/mst-data-vasturiano.json";
-import { useGraphSettings } from "@/providers/GraphSettingsProvider";
+import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { deepCopyData } from "@/lib/utils";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
-
     //get size of parent container
     const [height, setHeight] = useState(0);
     const [width, setWidth] = useState(0);
@@ -24,11 +23,19 @@ export const DashboardVisualizationPanel = () => {
         return <div>Loading...</div>;
     }
 
+    // Creating deep copy of the graph data for each graph component and
+    // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
+    // from beginning after every rerendering
+
+    const graphDataCopy = useMemo(() => {
+        return deepCopyData(graphSettingsContext.settings.graphData);
+    }, [graphSettingsContext.settings.graphData]);
+
     const getGraph = () => {
         if (graphSettingsContext.settings.graphDimension === "2D" && width && height) {
-            return <ForcedDirectedGraph2D graphDataJSON={mst} width={width} height={height} />;
+            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width} height={height} />;
         } else if (graphSettingsContext.settings.graphDimension === "3D" && width && height) {
-            return <ForcedDirectedGraph3D graphDataJSON={mst} width={width} height={height} />;
+            return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width} height={height} />;
         }
     };
 
@@ -43,7 +50,7 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
             </Button>
-            <div className="p-1">{getGraph()}</div>
+            <div className="p-1 flex justify-center items-center h-full w-full">{getGraph()}</div>
         </div>
     );
 };

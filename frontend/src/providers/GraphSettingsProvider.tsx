@@ -1,4 +1,25 @@
 import { createContext, useContext, useState } from "react";
+import mst from "@/data/mst-data-vasturiano.json";
+
+export type CustomNode = {
+    id: string;
+    group: string;
+    color: string;
+};
+
+export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" | "Dashed" | "Solid";
+
+export type CustomLink = {
+    source: string;
+    target: string;
+    value: number;
+    type: LinkType;
+};
+
+export type GraphData = {
+    nodes: CustomNode[];
+    links: CustomLink[];
+};
 
 export type GraphSettings = {
     graphDimension: "2D" | "3D";
@@ -8,6 +29,7 @@ export type GraphSettings = {
     zoomToFit: boolean;
     charge: number;
     linkDistance: number;
+    graphData: GraphData;
 };
 
 type GraphSettingsContextType = {
@@ -29,6 +51,7 @@ const defaultGraphSettings: GraphSettings = {
     zoomToFit: false,
     charge: -50,
     linkDistance: 50,
+    graphData: mst as GraphData,
 };
 
 export const useGraphSettings = () => useContext(GraphSettingsContext);
