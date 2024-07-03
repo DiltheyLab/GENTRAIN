@@ -23,6 +23,8 @@ VOLUME /app
 # Set the FLASK_APP environment variable
 ENV FLASK_ENV=development
 ENV FLASK_APP=main_site.py
+ENV PYTHONUNBUFFERED=1
+
 
 RUN chmod 777 ./scripts
 RUN nextclade dataset get --name 'sars-cov-2' --output-dir 'datasets/nextclade_covid/'
