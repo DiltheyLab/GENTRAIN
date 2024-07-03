@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, send_file, abort
 from collections import defaultdict
 from os.path import exists
@@ -143,8 +144,19 @@ def nextclade():
     with open(fa_tmp, "w") as fa_file:
         fa_file.write(fasta_content)
 
-    # call process
-    process = subprocess.run(["./scripts/nextclade.sh", fa_tmp, json_tmp])
+    
+    # Prepare the nextclade command with arguments
+    command = [
+        'nextclade',
+        'run',
+        fa_tmp,  # Input fasta file
+        '--output-json', json_tmp,  # Output JSON file
+        '--input-dataset', 'datasets/nextclade_covid'  # Dataset directory
+    ]
+
+    # Run the nextclade command
+    process = subprocess.run(command, capture_output=True, text=True)
+
 
     # return a None if the process failed (may change this in future)
     if process.returncode != 0:
