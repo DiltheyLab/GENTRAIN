@@ -5,7 +5,7 @@ import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "./ui/button";
-import { importDataFromFile } from "@/database/db";
+import { importDataFromJson } from "@/database/db";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
@@ -177,17 +177,6 @@ export const DashboardGraphSettings = () => {
                         {getLegend()}
                     </div>
                 </fieldset>
-                <div className="grid gap-3">
-                    <Button
-                        onClick={async (evt) => {
-                            evt.preventDefault();
-                            const blob = await fetch("/example_dataset.json").then((r) => r.blob());
-                            importDataFromFile(blob);
-                        }}
-                    >
-                        Import Example Data
-                    </Button>
-                </div>
             </form>
         </div>
     );

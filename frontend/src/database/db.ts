@@ -1,7 +1,8 @@
 import Dexie, { type EntityTable } from "dexie";
-import { importInto } from "dexie-export-import";
+import { exportDB, importInto } from "dexie-export-import";
 import type { SampleSchema } from "@/database/samples";
 import type { DistanceMatrixSchema } from "@/database/distance_matrix";
+import { downloadFile } from "@/services/files";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "fasta_id">;
@@ -14,9 +15,14 @@ db.version(1).stores({
     distance_matrix: "id, row_column_names, matrix, updated_at",
 });
 
-const importDataFromFile = async (file: Blob) => {
+const importDataFromJson = async (file: Blob) => {
     db.delete({ disableAutoOpen: false });
     await importInto(db, file);
 };
 
-export { db, importDataFromFile };
+const exportDatabaseToJson = async () => {
+    const blob = await exportDB(db);
+    downloadFile(blob);
+};
+
+export { db, importDataFromJson, exportDatabaseToJson };
