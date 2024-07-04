@@ -1,31 +1,11 @@
 import Dexie, { type EntityTable } from "dexie";
 import { importInto } from "dexie-export-import";
-
-interface Sample {
-    fasta_id: string;
-    ims_id: string;
-    group: string;
-    sequence: string;
-    n_count: number;
-    location_sending_lab: string;
-    location_sequencing_lab: string;
-    lineage: string;
-    variants: object;
-    metadata: string;
-    sampled_at: string;
-    updated_at: string;
-}
-
-interface DistanceMatrix {
-    id: string;
-    row_column_names: Array<string>;
-    matrix: Array<Array<number>>;
-    updated_at: string;
-}
+import type { SampleSchema } from "@/database/samples";
+import type { DistanceMatrixSchema } from "@/database/distance_matrix";
 
 const db = new Dexie("gentrain") as Dexie & {
-    samples: EntityTable<Sample, "fasta_id">;
-    distance_matrix: EntityTable<DistanceMatrix, "id">;
+    samples: EntityTable<SampleSchema, "fasta_id">;
+    distance_matrix: EntityTable<DistanceMatrixSchema, "id">;
 };
 
 db.version(1).stores({
@@ -39,9 +19,4 @@ const importDataFromFile = async (file: Blob) => {
     await importInto(db, file);
 };
 
-const getDistanceMatrix = async (): Promise<DistanceMatrix | undefined> => {
-    return await db.distance_matrix.get("dm_full");
-};
-
-export type { Sample, DistanceMatrix };
-export { db, importDataFromFile, getDistanceMatrix };
+export { db, importDataFromFile };

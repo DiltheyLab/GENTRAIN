@@ -1,19 +1,11 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { DistanceMatrix as DistanceMatrixSchema, getDistanceMatrix } from "@/database/db";
-import { useEffect, useState } from "react";
+import { useDistanceMatrixGetById } from "@/database/distance_matrix";
+import { useState } from "react";
 
-export function DistanceMatrix() {
-    const [matrixData, setMatrixData] = useState<DistanceMatrixSchema | undefined>();
+export function DistanceMatrixTable() {
+    const matrixData = useDistanceMatrixGetById("dm_full");
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
-
-    // how to listen for new data? context?
-    useEffect(() => {
-        const loadMatrixData = async () => {
-            setMatrixData(await getDistanceMatrix());
-        };
-        loadMatrixData();
-    }, []);
 
     const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
         return (

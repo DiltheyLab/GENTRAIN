@@ -1,0 +1,18 @@
+import { db } from "@/database/db";
+
+interface SampleSchema {
+    fasta_id: string;
+    ims_id: string;
+    group: string;
+    sequence: string;
+    n_count: number;
+    location_sending_lab: string;
+    location_sequencing_lab: string;
+    lineage: string;
+    variants: object;
+    metadata: string;
+    sampled_at: string;
+    updated_at: string;
+}
+
+export type { SampleSchema };
