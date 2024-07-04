@@ -3,6 +3,7 @@ import { DashboardGraphSettings } from "@/components/DashboardGraphSettings";
 import { DashboardVisualizationPanel } from "@/components/DashboardVisualizationPanel";
 import { GraphSettingsProvider } from "@/providers/GraphSettingsProvider";
 import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
+import { SampleInformationTable } from "@/components/tables/SampleInformationTable";
 
 export function Dashboard() {
     return (
@@ -19,6 +20,9 @@ export function Dashboard() {
                         </div>
                         <div className="mt-4">
                             <DistanceMatrixTable />
+                        </div>
+                        <div className="mt-4">
+                            <SampleInformationTable />
                         </div>
                     </div>
                 </div>

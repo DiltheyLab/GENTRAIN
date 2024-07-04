@@ -1,4 +1,5 @@
 import { db } from "@/database/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 interface SampleSchema {
     fasta_id: string;
@@ -14,5 +15,9 @@ interface SampleSchema {
     sampled_at: string;
     updated_at: string;
 }
+
+export const useSamplesGetAll = (): SampleSchema[] | undefined => {
+    return useLiveQuery(() => db.samples.toArray());
+};
 
 export type { SampleSchema };
