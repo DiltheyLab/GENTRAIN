@@ -4,6 +4,7 @@ import { DashboardVisualizationPanel } from "@/components/DashboardVisualization
 import { GraphSettingsProvider } from "@/providers/GraphSettingsProvider";
 import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
 import { SampleInformationTable } from "@/components/tables/SampleInformationTable";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export function Dashboard() {
     return (
@@ -19,12 +20,20 @@ export function Dashboard() {
                     </div>
                 </div>
                 <div>
-                    <div className="mt-4">
-                        <DistanceMatrixTable />
-                    </div>
-                    <div className="mt-4">
-                        <SampleInformationTable />
-                    </div>
+                    <Accordion type="multiple" className="w-full">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>Informationen zu den im Datensatz enthaltenen Fällen</AccordionTrigger>
+                            <AccordionContent>
+                                <SampleInformationTable />
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                            <AccordionTrigger>Genetische Distanzen der im Datensatz enthaltenen Fälle</AccordionTrigger>
+                            <AccordionContent>
+                                <DistanceMatrixTable />
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
             </main>
         </GraphSettingsProvider>
