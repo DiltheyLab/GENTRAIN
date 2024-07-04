@@ -53,27 +53,30 @@ export function DistanceMatrixTable() {
     return (
         <>
             {matrixData && (
-                <div className="border-[1px] border-muted rounded-xl overflow-hidden">
-                    <Table>
-                        <TableBody>
-                            <TableRow className="bg-muted/30 border-muted p-2">
-                                <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
-                                {matrixData.row_column_names.map((name, index) => (
-                                    <TableCell
-                                        key={index}
-                                        style={{ writingMode: "vertical-rl" }}
-                                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 ${
-                                            hoveredColumn === index ? "bg-muted" : "bg-muted/30"
-                                        }`}
-                                    >
-                                        {name}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                            {renderRows()}
-                        </TableBody>
-                    </Table>
-                </div>
+                <>
+                    <small>Letzte Änderung: {matrixData.updated_at.toLocaleString()}</small>
+                    <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
+                        <Table>
+                            <TableBody>
+                                <TableRow className="bg-muted/30 border-muted p-2">
+                                    <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
+                                    {matrixData.row_column_names.map((name, index) => (
+                                        <TableCell
+                                            key={index}
+                                            style={{ writingMode: "vertical-rl" }}
+                                            className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 ${
+                                                hoveredColumn === index ? "bg-muted" : "bg-muted/30"
+                                            }`}
+                                        >
+                                            {name}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                                {renderRows()}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </>
             )}
         </>
     );

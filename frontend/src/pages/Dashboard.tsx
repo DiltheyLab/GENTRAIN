@@ -20,7 +20,7 @@ export function Dashboard() {
                     </div>
                 </div>
                 <div>
-                    <Accordion type="multiple" className="w-full">
+                    <Accordion type="multiple" className="mt-4">
                         <AccordionItem value="item-1">
                             <AccordionTrigger>Informationen zu den im Datensatz enthaltenen Fällen</AccordionTrigger>
                             <AccordionContent>

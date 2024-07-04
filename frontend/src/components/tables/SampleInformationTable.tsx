@@ -7,8 +7,8 @@ export function SampleInformationTable() {
     const renderHeadRow = () => {
         return (
             <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Fasta Id</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">IMS Id</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">Fasta&nbsp;Id</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">IMS&nbsp;Id&nbsp;(RKI)</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Group</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Lineage</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Ambiguous Characters</TableHead>
@@ -26,7 +26,7 @@ export function SampleInformationTable() {
             return sampleData.map((row, rowIndex) => {
                 return (
                     <TableRow key={rowIndex} className="border-muted">
-                        <TableCell className="p-2 text-xs">{row.fasta_id}</TableCell>
+                        <TableCell className="p-2 text-xs font-medium">{row.fasta_id}</TableCell>
                         <TableCell className="p-2 text-xs">{row.ims_id}</TableCell>
                         <TableCell className="p-2 text-xs">{row.group}</TableCell>
                         <TableCell className="p-2 text-xs">{row.lineage}</TableCell>
@@ -45,12 +45,15 @@ export function SampleInformationTable() {
     return (
         <>
             {sampleData && (
-                <div className="border-[1px] border-muted rounded-xl overflow-hidden">
-                    <Table className="rounded-xl overflow-hidden">
-                        <TableHeader>{renderHeadRow()}</TableHeader>
-                        <TableBody>{renderRows()}</TableBody>
-                    </Table>
-                </div>
+                <>
+                    <small>Es sind {sampleData.length} Fälle im Datensatz.</small>
+                    <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
+                        <Table className="rounded-xl overflow-hidden">
+                            <TableHeader>{renderHeadRow()}</TableHeader>
+                            <TableBody>{renderRows()}</TableBody>
+                        </Table>
+                    </div>
+                </>
             )}
         </>
     );
