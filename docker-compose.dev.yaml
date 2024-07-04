@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: gentrain_backend
     image: gentrain-backend
     restart: unless-stopped
     build:
@@ -7,8 +8,6 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
-    volumes:
-      - ./backend:/app
     environment:
       - FLASK_ENV=development
       - FLASK_APP=main_site.py
