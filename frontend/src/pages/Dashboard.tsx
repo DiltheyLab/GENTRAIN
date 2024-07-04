@@ -2,17 +2,27 @@ import { Header } from "@/components/layout/Header";
 import { DashboardGraphSettings } from "@/components/DashboardGraphSettings";
 import { DashboardVisualizationPanel } from "@/components/DashboardVisualizationPanel";
 import { GraphSettingsProvider } from "@/providers/GraphSettingsProvider";
+import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
 
 export function Dashboard() {
     return (
         <GraphSettingsProvider>
-            <div className="flex flex-col">
-                <Header /> {/* 👈 Es muss noch eine Layout Komponente angelegt und alle Seiten darin gewrappt werden */}
-                <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
-                    <DashboardGraphSettings />
-                    <DashboardVisualizationPanel />
-                </main>
-            </div>
+            <Header /> {/* 👈 Es muss noch eine Layout Komponente angelegt und alle Seiten darin gewrappt werden */}
+            <main className="relative mx-auto">
+                <div className="flex p-4 flex-row">
+                    <div className="w-1/2 md:w-1/3 lg:w-1/6 mr-4">
+                        <DashboardGraphSettings />
+                    </div>
+                    <div className="w-1/2 md:w-2/3 lg:w-5/6">
+                        <div>
+                            <DashboardVisualizationPanel />
+                        </div>
+                        <div className="mt-4">
+                            <DistanceMatrixTable />
+                        </div>
+                    </div>
+                </div>
+            </main>
         </GraphSettingsProvider>
     );
 }
