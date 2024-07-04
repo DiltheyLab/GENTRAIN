@@ -11,7 +11,7 @@ export function DistanceMatrixTable() {
         return (
             <TableCell
                 key={colIndex}
-                className={`border-r-[1px] border-muted p-2 text-center text-xs ${
+                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 text-center text-xs ${
                     hoveredColumn === colIndex && hoveredRow === rowIndex
                         ? "bg-muted"
                         : hoveredColumn === colIndex
@@ -32,12 +32,12 @@ export function DistanceMatrixTable() {
                 return (
                     <TableRow
                         key={rowIndex}
-                        className="border-b-[1px] border-r-[1px] border-muted p-2"
+                        className="border-b-[1px] border-muted p-2"
                         onMouseEnter={() => setHoveredRow(rowIndex)}
                         onMouseLeave={() => setHoveredRow(undefined)}
                     >
                         <TableCell
-                            className={`border-r-[1px] border-muted font-medium p-2 text-center text-xs ${
+                            className={`[&:not(:last-child)]:border-r-[1px] border-muted font-medium p-2 text-center text-xs ${
                                 hoveredRow === rowIndex ? "bg-muted" : "bg-muted/30"
                             }`}
                         >
@@ -53,25 +53,27 @@ export function DistanceMatrixTable() {
     return (
         <>
             {matrixData && (
-                <Table className="rounded-xl overflow-hidden border-b-[1px] border-muted">
-                    <TableBody>
-                        <TableRow className="bg-muted/30 border-r-[1px] border-muted p-2">
-                            <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
-                            {matrixData.row_column_names.map((name, index) => (
-                                <TableCell
-                                    key={index}
-                                    style={{ writingMode: "vertical-rl" }}
-                                    className={`border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 ${
-                                        hoveredColumn === index ? "bg-muted" : "bg-muted/30"
-                                    }`}
-                                >
-                                    {name}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                        {renderRows()}
-                    </TableBody>
-                </Table>
+                <div className="border-[1px] border-muted rounded-xl overflow-hidden">
+                    <Table>
+                        <TableBody>
+                            <TableRow className="bg-muted/30 border-muted p-2">
+                                <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
+                                {matrixData.row_column_names.map((name, index) => (
+                                    <TableCell
+                                        key={index}
+                                        style={{ writingMode: "vertical-rl" }}
+                                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 ${
+                                            hoveredColumn === index ? "bg-muted" : "bg-muted/30"
+                                        }`}
+                                    >
+                                        {name}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                            {renderRows()}
+                        </TableBody>
+                    </Table>
+                </div>
             )}
         </>
     );
