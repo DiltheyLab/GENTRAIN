@@ -48,7 +48,7 @@ export function SampleInformationTable() {
                 <>
                     <small>Es sind {sampleData.length} Fälle im Datensatz.</small>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
-                        <Table className="rounded-xl overflow-hidden">
+                        <Table className="rounded-xl overflow-hidden" id="sample-information-table">
                             <TableHeader>{renderHeadRow()}</TableHeader>
                             <TableBody>{renderRows()}</TableBody>
                         </Table>

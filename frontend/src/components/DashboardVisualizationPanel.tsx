@@ -5,6 +5,7 @@ import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
+import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
@@ -47,10 +48,21 @@ export const DashboardVisualizationPanel = () => {
             <Badge variant="outline" className="absolute z-50 right-3 top-3">
                 {graphSettingsContext.settings.graphDimension}
             </Badge>
+            <Button
+                variant="outline"
+                className="absolute z-50 bottom-3 left-3"
+                onClick={() => {
+                    exportGraphAndInformationAsPdf();
+                }}
+            >
+                Export
+            </Button>
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
             </Button>
-            <div className="p-1 flex justify-center items-center h-full w-full">{getGraph()}</div>
+            <div className="p-1 flex justify-center items-center h-full w-full" id="graph-container">
+                {getGraph()}
+            </div>
         </div>
     );
 };
