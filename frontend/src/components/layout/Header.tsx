@@ -52,6 +52,7 @@ export const Header = () => {
             </Sheet>
             <div className="flex items-center gap-4 ml-auto md:gap-2 lg:gap-4">
                 <input
+                    id="dexie-file-upload"
                     ref={uploadFileRef}
                     type="file"
                     className="hidden"
@@ -62,7 +63,7 @@ export const Header = () => {
                         }
                     }}
                 />
-                <label htmlFor="file-upload">
+                <label htmlFor="dexie-file-upload">
                     <Button
                         variant="outline"
                         className="gap-2 flex items-center"
@@ -71,13 +72,13 @@ export const Header = () => {
                             if (uploadFileRef?.current) uploadFileRef?.current.click();
                         }}
                     >
-                        Datenbank importieren
+                        Daten importieren
                         <Upload className="h-5 w-5" />
                     </Button>
                 </label>
 
                 <Button variant="outline" className="gap-2 flex items-center" onClick={() => exportDatabaseToJson()}>
-                    Datenbank exportieren
+                    Daten exportieren
                     <Download className="h-5 w-5" />
                 </Button>
             </div>

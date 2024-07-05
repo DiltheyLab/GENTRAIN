@@ -12,10 +12,10 @@ export function Dashboard() {
             <GraphSettingsProvider>
                 <div className="relative max-w-[1500px] mx-auto p-4">
                     <div className="flex flex-row">
-                        <div className="w-1/2 md:w-1/3 lg:w-1/6 mr-4">
+                        <div className="w-1/2 md:w-1/3 lg:w-1/4 mr-4">
                             <DashboardGraphSettings />
                         </div>
-                        <div className="w-1/2 md:w-2/3 lg:w-5/6">
+                        <div className="w-1/2 md:w-2/3 lg:w-3/4">
                             <DashboardVisualizationPanel />
                         </div>
                     </div>
