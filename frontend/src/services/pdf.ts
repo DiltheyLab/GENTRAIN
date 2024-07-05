@@ -63,21 +63,21 @@ const addInformationTable = async (doc: jsPDF) => {
         rowPageBreak: "avoid",
         headStyles: { fillColor: [249, 115, 22] },
         bodyStyles: {
-            cellWidth: 25,
+            cellWidth: 27,
         },
     });
 };
 
 export const exportGraphAndInformationAsPdf = async () => {
     const doc = new jsPDF({
-        orientation: "l",
+        orientation: "l", //landscape
         unit: "mm",
-        format: "letter",
+        format: "a4",
     });
     doc.setFontSize(20);
     addGraphAsJpeg(doc);
     addHeadline(doc);
     doc.addPage();
     await addInformationTable(doc);
-    doc.save("test.pdf");
+    doc.save("gentrain_graph_export.pdf");
 };
