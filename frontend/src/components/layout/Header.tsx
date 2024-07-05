@@ -24,9 +24,6 @@ export const Header = () => {
                 <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
                     Hilfe/FAQ
                 </Link>
-                <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
-                    Kontakt
-                </Link>
             </nav>
             <Sheet>
                 <SheetTrigger asChild>
@@ -49,9 +46,6 @@ export const Header = () => {
                         </Link>
                         <Link to="#" className="text-muted-foreground hover:text-foreground">
                             Hilfe/FAQ
-                        </Link>
-                        <Link to="#" className="text-muted-foreground hover:text-foreground">
-                            Kontakt
                         </Link>
                     </nav>
                 </SheetContent>
