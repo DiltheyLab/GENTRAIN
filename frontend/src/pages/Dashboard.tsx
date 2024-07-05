@@ -1,4 +1,3 @@
-import { Header } from "@/components/layout/Header";
 import { DashboardGraphSettings } from "@/components/DashboardGraphSettings";
 import { DashboardVisualizationPanel } from "@/components/DashboardVisualizationPanel";
 import { GraphSettingsProvider } from "@/providers/GraphSettingsProvider";
