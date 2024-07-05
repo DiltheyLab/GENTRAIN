@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 
@@ -14,11 +14,22 @@ export const DashboardVisualizationPanel = () => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!containerRef.current) return;
         setHeight(containerRef.current.offsetHeight);
         setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
     }, [containerRef]);
+
+    useEffect(() => {
+        const onResize = () => {
+            if (!containerRef.current) return;
+            setWidth(containerRef.current.offsetWidth - 8);
+        };
+        window.addEventListener("resize", onResize);
+        return () => {
+            window.removeEventListener("resize", onResize);
+        };
+    }, []);
 
     if (!graphSettingsContext) {
         return <div>Loading...</div>;

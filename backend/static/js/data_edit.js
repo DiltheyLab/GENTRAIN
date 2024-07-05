@@ -532,6 +532,7 @@ function collect_data_add_to_DB(
         };
       }
 
+      console.log("test", fastaid_to_alldata);
       // report success
       add_alert(alertbox_id, "success", "Nextclade Aufruf abgeschlossen.");
       // add_alert(alertbox_id, "success", "Finished calling variants and lineage with nextclade.");
