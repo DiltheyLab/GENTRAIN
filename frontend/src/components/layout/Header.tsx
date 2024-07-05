@@ -9,7 +9,7 @@ export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
 
     return (
-        <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background z-50 px-4 md:px-6">
+        <header className="sticky top-0 flex min-h-16 items-center gap-4 border-b bg-background z-50 px-4 md:px-6">
             <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                 <Link to="#" className="flex items-center gap-2 text-md font-semibold md:text-base">
                     <Share2 className="h-6 w-6 text-primary" />
@@ -63,24 +63,30 @@ export const Header = () => {
                         }
                     }}
                 />
-                <label htmlFor="dexie-file-upload">
+                <div className="flex flex-row gap-4">
+                    <label htmlFor="dexie-file-upload">
+                        <Button
+                            variant="outline"
+                            className="gap-2 flex items-center"
+                            onClick={async (evt) => {
+                                evt.preventDefault();
+                                if (uploadFileRef?.current) uploadFileRef?.current.click();
+                            }}
+                        >
+                            <span className="hidden sm:block md:hidden lg:block">Daten importieren</span>
+                            <Upload className="h-5 w-5" />
+                        </Button>
+                    </label>
+
                     <Button
                         variant="outline"
                         className="gap-2 flex items-center"
-                        onClick={async (evt) => {
-                            evt.preventDefault();
-                            if (uploadFileRef?.current) uploadFileRef?.current.click();
-                        }}
+                        onClick={() => exportDatabaseToJson()}
                     >
-                        Daten importieren
-                        <Upload className="h-5 w-5" />
+                        <span className="hidden sm:block md:hidden lg:block">Daten exportieren</span>
+                        <Download className="h-5 w-5" />
                     </Button>
-                </label>
-
-                <Button variant="outline" className="gap-2 flex items-center" onClick={() => exportDatabaseToJson()}>
-                    Daten exportieren
-                    <Download className="h-5 w-5" />
-                </Button>
+                </div>
             </div>
         </header>
     );
