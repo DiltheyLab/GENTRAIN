@@ -24,9 +24,6 @@ export const Header = () => {
                 <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
                     Hilfe/FAQ
                 </Link>
-                <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
-                    Kontakt
-                </Link>
             </nav>
             <Sheet>
                 <SheetTrigger asChild>
@@ -50,14 +47,12 @@ export const Header = () => {
                         <Link to="#" className="text-muted-foreground hover:text-foreground">
                             Hilfe/FAQ
                         </Link>
-                        <Link to="#" className="text-muted-foreground hover:text-foreground">
-                            Kontakt
-                        </Link>
                     </nav>
                 </SheetContent>
             </Sheet>
             <div className="flex items-center gap-4 ml-auto md:gap-2 lg:gap-4">
                 <input
+                    id="dexie-file-upload"
                     ref={uploadFileRef}
                     type="file"
                     className="hidden"
@@ -69,7 +64,7 @@ export const Header = () => {
                     }}
                 />
                 <div className="flex flex-row gap-4">
-                    <label htmlFor="file-upload">
+                    <label htmlFor="dexie-file-upload">
                         <Button
                             variant="outline"
                             className="gap-2 flex items-center"
