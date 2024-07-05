@@ -22,5 +22,8 @@ ENV FLASK_ENV=development
 ENV FLASK_APP=main_site.py
 ENV PYTHONUNBUFFERED=1
 
+RUN chmod -x /app/scripts/
+RUN nextclade dataset get --name 'sars-cov-2' --output-dir '/app/datasets/nextclade_covid/'
+
 # Run the application
 CMD ["flask", "run", "--host=0.0.0.0", "-p 4000"]
