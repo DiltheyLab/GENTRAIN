@@ -7,7 +7,6 @@ WORKDIR /app
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml .
 
-
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /app/environment.yaml
 # Ensure the Conda environment is activated
@@ -22,5 +21,4 @@ ENV FLASK_ENV=development
 ENV FLASK_APP=main_site.py
 ENV PYTHONUNBUFFERED=1
 
-# Run the application
-CMD ["flask", "run", "--host=0.0.0.0", "-p 4000"]
+ENTRYPOINT ["/app/init.sh"]
