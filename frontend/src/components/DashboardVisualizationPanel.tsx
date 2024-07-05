@@ -61,7 +61,9 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
             </Button>
-            <div className="p-1 flex justify-center items-center h-full w-full">{getGraph()}</div>
+            <div className="p-1 flex justify-center items-center h-full w-full" id="graph-container">
+                {getGraph()}
+            </div>
         </div>
     );
 };

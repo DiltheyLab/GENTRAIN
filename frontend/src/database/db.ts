@@ -22,7 +22,7 @@ const importDataFromJson = async (file: Blob) => {
 
 const exportDatabaseToJson = async () => {
     const blob = await exportDB(db);
-    downloadFile(blob);
+    downloadFile(blob, `gentrain_export_${new Date().toLocaleString()}.json`);
 };
 
 export { db, importDataFromJson, exportDatabaseToJson };

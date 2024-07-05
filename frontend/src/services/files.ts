@@ -1,8 +1,8 @@
-const downloadFile = (blob: Blob) => {
+const downloadFile = (blob: Blob, name: string) => {
     const jsonURL = window.URL.createObjectURL(blob);
     const tempLink = document.createElement("a");
     tempLink.href = jsonURL;
-    tempLink.setAttribute("download", `gentrain_export_${new Date().toLocaleString()}.json`);
+    tempLink.setAttribute("download", name);
     tempLink.click();
     tempLink.remove();
 };

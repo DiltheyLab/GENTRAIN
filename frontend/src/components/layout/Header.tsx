@@ -1,9 +1,10 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Download, Menu, Package2, Share2, Upload } from "lucide-react";
+import { Download, FileText, Menu, Package2, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
+import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
@@ -64,6 +65,24 @@ export const Header = () => {
                     }}
                 />
                 <div className="flex flex-row gap-4">
+                    <Button
+                        variant="outline"
+                        className="gap-2 flex items-center"
+                        onClick={() => {
+                            exportGraphAndInformationAsPdf();
+                        }}
+                    >
+                        Export PDF
+                        <FileText className="h-5 w-5" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="gap-2 flex items-center"
+                        onClick={() => exportDatabaseToJson()}
+                    >
+                        <span className="hidden sm:block md:hidden lg:block">Daten exportieren</span>
+                        <Download className="h-5 w-5" />
+                    </Button>
                     <label htmlFor="dexie-file-upload">
                         <Button
                             variant="outline"
@@ -77,15 +96,6 @@ export const Header = () => {
                             <Upload className="h-5 w-5" />
                         </Button>
                     </label>
-
-                    <Button
-                        variant="outline"
-                        className="gap-2 flex items-center"
-                        onClick={() => exportDatabaseToJson()}
-                    >
-                        <span className="hidden sm:block md:hidden lg:block">Daten exportieren</span>
-                        <Download className="h-5 w-5" />
-                    </Button>
                 </div>
             </div>
         </header>
