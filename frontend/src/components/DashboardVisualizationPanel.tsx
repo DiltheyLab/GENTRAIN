@@ -55,7 +55,7 @@ export const DashboardVisualizationPanel = () => {
                     exportGraphAndInformationAsPdf();
                 }}
             >
-                Export
+                Export PDF
             </Button>
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
