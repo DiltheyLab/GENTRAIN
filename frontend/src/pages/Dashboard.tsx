@@ -9,8 +9,8 @@ import { Layout } from "@/components/layout/Layout";
 
 export function Dashboard() {
     return (
-        <GraphSettingsProvider>
-            <Layout>
+        <Layout>
+            <GraphSettingsProvider>
                 <div className="relative max-w-[1500px] mx-auto p-4">
                     <div className="flex flex-row">
                         <div className="w-1/2 md:w-1/3 lg:w-1/6 mr-4">
@@ -41,7 +41,7 @@ export function Dashboard() {
                         </Accordion>
                     </div>
                 </div>
-            </Layout>
-        </GraphSettingsProvider>
+            </GraphSettingsProvider>
+        </Layout>
     );
 }

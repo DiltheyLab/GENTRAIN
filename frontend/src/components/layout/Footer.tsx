@@ -13,7 +13,7 @@ export const Footer = () => {
                 </div>
                 <div>
                     <a href="/contact" className="underline ml-4">
-                        Contact
+                        Kontakt
                     </a>
                     <a href="/contact" className="underline ml-4">
                         Datenschutz
