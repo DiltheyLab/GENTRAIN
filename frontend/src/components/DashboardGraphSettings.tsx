@@ -4,9 +4,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "./ui/button";
+import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
+import { useSamplesGetAll } from "@/database/samples";
+import { getGroupToColor } from "@/services/graphs";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
+    const samples = useSamplesGetAll();
 
     if (!graphSettingsContext) {
         // Handle the case where graphSettingsContext is null
@@ -48,6 +53,40 @@ export const DashboardGraphSettings = () => {
         graphSettingsContext.updateSettings({ hideNodeLabel: checked });
     };
 
+    const changeFilter = (filter: Filter) => {
+        graphSettingsContext.updateSettings({ filter: filter });
+    };
+
+    const changeColoring = (coloring: Coloring) => {
+        graphSettingsContext.updateSettings({ coloring: coloring });
+        const graphData = graphSettingsContext.settings.graphData;
+
+        if (!samples) return;
+
+        const groupToColorNormal = getGroupToColor(samples, "group");
+        const groupToColorSamplingTime = getGroupToColor(samples, "sampled_at");
+
+        const coloredNodes = graphData.nodes.map((node) => {
+            let color = node.color;
+            if (coloring === "normal") {
+                color = groupToColorNormal[node.group];
+            } else if (coloring === "outbreaks" && node.group === "background") {
+                color = "#D3D2D2";
+            } else if (coloring === "samplingTime" && node.sampledAt) {
+                color = groupToColorSamplingTime[node.sampledAt];
+            }
+
+            return { ...node, color };
+        });
+
+        graphSettingsContext.updateSettings({
+            graphData: {
+                nodes: coloredNodes,
+                links: graphData.links,
+            },
+        });
+    };
+
     const getLegend = () => {
         const nodes = graphSettingsContext.settings.graphData.nodes;
         const uniqueGroups = nodes.filter((group, index, self) => {
@@ -64,7 +103,7 @@ export const DashboardGraphSettings = () => {
     };
     return (
         <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
-            <form className="grid w-full items-start gap-6">
+            <form className="grid w-full items-start gap-3">
                 <fieldset className="grid gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
                     <div className="grid gap-3">
@@ -166,6 +205,58 @@ export const DashboardGraphSettings = () => {
                         >
                             Zoom auf Fenstergröße aktivieren
                         </label>
+                    </div>
+                </fieldset>
+                <fieldset className="grid gap-6 rounded-lg border p-4">
+                    <legend className="-ml-1 px-1 text-sm font-medium">Filter</legend>
+                    <div className="flex flex-row gap-3">
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.filter === "all" ? "default" : "secondary"}
+                            className="w-1/2"
+                            onClick={() => changeFilter("all")}
+                        >
+                            Alle
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.filter === "outbreaks" ? "default" : "secondary"}
+                            className="w-1/2"
+                            onClick={() => changeFilter("outbreaks")}
+                        >
+                            Outbreaks
+                        </Button>
+                    </div>
+                </fieldset>
+                <fieldset className="grid gap-6 rounded-lg border p-4">
+                    <legend className="-ml-1 px-1 text-sm font-medium">Einfärbung</legend>
+                    <div className="flex flex-row gap-3">
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.coloring === "normal" ? "default" : "secondary"}
+                            className="w-1/5"
+                            onClick={() => changeColoring("normal")}
+                        >
+                            Alle
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.coloring === "outbreaks" ? "default" : "secondary"}
+                            className="w-2/5"
+                            onClick={() => changeColoring("outbreaks")}
+                        >
+                            Outbreaks
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={
+                                graphSettingsContext.settings.coloring === "samplingTime" ? "default" : "secondary"
+                            }
+                            className="w-2/5"
+                            onClick={() => changeColoring("samplingTime")}
+                        >
+                            Sampling Time
+                        </Button>
                     </div>
                 </fieldset>
                 <fieldset className="grid gap-6 rounded-lg border p-4">

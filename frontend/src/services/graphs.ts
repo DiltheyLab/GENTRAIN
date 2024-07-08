@@ -4,6 +4,34 @@ import { CustomLink, CustomNode } from "@/providers/GraphSettingsProvider";
 import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
 import { GraphData } from "@/providers/GraphSettingsProvider";
 
+type ColoringMode = "goldenAngleApprox" | "gradient";
+
+export const setNodeColor = (value: number, variant: ColoringMode) => {
+    if (variant === "goldenAngleApprox") {
+        const hue = value * 137.508; // use golden angle approximation
+        return `hsl(${hue},50%,75%)`;
+    } else if (variant === "gradient") {
+        //create gradient from blue to red
+        const r = Math.floor((255 * value) / 100);
+        const g = Math.floor((255 * (100 - value)) / 100);
+        const b = 0;
+        return `rgb(${r},${g},${b})`;
+    }
+};
+
+type ColorGroup = "group" | "sampled_at";
+
+export const getGroupToColor = (samples: SampleSchema[], colorGroup: ColorGroup) => {
+    // Extract unique groups and assign colors
+    const groups = samples.map((sample) => sample[colorGroup]);
+    const uniqueGroups = [...new Set(groups)];
+    const groupToColor: Record<string, string> = {};
+    uniqueGroups.forEach((group, index) => {
+        groupToColor[group] = setNodeColor(index, "goldenAngleApprox") || "black";
+    });
+    return groupToColor;
+};
+
 // Helper function to transform matrix data to graph data
 export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, samples: SampleSchema[]): GraphData => {
     let graph = new WeightedGraph(matrixData.matrix.length);
@@ -20,6 +48,8 @@ export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, sam
     const kruskal = new KruskalMST(graph);
     const mst_edges = kruskal.mst;
 
+    const groupToColor = getGroupToColor(samples, "group");
+
     // create node objects
     const nodes = matrixData.row_column_names.map((name) => {
         const sampleMetaData = samples.find((sample) => name === sample.fasta_id);
@@ -27,7 +57,7 @@ export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, sam
         return {
             id: name,
             group: group,
-            color: group === "No Group" ? "#000000" : "#FF0000",
+            color: groupToColor[group],
         } satisfies CustomNode;
     }) as CustomNode[];
 
