@@ -69,18 +69,26 @@ export const transformDistanceMatrixToGraphData = (
 ): GraphData => {
     let graph = new WeightedGraph(matrixData.matrix.length);
 
+    // Preprocess samples into a lookup table for filtering
+    const sampleGroupLookup = samples.reduce((acc, sample) => {
+        acc[sample.fasta_id] = sample;
+        return acc;
+    }, {} as Record<string, SampleSchema>);
+    console.log(sampleGroupLookup);
+
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
     // add weighted graph edges for every column-row-pair of the distance matrix
     // note that every pair is only iterated once
+    // and that if a filter is set, only edges that are part of an outbreak are added
     for (let row = 0; row < matrixData.row_column_names.length - 1; row++) {
         for (let column = row + 1; column < matrixData.row_column_names.length; column++) {
             // if filter is set to outbreaks, only show edges that are part of an outbreak
             if (filter === "outbreaks") {
-                // check if both samples are part of an outbreak
-                const rowSample = samples.find((sample) => sample.fasta_id === matrixData.row_column_names[row]);
-                const columnSample = samples.find((sample) => sample.fasta_id === matrixData.row_column_names[column]);
+                // get the group (e.g. outbreak_1) of the samples
+                const rowGroup = sampleGroupLookup[matrixData.row_column_names[row]].group;
+                const columnGroup = sampleGroupLookup[matrixData.row_column_names[column]].group;
                 // if one sample is not part of an outbreak, skip this edge
-                if (rowSample?.group === "background" || columnSample?.group === "background") {
+                if (rowGroup === "background" || columnGroup === "background") {
                     continue;
                 }
             }
@@ -103,9 +111,9 @@ export const transformDistanceMatrixToGraphData = (
 
         return {
             id: name,
-            group: group,
+            group: sampleGroupLookup[name].group,
             color: groupToColor[group],
-            sampledAt: sampleMetaData?.sampled_at,
+            sampledAt: sampleGroupLookup[name].sampled_at,
         } satisfies CustomNode;
     }) as CustomNode[];
 
