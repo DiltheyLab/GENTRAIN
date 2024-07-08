@@ -4,32 +4,62 @@ import { CustomLink, CustomNode } from "@/providers/GraphSettingsProvider";
 import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
 import { GraphData } from "@/providers/GraphSettingsProvider";
 
-type ColoringMode = "goldenAngleApprox" | "gradient";
-
-export const setNodeColor = (value: number, variant: ColoringMode) => {
-    if (variant === "goldenAngleApprox") {
-        const hue = value * 137.508; // use golden angle approximation
-        return `hsl(${hue},50%,75%)`;
-    } else if (variant === "gradient") {
-        //create gradient from blue to red
-        const r = Math.floor((255 * value) / 100);
-        const g = Math.floor((255 * (100 - value)) / 100);
-        const b = 0;
-        return `rgb(${r},${g},${b})`;
-    }
+export const setNodeColor = (value: number) => {
+    const hue = value * 137.508; // use golden angle approximation
+    return `hsl(${hue},50%,75%)`;
 };
 
-type ColorGroup = "group" | "sampled_at";
+const setNodeGradientColor = (normalizedIndex: number): string => {
+    // Interpolate hue from 240 (blue) to 0 (red)
+    const hue = 70 - normalizedIndex * 70;
+    // Use fixed saturation and lightness values
+    return `hsl(${hue}, 100%, 50%)`;
+};
 
-export const getGroupToColor = (samples: SampleSchema[], colorGroup: ColorGroup) => {
+type GroupToColor = {
+    [key: string]: string;
+};
+
+export const getGroupToColor = (samples: SampleSchema[], sampleAttribute: keyof SampleSchema) => {
     // Extract unique groups and assign colors
-    const groups = samples.map((sample) => sample[colorGroup]);
-    const uniqueGroups = [...new Set(groups)];
-    const groupToColor: Record<string, string> = {};
+    const uniqueGroups = getUniqueGroupsBySampleMetaData(samples, sampleAttribute);
+
+    const groupToColor: GroupToColor = {};
     uniqueGroups.forEach((group, index) => {
-        groupToColor[group] = setNodeColor(index, "goldenAngleApprox") || "black";
+        // Ensure group is a string that can be used as an index before proceeding
+        if (typeof group !== "string") {
+            throw new Error("sampleAttribute must be a string");
+        }
+        if (sampleAttribute === "group") {
+            groupToColor[group] = setNodeColor(index) || "#000";
+        } else if (sampleAttribute === "sampled_at") {
+            const normalizedIndex = (index + 1) / uniqueGroups.length; //normalize the index
+            groupToColor[group] = setNodeGradientColor(normalizedIndex) || "#000";
+        }
     });
+
     return groupToColor;
+};
+
+const getUniqueGroupsBySampleMetaData = (samples: SampleSchema[], sampleAttribute: keyof SampleSchema) => {
+    // Extract unique groups and assign colors
+    const groups = samples.map((sample) => sample[sampleAttribute]);
+    const uniqueGroups = [...new Set(groups)];
+    uniqueGroups.sort();
+    return uniqueGroups;
+};
+
+export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
+    const uniqueSamplingTimes = nodes.filter((group, index, self) => {
+        return index === self.findIndex((t) => t.sampledAt === group.sampledAt);
+    });
+    uniqueSamplingTimes.sort((a, b) => {
+        if (a.sampledAt && b.sampledAt) {
+            return new Date(a.sampledAt).getTime() - new Date(b.sampledAt).getTime();
+        }
+        return 0;
+    });
+    return uniqueSamplingTimes;
 };
 
 // Helper function to transform matrix data to graph data
@@ -58,6 +88,7 @@ export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, sam
             id: name,
             group: group,
             color: groupToColor[group],
+            sampledAt: sampleMetaData?.sampled_at,
         } satisfies CustomNode;
     }) as CustomNode[];
 

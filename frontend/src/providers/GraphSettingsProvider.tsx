@@ -22,7 +22,7 @@ export type GraphData = {
 };
 
 export type Filter = "all" | "outbreaks";
-export type Coloring = "normal" | "samplingTime" | "outbreaks";
+export type Coloring = "normal" | "sampled_at" | "outbreaks";
 
 export type GraphSettings = {
     graphDimension: "2D" | "3D";

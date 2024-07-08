@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "./ui/button";
 import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
 import { useSamplesGetAll } from "@/database/samples";
-import { getGroupToColor } from "@/services/graphs";
+import { getGroupToColor, getUniqueSamplingTimes } from "@/services/graphs";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
@@ -69,11 +69,11 @@ export const DashboardGraphSettings = () => {
         const coloredNodes = graphData.nodes.map((node) => {
             let color = node.color;
             if (coloring === "normal") {
-                color = groupToColorNormal[node.group];
+                color = groupToColorNormal[node.group]; // if coloring is normal, color it by group
             } else if (coloring === "outbreaks" && node.group === "background") {
-                color = "#D3D2D2";
-            } else if (coloring === "samplingTime" && node.sampledAt) {
-                color = groupToColorSamplingTime[node.sampledAt];
+                color = "#D3D2D2"; // if node is background, color it grey
+            } else if (coloring === "sampled_at" && node.sampledAt) {
+                color = groupToColorSamplingTime[node.sampledAt]; // if coloring is sampled_at, color it by sampling time
             }
 
             return { ...node, color };
@@ -89,17 +89,30 @@ export const DashboardGraphSettings = () => {
 
     const getLegend = () => {
         const nodes = graphSettingsContext.settings.graphData.nodes;
-        const uniqueGroups = nodes.filter((group, index, self) => {
-            return index === self.findIndex((t) => t.group === group.group);
-        });
 
-        // ToDo: Add color picker for each group
-        return uniqueGroups.map((node) => (
-            <div className="flex items-center gap-2" key={node.group}>
-                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                <p>{node.group}</p>
-            </div>
-        ));
+        if (
+            graphSettingsContext.settings.coloring === "normal" ||
+            graphSettingsContext.settings.coloring === "outbreaks"
+        ) {
+            const uniqueGroups = nodes.filter((group, index, self) => {
+                return index === self.findIndex((t) => t.group === group.group);
+            });
+            return uniqueGroups.map((node) => (
+                <div className="flex items-center gap-2" key={node.group}>
+                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                    <p>{node.group}</p>
+                </div>
+            ));
+        } else if (graphSettingsContext.settings.coloring === "sampled_at") {
+            const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
+
+            return uniqueSamplingTimes.map((node) => (
+                <div className="flex items-center gap-2" key={node.sampledAt}>
+                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                    <p>{node.sampledAt || "Kein Datum angegeben"}</p>
+                </div>
+            ));
+        }
     };
     return (
         <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
@@ -249,11 +262,9 @@ export const DashboardGraphSettings = () => {
                         </Button>
                         <Button
                             type="button"
-                            variant={
-                                graphSettingsContext.settings.coloring === "samplingTime" ? "default" : "secondary"
-                            }
+                            variant={graphSettingsContext.settings.coloring === "sampled_at" ? "default" : "secondary"}
                             className="w-2/5"
-                            onClick={() => changeColoring("samplingTime")}
+                            onClick={() => changeColoring("sampled_at")}
                         >
                             Sampling Time
                         </Button>
