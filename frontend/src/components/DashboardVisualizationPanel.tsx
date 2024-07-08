@@ -30,6 +30,7 @@ export const DashboardVisualizationPanel = () => {
 
     useEffect(() => {
         if (!containerRef.current) return;
+        setHeight(containerRef.current.offsetHeight);
         setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
     }, [containerRef]);
 
