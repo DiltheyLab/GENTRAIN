@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "./ui/button";
 import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
 import { useSamplesGetAll } from "@/database/samples";
-import { getGroupToColor, getUniqueSamplingTimes } from "@/services/graphs";
+import { getGroupToColor } from "@/services/graphs";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
@@ -87,33 +87,6 @@ export const DashboardGraphSettings = () => {
         });
     };
 
-    const getLegend = () => {
-        const nodes = graphSettingsContext.settings.graphData.nodes;
-
-        if (
-            graphSettingsContext.settings.coloring === "normal" ||
-            graphSettingsContext.settings.coloring === "outbreaks"
-        ) {
-            const uniqueGroups = nodes.filter((group, index, self) => {
-                return index === self.findIndex((t) => t.group === group.group);
-            });
-            return uniqueGroups.map((node) => (
-                <div className="flex items-center gap-2" key={node.group}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.group}</p>
-                </div>
-            ));
-        } else if (graphSettingsContext.settings.coloring === "sampled_at") {
-            const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
-
-            return uniqueSamplingTimes.map((node) => (
-                <div className="flex items-center gap-2" key={node.sampledAt}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.sampledAt || "Kein Datum angegeben"}</p>
-                </div>
-            ));
-        }
-    };
     return (
         <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
             <form className="grid w-full items-start gap-3">
@@ -268,13 +241,6 @@ export const DashboardGraphSettings = () => {
                         >
                             Sampling Time
                         </Button>
-                    </div>
-                </fieldset>
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                    <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                    <div className="flex flex-col gap-3">
-                        <Label htmlFor="role">Cluster</Label>
-                        {getLegend()}
                     </div>
                 </fieldset>
             </form>
