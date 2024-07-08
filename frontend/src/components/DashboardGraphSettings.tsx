@@ -66,7 +66,7 @@ export const DashboardGraphSettings = () => {
     };
     return (
         <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
-            <form className="grid w-full items-start gap-6">
+            <form className="grid w-full items-start gap-3">
                 <fieldset className="grid gap-6 rounded-lg border p-4">
                     <div className="grid gap-3">
                         <Button

@@ -3,15 +3,29 @@ import { Button } from "./ui/button";
 import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
+import { transformMatrixToGraphData } from "@/services/graphs";
+import { useDistanceMatrixGetById } from "@/database/distance_matrix";
+import { useSampleGetAll } from "@/database/samples";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
+    const matrixData = useDistanceMatrixGetById("dm_full");
+    const samples = useSampleGetAll();
+
     //get size of parent container
     const [height, setHeight] = useState(0);
     const [width, setWidth] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!matrixData || !samples || !graphSettingsContext) return;
+        const graphData = transformMatrixToGraphData(matrixData, samples);
+
+        // Update the graph settings with the new graph data
+        graphSettingsContext.updateSettings({ graphData });
+    }, [matrixData, samples]);
 
     useLayoutEffect(() => {
         if (!containerRef.current) return;

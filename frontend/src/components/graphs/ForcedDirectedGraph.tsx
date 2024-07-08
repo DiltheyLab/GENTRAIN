@@ -11,25 +11,20 @@ type ForcedDirectedGraph2DProps = {
 
 export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGraph2DProps) => {
     const graphSettingsContext = useGraphSettings();
-
     const forceRef = useRef<ForceGraphMethods>();
-
-    if (!graphSettingsContext) {
-        return <div>Loading...</div>;
-    }
-
-    if (data.nodes.length === 0) {
-        return <div>Es sind keine Knoten vorhanden</div>;
-    }
 
     // custom d3 force setup
     useEffect(() => {
-        if (!forceRef.current) return;
+        if (!forceRef.current || !graphSettingsContext) return;
         forceRef.current.d3Force("charge")?.strength(graphSettingsContext.settings.charge);
         forceRef.current.d3Force("link")?.distance(graphSettingsContext.settings.linkDistance);
 
         forceRef.current.d3ReheatSimulation();
-    }, [graphSettingsContext.settings.charge, graphSettingsContext.settings.linkDistance]);
+    }, [graphSettingsContext?.settings.charge, graphSettingsContext?.settings.linkDistance]);
+
+    if (!graphSettingsContext) {
+        return <div>Loading...</div>;
+    }
 
     const handleEngineStop = () => {
         if (!forceRef.current) return;
@@ -103,14 +98,14 @@ export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGra
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => `(${node.id})`}
-            nodeRelSize={graphSettingsContext.settings.nodeSize}
+            nodeRelSize={graphSettingsContext?.settings.nodeSize}
             width={width}
             height={height}
             cooldownTicks={100} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
             onEngineStop={handleEngineStop}
             linkLabel={(link) => `${link.value}`}
-            linkWidth={graphSettingsContext.settings.linkWidth}
+            linkWidth={graphSettingsContext?.settings.linkWidth}
             d3VelocityDecay={0.3}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}

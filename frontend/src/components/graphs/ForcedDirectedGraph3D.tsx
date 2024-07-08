@@ -19,10 +19,6 @@ export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGra
         return <div>Loading...</div>;
     }
 
-    if (data.nodes.length === 0) {
-        return <div>Es sind keine Knoten vorhanden</div>;
-    }
-
     const handleEngineStop = () => {
         if (!forceRef.current) return;
         if (graphSettingsContext.settings.zoomToFit === false) return;
