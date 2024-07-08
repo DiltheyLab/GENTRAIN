@@ -16,7 +16,7 @@ interface SampleSchema {
     updated_at: string;
 }
 
-export const useSampleGetAll = (): SampleSchema[] | undefined => {
+export const useSamplesGetAll = (): SampleSchema[] | undefined => {
     return useLiveQuery(() => db.samples.toArray());
 };
 

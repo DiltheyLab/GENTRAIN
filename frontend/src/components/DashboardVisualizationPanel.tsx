@@ -7,12 +7,12 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { transformMatrixToGraphData } from "@/services/graphs";
 import { useDistanceMatrixGetById } from "@/database/distance_matrix";
-import { useSampleGetAll } from "@/database/samples";
+import { useSamplesGetAll } from "@/database/samples";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
     const matrixData = useDistanceMatrixGetById("dm_full");
-    const samples = useSampleGetAll();
+    const samples = useSamplesGetAll();
 
     //get size of parent container
     const [height, setHeight] = useState(0);
@@ -32,6 +32,17 @@ export const DashboardVisualizationPanel = () => {
         setHeight(containerRef.current.offsetHeight);
         setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
     }, [containerRef]);
+
+    useEffect(() => {
+        const onResize = () => {
+            if (!containerRef.current) return;
+            setWidth(containerRef.current.offsetWidth - 8);
+        };
+        window.addEventListener("resize", onResize);
+        return () => {
+            window.removeEventListener("resize", onResize);
+        };
+    }, []);
 
     if (!graphSettingsContext) {
         return <div>Loading...</div>;
@@ -64,7 +75,9 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
             </Button>
-            <div className="p-1 flex justify-center items-center h-full w-full">{getGraph()}</div>
+            <div className="p-1 flex justify-center items-center h-full w-full" id="graph-container">
+                {getGraph()}
+            </div>
         </div>
     );
 };

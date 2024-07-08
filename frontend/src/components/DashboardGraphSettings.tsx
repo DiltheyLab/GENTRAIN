@@ -4,8 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "./ui/button";
-import { importDataFromFile } from "@/database/db";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
@@ -65,21 +63,8 @@ export const DashboardGraphSettings = () => {
         ));
     };
     return (
-        <div className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0">
-            <form className="grid w-full items-start gap-3">
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                    <div className="grid gap-3">
-                        <Button
-                            onClick={async (evt) => {
-                                evt.preventDefault();
-                                const blob = await fetch("/example_dataset.json").then((r) => r.blob());
-                                importDataFromFile(blob);
-                            }}
-                        >
-                            Import Test Data
-                        </Button>
-                    </div>
-                </fieldset>
+        <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
+            <form className="grid w-full items-start gap-6">
                 <fieldset className="grid gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
                     <div className="grid gap-3">
