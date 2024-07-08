@@ -107,7 +107,7 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset
             </Button>
-            <fieldset className="absolute z-50 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
+            <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
                 <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
                 <div className="flex flex-col">
                     <Label htmlFor="role" className="mb-2">
