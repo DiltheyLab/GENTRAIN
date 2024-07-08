@@ -18,10 +18,10 @@ type DistanceMatrixAndSamples = {
     samples: SampleSchema[];
 };
 
-export const useDistanceMatrixAndSamplesById = (id: string): DistanceMatrixAndSamples | undefined => {
+export const useDistanceMatrixAndSamplesGetById = (id: string): DistanceMatrixAndSamples | undefined => {
     return useLiveQuery(async () => {
-        const distanceMatrix = await db.distance_matrix.get(id);
+        const distance_matrix = await db.distance_matrix.get(id);
         const samples = await db.samples.toArray();
-        return { distanceMatrix: distanceMatrix, samples: samples };
+        return { distanceMatrix: distance_matrix, samples: samples };
     });
 };
