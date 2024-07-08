@@ -55,6 +55,7 @@ export const DashboardGraphSettings = () => {
 
     const changeFilter = (filter: Filter) => {
         graphSettingsContext.updateSettings({ filter: filter });
+        graphSettingsContext.updateSettings({ coloring: "normal" });
     };
 
     const changeColoring = (coloring: Coloring) => {
