@@ -5,13 +5,13 @@ import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { getUniqueSamplingTimes, transformMatrixToGraphData } from "@/services/graphs";
-import { useDistanceMatrixAndSamplesById } from "@/database/distance_matrix";
-import { Label } from "./ui/label";
+import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
+import { useDistanceMatrixAndSamplesGetById } from "@/database/distance_matrix";
+import { Label } from "@/components/ui/label";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
-    const matrixDataWithMetaData = useDistanceMatrixAndSamplesById("dm_full");
+    const matrixDataWithMetaData = useDistanceMatrixAndSamplesGetById("dm_full");
 
     //get size of parent container
     const [height, setHeight] = useState(0);
@@ -20,7 +20,7 @@ export const DashboardVisualizationPanel = () => {
 
     useEffect(() => {
         if (!matrixDataWithMetaData || !matrixDataWithMetaData.distanceMatrix || !graphSettingsContext) return;
-        const graphData = transformMatrixToGraphData(
+        const graphData = transformDistanceMatrixToGraphData(
             matrixDataWithMetaData.distanceMatrix,
             matrixDataWithMetaData.samples
         );

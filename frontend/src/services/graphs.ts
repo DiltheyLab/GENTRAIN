@@ -62,11 +62,15 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     return uniqueSamplingTimes;
 };
 
-// Helper function to transform matrix data to graph data
-export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, samples: SampleSchema[]): GraphData => {
+export const transformDistanceMatrixToGraphData = (
+    matrixData: DistanceMatrixSchema,
+    samples: SampleSchema[]
+): GraphData => {
     let graph = new WeightedGraph(matrixData.matrix.length);
 
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
+    // add weighted graph edges for every column-row-pair of the distance matrix
+    // note that every pair is only iterated once
     for (let row = 0; row < matrixData.row_column_names.length - 1; row++) {
         for (let column = row + 1; column < matrixData.row_column_names.length; column++) {
             // add an edge for every distance
@@ -74,7 +78,7 @@ export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, sam
         }
     }
 
-    // calculate edges that are in the mst
+    // calculate edges that are in the mst by using kruskal's algorithm
     const kruskal = new KruskalMST(graph);
     const mst_edges = kruskal.mst;
 
@@ -92,6 +96,7 @@ export const transformMatrixToGraphData = (matrixData: DistanceMatrixSchema, sam
         } satisfies CustomNode;
     }) as CustomNode[];
 
+    // create link objects
     const links = mst_edges.map((edge) => {
         return { source: nodes[edge["v"]].id, target: nodes[edge["w"]].id, value: edge["weight"], type: "Solid" };
     }) as CustomLink[];
