@@ -62,6 +62,10 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     return uniqueSamplingTimes;
 };
 
+type SampleGroupLookup = {
+    [key: string]: { group: string; sampled_at: string };
+};
+
 export const transformDistanceMatrixToGraphData = (
     matrixData: DistanceMatrixSchema,
     samples: SampleSchema[],
@@ -71,9 +75,9 @@ export const transformDistanceMatrixToGraphData = (
 
     // Preprocess samples into a lookup table for filtering
     const sampleGroupLookup = samples.reduce((acc, sample) => {
-        acc[sample.fasta_id] = sample;
+        acc[sample.fasta_id] = { group: sample.group, sampled_at: sample.sampled_at };
         return acc;
-    }, {} as Record<string, SampleSchema>);
+    }, {} as SampleGroupLookup);
     console.log(sampleGroupLookup);
 
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
@@ -122,6 +126,7 @@ export const transformDistanceMatrixToGraphData = (
         return { source: nodes[edge["v"]].id, target: nodes[edge["w"]].id, value: edge["weight"], type: "Solid" };
     }) as CustomLink[];
 
+    // if filter is set to outbreaks, only show nodes that are part of an outbreak
     if (filter === "outbreaks") {
         // remove nodes that are not part of an outbreak
         nodes = nodes.filter((node) => node.group !== "background");
