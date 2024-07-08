@@ -5,10 +5,13 @@ import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "./ui/button";
-import { importDataFromJson } from "@/database/db";
+import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
+import { useSamplesGetAll } from "@/database/samples";
+import { getGroupToColor } from "@/services/graphs";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
+    const samples = useSamplesGetAll();
 
     if (!graphSettingsContext) {
         // Handle the case where graphSettingsContext is null
@@ -50,23 +53,44 @@ export const DashboardGraphSettings = () => {
         graphSettingsContext.updateSettings({ hideNodeLabel: checked });
     };
 
-    const getLegend = () => {
-        const nodes = graphSettingsContext.settings.graphData.nodes;
-        const uniqueGroups = nodes.filter((group, index, self) => {
-            return index === self.findIndex((t) => t.group === group.group);
+    const changeFilter = (filter: Filter) => {
+        graphSettingsContext.updateSettings({ filter: filter });
+        graphSettingsContext.updateSettings({ coloring: "normal" });
+    };
+
+    const changeColoring = (coloring: Coloring) => {
+        graphSettingsContext.updateSettings({ coloring: coloring });
+        const graphData = graphSettingsContext.settings.graphData;
+
+        if (!samples) return;
+
+        const groupToColorNormal = getGroupToColor(samples, "group");
+        const groupToColorSamplingTime = getGroupToColor(samples, "sampled_at");
+
+        const coloredNodes = graphData.nodes.map((node) => {
+            let color = node.color;
+            if (coloring === "normal") {
+                color = groupToColorNormal[node.group]; // if coloring is normal, color it by group
+            } else if (coloring === "outbreaks" && node.group === "background") {
+                color = "#D3D2D2"; // if node is background, color it grey
+            } else if (coloring === "sampled_at" && node.sampledAt) {
+                color = groupToColorSamplingTime[node.sampledAt]; // if coloring is sampled_at, color it by sampling time
+            }
+
+            return { ...node, color };
         });
 
-        // ToDo: Add color picker for each group
-        return uniqueGroups.map((node) => (
-            <div className="flex items-center gap-2" key={node.group}>
-                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                <p>{node.group}</p>
-            </div>
-        ));
+        graphSettingsContext.updateSettings({
+            graphData: {
+                nodes: coloredNodes,
+                links: graphData.links,
+            },
+        });
     };
+
     return (
         <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
-            <form className="grid w-full items-start gap-6">
+            <form className="grid w-full items-start gap-3">
                 <fieldset className="grid gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
                     <div className="grid gap-3">
@@ -171,10 +195,53 @@ export const DashboardGraphSettings = () => {
                     </div>
                 </fieldset>
                 <fieldset className="grid gap-6 rounded-lg border p-4">
-                    <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                    <div className="flex flex-col gap-3">
-                        <Label htmlFor="role">Cluster</Label>
-                        {getLegend()}
+                    <legend className="-ml-1 px-1 text-sm font-medium">Filter</legend>
+                    <div className="flex flex-row gap-3">
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.filter === "all" ? "default" : "secondary"}
+                            className="w-1/2"
+                            onClick={() => changeFilter("all")}
+                        >
+                            Alle
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.filter === "outbreaks" ? "default" : "secondary"}
+                            className="w-1/2"
+                            onClick={() => changeFilter("outbreaks")}
+                        >
+                            Outbreaks
+                        </Button>
+                    </div>
+                </fieldset>
+                <fieldset className="grid gap-6 rounded-lg border p-4">
+                    <legend className="-ml-1 px-1 text-sm font-medium">Einfärbung</legend>
+                    <div className="flex flex-row gap-3">
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.coloring === "normal" ? "default" : "secondary"}
+                            className="w-1/5"
+                            onClick={() => changeColoring("normal")}
+                        >
+                            Alle
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.coloring === "outbreaks" ? "default" : "secondary"}
+                            className="w-2/5"
+                            onClick={() => changeColoring("outbreaks")}
+                        >
+                            Outbreaks
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={graphSettingsContext.settings.coloring === "sampled_at" ? "default" : "secondary"}
+                            className="w-2/5"
+                            onClick={() => changeColoring("sampled_at")}
+                        >
+                            Sampling Time
+                        </Button>
                     </div>
                 </fieldset>
             </form>
