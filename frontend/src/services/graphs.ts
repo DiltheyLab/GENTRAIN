@@ -78,7 +78,6 @@ export const transformDistanceMatrixToGraphData = (
         acc[sample.fasta_id] = { group: sample.group, sampled_at: sample.sampled_at };
         return acc;
     }, {} as SampleGroupLookup);
-    console.log(sampleGroupLookup);
 
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
     // add weighted graph edges for every column-row-pair of the distance matrix
