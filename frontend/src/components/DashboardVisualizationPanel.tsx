@@ -3,16 +3,14 @@ import { Button } from "./ui/button";
 import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { transformMatrixToGraphData } from "@/services/graphs";
-import { useDistanceMatrixGetById } from "@/database/distance_matrix";
-import { useSamplesGetAll } from "@/database/samples";
+import { useDistanceMatrixAndSamplesById } from "@/database/distance_matrix";
 
 export const DashboardVisualizationPanel = () => {
     const graphSettingsContext = useGraphSettings();
-    const matrixData = useDistanceMatrixGetById("dm_full");
-    const samples = useSamplesGetAll();
+    const matrixDataWithMetaData = useDistanceMatrixAndSamplesById("dm_full");
 
     //get size of parent container
     const [height, setHeight] = useState(0);
@@ -20,14 +18,17 @@ export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!matrixData || !samples || !graphSettingsContext) return;
-        const graphData = transformMatrixToGraphData(matrixData, samples);
+        if (!matrixDataWithMetaData || !matrixDataWithMetaData.distanceMatrix || !graphSettingsContext) return;
+        const graphData = transformMatrixToGraphData(
+            matrixDataWithMetaData.distanceMatrix,
+            matrixDataWithMetaData.samples
+        );
 
         // Update the graph settings with the new graph data
         graphSettingsContext.updateSettings({ graphData });
-    }, [matrixData, samples]);
+    }, [matrixDataWithMetaData]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!containerRef.current) return;
         setHeight(containerRef.current.offsetHeight);
         setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
