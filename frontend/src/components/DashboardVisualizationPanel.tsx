@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { transformMatrixToGraphData } from "@/services/graphs";
 import { useDistanceMatrixAndSamplesById } from "@/database/distance_matrix";
@@ -28,9 +28,8 @@ export const DashboardVisualizationPanel = () => {
         graphSettingsContext.updateSettings({ graphData });
     }, [matrixDataWithMetaData]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!containerRef.current) return;
-        setHeight(containerRef.current.offsetHeight);
         setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
     }, [containerRef]);
 
@@ -38,7 +37,6 @@ export const DashboardVisualizationPanel = () => {
         const onResize = () => {
             if (!containerRef.current) return;
             setWidth(containerRef.current.offsetWidth - 8);
-            setHeight(containerRef.current.offsetHeight);
         };
         window.addEventListener("resize", onResize);
         return () => {
