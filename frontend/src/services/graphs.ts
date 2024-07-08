@@ -1,6 +1,6 @@
 import { DistanceMatrixSchema } from "@/database/distance_matrix";
 import { SampleSchema } from "@/database/samples";
-import { CustomLink, CustomNode } from "@/providers/GraphSettingsProvider";
+import { CustomLink, CustomNode, Filter } from "@/providers/GraphSettingsProvider";
 import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
 import { GraphData } from "@/providers/GraphSettingsProvider";
 
@@ -64,7 +64,8 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
 
 export const transformDistanceMatrixToGraphData = (
     matrixData: DistanceMatrixSchema,
-    samples: SampleSchema[]
+    samples: SampleSchema[],
+    filter: Filter
 ): GraphData => {
     let graph = new WeightedGraph(matrixData.matrix.length);
 
@@ -73,6 +74,16 @@ export const transformDistanceMatrixToGraphData = (
     // note that every pair is only iterated once
     for (let row = 0; row < matrixData.row_column_names.length - 1; row++) {
         for (let column = row + 1; column < matrixData.row_column_names.length; column++) {
+            // if filter is set to outbreaks, only show edges that are part of an outbreak
+            if (filter === "outbreaks") {
+                // check if both samples are part of an outbreak
+                const rowSample = samples.find((sample) => sample.fasta_id === matrixData.row_column_names[row]);
+                const columnSample = samples.find((sample) => sample.fasta_id === matrixData.row_column_names[column]);
+                // if one sample is not part of an outbreak, skip this edge
+                if (rowSample?.group === "background" || columnSample?.group === "background") {
+                    continue;
+                }
+            }
             // add an edge for every distance
             graph.addEdge(new Edge(row, column, matrixData.matrix[row][column]));
         }
@@ -85,9 +96,11 @@ export const transformDistanceMatrixToGraphData = (
     const groupToColor = getGroupToColor(samples, "group");
 
     // create node objects
-    const nodes = matrixData.row_column_names.map((name) => {
+    let nodes = matrixData.row_column_names.map((name) => {
         const sampleMetaData = samples.find((sample) => name === sample.fasta_id);
         const group = sampleMetaData?.group || "No Group";
+        // if filter is set to outbreaks, only show nodes that are part of an outbreak
+
         return {
             id: name,
             group: group,
@@ -100,6 +113,11 @@ export const transformDistanceMatrixToGraphData = (
     const links = mst_edges.map((edge) => {
         return { source: nodes[edge["v"]].id, target: nodes[edge["w"]].id, value: edge["weight"], type: "Solid" };
     }) as CustomLink[];
+
+    if (filter === "outbreaks") {
+        // remove nodes that are not part of an outbreak
+        nodes = nodes.filter((node) => node.group !== "background");
+    }
 
     return {
         nodes: nodes,

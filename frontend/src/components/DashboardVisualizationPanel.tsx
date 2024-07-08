@@ -22,12 +22,13 @@ export const DashboardVisualizationPanel = () => {
         if (!matrixDataWithMetaData || !matrixDataWithMetaData.distanceMatrix || !graphSettingsContext) return;
         const graphData = transformDistanceMatrixToGraphData(
             matrixDataWithMetaData.distanceMatrix,
-            matrixDataWithMetaData.samples
+            matrixDataWithMetaData.samples,
+            graphSettingsContext.settings.filter
         );
 
         // Update the graph settings with the new graph data
         graphSettingsContext.updateSettings({ graphData });
-    }, [matrixDataWithMetaData]);
+    }, [matrixDataWithMetaData, graphSettingsContext?.settings.filter]);
 
     useEffect(() => {
         if (!containerRef.current) return;
