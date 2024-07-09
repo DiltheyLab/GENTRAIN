@@ -102,7 +102,7 @@ export const transformDistanceMatrixToGraphData = (
 
     // calculate edges that are in the mst by using kruskal's algorithm
     const kruskal = new KruskalMST(graph);
-    const mst_edges = kruskal.mst;
+    const mstEdges = kruskal.mst;
 
     const groupToColor = getGroupToColor(samples, "group");
 
@@ -110,8 +110,6 @@ export const transformDistanceMatrixToGraphData = (
     let nodes = matrixData.row_column_names.map((name) => {
         const sampleMetaData = samples.find((sample) => name === sample.fasta_id);
         const group = sampleMetaData?.group || "No Group";
-        // if filter is set to outbreaks, only show nodes that are part of an outbreak
-
         return {
             id: name,
             group: sampleGroupLookup[name].group,
@@ -121,7 +119,7 @@ export const transformDistanceMatrixToGraphData = (
     }) as CustomNode[];
 
     // create link objects
-    const links = mst_edges.map((edge) => {
+    const graphLinks = mstEdges.map((edge) => {
         return { source: nodes[edge["v"]].id, target: nodes[edge["w"]].id, value: edge["weight"], type: "Solid" };
     }) as CustomLink[];
 
@@ -133,6 +131,6 @@ export const transformDistanceMatrixToGraphData = (
 
     return {
         nodes: nodes,
-        links: links,
+        links: graphLinks,
     };
 };
