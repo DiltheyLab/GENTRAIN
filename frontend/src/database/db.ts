@@ -28,7 +28,7 @@ const db = new Dexie("gentrain") as Dexie & {
 db.version(1).stores({
     samples:
         "fasta_id, case_id, ims_id, group, sequence, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, updated_at",
-    distance_matrix: "++id, name, row_column_names, matrix, updated_at", //to be removed in future versions
+    distance_matrix: "id, name, row_column_names, matrix, updated_at", //to be removed in future versions
     distance_matrices: "++id, pathogen_id, name, updated_at",
     distances: "++id, sample_fasta_id_1, sample_fasta_id_2, distance_matrix_id, value",
     cases: "id, fasta_id, *groups, pathogen_id, date, updated_at",
