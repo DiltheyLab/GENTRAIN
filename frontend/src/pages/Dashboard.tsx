@@ -1,5 +1,5 @@
-import { DashboardGraphSettings } from "@/components/DashboardGraphSettings";
-import { DashboardVisualizationPanel } from "@/components/DashboardVisualizationPanel";
+import { DashboardGraphSettings } from "@/components/dashboard/DashboardGraphSettings";
+import { DashboardVisualizationPanel } from "@/components/dashboard/DashboardVisualizationPanel";
 import { GraphSettingsProvider } from "@/providers/GraphSettingsProvider";
 import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
 import { SampleInformationTable } from "@/components/tables/SampleInformationTable";

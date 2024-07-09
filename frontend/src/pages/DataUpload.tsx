@@ -1,9 +1,43 @@
 import { Layout } from "@/components/layout/Layout";
+import { DataTable } from "@/components/tables/sequenceData/data-table";
+import { columns } from "@/components/tables/sequenceData/columns";
+import { DataUploadButton } from "@/components/ui/DataUploadButton";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useSamplesGetAll } from "@/database/samples";
 
-export const DataUpload = () => {
+export function DataUpload() {
+    const samplesData = useSamplesGetAll();
     return (
         <Layout>
-            <div>DataUpload</div>
+            <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+                <div className="space-y-8">
+                    <div className="flex items-center justify-between space-y-2">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">Eigene Sequenzdaten importieren:</h2>
+                            <p className="text-muted-foreground">
+                                Wählen Sie eine Datei im FASTA-Format, die die zu importierenden viralen Sequenzdaten
+                                enthält. Die Daten werden überprüft und in den Datensatz eingebaut. Nach dem Upload
+                                können Sie Metadaten zu den Sequenzen hinzufügen.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex flex-row items-end gap-3">
+                        <DataUploadButton />
+                        <Button>Hochladen</Button>
+                    </div>
+                </div>
+                <Separator />
+                <div className="space-y-8">
+                    <div className="flex items-center justify-between space-y-2 ">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">Sequenzdaten</h2>
+                            <p className="text-muted-foreground">Hier ist eine Liste der hochgeladenen Sequenzdaten.</p>
+                        </div>
+                    </div>
+                    {samplesData && <DataTable data={samplesData} columns={columns} />}
+                </div>
+            </div>
         </Layout>
     );
-};
+}
