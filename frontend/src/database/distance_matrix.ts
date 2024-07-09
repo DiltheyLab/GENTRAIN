@@ -3,13 +3,14 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { SampleSchema } from "./samples";
 
 export interface DistanceMatrixSchema {
-    id: string;
+    id: number;
+    name: string;
     row_column_names: Array<string>;
     matrix: Array<Array<number>>;
     updated_at: string;
 }
 
-export const useDistanceMatrixGetById = (id: string): DistanceMatrixSchema | undefined => {
+export const useDistanceMatrixGetById = (id: number): DistanceMatrixSchema | undefined => {
     return useLiveQuery(() => db.distance_matrix.get(id));
 };
 
@@ -18,7 +19,7 @@ type DistanceMatrixAndSamples = {
     samples: SampleSchema[];
 };
 
-export const useDistanceMatrixAndSamplesGetById = (id: string): DistanceMatrixAndSamples | undefined => {
+export const useDistanceMatrixAndSamplesGetById = (id: number): DistanceMatrixAndSamples | undefined => {
     return useLiveQuery(async () => {
         const distance_matrix = await db.distance_matrix.get(id);
         const samples = await db.samples.toArray();
