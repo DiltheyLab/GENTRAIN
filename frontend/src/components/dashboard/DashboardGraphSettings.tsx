@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
 import { useSamplesGetAll } from "@/database/samples";
 import { getGroupToColor } from "@/services/graphs";

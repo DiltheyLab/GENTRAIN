@@ -1,8 +1,8 @@
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { ForcedDirectedGraph2D } from "./graphs/ForcedDirectedGraph";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
-import { ForcedDirectedGraph3D } from "./graphs/ForcedDirectedGraph3D";
+import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
