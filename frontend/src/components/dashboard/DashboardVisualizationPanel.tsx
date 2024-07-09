@@ -97,10 +97,7 @@ export const DashboardVisualizationPanel = () => {
     };
 
     return (
-        <div
-            ref={containerRef}
-            className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted lg:col-span-2"
-        >
+        <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             <Badge variant="outline" className="absolute z-50 right-3 top-3">
                 {graphSettingsContext.settings.graphDimension}
             </Badge>

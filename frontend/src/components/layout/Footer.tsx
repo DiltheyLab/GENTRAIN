@@ -1,7 +1,7 @@
 export const Footer = () => {
     return (
-        <footer className="mt-5 bg-accent">
-            <div className="flex justify-between items-center p-4 max-w-[1500px] mx-auto text-sm">
+        <footer className="mt-[40px] bg-accent">
+            <div className="flex justify-between items-center px-4 max-w-[1500px] mx-auto text-sm min-h-[80px]">
                 <div>
                     <div>
                         Made with <span className="text-primary">&#9829;</span> in Düsseldorf by&nbsp;

@@ -90,10 +90,10 @@ export const DashboardGraphSettings = () => {
 
     return (
         <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
-            <form className="grid w-full items-start gap-3">
-                <fieldset className="grid gap-6 rounded-lg border p-4">
+            <form className="w-full items-start gap-3">
+                <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
-                    <div className="grid gap-3">
+                    <div className="flex flex-col gap-3">
                         <Label htmlFor="model">Model</Label>
                         <Select onValueChange={(value) => changeGraphDimension(value)}>
                             <SelectTrigger id="model" className="items-start [&_[data-description]]:hidden">
@@ -129,7 +129,7 @@ export const DashboardGraphSettings = () => {
                         </Select>
                     </div>
 
-                    <div className="grid gap-3">
+                    <div className="flex flex-col gap-3">
                         <Label htmlFor="nodeSize">Knotengröße</Label>
                         <Slider
                             id="nodeSize"
@@ -194,7 +194,7 @@ export const DashboardGraphSettings = () => {
                         </label>
                     </div>
                 </fieldset>
-                <fieldset className="grid gap-6 rounded-lg border p-4">
+                <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Filter</legend>
                     <div className="flex flex-row gap-3">
                         <Button
@@ -215,13 +215,12 @@ export const DashboardGraphSettings = () => {
                         </Button>
                     </div>
                 </fieldset>
-                <fieldset className="grid gap-6 rounded-lg border p-4">
+                <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einfärbung</legend>
-                    <div className="flex flex-row gap-3">
+                    <div className="flex gap-3 flex-wrap flex-col">
                         <Button
                             type="button"
                             variant={graphSettingsContext.settings.coloring === "normal" ? "default" : "secondary"}
-                            className="w-1/5"
                             onClick={() => changeColoring("normal")}
                         >
                             Alle
@@ -229,7 +228,6 @@ export const DashboardGraphSettings = () => {
                         <Button
                             type="button"
                             variant={graphSettingsContext.settings.coloring === "outbreaks" ? "default" : "secondary"}
-                            className="w-2/5"
                             onClick={() => changeColoring("outbreaks")}
                         >
                             Outbreaks
@@ -237,7 +235,6 @@ export const DashboardGraphSettings = () => {
                         <Button
                             type="button"
                             variant={graphSettingsContext.settings.coloring === "sampled_at" ? "default" : "secondary"}
-                            className="w-2/5"
                             onClick={() => changeColoring("sampled_at")}
                         >
                             Sampling Time
