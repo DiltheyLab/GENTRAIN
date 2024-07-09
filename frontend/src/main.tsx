@@ -4,12 +4,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard.tsx";
 import "./index.css";
 import { ErrorPage } from "./pages/ErrorPage.tsx";
+import { DataUpload } from "./pages/DataUpload.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         errorElement: <ErrorPage />,
         element: <Dashboard />,
+    },
+    {
+        path: "/data-upload",
+        errorElement: <ErrorPage />,
+        element: <DataUpload />,
     },
 ]);
 
