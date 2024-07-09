@@ -5,7 +5,7 @@ export const Layout = ({ children }: any) => {
     return (
         <div>
             <Header></Header>
-            <main className="min-h-[calc(100vh-185px)]">{children}</main>
+            <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             <Footer></Footer>
         </div>
     );

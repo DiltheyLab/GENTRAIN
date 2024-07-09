@@ -10,7 +10,7 @@ export function Dashboard() {
     return (
         <Layout>
             <GraphSettingsProvider>
-                <div className="relative max-w-[1500px] mx-auto p-4">
+                <div className="relative mx-auto p-4">
                     <div className="flex flex-col-reverse gap-4 md:flex-row">
                         <div className="w-full md:w-1/3 lg:w-1/4">
                             <DashboardGraphSettings />
