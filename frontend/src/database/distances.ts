@@ -1,7 +1,7 @@
 export interface DistancesSchema {
     id: number;
-    sample_fasta_id_1: string;
-    sample_fasta_id_2: string;
+    sample_id_1: number;
+    sample_id_2: number;
     distance_matrix_id: number;
     value: number;
     updated_at: string;

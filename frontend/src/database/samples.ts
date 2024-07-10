@@ -2,6 +2,7 @@ import { db } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
 interface SampleSchema {
+    id: number;
     fasta_id: string;
     ims_id: string;
     group: string;
