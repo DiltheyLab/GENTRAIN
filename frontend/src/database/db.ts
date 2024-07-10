@@ -56,7 +56,6 @@ db.on("populate", async () => {
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }
 
-        // auchtoll
         db.pathogens.add({
             name: pathogenName,
             pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
