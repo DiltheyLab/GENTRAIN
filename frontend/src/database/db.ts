@@ -36,7 +36,7 @@ db.version(1).stores({
     cases: "++id, case_id, sample_id, *groups, pathogen_id, date, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, updated_at",
     groups: "++id, name, updated_at",
-    pathogens: "++id, name, pathogen_type_id, updated_at",
+    pathogens: "++id, name, pathogen_type_id, activated_at, updated_at",
     pathogen_types: "++id, name, updated_at",
 });
 

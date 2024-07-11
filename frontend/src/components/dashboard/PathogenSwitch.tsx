@@ -1,17 +1,18 @@
-"use client";
-
 import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
-import { PathogenSchema, usePathogensGetAll } from "@/database/pathogens";
 import { useApp } from "@/providers/AppProvider";
+import { PathogenTypeSchema, usePathogenTypesGetAll } from "@/database/pathogen_types";
+import { getPathogensGroupedByTypes, PathogenSchema, usePathogensGetAll } from "@/database/pathogens";
+import { db } from "@/database/db";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
     const pathogens = usePathogensGetAll();
+    const pathogenTypes = usePathogenTypesGetAll();
     const appContext = useApp();
 
     return (
@@ -23,17 +24,26 @@ export function PathogenSwitch() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
-                {pathogens?.map((pathogen: PathogenSchema) => {
+                {pathogenTypes?.map((pathogenType: PathogenTypeSchema) => {
                     return (
-                        <div
-                            className="px-4 py-2 cursor-pointer hover:bg-muted"
-                            key={pathogen.name}
-                            onClick={() => {
-                                appContext?.updatePathogen(pathogen);
-                                setOpen(false);
-                            }}
-                        >
-                            {pathogen.name}
+                        <div>
+                            <div className="text-sm font-bold px-4 py-2r">{pathogenType.name}</div>
+                            {pathogens?.map((pathogen: PathogenSchema) => {
+                                if (pathogen.pathogen_type_id !== pathogenType.id) {
+                                    return;
+                                }
+                                return (
+                                    <div
+                                        className="text-sm font-medium px-4 py-2 cursor-pointer hover:bg-muted"
+                                        onClick={() => {
+                                            setOpen(false);
+                                            appContext?.updatePathogen(pathogen);
+                                        }}
+                                    >
+                                        {pathogen.name}
+                                    </div>
+                                );
+                            })}
                         </div>
                     );
                 })}
