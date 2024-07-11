@@ -1,0 +1,92 @@
+{
+  "formatName": "dexie",
+  "formatVersion": 1,
+  "data": {
+    "databaseName": "gentrain",
+    "databaseVersion": 1,
+    "tables": [
+      {
+        "name": "samples",
+        "schema": "++id,fasta_id,case_id,ims_id,group,sequence,n_count,location_sending_lab,location_sequencing_lab,lineage,variants,metadata,sampled_at,updated_at",
+        "rowCount": 0
+      },
+      {
+        "name": "distance_matrix",
+        "schema": "id,name,row_column_names,matrix,updated_at",
+        "rowCount": 0
+      },
+      {
+        "name": "distance_matrices",
+        "schema": "++id,pathogen_id,name,updated_at",
+        "rowCount": 0
+      },
+      {
+        "name": "distances",
+        "schema": "++id,sample_id_1,sample_id_2,distance_matrix_id,value",
+        "rowCount": 0
+      },
+      {
+        "name": "cases",
+        "schema": "++id,case_id,sample_id,*groups,pathogen_id,date,updated_at",
+        "rowCount": 0
+      },
+      {
+        "name": "contacts",
+        "schema": "++id,case_id_1,case_id_2,type,context,updated_at",
+        "rowCount": 0
+      },
+      { "name": "groups", "schema": "++id,name,updated_at", "rowCount": 0 },
+      {
+        "name": "pathogens",
+        "schema": "++id,name,pathogen_type_id,updated_at",
+        "rowCount": 3
+      },
+      {
+        "name": "pathogen_types",
+        "schema": "++id,name,updated_at",
+        "rowCount": 2
+      }
+    ],
+    "data": [
+      { "tableName": "samples", "inbound": true, "rows": [] },
+      { "tableName": "distance_matrix", "inbound": true, "rows": [] },
+      { "tableName": "distance_matrices", "inbound": true, "rows": [] },
+      { "tableName": "distances", "inbound": true, "rows": [] },
+      { "tableName": "cases", "inbound": true, "rows": [] },
+      { "tableName": "contacts", "inbound": true, "rows": [] },
+      { "tableName": "groups", "inbound": true, "rows": [] },
+      {
+        "tableName": "pathogens",
+        "inbound": true,
+        "rows": [
+          {
+            "name": "Covid-19",
+            "pathogen_type_id": 1,
+            "updated_at": "1720687457506",
+            "id": 1
+          },
+          {
+            "name": "Test-1",
+            "pathogen_type_id": 2,
+            "updated_at": "1720687457507",
+            "id": 2
+          },
+          {
+            "name": "Test-2",
+            "pathogen_type_id": 2,
+            "updated_at": "1720687457507",
+            "id": 3
+          }
+        ]
+      },
+      {
+        "tableName": "pathogen_types",
+        "inbound": true,
+        "rows": [
+          { "name": "virus", "updated_at": "1720687457503", "id": 1 },
+          { "name": "bacteria", "updated_at": "1720687457506", "id": 2 }
+        ]
+      }
+    ]
+  }
+}
