@@ -66,7 +66,9 @@ db.on("populate", async () => {
 
 const importDataFromJson = async (file: Blob) => {
     db.delete({ disableAutoOpen: false });
-    await importInto(db, file);
+    await importInto(db, file, {
+        filter: (table, value, key) => table !== "pathogens" && table !== "pathogen_types",
+    });
 };
 
 const exportDatabaseToJson = async () => {
