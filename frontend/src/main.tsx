@@ -5,6 +5,8 @@ import { Dashboard } from "./pages/Dashboard.tsx";
 import "./index.css";
 import { ErrorPage } from "./pages/ErrorPage.tsx";
 import { DataUpload } from "./pages/DataUpload.tsx";
+import "@/assets/css/main.css";
+import { AppProvider } from "./providers/AppProvider.tsx";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <AppProvider>
+            <RouterProvider router={router} />
+        </AppProvider>
     </React.StrictMode>
 );
