@@ -11,8 +11,13 @@ export interface DistanceMatrixSchema {
     updated_at: string;
 }
 
-export const useDistanceMatrixGetById = (id: string): DistanceMatrixSchema | undefined => {
-    return useLiveQuery(() => db.distance_matrix.get(id));
+export const getDistanceMatrixByPathogenId = (pathogen_id: number): Promise<DistanceMatrixSchema | undefined> => {
+    const distanceMatrixForActivePathogen = db.distance_matrix.where({ pathogen_id: pathogen_id }).first();
+    return distanceMatrixForActivePathogen;
+};
+
+export const useDistanceMatrixGetByPathogenId = (pathogen_id: number): DistanceMatrixSchema | undefined => {
+    return useLiveQuery(() => db.distance_matrix.where({ pathogen_id: pathogen_id }).first());
 };
 
 type DistanceMatrixAndSamples = {
@@ -25,7 +30,6 @@ export const useDistanceMatrixAndSamplesGetByPathogenId = (
 ): DistanceMatrixAndSamples | undefined => {
     return useLiveQuery(async () => {
         const distance_matrix = await db.distance_matrix.where({ pathogen_id: pathogen_id }).first();
-        console.log(pathogen_id, distance_matrix);
         const samples = await db.samples.toArray();
         return { distanceMatrix: distance_matrix, samples: samples };
     });

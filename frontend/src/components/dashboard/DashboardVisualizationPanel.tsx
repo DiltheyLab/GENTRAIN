@@ -7,11 +7,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { Label } from "@/components/ui/label";
-import { useApp } from "@/providers/AppProvider";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/database/db";
-import { DistanceMatrixSchema } from "@/database/distance_matrix";
-import { SampleSchema } from "@/database/samples";
+import { getAllSamples, SampleSchema } from "@/database/samples";
+import { useAppStore } from "@/stores/app";
+import { DistanceMatrixSchema, getDistanceMatrixByPathogenId } from "@/database/distance_matrix";
 
 export const DashboardVisualizationPanel = () => {
     const [height, setHeight] = useState(0);
@@ -21,16 +21,14 @@ export const DashboardVisualizationPanel = () => {
 
     const containerRef = useRef<HTMLDivElement>(null);
     const graphSettingsContext = useGraphSettings();
-    const appContext = useApp();
+    const activePathogen = useAppStore((state) => state.activePathogen);
 
-    // fetch distance matrix and samples by selected pathogen id
     useLiveQuery(async () => {
-        if (appContext?.pathogen) {
-            setDistanceMatrix(await db.distance_matrix.where({ pathogen_id: appContext.pathogen.id }).first());
-            setSamples(await db.samples.toArray());
+        if (activePathogen) {
+            setDistanceMatrix(await getDistanceMatrixByPathogenId(activePathogen.id));
+            setSamples((await getAllSamples()) ?? []);
         }
-        console.log(distanceMatrix, appContext?.pathogen);
-    }, [appContext?.pathogen]);
+    }, [activePathogen]);
 
     useEffect(() => {
         if (!graphSettingsContext) return;

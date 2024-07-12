@@ -21,4 +21,8 @@ export const useSamplesGetAll = (): SampleSchema[] | undefined => {
     return useLiveQuery(() => db.samples.toArray());
 };
 
+export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {
+    return db.samples.toArray();
+};
+
 export type { SampleSchema };
