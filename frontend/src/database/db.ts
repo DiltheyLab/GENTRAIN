@@ -45,30 +45,30 @@ db.on("populate", async () => {
     for (const [pathogenName, pathogenType] of Object.entries(Pathogens)) {
         // retrieve pathogen type name from enum
         const pathogenTypeName = PathogenTypeName[pathogenType];
-
         // check if the type of the pathogen (bacteria or virus) already exists in pathogen_types-table
         // otherwise persist pathogen_type
-        if (!persistedPathogenTypes[pathogenTypeName]) {
+        if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({
                 name: pathogenTypeName as unknown as PathogenTypeName,
                 updated_at: Date.now().toString(),
             });
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }
-
-        db.pathogens.add({
-            name: pathogenName,
-            pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
-            updated_at: Date.now().toString(),
-        });
+        // check if the pathogen already exists in pathogen-table
+        // otherwise persist pathogen
+        if ((await db.pathogens.where({ name: pathogenName }).count()) === 0) {
+            db.pathogens.add({
+                name: pathogenName,
+                pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
+                updated_at: Date.now().toString(),
+            });
+        }
     }
 });
 
 const importDataFromJson = async (file: Blob) => {
     db.delete({ disableAutoOpen: false });
-    await importInto(db, file, {
-        filter: (table, value, key) => table !== "pathogens" && table !== "pathogen_types",
-    });
+    await importInto(db, file);
 };
 
 const exportDatabaseToJson = async () => {

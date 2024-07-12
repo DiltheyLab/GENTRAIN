@@ -2,15 +2,13 @@ import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useApp } from "@/providers/AppProvider";
 import { PathogenTypeSchema, usePathogenTypesGetAll } from "@/database/pathogen_types";
-import { getPathogensGroupedByTypes, PathogenSchema, usePathogensGetAll } from "@/database/pathogens";
-import { db } from "@/database/db";
+import { PathogenSchema, usePathogensGetAll } from "@/database/pathogens";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState("");
     const pathogens = usePathogensGetAll();
     const pathogenTypes = usePathogenTypesGetAll();
     const appContext = useApp();

@@ -50,7 +50,7 @@ export function DistanceMatrixTable() {
                     setHoveredRow(undefined);
                 }}
             >
-                {cellValue}
+                {cellValue !== -1 ? cellValue : "-"}
             </TableCell>
         );
     };
