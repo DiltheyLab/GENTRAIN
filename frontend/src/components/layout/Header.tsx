@@ -11,11 +11,8 @@ export const Header = () => {
     const pathName = useLocation().pathname;
 
     const isSelected = (url: string) => {
-        console.log(pathName, url);
-
         return pathName === url ? "text-foreground" : "text-muted-foreground";
     };
-    console.log(pathName);
 
     return (
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[100] px-4 md:px-6">
