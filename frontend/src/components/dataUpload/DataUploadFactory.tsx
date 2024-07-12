@@ -79,7 +79,9 @@ export const FileUploadFactory = ({
             if (error instanceof GentrainException) {
                 toast({
                     title: t(`error:upload.title`),
-                    description: t(`error:upload.${error.message}`, { cases: error.data.join(", ") }),
+                    description: error.data
+                        ? t(`error:upload.${error.message}`, { data: error.data.join(", ") })
+                        : t(`error:upload.${error.message}`),
                     duration: 10000,
                     variant: "destructive",
                 });

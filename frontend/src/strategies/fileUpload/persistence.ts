@@ -6,7 +6,7 @@ export const persistenceStrategies = {
     casesStrategy: async (data: Array<Array<string>>) => {
         const pathogen = useAppStore.getState().activePathogen;
         if (!pathogen) {
-            throw new Error("InvalidPathogenSelection");
+            throw new GentrainException("InvalidPathogenSelection");
         }
         // run db operations in transaction to roll back in error cases
         await db.transaction("rw", db.cases, async () => {
@@ -26,6 +26,7 @@ export const persistenceStrategies = {
                         updated_at: new Date().toISOString(),
                     });
                 }
+                // TODO: persist categories (outbreak, location, additional categories) and corresponding groups
             }
             if (existingCases.length > 0) {
                 throw new GentrainException("CasesAlreadyExist", existingCases);
