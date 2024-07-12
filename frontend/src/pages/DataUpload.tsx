@@ -3,12 +3,11 @@ import { DataTable } from "@/components/tables/sequenceData/data-table";
 import { columns } from "@/components/tables/sequenceData/columns";
 
 import { Separator } from "@/components/ui/separator";
-import { useSamplesGetAll } from "@/database/samples";
+import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
 
 export function DataUpload() {
-    const samplesData = useSamplesGetAll(); // das besser in eine eigene Komponente auslagern, um rerendering aller childs zu vermeiden
-
+    const samplesData = useGetAllSamples();
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">

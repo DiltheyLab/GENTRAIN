@@ -6,12 +6,12 @@ import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "../ui/button";
 import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
-import { useSamplesGetAll } from "@/database/samples";
 import { getGroupToColor } from "@/services/graphs";
+import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export const DashboardGraphSettings = () => {
     const graphSettingsContext = useGraphSettings();
-    const samples = useSamplesGetAll();
+    const samples = useGetAllSamples();
 
     if (!graphSettingsContext) {
         // Handle the case where graphSettingsContext is null

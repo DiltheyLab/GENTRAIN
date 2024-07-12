@@ -1,8 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useSamplesGetAll } from "@/database/samples";
+import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export function SampleInformationTable() {
-    const sampleData = useSamplesGetAll();
+    const sampleData = useGetAllSamples();
 
     const renderHeadRow = () => {
         return (

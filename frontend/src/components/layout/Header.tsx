@@ -5,6 +5,7 @@ import { Download, FileText, Menu, Package2, Share2, Upload } from "lucide-react
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
+import { PathogenSwitch } from "@/components/dashboard/PathogenSwitch";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
@@ -104,6 +105,7 @@ export const Header = () => {
                             <Upload className="h-5 w-5" />
                         </Button>
                     </label>
+                    <PathogenSwitch />
                 </div>
             </div>
         </header>
