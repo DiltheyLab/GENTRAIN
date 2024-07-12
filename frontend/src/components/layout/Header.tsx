@@ -5,6 +5,7 @@ import { Download, FileText, Menu, Package2, Share2, Upload } from "lucide-react
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
+import { PathogenSwitch } from "@/components/dashboard/PathogenSwitch";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
@@ -15,7 +16,6 @@ export const Header = () => {
 
         return pathName === url ? "text-foreground" : "text-muted-foreground";
     };
-    console.log(pathName);
 
     return (
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[100] px-4 md:px-6">
@@ -107,6 +107,7 @@ export const Header = () => {
                             <Upload className="h-5 w-5" />
                         </Button>
                     </label>
+                    <PathogenSwitch />
                 </div>
             </div>
         </header>
