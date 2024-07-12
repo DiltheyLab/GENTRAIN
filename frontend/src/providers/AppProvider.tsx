@@ -1,3 +1,4 @@
+import { db } from "@/database/db";
 import { PathogenSchema } from "@/database/pathogens";
 import { createContext, useContext, useState } from "react";
 
@@ -21,8 +22,12 @@ export const useApp = () => useContext(AppContext);
 export const AppProvider = ({ children }: AppProviderProps) => {
     const [pathogen, setPathogen] = useState<PathogenSchema | null>(null);
 
-    const updatePathogen = (newPathogen: PathogenSchema) => {
-        setPathogen(newPathogen);
+    const updatePathogen = (seletedPathogen: PathogenSchema) => {
+        if (pathogen) {
+            db.pathogens.update(pathogen.id, { activated_at: null });
+        }
+        db.pathogens.update(seletedPathogen.id, { activated_at: new Date().toISOString() });
+        setPathogen(seletedPathogen);
     };
 
     return (
