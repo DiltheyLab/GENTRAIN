@@ -4,10 +4,10 @@ import { columns } from "@/components/tables/sequenceData/columns";
 import { DataUploadButton } from "@/components/ui/DataUploadButton";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useSamplesGetAll } from "@/database/samples";
+import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export function DataUpload() {
-    const samplesData = useSamplesGetAll();
+    const samplesData = useGetAllSamples();
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">

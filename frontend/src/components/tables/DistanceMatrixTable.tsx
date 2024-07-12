@@ -1,34 +1,13 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useDistanceMatrixGetById } from "@/database/distance_matrix";
-import { useEffect, useState } from "react";
-import { callbackify } from "util";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
+import { useAppStore } from "@/stores/app";
+import { useState } from "react";
 
 export function DistanceMatrixTable() {
-    const matrixData = useDistanceMatrixGetById("dm_full");
+    const activePathogen = useAppStore((state) => state.activePathogen);
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
-    const [maxValue, setMaxValue] = useState<number>(0);
-
-    useEffect(() => {
-        let currentMaxValue = 0;
-        matrixData?.matrix?.forEach((row) => {
-            row.forEach((cellValue) => {
-                if (cellValue > currentMaxValue) {
-                    currentMaxValue = cellValue;
-                }
-            });
-        });
-        setMaxValue(currentMaxValue);
-    }, [matrixData?.matrix]);
-
-    // maps the value interval [min, max] onto [0,100] to colorized cell background based on their relative values
-    // results need to be projected to highlight the lower value area (tan, log, exp or something)
-    const getBackgroundOpacityBasedOnValueRange = (value: number) => {
-        if (value <= 0) {
-            return 0;
-        }
-        return Math.round(100 + (-100 / maxValue) * value) / 100;
-    };
+    const matrixData = useGetDistanceMatrixByPathogenId(activePathogen?.id);
 
     const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
         return (
@@ -50,7 +29,7 @@ export function DistanceMatrixTable() {
                     setHoveredRow(undefined);
                 }}
             >
-                {cellValue}
+                {cellValue !== -1 ? cellValue : "-"}
             </TableCell>
         );
     };
