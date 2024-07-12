@@ -1,0 +1,6 @@
+{
+    "upload": {
+        "title": "Fehlerhafter Upload",
+        "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf."
+    }
+}

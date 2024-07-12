@@ -1,6 +1,8 @@
 import { formatTextInArray } from "@/services/files";
 import { Button } from "../ui/button";
 import { FileUploadButton } from "../ui/FileUploadButton";
+import { useToast } from "../ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -22,6 +24,9 @@ export const FileUploadFactory = ({
     type,
     allowMultiFile,
 }: FileUploadComponentProps) => {
+    const { toast } = useToast();
+    const { t } = useTranslation();
+
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
             const fileReaderResult = await fileReadingStrategy(e.target.files);
@@ -29,10 +34,24 @@ export const FileUploadFactory = ({
             validationStrategy(fileAsStringArray);
             persistenceStrategy();
         } catch (error) {
-            //hier muss der toast hin
+            if (error instanceof Error) {
+                toast({
+                    title: t(`error:upload.title`),
+                    description: t(`error:upload.${error.message}`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+            } else {
+                toast({
+                    title: t(`error:upload.title`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+            }
             console.log(error);
         }
     };
+
     return (
         <div className="flex flex-row items-end gap-3">
             <FileUploadButton type={type} accept=".csv" multiple={allowMultiFile} onUpload={handleFileUpload} />
