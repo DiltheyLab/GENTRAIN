@@ -15,9 +15,7 @@ export function PathogenSwitch() {
     const updateActivePathogen = useAppStore((state) => state.updateActivePathogen);
 
     useEffect(() => {
-        const activelyPersistedPathogen = pathogens?.find(function (pathogen) {
-            return pathogen.activated_at;
-        });
+        const activelyPersistedPathogen = pathogens?.find((pathogen: PathogenSchema) => pathogen.activated_at);
         if (activelyPersistedPathogen) {
             updateActivePathogen(activelyPersistedPathogen);
         }
@@ -27,7 +25,7 @@ export function PathogenSwitch() {
         return (
             <div key={pathogenType.name}>
                 <div className="text-sm font-bold px-4 py-2r">{pathogenType.name}</div>
-                {pathogens?.map((pathogen: PathogenSchema) => {
+                {pathogens?.map((pathogen) => {
                     if (pathogen.pathogen_type_id !== pathogenType.id) {
                         return;
                     }
@@ -57,9 +55,7 @@ export function PathogenSwitch() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] px-0 py-2">
-                {pathogenTypes?.map((pathogenType: PathogenTypeSchema) =>
-                    renderPathogenOptionsForPathogenType(pathogenType)
-                )}
+                {pathogenTypes?.map((pathogenType) => renderPathogenOptionsForPathogenType(pathogenType))}
             </PopoverContent>
         </Popover>
     );

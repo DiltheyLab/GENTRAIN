@@ -3,37 +3,31 @@ import { Button } from "../ui/button";
 import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
 import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { Label } from "@/components/ui/label";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "@/database/db";
-import { getAllSamples, SampleSchema } from "@/database/samples";
 import { useAppStore } from "@/stores/app";
-import { DistanceMatrixSchema, getDistanceMatrixByPathogenId } from "@/database/distance_matrix";
+import { useResizeContainer } from "@/hooks/useResizeContainer";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrix/useGetDistanceMatrixByPathogenId";
+import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export const DashboardVisualizationPanel = () => {
-    const [height, setHeight] = useState(0);
-    const [width, setWidth] = useState(0);
-    const [distanceMatrix, setDistanceMatrix] = useState<DistanceMatrixSchema | undefined>(undefined);
-    const [samples, setSamples] = useState<SampleSchema[]>([]);
-
     const containerRef = useRef<HTMLDivElement>(null);
+    const [width, height] = useResizeContainer(containerRef.current);
     const graphSettingsContext = useGraphSettings();
     const activePathogen = useAppStore((state) => state.activePathogen);
-
-    useLiveQuery(async () => {
-        if (activePathogen) {
-            setDistanceMatrix(await getDistanceMatrixByPathogenId(activePathogen.id));
-            setSamples((await getAllSamples()) ?? []);
-        }
-    }, [activePathogen]);
+    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
+    const samples = useGetAllSamples();
 
     useEffect(() => {
-        if (!graphSettingsContext) return;
+        if (!graphSettingsContext || !distanceMatrix || !samples) {
+            graphSettingsContext?.updateSettings({ graphData: { nodes: [], links: [] } });
+            return;
+        }
+
         const graphData = transformDistanceMatrixToGraphData(
-            distanceMatrix ?? null,
+            distanceMatrix,
             samples,
             graphSettingsContext.settings.filter
         );
@@ -42,45 +36,27 @@ export const DashboardVisualizationPanel = () => {
         graphSettingsContext.updateSettings({ graphData });
     }, [samples, distanceMatrix, graphSettingsContext?.settings.filter]);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
-        setHeight(containerRef.current.offsetHeight);
-        setWidth(containerRef.current.offsetWidth - 8); // substract padding from parent to fit
-    }, [containerRef]);
-
-    useEffect(() => {
-        const onResize = () => {
-            if (!containerRef.current) return;
-            setHeight(containerRef.current.offsetHeight);
-            setWidth(containerRef.current.offsetWidth - 8);
-        };
-        window.addEventListener("resize", onResize);
-        return () => {
-            window.removeEventListener("resize", onResize);
-        };
-    }, []);
-
-    if (!graphSettingsContext) {
-        return <div>Loading...</div>;
-    }
-
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
     // from beginning after every rerendering
-
     const graphDataCopy = useMemo(() => {
-        return deepCopyData(graphSettingsContext.settings.graphData);
-    }, [graphSettingsContext.settings.graphData]);
+        if (graphSettingsContext) {
+            return deepCopyData(graphSettingsContext.settings.graphData);
+        }
+    }, [graphSettingsContext?.settings.graphData]);
 
     const getGraph = () => {
-        if (graphSettingsContext.settings.graphDimension === "2D" && width && height) {
-            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width} height={height} />;
-        } else if (graphSettingsContext.settings.graphDimension === "3D" && width && height) {
-            return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width} height={height} />;
+        if (graphSettingsContext?.settings.graphDimension === "2D" && width && height) {
+            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+        } else if (graphSettingsContext?.settings.graphDimension === "3D" && width && height) {
+            return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
         }
     };
 
     const getLegend = () => {
+        if (!graphSettingsContext) {
+            return;
+        }
         const nodes = graphSettingsContext.settings.graphData.nodes;
 
         if (
@@ -111,7 +87,7 @@ export const DashboardVisualizationPanel = () => {
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             <Badge variant="outline" className="absolute z-50 right-3 top-3">
-                {graphSettingsContext.settings.graphDimension}
+                {graphSettingsContext?.settings.graphDimension}
             </Badge>
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset

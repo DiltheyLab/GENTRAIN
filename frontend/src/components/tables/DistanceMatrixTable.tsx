@@ -1,20 +1,13 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { DistanceMatrixSchema, getDistanceMatrixByPathogenId } from "@/database/distance_matrix";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrix/useGetDistanceMatrixByPathogenId";
 import { useAppStore } from "@/stores/app";
-import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
 
 export function DistanceMatrixTable() {
     const activePathogen = useAppStore((state) => state.activePathogen);
-    const [matrixData, setMatrixData] = useState<DistanceMatrixSchema | undefined>(undefined);
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
-
-    useLiveQuery(async () => {
-        if (activePathogen) {
-            setMatrixData(await getDistanceMatrixByPathogenId(activePathogen.id));
-        }
-    }, [activePathogen]);
+    const matrixData = useGetDistanceMatrixByPathogenId(activePathogen?.id);
 
     const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
         return (

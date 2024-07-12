@@ -67,7 +67,7 @@ type SampleGroupLookup = {
 };
 
 export const transformDistanceMatrixToGraphData = (
-    matrixData: DistanceMatrixSchema | null,
+    matrixData: DistanceMatrixSchema,
     samples: SampleSchema[],
     filter: Filter
 ): GraphData => {
