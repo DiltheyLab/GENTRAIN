@@ -28,7 +28,7 @@ export const FileUploadFactory = ({
     const { toast } = useToast();
     const { t } = useTranslation();
     const [fileDataIsValid, setFileDataIsValid] = useState(false);
-    const [fileData, setFileData] = useState<string[][]>(); // Step 1: New state variable for the data
+    const [fileData, setFileData] = useState<string[][]>();
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
