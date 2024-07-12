@@ -29,6 +29,7 @@ export const DashboardVisualizationPanel = () => {
             setDistanceMatrix(await db.distance_matrix.where({ pathogen_id: appContext.pathogen.id }).first());
             setSamples(await db.samples.toArray());
         }
+        console.log(distanceMatrix, appContext?.pathogen);
     }, [appContext?.pathogen]);
 
     useEffect(() => {

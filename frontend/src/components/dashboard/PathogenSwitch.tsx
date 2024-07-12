@@ -2,7 +2,7 @@ import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApp } from "@/providers/AppProvider";
 import { PathogenTypeSchema, usePathogenTypesGetAll } from "@/database/pathogen_types";
 import { PathogenSchema, usePathogensGetAll } from "@/database/pathogens";
@@ -13,11 +13,27 @@ export function PathogenSwitch() {
     const pathogenTypes = usePathogenTypesGetAll();
     const appContext = useApp();
 
+    const [pathogen, setPathogen] = useState<PathogenSchema | null>(null);
+
+    useEffect(() => {
+        pathogens?.forEach((pathogen) => {
+            if (pathogen.activated_at) {
+                setPathogen(pathogen);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        if (pathogen) {
+            appContext?.updatePathogen(pathogen);
+        }
+    }, [pathogen]);
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-                    {appContext?.pathogen ? appContext?.pathogen?.name : "Pathogen auswählen"}
+                    {pathogen ? pathogen?.name : "Pathogen auswählen"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -36,7 +52,7 @@ export function PathogenSwitch() {
                                         className="text-sm font-medium px-4 py-2 cursor-pointer hover:bg-muted"
                                         onClick={() => {
                                             setOpen(false);
-                                            appContext?.updatePathogen(pathogen);
+                                            setPathogen(pathogen);
                                         }}
                                     >
                                         {pathogen.name}
