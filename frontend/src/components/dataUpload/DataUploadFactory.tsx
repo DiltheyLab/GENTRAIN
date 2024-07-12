@@ -11,8 +11,8 @@ export type FileReaderResult = {
 };
 
 export type FileUploadComponentProps = {
-    validationStrategy: (data: string[][]) => void; //ToDo: define the type of data
-    persistenceStrategy: (data: any) => void; //ToDo: define the type of data
+    validationStrategy: (data: string[][]) => void;
+    persistenceStrategy: (data: string[][]) => Promise<boolean>;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
     allowMultiFile: boolean;
@@ -38,7 +38,6 @@ export const FileUploadFactory = ({
             const fileAsStringArray = formatTextInArray(fileReaderResult);
             // validate the data
             validationStrategy(fileAsStringArray);
-            // if the data is valid, set dataIsValid to true
             setFileDataIsValid(true);
             setFileData(fileAsStringArray);
         } catch (error) {
@@ -63,11 +62,11 @@ export const FileUploadFactory = ({
         }
     };
 
-    const handleSubmit = () => {
-        if (!fileDataIsValid) return;
+    const handleSubmit = async () => {
+        if (!fileDataIsValid || !fileData) return;
         try {
             // persist the data
-            persistenceStrategy(fileData);
+            await persistenceStrategy(fileData);
             // show a success toast notification
             toast({
                 title: "Datei wurde erfolgreich hochgeladen",
