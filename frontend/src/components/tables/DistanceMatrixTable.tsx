@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrix/useGetDistanceMatrixByPathogenId";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useAppStore } from "@/stores/app";
 import { useState } from "react";
 

@@ -9,7 +9,7 @@ import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/se
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrix/useGetDistanceMatrixByPathogenId";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export const DashboardVisualizationPanel = () => {

@@ -15,7 +15,3 @@ export interface PathogenSchema {
     activated_at: string | null;
     updated_at: string;
 }
-
-export const usePathogensGetAll = (): PathogenSchema[] | undefined => {
-    return useLiveQuery(() => db.pathogens.toArray());
-};
