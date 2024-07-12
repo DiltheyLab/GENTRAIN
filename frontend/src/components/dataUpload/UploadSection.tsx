@@ -1,7 +1,7 @@
 import { fileReadingStrategies } from "@/strategies/fileUpload/fileReading";
 import { FileUploadFactory } from "./DataUploadFactory";
 import { validationStrategies } from "@/strategies/fileUpload/validation";
-import { persistenceStrategies } from "@/strategies/fileUpload/persistance";
+import { persistenceStrategies } from "@/strategies/fileUpload/persistence";
 
 export const UploadSection = () => {
     // Wenn wir bakterielle Pathogene bearbeiten muss multiFile verwendet werden
@@ -14,8 +14,8 @@ export const UploadSection = () => {
                 type="cases"
                 allowMultiFile={false}
                 fileReadingStrategy={fileReadingStrategies.singleFile}
-                validationStrategy={validationStrategies.contactsStrategy}
-                persistenceStrategy={persistenceStrategies.contactsStrategy}
+                validationStrategy={validationStrategies.casesStrategy}
+                persistenceStrategy={persistenceStrategies.casesStrategy}
             />
             <FileUploadFactory
                 type="samples"

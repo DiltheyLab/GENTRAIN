@@ -32,7 +32,7 @@ export const FileUploadFactory = ({
             const fileReaderResult = await fileReadingStrategy(e.target.files);
             const fileAsStringArray = formatTextInArray(fileReaderResult);
             validationStrategy(fileAsStringArray);
-            persistenceStrategy();
+            persistenceStrategy(fileAsStringArray.slice(1, fileAsStringArray.length));
         } catch (error) {
             if (error instanceof Error) {
                 toast({
