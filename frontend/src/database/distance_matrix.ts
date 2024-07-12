@@ -7,6 +7,7 @@ export interface DistanceMatrixSchema {
     name: string;
     row_column_names: Array<string>;
     matrix: Array<Array<number>>;
+    pathogen_id: number;
     updated_at: string;
 }
 

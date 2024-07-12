@@ -30,7 +30,7 @@ const db = new Dexie("gentrain") as Dexie & {
 db.version(1).stores({
     samples:
         "++id, fasta_id, case_id, ims_id, group, sequence, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, updated_at",
-    distance_matrix: "id, name, row_column_names, matrix, updated_at", //to be removed in future versions
+    distance_matrix: "id, name, row_column_names, matrix, pathogen_id, updated_at", //to be removed in future versions
     distance_matrices: "++id, pathogen_id, name, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value",
     cases: "++id, case_id, sample_id, *groups, pathogen_id, date, updated_at",
@@ -67,7 +67,9 @@ db.on("populate", async () => {
 });
 
 const importDataFromJson = async (file: Blob) => {
-    db.delete({ disableAutoOpen: false });
+    db.tables.forEach((table) => {
+        table.clear();
+    });
     await importInto(db, file);
 };
 
