@@ -1,13 +1,14 @@
 import { Layout } from "@/components/layout/Layout";
 import { DataTable } from "@/components/tables/sequenceData/data-table";
 import { columns } from "@/components/tables/sequenceData/columns";
-import { DataUploadButton } from "@/components/ui/DataUploadButton";
-import { Button } from "@/components/ui/button";
+
 import { Separator } from "@/components/ui/separator";
 import { useSamplesGetAll } from "@/database/samples";
+import { UploadSection } from "@/components/dataUpload/UploadSection";
 
 export function DataUpload() {
-    const samplesData = useSamplesGetAll();
+    const samplesData = useSamplesGetAll(); // das besser in eine eigene Komponente auslagern, um rerendering aller childs zu vermeiden
+
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -22,10 +23,8 @@ export function DataUpload() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-row items-end gap-3">
-                        <DataUploadButton />
-                        <Button>Hochladen</Button>
-                    </div>
+
+                    <UploadSection />
                 </div>
                 <Separator />
                 <div className="space-y-8">
