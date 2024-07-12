@@ -1,6 +1,4 @@
-import { useLiveQuery } from "dexie-react-hooks";
 import { PathogenTypeName } from "./pathogen_types";
-import { db } from "./db";
 
 export const Pathogens = {
     "Covid-19": PathogenTypeName.virus,
