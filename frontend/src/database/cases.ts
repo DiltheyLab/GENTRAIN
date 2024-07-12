@@ -1,3 +1,5 @@
+import { db } from "./db";
+
 export interface CaseSchema {
     id: number;
     case_id: string;
@@ -7,3 +9,7 @@ export interface CaseSchema {
     groups: Array<string>;
     updated_at: string;
 }
+
+export const getAllCases = (): Promise<CaseSchema[] | undefined> => {
+    return db.cases.toArray();
+};
