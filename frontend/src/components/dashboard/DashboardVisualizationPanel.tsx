@@ -6,29 +6,42 @@ import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
-import { useDistanceMatrixAndSamplesGetById } from "@/database/distance_matrix";
 import { Label } from "@/components/ui/label";
+import { useApp } from "@/providers/AppProvider";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/database/db";
+import { DistanceMatrixSchema } from "@/database/distance_matrix";
+import { SampleSchema } from "@/database/samples";
 
 export const DashboardVisualizationPanel = () => {
-    const graphSettingsContext = useGraphSettings();
-    const matrixDataWithMetaData = useDistanceMatrixAndSamplesGetById("dm_full");
-
-    //get size of parent container
     const [height, setHeight] = useState(0);
     const [width, setWidth] = useState(0);
+    const [distanceMatrix, setDistanceMatrix] = useState<DistanceMatrixSchema | undefined>(undefined);
+    const [samples, setSamples] = useState<SampleSchema[]>([]);
+
     const containerRef = useRef<HTMLDivElement>(null);
+    const graphSettingsContext = useGraphSettings();
+    const appContext = useApp();
+
+    // fetch distance matrix and samples by selected pathogen id
+    useLiveQuery(async () => {
+        if (appContext?.pathogen) {
+            setDistanceMatrix(await db.distance_matrix.where({ pathogen_id: appContext.pathogen.id }).first());
+            setSamples(await db.samples.toArray());
+        }
+    }, [appContext?.pathogen]);
 
     useEffect(() => {
-        if (!matrixDataWithMetaData || !matrixDataWithMetaData.distanceMatrix || !graphSettingsContext) return;
+        if (!graphSettingsContext) return;
         const graphData = transformDistanceMatrixToGraphData(
-            matrixDataWithMetaData.distanceMatrix,
-            matrixDataWithMetaData.samples,
+            distanceMatrix ?? null,
+            samples,
             graphSettingsContext.settings.filter
         );
 
         // Update the graph settings with the new graph data
         graphSettingsContext.updateSettings({ graphData });
-    }, [matrixDataWithMetaData, graphSettingsContext?.settings.filter]);
+    }, [samples, distanceMatrix, graphSettingsContext?.settings.filter]);
 
     useEffect(() => {
         if (!containerRef.current) return;

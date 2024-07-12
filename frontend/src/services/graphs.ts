@@ -67,10 +67,14 @@ type SampleGroupLookup = {
 };
 
 export const transformDistanceMatrixToGraphData = (
-    matrixData: DistanceMatrixSchema,
+    matrixData: DistanceMatrixSchema | null,
     samples: SampleSchema[],
     filter: Filter
 ): GraphData => {
+    if (!matrixData || samples.length === 0) {
+        return { nodes: [], links: [] };
+    }
+
     let graph = new WeightedGraph(matrixData.matrix.length);
 
     // Preprocess samples into a lookup table for filtering

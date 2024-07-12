@@ -60,6 +60,7 @@ db.on("populate", async () => {
             db.pathogens.add({
                 name: pathogenName,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
+                activated_at: null,
                 updated_at: Date.now().toString(),
             });
         }

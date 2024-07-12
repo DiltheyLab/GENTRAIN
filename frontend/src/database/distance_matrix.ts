@@ -20,9 +20,12 @@ type DistanceMatrixAndSamples = {
     samples: SampleSchema[];
 };
 
-export const useDistanceMatrixAndSamplesGetById = (id: string): DistanceMatrixAndSamples | undefined => {
+export const useDistanceMatrixAndSamplesGetByPathogenId = (
+    pathogen_id: number
+): DistanceMatrixAndSamples | undefined => {
     return useLiveQuery(async () => {
-        const distance_matrix = await db.distance_matrix.get(id);
+        const distance_matrix = await db.distance_matrix.where({ pathogen_id: pathogen_id }).first();
+        console.log(pathogen_id, distance_matrix);
         const samples = await db.samples.toArray();
         return { distanceMatrix: distance_matrix, samples: samples };
     });

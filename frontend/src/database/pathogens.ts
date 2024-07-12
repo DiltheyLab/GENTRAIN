@@ -11,6 +11,7 @@ export const Pathogens = {
 export interface PathogenSchema {
     id: number;
     name: string;
+    activated_at: string | null;
     pathogen_type_id: number;
     updated_at: string;
 }
