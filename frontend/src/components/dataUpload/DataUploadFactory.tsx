@@ -13,7 +13,7 @@ export type FileReaderResult = {
 };
 
 export type FileUploadComponentProps = {
-    validationStrategy: (data: string[][]) => void;
+    validationStrategy: (data: string[][]) => Promise<void>;
     persistenceStrategy: (data: string[][]) => Promise<void>;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
@@ -39,7 +39,7 @@ export const FileUploadFactory = ({
             // format the file content into an array
             const fileAsStringArray = formatTextInArray(fileReaderResult);
             // validate the data
-            validationStrategy(fileAsStringArray);
+            await validationStrategy(fileAsStringArray);
             setFileDataIsValid(true);
             setFileData(fileAsStringArray);
         } catch (error) {

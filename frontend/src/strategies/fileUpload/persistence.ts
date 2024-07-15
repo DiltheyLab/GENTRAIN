@@ -4,6 +4,7 @@ import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
 import { useAppStore } from "@/stores/app";
+import { findExistingContactInDB } from "./validation";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -48,6 +49,7 @@ export const persistenceStrategies = {
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];
+        const existingContacts = [] as string[];
 
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
@@ -57,13 +59,24 @@ export const persistenceStrategies = {
                 case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date(),
             } as ContactSchema;
+
+            // check if contact already exists in the database
+            const existingContact = await findExistingContactInDB(row);
+
+            // safe the index of the row with the existing contact
+            existingContact && existingContacts.push((i + 1).toString());
 
             // Validate the data and throw an error if it is invalid
             const dto = contactRules.parse(data) as ContactSchema;
+
             bulkData.push(dto);
         }
+
+        if (existingContacts.length > 0) {
+            throw new GentrainException("ContactsAlreadyExist", existingContacts);
+        }
+
         // Bulk add the data to the database
         await db.contacts.bulkAdd(bulkData);
     },
