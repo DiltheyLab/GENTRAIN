@@ -42,12 +42,30 @@ const findExistingContactInDB = async (row: string[], rowIndex: number) => {
     return existingContact;
 };
 
+const getAlreadyExistingCases = async (data: Array<Array<string>>): Promise<Array<string>> => {
+    let existingCases = [];
+
+    for (const row of data) {
+        const caseCount = await db.cases.where({ case_id: row[0] }).count();
+        if (caseCount > 0) {
+            existingCases.push(row[0]);
+        }
+    }
+    return existingCases;
+};
+
 export const validationStrategies = {
-    casesStrategy: (caseData: string[][]) => {
+    casesStrategy: async (caseData: string[][]) => {
         const header = caseData[0];
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
         if (!isCasesHeaderValid(header, caseColumnNames)) {
             throw new GentrainException("InvalidHeaderError");
+        }
+        // receive ids of cases already persisted in the db to throw an error containing case ids
+        const existingCases = await getAlreadyExistingCases(caseData.slice(1, caseData.length));
+        console.log(existingCases);
+        if (existingCases.length > 0) {
+            throw new GentrainException("CasesAlreadyExist", existingCases);
         }
     },
     contactsStrategy: (contactData: string[][]) => {
