@@ -10,9 +10,10 @@ export const persistenceStrategies = {
 
             const data = {
                 case_id_1: row[0],
+                case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date().toISOString(),
+                updated_at: new Date(),
             } as ContactSchema;
 
             // Validate the data and throw an error if it is invalid

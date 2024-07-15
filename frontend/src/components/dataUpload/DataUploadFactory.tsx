@@ -4,6 +4,7 @@ import { FileUploadButton } from "../ui/FileUploadButton";
 import { useToast } from "../ui/use-toast";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { GentrainException } from "@/exceptions/GentrainException";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -42,10 +43,12 @@ export const FileUploadFactory = ({
             setFileData(fileAsStringArray);
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
-            if (error instanceof Error) {
+            if (error instanceof GentrainException) {
                 toast({
                     title: t(`error:upload.title`),
-                    description: t(`error:upload.${error.message}`),
+                    description: error.data
+                        ? t(`error:upload.${error.message}`, { data: error.data.join(", ") })
+                        : t(`error:upload.${error.message}`),
                     duration: 10000,
                     variant: "destructive",
                 });
@@ -79,7 +82,7 @@ export const FileUploadFactory = ({
                 duration: 10000,
                 variant: "destructive",
             });
-            console.log(error);
+            console.log(error.message);
         }
     };
 

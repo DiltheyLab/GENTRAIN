@@ -6,7 +6,7 @@ export interface ContactSchema {
     case_id_2: string;
     type: string;
     context: string;
-    updated_at: string;
+    updated_at: Date;
 }
 
 export const contactRules = z.object({
@@ -14,5 +14,5 @@ export const contactRules = z.object({
     case_id_2: z.string().min(1),
     type: z.string(),
     context: z.string(),
-    updated_at: z.string().date(),
+    updated_at: z.date(),
 });
