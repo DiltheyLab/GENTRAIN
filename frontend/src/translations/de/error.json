@@ -3,6 +3,6 @@
         "title": "Fehlerhafter Upload",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",
         "InvalidPathogenSelection": "Sie müssen zunächst das behandelte Pathogen festlegen.",
-        "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}"
+        "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}. Es wurden daher keine Änderungen vorgenommen."
     }
 }

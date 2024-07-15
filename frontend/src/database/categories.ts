@@ -1,6 +1,5 @@
-export interface GroupSchema {
+export interface CategorySchema {
     id: number;
     name: string;
-    category_id: number;
     updated_at: string;
 }

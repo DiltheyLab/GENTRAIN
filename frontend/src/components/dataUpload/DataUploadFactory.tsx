@@ -68,7 +68,7 @@ export const FileUploadFactory = ({
         if (!fileDataIsValid) return;
         try {
             // persist the data (exclude header row)
-            await persistenceStrategy(fileData?.slice(1, fileData.length));
+            await persistenceStrategy(fileData);
             // show a success toast notification
             toast({
                 title: "Datei wurde erfolgreich hochgeladen",

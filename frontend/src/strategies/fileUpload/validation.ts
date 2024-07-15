@@ -24,7 +24,6 @@ export const validationStrategies = {
     },
     contactsStrategy: (contactData: string[][]) => {
         const header = contactData[0];
-        console.log(header);
 
         //check if header is exactly the same as columnNameRequirements
         if (!isHeaderValid(header, contactColumnNames)) {
