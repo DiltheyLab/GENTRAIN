@@ -11,11 +11,12 @@ import { getToastDescription } from "@/services/errors";
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
     [filename: string]: string;
+    mimetype: string;
 };
 
 export type FileUploadComponentProps = {
-    validationStrategy: (data: string[][]) => Promise<void> | void;
-    persistenceStrategy: (data: string[][]) => Promise<void> | void;
+    validationStrategy: (data: any) => Promise<void> | void;
+    persistenceStrategy: (data: any) => Promise<void> | void;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
     allowMultiFile: boolean;
@@ -31,14 +32,16 @@ export const FileUploadFactory = ({
     const { toast } = useToast();
     const { t } = useTranslation();
     const [fileDataIsValid, setFileDataIsValid] = useState(false);
-    const [fileData, setFileData] = useState<string[][]>();
+    const [fileData, setFileData] = useState<string[][] | object[]>();
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
             // read the file(s) and convert them to text
             const fileReaderResult = await fileReadingStrategy(e.target.files);
+
             // format the file content into an array
             const fileAsStringArray = formatTextInArray(fileReaderResult);
+            console.log(fileAsStringArray);
             // validate the data
             await validationStrategy(fileAsStringArray);
             setFileDataIsValid(true);
@@ -95,7 +98,12 @@ export const FileUploadFactory = ({
 
     return (
         <div className="flex flex-row items-end gap-3">
-            <FileUploadButton type={type} accept=".csv" multiple={allowMultiFile} onUpload={handleFileUpload} />
+            <FileUploadButton
+                type={type}
+                accept={type === "samples" ? ".fasta" : ".csv"}
+                multiple={allowMultiFile}
+                onUpload={handleFileUpload}
+            />
             <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
                 Hochladen
             </Button>

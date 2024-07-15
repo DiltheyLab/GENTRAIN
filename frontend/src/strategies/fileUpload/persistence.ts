@@ -10,7 +10,7 @@ import { useAppStore } from "@/stores/app";
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
  */
 export const persistenceStrategies = {
-    casesStrategy: async (data: Array<Array<string>>) => {
+    casesStrategy: async (caseData: Array<Array<string>>) => {
         const pathogen = useAppStore.getState().activePathogen;
         if (!pathogen) {
             throw new GentrainException("InvalidPathogenSelection");
@@ -18,9 +18,9 @@ export const persistenceStrategies = {
         // run db operations in transaction to rollback in error cases
         await db.transaction("rw", db.cases, db.categories, db.groups, async () => {
             // retrieve flexible category names from header row
-            const flexibleCategoryNames = getFlexibleCategoryNames(data);
-            data = data.slice(1, data.length);
-            for (const row of data) {
+            const flexibleCategoryNames = getFlexibleCategoryNames(caseData);
+            caseData = caseData.slice(1, caseData.length);
+            for (const row of caseData) {
                 // persist case from csv columns
                 const data = {
                     case_id: row[0],
@@ -36,6 +36,15 @@ export const persistenceStrategies = {
                 db.cases.add(dto);
             }
         });
+    },
+    sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
+        for (const sample of sampleData) {
+            // found case (only import if case exists)
+            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            // get fasta data
+            // get variants
+            console.log(sampleCase);
+        }
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];

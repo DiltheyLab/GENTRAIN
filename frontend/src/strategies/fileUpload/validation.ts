@@ -68,6 +68,9 @@ export const validationStrategies = {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
     },
+    sampleStrategy: (sampleData: object[]) => {
+        console.log(sampleData);
+    },
     contactsStrategy: (contactData: string[][]) => {
         //const allCases = useLiveQuery(() => db.cases.toArray());
         const allCases = mockCases;
