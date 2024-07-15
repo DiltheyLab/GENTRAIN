@@ -3,6 +3,7 @@ import { contactRules, ContactSchema } from "@/database/contacts";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
+import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 
 /**
@@ -32,7 +33,7 @@ export const persistenceStrategies = {
                         sample_id: row[1] !== "" ? row[1] : null,
                         pathogen_id: pathogen.id,
                         groups: await persistGroupsForCategories(flexibleCategoryNames, row),
-                        date: new Date(row[2]),
+                        date: parseGermanDateFormat(row[2]),
                         updated_at: new Date(),
                     } as CaseSchema;
 
