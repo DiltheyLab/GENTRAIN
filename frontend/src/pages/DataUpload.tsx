@@ -1,13 +1,13 @@
 import { Layout } from "@/components/layout/Layout";
-import { DataTable } from "@/components/tables/sequenceData/data-table";
-import { columns } from "@/components/tables/sequenceData/columns";
+import { DataTable } from "@/components/tables/cases/data-table";
+import { columns } from "@/components/tables/cases/columns";
 
 import { Separator } from "@/components/ui/separator";
-import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
+import { useGetAllCases } from "@/hooks/database/cases/useGetAllCases";
 
 export function DataUpload() {
-    const samplesData = useGetAllSamples();
+    const casesData = useGetAllCases();
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -29,11 +29,11 @@ export function DataUpload() {
                 <div className="space-y-8">
                     <div className="flex items-center justify-between space-y-2 ">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Sequenzdaten</h2>
-                            <p className="text-muted-foreground">Hier ist eine Liste der hochgeladenen Sequenzdaten.</p>
+                            <h2 className="text-2xl font-bold tracking-tight">Falldaten</h2>
+                            <p className="text-muted-foreground">Hier ist eine Liste der hochgeladenen Falldaten.</p>
                         </div>
                     </div>
-                    {samplesData && <DataTable data={samplesData} columns={columns} />}
+                    {casesData && <DataTable data={casesData} columns={columns} />}
                 </div>
             </div>
         </Layout>

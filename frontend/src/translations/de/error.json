@@ -2,6 +2,8 @@
     "upload": {
         "title": "Fehlerhafter Upload",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",
+        "InvalidPathogenSelection": "Sie müssen zunächst das behandelte Pathogen festlegen.",
+        "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}. Es wurden daher keine Änderungen vorgenommen.",
         "EmptyCaseId1": "Es gibt mindestens ein leeres Feld in der Spalte case_id_1. Ein Kontakt benötigt immer zwei Cases.",
         "EmptyCaseId2": "Es gibt mindestens ein leeres Feld in der Spalte case_id_2. Ein Kontakt benötigt immer zwei Cases.",
         "CaseIdNotInSystem": "Es wurde eine case_id in der Datei angegeben die noch nicht im System ist. Bitte laden Sie den entsprechenden Fall zuerst hoch."

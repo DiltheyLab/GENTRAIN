@@ -13,6 +13,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         const activePathogen = get().activePathogen;
         if (activePathogen && activePathogen?.id !== pathogen.id) {
             db.pathogens.update(activePathogen.id, { activated_at: null });
+        }
+        if (activePathogen?.id !== pathogen.id) {
             db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
         }
         set({ activePathogen: pathogen });

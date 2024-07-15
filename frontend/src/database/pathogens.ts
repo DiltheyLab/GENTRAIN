@@ -11,5 +11,5 @@ export interface PathogenSchema {
     name: string;
     pathogen_type_id: number;
     activated_at: string | null;
-    updated_at: string;
+    updated_at: Date;
 }

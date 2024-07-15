@@ -6,5 +6,5 @@ export enum PathogenTypeName {
 export interface PathogenTypeSchema {
     id: number;
     name: PathogenTypeName;
-    updated_at: string;
+    updated_at: Date;
 }
