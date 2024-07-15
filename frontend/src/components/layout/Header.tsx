@@ -12,8 +12,6 @@ export const Header = () => {
     const pathName = useLocation().pathname;
 
     const isSelected = (url: string) => {
-        console.log(pathName, url);
-
         return pathName === url ? "text-foreground" : "text-muted-foreground";
     };
 

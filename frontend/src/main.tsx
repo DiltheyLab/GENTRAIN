@@ -8,13 +8,16 @@ import { DataUpload } from "./pages/DataUpload.tsx";
 import "@/assets/css/main.css";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
-import translation_de from "@/translations/de.json";
+import translation_de from "@/translations/de/common.json";
+import error_de from "@/translations/de/error.json";
+
+import { Toaster } from "./components/ui/toaster.tsx";
 
 i18next.init({
     interpolation: { escapeValue: false },
     lng: "de",
     resources: {
-        de: { translation: translation_de },
+        de: { translation: translation_de, error: error_de },
     },
 });
 
@@ -34,6 +37,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <I18nextProvider i18n={i18next}>
+            <Toaster />
             <RouterProvider router={router} />
         </I18nextProvider>
     </React.StrictMode>

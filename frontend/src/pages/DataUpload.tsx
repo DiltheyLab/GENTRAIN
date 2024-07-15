@@ -1,10 +1,10 @@
 import { Layout } from "@/components/layout/Layout";
 import { DataTable } from "@/components/tables/sequenceData/data-table";
 import { columns } from "@/components/tables/sequenceData/columns";
-import { DataUploadButton } from "@/components/ui/DataUploadButton";
-import { Button } from "@/components/ui/button";
+
 import { Separator } from "@/components/ui/separator";
 import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
+import { UploadSection } from "@/components/dataUpload/UploadSection";
 
 export function DataUpload() {
     const samplesData = useGetAllSamples();
@@ -22,10 +22,8 @@ export function DataUpload() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-row items-end gap-3">
-                        <DataUploadButton />
-                        <Button>Hochladen</Button>
-                    </div>
+
+                    <UploadSection />
                 </div>
                 <Separator />
                 <div className="space-y-8">
