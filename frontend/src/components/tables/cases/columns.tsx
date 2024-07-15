@@ -46,13 +46,13 @@ export const columns: ColumnDef<CaseSchema>[] = [
         },
     },
     {
-        accessorKey: "date",
-        accessorFn: (row) => row.date.toString(),
+        accessorKey: "registered_at",
+        accessorFn: (row) => row.registered_at.toString(),
         header: ({ column }) => <DataTableColumnHeader column={column} title="Sample Datum" />,
         cell: ({ row }) => {
             return (
                 <div className="flex space-x-2">
-                    <span className="max-w-[500px] truncate font-medium">{row.getValue("date")}</span>
+                    <span className="max-w-[500px] truncate font-medium">{row.getValue("registered_at")}</span>
                 </div>
             );
         },

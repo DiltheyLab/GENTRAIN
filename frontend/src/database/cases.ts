@@ -7,7 +7,8 @@ export interface CaseSchema {
     sample_id: string | null;
     pathogen_id: number;
     groups: Array<number>;
-    date: Date;
+    registered_at: Date;
+    created_at: Date;
     updated_at: Date;
 }
 
@@ -16,8 +17,7 @@ export const caseRules = z.object({
     sample_id: z.string().min(1).or(z.null()),
     pathogen_id: z.number(),
     groups: z.array(z.number()),
-    date: z.date(),
-    updated_at: z.date(),
+    registered_at: z.date(),
 });
 
 export const getAllCases = (): Promise<CaseSchema[] | undefined> => {

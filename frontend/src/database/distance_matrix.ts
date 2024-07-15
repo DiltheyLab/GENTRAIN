@@ -5,7 +5,8 @@ export interface DistanceMatrixSchema {
     row_column_names: Array<string>;
     matrix: Array<Array<number>>;
     pathogen_id: number;
-    updated_at: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export const getDistanceMatrixByPathogenId = (pathogen_id: number): Promise<DistanceMatrixSchema | undefined> => {

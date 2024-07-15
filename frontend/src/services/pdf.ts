@@ -53,8 +53,8 @@ const addInformationTable = async (doc: jsPDF) => {
             sample.location_sending_lab,
             sample.location_sequencing_lab,
             sample.metadata,
-            sample.sampled_at,
-            sample.updated_at,
+            sample.sampled_at.toLocaleDateString(),
+            sample.updated_at.toLocaleDateString(),
         ];
     });
     autoTable(doc, {

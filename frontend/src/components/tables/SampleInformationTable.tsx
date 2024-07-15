@@ -34,8 +34,8 @@ export function SampleInformationTable() {
                         <TableCell className="p-2 text-xs">{row.location_sending_lab}</TableCell>
                         <TableCell className="p-2 text-xs">{row.location_sequencing_lab}</TableCell>
                         <TableCell className="p-2 text-xs">{row.metadata}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.sampled_at}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.updated_at.toLocaleString()}</TableCell>
+                        <TableCell className="p-2 text-xs">{row.sampled_at.toLocaleDateString()}</TableCell>
+                        <TableCell className="p-2 text-xs">{row.updated_at.toLocaleDateString()}</TableCell>
                     </TableRow>
                 );
             });

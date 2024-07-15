@@ -27,8 +27,7 @@ export const persistenceStrategies = {
                     sample_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
                     groups: await persistGroupsForCategories(flexibleCategoryNames, row),
-                    date: parseGermanDateFormat(row[2]),
-                    updated_at: new Date(),
+                    registered_at: parseGermanDateFormat(row[2]),
                 } as CaseSchema;
 
                 // Validate the data and throw an error if it is invalid
@@ -48,7 +47,6 @@ export const persistenceStrategies = {
                 case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date(),
             } as ContactSchema;
 
             // Validate the data and throw an error if it is invalid
