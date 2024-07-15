@@ -18,19 +18,19 @@ export const persistenceStrategies = {
             // retrieve flexible category names from header row
             const flexibleCategoryNames = getFlexibleCategoryNames(data);
             data = data.slice(1, data.length);
-            for (const cell of data) {
-                const caseCount = await db.cases.where({ case_id: cell[0] }).count();
+            for (const row of data) {
+                const caseCount = await db.cases.where({ case_id: row[0] }).count();
                 if (caseCount > 0) {
                     // throw exception if the case already exists
-                    existingCases.push(cell[0]);
+                    existingCases.push(row[0]);
                 } else {
                     // persist case from csv columns
                     db.cases.add({
-                        case_id: cell[0],
-                        sample_id: cell[1],
-                        date: cell[2],
+                        case_id: row[0],
+                        sample_id: row[1],
+                        date: new Date(row[2]).toISOString(),
                         pathogen_id: pathogen.id,
-                        groups: await persistGroupsForCategories(flexibleCategoryNames, cell),
+                        groups: await persistGroupsForCategories(flexibleCategoryNames, row),
                         updated_at: new Date().toISOString(),
                     });
                 }
@@ -39,9 +39,8 @@ export const persistenceStrategies = {
                 throw new GentrainException("CasesAlreadyExist", existingCases);
             }
         });
-        return true;
     },
     contactsStrategy: (data: any) => {
-        return true;
+        return;
     },
 };

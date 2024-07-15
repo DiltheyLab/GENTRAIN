@@ -29,7 +29,7 @@ const persistCategoryIfNotExist = async (categoryName: string) => {
 
 /**
  * Create categories and grourps for a single case.
- *
+ *x
  * @param flexibleCategoryNames
  * @param caseData
  * @returns

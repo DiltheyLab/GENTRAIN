@@ -13,7 +13,7 @@ export type FileReaderResult = {
 
 export type FileUploadComponentProps = {
     validationStrategy: (data: string[][]) => void; //ToDo: define the type of data
-    persistenceStrategy: (data: any) => Promise<boolean> | boolean; //ToDo: define the type of data
+    persistenceStrategy: (data: any) => Promise<void>;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
     allowMultiFile: boolean;
@@ -44,10 +44,10 @@ export const FileUploadFactory = ({
             setFileData(fileAsStringArray);
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
-            if (error instanceof Error) {
+            if (error instanceof GentrainException) {
                 toast({
                     title: t(`error:upload.title`),
-                    description: t(`error:upload.${error.message}`),
+                    description: t(`error:upload.${error.message}`, { data: error.data.join(", ") }),
                     duration: 10000,
                     variant: "destructive",
                 });

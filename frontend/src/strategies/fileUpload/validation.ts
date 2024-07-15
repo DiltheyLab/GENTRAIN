@@ -1,4 +1,4 @@
-const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak", "Location"];
+const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
 const contactColumnNames = ["case_id_1", "case_id_2", "type", "context"];
 
 const isHeaderValid = (header: string[], columnNames: string[]) => {
