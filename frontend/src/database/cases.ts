@@ -1,14 +1,24 @@
+import { z } from "zod";
 import { db } from "./db";
 
 export interface CaseSchema {
-    id: number;
+    id?: number;
     case_id: string;
-    sample_id: string;
+    sample_id: string | null;
     pathogen_id: number;
-    date: string;
     groups: Array<number>;
-    updated_at: string;
+    date: Date;
+    updated_at: Date;
 }
+
+export const caseRules = z.object({
+    case_id: z.string().min(1),
+    sample_id: z.string().min(1).or(z.null()),
+    pathogen_id: z.number(),
+    groups: z.array(z.number()),
+    date: z.date(),
+    updated_at: z.date(),
+});
 
 export const getAllCases = (): Promise<CaseSchema[] | undefined> => {
     return db.cases.toArray();

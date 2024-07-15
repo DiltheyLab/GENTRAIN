@@ -53,7 +53,7 @@ db.on("populate", async () => {
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({
                 name: pathogenTypeName as unknown as PathogenTypeName,
-                updated_at: Date.now().toString(),
+                updated_at: new Date(),
             });
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }
@@ -64,7 +64,7 @@ db.on("populate", async () => {
                 name: pathogenName,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
                 activated_at: null,
-                updated_at: Date.now().toString(),
+                updated_at: new Date(),
             });
         }
     }

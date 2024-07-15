@@ -35,17 +35,19 @@ export const columns: ColumnDef<CaseSchema>[] = [
     },
     {
         accessorKey: "sample_id",
+        accessorFn: (row) => row.sample_id ?? null,
         header: ({ column }) => <DataTableColumnHeader column={column} title="Sample Id" />,
         cell: ({ row }) => {
             return (
                 <div className="flex space-x-2">
-                    <span className="max-w-[500px] truncate font-medium">{row.getValue("sample_id")}</span>
+                    <span className="max-w-[500px] truncate font-medium">{row.getValue("sample_id") ?? ""}</span>
                 </div>
             );
         },
     },
     {
         accessorKey: "date",
+        accessorFn: (row) => row.date.toString(),
         header: ({ column }) => <DataTableColumnHeader column={column} title="Sample Datum" />,
         cell: ({ row }) => {
             return (

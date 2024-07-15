@@ -1,3 +1,4 @@
+import { caseRules, CaseSchema } from "@/database/cases";
 import { contactRules, ContactSchema } from "@/database/contacts";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
@@ -26,14 +27,18 @@ export const persistenceStrategies = {
                     existingCases.push(row[0]);
                 } else {
                     // persist case from csv columns
-                    db.cases.add({
+                    const data = {
                         case_id: row[0],
-                        sample_id: row[1],
-                        date: new Date(row[2]).toISOString(),
+                        sample_id: row[1] !== "" ? row[1] : null,
                         pathogen_id: pathogen.id,
                         groups: await persistGroupsForCategories(flexibleCategoryNames, row),
-                        updated_at: new Date().toISOString(),
-                    });
+                        date: new Date(row[2]),
+                        updated_at: new Date(),
+                    } as CaseSchema;
+
+                    // Validate the data and throw an error if it is invalid
+                    const dto = caseRules.parse(data) as CaseSchema;
+                    db.cases.add(dto);
                 }
             }
             if (existingCases.length > 0) {
@@ -52,7 +57,7 @@ export const persistenceStrategies = {
                 case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date().toISOString(),
+                updated_at: new Date(),
             } as ContactSchema;
 
             // Validate the data and throw an error if it is invalid

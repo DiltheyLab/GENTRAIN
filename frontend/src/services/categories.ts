@@ -1,4 +1,6 @@
+import { categoryRules, CategorySchema } from "@/database/categories";
 import { db } from "@/database/db";
+import { groupRules, GroupSchema } from "@/database/groups";
 
 /**
  * Returns names of flexible categories of a case from csv columns.
@@ -13,6 +15,30 @@ export const getFlexibleCategoryNames = (data: Array<Array<string>>) => {
     return [flexibleCategoryName1, flexibleCategoryName2, flexibleCategoryName3];
 };
 
+const createGroup = async (name: string, categoryId: number) => {
+    const data = {
+        name: name,
+        category_id: categoryId,
+        updated_at: new Date(),
+    } as GroupSchema;
+
+    // Validate the data and throw an error if it is invalid
+    const dto = groupRules.parse(data) as GroupSchema;
+    const groupId = await db.groups.add(dto);
+    return groupId;
+};
+
+const createCategory = async (categoryName: string) => {
+    const data = {
+        name: categoryName,
+        updated_at: new Date(),
+    } as CategorySchema;
+    // Validate the data and throw an error if it is invalid
+    const dto = categoryRules.parse(data) as CategorySchema;
+    const categoryId = await db.categories.add(dto);
+    return categoryId;
+};
+
 /**
  * Persists a category in the database if it does not exist. Returns the corresponding id.
  *
@@ -21,9 +47,7 @@ export const getFlexibleCategoryNames = (data: Array<Array<string>>) => {
  */
 const persistCategoryIfNotExist = async (categoryName: string) => {
     const existingCategoryForName = await db.categories.where({ name: categoryName }).first();
-    const categoryId = existingCategoryForName
-        ? existingCategoryForName.id
-        : await db.categories.add({ name: categoryName, updated_at: new Date().toISOString() });
+    const categoryId = existingCategoryForName ? existingCategoryForName.id : await createCategory(categoryName);
     return categoryId;
 };
 
@@ -47,12 +71,7 @@ export const persistGroupsForCategories = async (flexibleCategoryNames: Array<st
         }
         const categoryId = await persistCategoryIfNotExist(category.name);
         for (const group of category.groups) {
-            const groupId = await db.groups.add({
-                name: group,
-                category_id: categoryId,
-                updated_at: new Date().toISOString(),
-            });
-            groups.push(groupId);
+            groups.push(await createGroup(group, categoryId));
         }
     }
     return groups;
