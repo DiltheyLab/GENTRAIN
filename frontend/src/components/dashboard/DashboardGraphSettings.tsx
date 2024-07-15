@@ -2,65 +2,58 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
-import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "../ui/button";
-import type { Coloring, Filter } from "@/providers/GraphSettingsProvider";
 import { getGroupToColor } from "@/services/graphs";
 import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
+import { useGraphStore, type Coloring, type Filter } from "@/stores/graph";
 
 export const DashboardGraphSettings = () => {
-    const graphSettingsContext = useGraphSettings();
+    const graphStore = useGraphStore();
     const samples = useGetAllSamples();
 
-    if (!graphSettingsContext) {
-        // Handle the case where graphSettingsContext is null
-        // This could be rendering a fallback UI or throwing an error
-        return <div>Loading...</div>; // Example fallback UI
-    }
-
     const changeNodeSize = (value: number) => {
-        graphSettingsContext.updateSettings({
+        graphStore.updateSettings({
             nodeSize: value,
         });
     };
 
     const changeLinkWidth = (value: number) => {
-        graphSettingsContext.updateSettings({
+        graphStore.updateSettings({
             linkWidth: value,
         });
     };
 
     const changeCharge = (value: number) => {
-        graphSettingsContext.updateSettings({ charge: value });
+        graphStore.updateSettings({ charge: value });
     };
 
     const changeLinkDistance = (value: number) => {
-        graphSettingsContext.updateSettings({ linkDistance: value });
+        graphStore.updateSettings({ linkDistance: value });
     };
 
     const changeGraphDimension = (selectValue: string) => {
-        graphSettingsContext.updateSettings({
+        graphStore.updateSettings({
             graphDimension: selectValue as "2D" | "3D",
         });
     };
 
     const changeZoomToFit = (checked: boolean) => {
-        graphSettingsContext.updateSettings({ zoomToFit: checked });
+        graphStore.updateSettings({ zoomToFit: checked });
     };
 
     const changeNodeStyle = (checked: boolean) => {
-        graphSettingsContext.updateSettings({ hideNodeLabel: checked });
+        graphStore.updateSettings({ hideNodeLabel: checked });
     };
 
     const changeFilter = (filter: Filter) => {
-        graphSettingsContext.updateSettings({ filter: filter });
-        graphSettingsContext.updateSettings({ coloring: "normal" });
+        graphStore.updateSettings({ filter: filter });
+        graphStore.updateSettings({ coloring: "normal" });
     };
 
     const changeColoring = (coloring: Coloring) => {
-        graphSettingsContext.updateSettings({ coloring: coloring });
-        const graphData = graphSettingsContext.settings.graphData;
+        graphStore.updateSettings({ coloring: coloring });
+        const graphData = graphStore.data;
 
         if (!samples) return;
 
@@ -80,11 +73,9 @@ export const DashboardGraphSettings = () => {
             return { ...node, color };
         });
 
-        graphSettingsContext.updateSettings({
-            graphData: {
-                nodes: coloredNodes,
-                links: graphData.links,
-            },
+        graphStore.updateData({
+            nodes: coloredNodes,
+            links: graphData.links,
         });
     };
 
@@ -99,7 +90,7 @@ export const DashboardGraphSettings = () => {
                             <SelectTrigger id="model" className="items-start [&_[data-description]]:hidden">
                                 <SelectValue
                                     placeholder="Wähle ein Model aus"
-                                    defaultValue={graphSettingsContext.settings.graphDimension}
+                                    defaultValue={graphStore.settings.graphDimension}
                                 />
                             </SelectTrigger>
                             <SelectContent>
@@ -151,7 +142,7 @@ export const DashboardGraphSettings = () => {
                         <Label htmlFor="forceLinkDistance">Kantenabstand</Label>
                         <Slider
                             id="forceLinkDistance"
-                            defaultValue={[graphSettingsContext.settings.linkDistance]}
+                            defaultValue={[graphStore.settings.linkDistance]}
                             max={100}
                             min={10}
                             step={1}
@@ -160,7 +151,7 @@ export const DashboardGraphSettings = () => {
                         <Label htmlFor="forceCharge">Anziehungskraft</Label>
                         <Slider
                             id="forceCharge"
-                            defaultValue={[graphSettingsContext.settings.charge]}
+                            defaultValue={[graphStore.settings.charge]}
                             max={0}
                             min={-100}
                             step={1}
@@ -170,7 +161,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="nodeDescription"
-                            checked={graphSettingsContext.settings.hideNodeLabel}
+                            checked={graphStore.settings.hideNodeLabel}
                             onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
                         />
                         <label
@@ -183,7 +174,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="zoomToFit"
-                            checked={graphSettingsContext.settings.zoomToFit}
+                            checked={graphStore.settings.zoomToFit}
                             onCheckedChange={(value) => changeZoomToFit(Boolean(value))}
                         />
                         <label
@@ -199,7 +190,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex flex-row gap-3">
                         <Button
                             type="button"
-                            variant={graphSettingsContext.settings.filter === "all" ? "default" : "secondary"}
+                            variant={graphStore.settings.filter === "all" ? "default" : "secondary"}
                             className="w-1/2"
                             onClick={() => changeFilter("all")}
                         >
@@ -207,7 +198,7 @@ export const DashboardGraphSettings = () => {
                         </Button>
                         <Button
                             type="button"
-                            variant={graphSettingsContext.settings.filter === "outbreaks" ? "default" : "secondary"}
+                            variant={graphStore.settings.filter === "outbreaks" ? "default" : "secondary"}
                             className="w-1/2"
                             onClick={() => changeFilter("outbreaks")}
                         >
@@ -220,21 +211,21 @@ export const DashboardGraphSettings = () => {
                     <div className="flex gap-3 flex-wrap flex-col">
                         <Button
                             type="button"
-                            variant={graphSettingsContext.settings.coloring === "normal" ? "default" : "secondary"}
+                            variant={graphStore.settings.coloring === "normal" ? "default" : "secondary"}
                             onClick={() => changeColoring("normal")}
                         >
                             Alle
                         </Button>
                         <Button
                             type="button"
-                            variant={graphSettingsContext.settings.coloring === "outbreaks" ? "default" : "secondary"}
+                            variant={graphStore.settings.coloring === "outbreaks" ? "default" : "secondary"}
                             onClick={() => changeColoring("outbreaks")}
                         >
                             Outbreaks
                         </Button>
                         <Button
                             type="button"
-                            variant={graphSettingsContext.settings.coloring === "sampled_at" ? "default" : "secondary"}
+                            variant={graphStore.settings.coloring === "sampled_at" ? "default" : "secondary"}
                             onClick={() => changeColoring("sampled_at")}
                         >
                             Sampling Time

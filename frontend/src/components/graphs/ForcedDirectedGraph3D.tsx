@@ -1,7 +1,6 @@
-import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { useEffect, useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
-import type { GraphData } from "@/providers/GraphSettingsProvider";
+import { type GraphData, useGraphStore } from "@/stores/graph";
 
 type ForcedDirectedGraph3DProps = {
     data: GraphData;
@@ -10,7 +9,7 @@ type ForcedDirectedGraph3DProps = {
 };
 
 export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGraph3DProps) => {
-    const graphSettingsContext = useGraphSettings();
+    const graphSettingsContext = useGraphStore();
 
     // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();

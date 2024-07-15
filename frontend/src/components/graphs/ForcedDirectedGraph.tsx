@@ -1,7 +1,6 @@
-import { useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import type { GraphData } from "@/providers/GraphSettingsProvider";
+import { type GraphData, useGraphStore } from "@/stores/graph";
 
 type ForcedDirectedGraph2DProps = {
     data: GraphData;
@@ -10,7 +9,7 @@ type ForcedDirectedGraph2DProps = {
 };
 
 export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGraph2DProps) => {
-    const graphSettingsContext = useGraphSettings();
+    const graphSettingsContext = useGraphStore();
     const forceRef = useRef<ForceGraphMethods>();
 
     // custom d3 force setup

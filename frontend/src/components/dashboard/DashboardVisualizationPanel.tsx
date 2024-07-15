@@ -1,7 +1,6 @@
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
-import { GraphData, useGraphSettings } from "@/providers/GraphSettingsProvider";
 import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
@@ -11,58 +10,47 @@ import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
+import { type GraphData, useGraphStore } from "@/stores/graph";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
-    const graphSettingsContext = useGraphSettings();
+    const graphStore = useGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
     const samples = useGetAllSamples();
 
     useEffect(() => {
-        if (!graphSettingsContext || !distanceMatrix || !samples) {
-            graphSettingsContext?.updateSettings({ graphData: { nodes: [], links: [] } });
+        if (!distanceMatrix || !samples) {
+            graphStore.updateData({ nodes: [], links: [] });
             return;
         }
 
-        const graphData = transformDistanceMatrixToGraphData(
-            distanceMatrix,
-            samples,
-            graphSettingsContext.settings.filter
-        );
+        const graphData = transformDistanceMatrixToGraphData(distanceMatrix, samples, graphStore.settings.filter);
 
         // Update the graph settings with the new graph data
-        graphSettingsContext.updateSettings({ graphData });
-    }, [samples, distanceMatrix, graphSettingsContext?.settings.filter]);
+        graphStore.updateData(graphData);
+    }, [samples, distanceMatrix, graphStore.settings.filter]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
     // from beginning after every rerendering
     const graphDataCopy = useMemo(() => {
-        if (graphSettingsContext) {
-            return deepCopyData(graphSettingsContext.settings.graphData);
-        }
-    }, [graphSettingsContext?.settings.graphData]);
+        return deepCopyData(graphStore.data);
+    }, [graphStore.data]);
 
     const getGraph = () => {
-        if (graphSettingsContext?.settings.graphDimension === "2D" && width && height) {
+        if (graphStore.settings.graphDimension === "2D" && width && height) {
             return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
-        } else if (graphSettingsContext?.settings.graphDimension === "3D" && width && height) {
+        } else if (graphStore.settings.graphDimension === "3D" && width && height) {
             return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
         }
     };
 
     const getLegend = () => {
-        if (!graphSettingsContext) {
-            return;
-        }
-        const nodes = graphSettingsContext.settings.graphData.nodes;
+        const nodes = graphStore.data.nodes;
 
-        if (
-            graphSettingsContext.settings.coloring === "normal" ||
-            graphSettingsContext.settings.coloring === "outbreaks"
-        ) {
+        if (graphStore.settings.coloring === "normal" || graphStore.settings.coloring === "outbreaks") {
             const uniqueGroups = nodes.filter((group, index, self) => {
                 return index === self.findIndex((t) => t.group === group.group);
             });
@@ -72,7 +60,7 @@ export const DashboardVisualizationPanel = () => {
                     <p>{node.group}</p>
                 </div>
             ));
-        } else if (graphSettingsContext.settings.coloring === "sampled_at") {
+        } else if (graphStore.settings.coloring === "sampled_at") {
             const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
 
             return uniqueSamplingTimes.map((node) => (
@@ -87,7 +75,7 @@ export const DashboardVisualizationPanel = () => {
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             <Badge variant="outline" className="absolute z-50 right-3 top-3">
-                {graphSettingsContext?.settings.graphDimension}
+                {graphStore.settings.graphDimension}
             </Badge>
             <Button variant="outline" className="absolute z-50 bottom-3 right-3">
                 Reset

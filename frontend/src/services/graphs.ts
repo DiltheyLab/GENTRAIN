@@ -1,8 +1,7 @@
 import { DistanceMatrixSchema } from "@/database/distance_matrix";
 import { SampleSchema } from "@/database/samples";
-import { CustomLink, CustomNode, Filter } from "@/providers/GraphSettingsProvider";
+import { CustomLink, CustomNode, Filter, GraphData } from "@/stores/graph";
 import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
-import { GraphData } from "@/providers/GraphSettingsProvider";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
