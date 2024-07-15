@@ -1,3 +1,5 @@
+import { mockCases } from "@/data/mockCases";
+
 const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
 const contactColumnNames = ["case_id_1", "case_id_2", "type", "context"];
 
@@ -23,13 +25,29 @@ export const validationStrategies = {
         }
     },
     contactsStrategy: (contactData: string[][]) => {
+        //const allCases = useLiveQuery(() => db.cases.toArray());
+        const allCases = mockCases;
         const header = contactData[0];
 
         //check if header is exactly the same as columnNameRequirements
         if (!isHeaderValid(header, contactColumnNames)) {
             throw new Error("InvalidHeaderError");
         }
-        //gibt es zu jeder case_id_1 auch eine case_id_2 und umgekehrt
-        //und sind diese auch schon im system?
+
+        for (let i = 1; i < contactData.length; i++) {
+            const row = contactData[i];
+            //check if case_id_1 and case_id_2 are not empty
+            if (row[0] === "") {
+                throw new Error("EmptyCaseId1");
+            } else if (row[1] === "") {
+                throw new Error("EmptyCaseId2");
+            }
+            //check if case_id_1 and case_id_2 are in the system
+            const caseId1IsInAllCases = allCases.some((c) => c["case_id"] === row[0]);
+            const caseId2IsInAllCases = allCases.some((c) => c.case_id === row[1]);
+            if (!caseId1IsInAllCases || !caseId2IsInAllCases) {
+                throw new Error("CaseIdNotInSystem");
+            }
+        }
     },
 };

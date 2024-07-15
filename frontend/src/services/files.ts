@@ -44,7 +44,9 @@ export const formatTextInArray = (fileReaderResult: FileReaderResult | FileReade
         // line breaks (in windows every line has a \r in the end after splitting by \n)
         return lines.map((line) => line.split(";").map((cell) => cell.trim()));
     } else {
-        const lines = Object.values(fileReaderResult)[0].split("\n");
+        let lines = Object.values(fileReaderResult)[0].split("\n");
+        // filter empty lines to prevent empty cells
+        lines = lines.filter((line) => line !== "");
         // Split lines into fields and remove leading/trailing whitespaces or
         // line breaks (in windows every line has a \r in the end after splitting by \n)
         return lines.map((line) => line.split(";").map((cell) => cell.trim()));
