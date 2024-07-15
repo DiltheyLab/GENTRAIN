@@ -8,8 +8,8 @@ export interface CaseSchema {
     pathogen_id: number;
     groups: Array<number>;
     registered_at: Date;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export const caseRules = z.object({

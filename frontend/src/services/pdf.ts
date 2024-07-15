@@ -54,7 +54,7 @@ const addInformationTable = async (doc: jsPDF) => {
             sample.location_sequencing_lab,
             sample.metadata,
             sample.sampled_at.toLocaleDateString(),
-            sample.updated_at.toLocaleDateString(),
+            sample.updated_at?.toLocaleDateString() ?? "",
         ];
     });
     autoTable(doc, {

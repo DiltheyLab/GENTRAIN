@@ -13,8 +13,8 @@ interface SampleSchema {
     variants: object;
     metadata: string;
     sampled_at: Date;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {
