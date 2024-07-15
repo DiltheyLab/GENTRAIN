@@ -6,6 +6,7 @@
         "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}. Es wurden daher keine Änderungen vorgenommen.",
         "EmptyCaseId1": "Es gibt mindestens ein leeres Feld in der Spalte case_id_1. Ein Kontakt benötigt immer zwei Cases.",
         "EmptyCaseId2": "Es gibt mindestens ein leeres Feld in der Spalte case_id_2. Ein Kontakt benötigt immer zwei Cases.",
-        "CaseIdNotInSystem": "Es wurde eine case_id in der Datei angegeben die noch nicht im System ist. Bitte laden Sie den entsprechenden Fall zuerst hoch."
+        "CaseDoesNotExist": "Für folgende Fälle existiert kein Eintrag in der Datenbank: {{data}}. Bitte laden Sie den entsprechenden Fall (Case) erst hoch.",
+        "ContactAlreadyExist": "Der Kontakt in der/den Zeile/n {{data}} existiert bereits in der Datenbank. Bitte laden Sie den Kontakt nicht erneut hoch."
     }
 }
