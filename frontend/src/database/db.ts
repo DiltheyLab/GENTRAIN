@@ -10,6 +10,7 @@ import { ContactSchema } from "./contacts";
 import { GroupSchema } from "./groups";
 import { Pathogens, PathogenSchema } from "./pathogens";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
+import { CategorySchema } from "./categories";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -21,6 +22,7 @@ const db = new Dexie("gentrain") as Dexie & {
     groups: EntityTable<GroupSchema, "id">;
     pathogens: EntityTable<PathogenSchema, "id">;
     pathogen_types: EntityTable<PathogenTypeSchema, "id">;
+    categories: EntityTable<CategorySchema, "id">;
 };
 
 // define the database tables (https://dexie.org/)
@@ -35,9 +37,10 @@ db.version(1).stores({
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value",
     cases: "++id, case_id, sample_id, *groups, pathogen_id, date, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, updated_at",
-    groups: "++id, name, updated_at",
+    groups: "++id, name, category_id, updated_at",
     pathogens: "++id, name, pathogen_type_id, activated_at, updated_at",
     pathogen_types: "++id, name, updated_at",
+    categories: "++id, name, updated_at",
 });
 
 db.on("populate", async () => {
@@ -50,7 +53,7 @@ db.on("populate", async () => {
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({
                 name: pathogenTypeName as unknown as PathogenTypeName,
-                updated_at: Date.now().toString(),
+                updated_at: new Date(),
             });
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }
@@ -61,7 +64,7 @@ db.on("populate", async () => {
                 name: pathogenName,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
                 activated_at: null,
-                updated_at: Date.now().toString(),
+                updated_at: new Date(),
             });
         }
     }

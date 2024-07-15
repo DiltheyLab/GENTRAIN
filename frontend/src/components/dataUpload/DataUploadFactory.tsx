@@ -5,6 +5,7 @@ import { useToast } from "../ui/use-toast";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { GentrainException } from "@/exceptions/GentrainException";
+import { ZodError } from "zod";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -77,12 +78,31 @@ export const FileUploadFactory = ({
                 variant: "default",
             });
         } catch (error) {
-            toast({
-                title: t(`error:upload.title`),
-                duration: 10000,
-                variant: "destructive",
-            });
-            console.log(error.message);
+            if (error instanceof GentrainException) {
+                toast({
+                    title: t(`error:upload.title`),
+                    description: error.data
+                        ? t(`error:upload.${error.message}`, { data: error.data.join(", ") })
+                        : t(`error:upload.${error.message}`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+                console.log(error, error.message);
+            } else if (error instanceof ZodError) {
+                toast({
+                    title: t(`error:upload.title`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+                console.log(error, error.message);
+            } else {
+                toast({
+                    title: t(`error:upload.title`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+                console.log(error);
+            }
         }
     };
 
