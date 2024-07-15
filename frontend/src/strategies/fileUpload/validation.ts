@@ -42,7 +42,7 @@ const findExistingContactInDB = async (row: string[], rowIndex: number) => {
     return existingContact;
 };
 
-const getAlreadyExistingCases = async (data: Array<Array<string>>): Promise<Array<string>> => {
+const getAlreadyExistingCases = async (data: Array<Array<string>>) => {
     let existingCases = [];
 
     for (const row of data) {
