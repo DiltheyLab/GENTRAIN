@@ -20,6 +20,6 @@ export const caseRules = z.object({
     updated_at: z.date(),
 });
 
-export const getAllCases = (): Promise<CaseSchema[] | undefined> => {
+export const getAllCases = () => {
     return db.cases.toArray();
 };
