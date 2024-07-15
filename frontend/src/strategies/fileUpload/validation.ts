@@ -47,7 +47,7 @@ export const validationStrategies = {
         const header = caseData[0];
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
         if (!isCasesHeaderValid(header, caseColumnNames)) {
-            throw new Error("InvalidHeaderError");
+            throw new GentrainException("InvalidHeaderError");
         }
     },
     contactsStrategy: (contactData: string[][]) => {
