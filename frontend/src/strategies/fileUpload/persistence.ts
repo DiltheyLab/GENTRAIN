@@ -12,7 +12,7 @@ export const persistenceStrategies = {
         if (!pathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        // run db operations in transaction to roll back in error cases
+        // run db operations in transaction to rollback in error cases
         await db.transaction("rw", db.cases, db.categories, db.groups, async () => {
             let existingCases = [];
             // retrieve flexible category names from header row
@@ -20,10 +20,11 @@ export const persistenceStrategies = {
             data = data.slice(1, data.length);
             for (const cell of data) {
                 const caseCount = await db.cases.where({ case_id: cell[0] }).count();
-                // throw exception if the case already exists
                 if (caseCount > 0) {
+                    // throw exception if the case already exists
                     existingCases.push(cell[0]);
                 } else {
+                    // persist case from csv columns
                     db.cases.add({
                         case_id: cell[0],
                         sample_id: cell[1],
