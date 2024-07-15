@@ -64,7 +64,7 @@ export const persistenceStrategies = {
         }
 
         if (existingContacts.length > 0) {
-            throw new GentrainException("ContactsAlreadyExist", existingContacts);
+            throw new GentrainException("ContactAlreadyExist", existingContacts);
         }
 
         // Bulk add the data to the database
