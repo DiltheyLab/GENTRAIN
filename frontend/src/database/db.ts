@@ -31,16 +31,16 @@ const db = new Dexie("gentrain") as Dexie & {
 // *column_name = MultiEntry
 db.version(1).stores({
     samples:
-        "++id, fasta_id, case_id, ims_id, group, sequence, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, updated_at",
-    distance_matrix: "id, name, row_column_names, matrix, pathogen_id, updated_at", //to be removed in future versions
-    distance_matrices: "++id, pathogen_id, name, updated_at",
-    distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value",
-    cases: "++id, case_id, sample_id, *groups, pathogen_id, date, updated_at",
-    contacts: "++id, case_id_1, case_id_2, type, context, updated_at",
+        "++id, fasta_id, case_id, ims_id, group, sequence, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, created_at, updated_at",
+    distance_matrix: "id, name, row_column_names, matrix, pathogen_id, created_at, updated_at", //to be removed in future versions
+    distance_matrices: "++id, pathogen_id, name, created_at, updated_at",
+    distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
+    cases: "++id, case_id, sample_id, *groups, pathogen_id, registered_at, created_at, updated_at",
+    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
     groups: "++id, name, category_id, updated_at",
-    pathogens: "++id, name, pathogen_type_id, activated_at, updated_at",
-    pathogen_types: "++id, name, updated_at",
-    categories: "++id, name, updated_at",
+    pathogens: "++id, name, pathogen_type_id, activated_at, created_at, updated_at",
+    pathogen_types: "++id, name, created_at, updated_at",
+    categories: "++id, name, created_at, updated_at",
 });
 
 db.on("populate", async () => {
@@ -53,7 +53,6 @@ db.on("populate", async () => {
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({
                 name: pathogenTypeName as unknown as PathogenTypeName,
-                updated_at: new Date(),
             });
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }
@@ -64,10 +63,20 @@ db.on("populate", async () => {
                 name: pathogenName,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
                 activated_at: null,
-                updated_at: new Date(),
             });
         }
     }
+});
+
+db.tables.forEach(function (table) {
+    table.hook("creating", function (primKey, obj, transaction) {
+        obj.created_at = new Date();
+        obj.updated_at = new Date();
+    });
+
+    table.hook("updating", function (modifications, primKey, obj, transaction) {
+        obj.updated_at = new Date();
+    });
 });
 
 const importDataFromJson = async (file: Blob) => {

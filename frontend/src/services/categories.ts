@@ -19,7 +19,6 @@ const createGroup = async (name: string, categoryId: number) => {
     const data = {
         name: name,
         category_id: categoryId,
-        updated_at: new Date(),
     } as GroupSchema;
 
     // Validate the data and throw an error if it is invalid
@@ -31,7 +30,6 @@ const createGroup = async (name: string, categoryId: number) => {
 const createCategory = async (categoryName: string) => {
     const data = {
         name: categoryName,
-        updated_at: new Date(),
     } as CategorySchema;
     // Validate the data and throw an error if it is invalid
     const dto = categoryRules.parse(data) as CategorySchema;

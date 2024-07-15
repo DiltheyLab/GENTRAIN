@@ -6,13 +6,12 @@ export interface ContactSchema {
     case_id_2: string;
     type: string;
     context: string;
-    updated_at: Date;
+    created?: Date;
+    updated_at?: Date;
 }
 
 export const contactRules = z.object({
     case_id_1: z.string().min(1),
     case_id_2: z.string().min(1),
     type: z.string(),
-    context: z.string(),
-    updated_at: z.date(),
 });

@@ -2,5 +2,6 @@ export interface DistanceMatricesSchema {
     id: number;
     pathogen_id: number;
     name: string;
-    updated_at: string;
+    created_at?: Date;
+    updated_at?: Date;
 }

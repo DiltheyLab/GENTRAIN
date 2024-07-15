@@ -4,5 +4,6 @@ export interface DistancesSchema {
     sample_id_2: number;
     distance_matrix_id: number;
     value: number;
-    updated_at: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
