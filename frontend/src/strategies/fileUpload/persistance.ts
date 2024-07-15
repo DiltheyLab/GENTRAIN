@@ -1,36 +1,26 @@
-import { ContactSchema } from "@/database/contacts";
+import { contactRules, ContactSchema } from "@/database/contacts";
 import { db } from "@/database/db";
-import { z } from "zod";
 
 export const persistenceStrategies = {
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];
-        const contactSchema = z.object({
-            case_id_1: z.string().min(1),
-            case_id_2: z.string().min(1),
-            type: z.string(),
-            context: z.string(),
-            updated_at: z.string(),
-        });
+
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
 
-            const dto = {
+            const data = {
                 case_id_1: row[0],
-                case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date().toString(),
+                updated_at: new Date().toISOString(),
             } as ContactSchema;
 
             // Validate the data and throw an error if it is invalid
-            contactSchema.parse(dto);
+            const dto = contactRules.parse(data) as ContactSchema;
             bulkData.push(dto);
         }
         // Bulk add the data to the database
-        const key = await db.contacts.bulkAdd(bulkData);
-
-        return true;
+        await db.contacts.bulkAdd(bulkData);
     },
     strategy2: (data: any) => {},
 };

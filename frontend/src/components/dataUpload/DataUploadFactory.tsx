@@ -12,7 +12,7 @@ export type FileReaderResult = {
 
 export type FileUploadComponentProps = {
     validationStrategy: (data: string[][]) => void;
-    persistenceStrategy: (data: string[][]) => Promise<boolean>;
+    persistenceStrategy: (data: string[][]) => Promise<void>;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
     allowMultiFile: boolean;
