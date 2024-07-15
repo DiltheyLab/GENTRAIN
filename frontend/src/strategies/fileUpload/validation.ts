@@ -62,17 +62,13 @@ export const validationStrategies = {
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
         const existingCases = await getAlreadyExistingCases(caseData.slice(1, caseData.length));
-        console.log(existingCases);
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
     },
     contactsStrategy: async (contactData: string[][]) => {
         const allCases = await getAllCases();
-        console.log(allCases);
-
         const header = contactData[0];
-
         const existingContacts = [] as string[];
         const missingCasesInDB = [] as string[];
 
@@ -90,17 +86,12 @@ export const validationStrategies = {
 
             //check if case_id_1 and case_id_2 are in the system
             const missingCaseInColumnCaseId1 = findMissingCasesInDB(row[0], allCases);
-            if (missingCaseInColumnCaseId1) {
-                missingCasesInDB.push(missingCaseInColumnCaseId1);
-            }
-
+            missingCaseInColumnCaseId1 && missingCasesInDB.push(missingCaseInColumnCaseId1);
             const missingCaseInColumnCaseId2 = findMissingCasesInDB(row[1], allCases);
-            if (missingCaseInColumnCaseId2) {
-                missingCasesInDB.push(missingCaseInColumnCaseId2);
-            }
+            missingCaseInColumnCaseId2 && missingCasesInDB.push(missingCaseInColumnCaseId2);
 
+            // check if contact already exists in the database
             const existingContact = await findExistingContactInDB(row);
-
             // safe the index of the row with the existing contact
             existingContact && existingContacts.push((i + 1).toString());
         }
