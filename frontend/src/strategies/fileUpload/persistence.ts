@@ -41,9 +41,12 @@ export const persistenceStrategies = {
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            if (sampleCase) {
+                console.log(sampleCase);
+                db.samples.add({ sampled_at: sampleCase.registered_at });
+            }
             // get fasta data
             // get variants
-            console.log(sampleCase);
         }
     },
     contactsStrategy: async (contactData: string[][]) => {

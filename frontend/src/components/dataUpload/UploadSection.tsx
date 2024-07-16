@@ -8,7 +8,7 @@ import { useGetPathogenTypeByName } from "@/hooks/database/pathogen_types/useGet
 export const UploadSection = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
     const bacteriaPathogenType = useGetPathogenTypeByName("bacteria");
-    const allowMultiFile = activePathogen?.pathogen_type_id === bacteriaPathogenType?.id ?? false;
+    const allowMultiFile = activePathogen?.pathogen_type_id === bacteriaPathogenType?.id ? true : false;
     return (
         <>
             <FileUploadFactory
