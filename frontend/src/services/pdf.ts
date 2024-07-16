@@ -34,11 +34,8 @@ const addInformationTable = async (doc: jsPDF) => {
     const tableHead = [
         "Fasta Id",
         "IMS Id (RKI)",
-        "Group",
         "Lineage",
         "Ambiguous Characters",
-        "Sending Lab",
-        "Sequencing Lab",
         "Metadata",
         "Sample Datum",
         "Letztes Änderungsdatum",
@@ -46,15 +43,12 @@ const addInformationTable = async (doc: jsPDF) => {
     const tableRows = samples.map((sample: SampleSchema) => {
         return [
             sample.fasta_id,
-            sample.ims_id,
-            sample.group,
-            sample.lineage,
-            sample.n_count,
-            sample.location_sending_lab,
-            sample.location_sequencing_lab,
-            sample.metadata,
-            sample.sampled_at,
-            sample.updated_at,
+            sample.ims_id ?? "",
+            sample.lineage ?? "",
+            sample.n_count ?? "",
+            sample.metadata ?? "",
+            sample.sampled_at?.toLocaleDateString() ?? "",
+            sample.updated_at?.toLocaleDateString() ?? "",
         ];
     });
     autoTable(doc, {

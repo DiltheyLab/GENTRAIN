@@ -27,8 +27,7 @@ export const persistenceStrategies = {
                     sample_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
                     groups: await persistGroupsForCategories(flexibleCategoryNames, row),
-                    date: parseGermanDateFormat(row[2]),
-                    updated_at: new Date(),
+                    registered_at: parseGermanDateFormat(row[2]),
                 } as CaseSchema;
 
                 // Validate the data and throw an error if it is invalid
@@ -41,10 +40,12 @@ export const persistenceStrategies = {
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
-            if (sampleCase) {
-                console.log(sampleCase);
-                db.samples.add({ sampled_at: sampleCase.registered_at });
-            }
+            await db.samples.add({
+                fasta_id: sample.fastaId,
+                sequence: sample.sequence,
+                sampled_at: sampleCase ? sampleCase.registered_at : null,
+            });
+
             // get fasta data
             // get variants
         }
@@ -60,7 +61,6 @@ export const persistenceStrategies = {
                 case_id_2: row[1],
                 type: row[2],
                 context: row[3],
-                updated_at: new Date(),
             } as ContactSchema;
 
             // Validate the data and throw an error if it is invalid

@@ -1,0 +1,5 @@
+Case Id;Sequence Id;Date;Name;First Name;Birth Date;Outbreak;Location;Institution;Category 3
+CVD2021-24928;;01.02.22;Testname;Testvorname;13.05.97;Ausbruch 1;Kšln;Schule;Test1
+CVD2021-24923;;01.02.22;Testname;Testvorname;03.02.01;Ausbruch 2;Kšln;;Test2
+CVD2021-25156;Z7374;01.03.22;Testname;Testvorname;01.01.82;Ausbruch 2;;Krankenhaus;Test3
+CVD2021-25130;;01.02.22;Testname;Testvorname;05.01.96;Ausbruch 1;DŸsseldorf;Kindergarten;Test4

@@ -59,7 +59,7 @@ export function DistanceMatrixTable() {
         <>
             {matrixData && (
                 <>
-                    <small>Letzte Änderung: {matrixData.updated_at.toLocaleString()}</small>
+                    <small>Letzte Änderung: {matrixData.updated_at?.toLocaleString()}</small>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
                         <Table>
                             <TableBody>
