@@ -59,7 +59,6 @@ const persistCategoryIfNotExist = async (categoryName: string) => {
 export const persistGroupsForCategories = async (flexibleCategoryNames: Array<string>, caseData: Array<string>) => {
     let groups = [];
     for (const category of [
-        collectCategoryData("Ausbruch", caseData[6]),
         collectCategoryData(flexibleCategoryNames[0], caseData[7]),
         collectCategoryData(flexibleCategoryNames[1], caseData[8]),
         collectCategoryData(flexibleCategoryNames[2], caseData[9]),

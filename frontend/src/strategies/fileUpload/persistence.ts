@@ -5,6 +5,7 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
+import { getOrPersistOutbreak } from "@/services/outbreaks";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -16,7 +17,7 @@ export const persistenceStrategies = {
             throw new GentrainException("InvalidPathogenSelection");
         }
         // run db operations in transaction to rollback in error cases
-        await db.transaction("rw", db.cases, db.categories, db.groups, async () => {
+        await db.transaction("rw", db.cases, db.categories, db.groups, db.outbreaks, async () => {
             // retrieve flexible category names from header row
             const flexibleCategoryNames = getFlexibleCategoryNames(caseData);
             caseData = caseData.slice(1, caseData.length);
@@ -26,6 +27,7 @@ export const persistenceStrategies = {
                     case_id: row[0],
                     sample_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
+                    outbreak_id: await getOrPersistOutbreak(row[6]),
                     groups: await persistGroupsForCategories(flexibleCategoryNames, row),
                     registered_at: parseGermanDateFormat(row[2]),
                 } as CaseSchema;

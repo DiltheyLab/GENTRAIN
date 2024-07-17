@@ -11,6 +11,7 @@ import { GroupSchema } from "./groups";
 import { Pathogens, PathogenSchema } from "./pathogens";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 import { CategorySchema } from "./categories";
+import { OutbreakSchema } from "./outbreak";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -23,6 +24,7 @@ const db = new Dexie("gentrain") as Dexie & {
     pathogens: EntityTable<PathogenSchema, "id">;
     pathogen_types: EntityTable<PathogenTypeSchema, "id">;
     categories: EntityTable<CategorySchema, "id">;
+    outbreaks: EntityTable<OutbreakSchema, "id">;
 };
 
 // define the database tables (https://dexie.org/)
@@ -35,12 +37,13 @@ db.version(1).stores({
     distance_matrix: "id, name, row_column_names, matrix, pathogen_id, created_at, updated_at", //to be removed in future versions
     distance_matrices: "++id, pathogen_id, name, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
-    cases: "++id, case_id, sample_id, *groups, pathogen_id, registered_at, created_at, updated_at",
+    cases: "++id, case_id, sample_id, outbreak_id, *groups, pathogen_id, registered_at, created_at, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
     groups: "++id, name, category_id, updated_at",
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, created_at, updated_at",
+    outbreaks: "++id, name, created_at, updated_at",
 });
 
 db.on("populate", async () => {
