@@ -2,27 +2,24 @@ import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
-import { PathogenTypeSchema } from "@/database/pathogen_types";
-import { PathogenSchema } from "@/database/pathogens";
+import { useState } from "react";
 import { useAppStore } from "@/stores/app";
 import { useGetAllPathogenTypes } from "@/hooks/database/pathogen_types/useGetAllPathogenTypes";
 import { useTranslation } from "react-i18next";
-import { useGetAllPathogens } from "@/hooks/database/pathogens/useGetAllPathogens";
+import { PathogenTypeWithRelationships } from "@/database/pathogen_types";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
-    const pathogens = useGetAllPathogens();
     const pathogenTypes = useGetAllPathogenTypes();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const updateActivePathogen = useAppStore((state) => state.updateActivePathogen);
     const { t } = useTranslation();
 
-    const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeSchema) => {
+    const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
         return (
             <div key={pathogenType.name}>
                 <div className="text-xs font-bold px-4 py-2">{t(`pathogen_type.${pathogenType.name}`)}</div>
-                {pathogens?.map((pathogen) => {
+                {pathogenType.pathogens?.map((pathogen) => {
                     if (pathogen.pathogen_type_id !== pathogenType.id) {
                         return;
                     }
