@@ -30,7 +30,7 @@ export const FileUploadFactory = ({
     allowMultiFile,
 }: FileUploadComponentProps) => {
     const { toast } = useToast();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [fileDataIsValid, setFileDataIsValid] = useState(false);
     const [fileData, setFileData] = useState<string[][] | object[]>();
     const containerRef = useRef<HTMLDivElement>(null);
@@ -106,16 +106,24 @@ export const FileUploadFactory = ({
     };
 
     return (
-        <div ref={containerRef} className="flex flex-row items-end gap-3">
-            <FileUploadButton
-                type={type}
-                accept={type === "samples" ? ".fasta" : ".csv"}
-                multiple={allowMultiFile}
-                onUpload={handleFileUpload}
-            />
-            <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                Hochladen
-            </Button>
-        </div>
+        <>
+            <div ref={containerRef} className="flex flex-row items-end gap-3">
+                <FileUploadButton
+                    type={type}
+                    accept={type === "samples" ? ".fasta" : ".csv"}
+                    multiple={allowMultiFile}
+                    onUpload={handleFileUpload}
+                />
+                <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
+                    Hochladen
+                </Button>
+            </div>
+            {i18n.exists(`upload.help.${type}`) && (
+                <small
+                    className="text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
+                ></small>
+            )}
+        </>
     );
 };

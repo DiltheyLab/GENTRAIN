@@ -18,13 +18,6 @@ export function PathogenSwitch() {
     const updateActivePathogen = useAppStore((state) => state.updateActivePathogen);
     const { t } = useTranslation();
 
-    useEffect(() => {
-        const activelyPersistedPathogen = pathogens?.find((pathogen: PathogenSchema) => pathogen.activated_at);
-        if (activelyPersistedPathogen) {
-            updateActivePathogen(activelyPersistedPathogen);
-        }
-    }, [pathogens]);
-
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeSchema) => {
         return (
             <div key={pathogenType.name}>
