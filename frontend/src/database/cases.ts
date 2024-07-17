@@ -5,7 +5,7 @@ import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreak";
 
 export interface CaseSchema {
-    id?: number;
+    id: number;
     case_id: string;
     sample_id: string | null;
     pathogen_id: number;
@@ -30,6 +30,11 @@ export const caseRules = z.object({
     groups: z.array(z.number()),
     registered_at: z.date(),
 });
+
+export const getAllCases = async () => {
+    const cases = await db.cases.toArray();
+    return cases;
+};
 
 export const getAllCasesWithRelationships = async () => {
     const cases = await db.cases.toArray();

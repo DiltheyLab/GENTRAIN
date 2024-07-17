@@ -10,8 +10,13 @@
             "contacts": "Kontaktdaten hochladen"
         },
         "info": {
-            "cases": "Laden Sie <a href='/upload_templates/cases.xlsx'>hier</a> eine Excel-Vorlage herunter.",
+            "cases": null,
             "samples": "Laden Sie hier ihre Fasta-Datei mit Sequenzdaten hoch. Es werden nur Sequenzen erfasst zu denen bereits Falldaten verfügbar sind.",
+            "contacts": null
+        },
+        "help": {
+            "cases": "Laden Sie <a href='/upload_templates/cases.xlsx'>hier</a> eine Excel-Vorlage herunter.",
+            "samples": null,
             "contacts": "Laden Sie <a href='/upload_templates/contacts.xlsx'>hier</a> eine Excel-Vorlage herunter."
         }
     }
