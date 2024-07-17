@@ -1,4 +1,4 @@
-import { CaseSchema, getAllCases } from "@/database/cases";
+import { CaseSchema, getAllCasesWithRelationships } from "@/database/cases";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
 
@@ -70,7 +70,7 @@ export const validationStrategies = {
         console.log(sampleData);
     },
     contactsStrategy: async (contactData: string[][]) => {
-        const allCases = await getAllCases();
+        const allCases = await getAllCasesWithRelationships();
         const header = contactData[0];
         const existingContacts = [] as string[];
         const missingCasesInDB = [] as string[];

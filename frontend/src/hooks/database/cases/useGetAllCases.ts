@@ -1,7 +1,6 @@
-import { CaseSchema } from "@/database/cases";
-import { db } from "@/database/db";
+import { CaseWithRelationships, getAllCasesWithRelationships } from "@/database/cases";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const useGetAllCases = (): CaseSchema[] | undefined => {
-    return useLiveQuery(() => db.cases.toArray());
+export const useGetAllCases = (): CaseWithRelationships[] | undefined => {
+    return useLiveQuery(() => getAllCasesWithRelationships());
 };

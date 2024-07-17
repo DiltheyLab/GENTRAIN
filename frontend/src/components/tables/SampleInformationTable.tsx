@@ -1,32 +1,50 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useGetAllCases } from "@/hooks/database/cases/useGetAllCases";
 import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 
 export function SampleInformationTable() {
     const sampleData = useGetAllSamples();
-
+    const caseData = useGetAllCases();
+    console.log(caseData);
     const renderHeadRow = () => {
         return (
             <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Fasta&nbsp;Id</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">IMS&nbsp;Id&nbsp;(RKI)</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Lineage</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Ambiguous Characters</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Metadata</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">Case&nbsp;Id</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">Outbreak</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">Sample</TableHead>
+                <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Letztes Änderungsdatum</TableHead>
             </TableRow>
         );
     };
 
     const renderRows = () => {
-        if (sampleData) {
-            return sampleData.map((row, rowIndex) => {
+        if (caseData) {
+            return caseData.map((row, rowIndex) => {
                 return (
                     <TableRow key={rowIndex} className="border-muted">
-                        <TableCell className="p-2 text-xs font-medium">{row.fasta_id}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.ims_id}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.lineage}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.n_count}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.metadata}</TableCell>
+                        <TableCell className="p-2 text-xs font-medium">{row.case_id}</TableCell>
+                        <TableCell className="p-2 text-xs font-medium">
+                            {row.outbreak ? row.outbreak.name : "Background"}
+                        </TableCell>
+                        <TableCell className="p-2 text-xs">
+                            {row.sample && (
+                                <>
+                                    <div>
+                                        <p>{row.sample.fasta_id}</p>
+                                    </div>
+                                    <div>
+                                        <small>{row.sample.lineage ? row.sample.lineage : ""}</small>
+                                    </div>
+                                    <div>
+                                        <small>{row.sample.n_count ? row.sample.n_count : ""}</small>
+                                    </div>
+                                </>
+                            )}
+                        </TableCell>
+                        <TableCell className="p-2 text-xs">
+                            {row.registered_at ? row.registered_at.toLocaleDateString() : ""}
+                        </TableCell>
                         <TableCell className="p-2 text-xs">
                             {row.updated_at ? row.updated_at.toLocaleDateString() : ""}
                         </TableCell>
