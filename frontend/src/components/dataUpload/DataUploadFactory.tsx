@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { FileUploadButton } from "../ui/FileUploadButton";
 import { useToast } from "../ui/use-toast";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { ZodError } from "zod";
 import { getToastDescription } from "@/services/errors";
@@ -33,6 +33,15 @@ export const FileUploadFactory = ({
     const { t } = useTranslation();
     const [fileDataIsValid, setFileDataIsValid] = useState(false);
     const [fileData, setFileData] = useState<string[][] | object[]>();
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const resetUpload = () => {
+        // refresh file input
+        const inputElement: HTMLInputElement | null | undefined = containerRef.current?.querySelector(`input#${type}`);
+        if (inputElement) inputElement.value = "";
+        // reset upload button
+        setFileDataIsValid(false);
+    };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -41,7 +50,6 @@ export const FileUploadFactory = ({
 
             // format the file content into an array
             const fileAsStringArray = formatTextInArray(fileReaderResult);
-            console.log(fileAsStringArray);
             // validate the data
             await validationStrategy(fileAsStringArray);
             setFileDataIsValid(true);
@@ -75,6 +83,7 @@ export const FileUploadFactory = ({
         try {
             // persist the data
             await persistenceStrategy(fileData);
+            resetUpload();
             // show a success toast notification
             toast({
                 title: "Datei wurde erfolgreich hochgeladen",
@@ -97,7 +106,7 @@ export const FileUploadFactory = ({
     };
 
     return (
-        <div className="flex flex-row items-end gap-3">
+        <div ref={containerRef} className="flex flex-row items-end gap-3">
             <FileUploadButton
                 type={type}
                 accept={type === "samples" ? ".fasta" : ".csv"}
