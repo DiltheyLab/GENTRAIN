@@ -9,13 +9,9 @@ export function SampleInformationTable() {
             <TableRow className="font-medium bg-muted">
                 <TableHead className="font-medium p-2 text-xs text-black">Fasta&nbsp;Id</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">IMS&nbsp;Id&nbsp;(RKI)</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Group</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Lineage</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Ambiguous Characters</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sending Lab</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sequencing Lab</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Metadata</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sample Datum</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Letztes Änderungsdatum</TableHead>
             </TableRow>
         );
@@ -28,14 +24,12 @@ export function SampleInformationTable() {
                     <TableRow key={rowIndex} className="border-muted">
                         <TableCell className="p-2 text-xs font-medium">{row.fasta_id}</TableCell>
                         <TableCell className="p-2 text-xs">{row.ims_id}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.group}</TableCell>
                         <TableCell className="p-2 text-xs">{row.lineage}</TableCell>
                         <TableCell className="p-2 text-xs">{row.n_count}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.location_sending_lab}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.location_sequencing_lab}</TableCell>
                         <TableCell className="p-2 text-xs">{row.metadata}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.sampled_at.toLocaleDateString()}</TableCell>
-                        <TableCell className="p-2 text-xs">{row.updated_at?.toLocaleDateString()}</TableCell>
+                        <TableCell className="p-2 text-xs">
+                            {row.updated_at ? row.updated_at.toLocaleDateString() : ""}
+                        </TableCell>
                     </TableRow>
                 );
             });
