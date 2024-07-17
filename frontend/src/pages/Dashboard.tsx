@@ -4,8 +4,19 @@ import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
 import { SampleInformationTable } from "@/components/tables/SampleInformationTable";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Layout } from "@/components/layout/Layout";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppStore } from "@/stores/app";
 
 export function Dashboard() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (!useAppStore.getState().activePathogen) navigate("/data-upload");
+        }, 50);
+    }, []);
+
     return (
         <Layout>
             <div className="relative mx-auto p-4">
