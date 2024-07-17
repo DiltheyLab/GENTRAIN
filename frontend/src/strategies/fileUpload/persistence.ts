@@ -40,12 +40,15 @@ export const persistenceStrategies = {
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
-            await db.samples.add({
-                fasta_id: sample.fastaId,
-                sequence: sample.sequence,
-                sampled_at: sampleCase ? sampleCase.registered_at : null,
-            });
-
+            if (sampleCase) {
+                // we currently only add samples if a case for the fasta id exists already
+                // otherwise there would maximize the necessary amount of variant calculations
+                await db.samples.add({
+                    fasta_id: sample.fastaId,
+                    sequence: sample.sequence,
+                    sampled_at: sampleCase ? sampleCase.registered_at : null,
+                });
+            }
             // get fasta data
             // get variants
         }

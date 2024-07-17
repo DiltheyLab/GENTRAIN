@@ -2,5 +2,17 @@
     "pathogen_type": {
         "virus": "Viren",
         "bacteria": "Bakterien"
+    },
+    "upload": {
+        "label": {
+            "cases": "Falldaten hochladen",
+            "samples": "Sequenzdaten hochladen",
+            "contacts": "Kontaktdaten hochladen"
+        },
+        "info": {
+            "cases": "Laden Sie <a href='/upload_templates/cases.xlsx'>hier</a> eine Excel-Vorlage herunter.",
+            "samples": "Laden Sie hier ihre Fasta-Datei mit den Sequenzdaten hoch. Es werden nur Sequenzen erfasst zu denen bereits Falldaten hochgeladen wurde.",
+            "contacts": "Laden Sie <a href='/upload_templates/contacts.xlsx'>hier</a> eine Excel-Vorlage herunter."
+        }
     }
 }
