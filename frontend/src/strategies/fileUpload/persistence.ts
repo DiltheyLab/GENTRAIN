@@ -48,7 +48,6 @@ export const persistenceStrategies = {
                 await db.samples.add({
                     fasta_id: sample.fastaId,
                     sequence: sample.sequence,
-                    sampled_at: sampleCase ? sampleCase.registered_at : null,
                 });
             }
             // get fasta data

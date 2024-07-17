@@ -65,9 +65,25 @@ export const validationStrategies = {
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
+        return [];
     },
-    sampleStrategy: (sampleData: object[]) => {
-        console.log(sampleData);
+    sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
+        let samplesWithoutCase = [];
+        for (const sample of sampleData) {
+            // found case (only import if case exists)
+            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            if (!sampleCase) {
+                samplesWithoutCase.push(sample.fastaId);
+            }
+        }
+        return [
+            {
+                title: `Hochzuladene Sequenzen: ${sampleData.length - samplesWithoutCase.length}`,
+                description: `Für folgende Sequenzen wurde in der Datenbank kein zugehöriger Fall gefunden: ${samplesWithoutCase.join(
+                    ", "
+                )}`,
+            },
+        ];
     },
     contactsStrategy: async (contactData: string[][]) => {
         const allCases = await getAllCasesWithRelationships();
@@ -105,5 +121,6 @@ export const validationStrategies = {
         if (existingContacts.length > 0) {
             throw new GentrainException("ContactAlreadyExist", existingContacts);
         }
+        return [];
     },
 };

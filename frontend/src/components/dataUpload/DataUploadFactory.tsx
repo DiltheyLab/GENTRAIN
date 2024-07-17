@@ -15,7 +15,9 @@ export type FileReaderResult = {
 };
 
 export type FileUploadComponentProps = {
-    validationStrategy: (data: any) => Promise<void> | void;
+    validationStrategy: (
+        data: any
+    ) => Promise<{ title: string; description: string }[]> | { title: string; description: string }[];
     persistenceStrategy: (data: any) => Promise<void> | void;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
@@ -51,7 +53,15 @@ export const FileUploadFactory = ({
             // format the file content into an array
             const fileAsStringArray = formatTextInArray(fileReaderResult);
             // validate the data
-            await validationStrategy(fileAsStringArray);
+            const warnings = await validationStrategy(fileAsStringArray);
+            for (const warning of warnings) {
+                toast({
+                    title: warning.title,
+                    description: warning.description,
+                    duration: 30000,
+                    variant: "default",
+                });
+            }
             setFileDataIsValid(true);
             setFileData(fileAsStringArray);
         } catch (error) {
@@ -88,7 +98,7 @@ export const FileUploadFactory = ({
             toast({
                 title: "Datei wurde erfolgreich hochgeladen",
                 duration: 5000,
-                variant: "default",
+                variant: "success",
             });
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
