@@ -11,7 +11,7 @@
         },
         "info": {
             "cases": "Laden Sie <a href='/upload_templates/cases.xlsx'>hier</a> eine Excel-Vorlage herunter.",
-            "samples": "Laden Sie hier ihre Fasta-Datei mit den Sequenzdaten hoch. Es werden nur Sequenzen erfasst zu denen bereits Falldaten hochgeladen wurde.",
+            "samples": "Laden Sie hier ihre Fasta-Datei mit Sequenzdaten hoch. Es werden nur Sequenzen erfasst zu denen bereits Falldaten verfügbar sind.",
             "contacts": "Laden Sie <a href='/upload_templates/contacts.xlsx'>hier</a> eine Excel-Vorlage herunter."
         }
     }
