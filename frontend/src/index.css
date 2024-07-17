@@ -52,3 +52,7 @@
 .force-graph-container {
     height: 100%;
 }
+
+a {
+    @apply text-primary;
+}

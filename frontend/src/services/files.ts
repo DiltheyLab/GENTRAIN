@@ -33,22 +33,53 @@ export const readFilesAsText = (files: FileList): Promise<string[]> => {
     return Promise.all(filePromises);
 };
 
+const collectFastaIdsAndContent = (fastaSequences: Array<string>) => {
+    let fastaSequencesArray = [];
+    for (let sequence of fastaSequences) {
+        let sequenceArray = sequence.split("\n");
+        let fastaId = null;
+        let genom = "";
+        for (let element of sequenceArray) {
+            if (element[0] === ">") {
+                fastaId = element.slice(1).split(/\s+/)[0];
+            } else {
+                genom += element.trim();
+            }
+        }
+
+        fastaSequencesArray.push({ fastaId: fastaId, sequence: genom });
+    }
+    return fastaSequencesArray;
+};
+
 export const formatTextInArray = (fileReaderResult: FileReaderResult | FileReaderResult[]) => {
     if (fileReaderResult instanceof Array) {
         // if the fileReaderResult is an array, we assume that it contains multiple files
-        //ToDO: implement a function that handles the content of the files
+        let fastaSequencesArray = [];
+        for (const file of fileReaderResult) {
+            // fasta file name contains fasta id (bacterial)
+            if (file.mimetype === "fasta") {
+                let fastaSquences = Object.values(file)[0].split(/(?=>)/g);
+                fastaSquences.shift();
 
-        //ACHTUNG ÄNDERN!!!
-        const lines = Object.values(fileReaderResult[0])[0].split("\n");
-        // Split lines into fields and remove leading/trailing whitespaces or
-        // line breaks (in windows every line has a \r in the end after splitting by \n)
-        return lines.map((line) => line.split(";").map((cell) => cell.trim()));
+                fastaSequencesArray.push(collectFastaIdsAndContent(fastaSquences));
+            }
+        }
+        return fastaSequencesArray;
     } else {
-        let lines = Object.values(fileReaderResult)[0].split("\n");
-        // filter empty lines to prevent empty cells
-        lines = lines.filter((line) => line !== "");
-        // Split lines into fields and remove leading/trailing whitespaces or
-        // line breaks (in windows every line has a \r in the end after splitting by \n)
-        return lines.map((line) => line.split(";").map((cell) => cell.trim()));
+        if (fileReaderResult.mimetype === "fasta") {
+            // fasta header contains fasta id (viral)
+            let fastaSquences = Object.values(fileReaderResult)[0].split(/(?=>)/g);
+            fastaSquences.shift();
+            let fastaSquenceArray = collectFastaIdsAndContent(fastaSquences);
+            return fastaSquenceArray.flat(1);
+        } else {
+            let lines = Object.values(fileReaderResult)[0].split("\n");
+            // filter empty lines to prevent empty cells
+            lines = lines.filter((line) => line !== "");
+            // Split lines into fields and remove leading/trailing whitespaces or
+            // line breaks (in windows every line has a \r in the end after splitting by \n)
+            return lines.map((line) => line.split(";").map((cell) => cell.trim()));
+        }
     }
 };
