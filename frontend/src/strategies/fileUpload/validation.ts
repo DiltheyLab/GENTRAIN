@@ -66,6 +66,9 @@ export const validationStrategies = {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
     },
+    sampleStrategy: (sampleData: object[]) => {
+        console.log(sampleData);
+    },
     contactsStrategy: async (contactData: string[][]) => {
         const allCases = await getAllCases();
         const header = contactData[0];

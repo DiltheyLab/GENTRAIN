@@ -47,7 +47,7 @@ export const columns: ColumnDef<CaseSchema>[] = [
     },
     {
         accessorKey: "registered_at",
-        accessorFn: (row) => row.registered_at.toString(),
+        accessorFn: (row) => (row.registered_at ? row.registered_at.toString() : ""),
         header: ({ column }) => <DataTableColumnHeader column={column} title="Sample Datum" />,
         cell: ({ row }) => {
             return (
