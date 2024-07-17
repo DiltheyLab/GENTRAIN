@@ -5,7 +5,6 @@ import { columns } from "@/components/tables/cases/columns";
 import { Separator } from "@/components/ui/separator";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
 import { useGetAllCases } from "@/hooks/database/cases/useGetAllCases";
-import { PathogenDialog } from "@/components/dataUpload/PathogenDialog";
 
 export function DataUpload() {
     const casesData = useGetAllCases();
@@ -37,7 +36,6 @@ export function DataUpload() {
                     {casesData && <DataTable data={casesData} columns={columns} />}
                 </div>
             </div>
-            <PathogenDialog />
         </Layout>
     );
 }
