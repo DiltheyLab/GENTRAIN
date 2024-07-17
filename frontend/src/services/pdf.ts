@@ -22,7 +22,7 @@ const addGraphAsJpeg = (doc: jsPDF) => {
             }),
             "JPEG",
             0,
-            30,
+            60,
             pdfGraphWidth,
             pdfGraphHeight
         );
@@ -37,7 +37,6 @@ const addInformationTable = async (doc: jsPDF) => {
         "Lineage",
         "Ambiguous Characters",
         "Metadata",
-        "Sample Datum",
         "Letztes Änderungsdatum",
     ];
     const tableRows = samples.map((sample: SampleSchema) => {
@@ -47,7 +46,6 @@ const addInformationTable = async (doc: jsPDF) => {
             sample.lineage ?? "",
             sample.n_count ?? "",
             sample.metadata ?? "",
-            sample.sampled_at?.toLocaleDateString() ?? "",
             sample.updated_at?.toLocaleDateString() ?? "",
         ];
     });
@@ -57,14 +55,14 @@ const addInformationTable = async (doc: jsPDF) => {
         rowPageBreak: "avoid",
         headStyles: { fillColor: [249, 115, 22] },
         bodyStyles: {
-            cellWidth: 27,
+            cellWidth: 30,
         },
     });
 };
 
 export const exportGraphAndInformationAsPdf = async () => {
     const doc = new jsPDF({
-        orientation: "l", //landscape
+        orientation: "p", //portrait
         unit: "mm",
         format: "a4",
     });

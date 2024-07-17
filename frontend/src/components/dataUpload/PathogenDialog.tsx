@@ -28,7 +28,9 @@ export function PathogenDialog() {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Pathogen auswählen</DialogTitle>
-                    <DialogDescription>Für welches Pathogen möchten sie Ausbruchanalyse durchführen?</DialogDescription>
+                    <DialogDescription>
+                        Für welches Pathogen möchten sie Ausbruchanalysen durchführen?
+                    </DialogDescription>
                 </DialogHeader>
                 <PathogenSwitch />
                 <DialogFooter>
