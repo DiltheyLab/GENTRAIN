@@ -2,12 +2,13 @@ import { fileReadingStrategies } from "@/strategies/fileUpload/fileReading";
 import { FileUploadFactory } from "./DataUploadFactory";
 import { validationStrategies } from "@/strategies/fileUpload/validation";
 import { persistenceStrategies } from "@/strategies/fileUpload/persistence";
+import { useAppStore } from "@/stores/app";
+import { useGetPathogenTypeByName } from "@/hooks/database/pathogen_types/useGetAllPathogenTypes";
 
 export const UploadSection = () => {
-    // Wenn wir bakterielle Pathogene bearbeiten muss multiFile verwendet werden
-    // const allowMultiFile = activePathogentype === "bacteria";
-    const allowMultiFile = false;
-
+    const activePathogen = useAppStore((state) => state.activePathogen);
+    const bacteriaPathogenType = useGetPathogenTypeByName("bacteria");
+    const allowMultiFile = activePathogen?.pathogen_type_id === bacteriaPathogenType?.id ? true : false;
     return (
         <>
             <FileUploadFactory
@@ -23,8 +24,8 @@ export const UploadSection = () => {
                 fileReadingStrategy={
                     allowMultiFile ? fileReadingStrategies.multiFile : fileReadingStrategies.singleFile
                 }
-                validationStrategy={validationStrategies.contactsStrategy}
-                persistenceStrategy={persistenceStrategies.contactsStrategy}
+                validationStrategy={validationStrategies.sampleStrategy}
+                persistenceStrategy={persistenceStrategies.sampleStrategy}
             />
             <FileUploadFactory
                 type="contacts"

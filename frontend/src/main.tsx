@@ -1,6 +1,6 @@
 import React from "react";
 import * as ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard.tsx";
 import "./index.css";
 import { ErrorPage } from "./pages/ErrorPage.tsx";
@@ -12,6 +12,7 @@ import translation_de from "@/translations/de/common.json";
 import error_de from "@/translations/de/error.json";
 
 import { Toaster } from "./components/ui/toaster.tsx";
+import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <I18nextProvider i18n={i18next}>
             <Toaster />
             <RouterProvider router={router} />
+            <PathogenDialog />
         </I18nextProvider>
     </React.StrictMode>
 );

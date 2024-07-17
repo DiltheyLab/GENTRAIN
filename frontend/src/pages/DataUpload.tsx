@@ -14,11 +14,10 @@ export function DataUpload() {
                 <div className="space-y-8">
                     <div className="flex items-center justify-between space-y-2">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Eigene Sequenzdaten importieren:</h2>
+                            <h2 className="text-2xl font-bold tracking-tight">Analysedaten importieren:</h2>
                             <p className="text-muted-foreground">
-                                Wählen Sie eine Datei im FASTA-Format, die die zu importierenden viralen Sequenzdaten
-                                enthält. Die Daten werden überprüft und in den Datensatz eingebaut. Nach dem Upload
-                                können Sie Metadaten zu den Sequenzen hinzufügen.
+                                Laden Sie hier ihre Analysedaten hoch. Zu hochgeladenen Fällen können Sequenz- als auch
+                                Kontaktdaten hinterlegt werden.
                             </p>
                         </div>
                     </div>

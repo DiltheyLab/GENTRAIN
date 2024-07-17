@@ -40,7 +40,7 @@ db.version(1).stores({
     cases: "++id, case_id, sample_id, outbreak_id, *groups, pathogen_id, registered_at, created_at, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
     groups: "++id, name, category_id, updated_at",
-    pathogens: "++id, name, pathogen_type_id, activated_at, created_at, updated_at",
+    pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, created_at, updated_at",
     outbreaks: "++id, name, created_at, updated_at",
@@ -48,9 +48,9 @@ db.version(1).stores({
 
 db.on("populate", async () => {
     let persistedPathogenTypes = {} as Record<string, number>;
-    for (const [pathogenName, pathogenType] of Object.entries(Pathogens)) {
+    for (const [pathogenName, pathogenData] of Object.entries(Pathogens)) {
         // retrieve pathogen type name from enum
-        const pathogenTypeName = PathogenTypeName[pathogenType];
+        const pathogenTypeName = PathogenTypeName[pathogenData.type];
         // check if the type of the pathogen (bacteria or virus) already exists in pathogen_types-table
         // otherwise persist pathogen_type
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
@@ -64,6 +64,7 @@ db.on("populate", async () => {
         if ((await db.pathogens.where({ name: pathogenName }).count()) === 0) {
             db.pathogens.add({
                 name: pathogenName,
+                relationship_threshold: pathogenData.relationshop_threshold,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
                 activated_at: null,
             });

@@ -5,14 +5,13 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
-import { findExistingContactInDB } from "./validation";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
  */
 export const persistenceStrategies = {
-    casesStrategy: async (data: Array<Array<string>>) => {
+    casesStrategy: async (caseData: Array<Array<string>>) => {
         const pathogen = useAppStore.getState().activePathogen;
         if (!pathogen) {
             throw new GentrainException("InvalidPathogenSelection");
@@ -20,9 +19,9 @@ export const persistenceStrategies = {
         // run db operations in transaction to rollback in error cases
         await db.transaction("rw", db.cases, db.categories, db.groups, db.outbreaks, async () => {
             // retrieve flexible category names from header row
-            const flexibleCategoryNames = getFlexibleCategoryNames(data);
-            data = data.slice(1, data.length);
-            for (const row of data) {
+            const flexibleCategoryNames = getFlexibleCategoryNames(caseData);
+            caseData = caseData.slice(1, caseData.length);
+            for (const row of caseData) {
                 // persist case from csv columns
                 const data = {
                     case_id: row[0],
@@ -39,9 +38,25 @@ export const persistenceStrategies = {
             }
         });
     },
+    sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
+        for (const sample of sampleData) {
+            // found case (only import if case exists)
+            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            if (sampleCase) {
+                // we currently only add samples if a case for the fasta id exists already
+                // otherwise there would maximize the necessary amount of variant calculations
+                await db.samples.add({
+                    fasta_id: sample.fastaId,
+                    sequence: sample.sequence,
+                    sampled_at: sampleCase ? sampleCase.registered_at : null,
+                });
+            }
+            // get fasta data
+            // get variants
+        }
+    },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];
-        const existingContacts = [] as string[];
 
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
@@ -53,22 +68,10 @@ export const persistenceStrategies = {
                 context: row[3],
             } as ContactSchema;
 
-            // check if contact already exists in the database
-            const existingContact = await findExistingContactInDB(row);
-
-            // safe the index of the row with the existing contact
-            existingContact && existingContacts.push((i + 1).toString());
-
             // Validate the data and throw an error if it is invalid
             const dto = contactRules.parse(data) as ContactSchema;
-
             bulkData.push(dto);
         }
-
-        if (existingContacts.length > 0) {
-            throw new GentrainException("ContactAlreadyExist", existingContacts);
-        }
-
         // Bulk add the data to the database
         await db.contacts.bulkAdd(bulkData);
     },
