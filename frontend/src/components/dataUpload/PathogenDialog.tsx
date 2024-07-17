@@ -20,7 +20,7 @@ export function PathogenDialog() {
             if (!useAppStore.getState().activePathogen) {
                 setOpen(true);
             }
-        }, 50);
+        }, 100);
     }, []);
 
     return (
