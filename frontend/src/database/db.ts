@@ -33,7 +33,7 @@ const db = new Dexie("gentrain") as Dexie & {
 // *column_name = MultiEntry
 db.version(1).stores({
     samples:
-        "++id, fasta_id, case_id, ims_id, group, sequence, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, created_at, updated_at",
+        "++id, fasta_id, case_id, ims_id, group, n_count, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, created_at, updated_at",
     distance_matrix: "id, name, row_column_names, matrix, pathogen_id, created_at, updated_at", //to be removed in future versions
     distance_matrices: "++id, pathogen_id, name, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",

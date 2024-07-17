@@ -3,7 +3,6 @@ import { db } from "@/database/db";
 interface SampleSchema {
     id: number;
     fasta_id: string;
-    sequence: string;
     ims_id?: string;
     n_count?: number;
     lineage?: string;

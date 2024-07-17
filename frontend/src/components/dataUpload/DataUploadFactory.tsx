@@ -17,7 +17,9 @@ export type FileReaderResult = {
 export type FileUploadComponentProps = {
     validationStrategy: (
         data: any
-    ) => Promise<{ title: string; description: string }[]> | { title: string; description: string }[];
+    ) =>
+        | Promise<{ data: any; warnings: { title: string; description: string }[] }>
+        | { data: any; warnings: { title: string; description: string }[] };
     persistenceStrategy: (data: any) => Promise<void> | void;
     fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
     type: FileUploadTypes;
@@ -45,6 +47,17 @@ export const FileUploadFactory = ({
         setFileDataIsValid(false);
     };
 
+    const showWarningToasts = (warnings: { title: string; description: string }[]) => {
+        for (const warning of warnings) {
+            toast({
+                title: warning.title,
+                description: warning.description,
+                duration: 30000,
+                variant: "default",
+            });
+        }
+    };
+
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
             // read the file(s) and convert them to text
@@ -53,17 +66,14 @@ export const FileUploadFactory = ({
             // format the file content into an array
             const fileAsStringArray = formatTextInArray(fileReaderResult);
             // validate the data
-            const warnings = await validationStrategy(fileAsStringArray);
-            for (const warning of warnings) {
-                toast({
-                    title: warning.title,
-                    description: warning.description,
-                    duration: 30000,
-                    variant: "default",
-                });
-            }
+            const validationResult = await validationStrategy(fileAsStringArray);
+            showWarningToasts(validationResult.warnings);
             setFileDataIsValid(true);
-            setFileData(fileAsStringArray);
+            if (validationResult.data.length === 0) {
+                resetUpload();
+                return;
+            }
+            setFileData(validationResult.data);
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
