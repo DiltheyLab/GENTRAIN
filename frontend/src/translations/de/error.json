@@ -8,5 +8,10 @@
         "EmptyCaseId2": "Es gibt mindestens ein leeres Feld in der Spalte case_id_2. Ein Kontakt benötigt immer zwei Cases.",
         "CaseDoesNotExist": "Für folgende Fälle existiert kein Eintrag in der Datenbank: {{data}}. Bitte laden Sie den entsprechenden Fall (Case) erst hoch.",
         "ContactAlreadyExist": "Folgende Zeilen in der Kontaktdatei existieren bereits in der Datenbank: {{data}}. Bitte laden Sie den Kontakt nicht erneut hoch."
+    },
+    "outbreakAnalysis": {
+        "title": "Fehler beim Speichern der Analyse",
+        "AnalysisIdIsNotInStore": "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut.",
+        "AnalysisIdIsNotInDB": "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut."
     }
 }
