@@ -5,12 +5,12 @@ import { Box, Workflow } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "../ui/button";
 import { getGroupToColor } from "@/services/graphs";
-import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 import { useGraphStore, type Coloring, type Filter } from "@/stores/graph";
+import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 
 export const DashboardGraphSettings = () => {
     const graphStore = useGraphStore();
-    const samples = useGetAllSamples();
+    const cases = useGetAllCasesWithRelationships();
 
     const changeNodeSize = (value: number) => {
         graphStore.updateSettings({
@@ -55,19 +55,23 @@ export const DashboardGraphSettings = () => {
         graphStore.updateSettings({ coloring: coloring });
         const graphData = graphStore.data;
 
-        if (!samples) return;
+        if (!cases) return;
 
-        const groupToColorNormal = getGroupToColor(samples, "group");
-        const groupToColorSamplingTime = getGroupToColor(samples, "sampled_at");
+        const groupToColorNormal = getGroupToColor(cases, "outbreak_id");
+        const groupToColorSamplingTime = getGroupToColor(cases, "registered_at");
 
         const coloredNodes = graphData.nodes.map((node) => {
             let color = node.color;
             if (coloring === "normal") {
                 color = groupToColorNormal[node.group]; // if coloring is normal, color it by group
-            } else if (coloring === "outbreaks" && node.group === "background") {
-                color = "#D3D2D2"; // if node is background, color it grey
-            } else if (coloring === "sampled_at" && node.sampledAt) {
-                color = groupToColorSamplingTime[node.sampledAt]; // if coloring is sampled_at, color it by sampling time
+            } else if (coloring === "outbreaks") {
+                if (node.group === "Background") {
+                    color = "#D3D2D2";
+                } else {
+                    color = groupToColorNormal[node.group]; // if coloring is normal, color it by group
+                }
+            } else if (coloring === "registered_at" && node.registeredAt) {
+                color = groupToColorSamplingTime[node.registeredAt]; // if coloring is sampled_at, color it by sampling time
             }
 
             return { ...node, color };
@@ -225,8 +229,8 @@ export const DashboardGraphSettings = () => {
                         </Button>
                         <Button
                             type="button"
-                            variant={graphStore.settings.coloring === "sampled_at" ? "default" : "secondary"}
-                            onClick={() => changeColoring("sampled_at")}
+                            variant={graphStore.settings.coloring === "registered_at" ? "default" : "secondary"}
+                            onClick={() => changeColoring("registered_at")}
                         >
                             Sampling Time
                         </Button>

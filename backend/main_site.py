@@ -131,7 +131,6 @@ def send_example_files(file):
 @app.route("/data/nextclade", methods=["POST"])
 def nextclade():
     fasta_content = request.get_json(force=True)["fasta_content"]
-    print(fasta_content)
     # create directory if not existent
     temp_dir = "./temp_data/nextclade/"
     pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)

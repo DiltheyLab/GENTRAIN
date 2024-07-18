@@ -1,3 +1,5 @@
+import { SampleSchema } from "@/database/samples";
+
 export const getVariantsForSequence = async (
     sequence: string
 ): Promise<{ lineage: string; n_count: number; variants: object }> => {
@@ -23,3 +25,13 @@ export const getVariantsForSequence = async (
         },
     };
 };
+
+export function samplesByFastaId(samples: SampleSchema[]) {
+    var samples_dict: { [fastaId: string]: SampleSchema } = {};
+    for (const sample of samples) {
+        samples_dict[sample.fasta_id] = sample;
+    }
+    return samples_dict;
+}
+{
+}

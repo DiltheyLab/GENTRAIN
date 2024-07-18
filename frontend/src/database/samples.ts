@@ -5,6 +5,7 @@ interface SampleSchema {
     fasta_id: string;
     ims_id?: string;
     n_count?: number;
+    sequence_length?: number;
     lineage?: string;
     variants?: object;
     metadata?: string;

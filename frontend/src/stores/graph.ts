@@ -4,7 +4,7 @@ export type CustomNode = {
     id: string;
     group: string;
     color: string;
-    sampledAt?: string;
+    registeredAt?: string;
 };
 
 export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" | "Dashed" | "Solid";
@@ -22,7 +22,7 @@ export type GraphData = {
 };
 
 export type Filter = "all" | "outbreaks";
-export type Coloring = "normal" | "sampled_at" | "outbreaks";
+export type Coloring = "normal" | "registered_at" | "outbreaks";
 
 export type GraphSettings = {
     graphDimension: "2D" | "3D";

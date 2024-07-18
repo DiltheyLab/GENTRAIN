@@ -7,6 +7,7 @@ import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { getVariantsForSequence } from "@/services/samples";
+import { persistSampleDistances } from "@/services/distanceMatrices";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -51,9 +52,14 @@ export const persistenceStrategies = {
                     fasta_id: sample.fastaId,
                     lineage: variantsResult.lineage,
                     n_count: variantsResult.n_count,
+                    sequence_length: sample.sequence.length,
                     variants: variantsResult.variants,
                 });
             }
+        }
+        const activePathogen = useAppStore.getState().activePathogen;
+        if (activePathogen) {
+            persistSampleDistances(activePathogen.id);
         }
     },
     contactsStrategy: async (contactData: string[][]) => {

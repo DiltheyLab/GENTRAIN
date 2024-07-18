@@ -8,29 +8,31 @@ import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/se
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
-import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 import { type GraphData, useGraphStore } from "@/stores/graph";
+import { useGetDistanceMatrixByPathogenIdOld } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
+import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const graphStore = useGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
-    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
-    const samples = useGetAllSamples();
+    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+
+    const cases = useGetAllCasesWithRelationships();
 
     useEffect(() => {
-        if (!distanceMatrix || !samples) {
+        if (!distanceMatrixAssembly || !cases) {
             graphStore.updateData({ nodes: [], links: [] });
             return;
         }
 
-        const graphData = transformDistanceMatrixToGraphData(distanceMatrix, samples, graphStore.settings.filter);
+        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases, graphStore.settings.filter);
 
         // Update the graph settings with the new graph data
         graphStore.updateData(graphData);
-    }, [samples, distanceMatrix, graphStore.settings.filter]);
+    }, [cases, distanceMatrixAssembly, graphStore.settings.filter]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
@@ -49,7 +51,6 @@ export const DashboardVisualizationPanel = () => {
 
     const getLegend = () => {
         const nodes = graphStore.data.nodes;
-
         if (graphStore.settings.coloring === "normal" || graphStore.settings.coloring === "outbreaks") {
             const uniqueGroups = nodes.filter((group, index, self) => {
                 return index === self.findIndex((t) => t.group === group.group);
@@ -60,13 +61,13 @@ export const DashboardVisualizationPanel = () => {
                     <p>{node.group}</p>
                 </div>
             ));
-        } else if (graphStore.settings.coloring === "sampled_at") {
+        } else if (graphStore.settings.coloring === "registered_at") {
             const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
 
             return uniqueSamplingTimes.map((node) => (
-                <div className="flex items-center gap-2" key={node.sampledAt}>
+                <div className="flex items-center gap-2" key={node.registeredAt}>
                     <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.sampledAt || "Kein Datum angegeben"}</p>
+                    <p>{node.registeredAt || "Kein Datum angegeben"}</p>
                 </div>
             ));
         }
