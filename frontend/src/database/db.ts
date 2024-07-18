@@ -45,7 +45,7 @@ db.version(1).stores({
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, created_at, updated_at",
-    analyses: "++id, name, config, created_at, updated_at",
+    analyses: "++id, name, settings, created_at, updated_at",
     outbreaks: "++id, name, created_at, updated_at",
 });
 
