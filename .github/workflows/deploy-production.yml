@@ -26,5 +26,5 @@ jobs:
             git checkout ${{ secrets.MAIN_BRANCH }}
             git pull
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose stop
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose up -d -f docker-compose.prod.yaml --no-deps --build
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --no-deps --build
             exit
