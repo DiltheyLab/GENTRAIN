@@ -12,6 +12,8 @@ RUN conda env create -f /app/environment.yaml
 
 # Create a new user 'uwsgi' and set it as the current user
 RUN useradd -m uwsgi
+RUN chown -R uwsgi /app
+RUN chmod 755 /app
 USER uwsgi
 
 # Ensure the Conda environment is activated
@@ -20,7 +22,6 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
-RUN chmod -R 755 /app
 
 # Declare /app as a mount point
 VOLUME /app
