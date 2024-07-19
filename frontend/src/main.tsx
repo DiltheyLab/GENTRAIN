@@ -12,6 +12,7 @@ import translation_de from "@/translations/de/common.json";
 import error_de from "@/translations/de/error.json";
 
 import { Toaster } from "./components/ui/toaster.tsx";
+import { OutbreakAnalysis } from "./pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
 import { db } from "./database/db.ts";
 import { useAppStore } from "./stores/app.ts";
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
         path: "/",
         errorElement: <ErrorPage />,
         element: <Dashboard />,
+    },
+    {
+        path: "/outbreak-analysis",
+        errorElement: <ErrorPage />,
+        element: <OutbreakAnalysis />,
     },
     {
         path: "/data-upload",

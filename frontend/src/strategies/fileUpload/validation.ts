@@ -3,7 +3,7 @@ import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
 
 const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
-const contactColumnNames = ["case_id_1", "case_id_2", "type", "context"];
+const contactColumnNames = ["Case Id 1", "Case Id 2", "Type", "Context"];
 
 const isHeaderValid = (header: string[], columnNames: string[]) => {
     return header.length === columnNames.length && header.every((value, index) => value === columnNames[index]);
