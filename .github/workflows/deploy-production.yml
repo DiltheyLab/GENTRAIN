@@ -16,6 +16,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect and pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.GENTRAIN_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && docker-compose stop && docker-compose up -d --no-deps --build && exit"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.GENTRAIN_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && echo {{ secrets.GENTRAIN_PASSWORD }} | sudo -S git pull && docker-compose stop && docker-compose up -d --no-deps --build && exit"
       - name: cleanup
         run: rm -rf ~/.ssh
