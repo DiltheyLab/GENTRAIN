@@ -59,16 +59,17 @@ services:
     networks:
       - caddy
     environment:
-      - VITE_API_BASE_URL=https://api.localhost # Change this to your domain name
+      - VITE_API_BASE_URL=https://api.gentrain.bi.denbi.de
     depends_on:
       backend:
         condition: service_started
 
 volumes:
   # persist data caddy_data
-  caddy_data:
-  # persist config caddy_config:
+  caddy_data: # persist config caddy_config:
+
   caddy_config:
+
 
 networks:
   # Docker network for Caddy
