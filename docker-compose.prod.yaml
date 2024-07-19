@@ -8,8 +8,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    env_file:
-      - .env
     volumes:
       # Mount the host Caddyfile
       - type: bind
@@ -69,7 +67,6 @@ volumes:
   caddy_data: # persist config caddy_config:
 
   caddy_config:
-
 
 networks:
   # Docker network for Caddy
