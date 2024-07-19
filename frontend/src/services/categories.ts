@@ -15,15 +15,16 @@ export const getFlexibleCategoryNames = (data: Array<Array<string>>) => {
     return [flexibleCategoryName1, flexibleCategoryName2, flexibleCategoryName3];
 };
 
-const createGroup = async (name: string, categoryId: number) => {
+const createGroupIfNotExist = async (groupName: string, categoryId: number) => {
+    const existingGroupForName = await db.groups.where({ name: groupName }).first();
     const data = {
-        name: name,
+        name: groupName,
         category_id: categoryId,
     } as GroupSchema;
 
     // Validate the data and throw an error if it is invalid
     const dto = groupRules.parse(data) as GroupSchema;
-    const groupId = await db.groups.add(dto);
+    const groupId = existingGroupForName ? existingGroupForName.id : await db.groups.add(dto);
     return groupId;
 };
 
@@ -68,7 +69,7 @@ export const persistGroupsForCategories = async (flexibleCategoryNames: Array<st
         }
         const categoryId = await persistCategoryIfNotExist(category.name);
         for (const group of category.groups) {
-            groups.push(await createGroup(group, categoryId));
+            groups.push(await createGroupIfNotExist(group, categoryId));
         }
     }
     return groups;

@@ -65,9 +65,38 @@ export const validationStrategies = {
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
+        return {
+            data: caseData,
+            warnings: [],
+        };
     },
-    sampleStrategy: (sampleData: object[]) => {
-        console.log(sampleData);
+    sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
+        const samplesWithoutCase: string[] = [];
+
+        for (const sample of sampleData) {
+            // found case (only import if case exists)
+            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            if (!sampleCase) {
+                samplesWithoutCase.push(sample.fastaId);
+            }
+        }
+
+        // get only sampleds which were not marked as a sample without a case
+        sampleData = sampleData.filter(function (sample) {
+            return !samplesWithoutCase.includes(sample.fastaId);
+        });
+
+        return {
+            data: sampleData,
+            warnings: [
+                {
+                    title: `Hochladbare Sequenzen: ${sampleData.length}`,
+                    description: `Für folgende Sequenzen wurde in der Datenbank kein zugehöriger Fall gefunden, sodass die Sequenzen nicht hochgeladen werden können. ${samplesWithoutCase.join(
+                        ", "
+                    )}`,
+                },
+            ],
+        };
     },
     contactsStrategy: async (contactData: string[][]) => {
         const allCases = await getAllCasesWithRelationships();
@@ -105,5 +134,10 @@ export const validationStrategies = {
         if (existingContacts.length > 0) {
             throw new GentrainException("ContactAlreadyExist", existingContacts);
         }
+
+        return {
+            data: contactData,
+            warnings: [],
+        };
     },
 };

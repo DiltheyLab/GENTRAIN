@@ -70,7 +70,6 @@ export const formatTextInArray = (fileReaderResult: FileReaderResult | FileReade
         if (fileReaderResult.mimetype === "fasta") {
             // fasta header contains fasta id (viral)
             let fastaSquences = Object.values(fileReaderResult)[0].split(/(?=>)/g);
-            fastaSquences.shift();
             let fastaSquenceArray = collectFastaIdsAndContent(fastaSquences);
             return fastaSquenceArray.flat(1);
         } else {
