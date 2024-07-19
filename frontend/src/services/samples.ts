@@ -5,7 +5,7 @@ export const getVariantsForSequence = async (
 ): Promise<{ lineage: string; n_count: number; variants: object }> => {
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/data/nextclade`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fasta_content: `>0\n${sequence}` }),
     });
     let result = await response.json();
