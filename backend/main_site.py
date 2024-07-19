@@ -16,7 +16,7 @@ from flask_cors import CORS
 ################################
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000")
+CORS(app, origins=["https://gentrain.bi.denbi.de", "http://localhost:3000"])
 
 # load config
 config = {}
@@ -37,54 +37,6 @@ if exists(zipcodes_path):
             zipcode_to_city[line[3]] = line[2] + ", " + line[5]
 else:
     print("ERROR: Zipcodes file not found -> will not be able to find cities")
-
-
-################################
-#       Main visual pages      #
-################################
-
-# all of these just render the corresponding template and return the hmtl
-
-
-@app.route("/", methods=["GET"])
-def main_view():
-    return render_template("main_view.html")
-
-
-@app.route("/data", methods=["GET"])
-def data_view():
-    return render_template("data.html")
-
-
-@app.route("/choose_data", methods=["GET"])
-def choose_data_view():
-    return render_template("choose_data.html")
-
-
-@app.route("/export", methods=["GET"])
-def export_view():
-    return render_template("export.html")
-
-
-# @app.route("/similar_cases",methods=["GET"])
-# def similar_cases_view():
-#     return render_template("similar_cases.html")
-
-
-@app.route("/help", methods=["GET"])
-def help_view():
-    return render_template("help.html")
-
-
-@app.route("/contact", methods=["GET"])
-def contact_view():
-    return render_template("contact.html")
-
-
-@app.route("/test", methods=["GET"])
-def test_view():
-    # return a test json
-    return json.dumps({"test": "test"})
 
 
 ################################
