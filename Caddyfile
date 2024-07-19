@@ -1,7 +1,7 @@
 # Backend API (FLASK)
 api.gentrain.bi.denbi.de {
   basicauth {
-    gentrain_admin {$PASSWORD}
+    gentrain_admin $2a$14$J/OzeJTNnLbzYWVuXt3O3.MsCFGSkLWMd8dbqQGg3x5GPn4W5.Et6
   }
   # Reverse proxy to the backend docker container
   reverse_proxy backend:8080
@@ -15,7 +15,7 @@ api.gentrain.bi.denbi.de {
 # Frontend app (React)
 gentrain.bi.denbi.de {
   basicauth {
-    gentrain_admin {$PASSWORD}
+    gentrain_admin $2a$14$J/OzeJTNnLbzYWVuXt3O3.MsCFGSkLWMd8dbqQGg3x5GPn4W5.Et6
   }
   root * /srv
   try_files {path} /index.html
