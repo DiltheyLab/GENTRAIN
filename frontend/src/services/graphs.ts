@@ -104,9 +104,9 @@ export const transformDistanceMatrixToGraphData = (
     const graphCases = cases.filter((caseData) => !!caseData.sample);
     const graph = new WeightedGraph(graphCases.length);
 
+    console.log(matrixDataAssembly);
     for (const rowIndex of graphCases.keys()) {
         const rowCase = graphCases[rowIndex];
-        console.log("row", rowCase.sample?.fasta_id);
 
         for (const columnIndex of graphCases.keys()) {
             const columnCase = graphCases[columnIndex];

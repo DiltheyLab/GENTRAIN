@@ -8,8 +8,8 @@ const addHeadline = (doc: jsPDF) => {
 };
 
 const addGraphAsJpeg = (doc: jsPDF) => {
-    var width = doc.internal.pageSize.getWidth();
-    var graphCanvasElement = document.querySelector(
+    let width = doc.internal.pageSize.getWidth();
+    let graphCanvasElement = document.querySelector(
         "#graph-container .force-graph-container canvas"
     ) as HTMLCanvasElement;
     if (graphCanvasElement) {
