@@ -12,9 +12,7 @@ RUN conda env create -f /app/environment.yaml
 
 # Create a new user 'uwsgi' and set it as the current user
 RUN useradd -m uwsgi
-RUN mkdir -p /app/temp_data
-RUN chown uwsgi /app/temp_data
-
+RUN chown uwsgi /app
 USER uwsgi
 
 # Ensure the Conda environment is activated
@@ -22,7 +20,7 @@ RUN echo "source activate dashboard" > ~/.bashrc
 ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
-COPY --chown=uwsgi . .
+COPY . .
 
 # Declare /app as a mount point
 #VOLUME /app
@@ -30,8 +28,6 @@ COPY --chown=uwsgi . .
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-
 # Run app.py when the container launches using uWSGI
 CMD ["uwsgi", "--ini", "uwsgi.ini"]
-
 
