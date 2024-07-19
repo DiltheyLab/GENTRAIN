@@ -8,6 +8,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    env_file:
+      - .env
     volumes:
       # Mount the host Caddyfile
       - type: bind
