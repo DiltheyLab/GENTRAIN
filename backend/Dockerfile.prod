@@ -14,7 +14,7 @@ RUN conda env create -f /app/environment.yaml
 RUN useradd -m uwsgi
 RUN chown -R uwsgi /app
 RUN chmod -R 755 /app
-USER uwsgi
+USER uwsgi:uwsgi
 
 # Ensure the Conda environment is activated
 RUN echo "source activate dashboard" > ~/.bashrc
