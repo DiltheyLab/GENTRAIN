@@ -11,51 +11,6 @@ export function DistanceMatrixTable() {
     const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
 
-<<<<<<< Updated upstream
-    const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
-        return (
-            <TableCell
-                key={colIndex}
-                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 text-center text-xs ${
-                    hoveredColumn === colIndex && hoveredRow === rowIndex
-                        ? "bg-muted font-bold"
-                        : hoveredColumn === colIndex
-                        ? "bg-muted/20"
-                        : null
-                }`}
-                onMouseEnter={() => {
-                    setHoveredColumn(colIndex);
-                    setHoveredRow(rowIndex);
-                }}
-                onMouseLeave={() => {
-                    setHoveredColumn(undefined);
-                    setHoveredRow(undefined);
-                }}
-            >
-                {cellValue !== -1 ? cellValue : "-"}
-            </TableCell>
-        );
-    };
-
-    const renderRows = () => {
-        if (matrixData) {
-            return matrixData.matrix.map((row, rowIndex) => {
-                return (
-                    <TableRow key={rowIndex} className="border-b-[1px] border-muted p-2">
-                        <TableCell
-                            className={`[&:not(:last-child)]:border-r-[1px] border-muted font-medium p-2 text-center text-xs w-[100px] ${
-                                hoveredRow === rowIndex ? "bg-muted font-bold" : "bg-muted/20"
-                            }`}
-                        >
-                            {matrixData.row_column_names[rowIndex]}
-                        </TableCell>
-                        {row.map((cellValue, colIndex) => {
-                            return renderColumn(cellValue, colIndex, rowIndex);
-                        })}
-                    </TableRow>
-                );
-            });
-=======
     const renderRow = (rowKey: string, rowIndex: number) => {
         if (distanceMatrixAssembly) {
             return (
@@ -94,7 +49,6 @@ export function DistanceMatrixTable() {
                         })}
                 </TableRow>
             );
->>>>>>> Stashed changes
         }
     };
 
@@ -108,21 +62,6 @@ export function DistanceMatrixTable() {
                             <TableBody>
                                 <TableRow className="bg-muted/30 border-muted p-2">
                                     <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
-<<<<<<< Updated upstream
-                                    {matrixData.row_column_names.map((name, index) => (
-                                        <TableCell
-                                            key={key}
-                                            style={{ writingMode: "vertical-rl" }}
-                                            className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 h-[100px] ${
-                                                hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/50"
-                                            }`}
-                                        >
-                                            {key}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                                {renderRows()}
-=======
                                     {Object.keys(distanceMatrixAssembly)
                                         .sort()
                                         .map((key, index) => (
@@ -140,7 +79,6 @@ export function DistanceMatrixTable() {
                                 {Object.keys(distanceMatrixAssembly)
                                     .sort()
                                     .map((key, index) => renderRow(key, index))}
->>>>>>> Stashed changes
                             </TableBody>
                         </Table>
                     </div>
