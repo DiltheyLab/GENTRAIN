@@ -1,27 +1,16 @@
-# Backend API (FLASK) 
-api.gentrain.de {
-  tls philipp_vogel92@outlook.de # Use an email address for certificate notifications like expiration
-  header Access-Control-Allow-Methods "*" # Change this for production
-  header Access-Control-Allow-Origin "*"  # Change this for production
-  header Access-Control-Allow-Headers "*" # Change this for production
-
-  @options {
-    method OPTIONS
-  }
-  respond @options 200
-
+# Backend API (FLASK)
+api.gentrain.bi.denbi.de {
   # Reverse proxy to the backend docker container
   reverse_proxy backend:8080
-  
-  # Log 
+
+  # Log
   log {
     output stdout
   }
 }
 
 # Frontend app (React)
-gentrain.de {
-  tls philipp_vogel92@outlook.de
+gentrain.bi.denbi.de {
   root * /srv
   try_files {path} /index.html
   file_server
