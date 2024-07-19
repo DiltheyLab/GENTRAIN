@@ -16,9 +16,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
           script: |
-            cd ${{ secrets.WORK_DIR }}
+            cd ${{ secrets.GENTRAIN_DIR }}
             git checkout ${{ secrets.MAIN_BRANCH }}
             git pull
             docker-compose stop
