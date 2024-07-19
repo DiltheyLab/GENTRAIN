@@ -1,6 +1,10 @@
 # Use the official Miniconda3 image as the base image
 FROM continuumio/miniconda3:latest
 
+# Create a new user 'uwsgi' and set it as the current user
+RUN useradd uwsgi
+RUN chown -R uwsgi /app
+
 # Set working directory in the container
 WORKDIR /app
 
@@ -10,8 +14,6 @@ COPY environment.yaml .
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f ./environment.yaml
 
-# Create a new user 'uwsgi' and set it as the current user
-RUN useradd -m uwsgi
 USER uwsgi
 
 # Ensure the Conda environment is activated
