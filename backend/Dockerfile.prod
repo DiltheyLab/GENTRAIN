@@ -5,15 +5,14 @@ FROM continuumio/miniconda3:latest
 WORKDIR /app
 
 # Copy the 'environment.yml' file into the container
-COPY environment.yaml .
+COPY environment.yaml /app
 
 # Create a new Conda environment from the 'environment.yml' file
-RUN conda env create -f ./environment.yaml
+RUN conda env create -f /app/environment.yaml
 
 # Create a new user 'uwsgi' and set it as the current user
-RUN useradd uwsgi
-RUN chown -R uwsgi .
-RUN chmod -R 777 ./
+RUN useradd -m uwsgi
+RUN chown -R uswgi .
 USER uwsgi
 
 # Ensure the Conda environment is activated
