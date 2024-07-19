@@ -20,6 +20,7 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
+RUN chmod -R 755 /app
 
 # Declare /app as a mount point
 VOLUME /app
