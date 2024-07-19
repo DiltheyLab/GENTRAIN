@@ -12,7 +12,6 @@ RUN conda env create -f /app/environment.yaml
 
 # Create a new user 'uwsgi' and set it as the current user
 RUN useradd -m uwsgi
-USER uwsgi
 
 # Ensure the Conda environment is activated
 RUN echo "source activate dashboard" > ~/.bashrc
@@ -28,6 +27,8 @@ COPY --chown=uwsgi . .
 EXPOSE 8080
 
 RUN chmod -R 775 /app
+
+USER uwsgi
 
 # Run app.py when the container launches using uWSGI
 CMD ["uwsgi", "--ini", "uwsgi.ini"]
