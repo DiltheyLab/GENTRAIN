@@ -41,6 +41,7 @@ export const persistenceStrategies = {
         });
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
+        const activePathogen = useAppStore.getState().activePathogen;
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
@@ -57,9 +58,8 @@ export const persistenceStrategies = {
                 });
             }
         }
-        const activePathogen = useAppStore.getState().activePathogen;
         if (activePathogen) {
-            persistSampleDistances(activePathogen.id);
+            await persistSampleDistances(activePathogen.id);
         }
     },
     contactsStrategy: async (contactData: string[][]) => {
