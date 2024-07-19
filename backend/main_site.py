@@ -85,7 +85,7 @@ def nextclade():
     fasta_content = request.get_json(force=True)["fasta_content"]
     # create directory if not existent
     temp_dir = "./temp_data/nextclade/"
-    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True, mode=0o777)
+    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
     # Create temporary file names
     fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
@@ -146,7 +146,7 @@ def IMS_to_fasta():
 
     # create directory if not existent
     temp_dir = "./temp_data/samtools/"
-    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True, mode=0o777)
+    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
     # Create temporary file names
     fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
@@ -229,7 +229,7 @@ def usher_nearest_k():
 
     # create directory if not existent
     temp_dir = "./temp_data/usher/"
-    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True, mode=0o777)
+    pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
     # Create temporary file names
     out_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
