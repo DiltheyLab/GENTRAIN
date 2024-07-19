@@ -68,6 +68,7 @@ volumes:
 
   caddy_config:
 
+
 networks:
   # Docker network for Caddy
   caddy:
