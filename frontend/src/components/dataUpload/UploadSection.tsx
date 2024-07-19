@@ -4,6 +4,8 @@ import { validationStrategies } from "@/strategies/fileUpload/validation";
 import { persistenceStrategies } from "@/strategies/fileUpload/persistence";
 import { useAppStore } from "@/stores/app";
 import { useGetPathogenTypeByName } from "@/hooks/database/pathogen_types/useGetAllPathogenTypes";
+import { assembleDistanceMatrix } from "@/services/distanceMatrices";
+import { Button } from "../ui/button";
 
 export const UploadSection = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
@@ -34,6 +36,8 @@ export const UploadSection = () => {
                 validationStrategy={validationStrategies.contactsStrategy}
                 persistenceStrategy={persistenceStrategies.contactsStrategy}
             />
+            <br />
+            <Button onClick={() => assembleDistanceMatrix(1)}>Matrix berechnen</Button>
         </>
     );
 };

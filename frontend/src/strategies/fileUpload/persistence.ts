@@ -6,6 +6,8 @@ import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
+import { getVariantsForSequence } from "@/services/samples";
+import { persistSampleDistances } from "@/services/distanceMatrices";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -42,17 +44,22 @@ export const persistenceStrategies = {
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            // we currently only add samples if a case for the fasta id exists already
+            // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                // we currently only add samples if a case for the fasta id exists already
-                // otherwise there would maximize the necessary amount of variant calculations
+                const variantsResult = await getVariantsForSequence(sample.sequence);
                 await db.samples.add({
                     fasta_id: sample.fastaId,
-                    sequence: sample.sequence,
-                    sampled_at: sampleCase ? sampleCase.registered_at : null,
+                    lineage: variantsResult.lineage,
+                    n_count: variantsResult.n_count,
+                    sequence_length: sample.sequence.length,
+                    variants: variantsResult.variants,
                 });
             }
-            // get fasta data
-            // get variants
+        }
+        const activePathogen = useAppStore.getState().activePathogen;
+        if (activePathogen) {
+            persistSampleDistances(activePathogen.id);
         }
     },
     contactsStrategy: async (contactData: string[][]) => {

@@ -19,6 +19,9 @@ const createOutbreak = async (name: string) => {
  * @returns
  */
 export const getOrPersistOutbreak = async (outbreakName: string) => {
+    if (outbreakName.length === 0) {
+        return null;
+    }
     const existingOutbreakForName = await db.outbreaks.where({ name: outbreakName }).first();
     const outbreakId = existingOutbreakForName ? existingOutbreakForName.id : await createOutbreak(outbreakName);
     return outbreakId;
