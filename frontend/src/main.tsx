@@ -44,11 +44,13 @@ const router = createBrowserRouter([
     },
 ]);
 
-const pathogens = await db.pathogens.toArray();
-const activelyPersistedPathogen = pathogens?.find((pathogen: PathogenSchema) => pathogen.activated_at);
-if (activelyPersistedPathogen) {
-    useAppStore.setState({ activePathogen: activelyPersistedPathogen });
-}
+db.pathogens.toArray().then((response) => {
+    const activelyPersistedPathogen = response.find((pathogen: PathogenSchema) => pathogen.activated_at);
+    if (activelyPersistedPathogen) {
+        useAppStore.setState({ activePathogen: activelyPersistedPathogen });
+    }
+});
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <I18nextProvider i18n={i18next}>
