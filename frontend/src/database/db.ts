@@ -11,6 +11,7 @@ import { GroupSchema } from "./groups";
 import { Pathogens, PathogenSchema } from "./pathogens";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 import { CategorySchema } from "./categories";
+import { AnalysisSchema } from "./analyses";
 import { OutbreakSchema } from "./outbreak";
 
 const db = new Dexie("gentrain") as Dexie & {
@@ -24,6 +25,7 @@ const db = new Dexie("gentrain") as Dexie & {
     pathogens: EntityTable<PathogenSchema, "id">;
     pathogen_types: EntityTable<PathogenTypeSchema, "id">;
     categories: EntityTable<CategorySchema, "id">;
+    analyses: EntityTable<AnalysisSchema, "id">;
     outbreaks: EntityTable<OutbreakSchema, "id">;
 };
 
@@ -43,6 +45,7 @@ db.version(1).stores({
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, created_at, updated_at",
+    analyses: "++id, name, settings, created_at, updated_at",
     outbreaks: "++id, name, created_at, updated_at",
 });
 

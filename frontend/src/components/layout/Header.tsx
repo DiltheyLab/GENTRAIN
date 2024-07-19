@@ -26,6 +26,12 @@ export const Header = () => {
                     Dashboard
                 </Link>
                 <Link
+                    to="/outbreak-analysis"
+                    className={`${isSelected("/outbreak-analysis")} transition-colors hover:text-foreground`}
+                >
+                    Ausbruchsanalyse
+                </Link>
+                <Link
                     to="/data-upload"
                     className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
                 >
@@ -48,10 +54,19 @@ export const Header = () => {
                             <Package2 className="h-6 w-6" />
                             <span className="sr-only">Gentrain</span>
                         </Link>
-                        <Link to="/" className="hover:text-foreground">
+                        <Link to="/" className={`${isSelected("/")} transition-colors hover:text-foreground`}>
                             Dashboard
                         </Link>
-                        <Link to="/data-upload" className="text-muted-foreground hover:text-foreground">
+                        <Link
+                            to="/outbreak-analysis"
+                            className={`${isSelected("/outbreak-analysis")} transition-colors hover:text-foreground`}
+                        >
+                            Ausbruchsanalyse
+                        </Link>
+                        <Link
+                            to="/data-upload"
+                            className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
+                        >
                             Daten
                         </Link>
                         <Link to="#" className="text-muted-foreground hover:text-foreground">

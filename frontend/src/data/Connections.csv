@@ -1,4 +1,4 @@
-case_id_1;case_id_2;type;context
+Case Id 1;Case Id 2;Type;Context
 CVD2021-24928;CVD2021-24923;Outbreak;Test context
 CVD2021-24928;CVD2021-24923;Same adress, differend family name;Test context
 CVD2021-25156;CVD2021-25130;Outbreak;Test context
