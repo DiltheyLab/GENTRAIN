@@ -76,7 +76,7 @@ export const BackgroundSelection = () => {
                 }
                 groupBy="group"
             />
-            <div className="flex flex-row items-center gap-3">
+            {/*             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="ignoreBackground"
                     checked={analysisStore.settings.ignoreBackground}
@@ -85,7 +85,7 @@ export const BackgroundSelection = () => {
                 <Label htmlFor="ignoreBackground" className="font-normal text-base">
                     Alle Daten als Background verwenden
                 </Label>
-            </div>
+            </div> */}
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="ignoreBackground"
