@@ -16,7 +16,7 @@ from flask_cors import CORS
 ################################
 
 app = Flask(__name__)
-CORS(app, origins=["https://gentrain.bi.denbi.de", "http://localhost:3000"])
+# CORS(app, origins=["https://gentrain.bi.denbi.de", "http://localhost:3000"])
 
 # load config
 config = {}
