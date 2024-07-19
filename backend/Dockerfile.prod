@@ -4,6 +4,9 @@ FROM continuumio/miniconda3:latest
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml .
 
+# Set working directory in the container
+WORKDIR /app
+
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /app/environment.yaml
 
@@ -17,9 +20,6 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
-
-# Set working directory in the container
-WORKDIR /app
 
 # Declare /app as a mount point
 #VOLUME /app
