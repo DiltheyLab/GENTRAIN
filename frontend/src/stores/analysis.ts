@@ -10,9 +10,14 @@ type GroupColoration = {
     disableColoration: boolean;
 }[];
 
+export type SelectedBackground = {
+    outbreaks: OutbreakSchema[];
+    groups: GroupSchema[];
+};
+
 export type AnalysisSettings = {
     selectedOutbreak: OutbreakSchema | null;
-    selectedBackground: GroupSchema[];
+    selectedBackground: SelectedBackground | null;
     ignoreBackground: boolean;
     addCasesWithLowGeneticDistance: boolean;
     startDate: Date;
@@ -37,7 +42,7 @@ export interface AnalysisStore {
 
 export const defaultSettings: AnalysisSettings = {
     selectedOutbreak: null,
-    selectedBackground: [],
+    selectedBackground: null,
     ignoreBackground: false,
     addCasesWithLowGeneticDistance: false,
     startDate: new Date(),

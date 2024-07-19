@@ -13,6 +13,9 @@ export interface Option {
     disable?: boolean;
     /** fixed option that can't be removed. */
     fixed?: boolean;
+    group: string;
+    id: string;
+    category_id?: string;
     /** Group the options by providing key. */
     [key: string]: string | boolean | undefined;
 }
