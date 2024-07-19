@@ -19,6 +19,12 @@ const createOutbreak = async (name: string) => {
  * @returns
  */
 export const getOrPersistOutbreak = async (outbreakName: string) => {
+<<<<<<< Updated upstream
+=======
+    if (!outbreakName) {
+        return null;
+    }
+>>>>>>> Stashed changes
     const existingOutbreakForName = await db.outbreaks.where({ name: outbreakName }).first();
     const outbreakId = existingOutbreakForName ? existingOutbreakForName.id : await createOutbreak(outbreakName);
     return outbreakId;

@@ -34,6 +34,10 @@ export const UploadSection = () => {
                 validationStrategy={validationStrategies.contactsStrategy}
                 persistenceStrategy={persistenceStrategies.contactsStrategy}
             />
+<<<<<<< Updated upstream
+=======
+            <br />
+>>>>>>> Stashed changes
         </>
     );
 };

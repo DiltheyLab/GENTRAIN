@@ -1,7 +1,13 @@
+<<<<<<< Updated upstream
 import { DistanceMatrixSchema } from "@/database/distance_matrix";
 import { SampleSchema } from "@/database/samples";
+=======
+import { CaseSchema, CaseWithRelationships } from "@/database/cases";
+import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+>>>>>>> Stashed changes
 import { CustomLink, CustomNode, Filter, GraphData } from "@/stores/graph";
 import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
+import { assembleDistanceMatrix } from "./distanceMatrices";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -73,8 +79,11 @@ export const transformDistanceMatrixToGraphData = (
     if (!matrixData || samples.length === 0) {
         return { nodes: [], links: [] };
     }
+<<<<<<< Updated upstream
 
     let graph = new WeightedGraph(matrixData.matrix.length);
+=======
+>>>>>>> Stashed changes
 
     // Preprocess samples into a lookup table for filtering
     const sampleGroupLookup = samples.reduce((acc, sample) => {
@@ -86,8 +95,23 @@ export const transformDistanceMatrixToGraphData = (
     // add weighted graph edges for every column-row-pair of the distance matrix
     // note that every pair is only iterated once
     // and that if a filter is set, only edges that are part of an outbreak are added
+<<<<<<< Updated upstream
     for (let row = 0; row < matrixData.row_column_names.length - 1; row++) {
         for (let column = row + 1; column < matrixData.row_column_names.length; column++) {
+=======
+    const graphCases = cases.filter((caseData) => !!caseData.sample);
+    const graph = new WeightedGraph(graphCases.length);
+
+    for (const rowIndex of graphCases.keys()) {
+        const rowCase = graphCases[rowIndex];
+        console.log("row", rowCase.sample?.fasta_id);
+
+        for (const columnIndex of graphCases.keys()) {
+            const columnCase = graphCases[columnIndex];
+
+            if (!rowCase.sample || !columnCase.sample || rowCase.case_id === columnCase.case_id) continue;
+
+>>>>>>> Stashed changes
             // if filter is set to outbreaks, only show edges that are part of an outbreak
             if (filter === "outbreaks") {
                 // get the group (e.g. outbreak_1) of the samples
@@ -98,8 +122,21 @@ export const transformDistanceMatrixToGraphData = (
                     continue;
                 }
             }
+<<<<<<< Updated upstream
             // add an edge for every distance
             graph.addEdge(new Edge(row, column, matrixData.matrix[row][column]));
+=======
+
+            console.log(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id]);
+            console.log("col", columnCase.sample?.fasta_id);
+
+            // cases may not consist of a related samples
+            // also the distance matrix assembly does not provide a distance to the currently iterated case itself
+            // we therefore skip cases without related samples and the currently iterated case
+            graph.addEdge(
+                new Edge(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id])
+            );
+>>>>>>> Stashed changes
         }
     }
 
@@ -110,6 +147,7 @@ export const transformDistanceMatrixToGraphData = (
     const groupToColor = getGroupToColor(samples, "group");
 
     // create node objects
+<<<<<<< Updated upstream
     let nodes = matrixData.row_column_names.map((name) => {
         const sampleMetaData = samples.find((sample) => name === sample.fasta_id);
         const group = sampleMetaData?.group || "No Group";
@@ -121,9 +159,26 @@ export const transformDistanceMatrixToGraphData = (
         } satisfies CustomNode;
     }) as CustomNode[];
 
+=======
+    let nodes = graphCases.map((caseData) => {
+        const outbreakName = caseData?.outbreak?.name || "Background";
+        return {
+            id: caseData.sample ? caseData.sample.fasta_id : "",
+            group: caseData.outbreak ? caseData.outbreak.name : "Background", // TODO: rename this field to "outbreak"
+            //group: sampleGroupLookup[caseData.case_id].group,
+            color: groupToColor[outbreakName],
+            registeredAt: sampleGroupLookup[caseData.case_id].registered_at,
+        } satisfies CustomNode;
+    });
+>>>>>>> Stashed changes
     // create link objects
     const graphLinks = mstEdges.map((edge) => {
-        return { source: nodes[edge["v"]].id, target: nodes[edge["w"]].id, value: edge["weight"], type: "Solid" };
+        return {
+            source: nodes[edge["v"]].id,
+            target: nodes[edge["w"]].id,
+            value: edge["weight"],
+            type: "Solid",
+        };
     }) as CustomLink[];
 
     // if filter is set to outbreaks, only show nodes that are part of an outbreak

@@ -9,6 +9,7 @@ export function DistanceMatrixTable() {
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
     const matrixData = useGetDistanceMatrixByPathogenId(activePathogen?.id);
 
+<<<<<<< Updated upstream
     const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
         return (
             <TableCell
@@ -52,6 +53,46 @@ export function DistanceMatrixTable() {
                     </TableRow>
                 );
             });
+=======
+    const renderRow = (rowKey: string, rowIndex: number) => {
+        if (distanceMatrixAssembly) {
+            return (
+                <TableRow key={rowKey}>
+                    <TableCell
+                        key={rowKey}
+                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs w-[100px] ${
+                            hoveredRow === rowIndex ? "bg-muted font-bold" : "bg-muted/50"
+                        }`}
+                    >
+                        {rowKey}
+                    </TableCell>
+                    {Object.keys(distanceMatrixAssembly)
+                        .sort()
+                        .map((colKey, colIndex) => {
+                            return (
+                                <TableCell
+                                    key={colKey}
+                                    className={`[&:not(:last-child)]:border-r-[1px] border-muted font-medium p-2 text-center text-xs hover:font-bold ${
+                                        hoveredRow === rowIndex || hoveredColumn === colIndex
+                                            ? "bg-muted"
+                                            : "bg-muted/20"
+                                    }`}
+                                    onMouseEnter={() => {
+                                        setHoveredColumn(colIndex);
+                                        setHoveredRow(rowIndex);
+                                    }}
+                                    onMouseLeave={() => {
+                                        setHoveredColumn(undefined);
+                                        setHoveredRow(undefined);
+                                    }}
+                                >
+                                    {distanceMatrixAssembly[rowKey][colKey] ?? "-"}
+                                </TableCell>
+                            );
+                        })}
+                </TableRow>
+            );
+>>>>>>> Stashed changes
         }
     };
 
@@ -65,6 +106,7 @@ export function DistanceMatrixTable() {
                             <TableBody>
                                 <TableRow className="bg-muted/30 border-muted p-2">
                                     <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
+<<<<<<< Updated upstream
                                     {matrixData.row_column_names.map((name, index) => (
                                         <TableCell
                                             key={index}
@@ -78,6 +120,25 @@ export function DistanceMatrixTable() {
                                     ))}
                                 </TableRow>
                                 {renderRows()}
+=======
+                                    {Object.keys(distanceMatrixAssembly)
+                                        .sort()
+                                        .map((key, index) => (
+                                            <TableCell
+                                                key={key}
+                                                style={{ writingMode: "vertical-rl" }}
+                                                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 h-[100px] ${
+                                                    hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/50"
+                                                }`}
+                                            >
+                                                {key}
+                                            </TableCell>
+                                        ))}
+                                </TableRow>
+                                {Object.keys(distanceMatrixAssembly)
+                                    .sort()
+                                    .map((key, index) => renderRow(key, index))}
+>>>>>>> Stashed changes
                             </TableBody>
                         </Table>
                     </div>
