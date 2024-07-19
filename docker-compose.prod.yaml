@@ -11,7 +11,7 @@ services:
     volumes:
       # Mount the host Caddyfile
       - type: bind
-        source: ./Caddyfile.dev # change this to Caddyfile for production!
+        source: ./Caddyfile
         target: /etc/caddy/Caddyfile
         read_only: true
       - type: bind
