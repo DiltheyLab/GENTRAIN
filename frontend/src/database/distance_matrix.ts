@@ -9,7 +9,13 @@ export interface DistanceMatrixSchema {
     updated_at?: string;
 }
 
-export const getDistanceMatrixByPathogenId = (pathogen_id: number): Promise<DistanceMatrixSchema | undefined> => {
-    const distanceMatrixForActivePathogen = db.distance_matrix.where({ pathogen_id: pathogen_id }).first();
+export interface DistanceMatrixAssembly {
+    [row_sample_id: string]: { [col_sample_id: string]: number };
+}
+
+export const getDistanceMatrixByPathogenIdOld = async (
+    pathogen_id: number
+): Promise<DistanceMatrixSchema | undefined> => {
+    const distanceMatrixForActivePathogen = await db.distance_matrix.where({ pathogen_id: pathogen_id }).first();
     return distanceMatrixForActivePathogen;
 };

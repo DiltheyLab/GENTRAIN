@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useAppStore } from "@/stores/app";
 import { useState } from "react";
@@ -7,7 +8,8 @@ export function DistanceMatrixTable() {
     const activePathogen = useAppStore((state) => state.activePathogen);
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
-    const matrixData = useGetDistanceMatrixByPathogenId(activePathogen?.id);
+    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
+    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
 
 <<<<<<< Updated upstream
     const renderColumn = (cellValue: number, colIndex: number, rowIndex: number) => {
@@ -98,9 +100,9 @@ export function DistanceMatrixTable() {
 
     return (
         <>
-            {matrixData && (
+            {distanceMatrix && distanceMatrixAssembly && (
                 <>
-                    <small>Letzte Änderung: {matrixData.updated_at?.toLocaleString()}</small>
+                    <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
                         <Table>
                             <TableBody>
@@ -109,13 +111,13 @@ export function DistanceMatrixTable() {
 <<<<<<< Updated upstream
                                     {matrixData.row_column_names.map((name, index) => (
                                         <TableCell
-                                            key={index}
+                                            key={key}
                                             style={{ writingMode: "vertical-rl" }}
                                             className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 h-[100px] ${
-                                                hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/20"
+                                                hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/50"
                                             }`}
                                         >
-                                            {name}
+                                            {key}
                                         </TableCell>
                                     ))}
                                 </TableRow>

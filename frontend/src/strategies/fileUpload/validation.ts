@@ -65,11 +65,11 @@ export const validationStrategies = {
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
+        return {
+            data: caseData,
+            warnings: [],
+        };
     },
-<<<<<<< Updated upstream
-    sampleStrategy: (sampleData: object[]) => {
-        console.log(sampleData);
-=======
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
 
@@ -97,7 +97,6 @@ export const validationStrategies = {
                 },
             ],
         };
->>>>>>> Stashed changes
     },
     contactsStrategy: async (contactData: string[][]) => {
         const allCases = await getAllCasesWithRelationships();
@@ -135,5 +134,10 @@ export const validationStrategies = {
         if (existingContacts.length > 0) {
             throw new GentrainException("ContactAlreadyExist", existingContacts);
         }
+
+        return {
+            data: contactData,
+            warnings: [],
+        };
     },
 };

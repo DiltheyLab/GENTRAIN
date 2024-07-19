@@ -27,11 +27,11 @@ export const getVariantsForSequence = async (
 };
 
 export function samplesByFastaId(samples: SampleSchema[]) {
-    const samples_dict: { [fastaId: string]: SampleSchema } = {};
+    const sampleDict: { [fastaId: string]: SampleSchema } = {};
     for (const sample of samples) {
-        samples_dict[sample.fasta_id] = sample;
+        sampleDict[sample.fasta_id] = sample;
     }
-    return samples_dict;
+    return sampleDict;
 }
 {
 }
