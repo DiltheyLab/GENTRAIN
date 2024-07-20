@@ -42,8 +42,6 @@ export const DashboardVisualizationPanel = () => {
     }, [graphStore.data]);
 
     const getGraph = () => {
-        // temporarely disable graph since lib is not working on prod
-        return null;
         if (graphStore.settings.graphDimension === "2D" && width && height) {
             return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
         } else if (graphStore.settings.graphDimension === "3D" && width && height) {
