@@ -28,5 +28,4 @@ COPY . .
 EXPOSE 8080
 
 # Run app.py when the container launches using uWSGI
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
-
+ENTRYPOINT ["/app/init_prod.sh"]
