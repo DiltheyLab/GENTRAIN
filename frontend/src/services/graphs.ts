@@ -1,7 +1,7 @@
 import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CustomLink, CustomNode, Filter, GraphData } from "@/stores/graph";
-import jsgraphs from "js-graph-algorithms";
+import { Edge, KruskalMST, WeightedGraph } from "js-graph-algorithms";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -102,7 +102,7 @@ export const transformDistanceMatrixToGraphData = (
     // and that if a filter is set, only edges that are part of an outbreak are added
 
     const graphCases = cases.filter((caseData) => !!caseData.sample);
-    const graph = new jsgraphs.WeightedGraph(graphCases.length);
+    const graph = new WeightedGraph(graphCases.length);
 
     console.log(matrixDataAssembly);
     for (const rowIndex of graphCases.keys()) {
@@ -128,17 +128,13 @@ export const transformDistanceMatrixToGraphData = (
             // also the distance matrix assembly does not provide a distance to the currently iterated case itself
             // we therefore skip cases without related samples and the currently iterated case
             graph.addEdge(
-                new jsgraphs.Edge(
-                    rowIndex,
-                    columnIndex,
-                    matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id]
-                )
+                new Edge(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id])
             );
         }
     }
 
     // calculate edges that are in the mst by using kruskal's algorithm
-    const kruskal = new jsgraphs.KruskalMST(graph);
+    const kruskal = new KruskalMST(graph);
     const mstEdges = kruskal.mst;
 
     const groupToColor = getGroupToColor(cases, "outbreak_id");
