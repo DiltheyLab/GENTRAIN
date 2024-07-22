@@ -50,3 +50,12 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
+    - name: Slack Notification
+      uses: act10ns/slack@v1
+      env:
+        SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+      with: 
+        status: ${{ job.status }}
+        channel: '#github-deployments'
+        message: Successful Production Deployment
+      if: always()
