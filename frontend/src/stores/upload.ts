@@ -1,22 +1,31 @@
 import { create } from "zustand";
 
-interface UploadState {
-    sampleUploads: { [fastaId: string]: string };
-    addSampleUpload: (fastaId: string) => void;
-    updateSampleUpload: (fastaId: string, status: string) => void;
+interface SampleUploadState {
+    uploading: boolean;
+    pendingUploads: string[];
+    finishedUploads: string[];
+    addPendingUpload: (fastaIds: string) => void;
+    setUploading: (value: boolean) => void;
+    addFinishedUpload: (fastaIds: string) => void;
 }
 
-export const useUploadStore = create<UploadState>((set, get) => ({
-    sampleUploads: {},
-    addSampleUpload: (fastaId: string) => {
-        const sampleUploads = get().sampleUploads;
-        sampleUploads[fastaId] = "pending";
-        set({ sampleUploads: sampleUploads });
+export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
+    uploading: false,
+    pendingUploads: [],
+    finishedUploads: [],
+    setUploading: (value: boolean) => {
+        set({ uploading: value });
     },
-    updateSampleUpload: (fastaId: string, status: string) => {
-        console.log(fastaId, status);
-        const sampleUploads = get().sampleUploads;
-        sampleUploads[fastaId] = status;
-        set({ sampleUploads: sampleUploads });
+    addPendingUpload: (fastaId: string) => {
+        const updatedPendingUploads = get().pendingUploads;
+        updatedPendingUploads.push(fastaId);
+        set({ pendingUploads: updatedPendingUploads.sort() });
+    },
+    addFinishedUpload: (fastaId: string) => {
+        const updatedPendingUploads = get().pendingUploads.filter((pendingId) => pendingId !== fastaId);
+        const updatedFinishedUploads = get().finishedUploads;
+        updatedFinishedUploads.push(fastaId);
+        set({ pendingUploads: updatedPendingUploads.sort() });
+        set({ finishedUploads: updatedFinishedUploads.sort() });
     },
 }));

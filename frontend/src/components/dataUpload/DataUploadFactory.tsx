@@ -145,7 +145,11 @@ export const FileUploadFactory = ({
                     dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
                 ></small>
             )}
-            {type === "samples" && <SampleUploadStatus />}
+            {type === "samples" && (
+                <div>
+                    <SampleUploadStatus />
+                </div>
+            )}
         </>
     );
 };

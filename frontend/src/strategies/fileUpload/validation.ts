@@ -1,7 +1,7 @@
 import { CaseSchema, getAllCasesWithRelationships } from "@/database/cases";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
-import { useUploadStore } from "@/stores/upload";
+import { useSampleUploadStore } from "@/stores/upload";
 
 const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
 const contactColumnNames = ["Case Id 1", "Case Id 2", "Type", "Context"];
@@ -80,7 +80,7 @@ export const validationStrategies = {
             if (!sampleCase) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                useUploadStore.getState().addSampleUpload(sample.fastaId);
+                useSampleUploadStore.getState().addPendingUpload(sample.fastaId);
             }
         }
 
