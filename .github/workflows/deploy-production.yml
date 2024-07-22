@@ -50,15 +50,6 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
-      - name: Slack Notification
-        uses: act10ns/slack@v1
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-          channel: "#github-deployments"
-          message: Successful Production Deployment
-        if: always()
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
@@ -67,7 +58,7 @@ jobs:
         with:
           status: ${{ job.status }}
           notify_when: "success"
-          notification_title: "{workflow} Success"
+          notification_title: "Successful Production Deployment"
       - name: Notify Slack Action Failure
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
@@ -76,4 +67,4 @@ jobs:
         with:
           status: ${{ job.status }}
           notify_when: "failure"
-          notification_title: "{workflow} Failure"
+          notification_title: "Failed Production Deployment"
