@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { type GraphData, useGraphStore } from "@/stores/graph";
-import { useGetDistanceMatrixByPathogenIdOld } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 

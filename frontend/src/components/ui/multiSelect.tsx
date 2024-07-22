@@ -281,7 +281,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         const CreatableItem = () => {
             if (!creatable) return undefined;
             if (
-                isOptionsExist(options, [{ value: inputValue, label: inputValue }]) ||
+                isOptionsExist(options, [{ value: inputValue, label: inputValue, group: "", id: "" }]) ||
                 selected.find((s) => s.value === inputValue)
             ) {
                 return undefined;
@@ -301,7 +301,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                             return;
                         }
                         setInputValue("");
-                        const newOptions = [...selected, { value, label: value }];
+                        const newOptions = [...selected, { value, label: value, group: "", id: "" }];
                         setSelected(newOptions);
                         onChange?.(newOptions);
                     }}

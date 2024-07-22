@@ -1,41 +1,55 @@
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
+import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef } from "react";
+import { deepCopyData } from "@/lib/utils";
 import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
-import { useGetAllSamples } from "@/hooks/database/samples/useGetAllSamples";
 import { type GraphData, useGraphStore } from "@/stores/graph";
+import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const graphStore = useGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
-    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
-    const samples = useGetAllSamples();
+    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+
+    const cases = useGetAllCasesWithRelationships();
 
     useEffect(() => {
-        if (!distanceMatrix || !samples) {
+        if (!distanceMatrixAssembly || !cases) {
             graphStore.updateData({ nodes: [], links: [] });
             return;
         }
 
-        const graphData = transformDistanceMatrixToGraphData(distanceMatrix, samples, graphStore.settings.filter);
+        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases, graphStore.settings.filter);
 
         // Update the graph settings with the new graph data
         graphStore.updateData(graphData);
-    }, [samples, distanceMatrix, graphStore.settings.filter]);
+    }, [cases, distanceMatrixAssembly, graphStore.settings.filter]);
 
-    // useMemo to prevent unnecessary re-renders
-    const graphDataCopy = useMemo(() => graphStore.data, [graphStore.settings]);
+    // Creating deep copy of the graph data for each graph component and
+    // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
+    // from beginning after every rerendering
+    const graphDataCopy = useMemo(() => {
+        return deepCopyData(graphStore.data);
+    }, [graphStore.data]);
+
+    const getGraph = () => {
+        if (graphStore.settings.graphDimension === "2D" && width && height) {
+            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+        } else if (graphStore.settings.graphDimension === "3D" && width && height) {
+            return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+        }
+    };
 
     const getLegend = () => {
         const nodes = graphStore.data.nodes;
-
         if (graphStore.settings.coloring === "normal" || graphStore.settings.coloring === "outbreaks") {
             const uniqueGroups = nodes.filter((group, index, self) => {
                 return index === self.findIndex((t) => t.group === group.group);
@@ -46,13 +60,13 @@ export const AnalysisVisualizationPanel = () => {
                     <p>{node.group}</p>
                 </div>
             ));
-        } else if (graphStore.settings.coloring === "sampled_at") {
+        } else if (graphStore.settings.coloring === "registered_at") {
             const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
 
             return uniqueSamplingTimes.map((node) => (
-                <div className="flex items-center gap-2" key={node.sampledAt}>
+                <div className="flex items-center gap-2" key={node.registeredAt}>
                     <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.sampledAt || "Kein Datum angegeben"}</p>
+                    <p>{node.registeredAt || "Kein Datum angegeben"}</p>
                 </div>
             ));
         }
@@ -76,7 +90,7 @@ export const AnalysisVisualizationPanel = () => {
                 </div>
             </fieldset>
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />
+                {getGraph()}
             </div>
         </div>
     );
