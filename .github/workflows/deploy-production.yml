@@ -59,3 +59,5 @@ jobs:
           status: ${{ job.status }}
           notify_when: "success,failure"
           notification_title: "Production Deployment"
+          icon_success: 🚀
+          icon_failure: 💥
