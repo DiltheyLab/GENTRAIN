@@ -59,3 +59,21 @@ jobs:
           channel: "#github-deployments"
           message: Successful Production Deployment
         if: always()
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "success"
+          notification_title: "{workflow} Success"
+      - name: Notify Slack Action Failure
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "{workflow} Failure"
