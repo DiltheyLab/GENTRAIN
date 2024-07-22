@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_pull:
+  production_deployment:
     name: Production Deployment
     runs-on: ubuntu-latest
 
