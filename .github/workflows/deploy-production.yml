@@ -28,6 +28,7 @@ jobs:
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker image prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
