@@ -57,14 +57,4 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notify_when: "success"
-          notification_title: "Successful Production Deployment"
-      - name: Notify Slack Action Failure
-        uses: ravsamhq/notify-slack-action@2.3.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-          notification_title: "Failed Production Deployment"
+          notify_when: "success,failure"
