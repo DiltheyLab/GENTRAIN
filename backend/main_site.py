@@ -17,8 +17,11 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-# TODO: detect environment for local development cors
-# CORS(app, origins=["https://gentrain.bi.denbi.de", "http://localhost:3000"])
+if os.environ.get("FLASK_ENV") == "local":
+    CORS(app, origins=["http://localhost:3000"])
+
+for key, value in os.environ.items():
+    print(f"{key}: {value}")
 
 # load config
 config = {}
