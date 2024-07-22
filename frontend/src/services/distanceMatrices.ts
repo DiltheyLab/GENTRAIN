@@ -6,15 +6,15 @@ import { SampleSchema } from "@/database/samples";
 import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 
-function get_positions_of_variants(sample: any) {
+function get_positions_of_letiants(sample: any) {
     // return val
-    var positions: any = {};
+    let positions: any = {};
     let info;
     // Deletions
-    for (const i in sample["variants"]["deletions"]) {
-        var variant = sample["variants"]["deletions"][i];
-        var start = variant["start"];
-        var len = variant["length"];
+    for (const i in sample["letiants"]["deletions"]) {
+        let letiant = sample["letiants"]["deletions"][i];
+        let start = letiant["start"];
+        let len = letiant["length"];
 
         // add each position of a deletion on its own
         for (let j = start; j < start + len; j++) {
@@ -27,37 +27,37 @@ function get_positions_of_variants(sample: any) {
     }
 
     // Insertions
-    for (const i in sample["variants"]["insertions"]) {
-        var variant = sample["variants"]["insertions"][i];
-        var pos = variant["pos"];
+    for (const i in sample["letiants"]["insertions"]) {
+        let letiant = sample["letiants"]["insertions"][i];
+        let pos = letiant["pos"];
 
         info = {
             type: "ins",
-            mut: variant["ins"],
+            mut: letiant["ins"],
         };
         pos in positions ? positions[pos].push(info) : (positions[pos] = [info]);
     }
 
     // Substitutions
-    for (const i in sample["variants"]["substitutions"]) {
+    for (const i in sample["letiants"]["substitutions"]) {
         // { refNuc: "C", pos: 240, queryNuc: "T", … }
-        var variant = sample["variants"]["substitutions"][i];
-        var pos = variant["pos"];
+        let letiant = sample["letiants"]["substitutions"][i];
+        let pos = letiant["pos"];
 
         info = {
             type: "snp",
-            mut: variant["queryNuc"],
+            mut: letiant["queryNuc"],
         };
         pos in positions ? positions[pos].push(info) : (positions[pos] = [info]);
     }
 
     // Ns
-    for (const i in sample["variants"]["missing"]) {
+    for (const i in sample["letiants"]["missing"]) {
         // { begin: 28881, end: 28883, character: "N" }
-        var variant = sample["variants"]["missing"][i];
-        var start = variant["begin"];
-        var end = variant["end"];
-        var char = variant["character"];
+        let letiant = sample["letiants"]["missing"][i];
+        let start = letiant["begin"];
+        let end = letiant["end"];
+        let char = letiant["character"];
 
         // add each position of a N block separately
         for (let j = start; j < end; j++) {
@@ -70,12 +70,12 @@ function get_positions_of_variants(sample: any) {
     }
 
     // other ambious characters
-    for (const i in sample["variants"]["nonACGTNs"]) {
+    for (const i in sample["letiants"]["nonACGTNs"]) {
         // { begin: 60, end: 61, character: "Y" }
-        var variant = sample["variants"]["nonACGTNs"][i];
-        var start = variant["begin"];
-        var end = variant["end"];
-        var char = variant["character"];
+        let letiant = sample["letiants"]["nonACGTNs"][i];
+        let start = letiant["begin"];
+        let end = letiant["end"];
+        let char = letiant["character"];
 
         // add each position of a ambig char block separately
         for (let j = start; j < end; j++) {
@@ -88,7 +88,7 @@ function get_positions_of_variants(sample: any) {
     }
 
     // Start of alignment
-    for (let i = 0; i < sample["variants"]["alignmentStart"]; i++) {
+    for (let i = 0; i < sample["letiants"]["alignmentStart"]; i++) {
         // add dels until sequence starts
         info = {
             type: "del",
@@ -98,7 +98,7 @@ function get_positions_of_variants(sample: any) {
     }
 
     // End of alignment
-    for (let i = sample["variants"]["alignmentEnd"]; i < referenceString.length; i++) {
+    for (let i = sample["letiants"]["alignmentEnd"]; i < referenceString.length; i++) {
         // add dels until reference sequence ends
         info = {
             type: "del",
@@ -112,21 +112,21 @@ function get_positions_of_variants(sample: any) {
 
 async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
     // add bases into here
-    var alignment = ["", ""];
+    let alignment = ["", ""];
 
     // get dict of position to mutation
-    var positions_s1 = get_positions_of_variants(sample1);
-    var positions_s2 = get_positions_of_variants(sample2);
-    var positions = [positions_s1, positions_s2];
+    let positions_s1 = get_positions_of_letiants(sample1);
+    let positions_s2 = get_positions_of_letiants(sample2);
+    let positions = [positions_s1, positions_s2];
 
     // check all mutations for every position on the reference string
     // and add the correct bases to the alignment
     for (let i = 0; i < referenceString.length; i++) {
         // added if no mutation or only insertion
-        var ref_char = referenceString[i];
+        let ref_char = referenceString[i];
 
         // will be added to alignment after all mutations have been looked at
-        var add_chars = ["", ""];
+        let add_chars = ["", ""];
 
         // for both sequences
         for (let idx_seq = 0; idx_seq < 2; idx_seq++) {
@@ -139,7 +139,7 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
             //  for every mutation of this sequence (should be max 2)
             for (let idx_mut = 0; idx_mut < positions[idx_seq][i].length; idx_mut++) {
                 // current mutation
-                var mutation = positions[idx_seq][i][idx_mut];
+                let mutation = positions[idx_seq][i][idx_mut];
 
                 // ############################################################
                 // point mutations or ambig chars
@@ -153,13 +153,13 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
                 // either add nothing (del on both seqs) or add "-"
                 if (mutation["type"] == "del") {
                     // was a deletion found in the other sequence
-                    var found = false;
+                    let found = false;
 
                     // if already second seq then was not in first (and second seq has mutations at this pos)
                     if (idx_seq == 0 && !(typeof positions[idx_seq + 1][i] === "undefined")) {
                         // for every mutaion on the second seq
                         for (let idx_mut_2 = 0; idx_mut_2 < positions[idx_seq + 1][i].length; idx_mut_2++) {
-                            var mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
+                            let mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
 
                             // if seq 2 also has the same del then addchars should stay ""
                             if ((mutation_2["type"] = "del")) {
@@ -183,13 +183,13 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
                 // either add ins and "-" to other seq or align two ins with kalign
                 if (mutation["type"] == "ins") {
                     // was a insertion found in the other sequence
-                    var found = false;
+                    let found = false;
 
                     // if already second seq then was not in first (and second seq has mutations at this pos)
                     if (idx_seq == 0 && !(typeof positions[idx_seq + 1][i] === "undefined")) {
                         // for every mutaion on the second seq
                         for (let idx_mut_2 = 0; idx_mut_2 < positions[idx_seq + 1][i].length; idx_mut_2++) {
-                            var mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
+                            let mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
 
                             // if seq 2 also has an insertion align them with kalign
                             if ((mutation_2["type"] = "ins")) {
@@ -200,7 +200,7 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
                                 const fasta_string = `>1\n${mutation["mut"]}\n>2\n${mutation_2["mut"]}`;
 
                                 // mount fasta string as file
-                                var result = await cli.mount({
+                                let result = await cli.mount({
                                     name: "distance_input.fa",
                                     data: fasta_string,
                                 });
@@ -291,14 +291,14 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
  */
 async function calculate_single_distance(sample1: SampleSchema, sample2: SampleSchema, cli: any) {
     // create pseudoalignment
-    var alignment = await align_from_nextclade(sample1, sample2, cli);
+    let alignment = await align_from_nextclade(sample1, sample2, cli);
 
     // count of proper characters per sequence (so that in the beginning and end the first/last x chars can be skipped)
-    var proper_total_1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
-    var proper_total_2 = (sample2.sequence_length ?? 0) - (sample2.n_count ?? 0);
+    let proper_total_1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
+    let proper_total_2 = (sample2.sequence_length ?? 0) - (sample2.n_count ?? 0);
 
     // find all differences
-    var distance = count_differences(alignment, proper_total_1, proper_total_2);
+    let distance = count_differences(alignment, proper_total_1, proper_total_2);
     return distance;
 }
 // function calculate_full_distancematrix() {
@@ -317,10 +317,10 @@ async function calculate_single_distance(sample1: SampleSchema, sample2: SampleS
  */
 function count_differences(alignment: any, proper_total_1: any, proper_total_2: any) {
     // return val
-    var distance = 0;
+    let distance = 0;
 
     // skip this many proper chars in the beginning and end because of sequencing accuracy
-    var skip_proper = 20;
+    let skip_proper = 20;
 
     const char_mappings: { [base: string]: string[] } = {
         A: ["A"],
@@ -343,16 +343,16 @@ function count_differences(alignment: any, proper_total_1: any, proper_total_2: 
     };
 
     // currently in a gap of the respective sequence?
-    var gap_1 = false;
-    var gap_2 = false;
+    let gap_1 = false;
+    let gap_2 = false;
     // how many proper characters have been seen currently
-    var proper_1 = 0;
-    var proper_2 = 0;
+    let proper_1 = 0;
+    let proper_2 = 0;
 
     // run over each position of the alignment
     for (let i = 0; i < alignment[0].length; i++) {
-        var char_1 = alignment[0][i];
-        var char_2 = alignment[1][i];
+        let char_1 = alignment[0][i];
+        let char_2 = alignment[1][i];
 
         // #############################################
         // skip the position under these circumstances
@@ -453,7 +453,7 @@ export const persistSampleDistances = async (pathogenId: number) => {
         let add_index: number = row_column_names.indexOf(sample.fasta_id);
         if (add_index === -1) {
             matrix.push(new Array(row_column_names.length).fill(-1));
-            for (var i in matrix) {
+            for (let i in matrix) {
                 matrix[i].push(-1);
             }
 
