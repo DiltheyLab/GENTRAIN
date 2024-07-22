@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { CaseWithRelationships } from "@/database/cases";
 import { useGetAllCases } from "@/hooks/database/cases/useGetAllCases";
 
 export function CaseInformationTable() {
@@ -17,7 +18,7 @@ export function CaseInformationTable() {
 
     const renderRows = () => {
         if (caseData) {
-            return caseData.map((row, rowIndex) => {
+            return caseData.map((row: CaseWithRelationships, rowIndex) => {
                 return (
                     <TableRow key={rowIndex} className="border-muted">
                         <TableCell className="p-2 text-xs font-medium">{row.case_id}</TableCell>
