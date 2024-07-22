@@ -6,11 +6,11 @@ on:
 
 jobs:
   run_pull:
-    name: run pull
+    name: Deploy production build
     runs-on: ubuntu-latest
 
     steps:
-      - name: pull latest version
+      - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
@@ -21,7 +21,7 @@ jobs:
             git checkout ${{ vars.MAIN_BRANCH }}
             git pull
             exit
-      - name: create environment variables
+      - name: Generate environment variables
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
@@ -37,7 +37,7 @@ jobs:
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             exit
-      - name: restart docker containers
+      - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
