@@ -56,7 +56,9 @@ services:
         target: /app/dist
     networks:
       - caddy
+    env_file: "./backend/.env"
     environment:
+      - FLASK_ENV=production
       - VITE_API_BASE_URL=https://api.gentrain.bi.denbi.de
     depends_on:
       backend:

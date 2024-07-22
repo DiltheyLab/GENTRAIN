@@ -10,6 +10,4 @@ services:
       - "4000:4000"
     volumes:
       - ./backend:/app
-    environment:
-      - FLASK_ENV=development
-      - FLASK_APP=main_site.py
+    env_file: "./backend/.env"
