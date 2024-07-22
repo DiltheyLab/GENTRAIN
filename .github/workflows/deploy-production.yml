@@ -38,5 +38,7 @@ jobs:
             echo -e "FLASK_APP=main_script.py" >> backend/.env
             echo -e "PYTHONUNBUFFERED=1" >> backend/.env
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml stop
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml pull
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml rm -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --no-deps --build
             exit
