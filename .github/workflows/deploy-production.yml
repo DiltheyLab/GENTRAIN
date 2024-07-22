@@ -10,13 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_SECRET_KEY: ${{ secrets.HTBASIC_PASSWORD }}
-          envkey_VARIABLE: ${{ vars.HTBASIC_USERNAME }}
-          fail_on_empty: false
-          sort_keys: false
       - name: connect and pull
         uses: appleboy/ssh-action@v1.0.3
         env:
@@ -34,4 +27,5 @@ jobs:
             git pull
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml stop
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --no-deps --build
+            touch frontend/.env
             exit
