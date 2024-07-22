@@ -35,6 +35,7 @@ export const AnalysisForm = ({ changeIsOpen }: AnalysisFormProps) => {
             const id = await createAnalysis(analysisName, defaultSettings);
             analysisStore.updateName(analysisName);
             analysisStore.updateId(id);
+            analysisStore.updateSettings(defaultSettings);
             //close the dialog after saving the analysis
             changeIsOpen();
         } catch (error) {
