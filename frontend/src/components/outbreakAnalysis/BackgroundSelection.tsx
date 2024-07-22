@@ -5,6 +5,7 @@ import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
+import { Slider } from "../ui/slider";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -77,6 +78,10 @@ export const BackgroundSelection = () => {
         analysisStore.updateSettings({ includeCasesWithLowGeneticDistance: value });
     };
 
+    const changeGeneticDistanceThreshold = (value: number) => {
+        analysisStore.updateSettings({ geneticDistanceThreshold: value });
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <Label className="font-bold text-lg">2. Background festlegen</Label>
@@ -122,6 +127,15 @@ export const BackgroundSelection = () => {
                     Daten verwenden die unter dem genetischen Distanzschwellenwert liegen
                 </Label>
             </div>
+            <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
+            <Slider
+                id="geneticDistanceThreshold"
+                defaultValue={[analysisStore.settings.geneticDistanceThreshold]}
+                max={5}
+                min={0}
+                step={1}
+                onValueChange={(value) => changeGeneticDistanceThreshold(value[0])}
+            />
         </div>
     );
 };
