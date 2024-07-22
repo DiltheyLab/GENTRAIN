@@ -28,11 +28,12 @@ jobs:
             cd ${{ secrets.GENTRAIN_DIR }}
             git checkout ${{ secrets.MAIN_BRANCH }}
             git pull
-            touch "frontend/.env"
+            rm frontend/.env backend/.env
+            touch frontend/.env
             echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> frontend/.env
             echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> frontend/.env
             echo -e "VITE_API_BASE_URL=${{vars.API_BASE_URL}}" >> frontend/.env
-            touch "backend/.env"
+            touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             echo -e "FLASK_APP=main_script.py" >> backend/.env
             echo -e "PYTHONUNBUFFERED=1" >> backend/.env
