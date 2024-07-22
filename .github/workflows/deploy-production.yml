@@ -6,28 +6,29 @@ on:
 
 jobs:
   run_pull:
-    name: run pull
+    name: Deploy production build
     runs-on: ubuntu-latest
 
     steps:
-      - name: connect and pull
+      - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          GENTRAIN_DIR: ${{ secrets.GENTRAIN_DIR }}
-          GENTRAIN_PASSWORD: ${{ secrets.GENTRAIN_PASSWORD }}
-          MAIN_BRANCH: ${{ secrets.MAIN_BRANCH }}
-          VITE_HTBASIC_USERNAME: ${{ vars.HTBASIC_USERNAME }}
-          VITE_HTBASIC_PASSWORD: ${{ secrets.HTBASIC_PASSWORD }}
-          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: GENTRAIN_DIR,GENTRAIN_PASSWORD,MAIN_BRANCH
           script: |
-            cd ${{ secrets.GENTRAIN_DIR }}
-            git checkout ${{ secrets.MAIN_BRANCH }}
+            cd ${{ vars.GENTRAIN_DIR }}
+            git checkout ${{ vars.MAIN_BRANCH }}
             git pull
+            exit
+      - name: Generate environment variables
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}
             rm frontend/.env backend/.env
             touch frontend/.env
             echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> frontend/.env
@@ -35,9 +36,17 @@ jobs:
             echo -e "VITE_API_BASE_URL=${{vars.API_BASE_URL}}" >> frontend/.env
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
-            echo -e "FLASK_APP=main_script.py" >> backend/.env
-            echo -e "PYTHONUNBUFFERED=1" >> backend/.env
+            exit
+      - name: Restart docker containers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker image prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
