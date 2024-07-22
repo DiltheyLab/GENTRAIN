@@ -18,8 +18,9 @@ export type SelectedBackground = {
 export type AnalysisSettings = {
     selectedOutbreak: OutbreakSchema | null;
     selectedBackground: SelectedBackground | null;
+    includeCasesWithoutOutbreak: boolean;
     ignoreBackground: boolean;
-    addCasesWithLowGeneticDistance: boolean;
+    includeCasesWithLowGeneticDistance: boolean;
     startDate: Date;
     endDate: Date;
     geneticDistanceThreshold: number;
@@ -43,8 +44,9 @@ export interface AnalysisStore {
 export const defaultSettings: AnalysisSettings = {
     selectedOutbreak: null,
     selectedBackground: null,
+    includeCasesWithoutOutbreak: false,
     ignoreBackground: false,
-    addCasesWithLowGeneticDistance: false,
+    includeCasesWithLowGeneticDistance: false,
     startDate: new Date(),
     endDate: new Date(),
     geneticDistanceThreshold: 2,
