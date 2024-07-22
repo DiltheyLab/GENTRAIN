@@ -76,12 +76,12 @@ db.on("populate", async () => {
 });
 
 db.tables.forEach(function (table) {
-    table.hook("creating", function (primKey, obj, transaction) {
+    table.hook("creating", function (_primKey, obj, _transaction) {
         obj.created_at = new Date();
         obj.updated_at = new Date();
     });
 
-    table.hook("updating", function (modifications, primKey, obj, transaction) {
+    table.hook("updating", function (_modifications, _primKey, obj, _transaction) {
         obj.updated_at = new Date();
     });
 });

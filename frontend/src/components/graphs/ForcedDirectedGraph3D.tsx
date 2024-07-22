@@ -14,10 +14,6 @@ export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGra
     // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();
 
-    if (!graphSettingsContext) {
-        return <div>Loading...</div>;
-    }
-
     const handleEngineStop = () => {
         if (!forceRef.current) return;
         if (graphSettingsContext.settings.zoomToFit === false) return;
