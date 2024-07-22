@@ -12,18 +12,10 @@ jobs:
     steps:
       - name: connect and pull
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          GENTRAIN_DIR: ${{ vars.GENTRAIN_DIR }}
-          GENTRAIN_PASSWORD: ${{ secrets.GENTRAIN_PASSWORD }}
-          MAIN_BRANCH: ${{ vars.MAIN_BRANCH }}
-          VITE_HTBASIC_USERNAME: ${{ vars.HTBASIC_USERNAME }}
-          VITE_HTBASIC_PASSWORD: ${{ secrets.HTBASIC_PASSWORD }}
-          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: GENTRAIN_DIR,GENTRAIN_PASSWORD,MAIN_BRANCH,VITE_HTBASIC_USERNAME,VITE_HTBASIC_PASSWORD,VITE_API_BASE_URL
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
             git checkout ${{ vars.MAIN_BRANCH }}
