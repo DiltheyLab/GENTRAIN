@@ -15,8 +15,6 @@ jobs:
         with:
           envkey_SECRET_KEY: ${{ secrets.HTBASIC_PASSWORD }}
           envkey_VARIABLE: ${{ vars.HTBASIC_USERNAME }}
-          directory: /frontend
-          file_name: .env
           fail_on_empty: false
           sort_keys: false
       - name: connect and pull
