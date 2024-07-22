@@ -30,6 +30,6 @@ jobs:
             git pull
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml stop
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --no-deps --build
-            echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}\nVITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}\nVITE_API_BASE_URL=${{secrets.API_BASE_URL}}\n" >> frontend/.env
-            echo -e "FLASK_ENV=${{vars.FLASK_ENV}}\nFLASK_ENV=main_script.py\PYTHONUNBUFFERED=1\n" >> backend/.env
+            echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}\nVITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}\nVITE_API_BASE_URL=${{vars.API_BASE_URL}}\n" >> frontend/.env
+            echo -e "FLASK_ENV=${{vars.FLASK_ENV}}\nFLASK_ENV=main_script.py\nPYTHONUNBUFFERED=1\n" >> backend/.env
             exit
