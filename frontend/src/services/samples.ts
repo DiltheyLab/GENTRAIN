@@ -3,15 +3,13 @@ import { SampleSchema } from "@/database/samples";
 export const getVariantsForSequence = async (
     sequence: string
 ): Promise<{ lineage: string; n_count: number; variants: object }> => {
+    console.log(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`);
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/data/nextclade`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization:
-                "Basic " +
-                Buffer.from(
-                    `${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`
-                ).toString("base64"),
+                "Basic " + btoa(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`),
         },
         body: JSON.stringify({ fasta_content: `>0\n${sequence}` }),
     });
