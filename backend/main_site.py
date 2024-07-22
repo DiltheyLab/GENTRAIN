@@ -16,6 +16,8 @@ from flask_cors import CORS
 ################################
 
 app = Flask(__name__)
+
+# TODO: detect environment for local development cors
 # CORS(app, origins=["https://gentrain.bi.denbi.de", "http://localhost:3000"])
 
 # load config

@@ -27,4 +27,5 @@ jobs:
             git pull
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml stop
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --no-deps --build
+            touch frontend/.env
             exit
