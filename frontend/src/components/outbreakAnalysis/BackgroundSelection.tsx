@@ -10,7 +10,7 @@ export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
     const analysisStore = useAnalysisStore();
 
-    const getOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
+    const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         if (!groupsAndOutbreaks) return;
         const options: Option[] = [];
         for (const outbreak of groupsAndOutbreaks?.outbreaks) {
@@ -31,6 +31,14 @@ export const BackgroundSelection = () => {
             });
         }
         return options;
+    };
+
+    const createFilteredOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
+        const options = createOptions(groupsAndOutbreaks);
+        const filteredOptions = options?.filter(
+            (option) => option.value !== analysisStore.settings.selectedOutbreak?.name
+        );
+        return filteredOptions;
     };
 
     const handleIgnoreBackground = (value: boolean) => {
@@ -65,8 +73,8 @@ export const BackgroundSelection = () => {
         <div className="flex flex-col gap-4">
             <Label className="font-bold text-lg">2. Background festlegen</Label>
             <MultipleSelector
-                options={getOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                value={getOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
+                value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
                 onChange={(value) => handleMultipleSelectChange(value)}
                 placeholder="Bitte auswählen"
                 emptyIndicator={
