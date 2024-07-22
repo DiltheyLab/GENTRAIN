@@ -62,7 +62,7 @@ jobs:
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
         with:
           status: ${{ job.status }}
@@ -71,7 +71,7 @@ jobs:
       - name: Notify Slack Action Failure
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
         with:
           status: ${{ job.status }}
