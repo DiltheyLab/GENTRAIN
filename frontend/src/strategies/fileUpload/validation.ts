@@ -1,6 +1,7 @@
 import { CaseSchema, getAllCasesWithRelationships } from "@/database/cases";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
+import { useUploadStore } from "@/stores/upload";
 
 const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
 const contactColumnNames = ["Case Id 1", "Case Id 2", "Type", "Context"];
@@ -78,6 +79,8 @@ export const validationStrategies = {
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
             if (!sampleCase) {
                 samplesWithoutCase.push(sample.fastaId);
+            } else {
+                useUploadStore.getState().addSampleUpload(sample.fastaId);
             }
         }
 

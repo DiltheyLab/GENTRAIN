@@ -8,6 +8,7 @@ import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { getVariantsForSequence } from "@/services/samples";
 import { persistSampleDistances } from "@/services/distanceMatrices";
+import { useUploadStore } from "@/stores/upload";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -43,11 +44,13 @@ export const persistenceStrategies = {
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const activePathogen = useAppStore.getState().activePathogen;
         for (const sample of sampleData) {
+            console.log(useUploadStore.getState().sampleUploads);
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
+                useUploadStore.getState().updateSampleUpload(sample.fastaId, "loading");
                 const variantsResult = await getVariantsForSequence(sample.sequence);
                 await db.samples.add({
                     fasta_id: sample.fastaId,
@@ -56,6 +59,7 @@ export const persistenceStrategies = {
                     sequence_length: sample.sequence.length,
                     variants: variantsResult.variants,
                 });
+                useUploadStore.getState().updateSampleUpload(sample.fastaId, "success");
             }
         }
         if (activePathogen) {

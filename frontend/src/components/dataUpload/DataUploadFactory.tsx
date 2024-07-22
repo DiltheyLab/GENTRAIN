@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { ZodError } from "zod";
 import { getToastDescription } from "@/services/errors";
+import { SampleUploadStatus } from "./SampleUploadStatus";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -144,6 +145,7 @@ export const FileUploadFactory = ({
                     dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
                 ></small>
             )}
+            {type === "samples" && <SampleUploadStatus />}
         </>
     );
 };
