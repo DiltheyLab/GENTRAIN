@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data-table-column-header";
-import { DataTableRowActions } from "./data-table-row-actions";
 import { CaseSchema } from "@/database/cases";
 
 export const columns: ColumnDef<CaseSchema>[] = [
@@ -59,9 +58,5 @@ export const columns: ColumnDef<CaseSchema>[] = [
         filterFn: (row, id, value) => {
             return value.includes(row.getValue(id));
         },
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => <DataTableRowActions row={row} />,
     },
 ];
