@@ -17,7 +17,7 @@
         "help": {
             "cases": "Laden Sie <a href='/upload_templates/cases.xlsx'>hier</a> eine Excel-Vorlage herunter.",
             "samples": null,
-            "contacts": "Laden Sie <a href='/upload_templates/contacts.xlsx'>hier</a> eine Excel-Vorlage herunter."
+            "contacts": "Laden Sie <a href='/upload_templates/contacts.csv'>hier</a> eine Excel-Vorlage herunter."
         }
     }
 }
