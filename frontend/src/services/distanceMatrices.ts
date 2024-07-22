@@ -11,8 +11,8 @@ function get_positions_of_letiants(sample: any) {
     let positions: any = {};
     let info;
     // Deletions
-    for (const i in sample["letiants"]["deletions"]) {
-        let letiant = sample["letiants"]["deletions"][i];
+    for (const i in sample.variants["deletions"]) {
+        let letiant = sample.variants["deletions"][i];
         let start = letiant["start"];
         let len = letiant["length"];
 
@@ -27,8 +27,8 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // Insertions
-    for (const i in sample["letiants"]["insertions"]) {
-        let letiant = sample["letiants"]["insertions"][i];
+    for (const i in sample.variants["insertions"]) {
+        let letiant = sample.variants["insertions"][i];
         let pos = letiant["pos"];
 
         info = {
@@ -39,9 +39,9 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // Substitutions
-    for (const i in sample["letiants"]["substitutions"]) {
+    for (const i in sample.variants["substitutions"]) {
         // { refNuc: "C", pos: 240, queryNuc: "T", … }
-        let letiant = sample["letiants"]["substitutions"][i];
+        let letiant = sample.variants["substitutions"][i];
         let pos = letiant["pos"];
 
         info = {
@@ -52,9 +52,9 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // Ns
-    for (const i in sample["letiants"]["missing"]) {
+    for (const i in sample.variants["missing"]) {
         // { begin: 28881, end: 28883, character: "N" }
-        let letiant = sample["letiants"]["missing"][i];
+        let letiant = sample.variants["missing"][i];
         let start = letiant["begin"];
         let end = letiant["end"];
         let char = letiant["character"];
@@ -70,9 +70,9 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // other ambious characters
-    for (const i in sample["letiants"]["nonACGTNs"]) {
+    for (const i in sample.variants["nonACGTNs"]) {
         // { begin: 60, end: 61, character: "Y" }
-        let letiant = sample["letiants"]["nonACGTNs"][i];
+        let letiant = sample.variants["nonACGTNs"][i];
         let start = letiant["begin"];
         let end = letiant["end"];
         let char = letiant["character"];
@@ -88,7 +88,7 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // Start of alignment
-    for (let i = 0; i < sample["letiants"]["alignmentStart"]; i++) {
+    for (let i = 0; i < sample.variants["alignmentStart"]; i++) {
         // add dels until sequence starts
         info = {
             type: "del",
@@ -98,7 +98,7 @@ function get_positions_of_letiants(sample: any) {
     }
 
     // End of alignment
-    for (let i = sample["letiants"]["alignmentEnd"]; i < referenceString.length; i++) {
+    for (let i = sample.variants["alignmentEnd"]; i < referenceString.length; i++) {
         // add dels until reference sequence ends
         info = {
             type: "del",
