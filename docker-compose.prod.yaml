@@ -42,7 +42,7 @@ services:
       - "8080:8080"
     volumes:
       - ./backend:/app
-    env_file: "./backend/.env"
+    env_file: "./frontend/.env"
     networks:
       - caddy
 
