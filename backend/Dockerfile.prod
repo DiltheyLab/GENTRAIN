@@ -4,8 +4,6 @@ FROM continuumio/miniconda3:latest
 # Set working directory in the container
 WORKDIR /app
 
-RUN cd .. && ls -lah && cd app
-
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml /app
 
@@ -21,8 +19,6 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
-
-RUN ls -lah
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
