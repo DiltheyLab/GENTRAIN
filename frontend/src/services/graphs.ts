@@ -1,6 +1,6 @@
 import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
-import { CustomLink, CustomNode, Filter, GraphData } from "@/stores/graph";
+import { CustomLink, CustomNode, GraphData } from "@/stores/graph";
 import { Graph, Edge } from "@/lib/kruskal";
 
 export const setNodeColor = (value: number) => {
@@ -78,7 +78,7 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
 export const transformDistanceMatrixToGraphData = (
     matrixDataAssembly: DistanceMatrixAssembly,
     cases: CaseWithRelationships[],
-    filter: Filter
+    selectedOutbreak = ""
 ): GraphData => {
     if (!matrixDataAssembly || cases.length === 0) {
         return { nodes: [], links: [] };
@@ -88,8 +88,10 @@ export const transformDistanceMatrixToGraphData = (
     let graphCases = cases.filter((caseData) => !!caseData.sample);
 
     // if filter is set to outbreaks, only show cases that are part of an outbreak
-    if (filter === "outbreaks") {
-        graphCases = graphCases.filter((caseData) => caseData.outbreak_id !== null);
+    if (selectedOutbreak) {
+        graphCases = graphCases.filter(
+            (caseData) => caseData.outbreak_id !== null && caseData.outbreak?.name !== selectedOutbreak
+        );
     }
 
     const graph = new Graph(graphCases.length);
