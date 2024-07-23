@@ -1,6 +1,5 @@
 import { Footer } from "./Footer";
 import { Header } from "./Header";
-import test from "./Header";
 
 export const Layout = ({ children }: any) => {
     return (
