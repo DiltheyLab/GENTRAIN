@@ -33,7 +33,7 @@ export type AnalysisSettings = {
 export interface AnalysisStore {
     id: number | null;
     name: string | null;
-    graphData: GraphData | null;
+    graphData: GraphData;
     settings: AnalysisSettings;
     updateId: (newId: number) => void;
     updateName: (newName: string) => void;
@@ -59,7 +59,7 @@ export const defaultSettings: AnalysisSettings = {
 export const useAnalysisStore = create<AnalysisStore>((set) => ({
     id: null,
     name: null,
-    graphData: null,
+    graphData: { nodes: [], links: [] },
     settings: defaultSettings,
     updateId: (newId) => set({ id: newId }),
     updateName: (newName) => set({ name: newName }),

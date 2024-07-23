@@ -5,9 +5,7 @@ export const useGetDistanceMatrixAssemblyByPathogenId = (
     pathogen_id: number | undefined
 ): DistanceMatrixAssembly | undefined | null => {
     return useLiveQuery(async () => {
-        if (!pathogen_id) {
-            return;
-        }
+        if (!pathogen_id) return;
         const assembly = await assembleDistanceMatrixByPathogenId(pathogen_id);
         return assembly;
     }, [pathogen_id]);

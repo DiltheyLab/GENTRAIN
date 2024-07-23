@@ -27,7 +27,7 @@ export const DashboardVisualizationPanel = () => {
             return;
         }
 
-        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases, graphStore.settings.filter);
+        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases);
 
         // Update the graph settings with the new graph data
         graphStore.updateData(graphData);
