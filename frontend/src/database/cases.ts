@@ -61,3 +61,8 @@ export const getAllCasesWithRelationships = async () => {
     }
     return casesWithRelationships;
 };
+
+export const getCaseBySampleId = async (fastaId: string) => {
+    const caseBySampleId = await db.cases.where({ sample_id: fastaId }).first();
+    return caseBySampleId;
+};
