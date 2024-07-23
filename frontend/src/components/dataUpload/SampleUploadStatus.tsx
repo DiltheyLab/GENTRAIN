@@ -7,6 +7,7 @@ export function SampleUploadStatus() {
     const pendingUploads = useSampleUploadStore((state) => state.pendingUploads);
     const finishedUploads = useSampleUploadStore((state) => state.finishedUploads);
     const uploading = useSampleUploadStore((state) => state.uploading);
+    const addToRemovedSamples = useSampleUploadStore((state) => state.addToRemovedSamples);
 
     if (pendingUploads.length === 0 && finishedUploads.length === 0) return;
     return (
@@ -33,7 +34,9 @@ export function SampleUploadStatus() {
                     >
                         <div className="mr-2 text-xs">{fastaId}</div>
                         {uploading && <LoadingSpinner className="w-[20px]" />}
-                        {!uploading && <X width={20} className="cursor-pointer" />}
+                        {!uploading && (
+                            <X width={20} className="cursor-pointer" onClick={() => addToRemovedSamples(fastaId)} />
+                        )}
                     </div>
                 ))}
             </div>

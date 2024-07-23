@@ -46,6 +46,10 @@ export const persistenceStrategies = {
         useSampleUploadStore.getState().setUploading(true);
 
         for (const sample of sampleData) {
+            // skip if sample was removed via user interface
+            if (useSampleUploadStore.getState().removedSamples.includes(sample.fastaId)) {
+                continue;
+            }
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
             // we currently only add samples if a case for the fasta id exists already

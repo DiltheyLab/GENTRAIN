@@ -5,11 +5,13 @@ interface SampleUploadState {
     pendingUploads: string[];
     finishedUploads: string[];
     distanceCalculationProgress: number;
+    removedSamples: string[];
     addPendingUpload: (fastaIds: string) => void;
     setUploading: (value: boolean) => void;
     addFinishedUpload: (fastaIds: string) => void;
     setDistanceCalculationProgress: (progress: number) => void;
     reset: () => void;
+    addToRemovedSamples: (fastaId: string) => void;
 }
 
 export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
@@ -17,6 +19,14 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     pendingUploads: [],
     finishedUploads: [],
     distanceCalculationProgress: 0,
+    removedSamples: [],
+    addToRemovedSamples: (removedId: string) => {
+        const updatedPendingUploads = get().pendingUploads.filter((fastaId) => fastaId !== removedId);
+        const updatedRemovedSamples = get().removedSamples;
+        updatedRemovedSamples.push(removedId);
+        set({ pendingUploads: updatedPendingUploads });
+        set({ removedSamples: updatedRemovedSamples });
+    },
     reset: () => {
         set({ distanceCalculationProgress: 0, uploading: false, pendingUploads: [], finishedUploads: [] });
     },
