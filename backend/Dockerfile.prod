@@ -10,16 +10,17 @@ COPY environment.yaml /app
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /app/environment.yaml
 
-# Create a new user 'uwsgi' and set it as the current user
-RUN useradd -m uwsgi
-USER uwsgi
 # Ensure the Conda environment is activated
 RUN echo "source activate dashboard" > ~/.bashrc
 ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
+# Create a new user 'uwsgi' and set it as the current user
+RUN useradd -m uwsgi
+
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
 
+USER uwsgi
 # Declare /app as a mount point
 #VOLUME /app
 
