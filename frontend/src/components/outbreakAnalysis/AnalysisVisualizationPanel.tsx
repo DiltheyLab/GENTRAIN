@@ -1,14 +1,12 @@
-import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
-import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { getUniqueSamplingTimes, transformDistanceMatrixToGraphData } from "@/services/graphs";
+import { transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { type GraphData, useGraphStore } from "@/stores/graph";
+import { type GraphData } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { useAnalysisStore } from "@/stores/analysis";
