@@ -6,7 +6,7 @@ import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 import { PathogenSwitch } from "@/components/dashboard/PathogenSwitch";
-import test from "@/services/pdf";
+
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname;
