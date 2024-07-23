@@ -4,6 +4,9 @@ FROM continuumio/miniconda3:latest
 # Set working directory in the container
 WORKDIR /app
 
+RUN useradd -m uwsgi
+RUN chown -R uwsgi:uwsgi /app
+
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml /app
 
@@ -15,12 +18,11 @@ RUN echo "source activate dashboard" > ~/.bashrc
 ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 
 # Create a new user 'uwsgi' and set it as the current user
-RUN useradd -m uwsgi
+USER uwsgi
 
 # Copy the current directory contents into the container at the working directory
-COPY --chown=uwsgi . .
+COPY . .
 
-USER uwsgi
 # Declare /app as a mount point
 #VOLUME /app
 
