@@ -52,7 +52,6 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker image prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker exec -d gentrain-frontend-1 npm run build
             exit
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0

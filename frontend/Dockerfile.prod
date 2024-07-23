@@ -14,4 +14,4 @@ RUN npm i -g vite
 COPY . .
 
 # Run the application
-CMD ["sleep", "infinity"]
+CMD ["npm", "run", "build"]
