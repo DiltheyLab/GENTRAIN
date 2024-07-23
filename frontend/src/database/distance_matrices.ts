@@ -20,12 +20,10 @@ export const getDistanceMatrixByPathogenId = async (
     return distanceMatrixForActivePathogen;
 };
 
-export const assembleDistanceMatrixByPathogenId = async (
-    pathogen_id: number
-): Promise<DistanceMatrixAssembly | undefined | null> => {
+export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) => {
     const distanceMatrix = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
-    if (!distanceMatrix) {
-        return null;
-    }
-    return assembleDistanceMatrix(distanceMatrix.id);
+    if (!distanceMatrix) return;
+
+    const matrix = await assembleDistanceMatrix(distanceMatrix.id);
+    return matrix;
 };
