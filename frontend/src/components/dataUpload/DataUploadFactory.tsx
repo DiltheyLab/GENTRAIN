@@ -128,27 +128,29 @@ export const FileUploadFactory = ({
 
     return (
         <>
-            <div ref={containerRef} className="flex flex-row items-end gap-3">
-                <FileUploadButton
-                    type={type}
-                    accept={type === "samples" ? ".fasta" : ".csv"}
-                    multiple={allowMultiFile}
-                    onUpload={handleFileUpload}
-                />
-                <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                    Hochladen
-                </Button>
+            <div ref={containerRef} className="flex flex-col gap-3">
+                <div className="flex flex-row items-end gap-3">
+                    <FileUploadButton
+                        type={type}
+                        accept={type === "samples" ? ".fasta" : ".csv"}
+                        multiple={allowMultiFile}
+                        onUpload={handleFileUpload}
+                    />
+                    <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
+                        Hochladen
+                    </Button>
+                </div>
+                {type === "samples" && (
+                    <div>
+                        <SampleUploadStatus />
+                    </div>
+                )}
             </div>
             {i18n.exists(`upload.help.${type}`) && (
                 <small
                     className="text-muted-foreground"
                     dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
                 ></small>
-            )}
-            {type === "samples" && (
-                <div>
-                    <SampleUploadStatus />
-                </div>
             )}
         </>
     );

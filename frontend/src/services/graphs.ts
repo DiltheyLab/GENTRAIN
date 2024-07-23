@@ -104,7 +104,6 @@ export const transformDistanceMatrixToGraphData = (
     const graphCases = cases.filter((caseData) => !!caseData.sample);
     const graph = new jsgraph.WeightedGraph(graphCases.length);
 
-    console.log(matrixDataAssembly);
     for (const rowIndex of graphCases.keys()) {
         const rowCase = graphCases[rowIndex];
 

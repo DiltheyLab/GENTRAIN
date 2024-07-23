@@ -67,6 +67,8 @@ export const persistenceStrategies = {
         if (activePathogen) {
             await persistSampleDistances(activePathogen.id);
         }
+
+        useSampleUploadStore.getState().reset();
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];

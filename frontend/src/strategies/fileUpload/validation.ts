@@ -77,9 +77,11 @@ export const validationStrategies = {
         for (const sample of sampleData) {
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
-            if (!sampleCase) {
+            const existingSample = await db.samples.where({ fasta_id: sample.fastaId }).first();
+            if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
+                console.log("HI");
                 useSampleUploadStore.getState().addPendingUpload(sample.fastaId);
             }
         }
@@ -91,14 +93,15 @@ export const validationStrategies = {
 
         return {
             data: sampleData,
-            warnings: [
-                {
-                    title: `Hochladbare Sequenzen: ${sampleData.length}`,
-                    description: `Für folgende Sequenzen wurde in der Datenbank kein zugehöriger Fall gefunden, sodass die Sequenzen nicht hochgeladen werden können. ${samplesWithoutCase.join(
-                        ", "
-                    )}`,
-                },
-            ],
+            warnings:
+                samplesWithoutCase.length > 0
+                    ? [
+                          {
+                              title: "Folgende Sequenzen existieren bereits oder konnten keinem existierenden Fall zugeordnet werden.",
+                              description: samplesWithoutCase.join(", "),
+                          },
+                      ]
+                    : [],
         };
     },
     contactsStrategy: async (contactData: string[][]) => {
