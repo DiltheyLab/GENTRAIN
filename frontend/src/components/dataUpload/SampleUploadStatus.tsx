@@ -30,7 +30,7 @@ export function SampleUploadStatus() {
                     </div>
                 ))}
                 {pendingUploads.map((fastaId) => (
-                    <HoverCard openDelay={50} closeDelay={50}>
+                    <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
                         <HoverCardTrigger asChild>
                             <div
                                 key={fastaId}
