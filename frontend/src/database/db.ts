@@ -50,7 +50,6 @@ db.version(1).stores({
 });
 
 db.on("populate", async () => {
-    console.log("HI");
     let persistedPathogenTypes = {} as Record<string, number>;
     for (const [pathogenName, pathogenData] of Object.entries(Pathogens)) {
         // retrieve pathogen type name from enum
