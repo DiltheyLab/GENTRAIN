@@ -30,7 +30,7 @@ export const AnalysisDialog = ({ isOpen, changeIsOpen }: AnalysisDialogProps) =>
                     <DialogDescription></DialogDescription>
                 </DialogHeader>
                 <div className="flex justify-between space-x-8">
-                    <AnalysisForm changeIsOpen={changeIsOpen} />
+                    <AnalysisForm changeIsOpen={changeIsOpen} isOpen={isOpen} />
                     <Separator orientation="vertical" />
                     <AnalysisSelection changeIsOpen={changeIsOpen} />
                 </div>

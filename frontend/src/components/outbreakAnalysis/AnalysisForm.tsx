@@ -9,9 +9,10 @@ import { useGetAllAnalyses } from "@/hooks/database/analyses/useGetAllAnalyses";
 
 type AnalysisFormProps = {
     changeIsOpen: () => void;
+    isOpen: boolean;
 };
 
-export const AnalysisForm = ({ changeIsOpen }: AnalysisFormProps) => {
+export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
     const [analysisName, setAnalysisName] = useState("");
     const analysisStore = useAnalysisStore();
     const analyses = useGetAllAnalyses();
@@ -58,7 +59,7 @@ export const AnalysisForm = ({ changeIsOpen }: AnalysisFormProps) => {
                 placeholder="Analyse 1"
                 onChange={(e) => setAnalysisName(e.target.value)}
             />
-            {!isUniqueName() && (
+            {!isUniqueName() && isOpen && (
                 <p className="text-red-500 text-sm">
                     Der Name der Analyse ist bereits vergeben. Bitte wählen Sie einen anderen.
                 </p>
