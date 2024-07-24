@@ -516,10 +516,6 @@ export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
 };
 
 export const recalculateDistances = async (activePathogenId: number) => {
-    const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(activePathogenId);
     await deleteDistancesByPathogenId(activePathogenId);
     await persistSampleDistances(activePathogenId);
-    if (distanceMatrixId) {
-        await updateDistanceMatrixById(distanceMatrixId, { needs_recalculation: false });
-    }
 };

@@ -65,7 +65,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
         },
         cell: ({ row }) => {
             const outbreak = row.original.outbreak;
-            return <div>{outbreak ? outbreak.name : "Background"}</div>;
+            return <div>{outbreak ? outbreak.name : "-"}</div>;
         },
     },
     {
