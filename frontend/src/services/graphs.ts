@@ -130,19 +130,11 @@ const getGraphCases = (cases: CaseWithRelationships[], analysisSettings: Analysi
     return graphCases;
 };
 
-export const createGraphData = (
+const createMSTEdges = (
+    graphCases: CaseWithRelationships[],
     matrixDataAssembly: DistanceMatrixAssembly,
-    cases: CaseWithRelationships[],
-    analysisSettings: AnalysisSettings
-): GraphData => {
-    if (!matrixDataAssembly || cases.length === 0) {
-        return { nodes: [], links: [] };
-    }
-
-    const graphCases = getGraphCases(cases, analysisSettings);
-
-    const graph = new Graph(graphCases.length);
-
+    graph: Graph
+) => {
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
     // add weighted graph edges for every column-row-pair of the distance matrix
     // note that every pair is only iterated once
@@ -163,7 +155,26 @@ export const createGraphData = (
     }
 
     // calculate edges that are in the mst by using kruskal's algorithm
-    const mstEdges = graph.kruskal();
+    return graph.kruskal();
+};
+
+export const createGraphData = (
+    matrixDataAssembly: DistanceMatrixAssembly,
+    cases: CaseWithRelationships[],
+    analysisSettings: AnalysisSettings
+): GraphData => {
+    if (!matrixDataAssembly || cases.length === 0) {
+        return { nodes: [], links: [] };
+    }
+
+    // apply all filtering settings to get the correct cases for the graph
+    const graphCases = getGraphCases(cases, analysisSettings);
+
+    // create a new graph object with the correct amount of nodes
+    const graph = new Graph(graphCases.length);
+
+    // calculate edges that are in the mst by using kruskal's algorithm
+    const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
 
     const groupToColor = getGroupToColor(cases, "outbreak_id");
     // create node objects
@@ -202,31 +213,14 @@ export const transformDistanceMatrixToGraphData = (
         return { nodes: [], links: [] };
     }
 
+    // filter out cases without a sample and apply no other filtering settings -> Will be changed in the future
     const graphCases: CaseWithRelationships[] = cases.filter((caseData) => !!caseData.sample); // filter out cases without a sample
 
-    const graph = new Graph(cases.length);
-
-    // for the top part of the dm (as it is mirrored and the diagonal is all -1)
-    // add weighted graph edges for every column-row-pair of the distance matrix
-    // note that every pair is only iterated once
-    for (let rowIndex = 0; rowIndex < graphCases.length - 1; rowIndex++) {
-        const rowCase = graphCases[rowIndex];
-
-        for (let columnIndex = rowIndex + 1; columnIndex < graphCases.length; columnIndex++) {
-            const columnCase = graphCases[columnIndex];
-
-            graph.addEdge(
-                new Edge(
-                    rowIndex,
-                    columnIndex,
-                    matrixDataAssembly[rowCase.sample!.fasta_id][columnCase.sample!.fasta_id]
-                )
-            );
-        }
-    }
+    // create a new graph object with the correct amount of nodes
+    const graph = new Graph(graphCases.length);
 
     // calculate edges that are in the mst by using kruskal's algorithm
-    const mstEdges = graph.kruskal();
+    const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
 
     const groupToColor = getGroupToColor(cases, "outbreak_id");
 
