@@ -1,7 +1,4 @@
-import { CaseSchema } from "./cases";
 import { db } from "./db";
-import { SampleSchema } from "./samples";
-
 export interface DistancesSchema {
     id: number;
     sample_id_1: number;

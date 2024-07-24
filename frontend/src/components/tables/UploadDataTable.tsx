@@ -25,24 +25,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CaseWithRelationships, deleteCaseById, getCaseWithSampleById } from "@/database/cases";
-import { useAppStore } from "@/stores/app";
-import { getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
-import { deleteDistancesBySampleId } from "@/database/distances";
-
-const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
-    const activePathogen = useAppStore.getState().activePathogen;
-    if (activePathogen) {
-        const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(activePathogen.id);
-        const caseWithSample = await getCaseWithSampleById(id);
-        if (caseWithSample && distanceMatrixId) {
-            deleteCaseById(id);
-        }
-        if (caseWithSample?.sample) {
-            deleteDistancesBySampleId(caseWithSample?.sample.id);
-        }
-    }
-};
+import { CaseWithRelationships } from "@/database/cases";
+import { deleteCasebyIdAndRecalculateDistances } from "@/services/cases";
 
 export type Payment = {
     id: string;

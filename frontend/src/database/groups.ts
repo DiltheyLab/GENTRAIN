@@ -30,8 +30,3 @@ export const getGroupsByIdsWithRelationships = async (group_ids: number[]) => {
     }
     return groupsWithRelationships;
 };
-
-export const getCaseBySampleId = async (fastaId: string) => {
-    const caseBySampleId = await db.cases.where({ sample_id: fastaId }).first();
-    return caseBySampleId;
-};
