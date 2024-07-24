@@ -2,6 +2,8 @@ import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CustomLink, CustomNode, GraphData } from "@/stores/graph";
 import { Graph, Edge } from "@/lib/kruskal";
+import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
+import { OutbreakSchema } from "@/database/outbreak";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -75,24 +77,69 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     return uniqueSamplingTimes;
 };
 
+const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
+    return cases.filter((caseData) => caseData.outbreak_id === selectedOutbreak.id);
+};
+
+const filterCasesByGroupsAndOutbreaks = (cases: CaseWithRelationships[], selectedBackground: SelectedBackground) => {
+    return cases.filter(
+        (caseData) =>
+            selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) ||
+            selectedBackground.groups.some((group) => caseData.groups.includes(group.id))
+    );
+};
+
+const filterCasesByBackground = (cases: CaseWithRelationships[]) => {
+    return cases.filter((caseData) => caseData.outbreak_id === null);
+};
+
+const deleteDuplicateCases = (cases: CaseWithRelationships[]) => {
+    return cases.filter((caseData, index, self) => {
+        return index === self.findIndex((t) => t.id === caseData.id);
+    });
+};
+
+const getGraphCases = (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
+    const { selectedOutbreak, includeCasesWithoutOutbreak, ignoreBackground, selectedBackground } = analysisSettings;
+
+    let graphCases = cases.filter((caseData) => !!caseData.sample); // filter out cases without a sample
+
+    if (selectedOutbreak) {
+        graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+    }
+
+    if (selectedBackground) {
+        const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
+        graphCases = graphCases.concat(filteredCasesByBackground); // add cases with selected background to the graphCases array
+    }
+
+    if (includeCasesWithoutOutbreak) {
+        const casesWithoutOutbreak = filterCasesByBackground(cases);
+        graphCases = graphCases.concat(casesWithoutOutbreak); // add cases without outbreak to the graphCases array
+    }
+
+    if (ignoreBackground && selectedOutbreak) {
+        graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+    }
+
+    // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
+    // group and in background (not outbreak) the cases is added twice to the graphCases array
+    // to prevent this we filter out duplicates in the end
+    graphCases = deleteDuplicateCases(graphCases);
+
+    return graphCases;
+};
+
 export const transformDistanceMatrixToGraphData = (
     matrixDataAssembly: DistanceMatrixAssembly,
     cases: CaseWithRelationships[],
-    selectedOutbreak = ""
+    analysisSettings: AnalysisSettings
 ): GraphData => {
-    if (!matrixDataAssembly || cases.length === 0) {
+    if (!matrixDataAssembly || cases.length === 0 || !analysisSettings) {
         return { nodes: [], links: [] };
     }
 
-    // filter out cases without a sample
-    let graphCases = cases.filter((caseData) => !!caseData.sample);
-
-    // if filter is set to outbreaks, only show cases that are part of an outbreak
-    if (selectedOutbreak) {
-        graphCases = graphCases.filter(
-            (caseData) => caseData.outbreak_id !== null && caseData.outbreak?.name !== selectedOutbreak
-        );
-    }
+    const graphCases = getGraphCases(cases, analysisSettings);
 
     const graph = new Graph(graphCases.length);
 
@@ -123,7 +170,8 @@ export const transformDistanceMatrixToGraphData = (
     let nodes = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Background";
         return {
-            id: caseData.sample?.fasta_id || "unknown",
+            id: caseData.id,
+            caseId: caseData.case_id,
             group: caseData.outbreak ? caseData.outbreak.name : "Background", // TODO: rename this field to "outbreak"
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),

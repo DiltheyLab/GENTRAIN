@@ -1,7 +1,8 @@
 import { create } from "zustand";
 
 export type CustomNode = {
-    id: string;
+    id: number;
+    caseId: string;
     group: string;
     color: string;
     registeredAt?: string;
@@ -10,8 +11,8 @@ export type CustomNode = {
 export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" | "Dashed" | "Solid";
 
 export type CustomLink = {
-    source: string;
-    target: string;
+    source: number;
+    target: number;
     value: number;
     type: LinkType;
 };
