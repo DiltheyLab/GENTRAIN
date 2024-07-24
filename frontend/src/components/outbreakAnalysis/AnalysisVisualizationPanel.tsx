@@ -37,7 +37,7 @@ export const AnalysisVisualizationPanel = () => {
     }, [analyseStore.graphData]);
 
     const getGraph = () => {
-        if (width && height) {
+        if (width && height && analyseStore.settings.selectedOutbreak) {
             return <AnalysisGraph data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
         }
     };
@@ -59,10 +59,12 @@ export const AnalysisVisualizationPanel = () => {
 
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
-            <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
-                <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                <div className="flex flex-col">{getLegend()}</div>
-            </fieldset>
+            {analyseStore.settings.selectedOutbreak && (
+                <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
+                    <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
+                    <div className="flex flex-col">{getLegend()}</div>
+                </fieldset>
+            )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {getGraph()}
             </div>
