@@ -49,7 +49,7 @@ jobs:
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker image prune -f
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
