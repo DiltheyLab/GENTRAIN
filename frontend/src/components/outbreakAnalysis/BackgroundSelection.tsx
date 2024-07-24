@@ -120,7 +120,7 @@ export const BackgroundSelection = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="includeCasesWithLowGeneticDistance"
-                    checked={analysisStore.settings.ignoreBackground}
+                    checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
                     onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
                 />
                 <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-base">
@@ -136,6 +136,7 @@ export const BackgroundSelection = () => {
                 step={1}
                 onValueChange={(value) => changeGeneticDistanceThreshold(value[0])}
             />
+            <p>{analysisStore.settings.geneticDistanceThreshold}</p>
         </div>
     );
 };
