@@ -7,6 +7,7 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { AnalysisSchema } from "@/database/analyses";
 import { X } from "lucide-react";
 import { db } from "@/database/db";
+import { useToast } from "../ui/use-toast";
 
 type AnalysisSelectionProps = {
     changeIsOpen: () => void;
@@ -16,6 +17,7 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
     const analyses = useGetAllAnalyses();
     const analysisStore = useAnalysisStore();
+    const { toast } = useToast();
 
     const changeSelectedAnalysis = (id: string) => {
         const selectedAnalysis = analyses?.find((analysis) => analysis.id === +id);
@@ -34,11 +36,19 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
     const deleteAnalysis = async (id: number) => {
         try {
             await db.analyses.delete(id);
+            // disable button if the selected analysis is deleted
             if (selectedAnalysis?.id === id) {
                 setSelectedAnalysis(undefined);
             }
         } catch (error) {
             console.error(error);
+            toast({
+                title: "Fehler beim Löschen der Analyse",
+                description: "Die Analyse konnte nicht gelöscht werden. Bitte versuche es erneut.",
+                duration: 10000,
+                variant: "destructive",
+            });
+            console.error("Error while deleting analysis", error);
         }
     };
 
