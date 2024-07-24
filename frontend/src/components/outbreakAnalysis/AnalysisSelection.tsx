@@ -57,12 +57,7 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                     return (
                         <div className="flex flex-row items-center" key={analysis.id}>
                             <SelectItem value={analysis.id.toString()}>{analysis.name}</SelectItem>
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size={"sm"}
-                                onClick={() => deleteAnalysis(analysis.id)}
-                            >
+                            <Button type="button" variant="ghost" size="sm" onClick={() => deleteAnalysis(analysis.id)}>
                                 <X size={15} />
                             </Button>
                         </div>
