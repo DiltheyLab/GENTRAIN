@@ -192,9 +192,9 @@ export const createGraphData = (
     // create link objects
     const graphLinks = mstEdges.map((edge) => {
         return {
-            source: nodes[edge["v"]].id,
-            target: nodes[edge["w"]].id,
-            value: edge["weight"],
+            source: nodes[edge.source].id,
+            target: nodes[edge.target].id,
+            value: edge.weight,
             type: "Solid",
         };
     }) as CustomLink[];
@@ -239,9 +239,9 @@ export const transformDistanceMatrixToGraphData = (
     // create link objects
     const graphLinks = mstEdges.map((edge) => {
         return {
-            source: nodes[edge["v"]].id,
-            target: nodes[edge["w"]].id,
-            value: edge["weight"],
+            source: nodes[edge.source].id,
+            target: nodes[edge.target].id,
+            value: edge.weight,
             type: "Solid",
         };
     }) as CustomLink[];

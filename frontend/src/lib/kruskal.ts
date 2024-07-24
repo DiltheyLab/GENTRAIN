@@ -1,43 +1,36 @@
 class Edge {
-    v: number;
-    w: number;
+    source: number;
+    target: number;
     weight: number;
 
-    constructor(v: number, w: number, weight: number) {
-        this.v = v;
-        this.w = w;
+    constructor(source: number, target: number, weight: number) {
+        this.source = source;
+        this.target = target;
         this.weight = weight;
     }
 }
 
 class Graph {
-    v: number; // Number of vertices
-    e: number; // Number of edges
+    numberOfNodes: number;
+    numberOfEdges: number;
     edges: Edge[];
-    nodes: number[];
 
     constructor(size: number) {
-        this.v = size; // Number of vertices
-        this.e = 0; // Initialize with 0 edges
+        this.numberOfNodes = size;
+        this.numberOfEdges = 0;
         this.edges = [];
-        this.nodes = [];
-
-        // Initialize nodes based on the size
-        for (let i = 0; i < size; i++) {
-            this.nodes.push(i); // Assuming node values are integers starting from 0
-        }
     }
 
     addEdge(edge: Edge): void {
         this.edges.push(edge);
-        this.e++;
-        // No need to update nodes here if they are initialized in the constructor
+        this.numberOfEdges++;
     }
+
     // Kruskal's algorithm to find the minimum spanning tree
     kruskal() {
         this.edges.sort((a, b) => a.weight - b.weight); // Sort edges by weight
 
-        const parent = Array(this.v)
+        const parent = Array(this.numberOfNodes)
             .fill(0)
             .map((_, i) => i); // Disjoint-set 'parent' array
 
@@ -58,10 +51,10 @@ class Graph {
 
         const mst: Edge[] = []; // Array to store the edges of the minimum spanning tree
         this.edges.forEach((edge) => {
-            if (find(edge.v) !== find(edge.w)) {
+            if (find(edge.source) !== find(edge.target)) {
                 // If adding this edge doesn't form a cycle
-                union(edge.v, edge.w); // Union the sets
-                mst.push(edge); // Add edge to MST
+                union(edge.source, edge.target);
+                mst.push(edge);
             }
         });
 
