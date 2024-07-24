@@ -4,7 +4,7 @@ import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
 import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
 import { useSampleUploadStore } from "@/stores/upload";
 
 function get_positions_of_letiants(sample: any) {
@@ -440,10 +440,13 @@ export const persistSampleDistances = async (pathogenId: number) => {
     // load kalign
     const cli = await new Aioli(["kalign/3.3.1"]);
 
-    const distanceMatrixId = await db.distance_matrices.add({
-        pathogen_id: pathogenId,
-        name: "Test",
-    });
+    // get distance matrix for pathogen
+
+    const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(pathogenId);
+
+    if (!distanceMatrixId) {
+        return false;
+    }
 
     let row_column_names: string[] = [];
     let matrix: number[][] = [];
@@ -492,7 +495,6 @@ export const persistSampleDistances = async (pathogenId: number) => {
 
 export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
     const distances = await getAllDistancesForDistanceMatrixWithFastaIds(distanceMatrixId);
-
     if (!distances) return;
 
     const matrix: DistanceMatrixAssembly = {};

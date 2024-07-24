@@ -20,6 +20,18 @@ export const getDistanceMatrixByPathogenId = async (
     return distanceMatrixForActivePathogen;
 };
 
+export const getOrCreateDistanceMatrixByPathogenId = async (pathogen_id: number): Promise<number | undefined> => {
+    const distanceMatrixForActivePathogen = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
+    if (distanceMatrixForActivePathogen) {
+        return distanceMatrixForActivePathogen.id;
+    }
+    const distanceMatrixId = await db.distance_matrices.add({
+        pathogen_id: pathogen_id,
+        name: "Test",
+    });
+    return distanceMatrixId;
+};
+
 export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) => {
     const distanceMatrix = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
     if (!distanceMatrix) return;
