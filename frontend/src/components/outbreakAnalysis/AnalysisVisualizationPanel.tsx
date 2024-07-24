@@ -18,7 +18,6 @@ export const AnalysisVisualizationPanel = () => {
     const analyseStore = useAnalysisStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
-
     const cases = useGetAllCasesWithRelationships();
 
     useEffect(() => {
@@ -43,39 +42,26 @@ export const AnalysisVisualizationPanel = () => {
         }
     };
 
-    /*     const getLegend = () => {
-        const nodes = analyseStore..nodes;
-        if (graphStore.settings.coloring === "normal" || graphStore.settings.coloring === "outbreaks") {
-            const uniqueGroups = nodes.filter((group, index, self) => {
-                return index === self.findIndex((t) => t.group === group.group);
-            });
-            return uniqueGroups.map((node) => (
-                <div className="flex items-center gap-2" key={node.group}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.group}</p>
-                </div>
-            ));
-        } else if (graphStore.settings.coloring === "registered_at") {
-            const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
-
-            return uniqueSamplingTimes.map((node) => (
-                <div className="flex items-center gap-2" key={node.registeredAt}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.registeredAt || "Kein Datum angegeben"}</p>
-                </div>
-            ));
-        }
-    }; */
+    const getLegend = () => {
+        const nodes = analyseStore.graphData.nodes;
+        const uniqueGroups = nodes
+            .filter((group, index, self) => {
+                return index === self.findIndex((node) => node.group === group.group);
+            })
+            .sort((a, b) => a.group.localeCompare(b.group));
+        return uniqueGroups.map((node) => (
+            <div className="flex items-center gap-2" key={node.group}>
+                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                <p>{node.group}</p>
+            </div>
+        ));
+    };
 
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
                 <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                <div className="flex flex-col">
-                    <Label htmlFor="role" className="mb-2">
-                        Cluster
-                    </Label>
-                </div>
+                <div className="flex flex-col">{getLegend()}</div>
             </fieldset>
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {getGraph()}

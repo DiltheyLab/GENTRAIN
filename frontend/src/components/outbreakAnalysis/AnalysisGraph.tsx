@@ -14,8 +14,9 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current) return;
-        forceRef.current.d3Force("charge")?.strength(-40);
+        forceRef.current.d3Force("charge")?.strength(-50);
         forceRef.current.d3Force("link")?.distance(50);
+        forceRef.current.d3ReheatSimulation();
     }, []);
 
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
@@ -40,7 +41,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         // Draw the text
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = "rgb(0, 0, 0,0.6)";
+        ctx.fillStyle = "rgb(0, 0, 0,0.3)";
         //font bold
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
     };

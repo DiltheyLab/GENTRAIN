@@ -2,7 +2,7 @@ import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CustomLink, CustomNode, GraphData } from "@/stores/graph";
 import { Graph, Edge } from "@/lib/kruskal";
-import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
+import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
 
 export const setNodeColor = (value: number) => {
@@ -229,13 +229,14 @@ export const transformDistanceMatrixToGraphData = (
     const mstEdges = graph.kruskal();
 
     const groupToColor = getGroupToColor(cases, "outbreak_id");
+
     // create node objects
     let nodes = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Background";
         return {
             id: caseData.id,
             caseId: caseData.case_id,
-            group: caseData.outbreak ? caseData.outbreak.name : "Background", // TODO: rename this field to "outbreak"
+            group: caseData.outbreak ? caseData.outbreak.name : "Background",
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
