@@ -10,6 +10,7 @@ import { type GraphData } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { useAnalysisStore } from "@/stores/analysis";
+import { AnalysisGraph } from "./AnalysisGraph";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -25,16 +26,9 @@ export const AnalysisVisualizationPanel = () => {
             analyseStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
-
-        const graphData = transformDistanceMatrixToGraphData(
-            distanceMatrixAssembly,
-            cases,
-            analyseStore.settings.selectedOutbreak?.name
-        );
-
-        // Update the graph settings with the new graph data
+        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
         analyseStore.updateGraphData(graphData);
-    }, [cases, distanceMatrixAssembly, analyseStore.settings.selectedOutbreak?.name]);
+    }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
@@ -45,7 +39,7 @@ export const AnalysisVisualizationPanel = () => {
 
     const getGraph = () => {
         if (width && height) {
-            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+            return <AnalysisGraph data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
         }
     };
 
@@ -75,9 +69,6 @@ export const AnalysisVisualizationPanel = () => {
 
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
-            <Button variant="outline" className="absolute z-50 bottom-3 right-3">
-                Reset
-            </Button>
             <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
                 <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
                 <div className="flex flex-col">
