@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface SampleUploadState {
-    uploading: boolean;
+    isUploading: boolean;
     pendingUploads: string[];
     finishedUploads: string[];
     distanceCalculationProgress: number;
     removedSamples: string[];
     addPendingUpload: (fastaIds: string) => void;
-    setUploading: (value: boolean) => void;
+    setIsUploading: (value: boolean) => void;
     addFinishedUpload: (fastaIds: string) => void;
     setDistanceCalculationProgress: (progress: number) => void;
     reset: () => void;
@@ -15,7 +15,7 @@ interface SampleUploadState {
 }
 
 export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
-    uploading: false,
+    isUploading: false,
     pendingUploads: [],
     finishedUploads: [],
     distanceCalculationProgress: 0,
@@ -30,7 +30,7 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     reset: () => {
         set({
             distanceCalculationProgress: 0,
-            uploading: false,
+            isUploading: false,
             pendingUploads: [],
             finishedUploads: [],
             removedSamples: [],
@@ -39,8 +39,8 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     setDistanceCalculationProgress: (progress: number) => {
         set({ distanceCalculationProgress: progress });
     },
-    setUploading: (value: boolean) => {
-        set({ uploading: value });
+    setIsUploading: (value: boolean) => {
+        set({ isUploading: value });
     },
     addPendingUpload: (fastaId: string) => {
         const updatedPendingUploads = get().pendingUploads;

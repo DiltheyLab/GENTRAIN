@@ -6,7 +6,7 @@ import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
-import { getVariantsForSequence } from "@/services/samples";
+import { getAndPersistVariantsForSample, getAndPersistVariantsForSamplesSynchronously } from "@/services/samples";
 import { persistSampleDistances } from "@/services/distanceMatrices";
 import { useSampleUploadStore } from "@/stores/upload";
 import { deleteDistancesByPathogenId } from "@/database/distances";
@@ -44,7 +44,8 @@ export const persistenceStrategies = {
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const activePathogen = useAppStore.getState().activePathogen;
-        useSampleUploadStore.getState().setUploading(true);
+        useSampleUploadStore.getState().setIsUploading(true);
+        const promises = [];
 
         for (const sample of sampleData) {
             // skip if sample was removed via user interface
@@ -56,18 +57,12 @@ export const persistenceStrategies = {
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                const variantsResult = await getVariantsForSequence(sample.sequence);
-                await db.samples.add({
-                    fasta_id: sample.fastaId,
-                    lineage: variantsResult.lineage,
-                    n_count: variantsResult.n_count,
-                    sequence_length: sample.sequence.length,
-                    variants: variantsResult.variants,
-                });
-                useSampleUploadStore.getState().addFinishedUpload(sample.fastaId);
+                promises.push(getAndPersistVariantsForSample(sample));
             }
         }
-        useSampleUploadStore.getState().setUploading(false);
+
+        await getAndPersistVariantsForSamplesSynchronously(promises);
+        useSampleUploadStore.getState().setIsUploading(false);
 
         if (activePathogen) {
             await deleteDistancesByPathogenId(activePathogen.id);

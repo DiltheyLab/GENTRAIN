@@ -81,7 +81,6 @@ export const validationStrategies = {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                console.log("HI");
                 useSampleUploadStore.getState().addPendingUpload(sample.fastaId);
             }
         }
