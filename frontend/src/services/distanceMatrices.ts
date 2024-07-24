@@ -491,22 +491,20 @@ export const persistSampleDistances = async (pathogenId: number) => {
 };
 
 export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
-    let matrix: DistanceMatrixAssembly = {};
-
     const distances = await getAllDistancesForDistanceMatrixWithFastaIds(distanceMatrixId);
 
-    console.log(distances);
-    if (distances) {
-        for (const distance of distances) {
-            if (!matrix[distance.fasta_id_1]) {
-                matrix[distance.fasta_id_1] = {};
-            }
-            matrix[distance.fasta_id_1][distance.fasta_id_2] = distance.value;
-            if (!matrix[distance.fasta_id_2]) {
-                matrix[distance.fasta_id_2] = {};
-            }
-            matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value;
+    if (!distances) return;
+
+    const matrix: DistanceMatrixAssembly = {};
+    for (const distance of distances) {
+        if (!matrix[distance.fasta_id_1]) {
+            matrix[distance.fasta_id_1] = {};
         }
+        matrix[distance.fasta_id_1][distance.fasta_id_2] = distance.value;
+        if (!matrix[distance.fasta_id_2]) {
+            matrix[distance.fasta_id_2] = {};
+        }
+        matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value;
     }
     return matrix;
 };

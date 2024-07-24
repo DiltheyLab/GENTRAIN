@@ -20,9 +20,6 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
 
-# Declare /app as a mount point
-#VOLUME /app
-
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
