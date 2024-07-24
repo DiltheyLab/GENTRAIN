@@ -40,7 +40,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         // Draw the text
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = "rgb(0, 0, 0,0.1)";
+        ctx.fillStyle = "rgb(0, 0, 0,0.6)";
         //font bold
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
     };

@@ -2,7 +2,7 @@ import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CustomLink, CustomNode, GraphData } from "@/stores/graph";
 import { Graph, Edge } from "@/lib/kruskal";
-import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
+import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
 
 export const setNodeColor = (value: number) => {
@@ -130,18 +130,81 @@ const getGraphCases = (cases: CaseWithRelationships[], analysisSettings: Analysi
     return graphCases;
 };
 
-export const transformDistanceMatrixToGraphData = (
+export const createGraphData = (
     matrixDataAssembly: DistanceMatrixAssembly,
     cases: CaseWithRelationships[],
     analysisSettings: AnalysisSettings
 ): GraphData => {
-    if (!matrixDataAssembly || cases.length === 0 || !analysisSettings) {
+    if (!matrixDataAssembly || cases.length === 0) {
         return { nodes: [], links: [] };
     }
 
     const graphCases = getGraphCases(cases, analysisSettings);
 
     const graph = new Graph(graphCases.length);
+
+    // for the top part of the dm (as it is mirrored and the diagonal is all -1)
+    // add weighted graph edges for every column-row-pair of the distance matrix
+    // note that every pair is only iterated once
+    for (let rowIndex = 0; rowIndex < graphCases.length - 1; rowIndex++) {
+        const rowCase = graphCases[rowIndex];
+
+        for (let columnIndex = rowIndex + 1; columnIndex < graphCases.length; columnIndex++) {
+            const columnCase = graphCases[columnIndex];
+
+            graph.addEdge(
+                new Edge(
+                    rowIndex,
+                    columnIndex,
+                    matrixDataAssembly[rowCase.sample!.fasta_id][columnCase.sample!.fasta_id]
+                )
+            );
+        }
+    }
+
+    // calculate edges that are in the mst by using kruskal's algorithm
+    const mstEdges = graph.kruskal();
+
+    const groupToColor = getGroupToColor(cases, "outbreak_id");
+    // create node objects
+    let nodes = graphCases.map((caseData) => {
+        const outbreakName = caseData?.outbreak?.name || "Background";
+        return {
+            id: caseData.id,
+            caseId: caseData.case_id,
+            group: caseData.outbreak ? caseData.outbreak.name : "Background", // TODO: rename this field to "outbreak"
+            color: groupToColor[outbreakName],
+            registeredAt: caseData.registered_at.toLocaleDateString(),
+        } satisfies CustomNode;
+    });
+
+    // create link objects
+    const graphLinks = mstEdges.map((edge) => {
+        return {
+            source: nodes[edge["v"]].id,
+            target: nodes[edge["w"]].id,
+            value: edge["weight"],
+            type: "Solid",
+        };
+    }) as CustomLink[];
+
+    return {
+        nodes: nodes,
+        links: graphLinks,
+    };
+};
+
+export const transformDistanceMatrixToGraphData = (
+    matrixDataAssembly: DistanceMatrixAssembly,
+    cases: CaseWithRelationships[]
+): GraphData => {
+    if (!matrixDataAssembly || cases.length === 0) {
+        return { nodes: [], links: [] };
+    }
+
+    const graphCases: CaseWithRelationships[] = cases.filter((caseData) => !!caseData.sample); // filter out cases without a sample
+
+    const graph = new Graph(cases.length);
 
     // for the top part of the dm (as it is mirrored and the diagonal is all -1)
     // add weighted graph edges for every column-row-pair of the distance matrix

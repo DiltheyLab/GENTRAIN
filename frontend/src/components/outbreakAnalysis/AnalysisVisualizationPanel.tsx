@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { transformDistanceMatrixToGraphData } from "@/services/graphs";
+import { createGraphData, transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
@@ -26,7 +26,7 @@ export const AnalysisVisualizationPanel = () => {
             analyseStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
-        const graphData = transformDistanceMatrixToGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
+        const graphData = createGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
         analyseStore.updateGraphData(graphData);
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
