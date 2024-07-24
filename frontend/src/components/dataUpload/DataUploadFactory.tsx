@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { ZodError } from "zod";
 import { getToastDescription } from "@/services/errors";
+import { SampleUploadStatus } from "./SampleUploadStatus";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -127,16 +128,23 @@ export const FileUploadFactory = ({
 
     return (
         <>
-            <div ref={containerRef} className="flex flex-row items-end gap-3">
-                <FileUploadButton
-                    type={type}
-                    accept={type === "samples" ? ".fasta" : ".csv"}
-                    multiple={allowMultiFile}
-                    onUpload={handleFileUpload}
-                />
-                <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                    Hochladen
-                </Button>
+            <div ref={containerRef} className="flex flex-col gap-3">
+                <div className="flex flex-row items-end gap-3">
+                    <FileUploadButton
+                        type={type}
+                        accept={type === "samples" ? ".fasta" : ".csv"}
+                        multiple={allowMultiFile}
+                        onUpload={handleFileUpload}
+                    />
+                    <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
+                        Hochladen
+                    </Button>
+                </div>
+                {type === "samples" && (
+                    <div>
+                        <SampleUploadStatus />
+                    </div>
+                )}
             </div>
             {i18n.exists(`upload.help.${type}`) && (
                 <small

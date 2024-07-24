@@ -6,8 +6,10 @@ import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
-import { getVariantsForSequence } from "@/services/samples";
+import { getAndPersistVariantsForSample, getAndPersistVariantsForSamplesSynchronously } from "@/services/samples";
 import { persistSampleDistances } from "@/services/distanceMatrices";
+import { useSampleUploadStore } from "@/stores/upload";
+import { deleteDistancesByPathogenId } from "@/database/distances";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -42,25 +44,32 @@ export const persistenceStrategies = {
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const activePathogen = useAppStore.getState().activePathogen;
+        useSampleUploadStore.getState().setIsUploading(true);
+        const variantRequestPromises = [];
+
         for (const sample of sampleData) {
+            // skip if sample was removed via user interface
+            if (useSampleUploadStore.getState().removedSamples.includes(sample.fastaId)) {
+                continue;
+            }
             // found case (only import if case exists)
             const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                const variantsResult = await getVariantsForSequence(sample.sequence);
-                await db.samples.add({
-                    fasta_id: sample.fastaId,
-                    lineage: variantsResult.lineage,
-                    n_count: variantsResult.n_count,
-                    sequence_length: sample.sequence.length,
-                    variants: variantsResult.variants,
-                });
+                variantRequestPromises.push(getAndPersistVariantsForSample(sample));
             }
         }
+
+        await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
+        useSampleUploadStore.getState().setIsUploading(false);
+
         if (activePathogen) {
+            await deleteDistancesByPathogenId(activePathogen.id);
             await persistSampleDistances(activePathogen.id);
         }
+
+        useSampleUploadStore.getState().reset();
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];

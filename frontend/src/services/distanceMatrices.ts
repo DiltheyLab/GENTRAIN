@@ -4,7 +4,8 @@ import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
 import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
+import { useSampleUploadStore } from "@/stores/upload";
 
 function get_positions_of_letiants(sample: any) {
     // return val
@@ -439,15 +440,21 @@ export const persistSampleDistances = async (pathogenId: number) => {
     // load kalign
     const cli = await new Aioli(["kalign/3.3.1"]);
 
-    const distanceMatrixId = await db.distance_matrices.add({
-        pathogen_id: pathogenId,
-        name: "Test",
-    });
+    // get distance matrix for pathogen
+
+    const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(pathogenId);
+
+    if (!distanceMatrixId) {
+        return false;
+    }
 
     let row_column_names: string[] = [];
     let matrix: number[][] = [];
 
     // then add new samples to dm and calculate their distances
+    useSampleUploadStore.getState().setDistanceCalculationProgress(0);
+
+    let calculationsCount = 0;
     for (const sample of samples) {
         // when fasta id already in dm then overwrite it, otherwise add as last entry
         let add_index: number = row_column_names.indexOf(sample.fasta_id);
@@ -480,13 +487,14 @@ export const persistSampleDistances = async (pathogenId: number) => {
                 distance_matrix_id: distanceMatrixId,
             });
         }
+        calculationsCount++;
+        useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCount / samples.length) * 100);
     }
     return true;
 };
 
 export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
     const distances = await getAllDistancesForDistanceMatrixWithFastaIds(distanceMatrixId);
-
     if (!distances) return;
 
     const matrix: DistanceMatrixAssembly = {};
