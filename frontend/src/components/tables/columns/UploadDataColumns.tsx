@@ -89,7 +89,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
         },
     },
     {
-        accessorKey: "sample",
+        accessorKey: "sequence",
         header: ({ column }) => {
             return (
                 <Button

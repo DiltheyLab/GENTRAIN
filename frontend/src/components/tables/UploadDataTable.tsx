@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CaseWithRelationships } from "@/database/cases";
 import { UploadDataColumns } from "./columns/UploadDataColumns";
+import { customFilterFn } from "./filters/UploadDataFilters";
 
 const columns = UploadDataColumns;
 
@@ -21,6 +22,7 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
+    const [globalFilter, setGlobalFilter] = React.useState("");
 
     const table = useReactTable({
         data,
@@ -30,12 +32,15 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: customFilterFn,
+        onGlobalFilterChange: setGlobalFilter,
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         state: {
             sorting,
             columnVisibility,
             rowSelection,
+            globalFilter,
         },
     });
 
@@ -44,8 +49,10 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
             <div className="flex items-center pb-4">
                 <Input
                     placeholder="Falldaten filtern..."
-                    value={(table.getColumn("case_id")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) => table.getColumn("case_id")?.setFilterValue(event.target.value)}
+                    value={(globalFilter as string) ?? ""}
+                    onChange={(event) => {
+                        setGlobalFilter(event.target.value);
+                    }}
                     className="max-w-sm"
                 />
             </div>
