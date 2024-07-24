@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-    ColumnFiltersState,
     SortingState,
     VisibilityState,
     flexRender,
@@ -15,18 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CaseWithRelationships } from "@/database/cases";
 import { UploadDataColumns } from "./columns/UploadDataColumns";
-export type Payment = {
-    id: string;
-    amount: number;
-    status: "pending" | "processing" | "success" | "failed";
-    email: string;
-};
 
 const columns = UploadDataColumns;
 
 export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
@@ -34,7 +26,6 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
         data,
         columns,
         onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -43,7 +34,6 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
         onRowSelectionChange: setRowSelection,
         state: {
             sorting,
-            columnFilters,
             columnVisibility,
             rowSelection,
         },
