@@ -3,8 +3,12 @@ import { db } from "@/database/db";
 import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
-import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
-import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
+import { deleteDistancesByPathogenId, getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
+import {
+    DistanceMatrixAssembly,
+    getOrCreateDistanceMatrixByPathogenId,
+    updateDistanceMatrixById,
+} from "@/database/distance_matrices";
 import { useSampleUploadStore } from "@/stores/upload";
 
 function get_positions_of_letiants(sample: any) {
@@ -509,4 +513,13 @@ export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
         matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value;
     }
     return matrix;
+};
+
+export const recalculateDistances = async (activePathogenId: number) => {
+    const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(activePathogenId);
+    await deleteDistancesByPathogenId(activePathogenId);
+    await persistSampleDistances(activePathogenId);
+    if (distanceMatrixId) {
+        await updateDistanceMatrixById(distanceMatrixId, { needs_recalculation: false });
+    }
 };

@@ -11,12 +11,14 @@ import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { type GraphData, useGraphStore } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetDistanceMatrixByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const graphStore = useGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
+    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
 
     const cases = useGetAllCasesWithRelationships();
@@ -31,7 +33,7 @@ export const DashboardVisualizationPanel = () => {
 
         // Update the graph settings with the new graph data
         graphStore.updateData(graphData);
-    }, [cases, distanceMatrixAssembly, graphStore.settings.filter]);
+    }, [cases, distanceMatrix, distanceMatrixAssembly, graphStore.settings.filter]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
