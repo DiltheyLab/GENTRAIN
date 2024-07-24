@@ -4,7 +4,6 @@ import { db } from "./db";
 export interface DistanceMatricesSchema {
     id: number;
     pathogen_id: number;
-    needs_recalculation: boolean;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -27,7 +26,6 @@ export const getOrCreateDistanceMatrixByPathogenId = async (pathogen_id: number)
     }
     const distanceMatrixId = await db.distance_matrices.add({
         pathogen_id: pathogen_id,
-        needs_recalculation: true,
     });
     return distanceMatrixId;
 };
