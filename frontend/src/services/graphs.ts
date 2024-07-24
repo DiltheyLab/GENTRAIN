@@ -177,7 +177,8 @@ export const createGraphData = (
     const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
 
     const groupToColor = getGroupToColor(cases, "outbreak_id");
-    // create node objects
+
+    // create node objects for forced directed graph
     let nodes = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Background";
         return {
@@ -189,11 +190,11 @@ export const createGraphData = (
         } satisfies CustomNode;
     });
 
-    // create link objects
+    // create link objects for forced directed graph
     const graphLinks = mstEdges.map((edge) => {
         return {
-            source: nodes[edge.source].id,
-            target: nodes[edge.target].id,
+            source: graphCases[edge.source].id,
+            target: graphCases[edge.target].id,
             value: edge.weight,
             type: "Solid",
         };
@@ -239,8 +240,8 @@ export const transformDistanceMatrixToGraphData = (
     // create link objects
     const graphLinks = mstEdges.map((edge) => {
         return {
-            source: nodes[edge.source].id,
-            target: nodes[edge.target].id,
+            source: graphCases[edge.source].id,
+            target: graphCases[edge.target].id,
             value: edge.weight,
             type: "Solid",
         };
