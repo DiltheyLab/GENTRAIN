@@ -495,6 +495,7 @@ export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
 
     const distances = await getAllDistancesForDistanceMatrixWithFastaIds(distanceMatrixId);
 
+    console.log(distances);
     if (distances) {
         for (const distance of distances) {
             if (!matrix[distance.fasta_id_1]) {

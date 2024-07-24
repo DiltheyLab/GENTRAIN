@@ -38,3 +38,10 @@ export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatri
 
     return distancesWithFastaIds;
 };
+
+export const deleteDistancesByPathogenId = async (pathogen_id: number) => {
+    const distanceMatrixForPathogen = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
+    if (distanceMatrixForPathogen) {
+        await db.distances.where({ distance_matrix_id: distanceMatrixForPathogen.id }).delete();
+    }
+};

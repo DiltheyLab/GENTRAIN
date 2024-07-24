@@ -28,7 +28,13 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
         set({ removedSamples: updatedRemovedSamples });
     },
     reset: () => {
-        set({ distanceCalculationProgress: 0, uploading: false, pendingUploads: [], finishedUploads: [] });
+        set({
+            distanceCalculationProgress: 0,
+            uploading: false,
+            pendingUploads: [],
+            finishedUploads: [],
+            removedSamples: [],
+        });
     },
     setDistanceCalculationProgress: (progress: number) => {
         set({ distanceCalculationProgress: progress });

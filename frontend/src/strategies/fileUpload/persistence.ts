@@ -9,6 +9,7 @@ import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { getVariantsForSequence } from "@/services/samples";
 import { persistSampleDistances } from "@/services/distanceMatrices";
 import { useSampleUploadStore } from "@/stores/upload";
+import { deleteDistancesByPathogenId } from "@/database/distances";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -69,6 +70,7 @@ export const persistenceStrategies = {
         useSampleUploadStore.getState().setUploading(false);
 
         if (activePathogen) {
+            await deleteDistancesByPathogenId(activePathogen.id);
             await persistSampleDistances(activePathogen.id);
         }
 
