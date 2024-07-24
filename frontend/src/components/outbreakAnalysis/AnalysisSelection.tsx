@@ -5,6 +5,8 @@ import { Button } from "../ui/button";
 import { useGetAllAnalyses } from "@/hooks/database/analyses/useGetAllAnalyses";
 import { useAnalysisStore } from "@/stores/analysis";
 import { AnalysisSchema } from "@/database/analyses";
+import { X } from "lucide-react";
+import { db } from "@/database/db";
 
 type AnalysisSelectionProps = {
     changeIsOpen: () => void;
@@ -29,6 +31,17 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
         changeIsOpen();
     };
 
+    const deleteAnalysis = async (id: number) => {
+        try {
+            await db.analyses.delete(id);
+            if (selectedAnalysis?.id === id) {
+                setSelectedAnalysis(undefined);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const getSelectionGroups = () => {
         if (!analyses || analyses.length === 0) {
             return (
@@ -42,9 +55,17 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                 <SelectLabel>Analysen</SelectLabel>
                 {analyses.map((analysis) => {
                     return (
-                        <SelectItem key={analysis.id} value={analysis.id.toString()}>
-                            {analysis.name}
-                        </SelectItem>
+                        <div className="flex flex-row items-center" key={analysis.id}>
+                            <SelectItem value={analysis.id.toString()}>{analysis.name}</SelectItem>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size={"sm"}
+                                onClick={() => deleteAnalysis(analysis.id)}
+                            >
+                                <X size={15} />
+                            </Button>
+                        </div>
                     );
                 })}
             </SelectGroup>
