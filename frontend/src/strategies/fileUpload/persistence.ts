@@ -45,7 +45,7 @@ export const persistenceStrategies = {
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const activePathogen = useAppStore.getState().activePathogen;
         useSampleUploadStore.getState().setIsUploading(true);
-        const promises = [];
+        const variantRequestPromises = [];
 
         for (const sample of sampleData) {
             // skip if sample was removed via user interface
@@ -57,11 +57,11 @@ export const persistenceStrategies = {
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                promises.push(getAndPersistVariantsForSample(sample));
+                variantRequestPromises.push(getAndPersistVariantsForSample(sample));
             }
         }
 
-        await getAndPersistVariantsForSamplesSynchronously(promises);
+        await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
         useSampleUploadStore.getState().setIsUploading(false);
 
         if (activePathogen) {
