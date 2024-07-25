@@ -28,9 +28,8 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notify_when: "success,failure"
-          notification_title: "Frontend Build"
-          icon_success: 🚀
+          notify_when: "failure"
+          notification_title: "Test Frontend Build"
           icon_failure: 💥
 
   pull_production_state:
@@ -51,6 +50,16 @@ jobs:
             git checkout ${{ vars.MAIN_BRANCH }}
             git pull
             exit
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "Pull Production State"
+          icon_failure: 💥
 
   restart_docker_containers:
     name: Restart Docker Containers
@@ -75,7 +84,7 @@ jobs:
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             exit
-      - name: Restart docker containers
+      - name: Restart containers
         uses: appleboy/ssh-action
         with:
           host: ${{ vars.SSH_HOST }}
@@ -96,7 +105,16 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notify_when: "success,failure"
+          notify_when: "failure"
+          notification_title: "Restart Docker Container"
+          icon_failure: 💥
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "success"
           notification_title: "Production Deployment"
           icon_success: 🚀
-          icon_failure: 💥
