@@ -51,7 +51,7 @@ jobs:
             git pull
             exit
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action
+        uses: ravsamhq/notify-slack-action@2.3.0
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
@@ -99,7 +99,7 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action
+        uses: ravsamhq/notify-slack-action@2.3.0
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
@@ -109,7 +109,7 @@ jobs:
           notification_title: "Restart Docker Container"
           icon_failure: 💥
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action
+        uses: ravsamhq/notify-slack-action@2.3.0
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
