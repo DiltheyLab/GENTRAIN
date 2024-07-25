@@ -1,16 +1,15 @@
-import { Button } from "../ui/button";
-import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { createGraphData, transformDistanceMatrixToGraphData } from "@/services/graphs";
-import { Label } from "@/components/ui/label";
+import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { type GraphData } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
-import { useAnalysisStore } from "@/stores/analysis";
+import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { AnalysisGraph } from "./AnalysisGraph";
+import { CaseWithRelationships } from "@/database/cases";
+import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -25,8 +24,17 @@ export const AnalysisVisualizationPanel = () => {
             analyseStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
-        const graphData = createGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
-        analyseStore.updateGraphData(graphData);
+
+        const getGraphData = async (
+            distanceMatrixAssembly: DistanceMatrixAssembly,
+            cases: CaseWithRelationships[],
+            settings: AnalysisSettings
+        ) => {
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings);
+            analyseStore.updateGraphData(graphData);
+        };
+
+        getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
     // Creating deep copy of the graph data for each graph component and
