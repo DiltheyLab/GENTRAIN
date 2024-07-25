@@ -26,11 +26,12 @@ export const persistenceStrategies = {
             caseData = caseData.slice(1, caseData.length);
             for (const row of caseData) {
                 // persist case from csv columns
+                const outbreakId = await getOrPersistOutbreak(row[6]);
                 const data = {
                     case_id: row[0],
                     sample_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
-                    outbreak_id: await getOrPersistOutbreak(row[6]),
+                    outbreak_id: outbreakId ?? null,
                     group_ids: await persistGroupsForCategories(flexibleCategoryNames, row),
                     registered_at: parseGermanDateFormat(row[2]),
                 } as CaseSchema;
