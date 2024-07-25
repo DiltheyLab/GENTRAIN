@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_frontend:
-    name: Frontend Build
+  validate_frontend:
+    name: Test Frontend Build
     runs-on: ubuntu-latest
 
     steps:
@@ -33,8 +33,8 @@ jobs:
           icon_success: 🚀
           icon_failure: 💥
 
-  production_deployment:
-    name: Production Deployment
+  pull:
+    name: Retrieve Production State
     runs-on: ubuntu-latest
     needs: build_frontend
 
@@ -51,6 +51,13 @@ jobs:
             git checkout ${{ vars.MAIN_BRANCH }}
             git pull
             exit
+
+  deploy:
+    name: Restart Docker Containers
+    runs-on: ubuntu-latest
+    needs: build_frontend
+
+    steps:
       - name: Generate environment variables
         uses: appleboy/ssh-action@v1.0.3
         with:
