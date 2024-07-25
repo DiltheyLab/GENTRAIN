@@ -8,6 +8,7 @@ import { AnalysisSchema } from "@/database/analyses";
 import { X } from "lucide-react";
 import { db } from "@/database/db";
 import { useToast } from "../ui/use-toast";
+import { DeleteDialog } from "../ui/deleteDialog";
 
 type AnalysisSelectionProps = {
     changeIsOpen: () => void;
@@ -41,7 +42,6 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                 setSelectedAnalysis(undefined);
             }
         } catch (error) {
-            console.error(error);
             toast({
                 title: "Fehler beim Löschen der Analyse",
                 description: "Die Analyse konnte nicht gelöscht werden. Bitte versuche es erneut.",
@@ -67,9 +67,16 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                     return (
                         <div className="flex flex-row items-center" key={analysis.id}>
                             <SelectItem value={analysis.id.toString()}>{analysis.name}</SelectItem>
-                            <Button type="button" variant="ghost" size="sm" onClick={() => deleteAnalysis(analysis.id)}>
-                                <X size={15} />
-                            </Button>
+                            <DeleteDialog
+                                deleteAction={() => deleteAnalysis(analysis.id)}
+                                dialogTitle="Analyse löschen"
+                                dialogDescription="Möchten sie die Analyse wirklich löschen?"
+                                triggerComponent={
+                                    <Button type="button" variant="ghost" size="sm">
+                                        <X size={15} />
+                                    </Button>
+                                }
+                            />
                         </div>
                     );
                 })}
