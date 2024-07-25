@@ -45,7 +45,7 @@ export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGra
         if (graphSettingsContext.settings.hideNodeLabel) return;
 
         // Draw the label above the circle
-        const label = `${node.id}`;
+        const label = `${node["caseId"]}`;
         const fontSize = 12;
         ctx.font = `bold ${fontSize}px Sans-Serif`;
         const textWidth = ctx.measureText(label).width;
@@ -96,7 +96,7 @@ export const ForcedDirectedGraph2D = ({ data, width, height }: ForcedDirectedGra
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `(${node.id})`}
+            nodeLabel={(node) => `(${node["caseId"]})`}
             nodeRelSize={graphSettingsContext?.settings.nodeSize}
             width={width}
             height={height}
