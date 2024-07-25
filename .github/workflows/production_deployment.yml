@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - production
-  workflow_dispatch:
 
 jobs:
   test_frontend_build:
@@ -52,7 +51,7 @@ jobs:
             git pull
             exit
 
-  deploy:
+  restart_docker_containers:
     name: Restart Docker Containers
     runs-on: ubuntu-latest
     needs: pull_production_state
