@@ -43,7 +43,7 @@ const outbreakNameContainsValue = (caseData: CaseWithRelationships, value: strin
     }
 };
 
-export const customFilterFn = (row: any, columnId: any, value: string, addMeta: any) => {
+export const customFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return (
         caseIdContainsValue(row.original, value) ||

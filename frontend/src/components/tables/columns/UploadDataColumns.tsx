@@ -11,7 +11,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { CaseWithRelationships } from "@/database/cases";
 import { deleteCasebyIdAndRecalculateDistances } from "@/services/cases";
-import { getToastDescription } from "@/services/errors";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 

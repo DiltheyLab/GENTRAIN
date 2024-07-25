@@ -4,11 +4,7 @@ import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
 import { deleteDistancesByPathogenId, getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
-import {
-    DistanceMatrixAssembly,
-    getOrCreateDistanceMatrixByPathogenId,
-    updateDistanceMatrixById,
-} from "@/database/distance_matrices";
+import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
 import { useSampleUploadStore } from "@/stores/upload";
 
 function get_positions_of_letiants(sample: any) {
