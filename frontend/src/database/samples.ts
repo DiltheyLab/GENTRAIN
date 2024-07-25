@@ -17,4 +17,27 @@ export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {
     return db.samples.toArray();
 };
 
+export const createSample = async (fastaId: string, sequence: string, variantsResult: any) => {
+    const sampleId = await db.samples.add({
+        fasta_id: fastaId,
+        sequence_length: sequence.length,
+        lineage: `${variantsResult["clade"]}, ${variantsResult["customNodeAttributes"]["Nextclade_pango"]}`,
+        n_count: variantsResult["totalMissing"],
+        variants: {
+            substitutions: variantsResult["substitutions"],
+            deletions: variantsResult["deletions"],
+            insertions: variantsResult["insertions"],
+            missing: variantsResult["missing"],
+            nonACGTNs: variantsResult["nonACGTNs"],
+            alignmentStart: variantsResult["alignmentStart"],
+            alignmentEnd: variantsResult["alignmentEnd"],
+        },
+    });
+    return sampleId;
+};
+
+export const deleteSampleById = async (id: number) => {
+    await db.samples.delete(id);
+};
+
 export type { SampleSchema };

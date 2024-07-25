@@ -4,7 +4,6 @@ import { db } from "./db";
 export interface DistanceMatricesSchema {
     id: number;
     pathogen_id: number;
-    name: string;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -18,6 +17,21 @@ export const getDistanceMatrixByPathogenId = async (
 ): Promise<DistanceMatricesSchema | undefined> => {
     const distanceMatrixForActivePathogen = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
     return distanceMatrixForActivePathogen;
+};
+
+export const getOrCreateDistanceMatrixByPathogenId = async (pathogen_id: number): Promise<number | undefined> => {
+    const distanceMatrixForActivePathogen = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
+    if (distanceMatrixForActivePathogen) {
+        return distanceMatrixForActivePathogen.id;
+    }
+    const distanceMatrixId = await db.distance_matrices.add({
+        pathogen_id: pathogen_id,
+    });
+    return distanceMatrixId;
+};
+
+export const updateDistanceMatrixById = async (distance_matrix_id: number, fields: object) => {
+    await db.distance_matrices.update(distance_matrix_id, fields);
 };
 
 export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) => {
