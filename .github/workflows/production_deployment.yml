@@ -5,15 +5,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  test_frontend_build:
-    name: Test Frontend Build
+  frontend_build:
+    name: Frontend Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node
+        uses: actions/setup-node@v3
         with:
           node-version: "latest"
       - name: Build frontend
@@ -22,24 +22,24 @@ jobs:
           npm ci
           npm run build
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action
+        uses: ravsamhq/notify-slack-action@2.3.0
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
         with:
           status: ${{ job.status }}
           notify_when: "failure"
-          notification_title: "Test Frontend Build"
+          notification_title: "Frontend Build"
           icon_failure: 💥
 
   pull_production_state:
     name: Pull Production State
     runs-on: ubuntu-latest
-    needs: test_frontend_build
+    needs: frontend_build
 
     steps:
       - name: Pull latest version
-        uses: appleboy/ssh-action
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Generate environment variables
-        uses: appleboy/ssh-action
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -84,8 +84,8 @@ jobs:
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             exit
-      - name: Restart containers
-        uses: appleboy/ssh-action
+      - name: Restart docker containers
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
