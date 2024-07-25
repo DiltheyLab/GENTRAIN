@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - production
+  workflow_dispatch:
 
 jobs:
   test_frontend_build:
