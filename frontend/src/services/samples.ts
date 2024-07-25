@@ -7,9 +7,9 @@ export const getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fa
     if (!activePathogen) {
         return;
     }
-    const pathogenIdentifier = encodeURI(activePathogen.name).toLowerCase();
+    const pathogenName = encodeURI(activePathogen.name).toLowerCase();
     const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/pathogens/${pathogenIdentifier}/sequences/${fastaId}/variants`,
+        `${import.meta.env.VITE_API_BASE_URL}/pathogens/${pathogenName}/sequences/${fastaId}/variants`,
         {
             method: "POST",
             headers: {
@@ -18,11 +18,11 @@ export const getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fa
                     "Basic " +
                     btoa(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`),
             },
-            body: JSON.stringify({ fasta_content: `>0\n${sequence}` }),
+            body: JSON.stringify({ sequence: sequence }),
         }
     );
     let variantsResult = await response.json();
-    createSample(fastaId, sequence, variantsResult.results[0]);
+    createSample(fastaId, sequence, variantsResult);
     useSampleUploadStore.getState().addFinishedUpload(fastaId);
 };
 
