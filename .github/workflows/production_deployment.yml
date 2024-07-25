@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node
         with:
           node-version: "latest"
       - name: Build frontend
@@ -22,7 +22,7 @@ jobs:
           npm ci
           npm run build
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
+        uses: ravsamhq/notify-slack-action
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Pull latest version
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Generate environment variables
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -76,7 +76,7 @@ jobs:
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             exit
       - name: Restart docker containers
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -90,7 +90,7 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
       - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
+        uses: ravsamhq/notify-slack-action
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         if: always()
