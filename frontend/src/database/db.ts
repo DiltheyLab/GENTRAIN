@@ -37,9 +37,9 @@ db.version(1).stores({
     samples:
         "++id, fasta_id, case_id, ims_id, group, n_count, sequence_length, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, created_at, updated_at",
     distance_matrix: "id, name, row_column_names, matrix, pathogen_id, created_at, updated_at", //to be removed in future versions
-    distance_matrices: "++id, pathogen_id, name, created_at, updated_at",
+    distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
-    cases: "++id, case_id, sample_id, outbreak_id, *groups, pathogen_id, registered_at, created_at, updated_at",
+    cases: "++id, case_id, sample_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
     groups: "++id, name, category_id, updated_at",
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",

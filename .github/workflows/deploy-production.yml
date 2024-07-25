@@ -10,6 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "latest"
+      - name: Build project
+        run: |
+          cd frontend
+          npm ci
+          npm run build
       - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -49,7 +58,7 @@ jobs:
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker image prune -f
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit

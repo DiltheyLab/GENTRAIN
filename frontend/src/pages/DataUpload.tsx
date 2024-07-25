@@ -1,13 +1,12 @@
 import { Layout } from "@/components/layout/Layout";
-import { DataTable } from "@/components/tables/cases/data-table";
-import { columns } from "@/components/tables/cases/columns";
+import { UploadDataTable } from "@/components/tables/UploadDataTable";
 
 import { Separator } from "@/components/ui/separator";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
-import { useGetAllCases } from "@/hooks/database/cases/useGetAllCases";
+import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 
 export function DataUpload() {
-    const casesData = useGetAllCases();
+    const casesData = useGetAllCasesWithRelationships();
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -32,7 +31,7 @@ export function DataUpload() {
                             <p className="text-muted-foreground">Hier ist eine Liste der hochgeladenen Falldaten.</p>
                         </div>
                     </div>
-                    {casesData && <DataTable data={casesData} columns={columns} />}
+                    {casesData && <UploadDataTable data={casesData} />}
                 </div>
             </div>
         </Layout>
