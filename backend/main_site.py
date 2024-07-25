@@ -10,6 +10,7 @@ import csv
 import json
 import shutil
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 ################################
 #    Define global variables   #
@@ -92,9 +93,12 @@ def nextclade():
     temp_dir = "./temp_data/nextclade/"
     pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
-    # Create temporary file names
-    fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
-    json_tmp = fa_tmp[:-2] + "json"
+    # Create temporary file names with secure filenames, since ids are provided by user fasta upload.
+    fa_tmp = secure_filename(
+        tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
+    )
+    json_tmp = secure_filename(fa_tmp[:-2] + "json")
+
     # save fasta in temp file
     with open(fa_tmp, "w") as fa_file:
         fa_file.write(fasta_content)
@@ -124,7 +128,6 @@ def nextclade():
 
     # if the process succeded
     else:
-        print("JSON", json_tmp)
         # collect output data into lists
         with open(json_tmp, "r") as json_file:
             content = json.load(json_file)
