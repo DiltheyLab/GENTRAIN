@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate_frontend:
+  test_frontend_build:
     name: Test Frontend Build
     runs-on: ubuntu-latest
 
@@ -33,10 +33,10 @@ jobs:
           icon_success: 🚀
           icon_failure: 💥
 
-  pull:
-    name: Retrieve Production State
+  pull_production_state:
+    name: Pull Production State
     runs-on: ubuntu-latest
-    needs: build_frontend
+    needs: test_frontend_build
 
     steps:
       - name: Pull latest version
@@ -55,7 +55,7 @@ jobs:
   deploy:
     name: Restart Docker Containers
     runs-on: ubuntu-latest
-    needs: build_frontend
+    needs: pull_production_state
 
     steps:
       - name: Generate environment variables
