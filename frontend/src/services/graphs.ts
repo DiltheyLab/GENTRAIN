@@ -85,7 +85,7 @@ const filterCasesByGroupsAndOutbreaks = (cases: CaseWithRelationships[], selecte
     return cases.filter(
         (caseData) =>
             selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) ||
-            selectedBackground.groups.some((group) => caseData.groups.includes(group.id))
+            selectedBackground.groups.some((group) => caseData.group_ids.includes(group.id))
     );
 };
 
