@@ -46,7 +46,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
+            cd ${{ vars.GENTRAIN_DIR }}
             git checkout ${{ vars.MAIN_BRANCH }}
+            git pull
             exit
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
