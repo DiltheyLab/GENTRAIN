@@ -41,6 +41,7 @@ def getSequenceVariants(
     json_tmp = fa_tmp[:-2] + "json"
 
     # Save fasta string (ids, sequences) in temp file
+    # TODO: validate sequence (ATCG...)
     with open(fa_tmp, "w") as fa_file:
         fa_file.write(f">{fasta_id}\n{body.sequence}")
 
