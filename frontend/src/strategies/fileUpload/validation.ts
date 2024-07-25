@@ -76,7 +76,7 @@ export const validationStrategies = {
 
         for (const sample of sampleData) {
             // found case (only import if case exists)
-            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
             const existingSample = await db.samples.where({ fasta_id: sample.fastaId }).first();
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);

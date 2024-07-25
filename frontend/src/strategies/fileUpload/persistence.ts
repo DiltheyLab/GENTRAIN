@@ -29,7 +29,7 @@ export const persistenceStrategies = {
                 const outbreakId = await getOrPersistOutbreak(row[6]);
                 const data = {
                     case_id: row[0],
-                    sample_id: row[1] !== "" ? row[1] : null,
+                    fasta_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
                     outbreak_id: outbreakId ?? null,
                     group_ids: await persistGroupsForCategories(flexibleCategoryNames, row),
@@ -53,7 +53,7 @@ export const persistenceStrategies = {
                 continue;
             }
             // found case (only import if case exists)
-            const sampleCase = await db.cases.where({ sample_id: sample.fastaId }).first();
+            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {

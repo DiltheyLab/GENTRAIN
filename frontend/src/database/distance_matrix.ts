@@ -9,10 +9,6 @@ export interface DistanceMatrixSchema {
     updated_at?: string;
 }
 
-export interface DistanceMatrixAssembly {
-    [row_sample_id: string]: { [col_sample_id: string]: number };
-}
-
 export const getDistanceMatrixByPathogenIdOld = async (
     pathogen_id: number
 ): Promise<DistanceMatrixSchema | undefined> => {
