@@ -3,7 +3,7 @@ import { db } from "@/database/db";
 import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
-import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
+import { deleteDistancesByPathogenId, getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
 import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
 import { useSampleUploadStore } from "@/stores/upload";
 
@@ -509,4 +509,9 @@ export const assembleDistanceMatrix = async (distanceMatrixId: number) => {
         matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value;
     }
     return matrix;
+};
+
+export const recalculateDistances = async (activePathogenId: number) => {
+    await deleteDistancesByPathogenId(activePathogenId);
+    await persistSampleDistances(activePathogenId);
 };

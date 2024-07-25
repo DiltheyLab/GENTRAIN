@@ -94,7 +94,7 @@ const parseCategoryGroups = (categoryData: string) => {
  */
 const collectCategoryData = (name: string, data: string) => {
     if (!data) {
-        return null;
+        return;
     }
     return { name: name, groups: parseCategoryGroups(data) };
 };

@@ -1,5 +1,4 @@
 import { db } from "./db";
-
 export interface DistancesSchema {
     id: number;
     sample_id_1: number;
@@ -24,7 +23,7 @@ export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatri
         const sample2 = await db.samples.get(distance.sample_id_2);
 
         if (!sample1 || !sample2) {
-            return null;
+            return;
         }
 
         const distanceWithFastaId: DistanceWithFastaId = {
@@ -44,4 +43,8 @@ export const deleteDistancesByPathogenId = async (pathogen_id: number) => {
     if (distanceMatrixForPathogen) {
         await db.distances.where({ distance_matrix_id: distanceMatrixForPathogen.id }).delete();
     }
+};
+
+export const deleteDistancesBySampleId = async (sample_id: number) => {
+    await db.distances.where({ sample_id_1: sample_id }).or("sample_id_2").equals(sample_id).delete();
 };

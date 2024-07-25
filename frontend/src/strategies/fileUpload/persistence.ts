@@ -7,9 +7,8 @@ import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { getAndPersistVariantsForSample, getAndPersistVariantsForSamplesSynchronously } from "@/services/samples";
-import { persistSampleDistances } from "@/services/distanceMatrices";
+import { recalculateDistances } from "@/services/distanceMatrices";
 import { useSampleUploadStore } from "@/stores/upload";
-import { deleteDistancesByPathogenId } from "@/database/distances";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -27,12 +26,13 @@ export const persistenceStrategies = {
             caseData = caseData.slice(1, caseData.length);
             for (const row of caseData) {
                 // persist case from csv columns
+                const outbreakId = await getOrPersistOutbreak(row[6]);
                 const data = {
                     case_id: row[0],
                     sample_id: row[1] !== "" ? row[1] : null,
                     pathogen_id: pathogen.id,
-                    outbreak_id: await getOrPersistOutbreak(row[6]),
-                    groups: await persistGroupsForCategories(flexibleCategoryNames, row),
+                    outbreak_id: outbreakId ?? null,
+                    group_ids: await persistGroupsForCategories(flexibleCategoryNames, row),
                     registered_at: parseGermanDateFormat(row[2]),
                 } as CaseSchema;
 
@@ -65,8 +65,7 @@ export const persistenceStrategies = {
         useSampleUploadStore.getState().setIsUploading(false);
 
         if (activePathogen) {
-            await deleteDistancesByPathogenId(activePathogen.id);
-            await persistSampleDistances(activePathogen.id);
+            await recalculateDistances(activePathogen.id);
         }
 
         useSampleUploadStore.getState().reset();

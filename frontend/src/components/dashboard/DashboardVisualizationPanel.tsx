@@ -18,7 +18,6 @@ export const DashboardVisualizationPanel = () => {
     const graphStore = useGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
-
     const cases = useGetAllCasesWithRelationships();
 
     useEffect(() => {
