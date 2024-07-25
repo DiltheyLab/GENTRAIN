@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  production_deployment:
-    name: Production Deployment
+  build_frontend:
+    name: Frontend Build
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +18,26 @@ jobs:
           node-version: "latest"
       - name: Build frontend
         run: |
-          cd frontend
+          cd
           npm ci
           npm run build
+     - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "success,failure"
+          notification_title: "Frontend Build"
+          icon_success: 🚀
+          icon_failure: 💥
+
+  production_deployment:
+    name: Production Deployment
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
         with:
