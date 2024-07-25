@@ -18,8 +18,8 @@ jobs:
           node-version: "latest"
       - name: Build frontend
         run: |
-          cd
-          npm i
+          cd frontend
+          npm ci
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
