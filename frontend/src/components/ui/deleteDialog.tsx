@@ -1,4 +1,3 @@
-import { Copy, X } from "lucide-react";
 import { Button } from "./button";
 import {
     Dialog,
