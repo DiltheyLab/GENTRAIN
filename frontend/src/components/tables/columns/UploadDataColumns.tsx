@@ -8,8 +8,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
 import { CaseWithRelationships } from "@/database/cases";
 import { deleteCasebyIdAndRecalculateDistances } from "@/services/cases";
+import { getToastDescription } from "@/services/errors";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
@@ -147,6 +149,17 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
+            const deleteCase = async () => {
+                try {
+                    await deleteCasebyIdAndRecalculateDistances(row.original.id);
+                } catch (error) {
+                    toast({
+                        title: "Fall konnte nicht gelöscht werden.",
+                        duration: 10000,
+                        variant: "destructive",
+                    });
+                }
+            };
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -157,10 +170,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            className="cursor-pointer"
-                            onClick={() => deleteCasebyIdAndRecalculateDistances(row.original.id)}
-                        >
+                        <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
                             Entfernen
                         </DropdownMenuItem>
                     </DropdownMenuContent>

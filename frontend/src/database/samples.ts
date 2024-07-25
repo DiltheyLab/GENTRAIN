@@ -36,4 +36,8 @@ export const createSample = async (fastaId: string, sequence: string, variantsRe
     return sampleId;
 };
 
+export const deleteSampleById = async (id: number) => {
+    await db.samples.delete(id);
+};
+
 export type { SampleSchema };
