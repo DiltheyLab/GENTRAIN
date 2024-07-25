@@ -23,7 +23,7 @@ export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatri
         const sample2 = await db.samples.get(distance.sample_id_2);
 
         if (!sample1 || !sample2) {
-            return null;
+            return;
         }
 
         const distanceWithFastaId: DistanceWithFastaId = {

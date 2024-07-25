@@ -95,7 +95,6 @@ def nextclade():
     # Create temporary file names
     fa_tmp = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".fa", delete=False).name
     json_tmp = fa_tmp[:-2] + "json"
-
     # save fasta in temp file
     with open(fa_tmp, "w") as fa_file:
         fa_file.write(fasta_content)
@@ -125,6 +124,7 @@ def nextclade():
 
     # if the process succeded
     else:
+        print("JSON", json_tmp)
         # collect output data into lists
         with open(json_tmp, "r") as json_file:
             content = json.load(json_file)

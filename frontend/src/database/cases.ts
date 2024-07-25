@@ -77,7 +77,7 @@ export const getCaseBySampleId = async (fastaId: string) => {
 export const getCaseWithSampleById = async (id: number) => {
     const caseById = await db.cases.get(id);
     if (!caseById) {
-        return null;
+        return;
     }
     let caseWithRelationships: CaseWithRelationships = caseById;
     caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.sample_id }).first();
