@@ -19,7 +19,7 @@ jobs:
       - name: Build frontend
         run: |
           cd
-          npm ci
+          npm i
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
