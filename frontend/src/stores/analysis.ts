@@ -3,6 +3,7 @@ import { GraphData } from "./graph";
 import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
 import { CategorySchema } from "@/database/categories";
+import { useAppStore } from "./app";
 
 type GroupColoration = {
     group: GroupSchema;
@@ -49,20 +50,43 @@ export const defaultSettings: AnalysisSettings = {
     includeCasesWithLowGeneticDistance: false,
     startDate: new Date(),
     endDate: new Date(),
-    geneticDistanceThreshold: 2,
+    geneticDistanceThreshold: 0,
     showContactTracingEdges: true,
     hideEdgesAboveThreshold: false,
     groupColorations: [],
     category: null,
 };
 
-export const useAnalysisStore = create<AnalysisStore>((set) => ({
-    id: null,
-    name: null,
-    graphData: { nodes: [], links: [] },
-    settings: defaultSettings,
-    updateId: (newId) => set({ id: newId }),
-    updateName: (newName) => set({ name: newName }),
-    updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
-    updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
-}));
+export const getDefaultSettings = (): AnalysisSettings => {
+    const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
+    return {
+        selectedOutbreak: null,
+        selectedBackground: null,
+        includeCasesWithoutOutbreak: false,
+        ignoreBackground: false,
+        includeCasesWithLowGeneticDistance: false,
+        startDate: new Date(),
+        endDate: new Date(),
+        geneticDistanceThreshold: relationshipThreshold ?? 0,
+        showContactTracingEdges: true,
+        hideEdgesAboveThreshold: false,
+        groupColorations: [],
+        category: null,
+    };
+};
+
+export const useAnalysisStore = create<AnalysisStore>((set) => {
+    // Initialize the settings with the default settings and variables from add store
+    const initializedSettings = getDefaultSettings();
+
+    return {
+        id: null,
+        name: null,
+        graphData: { nodes: [], links: [] },
+        settings: initializedSettings,
+        updateId: (newId) => set({ id: newId }),
+        updateName: (newName) => set({ name: newName }),
+        updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
+        updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
+    };
+});
