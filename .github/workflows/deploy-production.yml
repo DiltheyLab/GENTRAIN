@@ -10,6 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "latest"
+      - name: Build project
+        run: |
+          cd frontend
+          npm ci
+          npm run build
       - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
         with:
