@@ -16,7 +16,7 @@ jobs:
           node-version: "latest"
       - name: Build project
         run: |
-          cd frontend
+          ls -lah
           npm ci
           npm run build
       - name: Pull latest version
