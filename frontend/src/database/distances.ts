@@ -48,3 +48,13 @@ export const deleteDistancesByPathogenId = async (pathogen_id: number) => {
 export const deleteDistancesBySampleId = async (sample_id: number) => {
     await db.distances.where({ sample_id_1: sample_id }).or("sample_id_2").equals(sample_id).delete();
 };
+
+export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[], threshold: number) => {
+    return await db.distances
+        .where("sample_id_1")
+        .anyOf(sampleIds)
+        .or("sample_id_2")
+        .anyOf(sampleIds)
+        .and((distance) => distance.value < threshold)
+        .toArray();
+};
