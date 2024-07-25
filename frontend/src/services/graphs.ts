@@ -184,7 +184,7 @@ export const createGraphData = (
         return {
             id: caseData.id,
             caseId: caseData.case_id,
-            group: caseData.outbreak ? caseData.outbreak.name : "Background", // TODO: rename this field to "outbreak"
+            group: caseData.outbreak ? caseData.outbreak.name : "Background",
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;

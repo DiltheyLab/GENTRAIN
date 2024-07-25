@@ -20,14 +20,16 @@ export const AnalysisDialog = ({ isOpen, changeIsOpen }: AnalysisDialogProps) =>
             <DialogContent className="min-w-[50vw] p-8">
                 <DialogHeader className="mb-6">
                     <DialogTitle className="flex flex-row justify-between items-center">
-                        Bitte legen sie eine neue Ausbruchsanalyse an oder wählen sie eine bestehende aus.
+                        Ausbruchsanalyse
                         <DialogClose asChild>
                             <Button type="button" onClick={() => navigate("/data-upload")} variant="ghost">
                                 <X size={15} />
                             </Button>
                         </DialogClose>
                     </DialogTitle>
-                    <DialogDescription></DialogDescription>
+                    <DialogDescription className="font-semibold text-base">
+                        Bitte legen sie eine neue Ausbruchsanalyse an oder wählen sie eine bestehende aus.
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="flex justify-between space-x-8">
                     <AnalysisForm changeIsOpen={changeIsOpen} isOpen={isOpen} />
