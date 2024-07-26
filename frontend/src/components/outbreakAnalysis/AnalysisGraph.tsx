@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { type GraphData } from "@/stores/graph";
+import { useAnalysisStore } from "@/stores/analysis";
 
 type AnalysisGraphProps = {
     data: GraphData;
@@ -10,14 +11,15 @@ type AnalysisGraphProps = {
 
 export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
     const forceRef = useRef<ForceGraphMethods>();
+    const { graphSettings } = useAnalysisStore();
 
     // custom d3 force setup
     useEffect(() => {
-        if (!forceRef.current) return;
+        if (!forceRef.current || !graphSettings) return;
         forceRef.current.d3Force("charge")?.strength(-80);
-        forceRef.current.d3Force("link")?.distance(50);
+        forceRef.current.d3Force("link")?.distance(graphSettings.linkDistance);
         forceRef.current.d3ReheatSimulation();
-    }, []);
+    }, [graphSettings.linkDistance]);
 
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
         if (!node.x || !node.y) return;
@@ -27,6 +29,9 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = node.color;
         ctx.fill();
+
+        // Draw the label if setting is not hidden
+        if (graphSettings.hideNodeLabel) return;
 
         // Draw the label above the circle
         const label = `${node["caseId"]}`;

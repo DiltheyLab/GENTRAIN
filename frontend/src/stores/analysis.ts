@@ -31,30 +31,27 @@ export type AnalysisSettings = {
     category: CategorySchema | null;
 };
 
+export type GraphSettings = {
+    hideNodeLabel: boolean;
+    linkDistance: number;
+};
+
 export interface AnalysisStore {
     id: number | null;
     name: string | null;
     graphData: GraphData;
     settings: AnalysisSettings;
+    graphSettings: GraphSettings;
     updateId: (newId: number) => void;
     updateName: (newName: string) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
+    updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
 }
 
-export const defaultSettings: AnalysisSettings = {
-    selectedOutbreak: null,
-    selectedBackground: null,
-    includeCasesWithoutOutbreak: false,
-    ignoreBackground: false,
-    includeCasesWithLowGeneticDistance: false,
-    startDate: new Date(),
-    endDate: new Date(),
-    geneticDistanceThreshold: 0,
-    showContactTracingEdges: true,
-    hideEdgesAboveThreshold: false,
-    groupColorations: [],
-    category: null,
+export const defaultGraphSettings: GraphSettings = {
+    hideNodeLabel: false,
+    linkDistance: 50,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
@@ -84,9 +81,12 @@ export const useAnalysisStore = create<AnalysisStore>((set) => {
         name: null,
         graphData: { nodes: [], links: [] },
         settings: initializedSettings,
+        graphSettings: defaultGraphSettings,
         updateId: (newId) => set({ id: newId }),
         updateName: (newName) => set({ name: newName }),
         updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
         updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
+        updateGraphSettings: (newGraphSettings) =>
+            set((state) => ({ graphSettings: { ...state.graphSettings, ...newGraphSettings } })),
     };
 });

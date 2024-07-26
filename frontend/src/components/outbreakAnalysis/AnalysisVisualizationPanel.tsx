@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
@@ -10,6 +10,11 @@ import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { AnalysisGraph } from "./AnalysisGraph";
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { Switch } from "../ui/switch";
+import { Button } from "../ui/button";
+import { Settings, X } from "lucide-react";
+import { Label } from "../ui/label";
+import { Slider } from "../ui/slider";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -18,6 +23,7 @@ export const AnalysisVisualizationPanel = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const cases = useGetAllCasesWithRelationships();
+    const [showGraphSettings, setShowGraphSettings] = useState(false);
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases) {
@@ -65,13 +71,73 @@ export const AnalysisVisualizationPanel = () => {
         ));
     };
 
+    const getGraphSettings = () => {
+        if (!showGraphSettings) {
+            return (
+                <Button
+                    className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowGraphSettings(true)}
+                >
+                    <Settings />
+                </Button>
+            );
+        }
+
+        return (
+            <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted ">
+                <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
+                <Button
+                    className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1"
+                    type="button"
+                    size="sm"
+                    variant={"ghost"}
+                    onClick={() => setShowGraphSettings(false)}
+                >
+                    <X size={23} className="text-slate-700" />
+                </Button>
+                <div className="flex flex-col gap-3">
+                    <div className="flex items-center space-x-3">
+                        <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
+                            Knotenbeschreibung
+                        </label>
+                        <Switch
+                            id="nodeLabel"
+                            checked={analyseStore.graphSettings.hideNodeLabel}
+                            onCheckedChange={(value) => analyseStore.updateGraphSettings({ hideNodeLabel: value })}
+                        />
+                    </div>
+                    <div className="flex space-x-3 items-baseline">
+                        <Label htmlFor="forceLinkDistance" className="text-sm font-normal leading-none">
+                            Kantenabstand
+                        </Label>
+                        <Slider
+                            id="forceLinkDistance"
+                            sliderColorIsGrey={true}
+                            className="w-1/2"
+                            defaultValue={[analyseStore.graphSettings.linkDistance]}
+                            max={130}
+                            min={10}
+                            step={10}
+                            onValueChange={(value) => analyseStore.updateGraphSettings({ linkDistance: value[0] })}
+                        />
+                    </div>
+                </div>
+            </fieldset>
+        );
+    };
+
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
-                <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
-                    <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                    <div className="flex flex-col">{getLegend()}</div>
-                </fieldset>
+                <>
+                    <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
+                        <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
+                        <div className="flex flex-col">{getLegend()}</div>
+                    </fieldset>
+                    {getGraphSettings()}
+                </>
             )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {getGraph()}
