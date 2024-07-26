@@ -1,14 +1,15 @@
-import { Button } from "./button";
+import React from "react";
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "./dialog";
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "./alert-dialog";
 
 type DeleteDialogProps = {
     deleteAction: () => void;
@@ -19,24 +20,20 @@ type DeleteDialogProps = {
 
 export function DeleteDialog({ deleteAction, dialogTitle, dialogDescription, triggerComponent }: DeleteDialogProps) {
     return (
-        <Dialog>
-            <DialogTrigger asChild>{triggerComponent}</DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>{dialogTitle}</DialogTitle>
-                    <DialogDescription>{dialogDescription}</DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="sm:justify-start mt-5">
-                    <Button type="button" variant="destructive" onClick={() => deleteAction()}>
-                        Löschen
-                    </Button>
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Abbrechen
-                        </Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                {React.isValidElement(triggerComponent) ? triggerComponent : <>{triggerComponent}</>}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+                    <AlertDialogDescription>{dialogDescription}.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => deleteAction()}>Löschen</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }
