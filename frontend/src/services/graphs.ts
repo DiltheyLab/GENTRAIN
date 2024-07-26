@@ -4,6 +4,7 @@ import { CustomLink, CustomNode, GraphData } from "@/stores/graph";
 import { Graph, Edge } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
+import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -99,32 +100,80 @@ const deleteDuplicateCases = (cases: CaseWithRelationships[]) => {
     });
 };
 
-const getGraphCases = (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
-    const { selectedOutbreak, includeCasesWithoutOutbreak, ignoreBackground, selectedBackground } = analysisSettings;
+const filterCasesByGeneticDistanceThreshold = async (
+    cases: CaseWithRelationships[],
+    selectedOutbreak: OutbreakSchema,
+    geneticDistanceThreshold: number
+) => {
+    const casesOfSelectedOutbreak = filterCasesByOutbreak(cases, selectedOutbreak);
+    const sampleIdsOfCasesInSelectedOutbreak = casesOfSelectedOutbreak.map((caseData) => caseData.sample?.id ?? -1);
 
-    let graphCases = cases.filter((caseData) => !!caseData.sample); // filter out cases without a sample
+    const distancesBelowThreshold = await getDistancesFromSampleIdsBelowThreshold(
+        sampleIdsOfCasesInSelectedOutbreak,
+        geneticDistanceThreshold
+    );
 
+    const sampleIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
+        acc.push(distance.sample_id_1, distance.sample_id_2);
+        return acc;
+    }, [] as number[]);
+
+    const sampleIdsWithoutDuplicates = Array.from(new Set(sampleIdsBelowThreshold));
+
+    const casesWithLowGeneticDistance = cases.filter((caseData) =>
+        sampleIdsWithoutDuplicates.includes(caseData.sample?.id ?? -1)
+    );
+    return casesWithLowGeneticDistance;
+};
+
+const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
+    const {
+        selectedOutbreak,
+        includeCasesWithoutOutbreak,
+        ignoreBackground,
+        selectedBackground,
+        geneticDistanceThreshold,
+        includeCasesWithLowGeneticDistance,
+    } = analysisSettings;
+
+    // filter out cases without a sample -> Maybe removed in the future
+    let graphCases = cases.filter((caseData) => !!caseData.sample);
+
+    // get cases from outbreak
     if (selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
     }
 
+    // use cases which are selected in the multiselect field
     if (selectedBackground) {
         const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
-        graphCases = graphCases.concat(filteredCasesByBackground); // add cases with selected background to the graphCases array
+        graphCases = graphCases.concat(filteredCasesByBackground);
     }
 
+    // use cases which are not assigned to any outbreak
     if (includeCasesWithoutOutbreak) {
         const casesWithoutOutbreak = filterCasesByBackground(cases);
-        graphCases = graphCases.concat(casesWithoutOutbreak); // add cases without outbreak to the graphCases array
+        graphCases = graphCases.concat(casesWithoutOutbreak);
     }
 
+    // use cases which have a distance below the threshold AND are connected to the selected outbreak
+    if (includeCasesWithLowGeneticDistance && selectedOutbreak) {
+        const casesWithLowGeneticDistance = await filterCasesByGeneticDistanceThreshold(
+            cases,
+            selectedOutbreak,
+            geneticDistanceThreshold
+        );
+        graphCases = graphCases.concat(casesWithLowGeneticDistance);
+    }
+
+    // disable background cases by filtering outbreak cases
     if (ignoreBackground && selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
     }
 
     // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
-    // group and in background (not outbreak) the cases is added twice to the graphCases array
-    // to prevent this we filter out duplicates in the end
+    // group and in background (not outbreak). The cases is added twice to the graphCases array
+    // to prevent rendering the same case multiple times we filter out duplicates in the end
     graphCases = deleteDuplicateCases(graphCases);
 
     return graphCases;
@@ -135,9 +184,8 @@ const createMSTEdges = (
     matrixDataAssembly: DistanceMatrixAssembly,
     graph: Graph
 ) => {
-    // for the top part of the dm (as it is mirrored and the diagonal is all -1)
-    // add weighted graph edges for every column-row-pair of the distance matrix
-    // note that every pair is only iterated once
+    // the column loop starts with rowIndex + 1 to prevent looping over cases which are already treated
+    // because of that rowIndex is stopping with graphCases.length - 1
     for (let rowIndex = 0; rowIndex < graphCases.length - 1; rowIndex++) {
         const rowCase = graphCases[rowIndex];
 
@@ -158,17 +206,17 @@ const createMSTEdges = (
     return graph.kruskal();
 };
 
-export const createGraphData = (
+export const createGraphData = async (
     matrixDataAssembly: DistanceMatrixAssembly,
     cases: CaseWithRelationships[],
     analysisSettings: AnalysisSettings
-): GraphData => {
+): Promise<GraphData> => {
     if (!matrixDataAssembly || cases.length === 0) {
         return { nodes: [], links: [] };
     }
 
     // apply all filtering settings to get the correct cases for the graph
-    const graphCases = getGraphCases(cases, analysisSettings);
+    const graphCases = await getGraphCases(cases, analysisSettings);
 
     // create a new graph object with the correct amount of nodes
     const graph = new Graph(graphCases.length);

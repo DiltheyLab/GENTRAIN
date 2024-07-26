@@ -55,6 +55,6 @@ export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[
         .anyOf(sampleIds)
         .or("sample_id_2")
         .anyOf(sampleIds)
-        .and((distance) => distance.value < threshold)
+        .and((distance) => distance.value <= threshold)
         .toArray();
 };
