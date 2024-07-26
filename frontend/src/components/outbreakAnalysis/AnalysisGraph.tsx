@@ -14,7 +14,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current) return;
-        forceRef.current.d3Force("charge")?.strength(-50);
+        forceRef.current.d3Force("charge")?.strength(-80);
         forceRef.current.d3Force("link")?.distance(50);
         forceRef.current.d3ReheatSimulation();
     }, []);
