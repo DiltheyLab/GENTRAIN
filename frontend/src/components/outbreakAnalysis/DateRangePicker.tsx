@@ -48,6 +48,11 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         selected={date}
                         onSelect={(dataRange) => analysisStore.updateSettings({ dateRange: dataRange })}
                         numberOfMonths={2}
+                        footer={
+                            <div className="flex justify-center p-2">
+                                <p className="text-xs font-extralight">Der Ausbruch fand im markierten Bereich statt</p>
+                            </div>
+                        }
                     />
                 </PopoverContent>
             </Popover>
