@@ -9,7 +9,8 @@ import { Label } from "../ui/label";
 import { useAnalysisStore } from "@/stores/analysis";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-    const date = useAnalysisStore().settings.dateRange;
+    const analysisStore = useAnalysisStore();
+    const date = analysisStore.settings.dateRange;
 
     return (
         <div className={cn("grid gap-2 mt-2", className)}>
