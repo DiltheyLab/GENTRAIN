@@ -89,7 +89,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
             nodeRelSize={6}
             width={width}
             height={height}
-            cooldownTicks={100} //number of frames until simulation ends
+            cooldownTicks={120} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
             linkLabel={(link) => `${link.value}`}
             linkWidth={3}
