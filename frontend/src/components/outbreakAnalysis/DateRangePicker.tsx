@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,16 +9,7 @@ import { Label } from "../ui/label";
 import { useAnalysisStore } from "@/stores/analysis";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-    const analysisStore = useAnalysisStore();
-
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: analysisStore.settings.startDate,
-        to: analysisStore.settings.endDate,
-    });
-
-    useEffect(() => {
-        setDate({ from: analysisStore.settings.startDate, to: analysisStore.settings.endDate });
-    }, [analysisStore.settings.startDate, analysisStore.settings.endDate]);
+    const date = useAnalysisStore().settings.dateRange;
 
     return (
         <div className={cn("grid gap-2 mt-2", className)}>
@@ -56,7 +45,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         mode="range"
                         defaultMonth={date?.from}
                         selected={date}
-                        onSelect={setDate}
+                        onSelect={(dataRange) => analysisStore.updateSettings({ dateRange: dataRange })}
                         numberOfMonths={2}
                     />
                 </PopoverContent>

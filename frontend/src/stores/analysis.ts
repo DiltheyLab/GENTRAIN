@@ -4,6 +4,8 @@ import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
 import { CategorySchema } from "@/database/categories";
 import { useAppStore } from "./app";
+import { addWeeks } from "date-fns";
+import { DateRange } from "react-day-picker";
 
 type GroupColoration = {
     group: GroupSchema;
@@ -23,8 +25,7 @@ export type AnalysisSettings = {
     includeCasesWithoutOutbreak: boolean;
     ignoreBackground: boolean;
     includeCasesWithLowGeneticDistance: boolean;
-    startDate: Date;
-    endDate: Date;
+    dateRange: DateRange;
     geneticDistanceThreshold: number;
     showContactTracingEdges: boolean;
     hideEdgesAboveThreshold: boolean;
@@ -64,8 +65,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         includeCasesWithoutOutbreak: false,
         ignoreBackground: false,
         includeCasesWithLowGeneticDistance: false,
-        startDate: new Date(),
-        endDate: new Date(),
+        dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: relationshipThreshold ?? 0,
         showContactTracingEdges: true,
         hideEdgesAboveThreshold: false,

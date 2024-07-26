@@ -17,9 +17,9 @@ export const OutbreakSelection = () => {
         let dateRange = casesInOutbreak?.map((caseInOutbreak) => caseInOutbreak.registered_at);
         dateRange = dateRange?.sort((a, b) => a.getTime() - b.getTime());
         if (!dateRange || dateRange.length === 0) return;
+
         analysisStore.updateSettings({
-            startDate: dateRange[0],
-            endDate: dateRange[dateRange.length - 1],
+            dateRange: { from: dateRange[0], to: dateRange[dateRange.length - 1] },
         });
     };
 
