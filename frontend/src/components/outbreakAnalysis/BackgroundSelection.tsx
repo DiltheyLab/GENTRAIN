@@ -6,10 +6,12 @@ import { useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGr
 import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
 import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
     const analysisStore = useAnalysisStore();
+
     const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         if (!groupsAndOutbreaks) return;
         const options: Option[] = [];
@@ -83,7 +85,19 @@ export const BackgroundSelection = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <Label className="font-bold text-lg">2. Background festlegen</Label>
+            <div className="flex items-baseline justify-between">
+                <Label className="font-bold text-lg">2. Background festlegen</Label>
+                <div className="flex items-center space-x-2">
+                    <label htmlFor="zoomToFit" className="text-sm font-medium leading-none">
+                        Alle
+                    </label>
+                    <Checkbox
+                        id="zoomToFit"
+                        checked={analysisStore.settings.includeAllCases}
+                        onCheckedChange={(value) => analysisStore.updateSettings({ includeAllCases: Boolean(value) })}
+                    />
+                </div>
+            </div>
             <MultipleSelector
                 options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
                 value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
@@ -103,7 +117,7 @@ export const BackgroundSelection = () => {
                     checked={analysisStore.settings.includeCasesWithoutOutbreak}
                     onCheckedChange={(value) => handleIncludeCasesWithoutOutbreak(value)}
                 />
-                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-sm">
+                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-[0.95rem]">
                     Keinem Ausbruch zugewiesen
                 </Label>
             </div>
@@ -113,7 +127,7 @@ export const BackgroundSelection = () => {
                     checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
                     onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
                 />
-                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-sm">
+                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-[0.95rem] leading-5">
                     Unter oder gleich dem genetischen Distanzschwellenwert
                 </Label>
             </div>
@@ -136,8 +150,8 @@ export const BackgroundSelection = () => {
                     checked={analysisStore.settings.ignoreBackground}
                     onCheckedChange={(value) => handleIgnoreBackground(value)}
                 />
-                <Label htmlFor="ignoreBackground" className="font-normal text-base">
-                    Background ausblenden
+                <Label htmlFor="ignoreBackground" className="font-normal text-[0.95rem]">
+                    Alles ausblenden
                 </Label>
             </div>
         </div>

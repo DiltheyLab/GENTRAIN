@@ -104,6 +104,7 @@ export const AnalysisVisualizationPanel = () => {
                         </label>
                         <Switch
                             id="nodeLabel"
+                            isSmall={true}
                             checked={analyseStore.graphSettings.hideNodeLabel}
                             onCheckedChange={(value) => analyseStore.updateGraphSettings({ hideNodeLabel: value })}
                         />
