@@ -21,6 +21,7 @@ export type SelectedBackground = {
 export type AnalysisSettings = {
     includeAllCases: boolean;
     selectedOutbreak: OutbreakSchema | null;
+    datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
     includeCasesWithoutOutbreak: boolean;
     ignoreBackground: boolean;
@@ -61,6 +62,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
     return {
         includeAllCases: false,
         selectedOutbreak: null,
+        datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
         includeCasesWithoutOutbreak: false,
         ignoreBackground: false,

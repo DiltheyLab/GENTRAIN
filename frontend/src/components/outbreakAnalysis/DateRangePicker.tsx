@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -39,18 +39,29 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 " align="start">
                     <Calendar
                         initialFocus
                         locale={de}
                         mode="range"
                         defaultMonth={date?.from}
+                        modifiers={{
+                            // add every day in the date object to the outbreakRange modifier
+                            outbreakRange: analysisStore.settings.datesOfCasesInSelectedOutbreak,
+                        }}
+                        modifiersClassNames={{
+                            outbreakRange:
+                                "relative after:absolute after:bottom-1.5 after:left-1/2 after:transform after:-translate-x-1/2 after:w-3/5 after:h-0.5 after:bg-red-500 after:content-['']",
+                        }}
                         selected={date}
                         onSelect={(dataRange) => analysisStore.updateSettings({ dateRange: dataRange })}
                         numberOfMonths={2}
                         footer={
                             <div className="flex justify-center p-2">
-                                <p className="text-xs font-extralight">Der Ausbruch fand im markierten Bereich statt</p>
+                                <p className="text-xs font-extralight">
+                                    <span className="underline decoration-red-500">Markierungen</span> zeigen, an
+                                    welchen Tagen Fälle <br /> im ausgewählten Ausbruch aufgetreten sind.
+                                </p>
                             </div>
                         }
                     />
