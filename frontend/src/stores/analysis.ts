@@ -17,6 +17,7 @@ export type SelectedBackground = {
 };
 
 export type AnalysisSettings = {
+    includeAllCases: boolean;
     selectedOutbreak: OutbreakSchema | null;
     selectedBackground: SelectedBackground | null;
     includeCasesWithoutOutbreak: boolean;
@@ -57,6 +58,7 @@ export const defaultGraphSettings: GraphSettings = {
 export const getDefaultSettings = (): AnalysisSettings => {
     const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
     return {
+        includeAllCases: false,
         selectedOutbreak: null,
         selectedBackground: null,
         includeCasesWithoutOutbreak: false,

@@ -102,6 +102,7 @@ const deleteDuplicateCases = (cases: CaseWithRelationships[]) => {
 
 const filterCasesByGeneticDistanceThreshold = async (
     cases: CaseWithRelationships[],
+    currentGraphCases: CaseWithRelationships[],
     selectedOutbreak: OutbreakSchema,
     geneticDistanceThreshold: number
 ) => {
@@ -120,7 +121,7 @@ const filterCasesByGeneticDistanceThreshold = async (
 
     const sampleIdsWithoutDuplicates = Array.from(new Set(sampleIdsBelowThreshold));
 
-    const casesWithLowGeneticDistance = cases.filter((caseData) =>
+    const casesWithLowGeneticDistance = currentGraphCases.filter((caseData) =>
         sampleIdsWithoutDuplicates.includes(caseData.sample?.id ?? -1)
     );
     return casesWithLowGeneticDistance;
@@ -144,6 +145,11 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
     }
 
+    // use all cases without any filtering
+    if (analysisSettings.includeAllCases) {
+        graphCases = cases;
+    }
+
     // use cases which are selected in the multiselect field
     if (selectedBackground) {
         const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
@@ -160,10 +166,13 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     if (includeCasesWithLowGeneticDistance && selectedOutbreak) {
         const casesWithLowGeneticDistance = await filterCasesByGeneticDistanceThreshold(
             cases,
+            graphCases,
             selectedOutbreak,
             geneticDistanceThreshold
         );
-        graphCases = graphCases.concat(casesWithLowGeneticDistance);
+        const casesOfSelectedOutbreak = filterCasesByOutbreak(cases, selectedOutbreak);
+
+        graphCases = casesOfSelectedOutbreak.concat(casesWithLowGeneticDistance);
     }
 
     // disable background cases by filtering outbreak cases
