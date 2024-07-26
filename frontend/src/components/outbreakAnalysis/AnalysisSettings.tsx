@@ -6,6 +6,7 @@ import { OutbreakSelection } from "./OutbreakSelection";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./BackgroundSelection";
+import { DateRangePicker } from "./DateRangePicker";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -34,10 +35,15 @@ export const AnalysisSettings = () => {
                 <fieldset className="flex flex-col gap-6 rounded-lg border p-4 min-h-[80vh]">
                     <div className="flex flex-col gap-3">
                         <OutbreakSelection />
-                        {analysisStore.settings.selectedOutbreak && <BackgroundSelection />}
-                        <Button type="button" onClick={() => safeAnalysis()}>
-                            Analyse speichern
-                        </Button>
+                        {analysisStore.settings.selectedOutbreak && (
+                            <>
+                                <BackgroundSelection />
+                                <DateRangePicker />
+                                <Button type="button" onClick={() => safeAnalysis()}>
+                                    Analyse speichern
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </fieldset>
             </form>

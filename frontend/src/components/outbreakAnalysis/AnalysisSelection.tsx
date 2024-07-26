@@ -66,13 +66,15 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                 {analyses.map((analysis) => {
                     return (
                         <div className="flex flex-row items-center" key={analysis.id}>
-                            <SelectItem value={analysis.id.toString()}>{analysis.name}</SelectItem>
+                            <SelectItem className="rounded-sm" value={analysis.id.toString()}>
+                                {analysis.name}
+                            </SelectItem>
                             <DeleteDialog
                                 deleteAction={() => deleteAnalysis(analysis.id)}
                                 dialogTitle="Analyse löschen"
                                 dialogDescription="Möchten sie die Analyse wirklich löschen?"
                                 triggerComponent={
-                                    <Button type="button" variant="ghost" size="sm">
+                                    <Button type="button" variant="ghost" size="sm" className="h-8 rounded-sm">
                                         <X size={15} />
                                     </Button>
                                 }
