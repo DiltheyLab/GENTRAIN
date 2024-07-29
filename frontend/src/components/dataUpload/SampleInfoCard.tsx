@@ -1,7 +1,7 @@
-import { useGetCaseBySampleId } from "@/hooks/database/cases/useGetCaseBySampleId";
+import { useGetCaseByFastaId } from "@/hooks/database/cases/useGetCaseByFastaId";
 
 export function SampleInfoCard({ fastaId }: { fastaId: string }) {
-    const caseData = useGetCaseBySampleId(fastaId);
+    const caseData = useGetCaseByFastaId(fastaId);
 
     return (
         <div>

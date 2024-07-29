@@ -83,7 +83,7 @@ export const DashboardVisualizationPanel = () => {
                 <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
                 <div className="flex flex-col">
                     <Label htmlFor="role" className="mb-2">
-                        Cluster
+                        Ausbrüche
                     </Label>
                     {getLegend()}
                 </div>

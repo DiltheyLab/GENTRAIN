@@ -1,0 +1,58 @@
+Case Id 1;Case Id 2;Type;Context
+CVD2021-4529;CVD2021-4519;Same adress, same family name;Test context
+CVD2021-4529;CVD2021-4537;Same adress, same family name;Test context
+CVD2021-10578;CVD2021-11213;Same adress, differend family name;Test context
+CVD2021-10578;CVD2021-11213;Contact person;Test context
+CVD2021-12629;CVD2021-11481;Same adress, differend family name;Test context
+CVD2021-12262;CVD2021-12192;Same adress, same family name;Test context
+CVD2021-12262;CVD2021-12192;Contact person;Test context
+CVD2021-12262;CVD2021-12263;Same adress, same family name;Test context
+CVD2021-12315;CVD2021-11809;Same adress, differend family name;Test context
+CVD2021-12192;CVD2021-12263;Same adress, same family name;Test context
+CVD2021-12192;CVD2021-12263;Contact person;Test context
+CVD2021-10271;CVD2021-10103;Same adress, same family name;Test context
+CVD2021-10271;CVD2021-10103;Contact person;Test context
+CVD2021-10271;CVD2021-10270;Same adress, same family name;Test context
+CVD2021-10271;CVD2021-10270;Contact person;Test context
+CVD2021-10271;CVD2021-8810;Same adress, differend family name;Test context
+CVD2021-10271;CVD2021-8219;Same adress, differend family name;Test context
+CVD2021-9723;CVD2021-9117;Same adress, differend family name;Test context
+CVD2021-9723;CVD2021-9724;Same adress, differend family name;Test context
+CVD2021-9723;CVD2021-9726;Same adress, differend family name;Test context
+CVD2021-10279;CVD2021-11396;Same adress, differend family name;Test context
+CVD2021-9237;CVD2021-10478;Same adress, differend family name;Test context
+CVD2021-9237;CVD2021-9236;Same adress, same family name;Test context
+CVD2021-4121;CVD2021-3468;Same adress, same family name;Test context
+CVD2021-4121;CVD2021-3468;Contact person;Test context
+CVD2021-4458;CVD2021-4060;Same adress, same family name;Test context
+CVD2021-4458;CVD2021-4060;Contact person;Test context
+CVD2021-4458;CVD2021-4086;Same adress, same family name;Test context
+CVD2021-4458;CVD2021-4457;Same adress, same family name;Test context
+CVD2021-9786;CVD2021-10192;Same adress, same family name;Test context
+CVD2021-9786;CVD2021-9970;Same adress, same family name;Test context
+CVD2021-9786;CVD2021-9965;Same adress, same family name;Test context
+CVD2021-10269;CVD2021-10124;Same adress, same family name;Test context
+CVD2021-10269;CVD2021-10124;Contact person;Test context
+CVD2021-4457;CVD2021-4060;Same adress, same family name;Test context
+CVD2021-4457;CVD2021-4060;Contact person;Test context
+CVD2021-4457;CVD2021-4086;Same adress, same family name;Test context
+CVD2021-10270;CVD2021-10103;Same adress, same family name;Test context
+CVD2021-10270;CVD2021-10103;Contact person;Test context
+CVD2021-10270;CVD2021-8219;Same adress, differend family name;Test context
+CVD2021-10270;CVD2021-8810;Same adress, differend family name;Test context
+CVD2021-9236;CVD2021-10478;Same adress, differend family name;Test context
+CVD2021-8810;CVD2021-10103;Same adress, differend family name;Test context
+CVD2021-8810;CVD2021-8219;Same adress, differend family name;Test context
+CVD2021-8219;CVD2021-10103;Same adress, differend family name;Test context
+CVD2021-10514;CVD2021-12122;Same adress, differend family name;Test context
+CVD2021-4086;CVD2021-4060;Same adress, same family name;Test context
+CVD2021-5032;CVD2021-4771;Same adress, differend family name;Test context
+CVD2021-5032;CVD2021-4771;Contact person;Test context
+CVD2021-9970;CVD2021-10192;Same adress, same family name;Test context
+CVD2021-9970;CVD2021-9965;Same adress, same family name;Test context
+CVD2021-9724;CVD2021-9117;Same adress, differend family name;Test context
+CVD2021-9724;CVD2021-9726;Same adress, differend family name;Test context
+CVD2021-9726;CVD2021-9117;Same adress, differend family name;Test context
+CVD2021-4537;CVD2021-4519;Same adress, same family name;Test context
+CVD2021-5243;CVD2021-5245;Same adress, differend family name;Test context
+CVD2021-10192;CVD2021-9965;Same adress, same family name;Test context

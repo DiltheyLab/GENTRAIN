@@ -1,15 +1,15 @@
-import { Button } from "../ui/button";
-import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
-import { useEffect, useMemo, useRef } from "react";
-import { deepCopyData } from "@/lib/utils";
-import { transformDistanceMatrixToGraphData } from "@/services/graphs";
-import { Label } from "@/components/ui/label";
+import { useEffect, useRef, useState } from "react";
+import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { type GraphData } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
-import { useAnalysisStore } from "@/stores/analysis";
+import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
+import { AnalysisGraph } from "./AnalysisGraph";
+import { CaseWithRelationships } from "@/database/cases";
+import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
+import { Legend } from "./Legend";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -17,8 +17,8 @@ export const AnalysisVisualizationPanel = () => {
     const analyseStore = useAnalysisStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
-
     const cases = useGetAllCasesWithRelationships();
+    const [showGraphSettings, setShowGraphSettings] = useState(false);
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases) {
@@ -26,68 +26,31 @@ export const AnalysisVisualizationPanel = () => {
             return;
         }
 
-        const graphData = transformDistanceMatrixToGraphData(
-            distanceMatrixAssembly,
-            cases,
-            analyseStore.settings.selectedOutbreak?.name
-        );
+        const getGraphData = async (
+            distanceMatrixAssembly: DistanceMatrixAssembly,
+            cases: CaseWithRelationships[],
+            settings: AnalysisSettings
+        ) => {
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings);
+            analyseStore.updateGraphData(graphData);
+        };
 
-        // Update the graph settings with the new graph data
-        analyseStore.updateGraphData(graphData);
-    }, [cases, distanceMatrixAssembly, analyseStore.settings.selectedOutbreak?.name]);
-
-    // Creating deep copy of the graph data for each graph component and
-    // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
-    // from beginning after every rerendering
-    const graphDataCopy = useMemo(() => {
-        return deepCopyData(analyseStore.graphData);
-    }, [analyseStore.graphData]);
-
-    const getGraph = () => {
-        if (width && height) {
-            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
-        }
-    };
-
-    /*     const getLegend = () => {
-        const nodes = analyseStore..nodes;
-        if (graphStore.settings.coloring === "normal" || graphStore.settings.coloring === "outbreaks") {
-            const uniqueGroups = nodes.filter((group, index, self) => {
-                return index === self.findIndex((t) => t.group === group.group);
-            });
-            return uniqueGroups.map((node) => (
-                <div className="flex items-center gap-2" key={node.group}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.group}</p>
-                </div>
-            ));
-        } else if (graphStore.settings.coloring === "registered_at") {
-            const uniqueSamplingTimes = getUniqueSamplingTimes(nodes);
-
-            return uniqueSamplingTimes.map((node) => (
-                <div className="flex items-center gap-2" key={node.registeredAt}>
-                    <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                    <p>{node.registeredAt || "Kein Datum angegeben"}</p>
-                </div>
-            ));
-        }
-    }; */
+        getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
+    }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
-            <Button variant="outline" className="absolute z-50 bottom-3 right-3">
-                Reset
-            </Button>
-            <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">
-                <legend className="-ml-1 px-1 text-sm font-medium">Legende</legend>
-                <div className="flex flex-col">
-                    <Label htmlFor="role" className="mb-2">
-                        Cluster
-                    </Label>
-                </div>
-            </fieldset>
+            {analyseStore.settings.selectedOutbreak && (
+                <>
+                    <Legend />
+                    <AnalysisGraphSettings
+                        showGraphSettings={showGraphSettings}
+                        updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
+                    />
+                </>
+            )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                {getGraph()}
+                <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
             </div>
         </div>
     );

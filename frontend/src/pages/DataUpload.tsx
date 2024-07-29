@@ -4,9 +4,14 @@ import { UploadDataTable } from "@/components/tables/UploadDataTable";
 import { Separator } from "@/components/ui/separator";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { Button } from "@/components/ui/button";
+import { useAppStore } from "@/stores/app";
+import { deleteDataForPathogen } from "@/database/db";
 
 export function DataUpload() {
     const casesData = useGetAllCasesWithRelationships();
+    const { activePathogen } = useAppStore();
+
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -32,6 +37,14 @@ export function DataUpload() {
                         </div>
                     </div>
                     {casesData && <UploadDataTable data={casesData} />}
+
+                    <div className="flex justify-end">
+                        {casesData && activePathogen && (
+                            <Button variant="destructive" onClick={() => deleteDataForPathogen(activePathogen.id)}>
+                                Falldaten zu {activePathogen.name} löschen
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </Layout>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { defaultSettings, useAnalysisStore } from "@/stores/analysis";
+import { getDefaultSettings, useAnalysisStore } from "@/stores/analysis";
 import { useToast } from "../ui/use-toast";
 import { createAnalysis } from "@/database/analyses";
 import { useGetAllAnalyses } from "@/hooks/database/analyses/useGetAllAnalyses";
@@ -32,6 +32,7 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
 
     const safeAnalysis = async () => {
         try {
+            const defaultSettings = getDefaultSettings();
             //create a new analysis in db and update the name in the store
             const id = await createAnalysis(analysisName, defaultSettings);
             analysisStore.updateName(analysisName);

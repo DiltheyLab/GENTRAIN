@@ -1,0 +1,25 @@
+Case Id 1;Case Id 2;Type;Context
+CVD2021-10261;CVD2021-11796;Same adress, differend family name;Test context
+CVD2021-10261;CVD2021-10541;Same adress, differend family name;Test context
+CVD2021-10261;CVD2021-10520;Same adress, differend family name;Test context
+CVD2021-13033;CVD2021-12910;Infected by;Test context
+CVD2021-13033;CVD2021-12910;Same adress, differend family name;Test context
+CVD2021-13033;CVD2021-12910;Contact person;Test context
+CVD2021-10541;CVD2021-10520;Same adress, differend family name;Test context
+CVD2021-10541;CVD2021-11796;Same adress, differend family name;Test context
+CVD2021-11306;CVD2021-11478;Same adress, differend family name;Test context
+CVD2021-10520;CVD2021-11796;Same adress, differend family name;Test context
+CVD2021-11158;CVD2021-11573;Contact person;Test context
+CVD2021-11158;CVD2021-11494;Contact person;Test context
+CVD2021-11158;CVD2021-11493;Contact person;Test context
+CVD2021-11158;CVD2021-12910;Contact person;Test context
+CVD2021-12529;CVD2021-11573;Infected by;Test context
+CVD2021-12529;CVD2021-11573;Same adress, same family name;Test context
+CVD2021-12529;CVD2021-11573;Contact person;Test context
+CVD2021-11493;CVD2021-12460;Infected by;Test context
+CVD2021-11493;CVD2021-12460;Same adress, differend family name;Test context
+CVD2021-11493;CVD2021-12460;Contact person;Test context
+CVD2021-11493;CVD2021-11494;Same adress, same family name;Test context
+CVD2021-11494;CVD2021-12460;Same adress, differend family name;Test context
+CVD2021-12453;CVD2021-11333;Same adress, differend family name;Test context
+CVD2021-12453;CVD2021-11333;Contact person;Test context

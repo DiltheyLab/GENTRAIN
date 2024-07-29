@@ -3,7 +3,7 @@ import { exportDB, importInto } from "dexie-export-import";
 import type { SampleSchema } from "@/database/samples";
 import type { DistanceMatrixSchema } from "@/database/distance_matrix";
 import { downloadFile } from "@/services/files";
-import { DistanceMatricesSchema } from "./distance_matrices";
+import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { DistancesSchema } from "./distances";
 import { CaseSchema } from "./cases";
 import { ContactSchema } from "./contacts";
@@ -39,7 +39,7 @@ db.version(1).stores({
     distance_matrix: "id, name, row_column_names, matrix, pathogen_id, created_at, updated_at", //to be removed in future versions
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
-    cases: "++id, case_id, sample_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at",
+    cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
     groups: "++id, name, category_id, updated_at",
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
@@ -98,4 +98,18 @@ const exportDatabaseToJson = async () => {
     downloadFile(blob, `gentrain_export_${new Date().toISOString()}.json`);
 };
 
-export { db, importDataFromJson, exportDatabaseToJson };
+const deleteDataForPathogen = async (pathogen_id: number) => {
+    const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
+    const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+    for (const caseData of cases) {
+        db.samples.where({ fasta_id: caseData.fasta_id }).delete();
+        db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete();
+        db.cases.where({ id: caseData.id }).delete();
+    }
+    if (distanceMatrix?.id) {
+        db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete();
+        db.distance_matrices.where({ id: distanceMatrix.id }).delete();
+    }
+};
+
+export { db, importDataFromJson, exportDatabaseToJson, deleteDataForPathogen };
