@@ -7,6 +7,7 @@ import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
+import { DateRangePicker } from "./DateRangePicker";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -143,6 +144,7 @@ export const BackgroundSelection = () => {
                     />
                 </>
             )}
+            <DateRangePicker />
 
             <div className="flex flex-row items-center gap-3">
                 <Switch

@@ -6,7 +6,6 @@ import { OutbreakSelection } from "./OutbreakSelection";
 import { GentrainException } from "@/exceptions/GentrainException";
 import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./BackgroundSelection";
-import { DateRangePicker } from "./DateRangePicker";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -38,7 +37,6 @@ export const AnalysisSettings = () => {
                         {analysisStore.settings.selectedOutbreak && (
                             <>
                                 <BackgroundSelection />
-                                <DateRangePicker />
                                 <Button type="button" onClick={() => safeAnalysis()}>
                                     Analyse speichern
                                 </Button>

@@ -179,6 +179,16 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
     }
 
+    // filter out cases which are not in the selected time range
+    if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
+        graphCases = graphCases.filter((caseData) => {
+            const caseWasRegistered = caseData.registered_at.getTime();
+            const startDate = analysisSettings.dateRange.from?.getTime() ?? 0;
+            const endDate = analysisSettings.dateRange.to?.getTime() ?? Infinity;
+            return caseWasRegistered >= startDate && caseWasRegistered <= endDate;
+        });
+    }
+
     // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
     graphCases = graphCases.filter((caseData) => caseData.fasta_id !== null);
 
