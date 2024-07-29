@@ -190,7 +190,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     }
 
     // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
-    graphCases = graphCases.filter((caseData) => caseData.fasta_id !== null);
+    graphCases = graphCases.filter((caseData) => caseData.sample);
 
     // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
     // group and in background (not outbreak). The cases is added twice to the graphCases array
