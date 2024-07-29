@@ -27,7 +27,7 @@ export function DeleteDialog({ deleteAction, dialogTitle, dialogDescription, tri
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
-                    <AlertDialogDescription>{dialogDescription}.</AlertDialogDescription>
+                    <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Abbrechen</AlertDialogCancel>
