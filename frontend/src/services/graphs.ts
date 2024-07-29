@@ -138,7 +138,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     } = analysisSettings;
 
     // filter out cases without a sample -> Maybe removed in the future
-    let graphCases = cases.filter((caseData) => !!caseData.sample);
+    let graphCases = [] as CaseWithRelationships[];
 
     // get cases from outbreak
     if (selectedOutbreak) {
@@ -171,7 +171,6 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             geneticDistanceThreshold
         );
         const casesOfSelectedOutbreak = filterCasesByOutbreak(cases, selectedOutbreak);
-
         graphCases = casesOfSelectedOutbreak.concat(casesWithLowGeneticDistance);
     }
 
@@ -179,6 +178,9 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     if (ignoreBackground && selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
     }
+
+    // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
+    graphCases = graphCases.filter((caseData) => caseData.fasta_id !== null);
 
     // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
     // group and in background (not outbreak). The cases is added twice to the graphCases array
