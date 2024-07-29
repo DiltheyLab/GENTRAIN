@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import { createSample, SampleSchema } from "@/database/samples";
 import { useAppStore } from "@/stores/app";
 import { useSampleUploadStore } from "@/stores/upload";
@@ -21,6 +22,11 @@ export const getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fa
             body: JSON.stringify({ sequence: sequence }),
         }
     );
+    if (response.status === 422) {
+        // on validation error add fasta ifs to list of failed upload in order to display meaningful toast message
+        useSampleUploadStore.getState().addFailedUpload(fastaId);
+        return;
+    }
     let variantsResult = await response.json();
     createSample(fastaId, sequence, variantsResult);
     useSampleUploadStore.getState().addFinishedUpload(fastaId);
@@ -28,6 +34,14 @@ export const getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fa
 
 export const getAndPersistVariantsForSamplesSynchronously = async (variantsRequests: Promise<void>[]) => {
     await Promise.all(variantsRequests);
+    // display an error toast if samples consist of invalid genomic sequences
+    if (useSampleUploadStore.getState().failedUploads.length > 0) {
+        toast({
+            title: "Invalide Sequenzstruktur",
+            description: useSampleUploadStore.getState().failedUploads.join(", "),
+            duration: 10000,
+        });
+    }
 };
 
 export function samplesByFastaId(samples: SampleSchema[]) {

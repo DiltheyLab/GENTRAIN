@@ -68,7 +68,9 @@ export const persistenceStrategies = {
             await recalculateDistances(activePathogen.id);
         }
 
-        useSampleUploadStore.getState().reset();
+        if (useSampleUploadStore.getState().failedUploads.length === 0) {
+            useSampleUploadStore.getState().reset();
+        }
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];
