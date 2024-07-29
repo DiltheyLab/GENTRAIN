@@ -92,7 +92,7 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
                 <SelectTrigger>
                     <SelectValue placeholder="Analyse auswählen" />
                 </SelectTrigger>
-                <SelectContent className="z-[101]">{getSelectionGroups()}</SelectContent>
+                <SelectContent className="z-[103]">{getSelectionGroups()}</SelectContent>
             </Select>
             <Button type="button" disabled={!selectedAnalysis} onClick={() => handleSubmit()}>
                 Analyse starten

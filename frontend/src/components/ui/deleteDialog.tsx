@@ -24,7 +24,7 @@ export function DeleteDialog({ deleteAction, dialogTitle, dialogDescription, tri
             <AlertDialogTrigger asChild>
                 {React.isValidElement(triggerComponent) ? triggerComponent : <>{triggerComponent}</>}
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="z-[105]">
                 <AlertDialogHeader>
                     <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
                     <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
