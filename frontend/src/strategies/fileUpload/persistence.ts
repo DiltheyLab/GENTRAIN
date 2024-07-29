@@ -62,7 +62,6 @@ export const persistenceStrategies = {
         }
 
         await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
-        useSampleUploadStore.getState().setIsUploading(false);
 
         if (activePathogen) {
             await recalculateDistances(activePathogen.id);
