@@ -78,9 +78,16 @@ export const persistenceStrategies = {
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
 
+            const case1 = await db.cases.where({ case_id: row[0] }).first();
+            const case2 = await db.cases.where({ case_id: row[1] }).first();
+
+            if (!case1 || !case2) {
+                return;
+            }
+
             const data = {
-                case_id_1: row[0],
-                case_id_2: row[1],
+                case_id_1: case1.id,
+                case_id_2: case2.id,
                 type: row[2],
                 context: row[3],
             } as ContactSchema;

@@ -3,7 +3,7 @@ import { exportDB, importInto } from "dexie-export-import";
 import type { SampleSchema } from "@/database/samples";
 import type { DistanceMatrixSchema } from "@/database/distance_matrix";
 import { downloadFile } from "@/services/files";
-import { DistanceMatricesSchema } from "./distance_matrices";
+import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { DistancesSchema } from "./distances";
 import { CaseSchema } from "./cases";
 import { ContactSchema } from "./contacts";
@@ -98,4 +98,18 @@ const exportDatabaseToJson = async () => {
     downloadFile(blob, `gentrain_export_${new Date().toISOString()}.json`);
 };
 
-export { db, importDataFromJson, exportDatabaseToJson };
+const deleteDataForPathogen = async (pathogen_id: number) => {
+    const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
+    const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+    for (const caseData of cases) {
+        db.samples.where({ fasta_id: caseData.sample_id }).delete();
+        db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete();
+        db.cases.where({ id: caseData.id }).delete();
+    }
+    if (distanceMatrix?.id) {
+        db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete();
+        db.distance_matrices.where({ id: distanceMatrix.id }).delete();
+    }
+};
+
+export { db, importDataFromJson, exportDatabaseToJson, deleteDataForPathogen };
