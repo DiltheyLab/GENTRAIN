@@ -40,19 +40,6 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
-    // Creating deep copy of the graph data for each graph component and
-    // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
-    // from beginning after every rerendering
-    const graphDataCopy = useMemo(() => {
-        return deepCopyData(analyseStore.graphData);
-    }, [analyseStore.graphData]);
-
-    const getGraph = () => {
-        if (width && height && analyseStore.settings.selectedOutbreak) {
-            return <AnalysisGraph data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
-        }
-    };
-
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
@@ -65,7 +52,7 @@ export const AnalysisVisualizationPanel = () => {
                 </>
             )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                {getGraph()}
+                <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
             </div>
         </div>
     );
