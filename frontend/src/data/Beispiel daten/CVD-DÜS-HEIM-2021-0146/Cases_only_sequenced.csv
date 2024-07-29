@@ -1,0 +1,14 @@
+Case Id;Sequence Id;Date;Name;First Name;Birth Date;Outbreak;Location;Institution;Category 3
+CVD2021-25681;Z8351;25.10.2021 18:13:41;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-25782;Z7697;26.10.2021 09:35:02;Testname;Testvorname;01.01.1782;CVD-DÜS-HEIM-2021-0146;Test Location;Test Intitution;Cat3
+CVD2021-27780;Z8334;09.11.2021 07:41:11;Testname;Testvorname;01.01.1782;CVD-DÜS-HEIM-2021-0162;Test Location;Test Intitution;Cat3
+CVD2021-28376;Z8852;11.11.2021 10:46:54;Testname;Testvorname;01.01.1782;CVD-DÜS-HEIM-2021-0162;Test Location;Test Intitution;Cat3
+CVD2021-29340;Z8619;16.11.2021 07:48:19;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-29361;Z8617;16.11.2021 08:42:59;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-29800;V1993;17.11.2021 09:06:53;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-29886;Z8633;17.11.2021 10:51:35;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-31675;Z10075;23.11.2021 12:15:30;Testname;Testvorname;01.01.1782;CVD-DÜS-HEIM-2021-0162;Test Location;Test Intitution;Cat3
+CVD2021-33778;Z9261;30.11.2021 09:36:00;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-37560;Z10518;11.12.2021 11:13:57;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-38754;Z10812;16.12.2021 07:40:36;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3
+CVD2021-38755;Z10811;16.12.2021 07:43:22;Testname;Testvorname;01.01.1782;;Test Location;Test Intitution;Cat3

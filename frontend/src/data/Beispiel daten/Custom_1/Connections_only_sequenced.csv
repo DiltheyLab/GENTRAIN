@@ -1,0 +1,34 @@
+Case Id 1;Case Id 2;Type;Context
+CVD2021-38730;CVD2021-40448;Same adress, differend family name;Test context
+CVD2021-38730;CVD2021-41392;Same adress, differend family name;Test context
+CVD2021-38865;CVD2021-38258;Same adress, same family name;Test context
+CVD2021-41392;CVD2021-40448;Same adress, differend family name;Test context
+CVD2021-38517;CVD2021-38520;Same adress, same family name;Test context
+CVD2021-38517;CVD2021-39891;Same adress, differend family name;Test context
+CVD2021-38517;CVD2021-39893;Same adress, differend family name;Test context
+CVD2021-38517;CVD2021-38964;Same adress, same family name;Test context
+CVD2021-38517;CVD2021-40625;Same adress, differend family name;Test context
+CVD2021-36572;CVD2021-36580;Same adress, same family name;Test context
+CVD2021-40343;CVD2021-39044;Same adress, same family name;Test context
+CVD2021-40343;CVD2021-40350;Same adress, same family name;Test context
+CVD2021-40343;CVD2021-40345;Same adress, same family name;Test context
+CVD2021-38964;CVD2021-38520;Same adress, same family name;Test context
+CVD2021-38964;CVD2021-39893;Same adress, differend family name;Test context
+CVD2021-38964;CVD2021-39891;Same adress, differend family name;Test context
+CVD2021-38964;CVD2021-40625;Same adress, differend family name;Test context
+CVD2021-39548;CVD2021-39729;Same adress, differend family name;Test context
+CVD2021-39044;CVD2021-40345;Same adress, same family name;Test context
+CVD2021-39044;CVD2021-40350;Same adress, same family name;Test context
+CVD2021-38469;CVD2021-39430;Infected by;Test context
+CVD2021-38469;CVD2021-39430;Same adress, same family name;Test context
+CVD2021-38469;CVD2021-39430;Contact person;Test context
+CVD2021-40345;CVD2021-40350;Same adress, same family name;Test context
+CVD2021-39439;CVD2021-39437;Same adress, differend family name;Test context
+CVD2021-39891;CVD2021-38520;Same adress, differend family name;Test context
+CVD2021-39891;CVD2021-40625;Same adress, differend family name;Test context
+CVD2021-39891;CVD2021-39893;Same adress, differend family name;Test context
+CVD2021-39779;CVD2021-39782;Same adress, differend family name;Test context
+CVD2021-38520;CVD2021-40625;Same adress, differend family name;Test context
+CVD2021-38520;CVD2021-39893;Same adress, differend family name;Test context
+CVD2021-40625;CVD2021-39893;Same adress, differend family name;Test context
+CVD2021-42412;CVD2021-38823;Same adress, differend family name;Test context

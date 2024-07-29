@@ -1,0 +1,9 @@
+Case Id 1;Case Id 2;Type;Context
+CVD2021-31675;CVD2021-27780;Same adress, differend family name;Test context
+CVD2021-31675;CVD2021-28376;Same adress, differend family name;Test context
+CVD2021-37560;CVD2021-38754;Same adress, differend family name;Test context
+CVD2021-37560;CVD2021-38755;Same adress, differend family name;Test context
+CVD2021-29886;CVD2021-29800;Same adress, same family name;Test context
+CVD2021-28376;CVD2021-27780;Same adress, differend family name;Test context
+CVD2021-38755;CVD2021-38754;Same adress, same family name;Test context
+CVD2021-29361;CVD2021-29340;Same adress, differend family name;Test context
