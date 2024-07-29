@@ -212,7 +212,6 @@ const createMSTEdges = (
 
         for (let columnIndex = rowIndex + 1; columnIndex < graphCases.length; columnIndex++) {
             const columnCase = graphCases[columnIndex];
-
             graph.addEdge(
                 new Edge(
                     rowIndex,
