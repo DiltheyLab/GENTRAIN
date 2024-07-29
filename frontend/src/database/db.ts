@@ -102,7 +102,7 @@ const deleteDataForPathogen = async (pathogen_id: number) => {
     const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
     for (const caseData of cases) {
-        db.samples.where({ fasta_id: caseData.sample_id }).delete();
+        db.samples.where({ fasta_id: caseData.fasta_id }).delete();
         db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete();
         db.cases.where({ id: caseData.id }).delete();
     }
