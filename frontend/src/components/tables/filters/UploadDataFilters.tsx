@@ -4,8 +4,8 @@ const caseIdContainsValue = (caseData: CaseWithRelationships, value: string) => 
     return caseData.case_id.toLowerCase().includes(value);
 };
 
-const sampleIdContainsValue = (caseData: CaseWithRelationships, value: string) => {
-    return caseData.sample_id?.toLowerCase().includes(value);
+const fastaIdContainsValue = (caseData: CaseWithRelationships, value: string) => {
+    return caseData.fasta_id?.toLowerCase().includes(value);
 };
 
 const lineageContainsValue = (caseData: CaseWithRelationships, value: string) => {
@@ -47,7 +47,7 @@ export const customFilterFn = (row: any, _columnId: any, value: string, _addMeta
     value = value.toLowerCase();
     return (
         caseIdContainsValue(row.original, value) ||
-        sampleIdContainsValue(row.original, value) ||
+        fastaIdContainsValue(row.original, value) ||
         lineageContainsValue(row.original, value) ||
         outbreakNameContainsValue(row.original, value) ||
         groupNameContainsValue(row.original, value) ||

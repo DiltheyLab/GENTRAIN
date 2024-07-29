@@ -8,7 +8,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 export interface CaseSchema {
     id: number;
     case_id: string;
-    sample_id: string | null;
+    fasta_id: string | null;
     pathogen_id: number;
     outbreak_id: number | null;
     group_ids: Array<number>;
@@ -26,7 +26,7 @@ export interface CaseWithRelationships extends CaseSchema {
 
 export const caseRules = z.object({
     case_id: z.string().min(1),
-    sample_id: z.string().min(1).or(z.null()),
+    fasta_id: z.string().min(1).or(z.null()),
     pathogen_id: z.number(),
     outbreak_id: z.number().or(z.null()),
     group_ids: z.array(z.number()),
@@ -47,8 +47,8 @@ export const getAllCasesWithRelationships = async () => {
         const pathogen = await db.pathogens.where({ id: cases[key].pathogen_id }).first();
         casesWithRelationships[key].pathogen = pathogen;
         // retrieve sample schema object
-        if (cases[key].sample_id) {
-            const sample = await db.samples.where({ fasta_id: cases[key].sample_id }).first();
+        if (cases[key].fasta_id) {
+            const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
             if (sample) {
                 casesWithRelationships[key].sample = sample;
             }
@@ -69,9 +69,9 @@ export const getAllCasesWithRelationships = async () => {
     return casesWithRelationships;
 };
 
-export const getCaseBySampleId = async (fastaId: string) => {
-    const caseBySampleId = await db.cases.where({ sample_id: fastaId }).first();
-    return caseBySampleId;
+export const getCaseByFastaId = async (fastaId: string) => {
+    const caseByFastaId = await db.cases.where({ fasta_id: fastaId }).first();
+    return caseByFastaId;
 };
 
 export const getCaseWithSampleById = async (id: number) => {
@@ -80,7 +80,7 @@ export const getCaseWithSampleById = async (id: number) => {
         return;
     }
     let caseWithRelationships: CaseWithRelationships = caseById;
-    caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.sample_id }).first();
+    caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
     return caseWithRelationships;
 };
 

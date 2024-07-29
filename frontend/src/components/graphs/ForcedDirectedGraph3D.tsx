@@ -33,7 +33,7 @@ export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGra
             graphData={data}
             ref={forceRef}
             nodeLabel={(node) => {
-                return `<div style="color: black;">(${node.id})</div>`;
+                return `<div style="color: black;">(${node["caseId"]})</div>`;
             }}
             nodeOpacity={0.9}
             width={width}
