@@ -22,7 +22,7 @@ export const AnalysisDialog = ({ isOpen, changeIsOpen }: AnalysisDialogProps) =>
                     <DialogTitle className="flex flex-row justify-between items-center">
                         Ausbruchsanalyse
                         <DialogClose asChild>
-                            <Button type="button" onClick={() => navigate("/data-upload")} variant="ghost">
+                            <Button type="button" onClick={() => navigate("/")} variant="ghost">
                                 <X size={15} />
                             </Button>
                         </DialogClose>
