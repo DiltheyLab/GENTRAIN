@@ -1,0 +1,71 @@
+import { Button } from "../ui/button";
+import { Settings, X } from "lucide-react";
+import { Label } from "../ui/label";
+import { Slider } from "../ui/slider";
+import { Switch } from "../ui/switch";
+import { useAnalysisStore } from "@/stores/analysis";
+
+type AnalysisGraphSettingsProps = {
+    showGraphSettings: boolean;
+    updateShowGraphSettings: (showGraphSettings: boolean) => void;
+};
+
+export const AnalysisGraphSettings = ({ showGraphSettings, updateShowGraphSettings }: AnalysisGraphSettingsProps) => {
+    const analyseStore = useAnalysisStore();
+
+    if (!showGraphSettings) {
+        return (
+            <Button
+                className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700"
+                type="button"
+                variant="ghost"
+                onClick={() => updateShowGraphSettings(true)}
+            >
+                <Settings />
+            </Button>
+        );
+    }
+
+    return (
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted ">
+            <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
+            <Button
+                className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1"
+                type="button"
+                size="sm"
+                variant={"ghost"}
+                onClick={() => updateShowGraphSettings(false)}
+            >
+                <X size={23} className="text-slate-700" />
+            </Button>
+            <div className="flex flex-col gap-3">
+                <div className="flex items-center space-x-3">
+                    <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
+                        Knotenbeschreibung
+                    </label>
+                    <Switch
+                        id="nodeLabel"
+                        isSmall={true}
+                        checked={analyseStore.graphSettings.hideNodeLabel}
+                        onCheckedChange={(value) => analyseStore.updateGraphSettings({ hideNodeLabel: value })}
+                    />
+                </div>
+                <div className="flex space-x-3 items-baseline">
+                    <Label htmlFor="forceLinkDistance" className="text-sm font-normal leading-none">
+                        Kantenabstand
+                    </Label>
+                    <Slider
+                        id="forceLinkDistance"
+                        sliderColorIsGrey={true}
+                        className="w-1/2"
+                        defaultValue={[analyseStore.graphSettings.linkDistance]}
+                        max={130}
+                        min={10}
+                        step={10}
+                        onValueChange={(value) => analyseStore.updateGraphSettings({ linkDistance: value[0] })}
+                    />
+                </div>
+            </div>
+        </fieldset>
+    );
+};
