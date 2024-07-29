@@ -7,10 +7,22 @@ import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAl
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/app";
 import { deleteDataForPathogen } from "@/database/db";
+import { useState } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { DeleteDialog } from "@/components/ui/deleteDialog";
 
 export function DataUpload() {
     const casesData = useGetAllCasesWithRelationships();
     const { activePathogen } = useAppStore();
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const deleteData = async () => {
+        if (activePathogen) {
+            setIsDeleting(true);
+            await deleteDataForPathogen(activePathogen.id);
+            setIsDeleting(false);
+        }
+    };
 
     return (
         <Layout>
@@ -40,9 +52,17 @@ export function DataUpload() {
 
                     <div className="flex justify-end">
                         {casesData && activePathogen && (
-                            <Button variant="destructive" onClick={() => deleteDataForPathogen(activePathogen.id)}>
-                                Falldaten zu {activePathogen.name} löschen
-                            </Button>
+                            <DeleteDialog
+                                deleteAction={deleteData}
+                                dialogTitle="Falldaten löschen"
+                                dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
+                                triggerComponent={
+                                    <Button variant="destructive">
+                                        {isDeleting && <LoadingSpinner></LoadingSpinner>}
+                                        {!isDeleting && <>Falldaten zu {activePathogen.name} löschen</>}
+                                    </Button>
+                                }
+                            />
                         )}
                     </div>
                 </div>
