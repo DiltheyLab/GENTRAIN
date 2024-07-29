@@ -5,6 +5,7 @@ import { Graph, Edge } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
+import { DateRange } from "react-day-picker";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -127,6 +128,15 @@ const filterCasesByGeneticDistanceThreshold = async (
     return casesWithLowGeneticDistance;
 };
 
+const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: DateRange) => {
+    return graphCases.filter((caseData) => {
+        const caseWasRegisteredAt = caseData.registered_at.getTime();
+        const startDate = dateRange.from?.getTime() ?? 0;
+        const endDate = dateRange.to?.getTime() ?? dateRange.from?.getTime() ?? Infinity;
+        return caseWasRegisteredAt >= startDate && caseWasRegisteredAt <= endDate;
+    });
+};
+
 const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
     const {
         selectedOutbreak,
@@ -181,12 +191,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
 
     // filter out cases which are not in the selected time range
     if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
-        graphCases = graphCases.filter((caseData) => {
-            const caseWasRegistered = caseData.registered_at.getTime();
-            const startDate = analysisSettings.dateRange.from?.getTime() ?? 0;
-            const endDate = analysisSettings.dateRange.to?.getTime() ?? Infinity;
-            return caseWasRegistered >= startDate && caseWasRegistered <= endDate;
-        });
+        graphCases = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
     }
 
     // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
