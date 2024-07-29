@@ -5,7 +5,9 @@ import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
-import { Slider } from "../ui/slider";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
+import { DateRangePicker } from "./DateRangePicker";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -84,7 +86,19 @@ export const BackgroundSelection = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <Label className="font-bold text-lg">2. Background festlegen</Label>
+            <div className="flex items-baseline justify-between">
+                <Label className="font-bold text-lg">2. Background festlegen</Label>
+                <div className="flex items-center space-x-2">
+                    <label htmlFor="zoomToFit" className="text-sm font-medium leading-none">
+                        Alle
+                    </label>
+                    <Checkbox
+                        id="zoomToFit"
+                        checked={analysisStore.settings.includeAllCases}
+                        onCheckedChange={(value) => analysisStore.updateSettings({ includeAllCases: Boolean(value) })}
+                    />
+                </div>
+            </div>
             <MultipleSelector
                 options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
                 value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
@@ -97,45 +111,51 @@ export const BackgroundSelection = () => {
                 }
                 groupBy="group"
             />
+            <Label>Weitere Daten verwenden:</Label>
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="includeCasesWithoutOutbreak"
                     checked={analysisStore.settings.includeCasesWithoutOutbreak}
                     onCheckedChange={(value) => handleIncludeCasesWithoutOutbreak(value)}
                 />
-                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-base">
-                    Daten verwenden, die keinem Ausbruch zugewiesen sind
+                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-[0.95rem]">
+                    Keinem Ausbruch zugewiesen
                 </Label>
             </div>
+            <div className="flex flex-row items-center gap-3">
+                <Switch
+                    id="includeCasesWithLowGeneticDistance"
+                    checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
+                    onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
+                />
+                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-[0.95rem] leading-5">
+                    Unter oder gleich dem genetischen Distanzschwellenwert
+                </Label>
+            </div>
+            {analysisStore.settings.includeCasesWithLowGeneticDistance && (
+                <>
+                    <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
+                    <Input
+                        type="number"
+                        min={0}
+                        id="geneticDistanceThreshold"
+                        value={analysisStore.settings.geneticDistanceThreshold}
+                        onChange={(e) => changeGeneticDistanceThreshold(+e.target.value)}
+                    />
+                </>
+            )}
+            <DateRangePicker />
+
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="ignoreBackground"
                     checked={analysisStore.settings.ignoreBackground}
                     onCheckedChange={(value) => handleIgnoreBackground(value)}
                 />
-                <Label htmlFor="ignoreBackground" className="font-normal text-base">
-                    Background ausblenden
+                <Label htmlFor="ignoreBackground" className="font-normal text-[0.95rem]">
+                    Alles ausblenden
                 </Label>
             </div>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="includeCasesWithLowGeneticDistance"
-                    checked={analysisStore.settings.ignoreBackground}
-                    onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
-                />
-                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-base">
-                    Daten verwenden die unter dem genetischen Distanzschwellenwert liegen
-                </Label>
-            </div>
-            <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
-            <Slider
-                id="geneticDistanceThreshold"
-                defaultValue={[analysisStore.settings.geneticDistanceThreshold]}
-                max={5}
-                min={0}
-                step={1}
-                onValueChange={(value) => changeGeneticDistanceThreshold(value[0])}
-            />
         </div>
     );
 };

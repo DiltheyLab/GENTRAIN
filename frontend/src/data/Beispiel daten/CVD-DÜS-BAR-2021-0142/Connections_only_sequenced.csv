@@ -1,0 +1,7 @@
+Case Id 1;Case Id 2;Type;Context
+CVD2021-26375;CVD2021-27195;Same adress, same family name;Test context
+CVD2021-26877;CVD2021-26140;Same adress, differend family name;Test context
+CVD2021-26877;CVD2021-26140;Contact person;Test context
+CVD2021-28829;CVD2021-27195;Infected by;Test context
+CVD2021-28829;CVD2021-27195;Same adress, same family name;Test context
+CVD2021-27195;CVD2021-25695;Contact person;Test context

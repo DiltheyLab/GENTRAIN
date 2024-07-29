@@ -3,12 +3,14 @@ import { create } from "zustand";
 interface SampleUploadState {
     isUploading: boolean;
     pendingUploads: string[];
+    failedUploads: string[];
     finishedUploads: string[];
     distanceCalculationProgress: number;
     removedSamples: string[];
-    addPendingUpload: (fastaIds: string) => void;
+    addFailedUpload: (fastaId: string) => void;
+    addPendingUpload: (fastaId: string) => void;
     setIsUploading: (value: boolean) => void;
-    addFinishedUpload: (fastaIds: string) => void;
+    addFinishedUpload: (fastaId: string) => void;
     setDistanceCalculationProgress: (progress: number) => void;
     reset: () => void;
     addToRemovedSamples: (fastaId: string) => void;
@@ -17,6 +19,7 @@ interface SampleUploadState {
 export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     isUploading: false,
     pendingUploads: [],
+    failedUploads: [],
     finishedUploads: [],
     distanceCalculationProgress: 0,
     removedSamples: [],
@@ -33,6 +36,7 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
             isUploading: false,
             pendingUploads: [],
             finishedUploads: [],
+            failedUploads: [],
             removedSamples: [],
         });
     },
@@ -41,6 +45,13 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     },
     setIsUploading: (value: boolean) => {
         set({ isUploading: value });
+    },
+    addFailedUpload: (fastaId: string) => {
+        const updatedPendingUploads = get().pendingUploads.filter((pendingId) => pendingId !== fastaId);
+        const updatedFailedUploads = get().failedUploads;
+        updatedFailedUploads.push(fastaId);
+        set({ pendingUploads: updatedPendingUploads.sort() });
+        set({ failedUploads: updatedFailedUploads.sort() });
     },
     addPendingUpload: (fastaId: string) => {
         const updatedPendingUploads = get().pendingUploads;

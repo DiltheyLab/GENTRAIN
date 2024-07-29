@@ -123,7 +123,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
                 );
             }
 
-            return <div>{row.original.sample_id ?? ""}</div>;
+            return <div>{row.original.fasta_id ?? ""}</div>;
         },
     },
     {

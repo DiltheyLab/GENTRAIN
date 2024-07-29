@@ -1,11 +1,34 @@
+import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { useGetAllOutbreaks } from "@/hooks/database/outbreaks/useGetAllOutbreaks";
 import { useAnalysisStore } from "@/stores/analysis";
+import { OutbreakSchema } from "@/database/outbreak";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
     const outbreaks = useGetAllOutbreaks();
+    const caseWithRelationships = useGetAllCasesWithRelationships();
+
+    const setDateRange = (selectedOutbreak: OutbreakSchema) => {
+        const casesInOutbreak = caseWithRelationships?.filter((caseWithRelationship) => {
+            return caseWithRelationship.outbreak_id === selectedOutbreak.id;
+        });
+
+        let dateRange = casesInOutbreak?.map((caseInOutbreak) => caseInOutbreak.registered_at);
+        dateRange = dateRange?.sort((a, b) => a.getTime() - b.getTime());
+        if (!dateRange || dateRange.length === 0) return;
+
+        // set the initial date range for the date range filter
+        analysisStore.updateSettings({
+            dateRange: { from: dateRange[0], to: dateRange[dateRange.length - 1] },
+        });
+
+        // set the date range for the outbreak to color it in the date picker
+        analysisStore.updateSettings({
+            datesOfCasesInSelectedOutbreak: dateRange,
+        });
+    };
 
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
@@ -13,6 +36,9 @@ export const OutbreakSelection = () => {
         analysisStore.updateSettings({
             selectedOutbreak: { name: selectedOutbreak.name, id: selectedOutbreak.id },
         });
+
+        // after changing the outbreak, set the date range for the date range picker
+        setDateRange(selectedOutbreak);
     };
     const getOutbreakGroups = () => {
         if (!outbreaks || outbreaks.length === 0) {

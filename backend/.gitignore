@@ -4,8 +4,6 @@ datasets/example_files/example_sequence_edit_error.tsv
 datasets/example_files/example_sequence_edit_error.fa
 temp_data
 
-main_site.ini
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -136,5 +134,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-datasets/example_files/test_files/

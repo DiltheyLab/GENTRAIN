@@ -21,8 +21,8 @@ export const createSample = async (fastaId: string, sequence: string, variantsRe
     const sampleId = await db.samples.add({
         fasta_id: fastaId,
         sequence_length: sequence.length,
-        lineage: `${variantsResult["clade"]}, ${variantsResult["customNodeAttributes"]["Nextclade_pango"]}`,
-        n_count: variantsResult["totalMissing"],
+        lineage: variantsResult["lineage"],
+        n_count: variantsResult["n_count"],
         variants: {
             substitutions: variantsResult["substitutions"],
             deletions: variantsResult["deletions"],
