@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { deepCopyData } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
 import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { type GraphData } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
