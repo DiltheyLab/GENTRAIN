@@ -83,6 +83,7 @@ jobs:
             echo -e "VITE_API_BASE_URL=${{vars.API_BASE_URL}}" >> frontend/.env
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
+            echo -e "FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE=${{vars.FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE}}" >> backend/.env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
