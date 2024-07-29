@@ -432,6 +432,50 @@ function count_differences(alignment: any, proper_total_1: any, proper_total_2: 
     return distance;
 }
 
+const calculateSampleDistances = async (
+    sample: SampleSchema,
+    fastaIds: string[],
+    matrix: number[][],
+    distanceMatrixId: number,
+    samples_dict: {
+        [fastaId: string]: SampleSchema;
+    },
+    cli: any
+): Promise<[string[], number[][]]> => {
+    // when fasta id already in dm then overwrite it, otherwise add as last entry
+    let add_index: number = fastaIds.indexOf(sample.fasta_id);
+    if (add_index === -1) {
+        matrix.push(new Array(fastaIds.length).fill(-1));
+        for (let i in matrix) {
+            matrix[i].push(-1);
+        }
+
+        fastaIds.push(sample.fasta_id);
+        add_index = fastaIds.length - 1;
+    }
+
+    // overwrite distances
+    for (const i in matrix) {
+        // skip the diagonal (distance to itself stays -1)
+        if (parseInt(i) === add_index) {
+            continue;
+        }
+
+        const sample1 = samples_dict[sample.fasta_id];
+        const sample2 = samples_dict[fastaIds[i]];
+
+        let distance = await calculate_single_distance(sample1, sample2, cli);
+
+        await db.distances.add({
+            sample_id_1: sample1.id,
+            sample_id_2: sample2.id,
+            value: distance,
+            distance_matrix_id: distanceMatrixId,
+        });
+    }
+    return [fastaIds, matrix];
+};
+
 export const persistSampleDistances = async (pathogenId: number) => {
     // collect data from db
     const samples = await db.samples.toArray();
@@ -448,7 +492,7 @@ export const persistSampleDistances = async (pathogenId: number) => {
         return false;
     }
 
-    let row_column_names: string[] = [];
+    let fastaIds: string[] = [];
     let matrix: number[][] = [];
 
     // then add new samples to dm and calculate their distances
@@ -456,37 +500,15 @@ export const persistSampleDistances = async (pathogenId: number) => {
 
     let calculationsCount = 0;
     for (const sample of samples) {
-        // when fasta id already in dm then overwrite it, otherwise add as last entry
-        let add_index: number = row_column_names.indexOf(sample.fasta_id);
-        if (add_index === -1) {
-            matrix.push(new Array(row_column_names.length).fill(-1));
-            for (let i in matrix) {
-                matrix[i].push(-1);
-            }
+        [fastaIds, matrix] = await calculateSampleDistances(
+            sample,
+            fastaIds,
+            matrix,
+            distanceMatrixId,
+            samples_dict,
+            cli
+        );
 
-            row_column_names.push(sample.fasta_id);
-            add_index = row_column_names.length - 1;
-        }
-
-        // overwrite distances
-        for (const i in matrix) {
-            // skip the diagonal (distance to itself stays -1)
-            if (parseInt(i) === add_index) {
-                continue;
-            }
-
-            const sample1 = samples_dict[sample.fasta_id];
-            const sample2 = samples_dict[row_column_names[i]];
-
-            let distance = await calculate_single_distance(sample1, sample2, cli);
-
-            db.distances.add({
-                sample_id_1: sample1.id,
-                sample_id_2: sample2.id,
-                value: distance,
-                distance_matrix_id: distanceMatrixId,
-            });
-        }
         calculationsCount++;
         useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCount / samples.length) * 100);
     }

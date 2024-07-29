@@ -86,7 +86,7 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
         );
     };
     return (
-        <div className="flex flex-col w-1/2 gap-2">
+        <div className="flex flex-col w-1/2 gap-2" id="analysis-selection">
             <Label htmlFor="name">Vorhandene Analyse auswählen:</Label>
             <Select onValueChange={(value) => changeSelectedAnalysis(value)}>
                 <SelectTrigger>
