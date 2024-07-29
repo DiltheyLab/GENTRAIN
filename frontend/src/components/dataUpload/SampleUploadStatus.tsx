@@ -1,14 +1,14 @@
 import { useSampleUploadStore } from "@/stores/upload";
 import { LoadingSpinner } from "../ui/loading-spinner";
-import { Check, X } from "lucide-react";
+import { Check, CircleAlert, X } from "lucide-react";
 import { DistanceCalculationProgress } from "./DistanceCalculationProgress";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { SampleInfoCard } from "./SampleInfoCard";
 
 export function SampleUploadStatus() {
-    const { pendingUploads, addToRemovedSamples, isUploading, finishedUploads } = useSampleUploadStore();
+    const { pendingUploads, addToRemovedSamples, isUploading, finishedUploads, failedUploads } = useSampleUploadStore();
 
-    if (pendingUploads.length === 0 && finishedUploads.length === 0) return;
+    if (pendingUploads.length === 0 && finishedUploads.length === 0 && failedUploads.length === 0) return;
     return (
         <div className="bg-muted p-6">
             <div className="mb-2 flex items-center text-sm">
@@ -25,6 +25,21 @@ export function SampleUploadStatus() {
                     >
                         <div className="mr-2 text-xs">{fastaId}</div> <Check width={18} />
                     </div>
+                ))}
+                {failedUploads.map((fastaId) => (
+                    <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
+                        <HoverCardTrigger asChild>
+                            <div
+                                key={fastaId}
+                                className="hover:bg-slate-900 hover:text-white cursor-default bg-white flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md"
+                            >
+                                <div className="mr-2 text-xs">{fastaId}</div> <CircleAlert width={18} />
+                            </div>
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-auto text-center">
+                            <small>Invalide genetische Sequenz</small>
+                        </HoverCardContent>
+                    </HoverCard>
                 ))}
                 {pendingUploads.map((fastaId) => (
                     <HoverCard key={fastaId} openDelay={50} closeDelay={50}>

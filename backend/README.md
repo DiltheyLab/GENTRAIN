@@ -4,22 +4,7 @@
 
 ### Conda
 
-Install libraries via [conda](https://docs.conda.io/en/latest/miniconda.html).
-Create environment and install packages:
-
-    conda create -n num-dash
-    conda install -c anaconda flask
-    conda install -c conda-forge uwsgi
-    conda install -c bioconda nextclade
-    conda install -c bioconda samtools
-    conda install -c anaconda biopython
-    conda install -c bioconda ucsc-fatovcf
-    conda config --add channels defaults
-    conda config --add channels bioconda
-    conda config --add channels conda-forge
-    conda install usher
-
-or import the environment from environment.yaml:
+Import the environment from environment.yaml:
 
     conda env create -f environment.yaml
 
@@ -28,16 +13,6 @@ If you change the environment export a new yaml file:
     conda env export > environment.yaml
 
 ### Datasets and Scripts
-
-Download the Nextclade Covid dataset:
-
-    nextclade dataset get --name 'sars-cov-2' --output-dir 'datasets/nextclade_covid/'
-
-Change modes of scripts
-
-    chmod +x scripts/nextclade.sh
-    chmod +x scripts/usher_nearest_k.sh
-    chmod +x scripts/IMS_to_fasta.sh
 
 Download the RKI datasets:
 
@@ -52,15 +27,9 @@ Download the RKI datasets:
 
 ## Run locally
 
-    cd <path>/num-dashboard
-    conda activate num-dash
+    docker-compose -f docker-compose.dev.yaml --build --no-deps
 
-    export FLASK_ENV=development
-    export FLASK_APP=main_site.py
-
-    flask run
-
-Open 'http://127.0.0.1:4000/' in your browser of choice.
+Open 'http://localhost:4000/' in your browser of choice.
 
 ## Run on server
 
@@ -123,22 +92,10 @@ When the `environment.yaml` was updated when pulling the repository use this to 
 
     conda env update -f environment.yaml
 
-#### New commits
+#### Github Actions
 
-After pushing a new commit, pull on the server. Then restart the dashboard service:
-
-    sudo systemctl restart dashboard
-
-The status can be checked with:
-
-    sudo systemctl status dashboard -n 50
-
-TODO: implement CI/CD elements to automate this
+The api is being deployed by github actions (.github/workflows/production_deployment.yml).
 
 ## Links
 
 [Ideas](https://docs.google.com/document/d/1wGQjhyARwbIx12TZwm1rZmsHJ9wGqqF6jZ6zu76jKRQ/edit?usp=sharing)
-
-## Planned page layout
-
-![](documentation/Page_layout.png)

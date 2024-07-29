@@ -8,6 +8,7 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { ZodError } from "zod";
 import { getToastDescription } from "@/services/errors";
 import { SampleUploadStatus } from "./SampleUploadStatus";
+import { useSampleUploadStore } from "@/stores/upload";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {
@@ -40,6 +41,7 @@ export const FileUploadFactory = ({
     const [fileData, setFileData] = useState<string[][] | object[]>();
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const { reset } = useSampleUploadStore();
     const resetUpload = () => {
         // refresh file input
         const inputElement: HTMLInputElement | null | undefined = containerRef.current?.querySelector(`input#${type}`);
@@ -61,6 +63,9 @@ export const FileUploadFactory = ({
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
+            // reset sample status component data
+            reset();
+
             // read the file(s) and convert them to text
             const fileReaderResult = await fileReadingStrategy(e.target.files);
 
