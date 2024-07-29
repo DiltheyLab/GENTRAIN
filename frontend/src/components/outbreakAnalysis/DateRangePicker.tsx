@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "../ui/label";
 import { useAnalysisStore } from "@/stores/analysis";
+import { Checkbox } from "../ui/checkbox";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const analysisStore = useAnalysisStore();
@@ -14,12 +15,22 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
 
     return (
         <div className={cn("grid gap-2 mt-2", className)}>
-            <Label>Zeitspanne auswählen (optional)</Label>
+            <div className="flex gap-3">
+                <Label htmlFor="excludeCasesOutsideOfDateRange">Zeitspanne auswählen</Label>
+                <Checkbox
+                    id="excludeCasesOutsideOfDateRange"
+                    checked={analysisStore.settings.excludeCasesOutsideOfDateRange}
+                    onCheckedChange={(value) =>
+                        analysisStore.updateSettings({ excludeCasesOutsideOfDateRange: Boolean(value) })
+                    }
+                />
+            </div>
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
                         id="date"
-                        variant={"outline"}
+                        disabled={!analysisStore.settings.excludeCasesOutsideOfDateRange}
+                        variant="outline"
                         className={cn(
                             "w-[300px] justify-start text-left font-normal",
                             !date && "text-muted-foreground"
@@ -44,9 +55,8 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         initialFocus
                         locale={de}
                         mode="range"
-                        defaultMonth={date?.from}
+                        defaultMonth={analysisStore.settings.datesOfCasesInSelectedOutbreak[0]}
                         modifiers={{
-                            // add every day in the date object to the outbreakRange modifier
                             outbreakRange: analysisStore.settings.datesOfCasesInSelectedOutbreak,
                         }}
                         modifiersClassNames={{
@@ -57,10 +67,11 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         onSelect={(dataRange) => analysisStore.updateSettings({ dateRange: dataRange })}
                         numberOfMonths={2}
                         footer={
-                            <div className="flex justify-center p-2">
+                            <div className="flex p-2">
                                 <p className="text-xs font-extralight">
-                                    <span className="underline decoration-red-500">Markierungen</span> zeigen, an
-                                    welchen Tagen Fälle <br /> im ausgewählten Ausbruch aufgetreten sind.
+                                    An den <span className="underline decoration-red-500">unterstrichenen</span> Tagen
+                                    traten Fälle im
+                                    <br /> ausgewählten Ausbruch auf.
                                 </p>
                             </div>
                         }
