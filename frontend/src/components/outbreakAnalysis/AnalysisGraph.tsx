@@ -81,6 +81,15 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         ctx.fillText(link.value.toString(), midX, midY);
     };
 
+    if (data.links.length === 0 && data.nodes.length === 1) {
+        return (
+            <div className="flex flex-col p-4 text-center">
+                <h4 className="text-lg font-semibold">Der ausgewählte Ausbruch besteht nur aus einem Datenpunkt.</h4>
+                <p> Bitte füge weitere Daten (Background) hinzu, um den Graph zu erstellen.</p>
+            </div>
+        );
+    }
+
     return (
         <ForceGraph2D
             ref={forceRef}
