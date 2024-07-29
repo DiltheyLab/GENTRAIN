@@ -4,33 +4,42 @@ import pathlib
 import tempfile
 import json
 from flask_pydantic import validate
+from .requests.get_sequence_variants import (
+    SequenceVariantsResponseModel,
+    SequenceVariantsRequestBodyModel,
+)
 from pydantic import BaseModel
+import re
 
 # user controller blueprint to be registered with api blueprint
 pathogens = Blueprint("pathogens", __name__)
 
 
-class GetSequenceVariantsRequestBodyModel(BaseModel):
-    sequence: str
+# error response model
+class ErrorResponseModel(BaseModel):
+    message: str
 
 
-class GetSequenceVariantsResponseModel(BaseModel):
-    lineage: str
-    n_count: int
-    substitutions: list[object]
-    deletions: list[object]
-    insertions: list[object]
-    missing: list[object]
-    nonACGTNs: list[object]
-    alignmentStart: int
-    alignmentEnd: int
+# custom validators
+def find_genomic_validation_errors(value: str):
+    illegal_characters = re.findall("[^ATGCRYSWKMBDHVNXU]+", value)
+    return illegal_characters
 
 
 @pathogens.route("/<pathogen_id>/sequences/<fasta_id>/variants", methods=["POST"])
 @validate()
-def getSequenceVariants(
-    body: GetSequenceVariantsRequestBodyModel, pathogen_id: str, fasta_id: str
+def get_sequence_variants(
+    body: SequenceVariantsRequestBodyModel, pathogen_id: str, fasta_id: str
 ):
+    genomic_errors = find_genomic_validation_errors(body.sequence)
+    if genomic_errors and len(genomic_errors) > 0:
+        return (
+            ErrorResponseModel(
+                message="Genomic sequence does not contain valid structure."
+            ),
+            422,
+        )
+
     # create directory if not existent
     temp_dir = "./temp_data/nextclade/"
     pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
@@ -63,14 +72,24 @@ def getSequenceVariants(
     else:
         # collect output data into lists
         with open(json_tmp, "r") as json_file:
-            content = json.load(json_file)["results"][0]
+            # check for script errors
+            content = json.load(json_file)
+            if content["errors"] and len(content["errors"]) > 0:
+                return (
+                    ErrorResponseModel(
+                        message="Genomic sequence does not contain valid structure."
+                    ),
+                    422,
+                )
+
+            content = content["results"][0]
 
         # delete the temporary files. If they can not be found ignore it
         pathlib.Path(fa_tmp).unlink(missing_ok=True)
         pathlib.Path(json_tmp).unlink(missing_ok=True)
 
-        # finally return output in json format
-        return GetSequenceVariantsResponseModel(
+        # finally return output as pydantic response model in json format
+        return SequenceVariantsResponseModel(
             lineage=f"{content['clade']}, {content['customNodeAttributes']['Nextclade_pango']}",
             n_count=content["totalMissing"],
             substitutions=content["substitutions"],
