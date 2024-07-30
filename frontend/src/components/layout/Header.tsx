@@ -89,16 +89,6 @@ export const Header = () => {
                     }}
                 />
                 <div className="flex flex-row gap-4">
-                    <Button
-                        variant="outline"
-                        className="gap-2 flex items-center"
-                        onClick={() => {
-                            exportGraphAndInformationAsPdf();
-                        }}
-                    >
-                        Export PDF
-                        <FileText className="h-5 w-5" />
-                    </Button>
                     <label htmlFor="dexie-file-upload">
                         <Button
                             variant="outline"
