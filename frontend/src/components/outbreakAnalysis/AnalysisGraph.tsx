@@ -1,37 +1,55 @@
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { useAnalysisStore } from "@/stores/analysis";
 import { GraphData } from "@/types/graph";
 
 type AnalysisGraphProps = {
     data: GraphData;
     width: number;
     height: number;
+    linkDistance?: number;
+    charge?: number;
+    zoomToFit?: boolean;
+    nodeSize?: number;
+    linkWidth?: number;
+    hideNodeLabel?: boolean;
+    labelTransparency?: number;
+    coolDownTicks?: number;
 };
 
-export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
+export const AnalysisGraph = ({
+    data,
+    width,
+    height,
+    linkDistance = 50,
+    charge = -80,
+    zoomToFit = false,
+    nodeSize = 6,
+    linkWidth = 3,
+    hideNodeLabel = false,
+    labelTransparency = 0.3,
+    coolDownTicks = 120,
+}: AnalysisGraphProps) => {
     const forceRef = useRef<ForceGraphMethods>();
-    const { graphSettings } = useAnalysisStore();
 
     // custom d3 force setup
     useEffect(() => {
-        if (!forceRef.current || !graphSettings) return;
-        forceRef.current.d3Force("charge")?.strength(-80);
-        forceRef.current.d3Force("link")?.distance(graphSettings.linkDistance);
+        if (!forceRef.current || !charge || !linkDistance) return;
+        forceRef.current.d3Force("charge")?.strength(charge);
+        forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
-    }, [graphSettings.linkDistance]);
+    }, [linkDistance]);
 
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
         if (!node.x || !node.y) return;
 
-        const radius = 6;
+        const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = node.color;
         ctx.fill();
 
         // Draw the label if setting is not hidden
-        if (graphSettings.hideNodeLabel) return;
+        if (hideNodeLabel) return;
 
         // Draw the label above the circle
         const label = `${node["caseId"]}`;
@@ -46,7 +64,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         // Draw the text
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = "rgb(0, 0, 0,0.3)";
+        ctx.fillStyle = `rgb(0, 0, 0,${labelTransparency})`;
         //font bold
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
     };
@@ -67,7 +85,7 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
         // End line
         ctx.lineTo(target.x, target.y);
         ctx.strokeStyle = "#CCC"; // Line color
-        ctx.lineWidth = 3;
+        ctx.lineWidth = linkWidth;
         ctx.stroke();
 
         // Calculate midpoint for text
@@ -95,13 +113,13 @@ export const AnalysisGraph = ({ data, width, height }: AnalysisGraphProps) => {
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => `${node["caseId"]}`}
-            nodeRelSize={6}
+            nodeRelSize={nodeSize}
             width={width}
             height={height}
-            cooldownTicks={120} //number of frames until simulation ends
+            cooldownTicks={coolDownTicks} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
             linkLabel={(link) => `${link.value}`}
-            linkWidth={3}
+            linkWidth={linkWidth}
             d3VelocityDecay={0.3}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
