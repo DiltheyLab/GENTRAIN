@@ -25,9 +25,6 @@ export const Graph3D = ({
     zoomToFit = false,
     nodeSize = 6,
     linkWidth = 3,
-    hideNodeLabel = false,
-    labelTransparency = 0.3,
-    coolDownTicks = 120,
 }: Graph3DProps) => {
     // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();
