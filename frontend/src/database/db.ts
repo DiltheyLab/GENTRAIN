@@ -99,22 +99,29 @@ const exportDatabaseToJson = async () => {
 };
 
 const deleteDataForPathogen = async (pathogen_id: number) => {
-    const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
-    const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
-    const deletions = [];
-    for (const caseData of cases) {
-        if (caseData.fasta_id) {
-            deletions.push(db.samples.where({ fasta_id: caseData.fasta_id }).delete());
+    await db.transaction(
+        "rw",
+        [db.cases, db.samples, db.contacts, db.cases, db.distances, db.distance_matrices],
+        async () => {
+            const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
+            const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+            const deletions = [];
+            for (const caseData of cases) {
+                if (caseData.fasta_id) {
+                    deletions.push(db.samples.where({ fasta_id: caseData.fasta_id }).delete());
+                }
+                deletions.push(
+                    db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete()
+                );
+                deletions.push(db.cases.where({ id: caseData.id }).delete());
+            }
+            if (distanceMatrix?.id) {
+                deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
+                deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
+            }
+            await Promise.all(deletions);
         }
-        deletions.push(db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete());
-        deletions.push(db.cases.where({ id: caseData.id }).delete());
-    }
-    if (distanceMatrix?.id) {
-        deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
-        deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
-    }
-    // wait for all deletions to be fulfilled to display loading spinner
-    await Promise.all(deletions);
+    );
 };
 
 export { db, importDataFromJson, exportDatabaseToJson, deleteDataForPathogen };

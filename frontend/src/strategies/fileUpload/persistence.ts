@@ -20,7 +20,7 @@ export const persistenceStrategies = {
             throw new GentrainException("InvalidPathogenSelection");
         }
         // run db operations in transaction to rollback in error cases
-        await db.transaction("rw", db.cases, db.categories, db.groups, db.outbreaks, async () => {
+        await db.transaction("rw", [db.cases, db.categories, db.groups, db.outbreaks], async () => {
             // retrieve flexible category names from header row
             const flexibleCategoryNames = getFlexibleCategoryNames(caseData);
             caseData = caseData.slice(1, caseData.length);
@@ -45,8 +45,7 @@ export const persistenceStrategies = {
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const activePathogen = useAppStore.getState().activePathogen;
         useSampleUploadStore.getState().setIsUploading(true);
-        const variantRequestPromises = [];
-
+        const variantRequestPromises: Promise<void>[] = [];
         for (const sample of sampleData) {
             // skip sample if it was excluded from uploads
             if (!Object.keys(useSampleUploadStore.getState().uploads).includes(sample.fastaId)) {
@@ -62,7 +61,6 @@ export const persistenceStrategies = {
         }
 
         await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
-
         // recalculate all sample distances to enable assembling a fresh distance matrix
         if (activePathogen) {
             await recalculateDistances(activePathogen.id);
