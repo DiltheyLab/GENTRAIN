@@ -4,8 +4,6 @@ import { validationStrategies } from "@/strategies/fileUpload/validation";
 import { persistenceStrategies } from "@/strategies/fileUpload/persistence";
 import { useAppStore } from "@/stores/app";
 import { useGetPathogenTypeByName } from "@/hooks/database/pathogen_types/useGetAllPathogenTypes";
-import { Button } from "../ui/button";
-import { recalculateDistances } from "@/services/distanceMatrices";
 
 export const UploadSection = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
@@ -29,9 +27,6 @@ export const UploadSection = () => {
                 validationStrategy={validationStrategies.sampleStrategy}
                 persistenceStrategy={persistenceStrategies.sampleStrategy}
             />
-            {activePathogen && (
-                <Button onClick={() => recalculateDistances(activePathogen?.id)}>Recalculate Distances</Button>
-            )}
             <FileUploadFactory
                 type="contacts"
                 allowMultiFile={false}
