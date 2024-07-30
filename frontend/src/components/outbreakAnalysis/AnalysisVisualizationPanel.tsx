@@ -40,8 +40,10 @@ export const AnalysisVisualizationPanel = () => {
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
     const renderGraph = () => {
-        if (analyseStore.graphData.nodes.length === 0 && analyseStore.settings.selectedOutbreak) {
+        if (analyseStore.graphData.nodes.length === 0 && analyseStore.settings.selectedOutbreak && !cases) {
             return <Loader2 className="h-24 w-h-24 animate-spin" />;
+        } else if (analyseStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
+            return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
         }
 
         return (
