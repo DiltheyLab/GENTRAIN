@@ -48,8 +48,8 @@ export const persistenceStrategies = {
         const variantRequestPromises = [];
 
         for (const sample of sampleData) {
-            // skip if sample was removed via user interface
-            if (useSampleUploadStore.getState().removedSamples.includes(sample.fastaId)) {
+            // skip sample if it was excluded from uploads
+            if (!Object.keys(useSampleUploadStore.getState().uploads).includes(sample.fastaId)) {
                 continue;
             }
             // found case (only import if case exists)
@@ -63,12 +63,9 @@ export const persistenceStrategies = {
 
         await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
 
+        // recalculate all sample distances to enable assembling a fresh distance matrix
         if (activePathogen) {
             await recalculateDistances(activePathogen.id);
-        }
-
-        if (useSampleUploadStore.getState().failedUploads.length === 0) {
-            useSampleUploadStore.getState().reset();
         }
     },
     contactsStrategy: async (contactData: string[][]) => {

@@ -81,7 +81,7 @@ export const validationStrategies = {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                useSampleUploadStore.getState().addPendingUpload(sample.fastaId);
+                useSampleUploadStore.getState().changeUpload(sample.fastaId, "pending");
             }
         }
 
