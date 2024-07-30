@@ -50,7 +50,15 @@ export const DashboardVisualizationPanel = () => {
         return deepCopyData(dashboardGraphStore.graphData);
     }, [dashboardGraphStore.graphData]);
 
-    const getGraph = () => {
+    const renderGraph = () => {
+        console.log(dashboardGraphStore.graphData.nodes.length, cases);
+
+        if (dashboardGraphStore.graphData.nodes.length === 0 && !cases) {
+            return <Loader2 className="h-24 w-h-24 animate-spin" />;
+        } else if (dashboardGraphStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
+            return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
+        }
+
         const { graphDimension, charge, hideNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
             dashboardGraphStore.graphSettings;
         if (graphDimension === "2D" && width && height) {
@@ -94,11 +102,7 @@ export const DashboardVisualizationPanel = () => {
             <Legend nodes={dashboardGraphStore.graphData.nodes} />
 
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                {dashboardGraphStore.graphData.nodes.length !== 0 ? (
-                    getGraph()
-                ) : (
-                    <Loader2 className="h-24 w-h-24 animate-spin" />
-                )}
+                {renderGraph()}
             </div>
         </div>
     );
