@@ -1,4 +1,5 @@
 import { db } from "./db";
+import { SampleSchema } from "./samples";
 export interface DistancesSchema {
     id: number;
     sample_id_1: number;
@@ -18,9 +19,25 @@ export interface DistanceWithFastaId {
 export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatrixId: number) => {
     const distances = await db.distances.where({ distance_matrix_id: distanceMatrixId }).toArray();
     let distancesWithFastaIds = [];
+
+    const sampleId = new Set<number>();
     for (const distance of distances) {
-        const sample1 = await db.samples.get(distance.sample_id_1);
-        const sample2 = await db.samples.get(distance.sample_id_2);
+        sampleId.add(distance.sample_id_1);
+        sampleId.add(distance.sample_id_2);
+    }
+
+    const samples = await db.samples.bulkGet(Array.from(sampleId));
+
+    const sampleMap = new Map<number, SampleSchema>();
+
+    for (const sample of samples) {
+        if (!sample) continue;
+        sampleMap.set(sample.id, sample);
+    }
+
+    for (const distance of distances) {
+        const sample1 = sampleMap.get(distance.sample_id_1);
+        const sample2 = sampleMap.get(distance.sample_id_2);
 
         if (!sample1 || !sample2) {
             return;
