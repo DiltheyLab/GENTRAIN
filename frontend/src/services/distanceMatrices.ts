@@ -3,7 +3,11 @@ import { db } from "@/database/db";
 import { samplesByFastaId } from "./samples";
 import Aioli from "@biowasm/aioli";
 import { SampleSchema } from "@/database/samples";
-import { deleteDistancesByPathogenId, getAllDistancesForDistanceMatrixWithFastaIds } from "@/database/distances";
+import {
+    deleteDistancesByPathogenId,
+    DistancesSchema,
+    getAllDistancesForDistanceMatrixWithFastaIds,
+} from "@/database/distances";
 import { DistanceMatrixAssembly, getOrCreateDistanceMatrixByPathogenId } from "@/database/distance_matrices";
 import { useSampleUploadStore } from "@/stores/upload";
 
@@ -441,7 +445,7 @@ const calculateSampleDistances = async (
         [fastaId: string]: SampleSchema;
     },
     cli: any
-): Promise<[string[], number[][]]> => {
+): Promise<[string[], number[][], DistancesSchema[]]> => {
     // when fasta id already in dm then overwrite it, otherwise add as last entry
     let add_index: number = fastaIds.indexOf(sample.fasta_id);
     if (add_index === -1) {
@@ -455,6 +459,7 @@ const calculateSampleDistances = async (
     }
 
     // overwrite distances
+    const distancesToBeAdded: DistancesSchema[] = [];
     for (const i in matrix) {
         // skip the diagonal (distance to itself stays -1)
         if (parseInt(i) === add_index) {
@@ -466,14 +471,14 @@ const calculateSampleDistances = async (
 
         let distance = await calculate_single_distance(sample1, sample2, cli);
 
-        await db.distances.add({
+        distancesToBeAdded.push({
             sample_id_1: sample1.id,
             sample_id_2: sample2.id,
             value: distance,
             distance_matrix_id: distanceMatrixId,
-        });
+        } as DistancesSchema);
     }
-    return [fastaIds, matrix];
+    return [fastaIds, matrix, distancesToBeAdded];
 };
 
 export const persistSampleDistances = async (pathogenId: number) => {
@@ -498,9 +503,12 @@ export const persistSampleDistances = async (pathogenId: number) => {
     // then add new samples to dm and calculate their distances
     useSampleUploadStore.getState().setDistanceCalculationProgress(0);
 
+    let distancesToBeAdded: DistancesSchema[] = [];
     let calculationsCount = 0;
     for (const sample of samples) {
-        [fastaIds, matrix] = await calculateSampleDistances(
+        let sampleDistanceToBeAdded;
+        console.time("distancecalculation");
+        [fastaIds, matrix, sampleDistanceToBeAdded] = await calculateSampleDistances(
             sample,
             fastaIds,
             matrix,
@@ -508,10 +516,14 @@ export const persistSampleDistances = async (pathogenId: number) => {
             samples_dict,
             cli
         );
-
+        console.timeEnd("distancecalculation");
+        distancesToBeAdded.push(...sampleDistanceToBeAdded);
         calculationsCount++;
         useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCount / samples.length) * 100);
     }
+
+    //bulk add
+    await db.distances.bulkAdd(distancesToBeAdded);
     return true;
 };
 
