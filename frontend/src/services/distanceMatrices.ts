@@ -507,7 +507,6 @@ export const persistSampleDistances = async (pathogenId: number) => {
     let calculationsCount = 0;
     for (const sample of samples) {
         let sampleDistanceToBeAdded;
-        console.time("distancecalculation");
         [fastaIds, matrix, sampleDistanceToBeAdded] = await calculateSampleDistances(
             sample,
             fastaIds,
@@ -516,7 +515,6 @@ export const persistSampleDistances = async (pathogenId: number) => {
             samples_dict,
             cli
         );
-        console.timeEnd("distancecalculation");
         distancesToBeAdded.push(...sampleDistanceToBeAdded);
         calculationsCount++;
         useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCount / samples.length) * 100);
