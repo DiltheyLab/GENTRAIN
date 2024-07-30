@@ -1,33 +1,50 @@
 import { useEffect, useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
-import { useGraphStore } from "@/stores/graph";
 import { GraphData } from "@/types/graph";
 
-type ForcedDirectedGraph3DProps = {
+type Graph3DProps = {
     data: GraphData;
     width: number;
     height: number;
+    linkDistance?: number;
+    charge?: number;
+    zoomToFit?: boolean;
+    nodeSize?: number;
+    linkWidth?: number;
+    hideNodeLabel?: boolean;
+    labelTransparency?: number;
+    coolDownTicks?: number;
 };
 
-export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGraph3DProps) => {
-    const graphSettingsContext = useGraphStore();
-
+export const Graph3D = ({
+    data,
+    width,
+    height,
+    linkDistance = 50,
+    charge = -80,
+    zoomToFit = false,
+    nodeSize = 6,
+    linkWidth = 3,
+    hideNodeLabel = false,
+    labelTransparency = 0.3,
+    coolDownTicks = 120,
+}: Graph3DProps) => {
     // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();
 
     const handleEngineStop = () => {
         if (!forceRef.current) return;
-        if (graphSettingsContext.settings.zoomToFit === false) return;
+        if (zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
     };
 
     useEffect(() => {
         if (!forceRef.current) return;
-        forceRef.current.d3Force("charge")?.strength(graphSettingsContext.settings.charge);
-        forceRef.current.d3Force("link")?.distance(graphSettingsContext.settings.linkDistance);
+        forceRef.current.d3Force("charge")?.strength(charge);
+        forceRef.current.d3Force("link")?.distance(linkDistance);
 
         forceRef.current.d3ReheatSimulation();
-    }, [graphSettingsContext.settings.charge, graphSettingsContext.settings.linkDistance]);
+    }, [charge, linkDistance]);
 
     return (
         <ForceGraph3D
@@ -40,14 +57,14 @@ export const ForcedDirectedGraph3D = ({ data, width, height }: ForcedDirectedGra
             width={width}
             height={height}
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color bg-muted
-            nodeRelSize={graphSettingsContext.settings.nodeSize}
+            nodeRelSize={nodeSize}
             linkLabel={(link) => {
                 return `${link.value}`;
             }}
             nodeColor={(node) => {
                 return node.color;
             }}
-            linkWidth={graphSettingsContext.settings.linkWidth}
+            linkWidth={linkWidth}
             linkColor="black"
             linkOpacity={0.7}
             cooldownTicks={100}

@@ -1,7 +1,5 @@
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { ForcedDirectedGraph2D } from "../graphs/ForcedDirectedGraph";
-import { ForcedDirectedGraph3D } from "../graphs/ForcedDirectedGraph3D";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
 import { transformDistanceMatrixToGraphData } from "@/services/graphs";
@@ -13,6 +11,8 @@ import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAl
 import { Legend } from "../outbreakAnalysis/Legend";
 import { Loader2 } from "lucide-react";
 import { GraphData } from "@/types/graph";
+import { Graph3D } from "../graphs/Graph3D";
+import { Graph2D } from "../graphs/Graph2D";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -42,10 +42,35 @@ export const DashboardVisualizationPanel = () => {
     }, [graphStore.data]);
 
     const getGraph = () => {
-        if (graphStore.settings.graphDimension === "2D" && width && height) {
-            return <ForcedDirectedGraph2D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+        const { graphDimension, charge, hideNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
+            graphStore.settings;
+        if (graphDimension === "2D" && width && height) {
+            return (
+                <Graph2D
+                    data={graphDataCopy as GraphData}
+                    width={width - 8}
+                    height={height - 8}
+                    charge={charge}
+                    linkDistance={linkDistance}
+                    nodeSize={nodeSize}
+                    hideNodeLabel={hideNodeLabel}
+                    linkWidth={linkWidth}
+                    zoomToFit={zoomToFit}
+                />
+            );
         } else if (graphStore.settings.graphDimension === "3D" && width && height) {
-            return <ForcedDirectedGraph3D data={graphDataCopy as GraphData} width={width - 8} height={height - 8} />;
+            return (
+                <Graph3D
+                    data={graphDataCopy as GraphData}
+                    width={width - 8}
+                    height={height - 8}
+                    charge={charge}
+                    linkDistance={linkDistance}
+                    nodeSize={nodeSize}
+                    linkWidth={linkWidth}
+                    zoomToFit={zoomToFit}
+                />
+            );
         }
     };
 

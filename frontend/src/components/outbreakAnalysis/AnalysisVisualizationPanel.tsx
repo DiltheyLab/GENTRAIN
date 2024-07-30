@@ -5,7 +5,7 @@ import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
-import { AnalysisGraph } from "./AnalysisGraph";
+import { Graph2D } from "../graphs/Graph2D";
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
@@ -45,7 +45,7 @@ export const AnalysisVisualizationPanel = () => {
         }
 
         return (
-            <AnalysisGraph
+            <Graph2D
                 data={analyseStore.graphData}
                 width={width - 8}
                 height={height - 8}
