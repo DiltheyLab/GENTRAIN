@@ -29,9 +29,9 @@ export const AnalysisSettings = () => {
     };
 
     return (
-        <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
+        <div className="relative flex-col items-center gap-8 flex min-h-[80vh]" x-chunk="dashboard-03-chunk-0">
             <form className="w-full items-start gap-3">
-                <fieldset className="flex flex-col gap-6 rounded-lg border p-4 min-h-[80vh]">
+                <fieldset className="flex flex-col gap-6 rounded-lg border p-4 ">
                     <div className="flex flex-col gap-3">
                         <OutbreakSelection />
                         {analysisStore.settings.selectedOutbreak && (

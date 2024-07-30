@@ -1,7 +1,10 @@
-import { useAnalysisStore } from "@/stores/analysis";
+import { CustomNode } from "@/types/graph";
 
-export const Legend = () => {
-    const { nodes } = useAnalysisStore().graphData;
+type LegendProps = {
+    nodes: CustomNode[];
+};
+
+export const Legend = ({ nodes }: LegendProps) => {
     const uniqueGroups = nodes
         .filter((group, index, self) => {
             return index === self.findIndex((node) => node.group === group.group);
@@ -15,6 +18,8 @@ export const Legend = () => {
                 <p>{node.group}</p>
             </div>
         ));
+
+    if (!nodes || nodes.length === 0) return;
 
     return (
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-4 bg-muted">

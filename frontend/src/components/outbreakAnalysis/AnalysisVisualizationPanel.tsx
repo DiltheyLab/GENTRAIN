@@ -5,11 +5,12 @@ import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
-import { AnalysisGraph } from "./AnalysisGraph";
+import { Graph2D } from "../graphs/Graph2D";
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
 import { Legend } from "./Legend";
+import { Loader2 } from "lucide-react";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -38,11 +39,29 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
+    const renderGraph = () => {
+        if (analyseStore.graphData.nodes.length === 0 && analyseStore.settings.selectedOutbreak && !cases) {
+            return <Loader2 className="h-24 w-h-24 animate-spin" />;
+        } else if (analyseStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
+            return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
+        }
+
+        return (
+            <Graph2D
+                data={analyseStore.graphData}
+                width={width - 8}
+                height={height - 8}
+                hideNodeLabel={analyseStore.graphSettings.hideNodeLabel}
+                linkDistance={analyseStore.graphSettings.linkDistance}
+            />
+        );
+    };
+
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
                 <>
-                    <Legend />
+                    <Legend nodes={analyseStore.graphData.nodes} />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
@@ -50,7 +69,7 @@ export const AnalysisVisualizationPanel = () => {
                 </>
             )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
+                {renderGraph()}
             </div>
         </div>
     );

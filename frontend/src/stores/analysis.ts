@@ -1,13 +1,16 @@
 import { create } from "zustand";
-import { GraphData } from "./graph";
 import { OutbreakSchema } from "@/database/outbreak";
 import { GroupSchema } from "@/database/groups";
 import { CategorySchema } from "@/database/categories";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { GraphData } from "@/types/graph";
 
-type GroupColoration = {
+export type Filter = "all" | "outbreaks";
+export type Coloring = "normal" | "registered_at" | "outbreaks";
+
+export type GroupColoration = {
     group: GroupSchema;
     color: string;
     disableColoration: boolean;
@@ -38,6 +41,12 @@ export type AnalysisSettings = {
 export type GraphSettings = {
     hideNodeLabel: boolean;
     linkDistance: number;
+    graphDimension?: "2D" | "3D";
+    nodeSize?: number;
+    linkWidth?: number;
+    zoomToFit?: boolean;
+    charge?: number;
+    coloring?: Coloring;
 };
 
 export interface AnalysisStore {

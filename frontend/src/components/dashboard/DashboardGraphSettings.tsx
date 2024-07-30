@@ -3,56 +3,52 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Box, Workflow } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "../ui/button";
-import { getGroupToColor } from "@/services/graphs";
-import { useGraphStore, type Coloring, type Filter } from "@/stores/graph";
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useDashboardGraphStore } from "@/stores/dashboardGraph";
 
 export const DashboardGraphSettings = () => {
-    const graphStore = useGraphStore();
-    const cases = useGetAllCasesWithRelationships();
+    const dashboardGraphStore = useDashboardGraphStore();
 
     const changeNodeSize = (value: number) => {
-        graphStore.updateSettings({
+        dashboardGraphStore.updateGraphSettings({
             nodeSize: value,
         });
     };
 
     const changeLinkWidth = (value: number) => {
-        graphStore.updateSettings({
+        dashboardGraphStore.updateGraphSettings({
             linkWidth: value,
         });
     };
 
     const changeCharge = (value: number) => {
-        graphStore.updateSettings({ charge: value });
+        dashboardGraphStore.updateGraphSettings({ charge: value });
     };
 
     const changeLinkDistance = (value: number) => {
-        graphStore.updateSettings({ linkDistance: value });
+        dashboardGraphStore.updateGraphSettings({ linkDistance: value });
     };
 
     const changeGraphDimension = (selectValue: string) => {
-        graphStore.updateSettings({
+        dashboardGraphStore.updateGraphSettings({
             graphDimension: selectValue as "2D" | "3D",
         });
     };
 
     const changeZoomToFit = (checked: boolean) => {
-        graphStore.updateSettings({ zoomToFit: checked });
+        dashboardGraphStore.updateGraphSettings({ zoomToFit: checked });
     };
 
     const changeNodeStyle = (checked: boolean) => {
-        graphStore.updateSettings({ hideNodeLabel: checked });
+        dashboardGraphStore.updateGraphSettings({ hideNodeLabel: checked });
     };
 
-    const changeFilter = (filter: Filter) => {
-        graphStore.updateSettings({ filter: filter });
-        graphStore.updateSettings({ coloring: "normal" });
+    /*  const changeFilter = (filter: Filter) => {
+        graphStore.updateGraphSettings({ filter: filter });
+        graphStore.updateGraphSettings({ coloring: "normal" });
     };
 
     const changeColoring = (coloring: Coloring) => {
-        graphStore.updateSettings({ coloring: coloring });
+        graphStore.updateGraphSettings({ coloring: coloring });
         const graphData = graphStore.data;
 
         if (!cases) return;
@@ -82,9 +78,9 @@ export const DashboardGraphSettings = () => {
             links: graphData.links,
         });
     };
-
+ */
     return (
-        <div className="relative flex-col items-center gap-8 flex" x-chunk="dashboard-03-chunk-0">
+        <div className="relative flex-col items-center gap-8 flex min-h-[80vh]" x-chunk="dashboard-03-chunk-0">
             <form className="w-full items-start gap-3">
                 <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Einstellungen</legend>
@@ -94,7 +90,7 @@ export const DashboardGraphSettings = () => {
                             <SelectTrigger id="model" className="items-start [&_[data-description]]:hidden">
                                 <SelectValue
                                     placeholder="Wähle ein Model aus"
-                                    defaultValue={graphStore.settings.graphDimension}
+                                    defaultValue={dashboardGraphStore.graphSettings.graphDimension}
                                 />
                             </SelectTrigger>
                             <SelectContent>
@@ -146,7 +142,7 @@ export const DashboardGraphSettings = () => {
                         <Label htmlFor="forceLinkDistance">Kantenabstand</Label>
                         <Slider
                             id="forceLinkDistance"
-                            defaultValue={[graphStore.settings.linkDistance]}
+                            defaultValue={[dashboardGraphStore.graphSettings.linkDistance]}
                             max={100}
                             min={10}
                             step={1}
@@ -155,7 +151,7 @@ export const DashboardGraphSettings = () => {
                         <Label htmlFor="forceCharge">Anziehungskraft</Label>
                         <Slider
                             id="forceCharge"
-                            defaultValue={[graphStore.settings.charge]}
+                            defaultValue={[dashboardGraphStore.graphSettings.charge ?? -50]}
                             max={0}
                             min={-100}
                             step={1}
@@ -165,7 +161,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="nodeDescription"
-                            checked={graphStore.settings.hideNodeLabel}
+                            checked={dashboardGraphStore.graphSettings.hideNodeLabel}
                             onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
                         />
                         <label
@@ -178,7 +174,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="zoomToFit"
-                            checked={graphStore.settings.zoomToFit}
+                            checked={dashboardGraphStore.graphSettings.zoomToFit}
                             onCheckedChange={(value) => changeZoomToFit(Boolean(value))}
                         />
                         <label
@@ -189,12 +185,12 @@ export const DashboardGraphSettings = () => {
                         </label>
                     </div>
                 </fieldset>
-                <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
+                {/*  <fieldset className="flex flex-col gap-6 rounded-lg border p-4">
                     <legend className="-ml-1 px-1 text-sm font-medium">Filter</legend>
                     <div className="flex flex-row gap-3">
                         <Button
                             type="button"
-                            variant={graphStore.settings.filter === "all" ? "default" : "secondary"}
+                            variant={graphStore.graphSettings.filter === "all" ? "default" : "secondary"}
                             className="w-1/2"
                             onClick={() => changeFilter("all")}
                         >
@@ -202,7 +198,7 @@ export const DashboardGraphSettings = () => {
                         </Button>
                         <Button
                             type="button"
-                            variant={graphStore.settings.filter === "outbreaks" ? "default" : "secondary"}
+                            variant={graphStore.graphSettings.filter === "outbreaks" ? "default" : "secondary"}
                             className="w-1/2"
                             onClick={() => changeFilter("outbreaks")}
                         >
@@ -215,27 +211,27 @@ export const DashboardGraphSettings = () => {
                     <div className="flex gap-3 flex-wrap flex-col">
                         <Button
                             type="button"
-                            variant={graphStore.settings.coloring === "normal" ? "default" : "secondary"}
+                            variant={graphStore.graphSettings.coloring === "normal" ? "default" : "secondary"}
                             onClick={() => changeColoring("normal")}
                         >
                             Alle
                         </Button>
                         <Button
                             type="button"
-                            variant={graphStore.settings.coloring === "outbreaks" ? "default" : "secondary"}
+                            variant={graphStore.graphSettings.coloring === "outbreaks" ? "default" : "secondary"}
                             onClick={() => changeColoring("outbreaks")}
                         >
                             Outbreaks
                         </Button>
                         <Button
                             type="button"
-                            variant={graphStore.settings.coloring === "registered_at" ? "default" : "secondary"}
+                            variant={graphStore.graphSettings.coloring === "registered_at" ? "default" : "secondary"}
                             onClick={() => changeColoring("registered_at")}
                         >
                             Sampling Time
                         </Button>
                     </div>
-                </fieldset>
+                </fieldset> */}
             </form>
         </div>
     );
