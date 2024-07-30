@@ -2,12 +2,14 @@ import { create } from "zustand";
 
 interface SampleUploadState {
     isUploading: boolean;
-    distanceCalculationProgress: number;
+    distanceCalculationCount: number;
+    distanceCalculationSum: number;
     uploads: { [fastaId: string]: string };
     removeUpload: (key: string) => void;
     changeUpload: (key: string, value: string) => void;
     setIsUploading: (value: boolean) => void;
-    setDistanceCalculationProgress: (progress: number) => void;
+    incrementDistanceCalculationCount: () => void;
+    setDistanceCalculationSum: (sum: number) => void;
     reset: () => void;
 }
 
@@ -16,7 +18,8 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     pendingUploads: [],
     failedUploads: [],
     finishedUploads: [],
-    distanceCalculationProgress: 0,
+    distanceCalculationCount: 0,
+    distanceCalculationSum: 0,
     removedSamples: [],
     uploads: {},
     removeUpload: (fastaId: string) => {
@@ -31,13 +34,18 @@ export const useSampleUploadStore = create<SampleUploadState>((set, get) => ({
     },
     reset: () => {
         set({
-            distanceCalculationProgress: 0,
+            distanceCalculationCount: 0,
+            distanceCalculationSum: 0,
             isUploading: false,
             uploads: {},
         });
     },
-    setDistanceCalculationProgress: (progress: number) => {
-        set({ distanceCalculationProgress: progress });
+    incrementDistanceCalculationCount: () => {
+        const newCount = get().distanceCalculationCount + 1;
+        set({ distanceCalculationCount: newCount });
+    },
+    setDistanceCalculationSum: (sum: number) => {
+        set({ distanceCalculationSum: sum });
     },
     setIsUploading: (value: boolean) => {
         set({ isUploading: value });
