@@ -51,8 +51,6 @@ export const DashboardVisualizationPanel = () => {
     }, [dashboardGraphStore.graphData]);
 
     const renderGraph = () => {
-        console.log(dashboardGraphStore.graphData.nodes.length, cases);
-
         if (dashboardGraphStore.graphData.nodes.length === 0 && !cases) {
             return <Loader2 className="h-24 w-h-24 animate-spin" />;
         } else if (dashboardGraphStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
