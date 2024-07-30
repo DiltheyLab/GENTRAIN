@@ -4,7 +4,6 @@ import { Check, CircleAlert, X } from "lucide-react";
 import { DistanceCalculationProgress } from "./DistanceCalculationProgress";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { SampleInfoCard } from "./SampleInfoCard";
-import { useEffect, useState } from "react";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
@@ -18,38 +17,9 @@ const getColorClassNames = (status: string) => {
 };
 
 export function SampleUploadStatus() {
-    const { pendingUploads, addToRemovedSamples, isUploading, finishedUploads, failedUploads } = useSampleUploadStore();
-    const [uploads, setUploads] = useState<{ [fastaId: string]: string }>({});
+    const { uploads, isUploading, removeUpload } = useSampleUploadStore();
 
-    useEffect(() => {
-        const currentUploads = uploads;
-
-        for (const upload of pendingUploads) {
-            currentUploads[upload] = "pending";
-        }
-        for (const upload of failedUploads) {
-            currentUploads[upload] = "failed";
-        }
-        for (const upload of finishedUploads) {
-            currentUploads[upload] = "finished";
-        }
-
-        setUploads(
-            Object.keys(currentUploads)
-                .sort()
-                .reduce((obj: { [fastaId: string]: string }, key: string) => {
-                    obj[key] = currentUploads[key];
-                    return obj;
-                }, {})
-        );
-    }, [pendingUploads, finishedUploads, failedUploads]);
-
-    useEffect(() => {
-        if (!isUploading) {
-            setUploads({});
-        }
-    }, [isUploading]);
-    if (pendingUploads.length === 0 && finishedUploads.length === 0 && failedUploads.length === 0) return;
+    if (Object.keys(uploads).length === 0) return;
     return (
         <div className="bg-muted p-6">
             <div className="mb-2 flex items-center text-sm">
@@ -91,7 +61,7 @@ export function SampleUploadStatus() {
                         </HoverCard>
                     ))}
                 {!isUploading &&
-                    pendingUploads.map((fastaId) => (
+                    Object.keys(uploads).map((fastaId) => (
                         <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>
                                 <div
@@ -104,7 +74,7 @@ export function SampleUploadStatus() {
                                     <X
                                         width={18}
                                         className="cursor-pointer font-normal"
-                                        onClick={() => addToRemovedSamples(fastaId)}
+                                        onClick={() => removeUpload(fastaId)}
                                     />
                                 </div>
                             </HoverCardTrigger>
