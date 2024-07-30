@@ -7,11 +7,12 @@ import { deepCopyData } from "@/lib/utils";
 import { transformDistanceMatrixToGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
-import { type GraphData, useGraphStore } from "@/stores/graph";
+import { useGraphStore } from "@/stores/graph";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { Legend } from "../outbreakAnalysis/Legend";
 import { Loader2 } from "lucide-react";
+import { GraphData } from "@/types/graph";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);

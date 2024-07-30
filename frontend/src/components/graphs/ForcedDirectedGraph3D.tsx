@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import ForceGraph3D, { ForceGraphMethods } from "react-force-graph-3d";
-import { type GraphData, useGraphStore } from "@/stores/graph";
+import { useGraphStore } from "@/stores/graph";
+import { GraphData } from "@/types/graph";
 
 type ForcedDirectedGraph3DProps = {
     data: GraphData;

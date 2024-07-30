@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { type GraphData } from "@/stores/graph";
 import { useAnalysisStore } from "@/stores/analysis";
+import { GraphData } from "@/types/graph";
 
 type AnalysisGraphProps = {
     data: GraphData;

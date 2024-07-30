@@ -1,4 +1,4 @@
-import { CustomNode } from "@/stores/graph";
+import { CustomNode } from "@/types/graph";
 
 type LegendProps = {
     nodes: CustomNode[];
