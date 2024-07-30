@@ -458,13 +458,15 @@ const calculateSampleDistances = async (
         const sample2 = samples_dict[fastaIds[i]];
 
         let distance = await calculate_single_distance(sample1, sample2, cli);
-        distancesToBeAdded.push({
+
+        await db.distances.add({
             sample_id_1: sample1.id,
             sample_id_2: sample2.id,
             value: distance,
             distance_matrix_id: distanceMatrixId,
         } as DistancesSchema);
     }
+
     return [fastaIds, matrix, distancesToBeAdded];
 };
 
@@ -489,10 +491,10 @@ export const persistSampleDistances = async (pathogenId: number) => {
     // then add new samples to dm and calculate their distances
     const n = samples.length - 1;
     const calculationsSum = (n * (n + 1)) / 2;
-    let distancesToBeAdded: DistancesSchema[] = [];
+    let count = 0;
     for (const sample of samples) {
-        let sampleDistanceToBeAdded;
-        [fastaIds, matrix, sampleDistanceToBeAdded] = await calculateSampleDistances(
+        count++;
+        [fastaIds, matrix] = await calculateSampleDistances(
             sample,
             fastaIds,
             matrix,
@@ -500,12 +502,9 @@ export const persistSampleDistances = async (pathogenId: number) => {
             samples_dict,
             cli
         );
-        distancesToBeAdded.push(...sampleDistanceToBeAdded);
-        useSampleUploadStore
-            .getState()
-            .setDistanceCalculationProgress((distancesToBeAdded.length / calculationsSum) * 100);
+        const calculationsCounts = (count * (count + 1)) / 2;
+        useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCounts / calculationsSum) * 100);
     }
-    await db.distances.bulkAdd(distancesToBeAdded);
     return true;
 };
 

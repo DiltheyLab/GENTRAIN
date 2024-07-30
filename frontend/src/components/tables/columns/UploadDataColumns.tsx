@@ -43,7 +43,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
                     className="px-0"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Fall Id
+                    Fall
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
