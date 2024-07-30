@@ -1,10 +1,9 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FileText, Menu, Package2, Save, Share2, Upload } from "lucide-react";
+import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
-import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 import { PathogenSwitch } from "@/components/dashboard/PathogenSwitch";
 
 export const Header = () => {
