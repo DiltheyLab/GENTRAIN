@@ -35,7 +35,7 @@ export const Header = () => {
                     to="/data-upload"
                     className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
                 >
-                    Ausbruchsdaten
+                    Datenbestand
                 </Link>
                 <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground`}>
                     Hilfe/FAQ
