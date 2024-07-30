@@ -8,9 +8,9 @@ import { SampleInfoCard } from "./SampleInfoCard";
 const getColorClassNames = (status: string) => {
     switch (status) {
         case "finished":
-            return "text-green-600";
+            return "text-green-600 border-green-600 hover:border-white";
         case "failed":
-            return "text-red-600";
+            return "text-red-600 border-red-600 hover:border-white";
         default:
             return "";
     }
