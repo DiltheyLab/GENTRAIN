@@ -10,6 +10,7 @@ import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
 import { Legend } from "./Legend";
+import { Loader2 } from "lucide-react";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +43,7 @@ export const AnalysisVisualizationPanel = () => {
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
                 <>
-                    <Legend />
+                    <Legend nodes={analyseStore.graphData.nodes} />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
@@ -50,7 +51,11 @@ export const AnalysisVisualizationPanel = () => {
                 </>
             )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
+                {analyseStore.graphData.nodes.length !== 0 ? (
+                    <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
+                ) : (
+                    <Loader2 className="h-24 w-h-24 animate-spin" />
+                )}
             </div>
         </div>
     );
