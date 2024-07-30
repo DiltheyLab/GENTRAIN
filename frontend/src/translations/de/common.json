@@ -5,9 +5,9 @@
     },
     "upload": {
         "label": {
-            "cases": "Falldaten hochladen",
-            "samples": "Sequenzdaten hochladen",
-            "contacts": "Kontaktdaten hochladen"
+            "cases": "Falldaten hinzufügen",
+            "samples": "Sequenzdaten hinzufügen",
+            "contacts": "Kontaktdaten hinzufügen"
         },
         "info": {
             "cases": null,

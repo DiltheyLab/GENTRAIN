@@ -156,6 +156,7 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
                 // ############################################################
                 // deletions (includes alignment start and end)
                 // either add nothing (del on both seqs) or add "-"
+
                 if (mutation["type"] == "del") {
                     // was a deletion found in the other sequence
                     let found = false;
@@ -186,6 +187,7 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
                 // ############################################################
                 // insertions
                 // either add ins and "-" to other seq or align two ins with kalign
+
                 if (mutation["type"] == "ins") {
                     // was a insertion found in the other sequence
                     let found = false;
@@ -203,17 +205,13 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
 
                                 // put insertions into fasta string
                                 const fasta_string = `>1\n${mutation["mut"]}\n>2\n${mutation_2["mut"]}`;
-
                                 // mount fasta string as file
                                 let result = await cli.mount({
                                     name: "distance_input.fa",
                                     data: fasta_string,
                                 });
 
-                                // Run kalign
                                 result = await cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
-                                // console.log("align");
-                                // console.log(result);
 
                                 // fetch FASTA file output
                                 result = await cli.cat("distance_result.fasta");
@@ -270,17 +268,6 @@ async function align_from_nextclade(sample1: any, sample2: any, cli: any) {
         alignment[1] += add_chars[1];
     }
 
-    // For testing. displays the alignment in a div
-    // d3.select("#seq1").html(sample1["sequence"])
-    // d3.select("#seq1_id").html(sample1["fasta_ID"] + " " + sample1["sequence"].length)
-    // d3.select("#seq2").html(sample2["sequence"])
-    // d3.select("#seq2_id").html(sample2["fasta_ID"] + " " + sample2["sequence"].length)
-    // d3.select("#align1").html(alignment[0])
-    // d3.select("#align2").html(alignment[1])
-    // d3.select("#meta").html(alignment[0].length + " " + alignment[1].length)
-
-    // console.log(positions);
-
     return alignment;
 }
 
@@ -304,6 +291,7 @@ async function calculate_single_distance(sample1: SampleSchema, sample2: SampleS
 
     // find all differences
     let distance = count_differences(alignment, proper_total_1, proper_total_2);
+
     return distance;
 }
 // function calculate_full_distancematrix() {
@@ -470,7 +458,6 @@ const calculateSampleDistances = async (
         const sample2 = samples_dict[fastaIds[i]];
 
         let distance = await calculate_single_distance(sample1, sample2, cli);
-
         distancesToBeAdded.push({
             sample_id_1: sample1.id,
             sample_id_2: sample2.id,
@@ -499,12 +486,10 @@ export const persistSampleDistances = async (pathogenId: number) => {
 
     let fastaIds: string[] = [];
     let matrix: number[][] = [];
-
     // then add new samples to dm and calculate their distances
-    useSampleUploadStore.getState().setDistanceCalculationProgress(0);
-
+    const n = samples.length - 1;
+    const calculationsSum = (n * (n + 1)) / 2;
     let distancesToBeAdded: DistancesSchema[] = [];
-    let calculationsCount = 0;
     for (const sample of samples) {
         let sampleDistanceToBeAdded;
         [fastaIds, matrix, sampleDistanceToBeAdded] = await calculateSampleDistances(
@@ -516,11 +501,10 @@ export const persistSampleDistances = async (pathogenId: number) => {
             cli
         );
         distancesToBeAdded.push(...sampleDistanceToBeAdded);
-        calculationsCount++;
-        useSampleUploadStore.getState().setDistanceCalculationProgress((calculationsCount / samples.length) * 100);
+        useSampleUploadStore
+            .getState()
+            .setDistanceCalculationProgress((distancesToBeAdded.length / calculationsSum) * 100);
     }
-
-    //bulk add
     await db.distances.bulkAdd(distancesToBeAdded);
     return true;
 };

@@ -142,7 +142,7 @@ export const FileUploadFactory = ({
                         onUpload={handleFileUpload}
                     />
                     <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                        Hochladen
+                        Bestätigen
                     </Button>
                 </div>
                 {type === "samples" && (

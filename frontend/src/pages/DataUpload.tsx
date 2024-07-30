@@ -30,10 +30,10 @@ export function DataUpload() {
                 <div className="space-y-8">
                     <div className="flex items-center justify-between space-y-2">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Analysedaten importieren:</h2>
+                            <h2 className="text-2xl font-bold tracking-tight">Ausbruchsdaten importieren:</h2>
                             <p className="text-muted-foreground">
-                                Laden Sie hier ihre Analysedaten hoch. Zu hochgeladenen Fällen können Sequenz- als auch
-                                Kontaktdaten hinterlegt werden.
+                                Laden Sie hier ihre Ausbruchsdaten für {activePathogen?.name} hoch. Zu jedem
+                                hochgeladenen Fall können Sequenz- sowie Kontaktdaten hinterlegt werden.
                             </p>
                         </div>
                     </div>
@@ -44,8 +44,9 @@ export function DataUpload() {
                 <div className="space-y-8">
                     <div className="flex items-center justify-between space-y-2 ">
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Falldaten</h2>
-                            <p className="text-muted-foreground">Hier ist eine Liste der hochgeladenen Falldaten.</p>
+                            <h2 className="text-2xl font-bold tracking-tight">
+                                Ausbruchsdaten für {activePathogen?.name}
+                            </h2>
                         </div>
                     </div>
                     {casesData && <UploadDataTable data={casesData} />}
@@ -59,7 +60,7 @@ export function DataUpload() {
                                 triggerComponent={
                                     <Button variant="destructive">
                                         {isDeleting && <LoadingSpinner></LoadingSpinner>}
-                                        {!isDeleting && <>Falldaten zu {activePathogen.name} löschen</>}
+                                        {!isDeleting && <>Ausbruchsdaten zu {activePathogen.name} löschen</>}
                                     </Button>
                                 }
                             />

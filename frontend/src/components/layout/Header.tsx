@@ -1,7 +1,7 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Menu, Package2, Share2, Upload } from "lucide-react";
+import { FileText, Menu, Package2, Save, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
@@ -35,7 +35,7 @@ export const Header = () => {
                     to="/data-upload"
                     className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
                 >
-                    Daten
+                    Ausbruchsdaten
                 </Link>
                 <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground`}>
                     Hilfe/FAQ
@@ -99,14 +99,6 @@ export const Header = () => {
                         Export PDF
                         <FileText className="h-5 w-5" />
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="gap-2 flex items-center"
-                        onClick={() => exportDatabaseToJson()}
-                    >
-                        <span className="hidden sm:block md:hidden lg:block">Daten exportieren</span>
-                        <Download className="h-5 w-5" />
-                    </Button>
                     <label htmlFor="dexie-file-upload">
                         <Button
                             variant="outline"
@@ -116,10 +108,18 @@ export const Header = () => {
                                 if (uploadFileRef?.current) uploadFileRef?.current.click();
                             }}
                         >
-                            <span className="hidden sm:block md:hidden lg:block">Daten importieren</span>
+                            <span className="hidden sm:block md:hidden lg:block">Zustand importieren</span>
                             <Upload className="h-5 w-5" />
                         </Button>
                     </label>
+                    <Button
+                        variant="outline"
+                        className="gap-2 flex items-center"
+                        onClick={() => exportDatabaseToJson()}
+                    >
+                        <span className="hidden sm:block md:hidden lg:block">Zustand speichern</span>
+                        <Save className="h-5 w-5" />
+                    </Button>
                     <PathogenSwitch />
                 </div>
             </div>
