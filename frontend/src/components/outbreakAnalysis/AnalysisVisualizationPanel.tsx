@@ -39,6 +39,22 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
     }, [cases, distanceMatrixAssembly, analyseStore.settings]);
 
+    const renderGraph = () => {
+        if (analyseStore.graphData.nodes.length === 0 && analyseStore.settings.selectedOutbreak) {
+            return <Loader2 className="h-24 w-h-24 animate-spin" />;
+        }
+
+        return (
+            <AnalysisGraph
+                data={analyseStore.graphData}
+                width={width - 8}
+                height={height - 8}
+                hideNodeLabel={analyseStore.graphSettings.hideNodeLabel}
+                linkDistance={analyseStore.graphSettings.linkDistance}
+            />
+        );
+    };
+
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
@@ -51,11 +67,7 @@ export const AnalysisVisualizationPanel = () => {
                 </>
             )}
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                {analyseStore.graphData.nodes.length !== 0 ? (
-                    <AnalysisGraph data={analyseStore.graphData} width={width - 8} height={height - 8} />
-                ) : (
-                    <Loader2 className="h-24 w-h-24 animate-spin" />
-                )}
+                {renderGraph()}
             </div>
         </div>
     );
