@@ -155,12 +155,12 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     }
 
     // use all cases without any filtering
-    if (analysisSettings.includeAllCases) {
+    if (analysisSettings.includeAllCases && selectedOutbreak) {
         graphCases = [...cases];
     }
 
     // use cases which are selected in the multiselect field
-    if (selectedBackground) {
+    if (selectedBackground && !analysisSettings.includeAllCases) {
         const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
         graphCases = graphCases.concat(filteredCasesByBackground);
     }

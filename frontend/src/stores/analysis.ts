@@ -71,7 +71,7 @@ export const defaultGraphSettings: GraphSettings = {
 export const getDefaultSettings = (): AnalysisSettings => {
     const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
     return {
-        includeAllCases: false,
+        includeAllCases: true,
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
