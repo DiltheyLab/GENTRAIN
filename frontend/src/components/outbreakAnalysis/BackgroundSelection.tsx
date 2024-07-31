@@ -2,9 +2,8 @@ import { Label } from "../ui/label";
 import MultipleSelector, { Option } from "../ui/multiSelect";
 import { Switch } from "../ui/switch";
 import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
-import { useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
+import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
-import { GroupSchema } from "@/database/groups";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { DateRangePicker } from "./DateRangePicker";
@@ -24,13 +23,22 @@ export const BackgroundSelection = () => {
                 group: "Ausbrüche",
             });
         }
-        for (const group of groupsAndOutbreaks?.groups) {
+        if (groupsAndOutbreaks.casesWithoutOutbreakExist) {
+            options.push({
+                label: "Keinem Ausbruch zugewiesen",
+                value: "Keinem Ausbruch zugewiesen",
+                id: "0",
+                group: "Ausbrüche",
+            });
+        }
+        for (const group of groupsAndOutbreaks?.groupsWithCategories) {
             options.push({
                 label: group.name,
                 value: group.name,
                 id: group.id.toString(),
                 category_id: group.category_id.toString(),
-                group: "Andere Gruppen",
+                categoryName: group.categoryName,
+                group: group.categoryName || "Andere Gruppen",
             });
         }
         return options;
@@ -49,31 +57,31 @@ export const BackgroundSelection = () => {
     };
 
     const handleMultipleSelectChange = (values: Option[]) => {
-        const selectedBackground = {
+        const selectedBackground: SelectedBackground = {
             outbreaks: [] as OutbreakSchema[],
-            groups: [] as GroupSchema[],
-        } satisfies SelectedBackground;
+            groupsWithCategories: [] as GroupWithCategory[],
+            casesWithoutOutbreakExist: false,
+        };
         for (const value of values) {
-            if (value.group === "Ausbrüche") {
+            if (value.group === "Ausbrüche" && value.label !== "Keinem Ausbruch zugewiesen") {
                 const outbreak = {
                     id: +value.id,
                     name: value.value,
                 } satisfies OutbreakSchema;
                 selectedBackground.outbreaks.push(outbreak);
+            } else if (value.group === "Ausbrüche" && value.label === "Keinem Ausbruch zugewiesen") {
+                selectedBackground.casesWithoutOutbreakExist = true;
             } else {
                 const group = {
                     id: +value.id,
                     name: value.value,
                     category_id: +value.category_id!,
-                } satisfies GroupSchema;
-                selectedBackground.groups.push(group);
+                    categoryName: value.categoryName,
+                } satisfies GroupWithCategory;
+                selectedBackground.groupsWithCategories.push(group);
             }
         }
         analysisStore.updateSettings({ selectedBackground: selectedBackground });
-    };
-
-    const handleIncludeCasesWithoutOutbreak = (value: boolean) => {
-        analysisStore.updateSettings({ includeCasesWithoutOutbreak: value });
     };
 
     const handleIncludeCasesWithLowGeneticDistance = (value: boolean) => {
@@ -112,16 +120,6 @@ export const BackgroundSelection = () => {
                 groupBy="group"
             />
             <Label>Weitere Daten verwenden:</Label>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="includeCasesWithoutOutbreak"
-                    checked={analysisStore.settings.includeCasesWithoutOutbreak}
-                    onCheckedChange={(value) => handleIncludeCasesWithoutOutbreak(value)}
-                />
-                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-[0.95rem]">
-                    Keinem Ausbruch zugewiesen
-                </Label>
-            </div>
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="includeCasesWithLowGeneticDistance"

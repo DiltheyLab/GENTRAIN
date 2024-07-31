@@ -86,13 +86,10 @@ const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak:
 const filterCasesByGroupsAndOutbreaks = (cases: CaseWithRelationships[], selectedBackground: SelectedBackground) => {
     return cases.filter(
         (caseData) =>
-            selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) ||
-            selectedBackground.groups.some((group) => caseData.group_ids.includes(group.id))
+            selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) || //include cases from selected outbreaks
+            selectedBackground.groupsWithCategories.some((group) => caseData.group_ids.includes(group.id)) || //include cases from selected groups
+            (selectedBackground.casesWithoutOutbreakExist && caseData.outbreak_id === null) //include cases without outbreak
     );
-};
-
-const filterCasesByBackground = (cases: CaseWithRelationships[]) => {
-    return cases.filter((caseData) => caseData.outbreak_id === null);
 };
 
 const deleteDuplicateCases = (cases: CaseWithRelationships[]) => {
@@ -140,7 +137,6 @@ const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: 
 const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
     const {
         selectedOutbreak,
-        includeCasesWithoutOutbreak,
         ignoreBackground,
         selectedBackground,
         geneticDistanceThreshold,
@@ -167,12 +163,6 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     if (selectedBackground) {
         const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
         graphCases = graphCases.concat(filteredCasesByBackground);
-    }
-
-    // use cases which are not assigned to any outbreak
-    if (includeCasesWithoutOutbreak) {
-        const casesWithoutOutbreak = filterCasesByBackground(cases);
-        graphCases = graphCases.concat(casesWithoutOutbreak);
     }
 
     // use cases which have a distance below the threshold AND are connected to the selected outbreak

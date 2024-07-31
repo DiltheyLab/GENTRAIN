@@ -22,7 +22,6 @@ export const getDefaultSettings = (): AnalysisSettings => {
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        includeCasesWithoutOutbreak: false,
         ignoreBackground: false,
         includeCasesWithLowGeneticDistance: false,
         excludeCasesOutsideOfDateRange: false,
