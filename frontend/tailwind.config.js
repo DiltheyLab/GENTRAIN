@@ -51,8 +51,12 @@ module.exports = {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
             },
+            fontSize: {
+                md: "0.95rem",
+            },
         },
     },
+
     darkMode: "class",
     plugins: [require("tailwindcss-animate")],
 };
