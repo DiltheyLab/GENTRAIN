@@ -1,12 +1,9 @@
 import { Label } from "../ui/label";
 import MultipleSelector, { Option } from "../ui/multiSelect";
-import { Switch } from "../ui/switch";
 import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
-import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
-import { DateRangePicker } from "./DateRangePicker";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -52,10 +49,6 @@ export const BackgroundSelection = () => {
         return filteredOptions;
     };
 
-    const handleShowBackground = (value: boolean) => {
-        analysisStore.updateSettings({ showBackground: value });
-    };
-
     const handleMultipleSelectChange = (values: Option[]) => {
         const selectedBackground: SelectedBackground = {
             outbreaks: [] as OutbreakSchema[],
@@ -84,76 +77,50 @@ export const BackgroundSelection = () => {
         analysisStore.updateSettings({ selectedBackground: selectedBackground });
     };
 
-    const handleIncludeCasesWithLowGeneticDistance = (value: boolean) => {
-        analysisStore.updateSettings({ includeCasesWithLowGeneticDistance: value });
-    };
-
-    const changeGeneticDistanceThreshold = (value: number) => {
-        analysisStore.updateSettings({ geneticDistanceThreshold: value });
+    const handleBackgroundDataChange = (value: "specificBackgroundData" | "allBackgroundData") => {
+        if (value === "allBackgroundData") {
+            analysisStore.updateSettings({ includeAllCases: true });
+        } else {
+            analysisStore.updateSettings({ includeAllCases: false });
+        }
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-baseline justify-between">
-                <Label className="font-bold text-lg">2. Background festlegen</Label>
-                <div className="flex items-center space-x-2">
-                    <label htmlFor="zoomToFit" className="text-sm font-medium leading-none">
-                        Alle
-                    </label>
-                    <Checkbox
-                        id="zoomToFit"
-                        checked={analysisStore.settings.includeAllCases}
-                        onCheckedChange={(value) => analysisStore.updateSettings({ includeAllCases: Boolean(value) })}
-                    />
-                </div>
-            </div>
-            <MultipleSelector
-                options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
-                onChange={(value) => handleMultipleSelectChange(value)}
-                placeholder="Bitte auswählen"
-                emptyIndicator={
-                    <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                        Keine Gruppen gefunden
-                    </p>
+        <div className="flex flex-col gap-4 mt-2">
+            <Label className="font-bold text-lg">2. Background auswählen</Label>
+            <RadioGroup
+                defaultValue={analysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"}
+                onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
+                    handleBackgroundDataChange(value)
                 }
-                groupBy="group"
-            />
-            <Label>Weitere Daten verwenden:</Label>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="includeCasesWithLowGeneticDistance"
-                    checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
-                    onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
+            >
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
+                    <Label htmlFor="allBackgroundData" className="font-normal text-md">
+                        Alle Daten verwenden
+                    </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
+                    <Label htmlFor="specificBackgroundData" className="font-normal text-md">
+                        Daten auswählen
+                    </Label>
+                </div>
+            </RadioGroup>
+            {!analysisStore.settings.includeAllCases && (
+                <MultipleSelector
+                    options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
+                    value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                    onChange={(value) => handleMultipleSelectChange(value)}
+                    placeholder="Bitte auswählen"
+                    emptyIndicator={
+                        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                            Keine Gruppen gefunden
+                        </p>
+                    }
+                    groupBy="group"
                 />
-                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-[0.95rem] leading-5">
-                    Unter oder gleich dem genetischen Distanzschwellenwert
-                </Label>
-            </div>
-            {analysisStore.settings.includeCasesWithLowGeneticDistance && (
-                <>
-                    <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
-                    <Input
-                        type="number"
-                        min={0}
-                        id="geneticDistanceThreshold"
-                        value={analysisStore.settings.geneticDistanceThreshold}
-                        onChange={(e) => changeGeneticDistanceThreshold(+e.target.value)}
-                    />
-                </>
             )}
-            <DateRangePicker />
-
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="showBackground"
-                    checked={analysisStore.settings.showBackground}
-                    onCheckedChange={(value) => handleShowBackground(value)}
-                />
-                <Label htmlFor="showBackground" className="font-normal text-[0.95rem]">
-                    Background anzeigen
-                </Label>
-            </div>
         </div>
     );
 };
