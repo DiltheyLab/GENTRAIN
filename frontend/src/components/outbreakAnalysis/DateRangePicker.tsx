@@ -8,21 +8,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Label } from "../ui/label";
 import { useAnalysisStore } from "@/stores/analysis";
 import { Checkbox } from "../ui/checkbox";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const analysisStore = useAnalysisStore();
     const date = analysisStore.settings.dateRange;
 
-    // Add 7 days to the start and end date as default selected date range
-    const [modifiedDateRange, setModifiedDateRange] = useState<DateRange | undefined>({
-        from: date.from ? new Date(date.from.getTime() - 7 * 24 * 60 * 60 * 1000) : undefined,
-        to: date.to ? new Date(date.to.getTime() + 7 * 24 * 60 * 60 * 1000) : undefined,
-    });
-
     const handleDateChange = (start: Date | undefined, end: Date | undefined) => {
-        setModifiedDateRange({ from: start, to: end });
         analysisStore.updateSettings({ dateRange: { from: start, to: end } });
     };
 
@@ -46,18 +37,17 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         variant="outline"
                         className={cn(
                             "w-[300px] justify-start text-left font-normal",
-                            !modifiedDateRange && "text-muted-foreground"
+                            !date && "text-muted-foreground"
                         )}
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {modifiedDateRange?.from ? (
-                            modifiedDateRange.to ? (
+                        {date?.from ? (
+                            date.to ? (
                                 <>
-                                    {format(modifiedDateRange.from, "LLL dd, y")} -{" "}
-                                    {format(modifiedDateRange.to, "LLL dd, y")}
+                                    {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
                                 </>
                             ) : (
-                                format(modifiedDateRange.from, "LLL dd, y")
+                                format(date.from, "LLL dd, y")
                             )
                         ) : (
                             <span>Bitte auswählen</span>
@@ -69,7 +59,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         initialFocus
                         locale={de}
                         mode="range"
-                        defaultMonth={analysisStore.settings.datesOfCasesInSelectedOutbreak[0]}
+                        defaultMonth={date.from}
                         modifiers={{
                             outbreakRange: analysisStore.settings.datesOfCasesInSelectedOutbreak,
                         }}
@@ -77,7 +67,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                             outbreakRange:
                                 "relative after:absolute after:bottom-1.5 after:left-1/2 after:transform after:-translate-x-1/2 after:w-3/5 after:h-0.5 after:bg-red-500 after:content-['']",
                         }}
-                        selected={modifiedDateRange}
+                        selected={date}
                         onSelect={(dataRange) => handleDateChange(dataRange?.from, dataRange?.to)}
                         numberOfMonths={2}
                         footer={

@@ -147,17 +147,20 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
         includeCasesWithLowGeneticDistance,
     } = analysisSettings;
 
-    // filter out cases without a sample -> Maybe removed in the future
     let graphCases = [] as CaseWithRelationships[];
+
+    // save cases which are in the selected outbreak to use it in the filters
+    let casesInOutbreak = [] as CaseWithRelationships[];
 
     // get cases from outbreak
     if (selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+        casesInOutbreak = [...graphCases];
     }
 
     // use all cases without any filtering
     if (analysisSettings.includeAllCases) {
-        graphCases = cases;
+        graphCases = [...cases];
     }
 
     // use cases which are selected in the multiselect field
@@ -180,26 +183,29 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             selectedOutbreak,
             geneticDistanceThreshold
         );
-        const casesOfSelectedOutbreak = filterCasesByOutbreak(cases, selectedOutbreak);
-        graphCases = casesOfSelectedOutbreak.concat(casesWithLowGeneticDistance);
+        // add cases with low genetic distance to the cases in the outbreak
+        graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
     }
 
     // disable background cases by filtering outbreak cases
     if (ignoreBackground && selectedOutbreak) {
-        graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+        graphCases = [...casesInOutbreak];
     }
 
     // filter out cases which are not in the selected time range
     if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
-        graphCases = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
+        const casesFilteredByDateRange = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
+        // add cases in date range to the cases in the outbreak
+        graphCases = casesInOutbreak.concat(casesFilteredByDateRange);
     }
 
     // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
     graphCases = graphCases.filter((caseData) => caseData.sample);
 
-    // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
-    // group and in background (not outbreak). The cases is added twice to the graphCases array
-    // to prevent rendering the same case multiple times we filter out duplicates in the end
+    // the graphCases array contains duplicated cases. Example: A case is in a selected
+    // group and in background (not outbreak). The cases is added twice to the graphCases array.
+    // to prevent rendering the same case multiple times we filter out duplicates in the end instead of
+    // checking for duplicates in each filter step
     graphCases = deleteDuplicateCases(graphCases);
 
     return graphCases;

@@ -19,9 +19,18 @@ export const OutbreakSelection = () => {
         dateRange = dateRange?.sort((a, b) => a.getTime() - b.getTime());
         if (!dateRange || dateRange.length === 0) return;
 
+        const startDate = dateRange[0];
+        const endDate = dateRange[dateRange.length - 1];
+
+        // Add 7 days to the start and end date as default selected date range
+        const modifiedDateRange = {
+            from: new Date(startDate.getTime() - 7 * 24 * 60 * 60 * 1000),
+            to: new Date(endDate.getTime() + 7 * 24 * 60 * 60 * 1000),
+        };
+
         // set the initial date range for the date range filter
         analysisStore.updateSettings({
-            dateRange: { from: dateRange[0], to: dateRange[dateRange.length - 1] },
+            dateRange: modifiedDateRange,
         });
 
         // set the date range for the outbreak to color it in the date picker
