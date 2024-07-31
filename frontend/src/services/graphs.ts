@@ -34,7 +34,7 @@ export const getGroupToColor = (cases: CaseWithRelationships[], caseAttribute: k
             throw new Error("caseAttribute must be a string");
         }
         if (caseAttribute === "outbreak_id") {
-            if (group === "Background") {
+            if (group === "Keinem Ausbruch zugewiesen") {
                 groupToColor[group] = "#D3D2D2";
             } else {
                 groupToColor[group] = setNodeColor(index) || "#000";
@@ -56,7 +56,7 @@ const getUniqueGroupsByCaseMetaData = (cases: CaseWithRelationships[], caseAttri
                 return attribute?.toLocaleDateString();
             }
             if (caseAttribute === "outbreak_id") {
-                return caseData.outbreak ? caseData.outbreak.name : "Background";
+                return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
             }
             return caseData[caseAttribute];
         })
@@ -259,11 +259,11 @@ export const createGraphData = async (
 
     // create node objects for forced directed graph
     let nodes = graphCases.map((caseData) => {
-        const outbreakName = caseData?.outbreak?.name || "Background";
+        const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
         return {
             id: caseData.id,
             caseId: caseData.case_id,
-            group: caseData.outbreak ? caseData.outbreak.name : "Background",
+            group: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
