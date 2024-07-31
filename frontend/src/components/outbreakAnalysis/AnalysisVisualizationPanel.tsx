@@ -61,7 +61,7 @@ export const AnalysisVisualizationPanel = () => {
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
             {analyseStore.settings.selectedOutbreak && (
                 <>
-                    <Legend nodes={analyseStore.graphData.nodes} />
+                    <Legend nodes={analyseStore.graphData.nodes} isOutbreakSeparated />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}

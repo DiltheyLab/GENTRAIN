@@ -1,13 +1,13 @@
 import { useAnalysisStore } from "@/stores/analysis";
 import { CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
 
 type LegendProps = {
     nodes: CustomNode[];
+    isOutbreakSeparated?: boolean;
 };
 
-export const Legend = ({ nodes }: LegendProps) => {
+export const Legend = ({ nodes, isOutbreakSeparated = false }: LegendProps) => {
     const analyseStore = useAnalysisStore();
 
     const uniqueGroupsOfNodes = nodes
@@ -16,23 +16,25 @@ export const Legend = ({ nodes }: LegendProps) => {
         })
         .sort((a, b) => a.group.localeCompare(b.group));
 
+    const renderLegendItems = (nodes: CustomNode[]) => {
+        return nodes.map((node) => (
+            <div className="flex items-center gap-2" key={node.group}>
+                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                <p>{node.group}</p>
+            </div>
+        ));
+    };
+
     const renderBackgroundLegend = () => {
         const selectedOutbreak = analyseStore.settings.selectedOutbreak;
         const nodesFromBackground = uniqueGroupsOfNodes.filter((node) => node.group !== selectedOutbreak?.name);
 
         if (!selectedOutbreak || nodesFromBackground.length === 0) return;
 
-        const backgroundLegend = nodesFromBackground.map((node) => (
-            <div className="flex items-center gap-2" key={node.group}>
-                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
-                <p>{node.group}</p>
-            </div>
-        ));
-
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-sm font-medium">Ausgewählter Background</Label>
-                {backgroundLegend}
+                {renderLegendItems(nodesFromBackground)}
             </div>
         );
     };
@@ -44,12 +46,9 @@ export const Legend = ({ nodes }: LegendProps) => {
         if (!selectedOutbreak || !nodeFromSelectedOutbreak) return;
 
         return (
-            <div className="flex items-center gap-2">
-                <span
-                    style={{ backgroundColor: `${nodeFromSelectedOutbreak.color}` }}
-                    className={"rounded-full h-3 w-3"}
-                />
-                <p>{selectedOutbreak?.name}</p>
+            <div className="flex flex-col">
+                <Label className="-ml-1 px-1 text-sm font-medium">Ausgewählter Ausbruch</Label>
+                {renderLegendItems([nodeFromSelectedOutbreak])}
             </div>
         );
     };
@@ -59,13 +58,14 @@ export const Legend = ({ nodes }: LegendProps) => {
     return (
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted">
             <legend className="-ml-1 px-1 text-sm font-bold -mb-2">Legende</legend>
-            <div className="flex flex-col gap-2">
-                <div>
-                    <Label className="-ml-1 px-1 text-sm font-medium">Ausgewählter Ausbruch</Label>
-                    <div className="flex flex-col">{renderOutbreakLegend()}</div>
+            {isOutbreakSeparated ? (
+                <div className="flex flex-col gap-2">
+                    {renderOutbreakLegend()}
+                    {renderBackgroundLegend()}
                 </div>
-                <div>{renderBackgroundLegend()}</div>
-            </div>
+            ) : (
+                <div className="flex flex-col">{renderLegendItems(uniqueGroupsOfNodes)}</div>
+            )}
         </fieldset>
     );
 };
