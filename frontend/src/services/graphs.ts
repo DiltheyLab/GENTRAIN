@@ -137,7 +137,7 @@ const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: 
 const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
     const {
         selectedOutbreak,
-        ignoreBackground,
+        showBackground,
         selectedBackground,
         geneticDistanceThreshold,
         includeCasesWithLowGeneticDistance,
@@ -178,7 +178,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     }
 
     // disable background cases by filtering outbreak cases
-    if (ignoreBackground && selectedOutbreak) {
+    if (!showBackground && selectedOutbreak) {
         graphCases = [...casesInOutbreak];
     }
 

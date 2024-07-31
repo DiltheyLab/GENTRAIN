@@ -52,8 +52,8 @@ export const BackgroundSelection = () => {
         return filteredOptions;
     };
 
-    const handleIgnoreBackground = (value: boolean) => {
-        analysisStore.updateSettings({ ignoreBackground: value });
+    const handleShowBackground = (value: boolean) => {
+        analysisStore.updateSettings({ showBackground: value });
     };
 
     const handleMultipleSelectChange = (values: Option[]) => {
@@ -146,12 +146,12 @@ export const BackgroundSelection = () => {
 
             <div className="flex flex-row items-center gap-3">
                 <Switch
-                    id="ignoreBackground"
-                    checked={analysisStore.settings.ignoreBackground}
-                    onCheckedChange={(value) => handleIgnoreBackground(value)}
+                    id="showBackground"
+                    checked={analysisStore.settings.showBackground}
+                    onCheckedChange={(value) => handleShowBackground(value)}
                 />
-                <Label htmlFor="ignoreBackground" className="font-normal text-[0.95rem]">
-                    Alles ausblenden
+                <Label htmlFor="showBackground" className="font-normal text-[0.95rem]">
+                    Background anzeigen
                 </Label>
             </div>
         </div>

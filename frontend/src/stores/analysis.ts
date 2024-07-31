@@ -28,7 +28,7 @@ export type AnalysisSettings = {
     selectedOutbreak: OutbreakSchema | null;
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
-    ignoreBackground: boolean;
+    showBackground: boolean;
     includeCasesWithLowGeneticDistance: boolean;
     excludeCasesOutsideOfDateRange: boolean;
     dateRange: DateRange;
@@ -75,7 +75,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        ignoreBackground: false,
+        showBackground: true,
         includeCasesWithLowGeneticDistance: false,
         excludeCasesOutsideOfDateRange: false,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
