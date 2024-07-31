@@ -44,8 +44,13 @@ export const AnalysisVisualizationPanel = () => {
             return <Loader2 className="h-24 w-h-24 animate-spin" />;
         } else if (analyseStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
             return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
+        } else if (!analyseStore.settings.selectedOutbreak) {
+            return (
+                <div className="flex justify-center items-center h-full w-full">
+                    Wählen sie einen Ausbruch aus, um mit der Analyse zu starten.
+                </div>
+            );
         }
-
         return (
             <Graph2D
                 data={analyseStore.graphData}

@@ -97,13 +97,13 @@ export const BackgroundSelection = () => {
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
                     <Label htmlFor="allBackgroundData" className="font-normal text-md">
-                        Alle Daten verwenden
+                        Alle Fälle verwenden
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
                     <Label htmlFor="specificBackgroundData" className="font-normal text-md">
-                        Daten auswählen
+                        Fälle auswählen
                     </Label>
                 </div>
             </RadioGroup>
