@@ -6,7 +6,7 @@ import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Legend } from "../outbreakAnalysis/Legend";
 import { Loader2 } from "lucide-react";
 import { GraphData } from "@/types/graph";
@@ -23,7 +23,7 @@ export const DashboardVisualizationPanel = () => {
     const dashboardGraphStore = useDashboardGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
-    const cases = useGetAllCasesWithRelationships();
+    const cases = useGetAllCasesForActivePathogenWithRelationships();
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases) {

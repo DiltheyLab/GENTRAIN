@@ -1,4 +1,4 @@
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { useGetAllOutbreaks } from "@/hooks/database/outbreaks/useGetAllOutbreaks";
@@ -8,7 +8,7 @@ import { OutbreakSchema } from "@/database/outbreak";
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
     const outbreaks = useGetAllOutbreaks();
-    const caseWithRelationships = useGetAllCasesWithRelationships();
+    const caseWithRelationships = useGetAllCasesForActivePathogenWithRelationships();
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
         const casesInOutbreak = caseWithRelationships?.filter((caseWithRelationship) => {

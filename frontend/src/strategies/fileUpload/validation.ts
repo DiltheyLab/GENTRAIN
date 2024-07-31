@@ -1,6 +1,7 @@
-import { CaseSchema, getAllCasesWithRelationships } from "@/database/cases";
+import { CaseSchema, getAllCasesForPathogenWithRelationships } from "@/database/cases";
 import { db } from "@/database/db";
 import { GentrainException } from "@/exceptions/GentrainException";
+import { useAppStore } from "@/stores/app";
 import { useSampleUploadStore } from "@/stores/upload";
 
 const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
@@ -44,9 +45,12 @@ const removeDuplicates = (array: string[]) => {
 
 const getAlreadyExistingCases = async (data: Array<Array<string>>) => {
     let existingCases = [];
-
+    const activePathogen = await useAppStore.getState().activePathogen;
+    if (!activePathogen) {
+        return;
+    }
     for (const row of data) {
-        const caseCount = await db.cases.where({ case_id: row[0] }).count();
+        const caseCount = await db.cases.where("[case_id+pathogen_id]").equals([row[0], activePathogen.id]).count();
         if (caseCount > 0) {
             existingCases.push(row[0]);
         }
@@ -63,6 +67,10 @@ export const validationStrategies = {
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
         const existingCases = await getAlreadyExistingCases(caseData.slice(1, caseData.length));
+        // existingCases is undefined if no pathogen is active
+        if (!existingCases) {
+            throw new GentrainException("InvalidPathogenSelection");
+        }
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
@@ -73,10 +81,16 @@ export const validationStrategies = {
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
+        const activePathogen = await useAppStore.getState().activePathogen;
 
+        if (!activePathogen) {
+            throw new GentrainException("InvalidPathogenSelection");
+        }
         for (const sample of sampleData) {
-            // found case (only import if case exists)
-            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
+            // only import if case for the pathogen and a samples with the same fasta id does not already exist
+            const sampleCase = await db.cases
+                .where({ fasta_id: sample.fastaId, pathogen_id: activePathogen.id })
+                .first();
             const existingSample = await db.samples.where({ fasta_id: sample.fastaId }).first();
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
@@ -104,7 +118,11 @@ export const validationStrategies = {
         };
     },
     contactsStrategy: async (contactData: string[][]) => {
-        const allCases = await getAllCasesWithRelationships();
+        const activePathogen = await useAppStore.getState().activePathogen;
+        if (!activePathogen) {
+            throw new GentrainException("InvalidPathogenSelection");
+        }
+        const allCases = await getAllCasesForPathogenWithRelationships(activePathogen.id);
         const header = contactData[0];
         const existingContacts = [] as string[];
         const missingCasesInDB = [] as string[];

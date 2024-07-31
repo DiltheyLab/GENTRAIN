@@ -1,9 +1,8 @@
 import { Layout } from "@/components/layout/Layout";
 import { UploadDataTable } from "@/components/tables/UploadDataTable";
-
 import { Separator } from "@/components/ui/separator";
 import { UploadSection } from "@/components/dataUpload/UploadSection";
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/app";
 import { deleteDataForPathogen } from "@/database/db";
@@ -12,9 +11,9 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DeleteDialog } from "@/components/ui/deleteDialog";
 
 export function DataUpload() {
-    const casesData = useGetAllCasesWithRelationships();
     const { activePathogen } = useAppStore();
     const [isDeleting, setIsDeleting] = useState(false);
+    const casesData = useGetAllCasesForActivePathogenWithRelationships();
 
     const deleteData = async () => {
         if (activePathogen) {
