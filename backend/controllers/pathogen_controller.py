@@ -6,11 +6,10 @@ from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
-from backend.controllers.requests.models.sequence_variants import (
+from backend.controllers.models.errors import ErrorResponseModel
+from backend.controllers.models.sequence_variants import (
     SequenceVariantsRequestBodyModel,
 )
-from backend.controllers.requests.models.errors import ErrorResponseModel
-
 
 # user controller blueprint to be registered with api blueprint
 pathogens = Blueprint("pathogens", __name__)

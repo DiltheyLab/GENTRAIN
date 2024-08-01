@@ -96,35 +96,35 @@
         "documentation": {}
     },
     {
-        "label": "SequenceVariantsRequestBodyModel",
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "label": "ErrorResponseModel",
+        "importPath": "backend.controllers.models.errors",
+        "description": "backend.controllers.models.errors",
         "isExtraImport": true,
-        "detail": "backend.controllers.requests.models.sequence_variants",
+        "detail": "backend.controllers.models.errors",
+        "documentation": {}
+    },
+    {
+        "label": "SequenceVariantsRequestBodyModel",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
+        "isExtraImport": true,
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
         "label": "BacterialSequenceVariantsResponseModel",
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
         "isExtraImport": true,
-        "detail": "backend.controllers.requests.models.sequence_variants",
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
         "label": "ViralSequenceVariantsResponseModel",
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
         "isExtraImport": true,
-        "detail": "backend.controllers.requests.models.sequence_variants",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorResponseModel",
-        "importPath": "backend.controllers.requests.models.errors",
-        "description": "backend.controllers.requests.models.errors",
-        "isExtraImport": true,
-        "detail": "backend.controllers.requests.models.errors",
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
@@ -281,37 +281,37 @@
     {
         "label": "ErrorResponseModel",
         "kind": 6,
-        "importPath": "backend.controllers.requests.models.errors",
-        "description": "backend.controllers.requests.models.errors",
+        "importPath": "backend.controllers.models.errors",
+        "description": "backend.controllers.models.errors",
         "peekOfCode": "class ErrorResponseModel(BaseModel):\n    \"\"\"Response model for error cases.\"\"\"\n    message: str\n    context: list = None",
-        "detail": "backend.controllers.requests.models.errors",
+        "detail": "backend.controllers.models.errors",
         "documentation": {}
     },
     {
         "label": "SequenceVariantsRequestBodyModel",
         "kind": 6,
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
         "peekOfCode": "class SequenceVariantsRequestBodyModel(BaseModel):\n    sequence: str\nclass ViralSequenceVariantsResponseModel(BaseModel):\n    lineage: str\n    n_count: int\n    substitutions: list[object]\n    deletions: list[object]\n    insertions: list[object]\n    missing: list[object]\n    nonACGTNs: list[object]",
-        "detail": "backend.controllers.requests.models.sequence_variants",
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
         "label": "ViralSequenceVariantsResponseModel",
         "kind": 6,
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
         "peekOfCode": "class ViralSequenceVariantsResponseModel(BaseModel):\n    lineage: str\n    n_count: int\n    substitutions: list[object]\n    deletions: list[object]\n    insertions: list[object]\n    missing: list[object]\n    nonACGTNs: list[object]\n    alignmentStart: int\n    alignmentEnd: int",
-        "detail": "backend.controllers.requests.models.sequence_variants",
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
         "label": "BacterialSequenceVariantsResponseModel",
         "kind": 6,
-        "importPath": "backend.controllers.requests.models.sequence_variants",
-        "description": "backend.controllers.requests.models.sequence_variants",
+        "importPath": "backend.controllers.models.sequence_variants",
+        "description": "backend.controllers.models.sequence_variants",
         "peekOfCode": "class BacterialSequenceVariantsResponseModel(BaseModel):\n    alleles: list[object]",
-        "detail": "backend.controllers.requests.models.sequence_variants",
+        "detail": "backend.controllers.models.sequence_variants",
         "documentation": {}
     },
     {
@@ -355,7 +355,7 @@
         "kind": 6,
         "importPath": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "description": "backend.strategies.sample_analysis.bacterial_sample_analysis",
-        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for viral analysises.\"\"\"\n        return BacterialSequenceVariantsResponseModel(alleles=[])",
+        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for bacterial analysises.\"\"\"\n        return BacterialSequenceVariantsResponseModel(alleles=[])",
         "detail": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "documentation": {}
     },

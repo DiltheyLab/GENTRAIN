@@ -1,7 +1,7 @@
 from backend.strategies.sample_analysis.sample_analysis_strategy import (
     SampleAnalysisStrategy,
 )
-from backend.controllers.requests.models.sequence_variants import (
+from backend.controllers.models.sequence_variants import (
     ViralSequenceVariantsResponseModel,
 )
 
