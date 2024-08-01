@@ -6,7 +6,7 @@ import { addWeeks } from "date-fns";
 
 const defaultGraphSettings: GraphSettings = {
     graphDimension: "2D",
-    hideNodeLabel: false,
+    showNodeLabel: true,
     nodeSize: 6,
     linkWidth: 3,
     zoomToFit: false,

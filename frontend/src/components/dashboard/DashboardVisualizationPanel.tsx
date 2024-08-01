@@ -57,7 +57,7 @@ export const DashboardVisualizationPanel = () => {
             return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
         }
 
-        const { graphDimension, charge, hideNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
+        const { graphDimension, charge, showNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
             dashboardGraphStore.graphSettings;
         if (graphDimension === "2D" && width && height) {
             return (
@@ -68,7 +68,7 @@ export const DashboardVisualizationPanel = () => {
                     charge={charge}
                     linkDistance={linkDistance}
                     nodeSize={nodeSize}
-                    hideNodeLabel={hideNodeLabel}
+                    showNodeLabel={showNodeLabel}
                     linkWidth={linkWidth}
                     zoomToFit={zoomToFit}
                 />

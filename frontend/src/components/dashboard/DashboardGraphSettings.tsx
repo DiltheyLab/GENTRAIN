@@ -39,7 +39,7 @@ export const DashboardGraphSettings = () => {
     };
 
     const changeNodeStyle = (checked: boolean) => {
-        dashboardGraphStore.updateGraphSettings({ hideNodeLabel: checked });
+        dashboardGraphStore.updateGraphSettings({ showNodeLabel: checked });
     };
 
     /*  const changeFilter = (filter: Filter) => {
@@ -161,7 +161,7 @@ export const DashboardGraphSettings = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="nodeDescription"
-                            checked={dashboardGraphStore.graphSettings.hideNodeLabel}
+                            checked={dashboardGraphStore.graphSettings.showNodeLabel}
                             onCheckedChange={(value) => changeNodeStyle(Boolean(value))}
                         />
                         <label

@@ -40,7 +40,7 @@ export type AnalysisSettings = {
 };
 
 export type GraphSettings = {
-    hideNodeLabel: boolean;
+    showNodeLabel: boolean;
     linkDistance: number;
     graphDimension?: "2D" | "3D";
     nodeSize?: number;
@@ -64,7 +64,7 @@ export interface AnalysisStore {
 }
 
 export const defaultGraphSettings: GraphSettings = {
-    hideNodeLabel: false,
+    showNodeLabel: true,
     linkDistance: 50,
 };
 
@@ -80,7 +80,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         excludeCasesOutsideOfDateRange: false,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: relationshipThreshold ?? 0,
-        showContactTracingEdges: true,
+        showContactTracingEdges: false,
         hideEdgesAboveThreshold: false,
         groupColorations: [],
         category: null,
