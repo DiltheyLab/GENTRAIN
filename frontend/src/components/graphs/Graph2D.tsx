@@ -11,7 +11,7 @@ type Graph2DProps = {
     zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
-    hideNodeLabel?: boolean;
+    showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
 };
@@ -20,13 +20,13 @@ export const Graph2D = ({
     data,
     width,
     height,
-    linkDistance = 50,
+    linkDistance = 70,
     charge = -80,
     zoomToFit = false,
     nodeSize = 6,
     linkWidth = 3,
-    hideNodeLabel = false,
-    labelTransparency = 0.3,
+    showNodeLabel = false,
+    labelTransparency = 1,
     coolDownTicks = 120,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
@@ -55,7 +55,7 @@ export const Graph2D = ({
         ctx.fill();
 
         // Draw the label if setting is not hidden
-        if (hideNodeLabel) return;
+        if (!showNodeLabel) return;
 
         // Draw the label above the circle
         const label = `${node["caseId"]}`;
@@ -88,9 +88,17 @@ export const Graph2D = ({
         ctx.beginPath();
         ctx.moveTo(source.x, source.y);
 
+        // Set line style based on link type
+        if (link.type === "Dashed") {
+            ctx.setLineDash([3, 3]); // Set dashed line pattern
+            ctx.strokeStyle = "#FF0000"; // Line color
+        } else {
+            ctx.setLineDash([]); // Solid line
+            ctx.strokeStyle = "#CCC"; // Line color
+        }
+
         // End line
         ctx.lineTo(target.x, target.y);
-        ctx.strokeStyle = "#CCC"; // Line color
         ctx.lineWidth = linkWidth;
         ctx.stroke();
 
@@ -118,7 +126,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `${node["caseId"]}`}
+            nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
             nodeRelSize={nodeSize}
             width={width}
             height={height}
