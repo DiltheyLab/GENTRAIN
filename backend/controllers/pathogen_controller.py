@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_pydantic import validate
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
@@ -9,13 +9,7 @@ from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 from backend.controllers.requests.models.sequence_variants import (
     SequenceVariantsRequestBodyModel,
 )
-
-
-class ErrorResponseModel(BaseModel):
-    """Response model for error cases."""
-
-    message: str
-    context: list = None
+from backend.controllers.requests.models.errors import ErrorResponseModel
 
 
 # user controller blueprint to be registered with api blueprint

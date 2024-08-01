@@ -120,6 +120,14 @@
         "documentation": {}
     },
     {
+        "label": "ErrorResponseModel",
+        "importPath": "backend.controllers.requests.models.errors",
+        "description": "backend.controllers.requests.models.errors",
+        "isExtraImport": true,
+        "detail": "backend.controllers.requests.models.errors",
+        "documentation": {}
+    },
+    {
         "label": "SampleAnalysisStrategy",
         "importPath": "backend.strategies.sample_analysis.sample_analysis_strategy",
         "description": "backend.strategies.sample_analysis.sample_analysis_strategy",
@@ -271,11 +279,20 @@
         "documentation": {}
     },
     {
+        "label": "ErrorResponseModel",
+        "kind": 6,
+        "importPath": "backend.controllers.requests.models.errors",
+        "description": "backend.controllers.requests.models.errors",
+        "peekOfCode": "class ErrorResponseModel(BaseModel):\n    \"\"\"Response model for error cases.\"\"\"\n    message: str\n    context: list = None",
+        "detail": "backend.controllers.requests.models.errors",
+        "documentation": {}
+    },
+    {
         "label": "SequenceVariantsRequestBodyModel",
         "kind": 6,
         "importPath": "backend.controllers.requests.models.sequence_variants",
         "description": "backend.controllers.requests.models.sequence_variants",
-        "peekOfCode": "class SequenceVariantsRequestBodyModel(BaseModel):\n    sequence: str\n# response model\nclass ViralSequenceVariantsResponseModel(BaseModel):\n    lineage: str\n    n_count: int\n    substitutions: list[object]\n    deletions: list[object]\n    insertions: list[object]\n    missing: list[object]",
+        "peekOfCode": "class SequenceVariantsRequestBodyModel(BaseModel):\n    sequence: str\nclass ViralSequenceVariantsResponseModel(BaseModel):\n    lineage: str\n    n_count: int\n    substitutions: list[object]\n    deletions: list[object]\n    insertions: list[object]\n    missing: list[object]\n    nonACGTNs: list[object]",
         "detail": "backend.controllers.requests.models.sequence_variants",
         "documentation": {}
     },
@@ -295,15 +312,6 @@
         "description": "backend.controllers.requests.models.sequence_variants",
         "peekOfCode": "class BacterialSequenceVariantsResponseModel(BaseModel):\n    alleles: list[object]",
         "detail": "backend.controllers.requests.models.sequence_variants",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorResponseModel",
-        "kind": 6,
-        "importPath": "backend.controllers.pathogen_controller",
-        "description": "backend.controllers.pathogen_controller",
-        "peekOfCode": "class ErrorResponseModel(BaseModel):\n    \"\"\"Response model for error cases.\"\"\"\n    message: str\n    context: list = None\n# user controller blueprint to be registered with api blueprint\npathogens = Blueprint(\"pathogens\", __name__)\n@pathogens.route(\"/<pathogen_id>/sequences/<fasta_id>/variants\", methods=[\"POST\"])\n@validate()\ndef get_sequence_variants(\n    body: SequenceVariantsRequestBodyModel, pathogen_id: str, fasta_id: str",
-        "detail": "backend.controllers.pathogen_controller",
         "documentation": {}
     },
     {

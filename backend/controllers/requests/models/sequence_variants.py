@@ -1,12 +1,11 @@
 from pydantic import BaseModel
 
 
-# request model
+# sequence variants action models
 class SequenceVariantsRequestBodyModel(BaseModel):
     sequence: str
 
 
-# response model
 class ViralSequenceVariantsResponseModel(BaseModel):
     lineage: str
     n_count: int
