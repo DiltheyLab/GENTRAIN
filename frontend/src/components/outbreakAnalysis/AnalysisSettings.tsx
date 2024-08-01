@@ -7,6 +7,7 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./BackgroundSelection";
 import { BackgroundFilter } from "./BackgroundFilter";
+import { ContactTracing } from "./ContactTracing";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -39,6 +40,7 @@ export const AnalysisSettings = () => {
                             <>
                                 <BackgroundSelection />
                                 <BackgroundFilter />
+                                <ContactTracing />
                                 <Button type="button" onClick={() => safeAnalysis()}>
                                     Analyse speichern
                                 </Button>
