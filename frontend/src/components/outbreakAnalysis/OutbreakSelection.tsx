@@ -6,6 +6,7 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
+import { StepIndicator } from "../ui/step-indicator";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
@@ -75,7 +76,9 @@ export const OutbreakSelection = () => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center">
-                <Label className="font-bold text-lg mr-3">1. Aubruch auswählen</Label>
+                <Label className="flex items-center font-bold text-md mr-3">
+                    <StepIndicator>1</StepIndicator> Aubruch auswählen
+                </Label>
                 <CustomTooltip
                     trigger={<Info className="h-5 w-5 cursor-pointer" />}
                     content={<p>Wählen Sie für die Analyse eines Ausbruchs den enstprechenden Datensatz aus. </p>}

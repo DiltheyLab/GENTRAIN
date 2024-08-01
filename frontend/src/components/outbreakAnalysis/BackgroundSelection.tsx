@@ -4,9 +4,9 @@ import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Button } from "../ui/button";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
+import { StepIndicator } from "../ui/step-indicator";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -91,7 +91,9 @@ export const BackgroundSelection = () => {
     return (
         <div className="flex flex-col gap-4 mt-2">
             <div className="flex items-center">
-                <Label className="font-bold text-lg mr-3">2. Background auswählen</Label>
+                <Label className="flex items-center font-bold text-md mr-3">
+                    <StepIndicator>2</StepIndicator> Background auswählen
+                </Label>
                 <CustomTooltip
                     trigger={<Info className="h-5 w-5 cursor-pointer" />}
                     content={

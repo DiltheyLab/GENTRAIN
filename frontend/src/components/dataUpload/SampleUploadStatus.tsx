@@ -4,6 +4,7 @@ import { Check, CircleAlert, X } from "lucide-react";
 import { DistanceCalculationProgress } from "./DistanceCalculationProgress";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { SampleInfoCard } from "./SampleInfoCard";
+import { StepIndicator } from "../ui/step-indicator";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
@@ -23,9 +24,7 @@ export function SampleUploadStatus() {
     return (
         <div className="bg-muted p-6">
             <div className="mb-2 flex items-center text-sm">
-                <div className="flex items-center justify-center bg-slate-900 w-[18px] h-[18px] rounded-full mr-2 font-bold text-white">
-                    1
-                </div>
+                <StepIndicator>1</StepIndicator>
                 Sequenzanalyse
             </div>
             <div className="mb-6 w-full flex flex-wrap gap-2">
@@ -85,9 +84,7 @@ export function SampleUploadStatus() {
                     ))}
             </div>
             <div className="mb-2 flex items-center text-sm">
-                <div className="flex items-center justify-center bg-slate-900 w-[18px] h-[18px] rounded-full mr-2 font-bold text-white">
-                    2
-                </div>
+                <StepIndicator>2</StepIndicator>
                 Distanzberechnung
             </div>
             <DistanceCalculationProgress />
