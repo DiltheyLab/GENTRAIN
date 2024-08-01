@@ -39,3 +39,7 @@ export const getGroupsForPathogenId = async (pathogenId: number) => {
     const groups = await db.groups.where({ pathogen_id: pathogenId }).toArray();
     return groups.sort((a, b) => a.name.localeCompare(b.name));
 };
+
+export const deleteGroupsByPathogenId = async (pathogen_id: number) => {
+    await db.groups.where({ pathogen_id: pathogen_id }).delete();
+};

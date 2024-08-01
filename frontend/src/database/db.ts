@@ -6,12 +6,12 @@ import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "./distanc
 import { DistancesSchema } from "./distances";
 import { CaseSchema } from "./cases";
 import { ContactSchema } from "./contacts";
-import { GroupSchema } from "./groups";
+import { deleteGroupsByPathogenId, GroupSchema } from "./groups";
 import { Pathogens, PathogenSchema } from "./pathogens";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
-import { CategorySchema } from "./categories";
-import { AnalysisSchema } from "./analyses";
-import { OutbreakSchema } from "./outbreak";
+import { CategorySchema, deleteCategoriesByPathogenId } from "./categories";
+import { AnalysisSchema, deleteAnalysesByPathogenId } from "./analyses";
+import { deleteOutbreaksByPathogenId, OutbreakSchema } from "./outbreaks";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -37,13 +37,13 @@ db.version(1).stores({
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at",
-    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at",
+    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at",
     pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, pathogen_id, created_at, updated_at",
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
-    outbreaks: "++id, name, pathogen_id, created_at, updated_at",
+    outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
 });
 
 db.on("populate", async () => {
@@ -98,7 +98,18 @@ const exportDatabaseToJson = async () => {
 const deleteDataForPathogen = async (pathogen_id: number) => {
     await db.transaction(
         "rw",
-        [db.cases, db.samples, db.contacts, db.cases, db.distances, db.distance_matrices],
+        [
+            db.cases,
+            db.samples,
+            db.contacts,
+            db.cases,
+            db.distances,
+            db.distance_matrices,
+            db.outbreaks,
+            db.categories,
+            db.groups,
+            db.analyses,
+        ],
         async () => {
             const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
             const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
@@ -116,6 +127,11 @@ const deleteDataForPathogen = async (pathogen_id: number) => {
                 deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
                 deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
             }
+            deletions.push(deleteOutbreaksByPathogenId(pathogen_id));
+            deletions.push(deleteCategoriesByPathogenId(pathogen_id));
+            deletions.push(deleteGroupsByPathogenId(pathogen_id));
+            deletions.push(deleteAnalysesByPathogenId(pathogen_id));
+
             await Promise.all(deletions);
         }
     );

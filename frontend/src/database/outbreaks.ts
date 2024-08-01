@@ -21,3 +21,7 @@ export const getOutbreaksForPathogenId = async (pathogenId: number) => {
         .then((outbreaks) => outbreaks.sort((a, b) => a.name.localeCompare(b.name)));
     return outbreaksForPathogen;
 };
+
+export const deleteOutbreaksByPathogenId = async (pathogen_id: number) => {
+    await db.outbreaks.where({ pathogen_id: pathogen_id }).delete();
+};

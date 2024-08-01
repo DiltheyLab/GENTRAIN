@@ -1,5 +1,5 @@
 import { db } from "@/database/db";
-import { outbreakRules, OutbreakSchema } from "@/database/outbreak";
+import { outbreakRules, OutbreakSchema } from "@/database/outbreaks";
 
 const createOutbreak = async (name: string, pathogenId: number) => {
     const data = {
@@ -24,7 +24,8 @@ export const getOrPersistOutbreak = async (outbreakName: string, pathogenId: num
         return;
     }
     const existingOutbreakForNameAndPathogen = await db.outbreaks
-        .where({ name: outbreakName, pathogen_id: pathogenId })
+        .where("[name+pathogen_id]")
+        .equals([outbreakName, pathogenId])
         .first();
     const outbreakId = existingOutbreakForNameAndPathogen
         ? existingOutbreakForNameAndPathogen.id

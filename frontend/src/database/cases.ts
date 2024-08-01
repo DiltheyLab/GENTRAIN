@@ -2,10 +2,10 @@ import { z } from "zod";
 import { db } from "./db";
 import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
-import { OutbreakSchema } from "./outbreak";
+import { OutbreakSchema } from "./outbreaks";
 import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
 import { useAppStore } from "@/stores/app";
-import { getOrCreateDistanceMatrixByPathogenId } from "./distance_matrices";
+import { deleteDistanceMatrixByPathogenId, getOrCreateDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
 
 export interface CaseSchema {

@@ -29,3 +29,7 @@ export const getAllCategoriesWithGroups = async () => {
     }
     return categoriesWithGroups;
 };
+
+export const deleteCategoriesByPathogenId = async (pathogen_id: number) => {
+    await db.categories.where({ pathogen_id: pathogen_id }).delete();
+};

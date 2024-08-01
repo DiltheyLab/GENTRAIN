@@ -33,7 +33,8 @@ const findMissingCasesInDB = (caseId: string, cases: CaseSchema[]) => {
 
 export const findExistingContactInDB = async (row: string[]) => {
     const existingContact = await db.contacts
-        .where({ case_id_1: row[0], case_id_2: row[1], type: row[2], context: row[3] })
+        .where("[case_id_1+case_id_2+type+context]")
+        .equals([row[0], row[1], row[2], row[3]])
         .first();
     return existingContact;
 };

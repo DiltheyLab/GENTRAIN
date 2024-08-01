@@ -1,4 +1,4 @@
-import { getOutbreaksForPathogenId } from "@/database/outbreak";
+import { getOutbreaksForPathogenId } from "@/database/outbreaks";
 import { useAppStore } from "@/stores/app";
 import { useLiveQuery } from "dexie-react-hooks";
 

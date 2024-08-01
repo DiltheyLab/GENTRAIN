@@ -2,7 +2,7 @@ import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAl
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { useAnalysisStore } from "@/stores/analysis";
-import { OutbreakSchema } from "@/database/outbreak";
+import { OutbreakSchema } from "@/database/outbreaks";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
 import { useGetGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
