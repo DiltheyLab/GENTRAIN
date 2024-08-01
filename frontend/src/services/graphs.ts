@@ -2,10 +2,10 @@ import { CaseSchema, CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { Graph, Edge } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
-import { OutbreakSchema } from "@/database/outbreak";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
 import { CustomNode, CustomLink, GraphData } from "@/types/graph";
+import { OutbreakSchema } from "@/database/outbreaks";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation

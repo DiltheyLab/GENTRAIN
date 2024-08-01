@@ -1,12 +1,11 @@
 import { create } from "zustand";
-import { OutbreakSchema } from "@/database/outbreak";
-import { GroupSchema } from "@/database/groups";
+import { GroupSchema, GroupWithCategory } from "@/database/groups";
 import { CategorySchema } from "@/database/categories";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
-import { GroupWithCategory } from "@/hooks/database/groups/useGetAllGroups";
+import { OutbreakSchema } from "@/database/outbreaks";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
