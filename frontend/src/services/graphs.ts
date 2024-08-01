@@ -155,7 +155,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     }
 
     // use all cases without any filtering
-    if (analysisSettings.includeAllCases && selectedOutbreak) {
+    if (analysisSettings.includeAllCases) {
         graphCases = [...cases];
     }
 
