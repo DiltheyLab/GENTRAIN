@@ -46,8 +46,8 @@ export const AnalysisGraphSettings = ({ showGraphSettings, updateShowGraphSettin
                     <Switch
                         id="nodeLabel"
                         isSmall={true}
-                        checked={analyseStore.graphSettings.hideNodeLabel}
-                        onCheckedChange={(value) => analyseStore.updateGraphSettings({ hideNodeLabel: value })}
+                        checked={analyseStore.graphSettings.showNodeLabel}
+                        onCheckedChange={(value) => analyseStore.updateGraphSettings({ showNodeLabel: value })}
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
