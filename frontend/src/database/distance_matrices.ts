@@ -19,7 +19,7 @@ export const getDistanceMatrixByPathogenId = async (
     return distanceMatrixForActivePathogen;
 };
 
-export const getOrCreateDistanceMatrixIdByPathogenId = async (pathogen_id: number): Promise<number | undefined> => {
+export const getOrCreateDistanceMatrixIdByPathogenId = async (pathogen_id: number): Promise<number> => {
     const distanceMatrixForActivePathogen = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
     if (distanceMatrixForActivePathogen) {
         return distanceMatrixForActivePathogen.id;

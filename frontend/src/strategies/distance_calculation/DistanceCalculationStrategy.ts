@@ -8,6 +8,7 @@ import { useAppStore } from "@/stores/app";
 import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
 import Aioli from "@biowasm/aioli";
 import { deleteDistancesByPathogenId } from "@/database/distances";
+import { db } from "@/database/db";
 
 export abstract class DistanceCalculationStrategy {
     protected sampleUploadState: SampleUploadState;
@@ -28,8 +29,6 @@ export abstract class DistanceCalculationStrategy {
         this.initProgress();
         await this.calculateSampleDistances();
     };
-
-    abstract calculateSampleDistances(): void;
 
     init = async () => {
         this.cli = await this.getCli();
@@ -64,4 +63,29 @@ export abstract class DistanceCalculationStrategy {
         const sampleAmount = Object.keys(this.samples).length - 1;
         this.sampleUploadState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
+
+    calculateSampleDistances = async () => {
+        if (!this.distanceMatrixId) {
+            return;
+        }
+        for (const index in this.samples) {
+            const sample1 = this.samples[index];
+            // we only calculate distances between current sample and previously iterated samples to minimize calculation count
+            // as limit we use the index of the current sample incremented by 1 since slice excludes the end index
+            const previousSamples = this.samples.slice(0, parseInt(index));
+            for (const sample2 of previousSamples) {
+                const distance = await this.calculateSampleDistance(sample1, sample2);
+
+                await db.distances.add({
+                    sample_id_1: sample1.id,
+                    sample_id_2: sample2.id,
+                    value: distance,
+                    distance_matrix_id: this.distanceMatrixId,
+                });
+                useSampleUploadStore.getState().incrementDistanceCalculationCount();
+            }
+        }
+    };
+
+    abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 }
