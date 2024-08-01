@@ -2,9 +2,7 @@ import { getCasesForPathogenWithSample } from "@/database/cases";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "@/database/distance_matrices";
 import { PathogenSchema } from "@/database/pathogens";
 import { SampleSchema } from "@/database/samples";
-import { GentrainException } from "@/exceptions/GentrainException";
 import { extractSamplesFromCases } from "@/services/samples";
-import { useAppStore } from "@/stores/app";
 import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
 import Aioli from "@biowasm/aioli";
 import { deleteDistancesByPathogenId } from "@/database/distances";
@@ -17,9 +15,9 @@ export abstract class DistanceCalculationStrategy {
     protected distanceMatrixId: number | undefined;
     protected samples: SampleSchema[];
 
-    constructor() {
+    constructor(pathogen: PathogenSchema) {
         this.sampleUploadState = useSampleUploadStore.getState();
-        this.pathogen = this.getPathogen();
+        this.pathogen = pathogen;
         this.samples = [];
     }
 
@@ -39,14 +37,6 @@ export abstract class DistanceCalculationStrategy {
     getCli = async () => {
         const cli = await new Aioli(["kalign/3.3.1"]);
         return cli;
-    };
-
-    getPathogen = () => {
-        const activePathogen = useAppStore.getState().activePathogen;
-        if (!activePathogen) {
-            throw new GentrainException("InvalidPathogenSelection");
-        }
-        return activePathogen;
     };
 
     getSamples = async () => {

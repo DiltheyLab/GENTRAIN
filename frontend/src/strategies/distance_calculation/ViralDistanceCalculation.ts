@@ -1,35 +1,8 @@
 import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/database/samples";
-import { useSampleUploadStore } from "@/stores/upload";
-import { db } from "@/database/db";
-import { DistancesSchema } from "@/database/distances";
 import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
-    constructor() {
-        super();
-    }
-
-    calculateSampleDistances = async () => {
-        for (const index in this.samples) {
-            const sample1 = this.samples[index];
-            // we only calculate distances between current sample and previously iterated samples to minimize calculation count
-            // as limit we use the index of the current sample incremented by 1 since slice excludes the end index
-            const previousSamples = this.samples.slice(0, parseInt(index));
-            for (const sample2 of previousSamples) {
-                const distance = await this.calculateSampleDistance(sample1, sample2);
-
-                await db.distances.add({
-                    sample_id_1: sample1.id,
-                    sample_id_2: sample2.id,
-                    value: distance,
-                    distance_matrix_id: this.distanceMatrixId,
-                } as DistancesSchema);
-                useSampleUploadStore.getState().incrementDistanceCalculationCount();
-            }
-        }
-    };
-
     calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
         // create pseudoalignment
         let alignment = await this.alignSamples(sample1, sample2);
