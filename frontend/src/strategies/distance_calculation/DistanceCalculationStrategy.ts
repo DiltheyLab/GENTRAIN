@@ -15,6 +15,8 @@ export abstract class DistanceCalculationStrategy {
     protected distanceMatrixId: number | undefined;
     protected samples: SampleSchema[];
 
+    abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
+
     constructor(pathogen: PathogenSchema) {
         this.sampleUploadState = useSampleUploadStore.getState();
         this.pathogen = pathogen;
@@ -76,6 +78,4 @@ export abstract class DistanceCalculationStrategy {
             }
         }
     };
-
-    abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 }

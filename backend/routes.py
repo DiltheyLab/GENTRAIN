@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.pathogen_controller import pathogens
+from backend.controllers.pathogen_controller import pathogens
 
 # main blueprint to be registered with application
 api = Blueprint("api", __name__)

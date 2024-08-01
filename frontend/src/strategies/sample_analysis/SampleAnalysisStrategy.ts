@@ -6,6 +6,7 @@ export abstract class SampleAnalysisStrategy {
     protected sampleUploadState: SampleUploadState;
     protected pathogen: PathogenSchema;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
+
     abstract createSample(fastaId: string, sequence: string, variantsResult: object): void;
 
     constructor(pathogen: PathogenSchema) {

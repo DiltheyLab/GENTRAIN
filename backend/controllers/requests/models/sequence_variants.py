@@ -7,7 +7,7 @@ class SequenceVariantsRequestBodyModel(BaseModel):
 
 
 # response model
-class SequenceVariantsResponseModel(BaseModel):
+class ViralSequenceVariantsResponseModel(BaseModel):
     lineage: str
     n_count: int
     substitutions: list[object]
@@ -17,3 +17,8 @@ class SequenceVariantsResponseModel(BaseModel):
     nonACGTNs: list[object]
     alignmentStart: int
     alignmentEnd: int
+
+
+class BacterialSequenceVariantsResponseModel(BaseModel):
+    schema: str
+    alleles: list[object]
