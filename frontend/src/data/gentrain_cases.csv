@@ -1,38 +1,38 @@
-Case Id;Sequence Id;Date;Name;First Name;Birth Date;Outbreak;Location;Institution;Geschlecht
-CVD2021-24928;VRE_Hybrid_BC_01;01.02.22;Testname;Testvorname;13.05.97;Testausbruch;K�ln;Schule;weiblich
-CVD2021-24923;VRE_Hybrid_BC_02;01.03.22;Testname;Testvorname;03.02.01;Testausbruch;K�ln;;weiblich
-CVD2021-25156;VRE_Hybrid_BC_03;05.03.22;Testname;Testvorname;01.01.82;Testausbruch;D�sseldorf;Krankenhaus;m�nnlich
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
-;;;;;;;;;
+Case Id;Sequence Id;Date;Name;First Name;Birth Date;Outbreak;Location;Institution;Category 3
+CVD2021-24928;V2143;01.02.2022;Testname;Testvorname;13.05.97;;Köln;Schule;Test1
+CVD2021-24923;V2532;01.02.2022;Testname;Testvorname;03.02.01;;Köln;;Test2
+CVD2021-25156;V2533;01.03.2022;Testname;Testvorname;01.01.82;;Düsseldorf;Krankenhaus;Test3
+CVD2021-25131;V2546;01.02.2022;Testname;Testvorname;05.01.96;;Köln;Kindergarten;Test4
+CVD2021-25132;V2551;02.02.2022;Testname;Testvorname;13.05.97;;Düsseldorf;Krankenhaus;Test5
+CVD2021-25133;V2563;03.02.2022;Testname;Testvorname;03.02.01;;Düsseldorf;Kindergarten;Test6
+CVD2021-25134;V2568;04.02.2022;Testname;Testvorname;01.01.82;;Köln;Krankenhaus;Test7
+CVD2021-25135;V2570;04.02.2022;Testname;Testvorname;05.01.96;;Düsseldorf;Kindergarten;Test8
+CVD2021-25136;V2579;04.02.2022;Testname;Testvorname;13.05.97;;Köln;Krankenhaus;Test9
+CVD2021-25137;V2584;04.02.2022;Testname;Testvorname;03.02.01;;Köln;Kindergarten;Test10
+CVD2021-25138;V2586;04.02.2022;Testname;Testvorname;01.01.82;;Köln;Kindergarten;Test11
+CVD2021-25139;V2587;05.02.2022;Testname;Testvorname;05.01.96;;Köln;Kindergarten;Test12
+CVD2021-25140;V2589;05.02.2022;Testname;Testvorname;13.05.97;;Düsseldorf;Kindergarten;Test13
+CVD2021-25141;V2602;05.02.2022;Testname;Testvorname;03.02.01;;Düsseldorf;Schule;Test14
+CVD2021-25142;V2603;05.02.2022;Testname;Testvorname;01.01.82;;Düsseldorf;Schule;Test15
+CVD2021-25143;V2606;06.02.2022;Testname;Testvorname;05.01.96;;Düsseldorf;Schule;Test16
+CVD2021-25144;V2608;06.02.2022;Testname;Testvorname;13.05.97;;Düsseldorf;Schule;Test17
+CVD2021-25145;V2609;08.02.2022;Testname;Testvorname;03.02.01;;Düsseldorf;Schule;Test18
+CVD2021-25146;V2610;08.02.2022;Testname;Testvorname;01.01.82;;Düsseldorf;Schule;Test19
+CVD2021-25147;V2612;08.02.2022;Testname;Testvorname;05.01.96;;Köln;Schule;Test20
+CVD2021-25148;V2614;08.02.2022;Testname;Testvorname;13.05.97;;Köln;Kindergarten;Test21
+CVD2021-25149;V2617;08.02.2022;Testname;Testvorname;03.02.01;;Köln;Kindergarten;Test22
+CVD2021-25150;V2618;08.02.2022;Testname;Testvorname;01.01.82;;Köln;Kindergarten;Test23
+CVD2021-25151;V2616;08.02.2022;Testname;Testvorname;29.11.62;;Köln;Kindergarten;Test24
+CVD2021-25152;V2581;12.02.2022;Testname;Testvorname;27.10.43;;Köln;Kindergarten;Test25
+CVD2021-25151;Z12766;12.02.2022;Testname;Testvorname;05.01.96;Ausbruch 1;Düsseldorf;Kindergarten;Test24
+CVD2021-25152;Z12834;12.02.2022;Testname;Testvorname;13.05.97;Ausbruch 1;Köln;Kindergarten;Test25
+CVD2021-25153;Z12858;15.02.2022;Testname;Testvorname;03.02.01;Ausbruch 1;Köln;Kindergarten;Test26
+CVD2021-25154;Z12867;16.02.2022;Testname;Testvorname;01.01.82;Ausbruch 2;Köln;Schule;Test27
+CVD2021-25155;Z12879;16.02.2022;Testname;Testvorname;05.01.96;Ausbruch 1;Düsseldorf;Kindergarten;Test28
+CVD2021-25156;Z12881;16.02.2022;Testname;Testvorname;13.05.97;Ausbruch 1;Düsseldorf;Kindergarten;Test29
+CVD2021-25157;Z12883;16.02.2022;Testname;Testvorname;03.02.01;Ausbruch 1;Düsseldorf;Kindergarten;Test30
+CVD2021-25158;Z12886;16.02.2022;Testname;Testvorname;01.01.82;Ausbruch 2;Düsseldorf;Schule;Test31
+CVD2021-25159;Z13004;16.03.2022;Testname;Testvorname;05.01.96;Ausbruch 2;Köln;Schule;Test32
+CVD2021-25160;Z13030;17.03.2022;Testname;Testvorname;13.05.97;Ausbruch 2;Köln;Schule;Test33
+CVD2021-25161;Z13075;17.03.2022;Testname;Testvorname;03.02.01;Ausbruch 1;Düsseldorf;Kindergarten;Test34
+CVD2021-25162;Z13077;17.03.2022;Testname;Testvorname;01.01.82;Ausbruch 2;Düsseldorf;Schule;Test35

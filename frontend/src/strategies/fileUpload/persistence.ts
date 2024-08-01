@@ -7,8 +7,9 @@ import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { getAndPersistVariantsForSample, getAndPersistVariantsForSamplesSynchronously } from "@/services/samples";
-import { recalculateDistances } from "@/services/distanceMatrices";
 import { useSampleUploadStore } from "@/stores/upload";
+import { getPathogenTypeForActivePathogen } from "@/database/pathogen_types";
+import { DistanceCalculationStrategyManager } from "../distance_calculation/DistanceCalculationStrategyManager";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -43,7 +44,6 @@ export const persistenceStrategies = {
         });
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
-        const activePathogen = useAppStore.getState().activePathogen;
         useSampleUploadStore.getState().setIsUploading(true);
         const variantRequestPromises: Promise<void>[] = [];
         for (const sample of sampleData) {
@@ -59,11 +59,15 @@ export const persistenceStrategies = {
                 variantRequestPromises.push(getAndPersistVariantsForSample(sample));
             }
         }
-
         await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
+
         // recalculate all sample distances to enable assembling a fresh distance matrix
-        if (activePathogen) {
-            await recalculateDistances(activePathogen.id);
+        const activePathogenType = await getPathogenTypeForActivePathogen();
+        if (activePathogenType) {
+            const distanceCalculationStrategy = DistanceCalculationStrategyManager.getStrategyForPathogenType(
+                activePathogenType.name.toString()
+            );
+            distanceCalculationStrategy.execute();
         }
     },
     contactsStrategy: async (contactData: string[][]) => {

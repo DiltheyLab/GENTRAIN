@@ -1,3 +1,4 @@
+import { useAppStore } from "@/stores/app";
 import { db } from "./db";
 import { PathogenSchema } from "./pathogens";
 
@@ -26,4 +27,13 @@ export const getAllPathogenTypesWithRelationships = async () => {
         pathogenTypesWithRelationships[key].pathogens = pathogens;
     }
     return pathogenTypesWithRelationships;
+};
+
+export const getPathogenTypeForActivePathogen = async () => {
+    const activePathogen = useAppStore.getState().activePathogen;
+    if (!activePathogen) {
+        return;
+    }
+    const pathogenType = await db.pathogen_types.get(activePathogen.pathogen_type_id);
+    return pathogenType;
 };

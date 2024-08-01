@@ -82,14 +82,14 @@ export const validationStrategies = {
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
         const activePathogen = await useAppStore.getState().activePathogen;
-
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
         for (const sample of sampleData) {
             // only import if case for the pathogen and a samples with the same fasta id does not already exist
             const sampleCase = await db.cases
-                .where({ fasta_id: sample.fastaId, pathogen_id: activePathogen.id })
+                .where("[fasta_id+pathogen_id]")
+                .equals([sample.fastaId, activePathogen.id])
                 .first();
             const existingSample = await db.samples.where({ fasta_id: sample.fastaId }).first();
             if (!sampleCase || existingSample) {

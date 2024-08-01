@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface SampleUploadState {
+export interface SampleUploadState {
     isUploading: boolean;
     distanceCalculationCount: number;
     distanceCalculationSum: number;

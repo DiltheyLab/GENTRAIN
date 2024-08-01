@@ -115,6 +115,20 @@ export const getCaseWithSampleById = async (id: number) => {
     return caseWithRelationships;
 };
 
+export const getCasesForPathogenWithSample = async (pathogen_id: number) => {
+    const pathogenCases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+
+    const casesWithRelationships: CaseWithRelationships[] = [];
+    for (const pathogenCase of pathogenCases) {
+        let caseWithRelationships: CaseWithRelationships = pathogenCase;
+        if (pathogenCase.fasta_id) {
+            caseWithRelationships.sample = await db.samples.where({ fasta_id: pathogenCase.fasta_id }).first();
+            casesWithRelationships.push(caseWithRelationships);
+        }
+    }
+    return casesWithRelationships;
+};
+
 export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
 };
