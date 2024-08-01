@@ -2,16 +2,16 @@ import Dexie, { type EntityTable } from "dexie";
 import { exportDB, importInto } from "dexie-export-import";
 import type { SampleSchema } from "@/database/samples";
 import { downloadFile } from "@/services/files";
-import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "./distance_matrices";
+import { DistanceMatricesSchema } from "./distance_matrices";
 import { DistancesSchema } from "./distances";
 import { CaseSchema } from "./cases";
 import { ContactSchema } from "./contacts";
-import { deleteGroupsByPathogenId, GroupSchema } from "./groups";
+import { GroupSchema } from "./groups";
 import { Pathogens, PathogenSchema } from "./pathogens";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
-import { CategorySchema, deleteCategoriesByPathogenId } from "./categories";
-import { AnalysisSchema, deleteAnalysesByPathogenId } from "./analyses";
-import { deleteOutbreaksByPathogenId, OutbreakSchema } from "./outbreaks";
+import { CategorySchema } from "./categories";
+import { AnalysisSchema } from "./analyses";
+import { OutbreakSchema } from "./outbreaks";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -95,46 +95,4 @@ const exportDatabaseToJson = async () => {
     downloadFile(blob, `gentrain_export_${new Date().toISOString()}.json`);
 };
 
-const deleteDataForPathogen = async (pathogen_id: number) => {
-    await db.transaction(
-        "rw",
-        [
-            db.cases,
-            db.samples,
-            db.contacts,
-            db.cases,
-            db.distances,
-            db.distance_matrices,
-            db.outbreaks,
-            db.categories,
-            db.groups,
-            db.analyses,
-        ],
-        async () => {
-            const distanceMatrix = await getDistanceMatrixByPathogenId(pathogen_id);
-            const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
-            const deletions = [];
-            for (const caseData of cases) {
-                if (caseData.fasta_id) {
-                    deletions.push(db.samples.where({ fasta_id: caseData.fasta_id }).delete());
-                }
-                deletions.push(
-                    db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete()
-                );
-                deletions.push(db.cases.where({ id: caseData.id }).delete());
-            }
-            if (distanceMatrix?.id) {
-                deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
-                deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
-            }
-            deletions.push(deleteOutbreaksByPathogenId(pathogen_id));
-            deletions.push(deleteCategoriesByPathogenId(pathogen_id));
-            deletions.push(deleteGroupsByPathogenId(pathogen_id));
-            deletions.push(deleteAnalysesByPathogenId(pathogen_id));
-
-            await Promise.all(deletions);
-        }
-    );
-};
-
-export { db, importDataFromJson, exportDatabaseToJson, deleteDataForPathogen };
+export { db, importDataFromJson, exportDatabaseToJson };
