@@ -41,7 +41,7 @@ def get_sequence_variants(
 
     except GenomicErrorException as exc:
         return (
-            ErrorResponseModel(message=repr(exc)),
+            ErrorResponseModel(message=exc.message),
             422,
         )
     except ValidationError as exc:
@@ -54,6 +54,11 @@ def get_sequence_variants(
         )
     except SequenceAnalysisFailedException as exc:
         return (
-            ErrorResponseModel(message=repr(exc)),
+            ErrorResponseModel(message=exc.message),
             500,
+        )
+    except FileNotFoundError as exc:
+        return (
+            ErrorResponseModel(message="Pathogen does not exist."),
+            404,
         )

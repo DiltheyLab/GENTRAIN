@@ -11,4 +11,4 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
-        return BacterialSequenceVariantsResponseModel(schema="schema", alleles=[])
+        return BacterialSequenceVariantsResponseModel(alleles=[])

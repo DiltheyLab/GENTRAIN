@@ -293,7 +293,7 @@
         "kind": 6,
         "importPath": "backend.controllers.requests.models.sequence_variants",
         "description": "backend.controllers.requests.models.sequence_variants",
-        "peekOfCode": "class BacterialSequenceVariantsResponseModel(BaseModel):\n    schema: str\n    alleles: list[object]",
+        "peekOfCode": "class BacterialSequenceVariantsResponseModel(BaseModel):\n    alleles: list[object]",
         "detail": "backend.controllers.requests.models.sequence_variants",
         "documentation": {}
     },
@@ -329,7 +329,7 @@
         "kind": 6,
         "importPath": "backend.exceptions.genomic_error_exception",
         "description": "backend.exceptions.genomic_error_exception",
-        "peekOfCode": "class GenomicErrorException(Exception):\n    \"\"\"Exception thrown whenever a sequence contains genomic errors..\"\"\"\n    def __init__(self):\n        super().__init__(\"Genomic sequence does not contain valid structure.\")",
+        "peekOfCode": "class GenomicErrorException(Exception):\n    \"\"\"Exception thrown whenever a sequence contains genomic errors..\"\"\"\n    def __init__(self):\n        self.message = \"Genomic sequence does not contain valid structure.\"",
         "detail": "backend.exceptions.genomic_error_exception",
         "documentation": {}
     },
@@ -338,7 +338,7 @@
         "kind": 6,
         "importPath": "backend.exceptions.sequence_analysis_failed_exception",
         "description": "backend.exceptions.sequence_analysis_failed_exception",
-        "peekOfCode": "class SequenceAnalysisFailedException(Exception):\n    \"\"\"Exception thrown whenever a sequence analysis fails.\"\"\"\n    def __init__(self):\n        super().__init__(\"Genomic sequence analysis failed.\")",
+        "peekOfCode": "class SequenceAnalysisFailedException(Exception):\n    \"\"\"Exception thrown whenever a sequence analysis fails.\"\"\"\n    def __init__(self):\n        self.message = \"Genomic sequence analysis failed.\"",
         "detail": "backend.exceptions.sequence_analysis_failed_exception",
         "documentation": {}
     },
@@ -347,7 +347,7 @@
         "kind": 6,
         "importPath": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "description": "backend.strategies.sample_analysis.bacterial_sample_analysis",
-        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for viral analysises.\"\"\"\n        return BacterialSequenceVariantsResponseModel(schema=\"schema\", alleles=[])",
+        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for viral analysises.\"\"\"\n        return BacterialSequenceVariantsResponseModel(alleles=[])",
         "detail": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "documentation": {}
     },

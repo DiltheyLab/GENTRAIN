@@ -20,5 +20,4 @@ class ViralSequenceVariantsResponseModel(BaseModel):
 
 
 class BacterialSequenceVariantsResponseModel(BaseModel):
-    schema: str
     alleles: list[object]
