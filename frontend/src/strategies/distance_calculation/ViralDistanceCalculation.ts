@@ -22,8 +22,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         let alignment = ["", ""];
 
         // get dict of position to mutation
-        let positions_s1 = this.getLetiantPositions(sample1);
-        let positions_s2 = this.getLetiantPositions(sample2);
+        let positions_s1 = this.getMutationPositions(sample1);
+        let positions_s2 = this.getMutationPositions(sample2);
         let positions = [positions_s1, positions_s2];
 
         // check all mutations for every position on the reference string
@@ -52,7 +52,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                     // point mutations or ambig chars
                     // just add mutation to add_chars
                     if (mutation["type"] == "snp") {
-                        add_chars[idx_seq] += mutation["mut"];
+                        add_chars[idx_seq] += mutation["replacement"];
                     }
 
                     // ############################################################
@@ -82,7 +82,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
                         // if the deletion was only in one sequence add the "-"
                         if (!found) {
-                            add_chars[idx_seq] += mutation["mut"];
+                            add_chars[idx_seq] += mutation["replacement"];
                         }
                     }
 
@@ -106,7 +106,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                                     found = true;
 
                                     // put insertions into fasta string
-                                    const fasta_string = `>1\n${mutation["mut"]}\n>2\n${mutation_2["mut"]}`;
+                                    const fasta_string = `>1\n${mutation["replacement"]}\n>2\n${mutation_2["replacement"]}`;
                                     // mount fasta string as file
                                     let result = await this.cli.mount({
                                         name: "distance_input.fa",
@@ -155,13 +155,13 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                         if (!found) {
                             // there is another mutation on this sequence
                             if (positions[idx_seq][i].length > 1) {
-                                add_chars[idx_seq] += mutation["mut"];
+                                add_chars[idx_seq] += mutation["replacement"];
                                 // no other mutation -> add ref char
                             } else {
-                                add_chars[idx_seq] = ref_char + add_chars[idx_seq] + mutation["mut"];
+                                add_chars[idx_seq] = ref_char + add_chars[idx_seq] + mutation["replacement"];
                             }
                             // add multiple "-" to the other sequence
-                            add_chars[1 - idx_seq] += new Array(mutation["mut"].length + 1).join("-");
+                            add_chars[1 - idx_seq] += new Array(mutation["replacement"].length + 1).join("-");
                         }
                     }
                 }
@@ -175,108 +175,125 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         return alignment;
     };
 
-    getLetiantPositions(sample: SampleSchema) {
+    addMutationToPositions(
+        mutation: { type: string; replacement: string },
+        position: number,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        position in positions ? positions[position].push(mutation) : (positions[position] = [mutation]);
+        return positions;
+    }
+
+    getMutationPositions(sample: SampleSchema) {
         if (!sample.variants) {
             return {};
         }
         let positions: any = {};
-        let info;
 
         // Deletions
-        for (const i in sample.variants["deletions"]) {
-            let letiant = sample.variants["deletions"][i];
-            let start = letiant["start"];
-            let len = letiant["length"];
+        for (const mutation of sample.variants["deletions"]) {
+            let start = mutation["start"];
+            let len = mutation["length"];
 
             // add each position of a deletion on its own
             for (let j = start; j < start + len; j++) {
-                info = {
-                    type: "del",
-                    mut: "-",
-                };
-                j in positions ? positions[j].push(info) : (positions[j] = [info]);
+                this.addMutationToPositions(
+                    {
+                        type: "del",
+                        replacement: "-",
+                    },
+                    j,
+                    positions
+                );
             }
         }
 
         // Insertions
-        for (const i in sample.variants["insertions"]) {
-            let letiant = sample.variants["insertions"][i];
-            let pos = letiant["pos"];
-
-            info = {
-                type: "ins",
-                mut: letiant["ins"],
-            };
-            pos in positions ? positions[pos].push(info) : (positions[pos] = [info]);
+        for (const mutation of sample.variants["insertions"]) {
+            this.addMutationToPositions(
+                {
+                    type: "ins",
+                    replacement: mutation["ins"],
+                },
+                mutation["pos"],
+                positions
+            );
         }
 
         // Substitutions
-        for (const i in sample.variants["substitutions"]) {
-            // { refNuc: "C", pos: 240, queryNuc: "T", … }
-            let letiant = sample.variants["substitutions"][i];
-            let pos = letiant["pos"];
-
-            info = {
-                type: "snp",
-                mut: letiant["queryNuc"],
-            };
-            pos in positions ? positions[pos].push(info) : (positions[pos] = [info]);
+        for (const mutation of sample.variants["substitutions"]) {
+            this.addMutationToPositions(
+                {
+                    type: "snp",
+                    replacement: mutation["queryNuc"],
+                },
+                mutation["pos"],
+                positions
+            );
         }
 
         // Ns
-        for (const i in sample.variants["missing"]) {
+        for (const mutation of sample.variants["missing"]) {
             // { begin: 28881, end: 28883, character: "N" }
-            let letiant = sample.variants["missing"][i];
-            let start = letiant["begin"];
-            let end = letiant["end"];
-            let char = letiant["character"];
+            let start = mutation["begin"];
+            let end = mutation["end"];
+            let char = mutation["character"];
 
             // add each position of a N block separately
             for (let j = start; j < end; j++) {
-                info = {
-                    type: "snp",
-                    mut: char,
-                };
-                j in positions ? positions[j].push(info) : (positions[j] = [info]);
+                this.addMutationToPositions(
+                    {
+                        type: "snp",
+                        replacement: char,
+                    },
+                    j,
+                    positions
+                );
             }
         }
 
         // other ambious characters
-        for (const i in sample.variants["nonACGTNs"]) {
+        for (const mutation of sample.variants["nonACGTNs"]) {
             // { begin: 60, end: 61, character: "Y" }
-            let letiant = sample.variants["nonACGTNs"][i];
-            let start = letiant["begin"];
-            let end = letiant["end"];
-            let char = letiant["character"];
+            let start = mutation["begin"];
+            let end = mutation["end"];
+            let char = mutation["character"];
 
             // add each position of a ambig char block separately
             for (let j = start; j < end; j++) {
-                info = {
-                    type: "snp",
-                    mut: char,
-                };
-                j in positions ? positions[j].push(info) : (positions[j] = [info]);
+                this.addMutationToPositions(
+                    {
+                        type: "snp",
+                        replacement: char,
+                    },
+                    j,
+                    positions
+                );
             }
         }
 
         // Start of alignment
         for (let i = 0; i < sample.variants["alignmentStart"]; i++) {
-            // add dels until sequence starts
-            info = {
-                type: "del",
-                mut: "-",
-            };
-            i in positions ? positions[i].push(info) : (positions[i] = [info]);
+            this.addMutationToPositions(
+                {
+                    type: "del",
+                    replacement: "-",
+                },
+                i,
+                positions
+            );
         }
 
         // End of alignment
         for (let i = sample.variants["alignmentEnd"]; i < referenceString.length; i++) {
-            // add dels until reference sequence ends
-            info = {
-                type: "del",
-                mut: "-",
-            };
-            i in positions ? positions[i].push(info) : (positions[i] = [info]);
+            this.addMutationToPositions(
+                {
+                    type: "del",
+                    replacement: "-",
+                },
+                i,
+                positions
+            );
         }
 
         return positions;

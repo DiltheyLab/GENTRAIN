@@ -24,10 +24,12 @@ export abstract class DistanceCalculationStrategy {
     }
 
     execute = async () => {
+        console.time("log");
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
         await this.calculateSampleDistances();
+        console.timeEnd("log");
     };
 
     init = async () => {
