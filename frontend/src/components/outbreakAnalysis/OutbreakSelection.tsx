@@ -1,15 +1,15 @@
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
-import { useGetAllOutbreaks } from "@/hooks/database/outbreaks/useGetAllOutbreaks";
 import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
+import { useGetGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
-    const outbreaks = useGetAllOutbreaks();
+    const outbreaks = useGetGetOutbreaksForActivePathogen();
     const caseWithRelationships = useGetAllCasesWithRelationships();
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
@@ -45,7 +45,11 @@ export const OutbreakSelection = () => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
         analysisStore.updateSettings({
-            selectedOutbreak: { name: selectedOutbreak.name, id: selectedOutbreak.id },
+            selectedOutbreak: {
+                name: selectedOutbreak.name,
+                pathogen_id: selectedOutbreak.pathogen_id,
+                id: selectedOutbreak.id,
+            },
         });
 
         // after changing the outbreak, set the date range for the date range picker

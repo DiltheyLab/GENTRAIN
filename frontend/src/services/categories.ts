@@ -15,11 +15,12 @@ export const getFlexibleCategoryNames = (data: Array<Array<string>>) => {
     return [flexibleCategoryName1, flexibleCategoryName2, flexibleCategoryName3];
 };
 
-const createGroupIfNotExist = async (groupName: string, categoryId: number) => {
+const createGroupIfNotExist = async (groupName: string, categoryId: number, pathogenId: number) => {
     const existingGroupForName = await db.groups.where({ name: groupName }).first();
     const data = {
         name: groupName,
         category_id: categoryId,
+        pathogen_id: pathogenId,
     } as GroupSchema;
 
     // Validate the data and throw an error if it is invalid
@@ -28,9 +29,10 @@ const createGroupIfNotExist = async (groupName: string, categoryId: number) => {
     return groupId;
 };
 
-const createCategory = async (categoryName: string) => {
+const createCategory = async (categoryName: string, pathogenId: number) => {
     const data = {
         name: categoryName,
+        pathogen_id: pathogenId,
     } as CategorySchema;
     // Validate the data and throw an error if it is invalid
     const dto = categoryRules.parse(data) as CategorySchema;
@@ -44,9 +46,11 @@ const createCategory = async (categoryName: string) => {
  * @param categoryName
  * @returns
  */
-const persistCategoryIfNotExist = async (categoryName: string) => {
+const persistCategoryIfNotExist = async (categoryName: string, pathogenId: number) => {
     const existingCategoryForName = await db.categories.where({ name: categoryName }).first();
-    const categoryId = existingCategoryForName ? existingCategoryForName.id : await createCategory(categoryName);
+    const categoryId = existingCategoryForName
+        ? existingCategoryForName.id
+        : await createCategory(categoryName, pathogenId);
     return categoryId;
 };
 
@@ -57,7 +61,11 @@ const persistCategoryIfNotExist = async (categoryName: string) => {
  * @param caseData
  * @returns
  */
-export const persistGroupsForCategories = async (flexibleCategoryNames: Array<string>, caseData: Array<string>) => {
+export const persistGroupsForCategories = async (
+    flexibleCategoryNames: Array<string>,
+    caseData: Array<string>,
+    pathogenId: number
+) => {
     let groups = [];
     for (const category of [
         collectCategoryData(flexibleCategoryNames[0], caseData[7]),
@@ -67,9 +75,9 @@ export const persistGroupsForCategories = async (flexibleCategoryNames: Array<st
         if (!category) {
             continue;
         }
-        const categoryId = await persistCategoryIfNotExist(category.name);
+        const categoryId = await persistCategoryIfNotExist(category.name, pathogenId);
         for (const group of category.groups) {
-            groups.push(await createGroupIfNotExist(group, categoryId));
+            groups.push(await createGroupIfNotExist(group, categoryId, pathogenId));
         }
     }
     return groups;

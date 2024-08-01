@@ -1,9 +1,12 @@
 import { z } from "zod";
 import { db } from "./db";
-import { SampleSchema } from "./samples";
+import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreak";
 import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
+import { useAppStore } from "@/stores/app";
+import { getOrCreateDistanceMatrixByPathogenId } from "./distance_matrices";
+import { deleteDistancesBySampleId } from "./distances";
 
 export interface CaseSchema {
     id: number;
@@ -86,4 +89,23 @@ export const getCaseWithSampleById = async (id: number) => {
 
 export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
+};
+
+export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
+    const activePathogen = useAppStore.getState().activePathogen;
+    if (activePathogen) {
+        await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
+            const distanceMatrixId = await getOrCreateDistanceMatrixByPathogenId(activePathogen.id);
+            const caseWithSample = await getCaseWithSampleById(id);
+            if (caseWithSample && distanceMatrixId) {
+                await deleteCaseById(id);
+            }
+            if (caseWithSample?.sample) {
+                await deleteSampleById(caseWithSample?.sample.id);
+            }
+            if (caseWithSample?.sample) {
+                await deleteDistancesBySampleId(caseWithSample?.sample.id);
+            }
+        });
+    }
 };
