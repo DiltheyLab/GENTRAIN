@@ -6,6 +6,7 @@ import { OutbreakSchema } from "@/database/outbreak";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
 import { CustomNode, CustomLink, GraphData } from "@/types/graph";
+import { ContactSchema } from "@/database/contacts";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -134,7 +135,11 @@ const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: 
     });
 };
 
-const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
+const getGraphCases = async (
+    cases: CaseWithRelationships[],
+    analysisSettings: AnalysisSettings,
+    contacts: ContactSchema[]
+) => {
     const {
         selectedOutbreak,
         showBackground,
@@ -189,8 +194,28 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
         graphCases = casesInOutbreak.concat(casesFilteredByDateRange);
     }
 
-    // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
-    graphCases = graphCases.filter((caseData) => caseData.sample);
+    if (analysisSettings.showContactTracingEdges) {
+        /*         // get all case ids which are in contact with each other
+        const contactCaseIds = new Set<number>();
+        for (const contact of contacts) {
+            contactCaseIds.add(contact.case_id_1);
+            contactCaseIds.add(contact.case_id_2);
+        }
+
+        const contactCaseIdsArray = Array.from(contactCaseIds);
+
+        // search for graphcases without sample and which is in contact with a graphcase
+        const contactCases = graphCases.filter((graphCase) => {
+            return contactCaseIdsArray.includes(graphCase.id) && !graphCase.sample;
+        });
+        // filter out cases without a samplespät    
+        graphCases = graphCases.filter((caseData) => caseData.sample);
+        // add contact cases to the graph cases
+        graphCases = graphCases.concat(contactCases); */
+    } else {
+        // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
+        //graphCases = graphCases.filter((caseData) => caseData.sample);
+    }
 
     // the graphCases array contains duplicated cases. Example: A case is in a selected
     // group and in background (not outbreak). The cases is added twice to the graphCases array.
@@ -199,6 +224,59 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     graphCases = deleteDuplicateCases(graphCases);
 
     return graphCases;
+};
+
+const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
+    const graphCasesWithoutContacts = graphCases.filter((caseData) => caseData.sample); // kontaktfälle erstmal rausfiltern
+    const graphCasesIds: number[] = [];
+
+    for (const caseData of graphCasesWithoutContacts) {
+        graphCasesIds.push(caseData.id);
+    }
+
+    const contactEdges: CustomLink[] = [];
+
+    for (const contact of contacts) {
+        if (contact.case_id_1 === contact.case_id_2) continue;
+        // only add contact edges if both contact cases are in the already filtered graphCases array
+        if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
+            const link = {
+                source: contact.case_id_1,
+                target: contact.case_id_2,
+                value: "",
+                type: "Dashed",
+            } as CustomLink;
+            contactEdges.push(link);
+        }
+    }
+    console.log("contactEdges", contactEdges);
+
+    return contactEdges;
+};
+
+const getContactTracingNodes = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
+    const allContactCases: CaseWithRelationships[] = graphCases.filter((caseData) => !caseData.sample);
+
+    // graphcases enthält alle fälle, auch kontaktfälle die nach der filterung übrig geblieben sind
+    // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken und
+    const contactCases = allContactCases.filter((contactCase) => {
+        return contacts.some((contact) => contact.case_id_1 === contactCase.id || contact.case_id_2 === contactCase.id);
+    });
+
+    console.log("contactcases", contactCases);
+
+    const contactNodes: CustomNode[] = contactCases.map((caseData) => {
+        return {
+            id: caseData.id,
+            caseId: caseData.case_id,
+            caseData: caseData,
+            group: "Kontaktverfolgung",
+            color: "#D3D2D2",
+            registeredAt: caseData.registered_at.toLocaleDateString(),
+        } as CustomNode;
+    });
+
+    return contactNodes;
 };
 
 const createMSTEdges = (
@@ -213,12 +291,10 @@ const createMSTEdges = (
 
         for (let columnIndex = rowIndex + 1; columnIndex < graphCases.length; columnIndex++) {
             const columnCase = graphCases[columnIndex];
+
+            if (!rowCase.sample || !columnCase.sample) continue;
             graph.addEdge(
-                new Edge(
-                    rowIndex,
-                    columnIndex,
-                    matrixDataAssembly[rowCase.sample!.fasta_id][columnCase.sample!.fasta_id]
-                )
+                new Edge(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id])
             );
         }
     }
@@ -230,14 +306,15 @@ const createMSTEdges = (
 export const createGraphData = async (
     matrixDataAssembly: DistanceMatrixAssembly,
     cases: CaseWithRelationships[],
-    analysisSettings: AnalysisSettings
+    analysisSettings: AnalysisSettings,
+    contacts: ContactSchema[]
 ): Promise<GraphData> => {
     if (!matrixDataAssembly || cases.length === 0) {
         return { nodes: [], links: [] };
     }
 
     // apply all filtering settings to get the correct cases for the graph
-    const graphCases = await getGraphCases(cases, analysisSettings);
+    let graphCases = await getGraphCases(cases, analysisSettings, contacts);
 
     // create a new graph object with the correct amount of nodes
     const graph = new Graph(graphCases.length);
@@ -248,11 +325,12 @@ export const createGraphData = async (
     const groupToColor = getGroupToColor(cases, "outbreak_id");
 
     // create node objects for forced directed graph
-    let nodes = graphCases.map((caseData) => {
+    let nodes: CustomNode[] = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
         return {
             id: caseData.id,
             caseId: caseData.case_id,
+            caseData: caseData,
             group: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
@@ -260,64 +338,25 @@ export const createGraphData = async (
     });
 
     // create link objects for forced directed graph
-    const graphLinks = mstEdges.map((edge) => {
+    let links = mstEdges.map((edge) => {
         return {
             source: graphCases[edge.source].id,
             target: graphCases[edge.target].id,
-            value: edge.weight,
+            value: edge.weight.toString(),
             type: "Solid",
         };
     }) as CustomLink[];
 
-    return {
-        nodes: nodes,
-        links: graphLinks,
-    };
-};
-
-export const transformDistanceMatrixToGraphData = (
-    matrixDataAssembly: DistanceMatrixAssembly,
-    cases: CaseWithRelationships[]
-): GraphData => {
-    if (!matrixDataAssembly || cases.length === 0) {
-        return { nodes: [], links: [] };
+    if (analysisSettings.showContactTracingEdges && contacts) {
+        nodes = nodes.filter((node) => node.caseData.sample); // erstmal keine Kontaktknoten anzeigen
+        const contactTracingLinks = createContactLinks(graphCases, contacts);
+        links = links.concat(contactTracingLinks);
+    } else {
+        nodes = nodes.filter((node) => node.caseData.sample);
     }
 
-    // filter out cases without a sample and apply no other filtering settings -> Will be changed in the future
-    const graphCases: CaseWithRelationships[] = cases.filter((caseData) => !!caseData.sample); // filter out cases without a sample
-
-    // create a new graph object with the correct amount of nodes
-    const graph = new Graph(graphCases.length);
-
-    // calculate edges that are in the mst by using kruskal's algorithm
-    const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
-
-    const groupToColor = getGroupToColor(cases, "outbreak_id");
-
-    // create node objects
-    let nodes = graphCases.map((caseData) => {
-        const outbreakName = caseData?.outbreak?.name || "Background";
-        return {
-            id: caseData.id,
-            caseId: caseData.case_id,
-            group: caseData.outbreak ? caseData.outbreak.name : "Background",
-            color: groupToColor[outbreakName],
-            registeredAt: caseData.registered_at.toLocaleDateString(),
-        } satisfies CustomNode;
-    });
-
-    // create link objects
-    const graphLinks = mstEdges.map((edge) => {
-        return {
-            source: graphCases[edge.source].id,
-            target: graphCases[edge.target].id,
-            value: edge.weight,
-            type: "Solid",
-        };
-    }) as CustomLink[];
-
     return {
         nodes: nodes,
-        links: graphLinks,
+        links: links,
     };
 };
