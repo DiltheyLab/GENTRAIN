@@ -72,6 +72,14 @@
         "documentation": {}
     },
     {
+        "label": "GenomicErrorException",
+        "importPath": "backend.exceptions.genomic_error_exception",
+        "description": "backend.exceptions.genomic_error_exception",
+        "isExtraImport": true,
+        "detail": "backend.exceptions.genomic_error_exception",
+        "documentation": {}
+    },
+    {
         "label": "SequenceAnalysisFailedException",
         "importPath": "backend.exceptions.sequence_analysis_failed_exception",
         "description": "backend.exceptions.sequence_analysis_failed_exception",
@@ -160,6 +168,24 @@
         "documentation": {}
     },
     {
+        "label": "pathlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "tempfile",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tempfile",
+        "description": "tempfile",
+        "detail": "tempfile",
+        "documentation": {}
+    },
+    {
         "label": "json",
         "kind": 6,
         "isExtraImport": true,
@@ -178,30 +204,12 @@
         "documentation": {}
     },
     {
-        "label": "pathlib",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "pathlib",
-        "description": "pathlib",
-        "detail": "pathlib",
-        "documentation": {}
-    },
-    {
         "label": "subprocess",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "subprocess",
         "description": "subprocess",
         "detail": "subprocess",
-        "documentation": {}
-    },
-    {
-        "label": "tempfile",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "tempfile",
-        "description": "tempfile",
-        "detail": "tempfile",
         "documentation": {}
     },
     {
@@ -355,7 +363,7 @@
         "kind": 6,
         "importPath": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "description": "backend.strategies.sample_analysis.bacterial_sample_analysis",
-        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for bacterial analysises.\"\"\"\n        return BacterialSequenceVariantsResponseModel(alleles=[])",
+        "peekOfCode": "class BacterialSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for bacterial samples.\"\"\"\n    def find_genomic_validation_errors(self):\n        \"\"\"Check if sequence contains genomic errors.\"\"\"\n        return []\n    def run_analysis(self):\n        \"\"\"Runs the sequence analysing script based on the pathogen.\"\"\"\n        return []\n    def get_response(self, result):\n        \"\"\"Return a response model for bacterial analysises.\"\"\"",
         "detail": "backend.strategies.sample_analysis.bacterial_sample_analysis",
         "documentation": {}
     },
@@ -373,7 +381,7 @@
         "kind": 6,
         "importPath": "backend.strategies.sample_analysis.viral_sample_analysis",
         "description": "backend.strategies.sample_analysis.viral_sample_analysis",
-        "peekOfCode": "class ViralSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for viral samples.\"\"\"\n    def get_response(self, result):\n        \"\"\"Return a response model for viral analysises.\"\"\"\n        return ViralSequenceVariantsResponseModel(\n            lineage=f\"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}\",\n            n_count=result[\"totalMissing\"],\n            substitutions=result[\"substitutions\"],\n            deletions=result[\"deletions\"],\n            insertions=result[\"insertions\"],",
+        "peekOfCode": "class ViralSampleAnalysis(SampleAnalysisStrategy):\n    \"\"\"Concrete analysis strategy for viral samples.\"\"\"\n    def find_genomic_validation_errors(self):\n        \"\"\"Check if sequence contains genomic errors.\"\"\"\n        illegal_characters = re.findall(\"[^ATGCRYSWKMBDHVNXU]+\", self.sequence)\n        return illegal_characters\n    def run_analysis(self):\n        \"\"\"Runs the sequence analysing script based on the pathogen.\"\"\"\n        process = subprocess.run(\n            [",
         "detail": "backend.strategies.sample_analysis.viral_sample_analysis",
         "documentation": {}
     },
