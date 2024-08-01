@@ -4,6 +4,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { useGetAllOutbreaks } from "@/hooks/database/outbreaks/useGetAllOutbreaks";
 import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreak";
+import { CustomTooltip } from "../ui/customTooltip";
+import { Info } from "lucide-react";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
@@ -72,9 +74,13 @@ export const OutbreakSelection = () => {
     };
     return (
         <div className="flex flex-col gap-4">
-            <Label htmlFor="name" className="font-bold text-lg">
-                1. Ausbruch auswählen
-            </Label>
+            <div className="flex items-center">
+                <Label className="font-bold text-lg mr-3">1. Aubruch auswählen</Label>
+                <CustomTooltip
+                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
+                    content={<p>Wählen Sie für die Analyse eines Ausbruchs den enstprechenden Datensatz aus. </p>}
+                />
+            </div>
             <Select
                 value={analysisStore.settings.selectedOutbreak?.id?.toString()}
                 onValueChange={(value) => changeSelectedOutbreak(value)}

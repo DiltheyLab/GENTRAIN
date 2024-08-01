@@ -3,6 +3,8 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { DateRangePicker } from "./DateRangePicker";
 import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
+import { CustomTooltip } from "../ui/customTooltip";
+import { Info } from "lucide-react";
 
 export const BackgroundFilter = () => {
     const analysisStore = useAnalysisStore();
@@ -21,7 +23,18 @@ export const BackgroundFilter = () => {
 
     return (
         <div className="flex flex-col gap-4 mt-2">
-            <Label className="font-bold text-lg">3. Background filtern</Label>
+            <div className="flex items-center">
+                <Label className="font-bold text-lg mr-3">3. Background filtern</Label>
+                <CustomTooltip
+                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
+                    content={
+                        <p>
+                            Sie können die in Schritt 2 ausgewählten Falldaten (Background) nach genetisch verwandten
+                            Fällen oder einer Zeitspanne filtern.
+                        </p>
+                    }
+                />
+            </div>
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="includeCasesWithLowGeneticDistance"
@@ -29,7 +42,7 @@ export const BackgroundFilter = () => {
                     onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
                 />
                 <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-md leading-5">
-                    Nur zum Ausbruch verwandte Fälle anzeigen
+                    Nur zum Ausbruch verwandte Falldaten anzeigen
                 </Label>
             </div>
             {analysisStore.settings.includeCasesWithLowGeneticDistance && (

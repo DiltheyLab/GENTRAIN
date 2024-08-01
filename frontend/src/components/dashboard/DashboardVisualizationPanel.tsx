@@ -91,10 +91,10 @@ export const DashboardVisualizationPanel = () => {
 
     return (
         <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
-            <Badge variant="outline" className="absolute z-50 right-3 top-3">
+            <Badge variant="outline" className="absolute z-20 right-3 top-3 bg-muted">
                 {dashboardGraphStore.graphSettings.graphDimension}
             </Badge>
-            <Button variant="outline" className="absolute z-50 bottom-3 right-3">
+            <Button variant="outline" className="absolute z-20 bottom-3 right-3">
                 Reset
             </Button>
             <Legend nodes={dashboardGraphStore.graphData.nodes} />

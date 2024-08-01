@@ -4,6 +4,9 @@ import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Button } from "../ui/button";
+import { CustomTooltip } from "../ui/customTooltip";
+import { Info } from "lucide-react";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -87,7 +90,18 @@ export const BackgroundSelection = () => {
 
     return (
         <div className="flex flex-col gap-4 mt-2">
-            <Label className="font-bold text-lg">2. Background auswählen</Label>
+            <div className="flex items-center">
+                <Label className="font-bold text-lg mr-3">2. Background auswählen</Label>
+                <CustomTooltip
+                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
+                    content={
+                        <p>
+                            Sie können entweder <u>alle</u> gespeicherten oder <u>bestimmte</u> Falldaten von Ausbrüchen
+                            oder Kategorien als Background auswählen.
+                        </p>
+                    }
+                />
+            </div>
             <RadioGroup
                 defaultValue={analysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"}
                 onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
@@ -97,13 +111,13 @@ export const BackgroundSelection = () => {
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
                     <Label htmlFor="allBackgroundData" className="font-normal text-md">
-                        Alle Fälle verwenden
+                        Alle Falldaten verwenden
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
                     <Label htmlFor="specificBackgroundData" className="font-normal text-md">
-                        Fälle auswählen
+                        Falldaten auswählen
                     </Label>
                 </div>
             </RadioGroup>
