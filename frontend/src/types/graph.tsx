@@ -1,6 +1,9 @@
+import { CaseWithRelationships } from "@/database/cases";
+
 export type CustomNode = {
     id: number;
     caseId: string;
+    caseData: CaseWithRelationships;
     group: string;
     color: string;
     registeredAt?: string;
@@ -11,7 +14,7 @@ export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" 
 export type CustomLink = {
     source: number;
     target: number;
-    value: number;
+    value: string;
     type: LinkType;
 };
 
