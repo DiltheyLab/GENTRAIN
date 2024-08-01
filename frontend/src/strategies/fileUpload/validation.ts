@@ -31,9 +31,16 @@ const findMissingCasesInDB = (caseId: string, cases: CaseSchema[]) => {
     }
 };
 
-export const findExistingContactInDB = async (row: string[]) => {
+export const findExistingContactInDB = async (row: string[], cases: CaseSchema[]) => {
+    const caseId1 = cases.find((c) => c["case_id"] === row[0])?.id;
+    const caseId2 = cases.find((c) => c["case_id"] === row[1])?.id;
+
+    if (!caseId1 || !caseId2) {
+        return;
+    }
+
     const existingContact = await db.contacts
-        .where({ case_id_1: row[0], case_id_2: row[1], type: row[2], context: row[3] })
+        .where({ case_id_1: caseId1, case_id_2: caseId2, type: row[2], context: row[3] })
         .first();
     return existingContact;
 };
@@ -128,7 +135,7 @@ export const validationStrategies = {
             missingCaseInColumnCaseId2 && missingCasesInDB.push(missingCaseInColumnCaseId2);
 
             // check if contact already exists in the database
-            const existingContact = await findExistingContactInDB(row);
+            const existingContact = await findExistingContactInDB(row, allCases);
             // safe the index of the row with the existing contact
             existingContact && existingContacts.push((i + 1).toString());
         }
