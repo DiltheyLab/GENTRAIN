@@ -16,6 +16,7 @@ export interface Option {
     group: string;
     id: string;
     category_id?: string;
+    categoryName?: string;
     /** Group the options by providing key. */
     [key: string]: string | boolean | undefined;
 }

@@ -13,6 +13,10 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
     const analysisStore = useAnalysisStore();
     const date = analysisStore.settings.dateRange;
 
+    const handleDateChange = (start: Date | undefined, end: Date | undefined) => {
+        analysisStore.updateSettings({ dateRange: { from: start, to: end } });
+    };
+
     return (
         <div className={cn("grid gap-2 mt-2", className)}>
             <div className="flex gap-3">
@@ -31,10 +35,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         id="date"
                         disabled={!analysisStore.settings.excludeCasesOutsideOfDateRange}
                         variant="outline"
-                        className={cn(
-                            "w-[300px] justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                        )}
+                        className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {date?.from ? (
@@ -55,7 +56,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         initialFocus
                         locale={de}
                         mode="range"
-                        defaultMonth={analysisStore.settings.datesOfCasesInSelectedOutbreak[0]}
+                        defaultMonth={date.from}
                         modifiers={{
                             outbreakRange: analysisStore.settings.datesOfCasesInSelectedOutbreak,
                         }}
@@ -64,7 +65,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                                 "relative after:absolute after:bottom-1.5 after:left-1/2 after:transform after:-translate-x-1/2 after:w-3/5 after:h-0.5 after:bg-red-500 after:content-['']",
                         }}
                         selected={date}
-                        onSelect={(dataRange) => analysisStore.updateSettings({ dateRange: dataRange })}
+                        onSelect={(dataRange) => handleDateChange(dataRange?.from, dataRange?.to)}
                         numberOfMonths={2}
                         footer={
                             <div className="flex p-2">

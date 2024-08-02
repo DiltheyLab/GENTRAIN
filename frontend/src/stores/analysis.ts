@@ -6,6 +6,7 @@ import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
+import { GroupWithCategory } from "@/hooks/database/groups/useGetAllGroups";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
@@ -18,7 +19,8 @@ export type GroupColoration = {
 
 export type SelectedBackground = {
     outbreaks: OutbreakSchema[];
-    groups: GroupSchema[];
+    groupsWithCategories: GroupWithCategory[];
+    casesWithoutOutbreakExist: boolean;
 };
 
 export type AnalysisSettings = {
@@ -26,8 +28,7 @@ export type AnalysisSettings = {
     selectedOutbreak: OutbreakSchema | null;
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
-    includeCasesWithoutOutbreak: boolean;
-    ignoreBackground: boolean;
+    showBackground: boolean;
     includeCasesWithLowGeneticDistance: boolean;
     excludeCasesOutsideOfDateRange: boolean;
     dateRange: DateRange;
@@ -70,12 +71,11 @@ export const defaultGraphSettings: GraphSettings = {
 export const getDefaultSettings = (): AnalysisSettings => {
     const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
     return {
-        includeAllCases: false,
+        includeAllCases: true,
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        includeCasesWithoutOutbreak: false,
-        ignoreBackground: false,
+        showBackground: true,
         includeCasesWithLowGeneticDistance: false,
         excludeCasesOutsideOfDateRange: false,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },

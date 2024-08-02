@@ -44,7 +44,6 @@ export const AnalysisVisualizationPanel = () => {
         } else if (analyseStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
             return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
         }
-
         return (
             <Graph2D
                 data={analyseStore.graphData}
@@ -57,19 +56,24 @@ export const AnalysisVisualizationPanel = () => {
     };
 
     return (
-        <div ref={containerRef} className="relative flex h-full flex-col rounded-xl bg-muted lg:col-span-2">
-            {analyseStore.settings.selectedOutbreak && (
+        <div
+            ref={containerRef}
+            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
+        >
+            {analyseStore.settings.selectedOutbreak ? (
                 <>
-                    <Legend nodes={analyseStore.graphData.nodes} />
+                    <Legend nodes={analyseStore.graphData.nodes} isOutbreakSeparated />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
                     />
+                    {renderGraph()}
                 </>
+            ) : (
+                <div className="flex justify-center items-center h-full w-full font-semibold">
+                    Wählen sie einen Ausbruch aus, um mit der Analyse zu starten.
+                </div>
             )}
-            <div className=" flex justify-center items-center h-full w-full" id="graph-container">
-                {renderGraph()}
-            </div>
         </div>
     );
 };

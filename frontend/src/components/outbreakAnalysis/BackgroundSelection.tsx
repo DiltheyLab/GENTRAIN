@@ -1,13 +1,12 @@
 import { Label } from "../ui/label";
 import MultipleSelector, { Option } from "../ui/multiSelect";
-import { Switch } from "../ui/switch";
 import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
-import { useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
+import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
 import { OutbreakSchema } from "@/database/outbreak";
-import { GroupSchema } from "@/database/groups";
-import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
-import { DateRangePicker } from "./DateRangePicker";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { CustomTooltip } from "../ui/customTooltip";
+import { Info } from "lucide-react";
+import { StepIndicator } from "../ui/step-indicator";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
@@ -24,13 +23,22 @@ export const BackgroundSelection = () => {
                 group: "Ausbrüche",
             });
         }
-        for (const group of groupsAndOutbreaks?.groups) {
+        if (groupsAndOutbreaks.casesWithoutOutbreakExist) {
+            options.push({
+                label: "Keinem Ausbruch zugewiesen",
+                value: "Keinem Ausbruch zugewiesen",
+                id: "0",
+                group: "Ausbrüche",
+            });
+        }
+        for (const group of groupsAndOutbreaks?.groupsWithCategories) {
             options.push({
                 label: group.name,
                 value: group.name,
                 id: group.id.toString(),
                 category_id: group.category_id.toString(),
-                group: "Andere Gruppen",
+                categoryName: group.categoryName,
+                group: group.categoryName || "Andere Gruppen",
             });
         }
         return options;
@@ -44,118 +52,91 @@ export const BackgroundSelection = () => {
         return filteredOptions;
     };
 
-    const handleIgnoreBackground = (value: boolean) => {
-        analysisStore.updateSettings({ ignoreBackground: value });
-    };
-
     const handleMultipleSelectChange = (values: Option[]) => {
-        const selectedBackground = {
+        const selectedBackground: SelectedBackground = {
             outbreaks: [] as OutbreakSchema[],
-            groups: [] as GroupSchema[],
-        } satisfies SelectedBackground;
+            groupsWithCategories: [] as GroupWithCategory[],
+            casesWithoutOutbreakExist: false,
+        };
         for (const value of values) {
-            if (value.group === "Ausbrüche") {
+            if (value.group === "Ausbrüche" && value.label !== "Keinem Ausbruch zugewiesen") {
                 const outbreak = {
                     id: +value.id,
                     name: value.value,
                 } satisfies OutbreakSchema;
                 selectedBackground.outbreaks.push(outbreak);
+            } else if (value.group === "Ausbrüche" && value.label === "Keinem Ausbruch zugewiesen") {
+                selectedBackground.casesWithoutOutbreakExist = true;
             } else {
                 const group = {
                     id: +value.id,
                     name: value.value,
                     category_id: +value.category_id!,
-                } satisfies GroupSchema;
-                selectedBackground.groups.push(group);
+                    categoryName: value.categoryName,
+                } satisfies GroupWithCategory;
+                selectedBackground.groupsWithCategories.push(group);
             }
         }
         analysisStore.updateSettings({ selectedBackground: selectedBackground });
     };
 
-    const handleIncludeCasesWithoutOutbreak = (value: boolean) => {
-        analysisStore.updateSettings({ includeCasesWithoutOutbreak: value });
-    };
-
-    const handleIncludeCasesWithLowGeneticDistance = (value: boolean) => {
-        analysisStore.updateSettings({ includeCasesWithLowGeneticDistance: value });
-    };
-
-    const changeGeneticDistanceThreshold = (value: number) => {
-        analysisStore.updateSettings({ geneticDistanceThreshold: value });
+    const handleBackgroundDataChange = (value: "specificBackgroundData" | "allBackgroundData") => {
+        if (value === "allBackgroundData") {
+            analysisStore.updateSettings({ includeAllCases: true });
+        } else {
+            analysisStore.updateSettings({ includeAllCases: false });
+        }
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-baseline justify-between">
-                <Label className="font-bold text-lg">2. Background festlegen</Label>
-                <div className="flex items-center space-x-2">
-                    <label htmlFor="zoomToFit" className="text-sm font-medium leading-none">
-                        Alle
-                    </label>
-                    <Checkbox
-                        id="zoomToFit"
-                        checked={analysisStore.settings.includeAllCases}
-                        onCheckedChange={(value) => analysisStore.updateSettings({ includeAllCases: Boolean(value) })}
-                    />
-                </div>
+        <div className="flex flex-col gap-4 mt-2">
+            <div className="flex items-center justify-between">
+                <Label className="flex items-center font-bold text-md mr-3">
+                    <StepIndicator>2</StepIndicator> Background auswählen
+                </Label>
+                <CustomTooltip
+                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
+                    content={
+                        <p>
+                            Sie können entweder <u>alle</u> gespeicherten oder <u>bestimmte</u> Falldaten von Ausbrüchen
+                            oder Kategorien als Background auswählen.
+                        </p>
+                    }
+                />
             </div>
-            <MultipleSelector
-                options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
-                onChange={(value) => handleMultipleSelectChange(value)}
-                placeholder="Bitte auswählen"
-                emptyIndicator={
-                    <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                        Keine Gruppen gefunden
-                    </p>
+            <RadioGroup
+                defaultValue={analysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"}
+                onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
+                    handleBackgroundDataChange(value)
                 }
-                groupBy="group"
-            />
-            <Label>Weitere Daten verwenden:</Label>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="includeCasesWithoutOutbreak"
-                    checked={analysisStore.settings.includeCasesWithoutOutbreak}
-                    onCheckedChange={(value) => handleIncludeCasesWithoutOutbreak(value)}
+            >
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
+                    <Label htmlFor="allBackgroundData" className="font-normal text-md">
+                        Alle Falldaten verwenden
+                    </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
+                    <Label htmlFor="specificBackgroundData" className="font-normal text-md">
+                        Falldaten auswählen
+                    </Label>
+                </div>
+            </RadioGroup>
+            {!analysisStore.settings.includeAllCases && (
+                <MultipleSelector
+                    options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
+                    value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                    onChange={(value) => handleMultipleSelectChange(value)}
+                    placeholder="Bitte auswählen"
+                    emptyIndicator={
+                        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                            Keine Gruppen gefunden
+                        </p>
+                    }
+                    groupBy="group"
                 />
-                <Label htmlFor="includeCasesWithoutOutbreak" className="font-normal text-[0.95rem]">
-                    Keinem Ausbruch zugewiesen
-                </Label>
-            </div>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="includeCasesWithLowGeneticDistance"
-                    checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
-                    onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
-                />
-                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-[0.95rem] leading-5">
-                    Unter oder gleich dem genetischen Distanzschwellenwert
-                </Label>
-            </div>
-            {analysisStore.settings.includeCasesWithLowGeneticDistance && (
-                <>
-                    <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
-                    <Input
-                        type="number"
-                        min={0}
-                        id="geneticDistanceThreshold"
-                        value={analysisStore.settings.geneticDistanceThreshold}
-                        onChange={(e) => changeGeneticDistanceThreshold(+e.target.value)}
-                    />
-                </>
             )}
-            <DateRangePicker />
-
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="ignoreBackground"
-                    checked={analysisStore.settings.ignoreBackground}
-                    onCheckedChange={(value) => handleIgnoreBackground(value)}
-                />
-                <Label htmlFor="ignoreBackground" className="font-normal text-[0.95rem]">
-                    Alles ausblenden
-                </Label>
-            </div>
         </div>
     );
 };

@@ -34,7 +34,7 @@ export const getGroupToColor = (cases: CaseWithRelationships[], caseAttribute: k
             throw new Error("caseAttribute must be a string");
         }
         if (caseAttribute === "outbreak_id") {
-            if (group === "Background") {
+            if (group === "Keinem Ausbruch zugewiesen") {
                 groupToColor[group] = "#D3D2D2";
             } else {
                 groupToColor[group] = setNodeColor(index) || "#000";
@@ -56,7 +56,7 @@ const getUniqueGroupsByCaseMetaData = (cases: CaseWithRelationships[], caseAttri
                 return attribute?.toLocaleDateString();
             }
             if (caseAttribute === "outbreak_id") {
-                return caseData.outbreak ? caseData.outbreak.name : "Background";
+                return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
             }
             return caseData[caseAttribute];
         })
@@ -86,13 +86,10 @@ const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak:
 const filterCasesByGroupsAndOutbreaks = (cases: CaseWithRelationships[], selectedBackground: SelectedBackground) => {
     return cases.filter(
         (caseData) =>
-            selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) ||
-            selectedBackground.groups.some((group) => caseData.group_ids.includes(group.id))
+            selectedBackground.outbreaks.some((outbreak) => caseData.outbreak_id === outbreak.id) || //include cases from selected outbreaks
+            selectedBackground.groupsWithCategories.some((group) => caseData.group_ids.includes(group.id)) || //include cases from selected groups
+            (selectedBackground.casesWithoutOutbreakExist && caseData.outbreak_id === null) //include cases without outbreak
     );
-};
-
-const filterCasesByBackground = (cases: CaseWithRelationships[]) => {
-    return cases.filter((caseData) => caseData.outbreak_id === null);
 };
 
 const deleteDuplicateCases = (cases: CaseWithRelationships[]) => {
@@ -140,36 +137,32 @@ const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: 
 const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
     const {
         selectedOutbreak,
-        includeCasesWithoutOutbreak,
-        ignoreBackground,
+        showBackground,
         selectedBackground,
         geneticDistanceThreshold,
         includeCasesWithLowGeneticDistance,
     } = analysisSettings;
 
-    // filter out cases without a sample -> Maybe removed in the future
     let graphCases = [] as CaseWithRelationships[];
+
+    // save cases which are in the selected outbreak to use it in the filters
+    let casesInOutbreak = [] as CaseWithRelationships[];
 
     // get cases from outbreak
     if (selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+        casesInOutbreak = [...graphCases];
     }
 
     // use all cases without any filtering
     if (analysisSettings.includeAllCases) {
-        graphCases = cases;
+        graphCases = [...cases];
     }
 
     // use cases which are selected in the multiselect field
-    if (selectedBackground) {
+    if (selectedBackground && !analysisSettings.includeAllCases) {
         const filteredCasesByBackground = filterCasesByGroupsAndOutbreaks(cases, selectedBackground);
         graphCases = graphCases.concat(filteredCasesByBackground);
-    }
-
-    // use cases which are not assigned to any outbreak
-    if (includeCasesWithoutOutbreak) {
-        const casesWithoutOutbreak = filterCasesByBackground(cases);
-        graphCases = graphCases.concat(casesWithoutOutbreak);
     }
 
     // use cases which have a distance below the threshold AND are connected to the selected outbreak
@@ -180,26 +173,29 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             selectedOutbreak,
             geneticDistanceThreshold
         );
-        const casesOfSelectedOutbreak = filterCasesByOutbreak(cases, selectedOutbreak);
-        graphCases = casesOfSelectedOutbreak.concat(casesWithLowGeneticDistance);
+        // add cases with low genetic distance to the cases in the outbreak
+        graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
     }
 
     // disable background cases by filtering outbreak cases
-    if (ignoreBackground && selectedOutbreak) {
-        graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
+    if (!showBackground && selectedOutbreak) {
+        graphCases = [...casesInOutbreak];
     }
 
     // filter out cases which are not in the selected time range
     if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
-        graphCases = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
+        const casesFilteredByDateRange = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
+        // add cases in date range to the cases in the outbreak
+        graphCases = casesInOutbreak.concat(casesFilteredByDateRange);
     }
 
     // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
     graphCases = graphCases.filter((caseData) => caseData.sample);
 
-    // it can happen that the graphCases has duplicated cases. Example: A case is in a selected
-    // group and in background (not outbreak). The cases is added twice to the graphCases array
-    // to prevent rendering the same case multiple times we filter out duplicates in the end
+    // the graphCases array contains duplicated cases. Example: A case is in a selected
+    // group and in background (not outbreak). The cases is added twice to the graphCases array.
+    // to prevent rendering the same case multiple times we filter out duplicates in the end instead of
+    // checking for duplicates in each filter step
     graphCases = deleteDuplicateCases(graphCases);
 
     return graphCases;
@@ -253,11 +249,11 @@ export const createGraphData = async (
 
     // create node objects for forced directed graph
     let nodes = graphCases.map((caseData) => {
-        const outbreakName = caseData?.outbreak?.name || "Background";
+        const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
         return {
             id: caseData.id,
             caseId: caseData.case_id,
-            group: caseData.outbreak ? caseData.outbreak.name : "Background",
+            group: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
             color: groupToColor[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
