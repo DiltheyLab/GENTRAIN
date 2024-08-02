@@ -195,26 +195,47 @@ const getGraphCases = async (
     }
 
     if (analysisSettings.showContactTracingEdges) {
-        /*         // get all case ids which are in contact with each other
-        const contactCaseIds = new Set<number>();
-        for (const contact of contacts) {
-            contactCaseIds.add(contact.case_id_1);
-            contactCaseIds.add(contact.case_id_2);
+        const allContactCases: CaseWithRelationships[] = graphCases.filter((caseData) => !caseData.sample);
+
+        //wenn wir nur kontaktfälle amzeigen wollen die mit Fällen mit samples verbunden sind, dann filtern wir die Fälle ohne samples raus,
+        //ansonsten werden alle Kontaktfälle angezeigt die in den Graphen stecken
+        const graphCaseIds = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
+
+        // graphcases enthält alle fälle, auch kontaktfälle die nach der filterung übrig geblieben sind
+        // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken und
+        const contactCases = allContactCases.filter((contactCase) => {
+            return contacts.some(
+                (contact) =>
+                    // kontaktfall ist im kontaktfile (spalte 1) und seine Verbindung (Spalte 2) ist ein Fall aus dem Graphen (vll graphen vorher filtern nach nur samples)
+                    (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) ||
+                    // kontaktfall ist im kontaktfile (spalte 2) und seine Verbindung (Spalte 1) ist ein Fall aus dem Graphen (vll graphen vorher filtern nach nur samples)
+                    (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1))
+            );
+        });
+        console.log("contactcases", contactCases);
+
+        let newGraphCasesWithDirectConnections = [] as CaseWithRelationships[];
+        for (const contactCase of contactCases) {
+            for (const contact of contacts) {
+                if (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) {
+                    newGraphCasesWithDirectConnections.push(contactCase);
+                }
+                if (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1)) {
+                    newGraphCasesWithDirectConnections.push(contactCase);
+                }
+            }
         }
 
-        const contactCaseIdsArray = Array.from(contactCaseIds);
+        newGraphCasesWithDirectConnections = deleteDuplicateCases(newGraphCasesWithDirectConnections);
+        console.log("newGraphCasesWithDirectConnections", newGraphCasesWithDirectConnections);
 
-        // search for graphcases without sample and which is in contact with a graphcase
-        const contactCases = graphCases.filter((graphCase) => {
-            return contactCaseIdsArray.includes(graphCase.id) && !graphCase.sample;
-        });
-        // filter out cases without a samplespät    
+        // filter out cases without a samples
         graphCases = graphCases.filter((caseData) => caseData.sample);
         // add contact cases to the graph cases
-        graphCases = graphCases.concat(contactCases); */
+        graphCases = graphCases.concat(contactCases);
     } else {
         // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
-        //graphCases = graphCases.filter((caseData) => caseData.sample);
+        graphCases = graphCases.filter((caseData) => caseData.sample);
     }
 
     // the graphCases array contains duplicated cases. Example: A case is in a selected
@@ -230,7 +251,8 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
     const graphCasesWithoutContacts = graphCases.filter((caseData) => caseData.sample); // kontaktfälle erstmal rausfiltern
     const graphCasesIds: number[] = [];
 
-    for (const caseData of graphCasesWithoutContacts) {
+    for (const caseData of graphCases) {
+        //graphCases ersetzen mit grapjCasesWithoutContacts
         graphCasesIds.push(caseData.id);
     }
 
@@ -249,7 +271,6 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
             contactEdges.push(link);
         }
     }
-    console.log("contactEdges", contactEdges);
 
     return contactEdges;
 };
@@ -327,6 +348,16 @@ export const createGraphData = async (
     // create node objects for forced directed graph
     let nodes: CustomNode[] = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
+        if (!caseData.sample) {
+            return {
+                id: caseData.id,
+                caseId: caseData.case_id,
+                caseData: caseData,
+                group: "Kontaktfall",
+                color: "#00FF00",
+                registeredAt: caseData.registered_at.toLocaleDateString(),
+            } as CustomNode;
+        }
         return {
             id: caseData.id,
             caseId: caseData.case_id,
@@ -348,7 +379,6 @@ export const createGraphData = async (
     }) as CustomLink[];
 
     if (analysisSettings.showContactTracingEdges && contacts) {
-        nodes = nodes.filter((node) => node.caseData.sample); // erstmal keine Kontaktknoten anzeigen
         const contactTracingLinks = createContactLinks(graphCases, contacts);
         links = links.concat(contactTracingLinks);
     } else {
