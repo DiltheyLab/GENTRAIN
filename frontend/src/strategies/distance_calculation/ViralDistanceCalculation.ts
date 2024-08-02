@@ -175,63 +175,52 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         return alignment;
     };
 
-    addMutationToPositions(
-        mutation: { type: string; replacement: string },
-        position: number,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
-    ) {
-        position in positions ? positions[position].push(mutation) : (positions[position] = [mutation]);
-        return positions;
-    }
-
     getMutationPositions(sample: SampleSchema) {
         if (!sample.variants) {
             return {};
         }
-        let positions: any = {};
+        let mutationPositions: any = {};
 
-        // Deletions
-        for (const mutation of sample.variants["deletions"]) {
-            let start = mutation["start"];
-            let len = mutation["length"];
+        mutationPositions = this.addInsertionMutations(sample, mutationPositions);
+        mutationPositions = this.addSubstitutionMutations(sample, mutationPositions);
+        mutationPositions = this.addAmbiguousMutations(sample, mutationPositions);
+        mutationPositions = this.addDeletionMutations(sample, mutationPositions);
 
-            // add each position of a deletion on its own
-            for (let j = start; j < start + len; j++) {
-                this.addMutationToPositions(
-                    {
-                        type: "del",
-                        replacement: "-",
-                    },
-                    j,
-                    positions
-                );
-            }
+        return mutationPositions;
+    }
+
+    private addInsertionMutations(
+        sample: SampleSchema,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        if (!sample.variants) {
+            return;
         }
-
-        // Insertions
         for (const mutation of sample.variants["insertions"]) {
-            this.addMutationToPositions(
-                {
-                    type: "ins",
-                    replacement: mutation["ins"],
-                },
-                mutation["pos"],
-                positions
-            );
+            positions = this.addInsertionToPositions(mutation["ins"], mutation["pos"], positions);
         }
+        return positions;
+    }
 
-        // Substitutions
+    private addSubstitutionMutations(
+        sample: SampleSchema,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        if (!sample.variants) {
+            return;
+        }
         for (const mutation of sample.variants["substitutions"]) {
-            this.addMutationToPositions(
-                {
-                    type: "snp",
-                    replacement: mutation["queryNuc"],
-                },
-                mutation["pos"],
-                positions
-            );
+            positions = this.addSubstitutionToPositions(mutation["queryNuc"], mutation["pos"], positions);
         }
-
+        return positions;
+    }
+    private addAmbiguousMutations(
+        sample: SampleSchema,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        if (!sample.variants) {
+            return;
+        }
         // Ns
         for (const mutation of sample.variants["missing"]) {
             // { begin: 28881, end: 28883, character: "N" }
@@ -241,14 +230,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
             // add each position of a N block separately
             for (let j = start; j < end; j++) {
-                this.addMutationToPositions(
-                    {
-                        type: "snp",
-                        replacement: char,
-                    },
-                    j,
-                    positions
-                );
+                positions = this.addSubstitutionToPositions(char, j, positions);
             }
         }
 
@@ -261,41 +243,92 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
             // add each position of a ambig char block separately
             for (let j = start; j < end; j++) {
-                this.addMutationToPositions(
-                    {
-                        type: "snp",
-                        replacement: char,
-                    },
-                    j,
-                    positions
-                );
+                positions = this.addSubstitutionToPositions(char, j, positions);
+            }
+        }
+        return positions;
+    }
+
+    private addDeletionMutations(
+        sample: SampleSchema,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        if (!sample.variants) {
+            return;
+        }
+        // Deletions
+        for (const mutation of sample.variants["deletions"]) {
+            let start = mutation["start"];
+            let len = mutation["length"];
+
+            // add each position of a deletion on its own
+            for (let j = start; j < start + len; j++) {
+                positions = this.addDeletionToPositions(j, positions);
             }
         }
 
         // Start of alignment
         for (let i = 0; i < sample.variants["alignmentStart"]; i++) {
-            this.addMutationToPositions(
-                {
-                    type: "del",
-                    replacement: "-",
-                },
-                i,
-                positions
-            );
+            positions = this.addDeletionToPositions(i, positions);
         }
 
         // End of alignment
         for (let i = sample.variants["alignmentEnd"]; i < referenceString.length; i++) {
-            this.addMutationToPositions(
-                {
-                    type: "del",
-                    replacement: "-",
-                },
-                i,
-                positions
-            );
+            positions = this.addDeletionToPositions(i, positions);
         }
+        return positions;
+    }
 
+    private addSubstitutionToPositions(
+        character: string,
+        position: number,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        return this.includeMutationInPositionsArray(
+            {
+                type: "snp",
+                replacement: character,
+            },
+            position,
+            positions
+        );
+    }
+
+    private addInsertionToPositions(
+        character: string,
+        position: number,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        return this.includeMutationInPositionsArray(
+            {
+                type: "ins",
+                replacement: character,
+            },
+            position,
+            positions
+        );
+    }
+
+    private addDeletionToPositions(
+        position: number,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        return this.includeMutationInPositionsArray(
+            {
+                type: "del",
+                replacement: "-",
+            },
+            position,
+            positions
+        );
+    }
+
+    private includeMutationInPositionsArray(
+        mutation: { type: string; replacement: string },
+        position: number,
+        positions: { [position: number]: { type: string; replacement: string } }[][]
+    ) {
+        position in positions ? positions[position].push(mutation) : (positions[position] = [mutation]);
         return positions;
     }
 
