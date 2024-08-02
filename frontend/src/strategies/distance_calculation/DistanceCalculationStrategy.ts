@@ -52,8 +52,8 @@ export abstract class DistanceCalculationStrategy {
     };
 
     initProgress = () => {
-        const sampleAmount = Object.keys(this.samples).length - 1;
-        this.sampleUploadState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
+        const sampleAmount = Object.keys(this.samples).length;
+        this.sampleUploadState.setDistanceCalculationSum(sampleAmount);
     };
 
     calculateSampleDistances = async () => {
@@ -67,15 +67,14 @@ export abstract class DistanceCalculationStrategy {
             const previousSamples = this.samples.slice(0, parseInt(index));
             for (const sample2 of previousSamples) {
                 const distance = await this.calculateSampleDistance(sample1, sample2);
-
                 await db.distances.add({
                     sample_id_1: sample1.id,
                     sample_id_2: sample2.id,
                     value: distance,
                     distance_matrix_id: this.distanceMatrixId,
                 });
-                useSampleUploadStore.getState().incrementDistanceCalculationCount();
             }
+            useSampleUploadStore.getState().incrementDistanceCalculationCount();
         }
     };
 }
