@@ -90,7 +90,7 @@ export const BackgroundSelection = () => {
 
     return (
         <div className="flex flex-col gap-4 mt-2">
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
                 <Label className="flex items-center font-bold text-md mr-3">
                     <StepIndicator>2</StepIndicator> Background auswählen
                 </Label>
