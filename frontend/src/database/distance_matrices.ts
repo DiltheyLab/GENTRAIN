@@ -34,6 +34,10 @@ export const updateDistanceMatrixById = async (distance_matrix_id: number, field
     await db.distance_matrices.update(distance_matrix_id, fields);
 };
 
+export const deleteDistanceMatrixByPathogenId = async (pathogen_id: number) => {
+    await db.distance_matrices.where({ pathogen_id: pathogen_id }).delete();
+};
+
 export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) => {
     const distanceMatrix = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
     if (!distanceMatrix) return;

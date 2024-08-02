@@ -5,7 +5,9 @@ import { Button } from "../ui/button";
 import { getDefaultSettings, useAnalysisStore } from "@/stores/analysis";
 import { useToast } from "../ui/use-toast";
 import { createAnalysis } from "@/database/analyses";
-import { useGetAllAnalyses } from "@/hooks/database/analyses/useGetAllAnalyses";
+import { useAppStore } from "@/stores/app";
+import { useNavigate } from "react-router-dom";
+import { useGetAnalysesForActivePathogen } from "@/hooks/database/analyses/useGetAnalysesForActivePathogen";
 
 type AnalysisFormProps = {
     changeIsOpen: () => void;
@@ -15,8 +17,10 @@ type AnalysisFormProps = {
 export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
     const [analysisName, setAnalysisName] = useState("");
     const analysisStore = useAnalysisStore();
-    const analyses = useGetAllAnalyses();
+    const analyses = useGetAnalysesForActivePathogen();
+    const { activePathogen } = useAppStore();
     const { toast } = useToast();
+    const navigate = useNavigate();
 
     const isUniqueName = () => {
         return analyses?.find((analysis) => analysis.name === analysisName) === undefined;
@@ -31,10 +35,22 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
     };
 
     const safeAnalysis = async () => {
+        if (!activePathogen) {
+            changeIsOpen();
+
+            navigate("/");
+            toast({
+                title: "Fehler beim Speichern der Analyse",
+                description: "Die Analyse konnte nicht gespeichert werden. Bitte wählen Sie zunächst ein Pathogen aus.",
+                duration: 10000,
+            });
+            console.error("Error while saving analysis");
+            return;
+        }
         try {
             const defaultSettings = getDefaultSettings();
             //create a new analysis in db and update the name in the store
-            const id = await createAnalysis(analysisName, defaultSettings);
+            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings);
             analysisStore.updateName(analysisName);
             analysisStore.updateId(id);
             analysisStore.updateSettings(defaultSettings);

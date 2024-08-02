@@ -6,10 +6,10 @@ import { UploadSection } from "@/components/dataUpload/UploadSection";
 import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/app";
-import { deleteDataForPathogen } from "@/database/db";
 import { useState } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DeleteDialog } from "@/components/ui/deleteDialog";
+import { deleteDataForPathogen } from "@/database/pathogens";
 
 export function DataUpload() {
     const casesData = useGetAllCasesWithRelationships();

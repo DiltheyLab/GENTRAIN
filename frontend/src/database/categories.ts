@@ -5,6 +5,7 @@ import { GroupSchema } from "./groups";
 export interface CategorySchema {
     id: number;
     name: string;
+    pathogen_id: number;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -14,6 +15,7 @@ export interface CategoriesWithGroups extends CategorySchema {
 
 export const categoryRules = z.object({
     name: z.string().min(1),
+    pathogen_id: z.number(),
 });
 
 export const getAllCategoriesWithGroups = async () => {
@@ -26,4 +28,8 @@ export const getAllCategoriesWithGroups = async () => {
         categoriesWithGroups[key].groups = groups;
     }
     return categoriesWithGroups;
+};
+
+export const deleteCategoriesByPathogenId = async (pathogen_id: number) => {
+    await db.categories.where({ pathogen_id: pathogen_id }).delete();
 };
