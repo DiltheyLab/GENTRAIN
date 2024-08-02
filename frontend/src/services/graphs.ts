@@ -36,7 +36,7 @@ export const getGroupToColor = (cases: CaseWithRelationships[], caseAttribute: k
         }
         if (caseAttribute === "outbreak_id") {
             if (group === "Keinem Ausbruch zugewiesen") {
-                groupToColor[group] = "#999";
+                groupToColor[group] = "#CCC";
             } else {
                 groupToColor[group] = setNodeColor(index) || "#000";
             }

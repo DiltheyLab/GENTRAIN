@@ -140,7 +140,7 @@ export const Graph2D = ({
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
             linkCanvasObjectMode={() => "after"}
             linkLineDash={(link) => (link.type === "Dashed" ? [3, 3] : [])}
-            linkColor={(link) => (link.type === "Dashed" ? "red" : "#999")}
+            linkColor={(link) => (link.type === "Dashed" ? "red" : "#CCC")}
             linkWidth={linkWidth}
             /*             linkLabel={(link) => `${link.value}`}
              */
