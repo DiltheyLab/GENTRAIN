@@ -24,9 +24,9 @@ export const Graph2D = ({
     charge = -80,
     zoomToFit = false,
     nodeSize = 6,
-    linkWidth = 3,
+    linkWidth = 2,
     showNodeLabel = false,
-    labelTransparency = 1,
+    labelTransparency = 0.3,
     coolDownTicks = 120,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
@@ -84,9 +84,10 @@ export const Graph2D = ({
         // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
 
+        /* 
         // Start line
         ctx.beginPath();
-        ctx.moveTo(source.x, source.y);
+        ctx.moveTo(source.x, source.y); 
 
         // Set line style based on link type
         if (link.type === "Dashed") {
@@ -96,11 +97,12 @@ export const Graph2D = ({
             ctx.setLineDash([]); // Solid line
             ctx.strokeStyle = "#CCC"; // Line color
         }
-
+        
         // End line
         ctx.lineTo(target.x, target.y);
         ctx.lineWidth = linkWidth;
         ctx.stroke();
+        */
 
         // Calculate midpoint for text
         const midX = (source.x + target.x) / 2;
@@ -132,12 +134,16 @@ export const Graph2D = ({
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
-            linkLabel={(link) => `${link.value}`}
-            linkWidth={linkWidth}
             d3VelocityDecay={0.3}
             onEngineStop={handleEngineStop}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
+            linkCanvasObjectMode={() => "after"}
+            linkLineDash={(link) => (link.type === "Dashed" ? [3, 3] : [])}
+            linkColor={(link) => (link.type === "Dashed" ? "red" : "#999")}
+            linkWidth={linkWidth}
+            /*             linkLabel={(link) => `${link.value}`}
+             */
         />
     );
 };
