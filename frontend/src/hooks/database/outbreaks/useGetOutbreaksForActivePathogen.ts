@@ -2,7 +2,7 @@ import { getOutbreaksForPathogenId } from "@/database/outbreaks";
 import { useAppStore } from "@/stores/app";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const useGetGetOutbreaksForActivePathogen = () => {
+export const useGetOutbreaksForActivePathogen = () => {
     const activePathogen = useAppStore.getState().activePathogen;
     return useLiveQuery(() => {
         if (!activePathogen) {

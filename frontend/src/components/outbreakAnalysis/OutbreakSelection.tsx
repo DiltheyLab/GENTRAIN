@@ -5,12 +5,12 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreaks";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
-import { useGetGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
+import { useGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { StepIndicator } from "../ui/step-indicator";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
-    const outbreaks = useGetGetOutbreaksForActivePathogen();
+    const outbreaks = useGetOutbreaksForActivePathogen();
     const caseWithRelationships = useGetAllCasesWithRelationships();
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
