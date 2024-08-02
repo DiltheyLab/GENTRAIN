@@ -5,6 +5,7 @@ import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
+import { StepIndicator } from "../ui/step-indicator";
 
 export const BackgroundFilter = () => {
     const analysisStore = useAnalysisStore();
@@ -23,8 +24,10 @@ export const BackgroundFilter = () => {
 
     return (
         <div className="flex flex-col gap-4 mt-2">
-            <div className="flex items-center">
-                <Label className="font-bold text-lg mr-3">3. Background filtern</Label>
+            <div className="flex items-center justify-between">
+                <Label className="flex items-center font-bold text-md mr-3">
+                    <StepIndicator>3</StepIndicator> Background filtern
+                </Label>
                 <CustomTooltip
                     trigger={<Info className="h-5 w-5 cursor-pointer" />}
                     content={
