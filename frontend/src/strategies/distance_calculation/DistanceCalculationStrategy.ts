@@ -53,7 +53,7 @@ export abstract class DistanceCalculationStrategy {
 
     initProgress = () => {
         const sampleAmount = Object.keys(this.samples).length;
-        this.sampleUploadState.setDistanceCalculationSum(sampleAmount);
+        this.sampleUploadState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
 
     calculateSampleDistances = async () => {
