@@ -4,6 +4,7 @@ export interface AnalysisSchema {
     id: number;
     name: string;
     settings: AnalysisSettings;
+    pathogen_id: number;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -12,10 +13,16 @@ export const getAllAnalyses = () => {
     return db.analyses.toArray();
 };
 
-export const createAnalysis = async (name: string, settings: AnalysisSettings) => {
+export const getAnalysesForPathogenId = async (pathogenId: number) => {
+    const analyses = await db.analyses.where({ pathogen_id: pathogenId }).toArray();
+    return analyses;
+};
+
+export const createAnalysis = async (name: string, pathogen_id: number, settings: AnalysisSettings) => {
     const analysis = {
         name: name,
         settings: settings,
+        pathogen_id: pathogen_id,
     };
     return await db.analyses.add(analysis);
 };
@@ -26,4 +33,8 @@ export const getAnalysisByID = (id: number) => {
 
 export const updateAnalysisSettings = async (id: number, settings: AnalysisSettings) => {
     return await db.analyses.update(id, { settings: settings });
+};
+
+export const deleteAnalysesByPathogenId = async (pathogen_id: number) => {
+    await db.analyses.where({ pathogen_id: pathogen_id }).delete();
 };

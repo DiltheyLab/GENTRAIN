@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
-import { useGetAllAnalyses } from "@/hooks/database/analyses/useGetAllAnalyses";
 import { useAnalysisStore } from "@/stores/analysis";
 import { AnalysisSchema } from "@/database/analyses";
 import { X } from "lucide-react";
 import { db } from "@/database/db";
 import { useToast } from "../ui/use-toast";
 import { DeleteDialog } from "../ui/deleteDialog";
+import { useGetAnalysesForActivePathogen } from "@/hooks/database/analyses/useGetAnalysesForActivePathogen";
 
 type AnalysisSelectionProps = {
     changeIsOpen: () => void;
@@ -16,7 +16,7 @@ type AnalysisSelectionProps = {
 
 export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
-    const analyses = useGetAllAnalyses();
+    const analyses = useGetAnalysesForActivePathogen();
     const analysisStore = useAnalysisStore();
     const { toast } = useToast();
 

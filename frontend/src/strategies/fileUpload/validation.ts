@@ -40,7 +40,8 @@ export const findExistingContactInDB = async (row: string[], cases: CaseSchema[]
     }
 
     const existingContact = await db.contacts
-        .where({ case_id_1: caseId1, case_id_2: caseId2, type: row[2], context: row[3] })
+        .where("[case_id_1+case_id_2+type+context]")
+        .equals([caseId1, caseId2, row[2], row[3]])
         .first();
     return existingContact;
 };
