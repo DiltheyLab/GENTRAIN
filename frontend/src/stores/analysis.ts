@@ -6,6 +6,7 @@ import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
+import { COLORPALETTENODES } from "@/colors/colorPaletteNodes";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
@@ -35,6 +36,7 @@ export type AnalysisSettings = {
     showContactTracingEdges: boolean;
     hideEdgesAboveThreshold: boolean;
     groupColorations: GroupColoration;
+    colorPaletteNodes: string[];
     category: CategorySchema | null;
 };
 
@@ -82,6 +84,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         showContactTracingEdges: false,
         hideEdgesAboveThreshold: false,
         groupColorations: [],
+        colorPaletteNodes: COLORPALETTENODES,
         category: null,
     };
 };

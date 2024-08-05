@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { AnalysisSettings, GraphSettings } from "./analysis";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
+import { COLORPALETTENODES } from "@/colors/colorPaletteNodes";
 
 const defaultGraphSettings: GraphSettings = {
     graphDimension: "2D",
@@ -30,6 +31,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         showContactTracingEdges: false,
         hideEdgesAboveThreshold: false,
         groupColorations: [],
+        colorPaletteNodes: COLORPALETTENODES,
         category: null,
     };
 };
