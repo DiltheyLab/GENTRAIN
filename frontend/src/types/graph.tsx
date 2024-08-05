@@ -4,18 +4,19 @@ export type CustomNode = {
     id: number;
     caseId: string;
     caseData: CaseWithRelationships;
-    group: string;
+    cluster: string;
     color: string;
     registeredAt?: string;
 };
-
-export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" | "Dashed" | "Solid";
 
 export type CustomLink = {
     source: number;
     target: number;
     value: string;
-    type: LinkType;
+    color: string;
+    curvature: number;
+    type: string;
+    context: string;
 };
 
 export type GraphData = {
