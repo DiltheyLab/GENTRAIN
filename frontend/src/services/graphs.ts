@@ -7,6 +7,7 @@ import { DateRange } from "react-day-picker";
 import { CustomNode, CustomLink, GraphData } from "@/types/graph";
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
+import { COLORPALETTELINKS } from "@/colors/colorPalettes";
 
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
@@ -20,7 +21,7 @@ const setNodeGradientColor = (normalizedIndex: number): string => {
     return `hsl(${hue}, 100%, 50%)`;
 };
 
-type GroupToColor = {
+type ColorMapForClusters = {
     [key: string]: string;
 };
 
@@ -28,7 +29,7 @@ export const getGroupToColor = (cases: CaseWithRelationships[], caseAttribute: k
     // Extract unique groups and assign colors
     const uniqueGroups = getUniqueGroupsByCaseMetaData(cases, caseAttribute);
 
-    const groupToColor: GroupToColor = {};
+    const groupToColor: ColorMapForClusters = {};
     uniqueGroups.forEach((group, index) => {
         // Ensure group is a string that can be used as an index before proceeding
         if (typeof group !== "string" && typeof group !== "number") {
@@ -63,7 +64,6 @@ const getUniqueGroupsByCaseMetaData = (cases: CaseWithRelationships[], caseAttri
         })
         .filter((group) => group);
     const uniqueGroups = [...new Set(groups)];
-    uniqueGroups.sort();
     return uniqueGroups;
 };
 
@@ -78,6 +78,62 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
         return 0;
     });
     return uniqueSamplingTimes;
+};
+
+const getUniqueCluster = (cases: CaseWithRelationships[]) => {
+    // Extract unique cluster
+    const cluster = cases.map((caseData) => {
+        return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
+    });
+    return [...new Set(cluster)];
+};
+
+const sortCluster = (uniqueCluster: string[], selectedOutbreak: OutbreakSchema | null) => {
+    const sortedCluster = uniqueCluster.sort();
+
+    //find the index of the group "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const noOutbreakIndex = sortedCluster.indexOf("Keinem Ausbruch zugewiesen");
+    if (noOutbreakIndex !== -1) {
+        sortedCluster.splice(noOutbreakIndex, 1);
+        sortedCluster.push("Keinem Ausbruch zugewiesen");
+    }
+
+    // if no outbreak is selected return the sorted cluster -> no special sorting needed for dashboard graph
+    if (!selectedOutbreak) return sortedCluster;
+
+    // find the index of the selected outbreak in the sorted cluster and put it at the beginning of the array
+    const outbreakIndex = sortedCluster.indexOf(selectedOutbreak?.name);
+    if (outbreakIndex !== -1) {
+        sortedCluster.splice(outbreakIndex, 1);
+        sortedCluster.unshift(selectedOutbreak?.name);
+    }
+
+    return sortedCluster;
+};
+
+export const createColorMapForClusters = (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
+    const selectedOutbreak = analysisSettings.selectedOutbreak;
+    const colorPalette = analysisSettings.colorPaletteNodes;
+
+    // Extract unique cluster
+    const uniqueCluster = getUniqueCluster(cases);
+
+    // Sort cluster that the selected outbreak is at the beginning of the array and the cluster "Keinem Ausbruch zugewiesen" at the end
+    const sortedCluster = sortCluster(uniqueCluster as string[], selectedOutbreak);
+
+    const colorMapForClusters: ColorMapForClusters = {};
+    sortedCluster.forEach((cluster, index) => {
+        if (cluster === "Keinem Ausbruch zugewiesen") {
+            // the cluster "Keinem Ausbruch zugewiesen" gets a grey color which is always the last color in the color palette
+            colorMapForClusters[cluster] = colorPalette[colorPalette.length - 1];
+        } else {
+            // the color pallete has 34 specific colors
+            // if there are more clusters than colors we use the setNodeColor function to generate a color
+            colorMapForClusters[cluster] = colorPalette[index] || setNodeColor(index);
+        }
+    });
+
+    return colorMapForClusters;
 };
 
 const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
@@ -291,17 +347,34 @@ const getGraphCases = async (
     return graphCases;
 };
 
-const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
-    // const graphCasesWithoutContacts = graphCases.filter((caseData) => caseData.sample); // kontaktfälle erstmal rausfiltern
-    const graphCasesIds: number[] = [];
+const createColorMapForContacts = (contacts: ContactSchema[]) => {
+    const contactTypes = contacts.map((contact) => contact.type);
+    const uniqueContactTypes = [...new Set(contactTypes)];
 
-    for (const caseData of graphCases) {
-        //graphCases ersetzen mit grapjCasesWithoutContacts
-        graphCasesIds.push(caseData.id);
-    }
+    console.log("uniqueContactTypes", uniqueContactTypes);
+
+    const colorMapForContacts: ColorMapForClusters = {};
+    uniqueContactTypes.forEach((contactType, index) => {
+        colorMapForContacts[contactType] = COLORPALETTELINKS[index] || setNodeColor(index);
+    });
+    console.log("colorMapForContacts", colorMapForContacts);
+
+    return colorMapForContacts;
+};
+
+const createCurvatureMapForContacts = (contacts: ContactSchema[]) => {
+    const contactConnectionPairs = contacts.map((contact) => {
+        return [contact.case_id_1, contact.case_id_2];
+    });
+    console.log(contactConnectionPairs);
+};
+
+const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
+    const graphCasesIds = graphCases.map((caseData) => caseData.id);
+
+    const colorMapForContacts = createColorMapForContacts(contacts);
 
     const contactEdges: CustomLink[] = [];
-
     for (const contact of contacts) {
         if (contact.case_id_1 === contact.case_id_2) continue;
         // only add contact edges if both contact cases are in the already filtered graphCases array
@@ -310,11 +383,17 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
                 source: contact.case_id_1,
                 target: contact.case_id_2,
                 value: "",
-                type: "Dashed",
+                color: colorMapForContacts[contact.type],
+                type: contact.type,
+                context: contact.context,
             } as CustomLink;
             contactEdges.push(link);
         }
     }
+
+    // am ende alle links anschauen, wenn 2 zu gleichen gehen cuvature einfügen
+    // so bekommt man auch die die bereits einen genetic relation haben mit einer gerade hin plus die anderen contact
+    // schleife durch links und schauen
 
     return contactEdges;
 };
@@ -362,17 +441,18 @@ export const createGraphData = async (
     // calculate edges that are in the mst by using kruskal's algorithm
     const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
 
-    const groupToColor = getGroupToColor(cases, "outbreak_id");
+    const colorMapForClusters = createColorMapForClusters(cases, analysisSettings);
 
     // create node objects for forced directed graph
     let nodes: CustomNode[] = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
+
         return {
             id: caseData.id,
             caseId: caseData.case_id,
             caseData: caseData,
-            group: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
-            color: groupToColor[outbreakName],
+            cluster: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
+            color: colorMapForClusters[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
     });
@@ -383,9 +463,12 @@ export const createGraphData = async (
             source: graphCases[edge.source].id,
             target: graphCases[edge.target].id,
             value: edge.weight.toString(),
-            type: "Solid",
+            color: "#CCC",
+            curvature: 0,
+            type: "Genetische Distanz",
+            context: "",
         };
-    }) as CustomLink[];
+    }) satisfies CustomLink[];
 
     if (analysisSettings.showContactTracingEdges && contacts) {
         const contactTracingLinks = createContactLinks(graphCases, contacts);

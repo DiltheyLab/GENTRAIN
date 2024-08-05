@@ -21,7 +21,7 @@ export const Graph2D = ({
     width,
     height,
     linkDistance = 70,
-    charge = -80,
+    charge = -50,
     zoomToFit = false,
     nodeSize = 6,
     linkWidth = 2,
@@ -84,11 +84,10 @@ export const Graph2D = ({
         // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
 
-        /* 
         // Start line
         ctx.beginPath();
-        ctx.moveTo(source.x, source.y); 
-
+        ctx.moveTo(source.x, source.y);
+        /* 
         // Set line style based on link type
         if (link.type === "Dashed") {
             ctx.setLineDash([3, 3]); // Set dashed line pattern
@@ -96,13 +95,13 @@ export const Graph2D = ({
         } else {
             ctx.setLineDash([]); // Solid line
             ctx.strokeStyle = "#CCC"; // Line color
-        }
-        
+        } */
+        ctx.strokeStyle = link.color; // Line color
+
         // End line
         ctx.lineTo(target.x, target.y);
         ctx.lineWidth = linkWidth;
         ctx.stroke();
-        */
 
         // Calculate midpoint for text
         const midX = (source.x + target.x) / 2;
@@ -129,7 +128,6 @@ export const Graph2D = ({
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
-            nodeRelSize={nodeSize}
             width={width}
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
@@ -139,11 +137,10 @@ export const Graph2D = ({
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
             linkCanvasObjectMode={() => "after"}
-            linkLineDash={(link) => (link.type === "Dashed" ? [3, 3] : [])}
-            linkColor={(link) => (link.type === "Dashed" ? "red" : "#CCC")}
+            //linkLineDash={(link) => (link.contact ? [3, 3] : [])}
+            //linkCurvature={(link) => (link.contact && link.contact.type === "Contact person" ? 0.25 : 0)}
+            linkColor={(link) => link.color}
             linkWidth={linkWidth}
-            /*             linkLabel={(link) => `${link.value}`}
-             */
         />
     );
 };

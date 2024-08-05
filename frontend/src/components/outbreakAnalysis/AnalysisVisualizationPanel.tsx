@@ -66,7 +66,11 @@ export const AnalysisVisualizationPanel = () => {
         >
             {analyseStore.settings.selectedOutbreak ? (
                 <>
-                    <Legend nodes={analyseStore.graphData.nodes} isOutbreakSeparated />
+                    <Legend
+                        nodes={analyseStore.graphData.nodes}
+                        links={analyseStore.graphData.links}
+                        isOutbreakSeparated
+                    />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}

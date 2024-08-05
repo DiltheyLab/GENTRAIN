@@ -97,7 +97,7 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-20 bottom-3 right-3">
                 Reset
             </Button>
-            <Legend nodes={dashboardGraphStore.graphData.nodes} />
+            <Legend nodes={dashboardGraphStore.graphData.nodes} links={dashboardGraphStore.graphData.links} />
 
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {renderGraph()}
