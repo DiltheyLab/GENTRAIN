@@ -10,4 +10,4 @@ services:
       - "4000:4000"
     volumes:
       - ./backend:/backend
-    env_file: "./backend/.env"
+    env_file: "./backend/backend/.env"
