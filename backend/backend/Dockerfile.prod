@@ -11,9 +11,7 @@ COPY environment.yaml /backend
 RUN conda env create -f /backend/environment.yaml
 
 RUN mkdir /backend
-RUN mv * /backend/backend
-RUN mv /backend/backend/uwsgi.ini /backend
-
+RUN mv * /backend/backend && mv /backend/backend/uwsgi.ini /backend
 # Create a new user 'uwsgi' and set it as the current user
 RUN useradd -m uwsgi
 USER uwsgi
