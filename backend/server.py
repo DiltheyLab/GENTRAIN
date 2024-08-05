@@ -1,11 +1,7 @@
 import os
-import sys
 from flask import Flask
 from flask_cors import CORS
 from .routes import api
-
-sys.path.insert(0, os.path.realpath(os.path.dirname(__file__)))
-print(sys.path)
 
 app = Flask(__name__)
 
