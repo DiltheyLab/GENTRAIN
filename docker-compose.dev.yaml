@@ -9,5 +9,5 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./backend:/app
+      - ./backend:/backend
     env_file: "./backend/.env"

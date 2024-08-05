@@ -2,13 +2,13 @@
 FROM --platform=linux/amd64 continuumio/miniconda3:latest
 
 # Set working directory in the container
-WORKDIR /app
+WORKDIR /backend
 
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml .
 
 # Create a new Conda environment from the 'environment.yml' file
-RUN conda env create -f /app/environment.yaml
+RUN conda env create -f /backend/environment.yaml
 # Ensure the Conda environment is activated
 RUN echo "source activate dashboard" > ~/.bashrc
 ENV PATH /opt/conda/envs/dashboard/bin:$PATH
@@ -16,4 +16,4 @@ ENV PATH /opt/conda/envs/dashboard/bin:$PATH
 # Copy the current directory contents into the container at the working directory
 COPY . .
 
-ENTRYPOINT ["/app/init.sh"]
+ENTRYPOINT ["/backend/init.sh"]

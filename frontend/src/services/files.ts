@@ -52,17 +52,16 @@ const collectFastaIdsAndContent = (fastaSequences: Array<string>) => {
     return fastaSequencesArray;
 };
 
-export const formatTextInArray = (fileReaderResult: FileReaderResult | FileReaderResult[]) => {
+export const formatInArray = (fileReaderResult: FileReaderResult | FileReaderResult[]) => {
     if (fileReaderResult instanceof Array) {
         // if the fileReaderResult is an array, we assume that it contains multiple files
         let fastaSequencesArray = [];
         for (const file of fileReaderResult) {
-            // fasta file name contains fasta id (bacterial)
             if (file.mimetype === "fasta") {
-                let fastaSquences = Object.values(file)[0].split(/(?=>)/g);
-                fastaSquences.shift();
-
-                fastaSequencesArray.push(collectFastaIdsAndContent(fastaSquences));
+                // for bacterial uploads:
+                // fasta file name contains fasta id
+                // content contains assembly
+                fastaSequencesArray.push({ fastaId: file.filename.split(".")[0], sequence: file.content });
             }
         }
         return fastaSequencesArray;
