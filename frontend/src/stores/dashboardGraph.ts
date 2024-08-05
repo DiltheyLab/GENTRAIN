@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { AnalysisSettings, GraphSettings } from "./analysis";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
-import { COLORPALETTENODES } from "@/colors/colorPaletteNodes";
+import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 const defaultGraphSettings: GraphSettings = {
     graphDimension: "2D",

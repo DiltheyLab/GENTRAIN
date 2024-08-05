@@ -6,7 +6,7 @@ import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLORPALETTENODES } from "@/colors/colorPaletteNodes";
+import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
