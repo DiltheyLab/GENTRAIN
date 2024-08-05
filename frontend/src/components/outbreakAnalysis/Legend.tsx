@@ -7,14 +7,26 @@ type LegendProps = {
     isOutbreakSeparated?: boolean;
 };
 
-export const Legend = ({ nodes, isOutbreakSeparated = false }: LegendProps) => {
-    const analyseStore = useAnalysisStore();
-
-    const uniqueGroupsOfNodes = nodes
+const getUniqueGroupsOfNodes = (nodes: CustomNode[]) => {
+    let uniqueGroupsOfNodes = nodes
         .filter((group, index, self) => {
             return index === self.findIndex((node) => node.group === group.group);
         })
         .sort((a, b) => a.group.localeCompare(b.group));
+
+    //find the index of the group "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const index = uniqueGroupsOfNodes.findIndex((node) => node.group === "Keinem Ausbruch zugewiesen");
+    if (index !== -1) {
+        const item = uniqueGroupsOfNodes.splice(index, 1);
+        uniqueGroupsOfNodes.push(item[0]);
+    }
+    return uniqueGroupsOfNodes;
+};
+
+export const Legend = ({ nodes, isOutbreakSeparated = false }: LegendProps) => {
+    const analyseStore = useAnalysisStore();
+
+    const uniqueGroupsOfNodes = getUniqueGroupsOfNodes(nodes);
 
     const renderLegendItems = (nodes: CustomNode[]) => {
         return nodes.map((node) => (
