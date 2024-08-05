@@ -26,7 +26,7 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"./scripts/pathogens/{self.pathogen_id}.sh",
+                f"/home/backend/scripts/pathogens/{self.pathogen_id}.sh",
                 self.input_file,
                 self.output_file,
             ],
