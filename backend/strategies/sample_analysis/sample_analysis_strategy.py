@@ -37,7 +37,7 @@ class SampleAnalysisStrategy(ABC):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        temp_dir = "./temp_data/sample_analysis/"
+        temp_dir = "/home/backend/temp_data/sample_analysis/"
         pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
