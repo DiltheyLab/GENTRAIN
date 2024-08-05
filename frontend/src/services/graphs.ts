@@ -123,6 +123,7 @@ const filterCasesByGeneticDistanceThreshold = async (
     const casesWithLowGeneticDistance = currentGraphCases.filter((caseData) =>
         sampleIdsWithoutDuplicates.includes(caseData.sample?.id ?? -1)
     );
+
     return casesWithLowGeneticDistance;
 };
 
@@ -178,6 +179,14 @@ const getGraphCases = async (
             selectedOutbreak,
             geneticDistanceThreshold
         );
+
+        // if we want to show only cases with low genetic distance we have to filter out cases which have no samples like contact cases
+        // graphCases = graphCases.filter((graphCase) => graphCase.sample);
+        // casesInOutbreak = casesInOutbreak.filter((graphCase) => graphCase.sample);
+
+        //if we want to show contacts later we have to keep the contact cases in the graphCases array instead of filtering them out in line 190
+        // the reason for that is that there are no contact cases in the casesWithLowGeneticDistance array and only the contact cases from the casesInOutbreak array
+
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
     }
@@ -197,23 +206,32 @@ const getGraphCases = async (
     if (analysisSettings.showContactTracingEdges) {
         const allContactCases: CaseWithRelationships[] = graphCases.filter((caseData) => !caseData.sample);
 
+        //Fall: 1
         //wenn wir nur kontaktfälle amzeigen wollen die mit Fällen mit samples verbunden sind, dann filtern wir die Fälle ohne samples raus,
         //ansonsten werden alle Kontaktfälle angezeigt die in den Graphen stecken
-        const graphCaseIds = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
+        // const graphCaseIds = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
+
+        // Fall: 2: Hier werden alle Kontaktfälle angezeigt die in den Graphcase stecken, auch diese die nicht mit einem SampleFall verbunden sind
+        const graphCaseIds = graphCases.map((caseData) => caseData.id);
 
         // graphcases enthält alle fälle, auch kontaktfälle die nach der filterung übrig geblieben sind
-        // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken und
-        const contactCases = allContactCases.filter((contactCase) => {
-            return contacts.some(
-                (contact) =>
-                    // kontaktfall ist im kontaktfile (spalte 1) und seine Verbindung (Spalte 2) ist ein Fall aus dem Graphen (vll graphen vorher filtern nach nur samples)
-                    (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) ||
-                    // kontaktfall ist im kontaktfile (spalte 2) und seine Verbindung (Spalte 1) ist ein Fall aus dem Graphen (vll graphen vorher filtern nach nur samples)
-                    (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1))
-            );
-        });
-        console.log("contactcases", contactCases);
+        // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken
+        let contactCases = [] as CaseWithRelationships[];
+        for (const contactCase of allContactCases) {
+            for (const contact of contacts) {
+                if (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) {
+                    contactCases.push(contactCase);
+                }
+                if (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1)) {
+                    contactCases.push(contactCase);
+                }
+            }
+        }
 
+        contactCases = deleteDuplicateCases(contactCases);
+
+        /* 
+        // ---- test schleife siehe oben: gleiches ergebnis wie contactCases
         let newGraphCasesWithDirectConnections = [] as CaseWithRelationships[];
         for (const contactCase of contactCases) {
             for (const contact of contacts) {
@@ -225,10 +243,36 @@ const getGraphCases = async (
                 }
             }
         }
-
+        // jetzt kann man diese fälle in den graphcases hinzufügen und das vorgehen wiederholen (Rekursion?)
+        // hier ein beispiel ohne rekursion mit zweiten cycle
+        // -------------------------
         newGraphCasesWithDirectConnections = deleteDuplicateCases(newGraphCasesWithDirectConnections);
         console.log("newGraphCasesWithDirectConnections", newGraphCasesWithDirectConnections);
+        console.log("graphCases before concat contactCases", graphCases);
 
+        graphCases = graphCases.concat(newGraphCasesWithDirectConnections);
+        console.log("graphCases after concat contactCases", graphCases);
+
+        // zweiter Kontaktzyklus
+        const graphCaseIdSecondcyle = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
+
+        let secondCaseCycle = [] as CaseWithRelationships[];
+        for (const contactCase of contactCases) {
+            for (const contact of contacts) {
+                if (contact.case_id_1 === contactCase.id && graphCaseIdSecondcyle.includes(contact.case_id_2)) {
+                    secondCaseCycle.push(contactCase);
+                }
+                if (contact.case_id_2 === contactCase.id && graphCaseIdSecondcyle.includes(contact.case_id_1)) {
+                    secondCaseCycle.push(contactCase);
+                }
+            }
+        }
+        secondCaseCycle = deleteDuplicateCases(secondCaseCycle);
+        console.log("secondCaseCycle", secondCaseCycle);
+        // hier endet der Testzyklus ---> Funktioniert noch nicht. Liegt vll daran das es solche fälle nicht gibt. Aber wer weiß
+        // vll einfach mal alle kontaktfälle einblenden mit fliegen clustern siehe zeile 200-203  (cases ohne samples nicht mehr ausfiltern? )
+        // -------------------------
+ */
         // filter out cases without a samples
         graphCases = graphCases.filter((caseData) => caseData.sample);
         // add contact cases to the graph cases
@@ -248,7 +292,7 @@ const getGraphCases = async (
 };
 
 const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
-    const graphCasesWithoutContacts = graphCases.filter((caseData) => caseData.sample); // kontaktfälle erstmal rausfiltern
+    // const graphCasesWithoutContacts = graphCases.filter((caseData) => caseData.sample); // kontaktfälle erstmal rausfiltern
     const graphCasesIds: number[] = [];
 
     for (const caseData of graphCases) {
@@ -273,31 +317,6 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
     }
 
     return contactEdges;
-};
-
-const getContactTracingNodes = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
-    const allContactCases: CaseWithRelationships[] = graphCases.filter((caseData) => !caseData.sample);
-
-    // graphcases enthält alle fälle, auch kontaktfälle die nach der filterung übrig geblieben sind
-    // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken und
-    const contactCases = allContactCases.filter((contactCase) => {
-        return contacts.some((contact) => contact.case_id_1 === contactCase.id || contact.case_id_2 === contactCase.id);
-    });
-
-    console.log("contactcases", contactCases);
-
-    const contactNodes: CustomNode[] = contactCases.map((caseData) => {
-        return {
-            id: caseData.id,
-            caseId: caseData.case_id,
-            caseData: caseData,
-            group: "Kontaktverfolgung",
-            color: "#D3D2D2",
-            registeredAt: caseData.registered_at.toLocaleDateString(),
-        } as CustomNode;
-    });
-
-    return contactNodes;
 };
 
 const createMSTEdges = (
