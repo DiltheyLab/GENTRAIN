@@ -25,4 +25,4 @@ COPY --chown=uwsgi . .
 EXPOSE 8080
 
 # Run app.py when the container launches using uWSGI
-ENTRYPOINT ["/backend/init_prod.sh"]
+ENTRYPOINT ["/home/backend/init_prod.sh"]
