@@ -20,21 +20,21 @@ export const Graph2D = ({
     data,
     width,
     height,
-    linkDistance = 70,
-    charge = -50,
+    linkDistance = 50,
+    charge = -80,
     zoomToFit = false,
     nodeSize = 6,
-    linkWidth = 2,
+    linkWidth = 2.5,
     showNodeLabel = false,
     labelTransparency = 0.3,
-    coolDownTicks = 120,
+    coolDownTicks = 130,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
 
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;
-        forceRef.current.d3Force("charge")?.strength(charge);
+        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(400);
         forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
     }, [linkDistance, charge]);
@@ -83,11 +83,11 @@ export const Graph2D = ({
 
         // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
-
+        /* 
         // Start line
         ctx.beginPath();
         ctx.moveTo(source.x, source.y);
-        /* 
+        
         // Set line style based on link type
         if (link.type === "Dashed") {
             ctx.setLineDash([3, 3]); // Set dashed line pattern
@@ -95,14 +95,14 @@ export const Graph2D = ({
         } else {
             ctx.setLineDash([]); // Solid line
             ctx.strokeStyle = "#CCC"; // Line color
-        } */
+        } 
         ctx.strokeStyle = link.color; // Line color
-
+        
         // End line
         ctx.lineTo(target.x, target.y);
         ctx.lineWidth = linkWidth;
         ctx.stroke();
-
+        */
         // Calculate midpoint for text
         const midX = (source.x + target.x) / 2;
         const midY = (source.y + target.y) / 2;
@@ -128,19 +128,32 @@ export const Graph2D = ({
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
+            nodeRelSize={nodeSize}
             width={width}
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
-            d3VelocityDecay={0.3}
+            d3VelocityDecay={0.2}
             onEngineStop={handleEngineStop}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
             linkCanvasObjectMode={() => "after"}
             //linkLineDash={(link) => (link.contact ? [3, 3] : [])}
-            //linkCurvature={(link) => (link.contact && link.contact.type === "Contact person" ? 0.25 : 0)}
+            linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
+            onNodeClick={(node, event) => {
+                forceRef?.current?.centerAt(node.x, node.y, 1000);
+                forceRef?.current?.zoom(2, 1000);
+            }}
+            onNodeDrag={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
+            onNodeDragEnd={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
         />
     );
 };

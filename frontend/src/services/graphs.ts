@@ -351,22 +351,36 @@ const createColorMapForContacts = (contacts: ContactSchema[]) => {
     const contactTypes = contacts.map((contact) => contact.type);
     const uniqueContactTypes = [...new Set(contactTypes)];
 
-    console.log("uniqueContactTypes", uniqueContactTypes);
-
     const colorMapForContacts: ColorMapForClusters = {};
     uniqueContactTypes.forEach((contactType, index) => {
         colorMapForContacts[contactType] = COLORPALETTELINKS[index] || setNodeColor(index);
     });
-    console.log("colorMapForContacts", colorMapForContacts);
 
     return colorMapForContacts;
 };
 
-const createCurvatureMapForContacts = (contacts: ContactSchema[]) => {
-    const contactConnectionPairs = contacts.map((contact) => {
-        return [contact.case_id_1, contact.case_id_2];
-    });
-    console.log(contactConnectionPairs);
+const createCurvatures = (links: CustomLink[]) => {
+    const linkMap = new Map<string, number>();
+
+    for (let i = 0; i < links.length; i++) {
+        const source = links[i].source;
+        const target = links[i].target;
+
+        // Create a unique key for each link pair
+        const key = source < target ? `${source}-${target}` : `${target}-${source}`;
+
+        // Increment the count for this link pair
+        if (linkMap.has(key)) {
+            linkMap.set(key, linkMap.get(key)! + 1);
+        } else {
+            linkMap.set(key, 1);
+        }
+
+        // Set the curvature based on the count of this link pair
+        links[i].curvature = 0.2 * (linkMap.get(key)! - 1);
+    }
+
+    return links;
 };
 
 const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
@@ -386,14 +400,11 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
                 color: colorMapForContacts[contact.type],
                 type: contact.type,
                 context: contact.context,
-            } as CustomLink;
+                curvature: 0,
+            } satisfies CustomLink;
             contactEdges.push(link);
         }
     }
-
-    // am ende alle links anschauen, wenn 2 zu gleichen gehen cuvature einfügen
-    // so bekommt man auch die die bereits einen genetic relation haben mit einer gerade hin plus die anderen contact
-    // schleife durch links und schauen
 
     return contactEdges;
 };
@@ -473,6 +484,7 @@ export const createGraphData = async (
     if (analysisSettings.showContactTracingEdges && contacts) {
         const contactTracingLinks = createContactLinks(graphCases, contacts);
         links = links.concat(contactTracingLinks);
+        links = createCurvatures(links);
     } else {
         nodes = nodes.filter((node) => node.caseData.sample);
     }
