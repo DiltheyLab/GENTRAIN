@@ -84,5 +84,18 @@ export const COLORPALETTEGRADATIONS = [
     "#FF3333",
     "#FF6666",
     "#FF9999",
-    "#CCCCCC", // last color
+    "#CCCCCC", // last color for cluster "keinem Ausbruch zugewiesen"
+];
+
+export const COLORPALETTELINKS = [
+    "#d48fc0",
+    "#94a0c7",
+    "#e5926b",
+    "#85c0a7",
+    "#b2d669",
+    "#f2d49b",
+    "#f2b6b6",
+    "#b6b6b6",
+    "#f2f2f2",
+    "#f2b6e3",
 ];
