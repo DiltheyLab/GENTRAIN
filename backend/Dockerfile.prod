@@ -10,7 +10,7 @@ COPY environment.yaml /backend
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /backend/environment.yaml
 
-RUN mkdir /backend
+RUN mkdir /backend/backend
 RUN mv * /backend/backend
 RUN mv /backend/backend/uwsgi.ini /backend
 
