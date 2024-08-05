@@ -367,16 +367,6 @@ export const createGraphData = async (
     // create node objects for forced directed graph
     let nodes: CustomNode[] = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
-        if (!caseData.sample) {
-            return {
-                id: caseData.id,
-                caseId: caseData.case_id,
-                caseData: caseData,
-                group: "Kontaktfall",
-                color: "#00FF00",
-                registeredAt: caseData.registered_at.toLocaleDateString(),
-            } as CustomNode;
-        }
         return {
             id: caseData.id,
             caseId: caseData.case_id,
