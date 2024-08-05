@@ -2,10 +2,9 @@ import os
 import sys
 from flask import Flask
 from flask_cors import CORS
-from backend.routes import api
+from .routes import api
 
-# insert root directory into python module search path
-sys.path.insert(1, os.getcwd())
+sys.path.insert(0, os.path.realpath(os.path.dirname(__file__)))
 
 app = Flask(__name__)
 

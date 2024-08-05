@@ -49,7 +49,7 @@ The system services are located here: `/etc/systemd/system`.
     User=ubuntu
     Group=www-data
     WorkingDirectory=/home/ubuntu/num-dashboard
-    ExecStart=/home/ubuntu/miniconda3/envs/num-dash/bin/uwsgi --ini main_site.ini
+    ExecStart=/home/ubuntu/miniconda3/envs/num-dash/bin/uwsgi --ini server.ini
 
     [Install]
     WantedBy=multi-user.target
@@ -57,7 +57,7 @@ The system services are located here: `/etc/systemd/system`.
 The ini file in the directory of this repository:
 
     [uwsgi]
-    wsgi-file = main_site.py
+    wsgi-file = server.py
     callable = app
 
     master = true

@@ -101,10 +101,9 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                                 let mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
 
                                 // if seq 2 also has an insertion align them with kalign
-                                if ((mutation_2["type"] = "ins")) {
+                                if (mutation_2["type"] == "ins") {
                                     // report that it was found
                                     found = true;
-
                                     // put insertions into fasta string
                                     const fasta_string = `>1\n${mutation["replacement"]}\n>2\n${mutation_2["replacement"]}`;
                                     // mount fasta string as file
@@ -158,7 +157,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                                 add_chars[idx_seq] += mutation["replacement"];
                                 // no other mutation -> add ref char
                             } else {
-                                add_chars[idx_seq] = ref_char + add_chars[idx_seq] + mutation["replacement"];
+                                add_chars[idx_seq] = ref_char + add_chars[idx_seq] + mutation["replacement"]; // evtl add_chars nicht notwendig
                             }
                             // add multiple "-" to the other sequence
                             add_chars[1 - idx_seq] += new Array(mutation["replacement"].length + 1).join("-");
@@ -426,7 +425,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                     distance += 1;
                 }
 
-                // gap in seq 1 ongoing
+                // gap in seq 1 ongoing // evtl reicht hier eine gap-variable
                 gap_1 = true;
                 gap_2 = false;
 
