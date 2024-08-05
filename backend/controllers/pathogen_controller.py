@@ -28,9 +28,9 @@ def get_sequence_variants(
             sequence=body.sequence,
         )
 
-        strategy.execute()
+        result = strategy.execute()
         # finally return output as pydantic response model in json format
-        return strategy.get_response()
+        return strategy.get_response(result)
 
     except GenomicErrorException as exc:
         return (

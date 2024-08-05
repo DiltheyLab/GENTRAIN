@@ -17,6 +17,6 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         return []
 
-    def get_response(self, result):
+    def get_response(self):
         """Return a response model for bacterial analysises."""
         return BacterialSequenceVariantsResponseModel(alleles=[])
