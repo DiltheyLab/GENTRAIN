@@ -3,7 +3,7 @@ import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { Graph2D } from "../graphs/Graph2D";
 import { CaseWithRelationships } from "@/database/cases";
@@ -18,9 +18,8 @@ export const AnalysisVisualizationPanel = () => {
     const analyseStore = useAnalysisStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
-    const cases = useGetAllCasesWithRelationships();
+    const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases) {
             analyseStore.updateGraphData({ nodes: [], links: [] });

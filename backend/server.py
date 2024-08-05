@@ -1,13 +1,11 @@
 import os
+import sys
 from flask import Flask
-from collections import defaultdict
-from os.path import exists
 from flask_cors import CORS
-from routes import api
+from backend.routes import api
 
-################################
-#    Define global variables   #
-################################
+# insert root directory into python module search path
+sys.path.insert(1, os.getcwd())
 
 app = Flask(__name__)
 
