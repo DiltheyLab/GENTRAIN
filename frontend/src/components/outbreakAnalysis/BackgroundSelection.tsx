@@ -1,15 +1,16 @@
 import { Label } from "../ui/label";
 import MultipleSelector, { Option } from "../ui/multiSelect";
 import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
-import { GroupWithCategory, useGetAllGroupsAndOutbreaks } from "@/hooks/database/groups/useGetAllGroups";
-import { OutbreakSchema } from "@/database/outbreak";
+import { OutbreakSchema } from "@/database/outbreaks";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
+import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
+import { GroupWithCategory } from "@/database/groups";
 import { StepIndicator } from "../ui/step-indicator";
 
 export const BackgroundSelection = () => {
-    const groupsAndOutbreaks = useGetAllGroupsAndOutbreaks();
+    const groupsAndOutbreaks = useGetAllGroupsAndOutbreaksForActivePathogen();
     const analysisStore = useAnalysisStore();
 
     const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {

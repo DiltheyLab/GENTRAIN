@@ -5,10 +5,10 @@ import { UploadSection } from "@/components/dataUpload/UploadSection";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/app";
-import { deleteDataForPathogen } from "@/database/db";
 import { useState } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DeleteDialog } from "@/components/ui/deleteDialog";
+import { deleteDataForPathogen } from "@/database/pathogens";
 
 export function DataUpload() {
     const { activePathogen } = useAppStore();

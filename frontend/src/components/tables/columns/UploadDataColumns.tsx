@@ -9,8 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
-import { CaseWithRelationships } from "@/database/cases";
-import { deleteCasebyIdAndRecalculateDistances } from "@/services/cases";
+import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/database/cases";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
