@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
-    env_file: "./frontend/.env"
+    env_file: "./backend/backend/.env"
     networks:
       - caddy
 
