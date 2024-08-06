@@ -1,12 +1,17 @@
 import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/database/samples";
 import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
+import {
+    addAmbiguousMutations,
+    addDeletionMutations,
+    addInsertionMutations,
+    addSubstitutionMutations,
+} from "@/services/positions";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
         // create pseudoalignment
-        let alignment = await this.alignSamplesOld(sample1, sample2);
-
+        let alignment = await this.alignSamples(sample1, sample2);
         // count of proper characters per sequence (so that in the beginning and end the first/last x chars can be skipped)
         let proper_total_1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
         let proper_total_2 = (sample2.sequence_length ?? 0) - (sample2.n_count ?? 0);
@@ -18,134 +23,145 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     };
 
     alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
+        console.time("positions");
         const positionsSample1 = this.getMutationPositions(sample1);
         const positionsSample2 = this.getMutationPositions(sample2);
-        let alignmentSample1 = "";
-        let alignmentSample2 = "";
-        for (let i = 0; i < referenceString.length; i++) {
-            const refChar = referenceString[i];
-            let addToAlignment1 = "";
-            let addToAlignment2 = "";
-            addToAlignment1 = this.handleEmptyMutations(positionsSample1[i], addToAlignment1, refChar);
-            addToAlignment2 = this.handleEmptyMutations(positionsSample1[i], addToAlignment2, refChar);
-            [addToAlignment1, addToAlignment2] = this.handleMutations(
-                positionsSample1[i],
-                positionsSample2[i],
-                addToAlignment1,
-                addToAlignment2,
-                refChar
-            );
-            alignmentSample1 += addToAlignment1;
-            alignmentSample2 += addToAlignment2;
+        console.timeEnd("positions");
+        const positions: {
+            [position: number]: {
+                hasDeletion: boolean;
+                insertionIndex: number | null;
+                mutations: { type: string; characters: string }[];
+            };
+        }[] = [positionsSample1, positionsSample2];
+        let alignment = ["", ""];
+        for (let baseIndex = 0; baseIndex < referenceString.length; baseIndex++) {
+            const refChar = referenceString[baseIndex];
+            let additions = ["", ""];
+            for (const index in positions) {
+                const position = positions[index][baseIndex];
+                const sequenceIndex = parseInt(index);
+                const otherSequenceIndex = sequenceIndex === 0 ? 1 : 0;
+                if (this.hasNoMutationsAtPosition(position)) {
+                    additions[sequenceIndex] = refChar; // evtl +additions[sequenceIndex]
+                    continue;
+                }
+                const mutations = position.mutations;
+                for (const mutation of mutations) {
+                    additions[sequenceIndex] = this.handleSnp(mutation, additions[sequenceIndex]);
+                    if (!this.sequenceHasDeletionAtPosition(otherSequenceIndex, baseIndex, positions)) {
+                        additions[sequenceIndex] = this.handleDeletion(mutation, additions[sequenceIndex]);
+                    }
+                }
+            }
+            additions = await this.handleInsertions(baseIndex, positions, additions);
+            alignment[0] += additions[0];
+            alignment[1] += additions[1];
         }
-        return [alignmentSample1, alignmentSample2];
+        return alignment;
     };
 
-    handleEmptyMutations = (
-        mutations: { type: string; replacement: string }[],
-        addToAlignment: string,
-        refChar: string
-    ) => {
-        if (typeof mutations === "undefined") {
-            return refChar + addToAlignment;
+    hasNoMutationsAtPosition = (position: {
+        hasDeletion: boolean;
+        insertionIndex: number | null;
+        mutations: { type: string; characters: string }[];
+    }) => {
+        if (typeof position === "undefined") {
+            return true;
         }
-        return addToAlignment;
     };
 
-    handleMutations = (
-        mutations1: { type: string; replacement: string }[],
-        mutations2: { type: string; replacement: string }[],
-        addToAlignment1: string,
-        addToAlignment2: string,
-        refChar: string
+    handleSnp = (mutation: { type: string; characters: string }, additions: string) => {
+        if (mutation.type === "snp") {
+            additions += mutation.characters;
+        }
+        return additions;
+    };
+
+    handleDeletion = (mutation: { type: string; characters: string }, additions: string) => {
+        if (mutation["type"] == "del") {
+            additions += mutation["characters"];
+        }
+        return additions;
+    };
+    handleInsertions = async (
+        baseIndex: number,
+        positions: {
+            [position: number]: {
+                hasDeletion: boolean;
+                insertionIndex: number | null;
+                mutations: { type: string; characters: string }[];
+            };
+        }[],
+        additions: string[]
     ) => {
-        if (typeof mutations1 === "undefined" && typeof mutations2 !== "undefined") {
-            for (const mutation of mutations2) {
-                [addToAlignment2, addToAlignment1] = this.handleSolelyMutation(
-                    mutation,
-                    addToAlignment2,
-                    addToAlignment1,
-                    refChar
+        const firstSequenceInsertionIndex = this.getInsertionIndexForSequenceAtPosition(0, baseIndex, positions);
+        const secondSequenceInsertionIndex = this.getInsertionIndexForSequenceAtPosition(1, baseIndex, positions);
+        let charactersToInsert1 = "";
+        let charactersToInsert2 = "";
+        if (firstSequenceInsertionIndex && secondSequenceInsertionIndex) {
+            charactersToInsert1 = positions[0][baseIndex].mutations[firstSequenceInsertionIndex].characters;
+            charactersToInsert2 = positions[1][baseIndex].mutations[secondSequenceInsertionIndex].characters;
+            if (charactersToInsert1 !== charactersToInsert2) {
+                [charactersToInsert1, charactersToInsert2] = await this.alignInsertions(
+                    charactersToInsert1,
+                    charactersToInsert2
                 );
             }
+            additions[0] += charactersToInsert1;
+            additions[1] += charactersToInsert2;
         }
-
-        if (typeof mutations1 !== "undefined" && typeof mutations2 === "undefined") {
-            for (const mutation of mutations1) {
-                [addToAlignment1, addToAlignment2] = this.handleSolelyMutation(
-                    mutation,
-                    addToAlignment1,
-                    addToAlignment2,
-                    refChar
-                );
-            }
+        if (firstSequenceInsertionIndex && !secondSequenceInsertionIndex) {
+            charactersToInsert1 = positions[0][baseIndex].mutations[firstSequenceInsertionIndex].characters;
+            charactersToInsert2 = new Array(charactersToInsert1.length + 1).join("-");
         }
-
-        if (typeof mutations1 !== "undefined" && typeof mutations2 !== "undefined") {
-            [addToAlignment1, addToAlignment2] = this.handleJointlyMutations(
-                mutations1,
-                mutations2,
-                addToAlignment1,
-                addToAlignment2,
-                refChar
-            );
+        if (!firstSequenceInsertionIndex && secondSequenceInsertionIndex) {
+            charactersToInsert2 = positions[1][baseIndex].mutations[secondSequenceInsertionIndex].characters;
+            charactersToInsert1 = new Array(charactersToInsert2.length + 1).join("-");
         }
-        return [addToAlignment1, addToAlignment2];
+        additions[0] += charactersToInsert1;
+        additions[1] += charactersToInsert2;
+        return additions;
     };
 
-    handleSolelyMutation = (
-        mutation: { type: string; replacement: string },
-        addToAlignment1: string,
-        addToAlignment2: string,
-        refChar: string
+    sequenceHasDeletionAtPosition = (
+        sequenceIndex: number,
+        baseIndex: number,
+        positions: {
+            [position: number]: {
+                hasDeletion: boolean;
+                insertionIndex: number | null;
+                mutations: { type: string; characters: string }[];
+            };
+        }[]
     ) => {
-        addToAlignment1 = this.handleSnp(mutation, addToAlignment1);
-        addToAlignment1 = this.handleSolelyDeletion(mutation, addToAlignment1);
-        [addToAlignment1, addToAlignment2] = this.handleSolelyInsertion(
-            mutation,
-            addToAlignment1,
-            addToAlignment2,
-            refChar
-        );
-
-        return [addToAlignment1, addToAlignment2];
+        return positions[sequenceIndex][baseIndex] && positions[sequenceIndex][baseIndex].hasDeletion;
     };
 
-    handleJointlyMutations = (
-        mutation1: { type: string; replacement: string }[],
-        mutation2: { type: string; replacement: string }[],
-        addToAlignment1: string,
-        addToAlignment2: string,
-        refChar: string
+    getInsertionIndexForSequenceAtPosition = (
+        sequenceIndex: number,
+        baseIndex: number,
+        positions: {
+            [position: number]: {
+                hasDeletion: boolean;
+                insertionIndex: number | null;
+                mutations: { type: string; characters: string }[];
+            };
+        }[]
     ) => {
-        return [addToAlignment1, addToAlignment2];
+        return positions[sequenceIndex][baseIndex] && positions[sequenceIndex][baseIndex].insertionIndex;
     };
 
-    handleSnp = (mutation: { type: string; replacement: string }, addToAlignment: string) => {
-        if (mutation["type"] === "snp") {
-            addToAlignment += mutation["replacement"];
-        }
-        return addToAlignment;
-    };
-
-    handleSolelyDeletion = (mutation: { type: string; replacement: string }, addToAlignment: string) => {
-        if (mutation["type"] === "del") {
-            addToAlignment += mutation["replacement"];
-        }
-        return addToAlignment;
-    };
-
-    handleSolelyInsertion = (
-        mutation: { type: string; replacement: string },
-        addToAlignment1: string,
-        addToAlignment2: string,
-        refChar: string
-    ) => {
-        if (mutation["type"] === "ins") {
-            addToAlignment1 += addToAlignment1.length > 0 ? mutation["replacement"] : refChar + mutation["replacement"];
-            addToAlignment2 += new Array(mutation["replacement"].length + 1).join("-");
-        }
-        return [addToAlignment1, addToAlignment2];
+    alignInsertions = async (insertion1: string, insertion2: string) => {
+        const fasta_string = `>1\n${insertion1}\n>2\n${insertion2}`;
+        let result = await this.cli.mount({
+            name: "distance_input.fa",
+            data: fasta_string,
+        });
+        result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
+        result = await this.cli.cat("distance_result.fasta");
+        result = result.split(/[\r\n]+/);
+        return [result[1], result[3]];
     };
 
     alignSamplesOld = async (sample1: SampleSchema, sample2: SampleSchema) => {
@@ -311,155 +327,12 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         }
         let mutationPositions: any = {};
 
-        mutationPositions = this.addInsertionMutations(sample, mutationPositions);
-        mutationPositions = this.addSubstitutionMutations(sample, mutationPositions);
-        mutationPositions = this.addAmbiguousMutations(sample, mutationPositions);
-        mutationPositions = this.addDeletionMutations(sample, mutationPositions);
+        mutationPositions = addInsertionMutations(sample, mutationPositions);
+        mutationPositions = addSubstitutionMutations(sample, mutationPositions);
+        mutationPositions = addAmbiguousMutations(sample, mutationPositions);
+        mutationPositions = addDeletionMutations(sample, mutationPositions);
 
         return mutationPositions;
-    }
-
-    private addInsertionMutations(
-        sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        if (!sample.variants) {
-            return;
-        }
-        for (const mutation of sample.variants["insertions"]) {
-            positions = this.addInsertionToPositions(mutation["ins"], mutation["pos"], positions);
-        }
-        return positions;
-    }
-
-    private addSubstitutionMutations(
-        sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        if (!sample.variants) {
-            return;
-        }
-        for (const mutation of sample.variants["substitutions"]) {
-            positions = this.addSubstitutionToPositions(mutation["queryNuc"], mutation["pos"], positions);
-        }
-        return positions;
-    }
-    private addAmbiguousMutations(
-        sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        if (!sample.variants) {
-            return;
-        }
-        // Ns
-        for (const mutation of sample.variants["missing"]) {
-            // { begin: 28881, end: 28883, character: "N" }
-            let start = mutation["begin"];
-            let end = mutation["end"];
-            let char = mutation["character"];
-
-            // add each position of a N block separately
-            for (let j = start; j < end; j++) {
-                positions = this.addSubstitutionToPositions(char, j, positions);
-            }
-        }
-
-        // other ambious characters
-        for (const mutation of sample.variants["nonACGTNs"]) {
-            // { begin: 60, end: 61, character: "Y" }
-            let start = mutation["begin"];
-            let end = mutation["end"];
-            let char = mutation["character"];
-
-            // add each position of a ambig char block separately
-            for (let j = start; j < end; j++) {
-                positions = this.addSubstitutionToPositions(char, j, positions);
-            }
-        }
-        return positions;
-    }
-
-    private addDeletionMutations(
-        sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        if (!sample.variants) {
-            return;
-        }
-        // Deletions
-        for (const mutation of sample.variants["deletions"]) {
-            let start = mutation["start"];
-            let len = mutation["length"];
-
-            // add each position of a deletion on its own
-            for (let j = start; j < start + len; j++) {
-                positions = this.addDeletionToPositions(j, positions);
-            }
-        }
-
-        // Start of alignment
-        for (let i = 0; i < sample.variants["alignmentStart"]; i++) {
-            positions = this.addDeletionToPositions(i, positions);
-        }
-
-        // End of alignment
-        for (let i = sample.variants["alignmentEnd"]; i < referenceString.length; i++) {
-            positions = this.addDeletionToPositions(i, positions);
-        }
-        return positions;
-    }
-
-    private addSubstitutionToPositions(
-        character: string,
-        position: number,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        return this.includeMutationInPositionsArray(
-            {
-                type: "snp",
-                replacement: character,
-            },
-            position,
-            positions
-        );
-    }
-
-    private addInsertionToPositions(
-        character: string,
-        position: number,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        return this.includeMutationInPositionsArray(
-            {
-                type: "ins",
-                replacement: character,
-            },
-            position,
-            positions
-        );
-    }
-
-    private addDeletionToPositions(
-        position: number,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        return this.includeMutationInPositionsArray(
-            {
-                type: "del",
-                replacement: "-",
-            },
-            position,
-            positions
-        );
-    }
-
-    private includeMutationInPositionsArray(
-        mutation: { type: string; replacement: string },
-        position: number,
-        positions: { [position: number]: { type: string; replacement: string }[] }
-    ) {
-        position in positions ? positions[position].push(mutation) : (positions[position] = [mutation]);
-        return positions;
     }
 
     countDifferences = (alignment: any, proper_total_1: any, proper_total_2: any) => {
