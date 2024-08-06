@@ -16,6 +16,8 @@ import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseWithRelationships } from "@/database/cases";
 import { AnalysisSettings } from "@/stores/analysis";
 import { useDashboardGraphStore } from "@/stores/dashboardGraph";
+import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
+import { ContactSchema } from "@/database/contacts";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,9 +26,10 @@ export const DashboardVisualizationPanel = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const cases = useGetAllCasesWithRelationships();
+    const contacts = useGetAllContacts();
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases) {
+        if (!distanceMatrixAssembly || !cases || !contacts) {
             dashboardGraphStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
@@ -34,14 +37,15 @@ export const DashboardVisualizationPanel = () => {
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
-            settings: AnalysisSettings
+            settings: AnalysisSettings,
+            contacts: ContactSchema[]
         ) => {
-            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings);
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
         };
 
-        getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings);
-    }, [cases, distanceMatrixAssembly, dashboardGraphStore.settings]);
+        getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
+    }, [cases, distanceMatrixAssembly, dashboardGraphStore.settings, contacts]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
