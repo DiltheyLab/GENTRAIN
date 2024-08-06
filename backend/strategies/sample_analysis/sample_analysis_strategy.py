@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import pathlib
 import tempfile
 from backend.exceptions.genomic_error_exception import GenomicErrorException
+from backend.config import get_project_path
 
 
 class SampleAnalysisStrategy(ABC):
@@ -37,7 +38,7 @@ class SampleAnalysisStrategy(ABC):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        temp_dir = "/home/backend/temp_data/sample_analysis/"
+        temp_dir = f"{get_project_path()}/temp_data/sample_analysis/"
         pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script

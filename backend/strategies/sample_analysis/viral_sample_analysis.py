@@ -12,6 +12,7 @@ from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.exceptions.genomic_error_exception import GenomicErrorException
+from backend.config import get_project_path
 
 
 class ViralSampleAnalysis(SampleAnalysisStrategy):
@@ -26,9 +27,10 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"/home/backend/scripts/pathogens/{self.pathogen_id}.sh",
+                f"{get_project_path()}/scripts/pathogens/{self.pathogen_id}.sh",
                 self.input_file,
                 self.output_file,
+                f"{get_project_path()}/datasets/nextclade_covid",
             ],
             check=False,
         )
