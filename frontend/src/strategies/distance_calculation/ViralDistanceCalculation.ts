@@ -23,52 +23,54 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     };
 
     alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
-        console.time("positions");
         const positionsSample1 = this.getMutationPositions(sample1);
         const positionsSample2 = this.getMutationPositions(sample2);
-        console.timeEnd("positions");
-        const positions: {
-            [position: number]: {
-                hasDeletion: boolean;
-                insertionIndex: number | null;
-                mutations: { type: string; characters: string }[];
-            };
+        let positions: {
+            [position: number]: { type: string; characters: string }[];
         }[] = [positionsSample1, positionsSample2];
         let alignment = ["", ""];
         for (let baseIndex = 0; baseIndex < referenceString.length; baseIndex++) {
             const refChar = referenceString[baseIndex];
             let additions = ["", ""];
-            for (const index in positions) {
-                const position = positions[index][baseIndex];
-                const sequenceIndex = parseInt(index);
-                const otherSequenceIndex = sequenceIndex === 0 ? 1 : 0;
-                if (this.hasNoMutationsAtPosition(position)) {
+            let insertionHandled = false;
+            let deletionHandled = false;
+            for (let sequenceIndex = 0; sequenceIndex < 2; sequenceIndex++) {
+                const mutations = positions[sequenceIndex][baseIndex];
+                if (!this.hasMutationsAtPosition(mutations)) {
                     additions[sequenceIndex] = refChar; // evtl +additions[sequenceIndex]
                     continue;
                 }
-                const mutations = position.mutations;
-                for (const mutation of mutations) {
+                for (let mutationIndex = 0; mutationIndex < mutations.length; mutationIndex++) {
+                    const mutation = mutations[mutationIndex];
                     additions[sequenceIndex] = this.handleSnp(mutation, additions[sequenceIndex]);
-                    if (!this.sequenceHasDeletionAtPosition(otherSequenceIndex, baseIndex, positions)) {
-                        additions[sequenceIndex] = this.handleDeletion(mutation, additions[sequenceIndex]);
-                    }
+                    [positions, additions, deletionHandled] = this.handleDeletion(
+                        mutation,
+                        sequenceIndex,
+                        baseIndex,
+                        positions,
+                        additions,
+                        deletionHandled
+                    );
+                    [positions, additions, insertionHandled] = await this.handleInsertion(
+                        mutation,
+                        sequenceIndex,
+                        baseIndex,
+                        positions,
+                        additions,
+                        refChar,
+                        insertionHandled
+                    );
                 }
             }
-            additions = await this.handleInsertions(baseIndex, positions, additions);
+
             alignment[0] += additions[0];
             alignment[1] += additions[1];
         }
         return alignment;
     };
 
-    hasNoMutationsAtPosition = (position: {
-        hasDeletion: boolean;
-        insertionIndex: number | null;
-        mutations: { type: string; characters: string }[];
-    }) => {
-        if (typeof position === "undefined") {
-            return true;
-        }
+    hasMutationsAtPosition = (position: { type: string; characters: string }[]) => {
+        return typeof position !== "undefined";
     };
 
     handleSnp = (mutation: { type: string; characters: string }, additions: string) => {
@@ -78,50 +80,124 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         return additions;
     };
 
-    handleDeletion = (mutation: { type: string; characters: string }, additions: string) => {
-        if (mutation["type"] == "del") {
-            additions += mutation["characters"];
-        }
-        return additions;
-    };
-    handleInsertions = async (
+    handleDeletion = (
+        mutation: { type: string; characters: string },
+        sequenceIndex: number,
         baseIndex: number,
         positions: {
-            [position: number]: {
-                hasDeletion: boolean;
-                insertionIndex: number | null;
-                mutations: { type: string; characters: string }[];
-            };
+            [position: number]: { type: string; characters: string }[];
         }[],
-        additions: string[]
-    ) => {
-        const firstSequenceInsertionIndex = this.getInsertionIndexForSequenceAtPosition(0, baseIndex, positions);
-        const secondSequenceInsertionIndex = this.getInsertionIndexForSequenceAtPosition(1, baseIndex, positions);
-        let charactersToInsert1 = "";
-        let charactersToInsert2 = "";
-        if (firstSequenceInsertionIndex && secondSequenceInsertionIndex) {
-            charactersToInsert1 = positions[0][baseIndex].mutations[firstSequenceInsertionIndex].characters;
-            charactersToInsert2 = positions[1][baseIndex].mutations[secondSequenceInsertionIndex].characters;
-            if (charactersToInsert1 !== charactersToInsert2) {
-                [charactersToInsert1, charactersToInsert2] = await this.alignInsertions(
-                    charactersToInsert1,
-                    charactersToInsert2
-                );
+        additions: string[],
+        deletionHandled: boolean
+    ): [
+        {
+            [position: number]: { type: string; characters: string }[];
+        }[],
+        string[],
+        boolean
+    ] => {
+        if (mutation["type"] == "del") {
+            // if already second seq then was not in first (and second seq has mutations at this pos)
+            if (sequenceIndex === 0 && !(typeof positions[sequenceIndex + 1][baseIndex] === "undefined")) {
+                // for every mutaion on the second seq
+                for (
+                    let otherSequenceMutationsIndex = 0;
+                    otherSequenceMutationsIndex < positions[sequenceIndex + 1][baseIndex].length;
+                    otherSequenceMutationsIndex++
+                ) {
+                    let mutation_2 = positions[sequenceIndex + 1][baseIndex][otherSequenceMutationsIndex];
+
+                    // if seq 2 also has the same del then addchars should stay ""
+                    if ((mutation_2["type"] = "del")) {
+                        // report that it was found
+                        deletionHandled = true;
+                        // remove from the other list so it wont come up again
+                        positions[sequenceIndex + 1][baseIndex].splice(otherSequenceMutationsIndex, 1);
+                        break;
+                    }
+                }
             }
-            additions[0] += charactersToInsert1;
-            additions[1] += charactersToInsert2;
+
+            // if the deletion was only in one sequence add the "-"
+            if (!deletionHandled) {
+                additions[sequenceIndex] += mutation["characters"];
+            }
         }
-        if (firstSequenceInsertionIndex && !secondSequenceInsertionIndex) {
-            charactersToInsert1 = positions[0][baseIndex].mutations[firstSequenceInsertionIndex].characters;
-            charactersToInsert2 = new Array(charactersToInsert1.length + 1).join("-");
+        return [positions, additions, deletionHandled];
+    };
+
+    handleInsertion = async (
+        mutation: { type: string; characters: string },
+        sequenceIndex: number,
+        baseIndex: number,
+        positions: {
+            [position: number]: { type: string; characters: string }[];
+        }[],
+        additions: string[],
+        refChar: string,
+        insertionHandled: boolean
+    ): Promise<
+        [
+            {
+                [position: number]: { type: string; characters: string }[];
+            }[],
+            string[],
+            boolean
+        ]
+    > => {
+        if (mutation.type === "ins") {
+            if (sequenceIndex === 0 && !(typeof positions[sequenceIndex + 1][baseIndex] === "undefined")) {
+                for (
+                    let otherSequenceMutationsIndex = 0;
+                    otherSequenceMutationsIndex < positions[sequenceIndex + 1][baseIndex].length;
+                    otherSequenceMutationsIndex++
+                ) {
+                    let mutation_2 = positions[sequenceIndex + 1][baseIndex][otherSequenceMutationsIndex];
+
+                    if (mutation_2["type"] == "ins") {
+                        let charactersToAdd1 = mutation["characters"];
+                        let charactersToAdd2 = mutation_2["characters"];
+                        if (charactersToAdd1 !== charactersToAdd2) {
+                            insertionHandled = true;
+                            const fasta_string = `>1\n${mutation["characters"]}\n>2\n${mutation_2["characters"]}`;
+                            let result = await this.cli.mount({
+                                name: "distance_input.fa",
+                                data: fasta_string,
+                            });
+                            result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
+                            result = await this.cli.cat("distance_result.fasta");
+                            result = result.split(/[\r\n]+/);
+                            charactersToAdd1 = result[1];
+                            charactersToAdd2 = result[3];
+                        }
+
+                        if (positions[sequenceIndex][baseIndex].length > 1) {
+                            additions[sequenceIndex] += charactersToAdd1;
+                        } else {
+                            additions[sequenceIndex] = refChar + additions[sequenceIndex] + charactersToAdd1;
+                        }
+
+                        if (positions[1 - sequenceIndex][baseIndex].length > 1) {
+                            additions[1 - sequenceIndex] += charactersToAdd2;
+                        } else {
+                            additions[1 - sequenceIndex] = refChar + additions[1 - sequenceIndex] + charactersToAdd2;
+                        }
+
+                        positions[sequenceIndex + 1][baseIndex].splice(otherSequenceMutationsIndex, 1);
+                        break;
+                    }
+                }
+            }
+            if (!insertionHandled) {
+                if (positions[sequenceIndex][baseIndex].length > 1) {
+                    additions[sequenceIndex] += mutation["characters"];
+                } else {
+                    additions[sequenceIndex] = refChar + additions[sequenceIndex] + mutation["characters"]; // evtl add_chars nicht notwendig
+                }
+                additions[1 - sequenceIndex] += new Array(mutation["characters"].length + 1).join("-");
+            }
         }
-        if (!firstSequenceInsertionIndex && secondSequenceInsertionIndex) {
-            charactersToInsert2 = positions[1][baseIndex].mutations[secondSequenceInsertionIndex].characters;
-            charactersToInsert1 = new Array(charactersToInsert2.length + 1).join("-");
-        }
-        additions[0] += charactersToInsert1;
-        additions[1] += charactersToInsert2;
-        return additions;
+        return [positions, additions, insertionHandled];
     };
 
     sequenceHasDeletionAtPosition = (

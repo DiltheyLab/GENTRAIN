@@ -4,11 +4,7 @@ import { SampleSchema } from "@/database/samples";
 export const addInsertionMutations = (
     sample: SampleSchema,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     if (!sample.variants) {
@@ -23,11 +19,7 @@ export const addInsertionMutations = (
 export const addSubstitutionMutations = (
     sample: SampleSchema,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     if (!sample.variants) {
@@ -42,11 +34,7 @@ export const addSubstitutionMutations = (
 export const addAmbiguousMutations = (
     sample: SampleSchema,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     if (!sample.variants) {
@@ -83,11 +71,7 @@ export const addAmbiguousMutations = (
 export const addDeletionMutations = (
     sample: SampleSchema,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     if (!sample.variants) {
@@ -120,11 +104,7 @@ export const addSubstitutionToPositions = (
     character: string,
     position: number,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     return includeMutationInPositionsArray(
@@ -141,11 +121,7 @@ export const addInsertionToPositions = (
     character: string,
     position: number,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     return includeMutationInPositionsArray(
@@ -161,11 +137,7 @@ export const addInsertionToPositions = (
 export const addDeletionToPositions = (
     position: number,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
     return includeMutationInPositionsArray(
@@ -182,27 +154,13 @@ export const includeMutationInPositionsArray = (
     mutation: { type: string; characters: string },
     position: number,
     positions: {
-        [position: number]: {
-            hasDeletion: boolean;
-            insertionIndex: number | null;
-            mutations: { type: string; characters: string }[];
-        };
+        [position: number]: { type: string; characters: string }[];
     }
 ) => {
-    if (position in positions && "mutations" in positions[position]) {
-        positions[position].mutations.push({ type: mutation.type, characters: mutation.characters });
+    if (position in positions) {
+        positions[position].push({ type: mutation.type, characters: mutation.characters });
     } else {
-        positions[position] = {
-            hasDeletion: false,
-            insertionIndex: null,
-            mutations: [{ type: mutation.type, characters: mutation.characters }],
-        };
-    }
-    if (mutation.type === "del") {
-        positions[position].hasDeletion = true;
-    }
-    if (mutation.type === "ins") {
-        positions[position].insertionIndex = positions[position].mutations.length - 1;
+        positions[position] = [{ type: mutation.type, characters: mutation.characters }];
     }
     return positions;
 };
