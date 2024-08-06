@@ -5,7 +5,7 @@ import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
         // create pseudoalignment
-        let alignment = await this.alignSamples(sample1, sample2);
+        let alignment = await this.alignSamplesOld(sample1, sample2);
 
         // count of proper characters per sequence (so that in the beginning and end the first/last x chars can be skipped)
         let proper_total_1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
@@ -18,6 +18,137 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     };
 
     alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
+        const positionsSample1 = this.getMutationPositions(sample1);
+        const positionsSample2 = this.getMutationPositions(sample2);
+        let alignmentSample1 = "";
+        let alignmentSample2 = "";
+        for (let i = 0; i < referenceString.length; i++) {
+            const refChar = referenceString[i];
+            let addToAlignment1 = "";
+            let addToAlignment2 = "";
+            addToAlignment1 = this.handleEmptyMutations(positionsSample1[i], addToAlignment1, refChar);
+            addToAlignment2 = this.handleEmptyMutations(positionsSample1[i], addToAlignment2, refChar);
+            [addToAlignment1, addToAlignment2] = this.handleMutations(
+                positionsSample1[i],
+                positionsSample2[i],
+                addToAlignment1,
+                addToAlignment2,
+                refChar
+            );
+            alignmentSample1 += addToAlignment1;
+            alignmentSample2 += addToAlignment2;
+        }
+        return [alignmentSample1, alignmentSample2];
+    };
+
+    handleEmptyMutations = (
+        mutations: { type: string; replacement: string }[],
+        addToAlignment: string,
+        refChar: string
+    ) => {
+        if (typeof mutations === "undefined") {
+            return refChar + addToAlignment;
+        }
+        return addToAlignment;
+    };
+
+    handleMutations = (
+        mutations1: { type: string; replacement: string }[],
+        mutations2: { type: string; replacement: string }[],
+        addToAlignment1: string,
+        addToAlignment2: string,
+        refChar: string
+    ) => {
+        if (typeof mutations1 === "undefined" && typeof mutations2 !== "undefined") {
+            for (const mutation of mutations2) {
+                [addToAlignment2, addToAlignment1] = this.handleSolelyMutation(
+                    mutation,
+                    addToAlignment2,
+                    addToAlignment1,
+                    refChar
+                );
+            }
+        }
+
+        if (typeof mutations1 !== "undefined" && typeof mutations2 === "undefined") {
+            for (const mutation of mutations1) {
+                [addToAlignment1, addToAlignment2] = this.handleSolelyMutation(
+                    mutation,
+                    addToAlignment1,
+                    addToAlignment2,
+                    refChar
+                );
+            }
+        }
+
+        if (typeof mutations1 !== "undefined" && typeof mutations2 !== "undefined") {
+            [addToAlignment1, addToAlignment2] = this.handleJointlyMutations(
+                mutations1,
+                mutations2,
+                addToAlignment1,
+                addToAlignment2,
+                refChar
+            );
+        }
+        return [addToAlignment1, addToAlignment2];
+    };
+
+    handleSolelyMutation = (
+        mutation: { type: string; replacement: string },
+        addToAlignment1: string,
+        addToAlignment2: string,
+        refChar: string
+    ) => {
+        addToAlignment1 = this.handleSnp(mutation, addToAlignment1);
+        addToAlignment1 = this.handleSolelyDeletion(mutation, addToAlignment1);
+        [addToAlignment1, addToAlignment2] = this.handleSolelyInsertion(
+            mutation,
+            addToAlignment1,
+            addToAlignment2,
+            refChar
+        );
+
+        return [addToAlignment1, addToAlignment2];
+    };
+
+    handleJointlyMutations = (
+        mutation1: { type: string; replacement: string }[],
+        mutation2: { type: string; replacement: string }[],
+        addToAlignment1: string,
+        addToAlignment2: string,
+        refChar: string
+    ) => {
+        return [addToAlignment1, addToAlignment2];
+    };
+
+    handleSnp = (mutation: { type: string; replacement: string }, addToAlignment: string) => {
+        if (mutation["type"] === "snp") {
+            addToAlignment += mutation["replacement"];
+        }
+        return addToAlignment;
+    };
+
+    handleSolelyDeletion = (mutation: { type: string; replacement: string }, addToAlignment: string) => {
+        if (mutation["type"] === "del") {
+            addToAlignment += mutation["replacement"];
+        }
+        return addToAlignment;
+    };
+
+    handleSolelyInsertion = (
+        mutation: { type: string; replacement: string },
+        addToAlignment1: string,
+        addToAlignment2: string,
+        refChar: string
+    ) => {
+        if (mutation["type"] === "ins") {
+            addToAlignment1 += addToAlignment1.length > 0 ? mutation["replacement"] : refChar + mutation["replacement"];
+            addToAlignment2 += new Array(mutation["replacement"].length + 1).join("-");
+        }
+        return [addToAlignment1, addToAlignment2];
+    };
+
+    alignSamplesOld = async (sample1: SampleSchema, sample2: SampleSchema) => {
         // add bases into here
         let alignment = ["", ""];
 
@@ -190,7 +321,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
     private addInsertionMutations(
         sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         if (!sample.variants) {
             return;
@@ -203,7 +334,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
     private addSubstitutionMutations(
         sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         if (!sample.variants) {
             return;
@@ -215,7 +346,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     }
     private addAmbiguousMutations(
         sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         if (!sample.variants) {
             return;
@@ -250,7 +381,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
     private addDeletionMutations(
         sample: SampleSchema,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         if (!sample.variants) {
             return;
@@ -281,7 +412,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     private addSubstitutionToPositions(
         character: string,
         position: number,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         return this.includeMutationInPositionsArray(
             {
@@ -296,7 +427,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     private addInsertionToPositions(
         character: string,
         position: number,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         return this.includeMutationInPositionsArray(
             {
@@ -310,7 +441,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
 
     private addDeletionToPositions(
         position: number,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         return this.includeMutationInPositionsArray(
             {
@@ -325,7 +456,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     private includeMutationInPositionsArray(
         mutation: { type: string; replacement: string },
         position: number,
-        positions: { [position: number]: { type: string; replacement: string } }[][]
+        positions: { [position: number]: { type: string; replacement: string }[] }
     ) {
         position in positions ? positions[position].push(mutation) : (positions[position] = [mutation]);
         return positions;
