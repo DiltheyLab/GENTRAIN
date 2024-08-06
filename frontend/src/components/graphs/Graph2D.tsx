@@ -34,7 +34,7 @@ export const Graph2D = ({
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;
-        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(400);
+        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(350);
         forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
     }, [linkDistance, charge]);
@@ -142,7 +142,7 @@ export const Graph2D = ({
             linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
-            onNodeClick={(node, event) => {
+            onNodeClick={(node, _event) => {
                 forceRef?.current?.centerAt(node.x, node.y, 1000);
                 forceRef?.current?.zoom(2, 1000);
             }}
