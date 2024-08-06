@@ -81,7 +81,7 @@ export const OutbreakSelection = () => {
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <Label className="flex items-center font-bold text-md mr-3">
-                    <StepIndicator>1</StepIndicator> Aubruch auswählen
+                    <StepIndicator>1</StepIndicator> Ausbruch auswählen
                 </Label>
                 <CustomTooltip
                     trigger={<Info className="h-5 w-5 cursor-pointer" />}
