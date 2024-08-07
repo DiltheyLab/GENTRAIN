@@ -25,48 +25,6 @@ type ColorMapForClusters = {
     [key: string]: string;
 };
 
-export const getGroupToColor = (cases: CaseWithRelationships[], caseAttribute: keyof CaseSchema) => {
-    // Extract unique groups and assign colors
-    const uniqueGroups = getUniqueGroupsByCaseMetaData(cases, caseAttribute);
-
-    const groupToColor: ColorMapForClusters = {};
-    uniqueGroups.forEach((group, index) => {
-        // Ensure group is a string that can be used as an index before proceeding
-        if (typeof group !== "string" && typeof group !== "number") {
-            throw new Error("caseAttribute must be a string");
-        }
-        if (caseAttribute === "outbreak_id") {
-            if (group === "Keinem Ausbruch zugewiesen") {
-                groupToColor[group] = "#CCC";
-            } else {
-                groupToColor[group] = setNodeColor(index) || "#000";
-            }
-        } else if (caseAttribute === "registered_at") {
-            const normalizedIndex = (index + 1) / uniqueGroups.length; //normalize the index
-            groupToColor[group] = setNodeGradientColor(normalizedIndex) || "#000";
-        }
-    });
-    return groupToColor;
-};
-
-const getUniqueGroupsByCaseMetaData = (cases: CaseWithRelationships[], caseAttribute: keyof CaseSchema) => {
-    // Extract unique groups and assign colors
-    const groups = cases
-        .map((caseData) => {
-            if (caseAttribute === "registered_at") {
-                let attribute: Date = caseData[caseAttribute];
-                return attribute?.toLocaleDateString();
-            }
-            if (caseAttribute === "outbreak_id") {
-                return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
-            }
-            return caseData[caseAttribute];
-        })
-        .filter((group) => group);
-    const uniqueGroups = [...new Set(groups)];
-    return uniqueGroups;
-};
-
 export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     const uniqueSamplingTimes = nodes.filter((group, index, self) => {
         return index === self.findIndex((t) => t.registeredAt === group.registeredAt);
@@ -80,7 +38,7 @@ export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     return uniqueSamplingTimes;
 };
 
-const getUniqueCluster = (cases: CaseWithRelationships[]) => {
+const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     // Extract unique cluster
     const cluster = cases.map((caseData) => {
         return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
@@ -116,7 +74,7 @@ export const createColorMapForClusters = (cases: CaseWithRelationships[], analys
     const colorPalette = analysisSettings.colorPaletteNodes;
 
     // Extract unique cluster
-    const uniqueCluster = getUniqueCluster(cases);
+    const uniqueCluster = getUniqueClusterOfCases(cases);
 
     // Sort cluster that the selected outbreak is at the beginning of the array and the cluster "Keinem Ausbruch zugewiesen" at the end
     const sortedCluster = sortCluster(uniqueCluster as string[], selectedOutbreak);
@@ -183,8 +141,8 @@ const filterCasesByGeneticDistanceThreshold = async (
     return casesWithLowGeneticDistance;
 };
 
-const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: DateRange) => {
-    return graphCases.filter((caseData) => {
+const filterCasesByDateRange = (cases: CaseWithRelationships[], dateRange: DateRange) => {
+    return cases.filter((caseData) => {
         const caseWasRegisteredAt = caseData.registered_at.getTime();
         const startDate = dateRange.from?.getTime() ?? 0;
         const endDate = dateRange.to?.getTime() ?? dateRange.from?.getTime() ?? Infinity;
@@ -192,17 +150,18 @@ const filterCasesByDateRange = (graphCases: CaseWithRelationships[], dateRange: 
     });
 };
 
-const getGraphCases = async (
-    cases: CaseWithRelationships[],
-    analysisSettings: AnalysisSettings,
-    contacts: ContactSchema[]
-) => {
+const filterCasesWithoutSample = (cases: CaseWithRelationships[]) => {
+    return cases.filter((caseData) => caseData.sample);
+};
+
+const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
     const {
         selectedOutbreak,
         showBackground,
         selectedBackground,
         geneticDistanceThreshold,
         excludeCasesAboveGeneticDistanceThreshold,
+        excludeCasesWithoutSequence,
     } = analysisSettings;
 
     let graphCases = [] as CaseWithRelationships[];
@@ -210,11 +169,15 @@ const getGraphCases = async (
     // save cases which are in the selected outbreak to use it in the filters
     let casesInOutbreak = [] as CaseWithRelationships[];
 
+    // *************************** SELECT OUTBREAK ********************************
+
     // get cases from outbreak
     if (selectedOutbreak) {
         graphCases = filterCasesByOutbreak(cases, selectedOutbreak);
         casesInOutbreak = [...graphCases];
     }
+
+    // *************************** SELECT BACKGROUND ********************************
 
     // use all cases without any filtering
     if (analysisSettings.includeAllCases) {
@@ -227,6 +190,14 @@ const getGraphCases = async (
         graphCases = graphCases.concat(filteredCasesByBackground);
     }
 
+    // *************************** FILTERING ********************************
+
+    // filter out cases which have no sequence
+    if (excludeCasesWithoutSequence) {
+        graphCases = filterCasesWithoutSample(graphCases);
+        casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
+    }
+
     // use cases which have a distance below the threshold AND are connected to the selected outbreak
     if (excludeCasesAboveGeneticDistanceThreshold && selectedOutbreak) {
         const casesWithLowGeneticDistance = await filterCasesByGeneticDistanceThreshold(
@@ -236,106 +207,35 @@ const getGraphCases = async (
             geneticDistanceThreshold
         );
 
-        // if we want to show only cases with low genetic distance we have to filter out cases which have no samples like contact cases
-        // graphCases = graphCases.filter((graphCase) => graphCase.sample);
-        // casesInOutbreak = casesInOutbreak.filter((graphCase) => graphCase.sample);
+        // Fall 1: Es gibt nur Fälle mit genetischer distanz
 
-        //if we want to show contacts later we have to keep the contact cases in the graphCases array instead of filtering them out in line 190
-        // the reason for that is that there are no contact cases in the casesWithLowGeneticDistance array and only the contact cases from the casesInOutbreak array
+        // because we only want to show cases which have a distance below the threshold and are connected to the selected outbreak
+        // we have to filter out cases without a sample because they have no distance
+        graphCases = filterCasesWithoutSample(graphCases);
+        casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
+
+        // Fall2: Die Kontaktfälle bleiben auch ohne genetische Distanz erhalten
+        // const contactCases = graphCases.filter((caseData) => !caseData.sample);
 
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
-    }
 
-    // disable background cases by filtering outbreak cases
-    if (!showBackground && selectedOutbreak) {
-        graphCases = [...casesInOutbreak];
+        //gehört zu Fall 2
+        //graphCases = graphCases.concat(contactCases);
     }
 
     // filter out cases which are not in the selected time range
     if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
+        console.log(casesInOutbreak);
+
         const casesFilteredByDateRange = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
         // add cases in date range to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesFilteredByDateRange);
     }
 
-    if (analysisSettings.showContactTracingEdges) {
-        const allContactCases: CaseWithRelationships[] = graphCases.filter((caseData) => !caseData.sample);
-
-        //Fall: 1
-        //wenn wir nur kontaktfälle amzeigen wollen die mit Fällen mit samples verbunden sind, dann filtern wir die Fälle ohne samples raus,
-        //ansonsten werden alle Kontaktfälle angezeigt die in den Graphen stecken
-        // const graphCaseIds = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
-
-        // Fall: 2: Hier werden alle Kontaktfälle angezeigt die in den Graphcase stecken, auch diese die nicht mit einem SampleFall verbunden sind
-        const graphCaseIds = graphCases.map((caseData) => caseData.id);
-
-        // graphcases enthält alle fälle, auch kontaktfälle die nach der filterung übrig geblieben sind
-        // wir wollen nur Kontaktfälle anzeigen die in graphcases stecken
-        let contactCases = [] as CaseWithRelationships[];
-        for (const contactCase of allContactCases) {
-            for (const contact of contacts) {
-                if (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) {
-                    contactCases.push(contactCase);
-                }
-                if (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1)) {
-                    contactCases.push(contactCase);
-                }
-            }
-        }
-
-        contactCases = deleteDuplicateCases(contactCases);
-
-        /* 
-        // ---- test schleife siehe oben: gleiches ergebnis wie contactCases
-        let newGraphCasesWithDirectConnections = [] as CaseWithRelationships[];
-        for (const contactCase of contactCases) {
-            for (const contact of contacts) {
-                if (contact.case_id_1 === contactCase.id && graphCaseIds.includes(contact.case_id_2)) {
-                    newGraphCasesWithDirectConnections.push(contactCase);
-                }
-                if (contact.case_id_2 === contactCase.id && graphCaseIds.includes(contact.case_id_1)) {
-                    newGraphCasesWithDirectConnections.push(contactCase);
-                }
-            }
-        }
-        // jetzt kann man diese fälle in den graphcases hinzufügen und das vorgehen wiederholen (Rekursion?)
-        // hier ein beispiel ohne rekursion mit zweiten cycle
-        // -------------------------
-        newGraphCasesWithDirectConnections = deleteDuplicateCases(newGraphCasesWithDirectConnections);
-        console.log("newGraphCasesWithDirectConnections", newGraphCasesWithDirectConnections);
-        console.log("graphCases before concat contactCases", graphCases);
-
-        graphCases = graphCases.concat(newGraphCasesWithDirectConnections);
-        console.log("graphCases after concat contactCases", graphCases);
-
-        // zweiter Kontaktzyklus
-        const graphCaseIdSecondcyle = graphCases.filter((graphCase) => graphCase.sample).map((caseData) => caseData.id);
-
-        let secondCaseCycle = [] as CaseWithRelationships[];
-        for (const contactCase of contactCases) {
-            for (const contact of contacts) {
-                if (contact.case_id_1 === contactCase.id && graphCaseIdSecondcyle.includes(contact.case_id_2)) {
-                    secondCaseCycle.push(contactCase);
-                }
-                if (contact.case_id_2 === contactCase.id && graphCaseIdSecondcyle.includes(contact.case_id_1)) {
-                    secondCaseCycle.push(contactCase);
-                }
-            }
-        }
-        secondCaseCycle = deleteDuplicateCases(secondCaseCycle);
-        console.log("secondCaseCycle", secondCaseCycle);
-        // hier endet der Testzyklus ---> Funktioniert noch nicht. Liegt vll daran das es solche fälle nicht gibt. Aber wer weiß
-        // vll einfach mal alle kontaktfälle einblenden mit fliegen clustern siehe zeile 200-203  (cases ohne samples nicht mehr ausfiltern? )
-        // -------------------------
- */
-        // filter out cases without a samples
-        graphCases = graphCases.filter((caseData) => caseData.sample);
-        // add contact cases to the graph cases
-        graphCases = graphCases.concat(contactCases);
-    } else {
-        // to calculate the mst with the genetic distance we have to filter out cases without a fasta_id
-        graphCases = graphCases.filter((caseData) => caseData.sample);
+    // disable background cases by filtering outbreak cases
+    if (!showBackground && selectedOutbreak) {
+        graphCases = [...casesInOutbreak];
     }
 
     // the graphCases array contains duplicated cases. Example: A case is in a selected
@@ -390,7 +290,6 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
 
     const contactEdges: CustomLink[] = [];
     for (const contact of contacts) {
-        if (contact.case_id_1 === contact.case_id_2) continue;
         // only add contact edges if both contact cases are in the already filtered graphCases array
         if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
             const link = {
@@ -444,7 +343,7 @@ export const createGraphData = async (
     }
 
     // apply all filtering settings to get the correct cases for the graph
-    let graphCases = await getGraphCases(cases, analysisSettings, contacts);
+    const graphCases = await getGraphCases(cases, analysisSettings);
 
     // create a new graph object with the correct amount of nodes
     const graph = new Graph(graphCases.length);
@@ -455,7 +354,7 @@ export const createGraphData = async (
     const colorMapForClusters = createColorMapForClusters(cases, analysisSettings);
 
     // create node objects for forced directed graph
-    let nodes: CustomNode[] = graphCases.map((caseData) => {
+    const nodes: CustomNode[] = graphCases.map((caseData) => {
         const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
 
         return {
@@ -468,7 +367,7 @@ export const createGraphData = async (
         } satisfies CustomNode;
     });
 
-    // create link objects for forced directed graph
+    // create link objects for sequenced cases (MST)
     let links = mstEdges.map((edge) => {
         return {
             source: graphCases[edge.source].id,
@@ -481,12 +380,11 @@ export const createGraphData = async (
         };
     }) satisfies CustomLink[];
 
+    // create link objects for contacts
     if (analysisSettings.showContactTracingEdges && contacts) {
         const contactTracingLinks = createContactLinks(graphCases, contacts);
         links = links.concat(contactTracingLinks);
         links = createCurvatures(links);
-    } else {
-        nodes = nodes.filter((node) => node.caseData.sample);
     }
 
     return {
