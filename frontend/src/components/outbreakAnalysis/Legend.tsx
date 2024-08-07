@@ -1,35 +1,12 @@
 import { useAnalysisStore } from "@/stores/analysis";
 import { CustomLink, CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
+import { getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
 
 type LegendProps = {
     nodes: CustomNode[];
     links: CustomLink[];
     isOutbreakSeparated?: boolean;
-};
-
-const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
-    let uniqueClustersOfNodes = nodes
-        .filter((cluster, index, self) => {
-            return index === self.findIndex((node) => node.cluster === cluster.cluster);
-        })
-        .sort((a, b) => a.cluster.localeCompare(b.cluster));
-
-    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const index = uniqueClustersOfNodes.findIndex((node) => node.cluster === "Keinem Ausbruch zugewiesen");
-    if (index !== -1) {
-        const item = uniqueClustersOfNodes.splice(index, 1);
-        uniqueClustersOfNodes.push(item[0]);
-    }
-    return uniqueClustersOfNodes;
-};
-
-const getUniqueTypesOfLinks = (links: CustomLink[]) => {
-    return links
-        .filter((link, index, self) => {
-            return index === self.findIndex((l) => l.type === link.type);
-        })
-        .sort((a, b) => a.type.localeCompare(b.type));
 };
 
 export const Legend = ({ nodes, links, isOutbreakSeparated = false }: LegendProps) => {
