@@ -8,6 +8,7 @@ import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./BackgroundSelection";
 import { BackgroundFilter } from "./BackgroundFilter";
 import { ContactTracing } from "./ContactTracing";
+import { ColorSelection } from "./ColorSelection";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -41,6 +42,7 @@ export const AnalysisSettings = () => {
                                 <BackgroundSelection />
                                 <BackgroundFilter />
                                 <ContactTracing />
+                                <ColorSelection />
                                 <Button type="button" onClick={() => safeAnalysis()}>
                                     Analyse speichern
                                 </Button>
