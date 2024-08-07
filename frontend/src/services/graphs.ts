@@ -198,8 +198,9 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
         casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
     }
 
-    // use cases which have a distance below the threshold AND are connected to the selected outbreak
+    // filter out cases which have a distance above the genetic distance threshold
     if (excludeCasesAboveGeneticDistanceThreshold && selectedOutbreak) {
+        // get cases with genetic distance below threshold which are connected to a case in the selected outbreak
         const casesWithLowGeneticDistance = await filterCasesByGeneticDistanceThreshold(
             cases,
             graphCases,
@@ -211,23 +212,22 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
 
         // because we only want to show cases which have a distance below the threshold and are connected to the selected outbreak
         // we have to filter out cases without a sample because they have no distance
-        graphCases = filterCasesWithoutSample(graphCases);
-        casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
+        //graphCases = filterCasesWithoutSample(graphCases);
+        //casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
 
         // Fall2: Die Kontaktfälle bleiben auch ohne genetische Distanz erhalten
-        // const contactCases = graphCases.filter((caseData) => !caseData.sample);
+        const contactCases = graphCases.filter((caseData) => !caseData.sample);
 
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
 
-        //gehört zu Fall 2
-        //graphCases = graphCases.concat(contactCases);
+        // -> gehört zu Fall 2
+        // we have to add contact cases in the end because they were filtered out by filterCasesByGeneticDistanceThreshold
+        graphCases = graphCases.concat(contactCases);
     }
 
     // filter out cases which are not in the selected time range
     if (analysisSettings.excludeCasesOutsideOfDateRange && analysisSettings.dateRange) {
-        console.log(casesInOutbreak);
-
         const casesFilteredByDateRange = filterCasesByDateRange(graphCases, analysisSettings.dateRange);
         // add cases in date range to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesFilteredByDateRange);
