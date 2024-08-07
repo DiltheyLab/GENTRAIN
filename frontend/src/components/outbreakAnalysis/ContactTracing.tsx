@@ -30,7 +30,7 @@ export const ContactTracing = () => {
                     onCheckedChange={(value) => handleShowContactTracingEdges(value)}
                 />
                 <Label htmlFor="showContactTracingEdges" className="font-normal text-md">
-                    Kontakte anzeigen
+                    Kontaktkanten anzeigen
                 </Label>
             </div>
         </div>

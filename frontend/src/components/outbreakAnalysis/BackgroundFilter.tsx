@@ -22,6 +22,10 @@ export const BackgroundFilter = () => {
         analysisStore.updateSettings({ geneticDistanceThreshold: value });
     };
 
+    const handleExcludeCasesWithoutSequence = (value: boolean) => {
+        analysisStore.updateSettings({ excludeCasesWithoutSequence: value });
+    };
+
     return (
         <div className="flex flex-col gap-4 mt-2">
             <div className="flex items-center justify-between">
@@ -40,12 +44,22 @@ export const BackgroundFilter = () => {
             </div>
             <div className="flex flex-row items-center gap-3">
                 <Switch
+                    id="excludeCasesWithoutSequence"
+                    checked={analysisStore.settings.excludeCasesWithoutSequence}
+                    onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
+                />
+                <Label htmlFor="excludeCasesWithoutSequence" className="font-normal text-md leading-5">
+                    Nicht sequenzierte Fälle ausschließen
+                </Label>
+            </div>
+            <div className="flex flex-row items-center gap-3">
+                <Switch
                     id="excludeCasesAboveGeneticDistanceThreshold"
                     checked={analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="font-normal text-md leading-5">
-                    Nur zum Ausbruch genetisch verwandte Falldaten anzeigen
+                    Fälle mit genetischer Distanz &le; {analysisStore.settings.geneticDistanceThreshold} ausschließen
                 </Label>
             </div>
             {analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold && (
