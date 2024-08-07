@@ -28,8 +28,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
             let mutations2 = positionsSample2[baseIndex];
             let additions1 = "";
             let additions2 = "";
-            additions1 = this.handleRemainedCharacter(mutations1, additions1, refChar);
-            additions2 = this.handleRemainedCharacter(mutations2, additions2, refChar);
+            sequence1 += this.handleRemainedCharacter(mutations1, additions1, refChar);
+            sequence2 += this.handleRemainedCharacter(mutations2, additions2, refChar);
             if (!mutations1 && !mutations2) continue;
             additions1 = this.handleSnp(mutations1, additions1);
             additions2 = this.handleSnp(mutations2, additions2);
@@ -42,7 +42,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     };
 
     handleRemainedCharacter = (mutations: MutationsSchema, addition: string, refChar: string) => {
-        if (typeof mutations === "undefined") {
+        if (!mutations) {
             addition = refChar + addition;
         }
         return addition;
