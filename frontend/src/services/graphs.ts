@@ -9,6 +9,30 @@ import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import { COLORPALETTELINKS } from "@/colors/colorPalettes";
 
+export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
+    let uniqueClustersOfNodes = nodes
+        .filter((cluster, index, self) => {
+            return index === self.findIndex((node) => node.cluster === cluster.cluster);
+        })
+        .sort((a, b) => a.cluster.localeCompare(b.cluster));
+
+    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const index = uniqueClustersOfNodes.findIndex((node) => node.cluster === "Keinem Ausbruch zugewiesen");
+    if (index !== -1) {
+        const item = uniqueClustersOfNodes.splice(index, 1);
+        uniqueClustersOfNodes.push(item[0]);
+    }
+    return uniqueClustersOfNodes;
+};
+
+export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
+    return links
+        .filter((link, index, self) => {
+            return index === self.findIndex((l) => l.type === link.type);
+        })
+        .sort((a, b) => a.type.localeCompare(b.type));
+};
+
 export const setNodeColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
     return `hsl(${hue},50%,75%)`;
