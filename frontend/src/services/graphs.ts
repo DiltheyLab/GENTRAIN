@@ -283,31 +283,6 @@ const createCurvatures = (links: CustomLink[]) => {
     return links;
 };
 
-const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
-    const graphCasesIds = graphCases.map((caseData) => caseData.id);
-
-    const colorMapForContacts = createColorMapForContacts(contacts);
-
-    const contactLinks: CustomLink[] = [];
-    for (const contact of contacts) {
-        // only add contact links if both contact cases are in the already filtered graphCases array
-        if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
-            const link = {
-                source: contact.case_id_1,
-                target: contact.case_id_2,
-                value: "",
-                color: colorMapForContacts[contact.type],
-                type: contact.type,
-                context: contact.context,
-                curvature: 0,
-            } satisfies CustomLink;
-            contactLinks.push(link);
-        }
-    }
-
-    return contactLinks;
-};
-
 const createMSTLinks = (
     graphCases: CaseWithRelationships[],
     matrixDataAssembly: DistanceMatrixAssembly,
@@ -330,6 +305,40 @@ const createMSTLinks = (
 
     // calculate links that are in the mst by using kruskal's algorithm
     return graph.kruskal();
+};
+
+const createContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[], links: CustomLink[]) => {
+    // create a array with the ids of the cases which are in the already filtered graphCases array
+    const graphCasesIds = graphCases.map((caseData) => caseData.id);
+
+    // create a color map for the contact types
+    const colorMapForContacts = createColorMapForContacts(contacts);
+
+    const contactTracingLinks: CustomLink[] = [];
+    // create link objects for contacts
+    for (const contact of contacts) {
+        // only add contact links if both contact cases are in the already filtered graphCases array
+        if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
+            const link = {
+                source: contact.case_id_1,
+                target: contact.case_id_2,
+                value: "",
+                color: colorMapForContacts[contact.type],
+                type: contact.type,
+                context: contact.context,
+                curvature: 0,
+            } satisfies CustomLink;
+            contactTracingLinks.push(link);
+        }
+    }
+
+    // add contact links to the already existing mst links
+    links = links.concat(contactTracingLinks);
+
+    // calculate curvatures for the links because now we have more than one link between two nodes
+    links = createCurvatures(links);
+
+    return links;
 };
 
 export const createGraphData = async (
@@ -382,9 +391,7 @@ export const createGraphData = async (
 
     // create link objects for contacts
     if (analysisSettings.showContactTracingLinks && contacts) {
-        const contactTracingLinks = createContactLinks(graphCases, contacts);
-        links = links.concat(contactTracingLinks);
-        links = createCurvatures(links);
+        links = createContactLinks(graphCases, contacts, links);
     }
 
     return {
