@@ -65,7 +65,7 @@ export interface AnalysisStore {
 }
 
 export const defaultGraphSettings: GraphSettings = {
-    showNodeLabel: true,
+    showNodeLabel: false,
     linkDistance: 50,
 };
 
