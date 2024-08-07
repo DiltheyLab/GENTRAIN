@@ -1,6 +1,6 @@
-import { CaseSchema, CaseWithRelationships } from "@/database/cases";
+import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
-import { Graph, Edge } from "@/lib/kruskal";
+import { Graph, Link } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
@@ -288,9 +288,9 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
 
     const colorMapForContacts = createColorMapForContacts(contacts);
 
-    const contactEdges: CustomLink[] = [];
+    const contactLinks: CustomLink[] = [];
     for (const contact of contacts) {
-        // only add contact edges if both contact cases are in the already filtered graphCases array
+        // only add contact links if both contact cases are in the already filtered graphCases array
         if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
             const link = {
                 source: contact.case_id_1,
@@ -301,14 +301,14 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
                 context: contact.context,
                 curvature: 0,
             } satisfies CustomLink;
-            contactEdges.push(link);
+            contactLinks.push(link);
         }
     }
 
-    return contactEdges;
+    return contactLinks;
 };
 
-const createMSTEdges = (
+const createMSTLinks = (
     graphCases: CaseWithRelationships[],
     matrixDataAssembly: DistanceMatrixAssembly,
     graph: Graph
@@ -322,13 +322,13 @@ const createMSTEdges = (
             const columnCase = graphCases[columnIndex];
 
             if (!rowCase.sample || !columnCase.sample) continue;
-            graph.addEdge(
-                new Edge(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id])
+            graph.addLink(
+                new Link(rowIndex, columnIndex, matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id])
             );
         }
     }
 
-    // calculate edges that are in the mst by using kruskal's algorithm
+    // calculate links that are in the mst by using kruskal's algorithm
     return graph.kruskal();
 };
 
@@ -348,8 +348,8 @@ export const createGraphData = async (
     // create a new graph object with the correct amount of nodes
     const graph = new Graph(graphCases.length);
 
-    // calculate edges that are in the mst by using kruskal's algorithm
-    const mstEdges = createMSTEdges(graphCases, matrixDataAssembly, graph);
+    // calculate links that are in the mst by using kruskal's algorithm
+    const mstLinks = createMSTLinks(graphCases, matrixDataAssembly, graph);
 
     const colorMapForClusters = createColorMapForClusters(cases, analysisSettings);
 
@@ -368,11 +368,11 @@ export const createGraphData = async (
     });
 
     // create link objects for sequenced cases (MST)
-    let links = mstEdges.map((edge) => {
+    let links = mstLinks.map((link) => {
         return {
-            source: graphCases[edge.source].id,
-            target: graphCases[edge.target].id,
-            value: edge.weight.toString(),
+            source: graphCases[link.source].id,
+            target: graphCases[link.target].id,
+            value: link.weight.toString(),
             color: "#CCC",
             curvature: 0,
             type: "Genetische Distanz",
@@ -381,7 +381,7 @@ export const createGraphData = async (
     }) satisfies CustomLink[];
 
     // create link objects for contacts
-    if (analysisSettings.showContactTracingEdges && contacts) {
+    if (analysisSettings.showContactTracingLinks && contacts) {
         const contactTracingLinks = createContactLinks(graphCases, contacts);
         links = links.concat(contactTracingLinks);
         links = createCurvatures(links);

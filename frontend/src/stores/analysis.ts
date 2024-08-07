@@ -34,8 +34,7 @@ export type AnalysisSettings = {
     excludeCasesWithoutSequence: boolean;
     dateRange: DateRange;
     geneticDistanceThreshold: number;
-    showContactTracingEdges: boolean;
-    hideEdgesAboveThreshold: boolean;
+    showContactTracingLinks: boolean;
     groupColorations: GroupColoration;
     colorPaletteNodes: string[];
     category: CategorySchema | null;
@@ -83,8 +82,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         excludeCasesWithoutSequence: true,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
-        showContactTracingEdges: false,
-        hideEdgesAboveThreshold: false,
+        showContactTracingLinks: false,
         groupColorations: [],
         colorPaletteNodes: COLORPALETTENODES,
         category: null,

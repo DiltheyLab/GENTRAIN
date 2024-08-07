@@ -8,8 +8,8 @@ import { Info } from "lucide-react";
 export const ContactTracing = () => {
     const analysisStore = useAnalysisStore();
 
-    const handleShowContactTracingEdges = (value: boolean) => {
-        analysisStore.updateSettings({ showContactTracingEdges: value });
+    const handleShowContactTracingLinks = (value: boolean) => {
+        analysisStore.updateSettings({ showContactTracingLinks: value });
     };
 
     return (
@@ -25,11 +25,11 @@ export const ContactTracing = () => {
             </div>
             <div className="flex flex-row items-center gap-3">
                 <Switch
-                    id="showContactTracingEdges"
-                    checked={analysisStore.settings.showContactTracingEdges}
-                    onCheckedChange={(value) => handleShowContactTracingEdges(value)}
+                    id="showContactTracingLinks"
+                    checked={analysisStore.settings.showContactTracingLinks}
+                    onCheckedChange={(value) => handleShowContactTracingLinks(value)}
                 />
-                <Label htmlFor="showContactTracingEdges" className="font-normal text-md">
+                <Label htmlFor="showContactTracingLinks" className="font-normal text-md">
                     Kontaktkanten anzeigen
                 </Label>
             </div>
