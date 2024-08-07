@@ -15,7 +15,7 @@ export abstract class DistanceCalculationStrategy {
     protected distanceMatrixId: number | undefined;
     protected samples: SampleSchema[];
 
-    abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
+    protected abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
         this.sampleUploadState = useSampleUploadStore.getState();
@@ -23,7 +23,7 @@ export abstract class DistanceCalculationStrategy {
         this.samples = [];
     }
 
-    execute = async () => {
+    public execute = async () => {
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
@@ -32,33 +32,33 @@ export abstract class DistanceCalculationStrategy {
         console.timeEnd("calc");
     };
 
-    init = async () => {
+    private init = async () => {
         this.cli = await this.getCli();
         this.distanceMatrixId = await this.getDistanceMatrixId();
         this.samples = await this.getSamples();
     };
 
-    getCli = async () => {
+    private getCli = async () => {
         const cli = await new Aioli(["kalign/3.3.1"]);
         return cli;
     };
 
-    getSamples = async () => {
+    private getSamples = async () => {
         const cases = await getCasesForPathogenWithSample(this.pathogen.id);
         return extractSamplesFromCases(cases);
     };
 
-    getDistanceMatrixId = async () => {
+    private getDistanceMatrixId = async () => {
         const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(this.pathogen.id);
         return distanceMatrixId;
     };
 
-    initProgress = () => {
+    private initProgress = () => {
         const sampleAmount = Object.keys(this.samples).length;
         this.sampleUploadState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
 
-    calculateSampleDistances = async () => {
+    private calculateSampleDistances = async () => {
         if (!this.distanceMatrixId) {
             return;
         }

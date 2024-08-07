@@ -8,7 +8,7 @@ export interface PositionsSchema {
     [position: number]: MutationsSchema;
 }
 
-export class ViralPositionService {
+export class ViralPositionExtractor {
     protected sample: SampleSchema;
     protected positions: PositionsSchema;
 
