@@ -51,7 +51,7 @@ export class ViralDistanceExtractor {
             this.currentChar1 = sequence1[i];
             this.currentChar2 = sequence2[i];
 
-            if (this.bothCharsAreNs()) {
+            if (this.atleastOneCharIsN()) {
                 continue;
             }
 
@@ -120,7 +120,7 @@ export class ViralDistanceExtractor {
         );
     };
 
-    private bothCharsAreNs = () => {
+    private atleastOneCharIsN = () => {
         return this.currentChar1 === "N" || this.currentChar2 === "N";
     };
 
