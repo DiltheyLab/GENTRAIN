@@ -14,8 +14,8 @@ export const BackgroundFilter = () => {
         analysisStore.updateSettings({ showBackground: value });
     };
 
-    const handleIncludeCasesWithLowGeneticDistance = (value: boolean) => {
-        analysisStore.updateSettings({ includeCasesWithLowGeneticDistance: value });
+    const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
+        analysisStore.updateSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
     };
 
     const changeGeneticDistanceThreshold = (value: number) => {
@@ -40,15 +40,15 @@ export const BackgroundFilter = () => {
             </div>
             <div className="flex flex-row items-center gap-3">
                 <Switch
-                    id="includeCasesWithLowGeneticDistance"
-                    checked={analysisStore.settings.includeCasesWithLowGeneticDistance}
-                    onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
+                    id="excludeCasesAboveGeneticDistanceThreshold"
+                    checked={analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
+                    onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
                 />
-                <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-md leading-5">
+                <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="font-normal text-md leading-5">
                     Nur zum Ausbruch genetisch verwandte Falldaten anzeigen
                 </Label>
             </div>
-            {analysisStore.settings.includeCasesWithLowGeneticDistance && (
+            {analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold && (
                 <>
                     <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
                     <Input

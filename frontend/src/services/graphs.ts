@@ -202,7 +202,7 @@ const getGraphCases = async (
         showBackground,
         selectedBackground,
         geneticDistanceThreshold,
-        includeCasesWithLowGeneticDistance,
+        excludeCasesAboveGeneticDistanceThreshold,
     } = analysisSettings;
 
     let graphCases = [] as CaseWithRelationships[];
@@ -228,7 +228,7 @@ const getGraphCases = async (
     }
 
     // use cases which have a distance below the threshold AND are connected to the selected outbreak
-    if (includeCasesWithLowGeneticDistance && selectedOutbreak) {
+    if (excludeCasesAboveGeneticDistanceThreshold && selectedOutbreak) {
         const casesWithLowGeneticDistance = await filterCasesByGeneticDistanceThreshold(
             cases,
             graphCases,

@@ -29,8 +29,9 @@ export type AnalysisSettings = {
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
     showBackground: boolean;
-    includeCasesWithLowGeneticDistance: boolean;
+    excludeCasesAboveGeneticDistanceThreshold: boolean;
     excludeCasesOutsideOfDateRange: boolean;
+    excludeCasesWithoutSequence: boolean;
     dateRange: DateRange;
     geneticDistanceThreshold: number;
     showContactTracingEdges: boolean;
@@ -77,8 +78,9 @@ export const getDefaultSettings = (): AnalysisSettings => {
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
         showBackground: true,
-        includeCasesWithLowGeneticDistance: false,
+        excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
+        excludeCasesWithoutSequence: true,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingEdges: false,
