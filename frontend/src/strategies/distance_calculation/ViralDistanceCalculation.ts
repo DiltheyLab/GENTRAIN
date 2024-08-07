@@ -1,16 +1,10 @@
 import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/database/samples";
 import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
-import {
-    addAmbiguousMutations,
-    addDeletionMutations,
-    addInsertionMutations,
-    addSubstitutionMutations,
-} from "@/services/positions";
+import { MutationsSchema, ViralPositionService } from "@/services/ViralPositionService";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
-        // create pseudoalignment
         let alignment = await this.alignSamples(sample1, sample2);
         // count of proper characters per sequence (so that in the beginning and end the first/last x chars can be skipped)
         let proper_total_1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
@@ -25,207 +19,105 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
         const positionsSample1 = this.getMutationPositions(sample1);
         const positionsSample2 = this.getMutationPositions(sample2);
-        let positions: {
-            [position: number]: { type: string; characters: string }[];
-        }[] = [positionsSample1, positionsSample2];
-        let alignment = ["", ""];
+        let sequence1 = "";
+        let sequence2 = "";
+
         for (let baseIndex = 0; baseIndex < referenceString.length; baseIndex++) {
             const refChar = referenceString[baseIndex];
-            let additions = ["", ""];
-            let insertionHandled = false;
-            let deletionHandled = false;
-            for (let sequenceIndex = 0; sequenceIndex < 2; sequenceIndex++) {
-                const mutations = positions[sequenceIndex][baseIndex];
-                if (!this.hasMutationsAtPosition(mutations)) {
-                    additions[sequenceIndex] = refChar; // evtl +additions[sequenceIndex]
-                    continue;
-                }
-                for (let mutationIndex = 0; mutationIndex < mutations.length; mutationIndex++) {
-                    const mutation = mutations[mutationIndex];
-                    additions[sequenceIndex] = this.handleSnp(mutation, additions[sequenceIndex]);
-                    [positions, additions, deletionHandled] = this.handleDeletion(
-                        mutation,
-                        sequenceIndex,
-                        baseIndex,
-                        positions,
-                        additions,
-                        deletionHandled
-                    );
-                    [positions, additions, insertionHandled] = await this.handleInsertion(
-                        mutation,
-                        sequenceIndex,
-                        baseIndex,
-                        positions,
-                        additions,
-                        refChar,
-                        insertionHandled
-                    );
-                }
-            }
-
-            alignment[0] += additions[0];
-            alignment[1] += additions[1];
+            let mutations1 = positionsSample1[baseIndex];
+            let mutations2 = positionsSample2[baseIndex];
+            let additions1 = "";
+            let additions2 = "";
+            additions1 = this.handleRemainedCharacter(mutations1, additions1, refChar);
+            additions2 = this.handleRemainedCharacter(mutations2, additions2, refChar);
+            if (!mutations1 && !mutations2) continue;
+            additions1 = this.handleSnp(mutations1, additions1);
+            additions2 = this.handleSnp(mutations2, additions2);
+            [additions1, additions2] = this.handleDeletions(mutations1, mutations2, additions1, additions2);
+            [additions1, additions2] = this.handleInsertions(mutations1, mutations2, additions1, additions2, refChar);
+            sequence1 += additions1;
+            sequence2 += additions2;
         }
-        return alignment;
+        return [sequence1, sequence2];
     };
 
-    hasMutationsAtPosition = (position: { type: string; characters: string }[]) => {
-        return typeof position !== "undefined";
+    handleRemainedCharacter = (mutations: MutationsSchema, addition: string, refChar: string) => {
+        if (typeof mutations === "undefined") {
+            addition = refChar + addition;
+        }
+        return addition;
     };
 
-    handleSnp = (mutation: { type: string; characters: string }, additions: string) => {
-        if (mutation.type === "snp") {
-            additions += mutation.characters;
+    handleSnp = (mutations: MutationsSchema, additions: string) => {
+        if (!mutations || !("snp" in mutations)) {
+            return additions;
         }
+        additions += mutations.snp;
+
         return additions;
     };
 
-    handleDeletion = (
-        mutation: { type: string; characters: string },
-        sequenceIndex: number,
-        baseIndex: number,
-        positions: {
-            [position: number]: { type: string; characters: string }[];
-        }[],
-        additions: string[],
-        deletionHandled: boolean
-    ): [
-        {
-            [position: number]: { type: string; characters: string }[];
-        }[],
-        string[],
-        boolean
-    ] => {
-        if (mutation["type"] == "del") {
-            // if already second seq then was not in first (and second seq has mutations at this pos)
-            if (sequenceIndex === 0 && !(typeof positions[sequenceIndex + 1][baseIndex] === "undefined")) {
-                // for every mutaion on the second seq
-                for (
-                    let otherSequenceMutationsIndex = 0;
-                    otherSequenceMutationsIndex < positions[sequenceIndex + 1][baseIndex].length;
-                    otherSequenceMutationsIndex++
-                ) {
-                    let mutation_2 = positions[sequenceIndex + 1][baseIndex][otherSequenceMutationsIndex];
-
-                    // if seq 2 also has the same del then addchars should stay ""
-                    if ((mutation_2["type"] = "del")) {
-                        // report that it was found
-                        deletionHandled = true;
-                        // remove from the other list so it wont come up again
-                        positions[sequenceIndex + 1][baseIndex].splice(otherSequenceMutationsIndex, 1);
-                        break;
-                    }
-                }
-            }
-
-            // if the deletion was only in one sequence add the "-"
-            if (!deletionHandled) {
-                additions[sequenceIndex] += mutation["characters"];
-            }
-        }
-        return [positions, additions, deletionHandled];
-    };
-
-    handleInsertion = async (
-        mutation: { type: string; characters: string },
-        sequenceIndex: number,
-        baseIndex: number,
-        positions: {
-            [position: number]: { type: string; characters: string }[];
-        }[],
-        additions: string[],
-        refChar: string,
-        insertionHandled: boolean
-    ): Promise<
-        [
-            {
-                [position: number]: { type: string; characters: string }[];
-            }[],
-            string[],
-            boolean
-        ]
-    > => {
-        if (mutation.type === "ins") {
-            if (sequenceIndex === 0 && !(typeof positions[sequenceIndex + 1][baseIndex] === "undefined")) {
-                for (
-                    let otherSequenceMutationsIndex = 0;
-                    otherSequenceMutationsIndex < positions[sequenceIndex + 1][baseIndex].length;
-                    otherSequenceMutationsIndex++
-                ) {
-                    let mutation_2 = positions[sequenceIndex + 1][baseIndex][otherSequenceMutationsIndex];
-
-                    if (mutation_2["type"] == "ins") {
-                        let charactersToAdd1 = mutation["characters"];
-                        let charactersToAdd2 = mutation_2["characters"];
-                        if (charactersToAdd1 !== charactersToAdd2) {
-                            insertionHandled = true;
-                            const fasta_string = `>1\n${mutation["characters"]}\n>2\n${mutation_2["characters"]}`;
-                            let result = await this.cli.mount({
-                                name: "distance_input.fa",
-                                data: fasta_string,
-                            });
-                            result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
-                            result = await this.cli.cat("distance_result.fasta");
-                            result = result.split(/[\r\n]+/);
-                            charactersToAdd1 = result[1];
-                            charactersToAdd2 = result[3];
-                        }
-
-                        if (positions[sequenceIndex][baseIndex].length > 1) {
-                            additions[sequenceIndex] += charactersToAdd1;
-                        } else {
-                            additions[sequenceIndex] = refChar + additions[sequenceIndex] + charactersToAdd1;
-                        }
-
-                        if (positions[1 - sequenceIndex][baseIndex].length > 1) {
-                            additions[1 - sequenceIndex] += charactersToAdd2;
-                        } else {
-                            additions[1 - sequenceIndex] = refChar + additions[1 - sequenceIndex] + charactersToAdd2;
-                        }
-
-                        positions[sequenceIndex + 1][baseIndex].splice(otherSequenceMutationsIndex, 1);
-                        break;
-                    }
-                }
-            }
-            if (!insertionHandled) {
-                if (positions[sequenceIndex][baseIndex].length > 1) {
-                    additions[sequenceIndex] += mutation["characters"];
-                } else {
-                    additions[sequenceIndex] = refChar + additions[sequenceIndex] + mutation["characters"]; // evtl add_chars nicht notwendig
-                }
-                additions[1 - sequenceIndex] += new Array(mutation["characters"].length + 1).join("-");
-            }
-        }
-        return [positions, additions, insertionHandled];
-    };
-
-    sequenceHasDeletionAtPosition = (
-        sequenceIndex: number,
-        baseIndex: number,
-        positions: {
-            [position: number]: {
-                hasDeletion: boolean;
-                insertionIndex: number | null;
-                mutations: { type: string; characters: string }[];
-            };
-        }[]
+    handleDeletions = (
+        mutations1: MutationsSchema,
+        mutations2: MutationsSchema,
+        additions1: string,
+        additions2: string
     ) => {
-        return positions[sequenceIndex][baseIndex] && positions[sequenceIndex][baseIndex].hasDeletion;
+        if (
+            (mutations1 && mutations2 && !("del" in mutations1) && !("del" in mutations2)) ||
+            (mutations1 && mutations2 && "del" in mutations1 && "del" in mutations2)
+        ) {
+            return [additions1, additions2];
+        }
+        if (mutations1 && "del" in mutations1) {
+            additions1 += "-";
+        }
+        if (mutations2 && "del" in mutations2) {
+            additions2 += "-";
+        }
+        return [additions1, additions2];
     };
 
-    getInsertionIndexForSequenceAtPosition = (
-        sequenceIndex: number,
-        baseIndex: number,
-        positions: {
-            [position: number]: {
-                hasDeletion: boolean;
-                insertionIndex: number | null;
-                mutations: { type: string; characters: string }[];
-            };
-        }[]
+    handleInsertions = (
+        mutations1: MutationsSchema,
+        mutations2: MutationsSchema,
+        additions1: string,
+        additions2: string,
+        refChar: string
     ) => {
-        return positions[sequenceIndex][baseIndex] && positions[sequenceIndex][baseIndex].insertionIndex;
+        if (mutations1 && mutations2 && !("ins" in mutations1) && !("ins" in mutations2)) {
+            return [additions1, additions2];
+        }
+        if (mutations1 && mutations2 && "ins" in mutations1 && "ins" in mutations2) {
+            let insertion1 = mutations1.ins;
+            let insertion2 = mutations2.ins;
+            if (mutations1.ins !== mutations2.ins) {
+                this.alignInsertions(insertion1, insertion2).then(([alignedSequence1, alignedSequence2]) => {
+                    additions1 +=
+                        Object.keys(mutations1).length > 1 ? alignedSequence1 : refChar + additions1 + alignedSequence1;
+                    additions2 +=
+                        Object.keys(mutations2).length > 1 ? alignedSequence2 : refChar + additions2 + alignedSequence2;
+                    return [additions1, additions2];
+                });
+            }
+            additions1 += Object.keys(mutations1).length > 1 ? insertion1 : refChar + additions1 + insertion1;
+            additions2 += Object.keys(mutations2).length > 1 ? insertion2 : refChar + additions2 + insertion2;
+            return [additions1, additions2];
+        }
+        if (mutations1 && "ins" in mutations1) {
+            const insertion = mutations1.ins;
+            const gaps = new Array(insertion.length + 1).join("-");
+            additions1 += Object.keys(mutations1).length > 1 ? insertion : refChar + additions1 + insertion;
+            additions2 += gaps;
+        }
+        if (mutations2 && "ins" in mutations2) {
+            const insertion = mutations2.ins;
+            const gaps = new Array(insertion.length + 1).join("-");
+            additions1 += gaps;
+            additions2 += Object.keys(mutations2).length > 1 ? insertion : refChar + additions2 + insertion;
+        }
+
+        return [additions1, additions2];
     };
 
     alignInsertions = async (insertion1: string, insertion2: string) => {
@@ -240,175 +132,10 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         return [result[1], result[3]];
     };
 
-    alignSamplesOld = async (sample1: SampleSchema, sample2: SampleSchema) => {
-        // add bases into here
-        let alignment = ["", ""];
-
-        // get dict of position to mutation
-        let positions_s1 = this.getMutationPositions(sample1);
-        let positions_s2 = this.getMutationPositions(sample2);
-        let positions = [positions_s1, positions_s2];
-
-        // check all mutations for every position on the reference string
-        // and add the correct bases to the alignment
-        for (let i = 0; i < referenceString.length; i++) {
-            // added if no mutation or only insertion
-            let ref_char = referenceString[i];
-
-            // will be added to alignment after all mutations have been looked at
-            let add_chars = ["", ""];
-
-            // for both sequences
-            for (let idx_seq = 0; idx_seq < 2; idx_seq++) {
-                // if there is no mutation add refchar and continue
-                if (typeof positions[idx_seq][i] === "undefined") {
-                    add_chars[idx_seq] = ref_char + add_chars[idx_seq];
-                    continue;
-                }
-
-                //  for every mutation of this sequence (should be max 2)
-                for (let idx_mut = 0; idx_mut < positions[idx_seq][i].length; idx_mut++) {
-                    // current mutation
-                    let mutation = positions[idx_seq][i][idx_mut];
-
-                    // ############################################################
-                    // point mutations or ambig chars
-                    // just add mutation to add_chars
-                    if (mutation["type"] == "snp") {
-                        add_chars[idx_seq] += mutation["replacement"];
-                    }
-
-                    // ############################################################
-                    // deletions (includes alignment start and end)
-                    // either add nothing (del on both seqs) or add "-"
-
-                    if (mutation["type"] == "del") {
-                        // was a deletion found in the other sequence
-                        let found = false;
-
-                        // if already second seq then was not in first (and second seq has mutations at this pos)
-                        if (idx_seq == 0 && !(typeof positions[idx_seq + 1][i] === "undefined")) {
-                            // for every mutaion on the second seq
-                            for (let idx_mut_2 = 0; idx_mut_2 < positions[idx_seq + 1][i].length; idx_mut_2++) {
-                                let mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
-
-                                // if seq 2 also has the same del then addchars should stay ""
-                                if ((mutation_2["type"] = "del")) {
-                                    // report that it was found
-                                    found = true;
-                                    // remove from the other list so it wont come up again
-                                    positions[idx_seq + 1][i].splice(idx_mut_2, 1);
-                                    break;
-                                }
-                            }
-                        }
-
-                        // if the deletion was only in one sequence add the "-"
-                        if (!found) {
-                            add_chars[idx_seq] += mutation["replacement"];
-                        }
-                    }
-
-                    // ############################################################
-                    // insertions
-                    // either add ins and "-" to other seq or align two ins with kalign
-
-                    if (mutation["type"] == "ins") {
-                        // was a insertion found in the other sequence
-                        let found = false;
-
-                        // if already second seq then was not in first (and second seq has mutations at this pos)
-                        if (idx_seq == 0 && !(typeof positions[idx_seq + 1][i] === "undefined")) {
-                            // for every mutaion on the second seq
-                            for (let idx_mut_2 = 0; idx_mut_2 < positions[idx_seq + 1][i].length; idx_mut_2++) {
-                                let mutation_2 = positions[idx_seq + 1][i][idx_mut_2];
-
-                                // if seq 2 also has an insertion align them with kalign
-                                if (mutation_2["type"] == "ins") {
-                                    // report that it was found
-                                    found = true;
-                                    // put insertions into fasta string
-                                    const fasta_string = `>1\n${mutation["replacement"]}\n>2\n${mutation_2["replacement"]}`;
-                                    // mount fasta string as file
-                                    let result = await this.cli.mount({
-                                        name: "distance_input.fa",
-                                        data: fasta_string,
-                                    });
-
-                                    result = await this.cli.exec(
-                                        "kalign distance_input.fa -f fasta -o distance_result.fasta"
-                                    );
-
-                                    // fetch FASTA file output
-                                    result = await this.cli.cat("distance_result.fasta");
-                                    // console.log("result:");
-                                    // console.log(result);
-                                    // split by newline
-                                    result = result.split(/[\r\n]+/);
-
-                                    // Add to current sequence (should be sequence 0)
-
-                                    // there is another mutation on this sequence
-                                    if (positions[idx_seq][i].length > 1) {
-                                        add_chars[idx_seq] += result[1];
-                                        // no other mutation -> add ref char
-                                    } else {
-                                        add_chars[idx_seq] = ref_char + add_chars[idx_seq] + result[1];
-                                    }
-
-                                    // Add to other sequence (should be sequence 1)
-
-                                    // there is another mutation on this sequence
-                                    if (positions[1 - idx_seq][i].length > 1) {
-                                        add_chars[1 - idx_seq] += result[3];
-                                        // no other mutation -> add ref char
-                                    } else {
-                                        add_chars[1 - idx_seq] = ref_char + add_chars[1 - idx_seq] + result[3];
-                                    }
-
-                                    // remove from the other list so it wont come up again
-                                    positions[idx_seq + 1][i].splice(idx_mut_2, 1);
-                                    break;
-                                }
-                            }
-                        }
-
-                        // if it is the only insertion at this position
-                        if (!found) {
-                            // there is another mutation on this sequence
-                            if (positions[idx_seq][i].length > 1) {
-                                add_chars[idx_seq] += mutation["replacement"];
-                                // no other mutation -> add ref char
-                            } else {
-                                add_chars[idx_seq] = ref_char + add_chars[idx_seq] + mutation["replacement"]; // evtl add_chars nicht notwendig
-                            }
-                            // add multiple "-" to the other sequence
-                            add_chars[1 - idx_seq] += new Array(mutation["replacement"].length + 1).join("-");
-                        }
-                    }
-                }
-            }
-
-            // after going through all mutations at a position add them to the alignment
-            alignment[0] += add_chars[0];
-            alignment[1] += add_chars[1];
-        }
-
-        return alignment;
-    };
-
     getMutationPositions(sample: SampleSchema) {
-        if (!sample.variants) {
-            return {};
-        }
-        let mutationPositions: any = {};
-
-        mutationPositions = addInsertionMutations(sample, mutationPositions);
-        mutationPositions = addSubstitutionMutations(sample, mutationPositions);
-        mutationPositions = addAmbiguousMutations(sample, mutationPositions);
-        mutationPositions = addDeletionMutations(sample, mutationPositions);
-
-        return mutationPositions;
+        const viralPositionService = new ViralPositionService(sample);
+        viralPositionService.collectPositions();
+        return viralPositionService.getPositions();
     }
 
     countDifferences = (alignment: any, proper_total_1: any, proper_total_2: any) => {
@@ -523,7 +250,6 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                 gap_2 = true;
             }
         }
-
         return distance;
     };
 }

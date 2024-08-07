@@ -27,9 +27,9 @@ export abstract class DistanceCalculationStrategy {
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
-        console.time("calc-new");
+        console.time("calc");
         await this.calculateSampleDistances();
-        console.timeEnd("calc-new");
+        console.timeEnd("calc");
     };
 
     init = async () => {
