@@ -28,13 +28,28 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
             let mutations2 = positionsSample2[baseIndex];
             let additions1 = "";
             let additions2 = "";
-            sequence1 += this.handleRemainedCharacter(mutations1, additions1, refChar);
-            sequence2 += this.handleRemainedCharacter(mutations2, additions2, refChar);
-            if (!mutations1 && !mutations2) continue;
+            additions1 += this.handleRemainedCharacter(mutations1, additions1, refChar);
+            additions2 += this.handleRemainedCharacter(mutations2, additions2, refChar);
             additions1 = this.handleSnp(mutations1, additions1);
             additions2 = this.handleSnp(mutations2, additions2);
             [additions1, additions2] = this.handleDeletions(mutations1, mutations2, additions1, additions2);
-            [additions1, additions2] = this.handleInsertions(mutations1, mutations2, additions1, additions2, refChar);
+            if (this.checkForDifferingInsertions(mutations1, mutations2)) {
+                [additions1, additions2] = await this.handleInsertionsWithAlignment(
+                    mutations1,
+                    mutations2,
+                    additions1,
+                    additions2,
+                    refChar
+                );
+            }
+            [additions1, additions2] = this.handleInsertionsWithoutAlignment(
+                mutations1,
+                mutations2,
+                additions1,
+                additions2,
+                refChar
+            );
+
             sequence1 += additions1;
             sequence2 += additions2;
         }
@@ -78,7 +93,37 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         return [additions1, additions2];
     };
 
-    handleInsertions = (
+    checkForDifferingInsertions = (mutations1: MutationsSchema, mutations2: MutationsSchema) => {
+        return (
+            mutations1 && mutations2 && "ins" in mutations1 && "ins" in mutations2 && mutations1.ins !== mutations2.ins
+        );
+    };
+
+    handleInsertionsWithAlignment = async (
+        mutations1: MutationsSchema,
+        mutations2: MutationsSchema,
+        additions1: string,
+        additions2: string,
+        refChar: string
+    ) => {
+        const insertion1 = mutations1.ins;
+        const insertion2 = mutations2.ins;
+        const fasta_string = `>1\n${insertion1}\n>2\n${insertion2}`;
+        let result = await this.cli.mount({
+            name: "distance_input.fa",
+            data: fasta_string,
+        });
+        result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
+        result = await this.cli.cat("distance_result.fasta");
+        result = result.split(/[\r\n]+/);
+        const alignedInsertion1 = result[1];
+        const alignedInsertion2 = result[3];
+        additions1 += Object.keys(mutations1).length > 1 ? alignedInsertion1 : refChar + additions1 + alignedInsertion1;
+        additions2 += Object.keys(mutations2).length > 1 ? alignedInsertion2 : refChar + additions2 + alignedInsertion2;
+        return [additions1, additions2];
+    };
+
+    handleInsertionsWithoutAlignment = (
         mutations1: MutationsSchema,
         mutations2: MutationsSchema,
         additions1: string,
@@ -91,15 +136,6 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         if (mutations1 && mutations2 && "ins" in mutations1 && "ins" in mutations2) {
             let insertion1 = mutations1.ins;
             let insertion2 = mutations2.ins;
-            if (mutations1.ins !== mutations2.ins) {
-                this.alignInsertions(insertion1, insertion2).then(([alignedSequence1, alignedSequence2]) => {
-                    additions1 +=
-                        Object.keys(mutations1).length > 1 ? alignedSequence1 : refChar + additions1 + alignedSequence1;
-                    additions2 +=
-                        Object.keys(mutations2).length > 1 ? alignedSequence2 : refChar + additions2 + alignedSequence2;
-                    return [additions1, additions2];
-                });
-            }
             additions1 += Object.keys(mutations1).length > 1 ? insertion1 : refChar + additions1 + insertion1;
             additions2 += Object.keys(mutations2).length > 1 ? insertion2 : refChar + additions2 + insertion2;
             return [additions1, additions2];
@@ -118,18 +154,6 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         }
 
         return [additions1, additions2];
-    };
-
-    alignInsertions = async (insertion1: string, insertion2: string) => {
-        const fasta_string = `>1\n${insertion1}\n>2\n${insertion2}`;
-        let result = await this.cli.mount({
-            name: "distance_input.fa",
-            data: fasta_string,
-        });
-        result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
-        result = await this.cli.cat("distance_result.fasta");
-        result = result.split(/[\r\n]+/);
-        return [result[1], result[3]];
     };
 
     getMutationPositions(sample: SampleSchema) {
