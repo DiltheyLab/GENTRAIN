@@ -27,9 +27,7 @@ export abstract class DistanceCalculationStrategy {
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
-        console.time("calc");
         await this.calculateSampleDistances();
-        console.timeEnd("calc");
     };
 
     private init = async () => {
@@ -66,7 +64,7 @@ export abstract class DistanceCalculationStrategy {
             const sample1 = this.samples[index];
             // we only calculate distances between current sample and previously iterated samples to minimize calculation count
             // as limit we use the index of the current sample incremented by 1 since slice excludes the end index
-            const previousSamples = this.samples.slice(0, parseInt(index));
+            const previousSamples = this.samples.slice(0, +index);
             for (const sample2 of previousSamples) {
                 const distance = await this.calculateSampleDistance(sample1, sample2);
                 await db.distances.add({

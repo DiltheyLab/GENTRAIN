@@ -55,7 +55,7 @@ export class ViralDistanceExtractor {
                 continue;
             }
 
-            this.incrementProperChars();
+            this.incrementProperCharsSeen();
 
             if (this.properThresholdNotReached() || this.charsAreEqual()) {
                 continue;
@@ -67,7 +67,7 @@ export class ViralDistanceExtractor {
         }
     };
 
-    private incrementProperChars = () => {
+    private incrementProperCharsSeen = () => {
         this.properCharsSeen1 += this.currentChar1 !== "-" ? 1 : 0;
         this.properCharsSeen2 += this.currentChar2 !== "-" ? 1 : 0;
     };

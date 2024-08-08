@@ -75,11 +75,11 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
      * @param refChar
      * @returns
      */
-    private handleRemainedCharacter = (mutations: MutationsSchema, addition: string, refChar: string) => {
+    private handleRemainedCharacter = (mutations: MutationsSchema, additions: string, refChar: string) => {
         if (!mutations) {
-            addition = refChar + addition;
+            additions = refChar + additions; //additions kann vermutlich weg
         }
-        return addition;
+        return additions;
     };
 
     /**
