@@ -16,6 +16,8 @@ import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseWithRelationships } from "@/database/cases";
 import { AnalysisSettings } from "@/stores/analysis";
 import { useDashboardGraphStore } from "@/stores/dashboardGraph";
+import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
+import { ContactSchema } from "@/database/contacts";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -23,10 +25,11 @@ export const DashboardVisualizationPanel = () => {
     const dashboardGraphStore = useDashboardGraphStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+    const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases) {
+        if (!distanceMatrixAssembly || !cases || !contacts) {
             dashboardGraphStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
@@ -34,14 +37,15 @@ export const DashboardVisualizationPanel = () => {
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
-            settings: AnalysisSettings
+            settings: AnalysisSettings,
+            contacts: ContactSchema[]
         ) => {
-            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings);
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
         };
 
-        getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings);
-    }, [cases, distanceMatrixAssembly, dashboardGraphStore.settings]);
+        getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
+    }, [cases, distanceMatrixAssembly, dashboardGraphStore.settings, contacts]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
@@ -57,7 +61,7 @@ export const DashboardVisualizationPanel = () => {
             return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
         }
 
-        const { graphDimension, charge, hideNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
+        const { graphDimension, charge, showNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } =
             dashboardGraphStore.graphSettings;
         if (graphDimension === "2D" && width && height) {
             return (
@@ -68,7 +72,7 @@ export const DashboardVisualizationPanel = () => {
                     charge={charge}
                     linkDistance={linkDistance}
                     nodeSize={nodeSize}
-                    hideNodeLabel={hideNodeLabel}
+                    showNodeLabel={showNodeLabel}
                     linkWidth={linkWidth}
                     zoomToFit={zoomToFit}
                 />
@@ -97,7 +101,7 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-20 bottom-3 right-3">
                 Reset
             </Button>
-            <Legend nodes={dashboardGraphStore.graphData.nodes} />
+            <Legend nodes={dashboardGraphStore.graphData.nodes} links={dashboardGraphStore.graphData.links} />
 
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {renderGraph()}

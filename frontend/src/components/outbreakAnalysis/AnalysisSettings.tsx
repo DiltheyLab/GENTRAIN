@@ -7,6 +7,7 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./BackgroundSelection";
 import { BackgroundFilter } from "./BackgroundFilter";
+import { ContactTracing } from "./ContactTracing";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 
 export const AnalysisSettings = () => {
@@ -40,6 +41,7 @@ export const AnalysisSettings = () => {
                             <>
                                 <BackgroundSelection />
                                 <BackgroundFilter />
+                                <ContactTracing />
                                 <Button
                                     className="mt-2"
                                     variant="outline"

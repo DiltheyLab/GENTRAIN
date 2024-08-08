@@ -6,6 +6,7 @@ import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
+import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
@@ -28,18 +29,19 @@ export type AnalysisSettings = {
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
     showBackground: boolean;
-    includeCasesWithLowGeneticDistance: boolean;
+    excludeCasesAboveGeneticDistanceThreshold: boolean;
     excludeCasesOutsideOfDateRange: boolean;
+    excludeCasesWithoutSequence: boolean;
     dateRange: DateRange;
     geneticDistanceThreshold: number;
-    showContactTracingEdges: boolean;
-    hideEdgesAboveThreshold: boolean;
+    showContactTracingLinks: boolean;
     groupColorations: GroupColoration;
+    colorPaletteNodes: string[];
     category: CategorySchema | null;
 };
 
 export type GraphSettings = {
-    hideNodeLabel: boolean;
+    showNodeLabel: boolean;
     linkDistance: number;
     graphDimension?: "2D" | "3D";
     nodeSize?: number;
@@ -63,25 +65,26 @@ export interface AnalysisStore {
 }
 
 export const defaultGraphSettings: GraphSettings = {
-    hideNodeLabel: false,
+    showNodeLabel: false,
     linkDistance: 50,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
-    const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
+    const geneticDistanceThreshold = useAppStore.getState().activePathogen?.genetic_distance_threshold;
     return {
         includeAllCases: true,
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
         showBackground: true,
-        includeCasesWithLowGeneticDistance: false,
+        excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
+        excludeCasesWithoutSequence: true,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
-        geneticDistanceThreshold: relationshipThreshold ?? 0,
-        showContactTracingEdges: true,
-        hideEdgesAboveThreshold: false,
+        geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
+        showContactTracingLinks: false,
         groupColorations: [],
+        colorPaletteNodes: COLORPALETTENODES,
         category: null,
     };
 };
