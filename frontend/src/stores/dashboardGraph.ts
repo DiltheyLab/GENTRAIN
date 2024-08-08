@@ -32,6 +32,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         showContactTracingLinks: false,
         groupColorations: [],
         colorPaletteNodes: COLORPALETTENODES,
+        datesOfAllCases: [],
         category: null,
     };
 };
