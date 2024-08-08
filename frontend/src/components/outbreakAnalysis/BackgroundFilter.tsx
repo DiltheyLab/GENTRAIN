@@ -45,7 +45,7 @@ export const BackgroundFilter = () => {
                     onCheckedChange={(value) => handleIncludeCasesWithLowGeneticDistance(value)}
                 />
                 <Label htmlFor="includeCasesWithLowGeneticDistance" className="font-normal text-md leading-5">
-                    Nur zum Ausbruch verwandte Falldaten anzeigen
+                    Nur zum Ausbruch genetisch verwandte Falldaten anzeigen
                 </Label>
             </div>
             {analysisStore.settings.includeCasesWithLowGeneticDistance && (
