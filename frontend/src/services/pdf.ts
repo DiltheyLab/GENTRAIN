@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 
 const addHeadline = (doc: jsPDF, name: string = "GenTrain - Ausbruchsanalysebericht") => {
-    doc.text(name, 10, 15);
+    doc.text(name, 10, 15).setFontSize(8).setFont("Arial", "bold");
 };
 
 const addGraphAsJpeg = (doc: jsPDF) => {
