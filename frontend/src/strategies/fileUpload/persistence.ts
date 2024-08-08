@@ -83,7 +83,7 @@ export const persistenceStrategies = {
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
 
-            const case1 = casesMap.get(row[0]); //use lookup table instead of single db operation
+            const case1 = casesMap.get(row[0]);
             const case2 = casesMap.get(row[1]);
 
             if (!case1 || !case2) {
