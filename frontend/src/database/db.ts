@@ -39,7 +39,7 @@ db.version(1).stores({
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at",
-    pathogens: "++id, name, relationship_threshold, pathogen_type_id, activated_at, created_at, updated_at",
+    pathogens: "++id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, created_at, updated_at",
     categories: "++id, name, pathogen_id, created_at, updated_at",
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
@@ -64,7 +64,7 @@ db.on("populate", async () => {
         if ((await db.pathogens.where({ name: pathogenName }).count()) === 0) {
             db.pathogens.add({
                 name: pathogenName,
-                relationship_threshold: pathogenData.relationshop_threshold,
+                genetic_distance_threshold: pathogenData.geneticDistanceThreshold,
                 pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
                 activated_at: null,
             });

@@ -1,18 +1,22 @@
+import { CaseWithRelationships } from "@/database/cases";
+
 export type CustomNode = {
     id: number;
     caseId: string;
-    group: string;
+    caseData: CaseWithRelationships;
+    cluster: string;
     color: string;
     registeredAt?: string;
 };
 
-export type LinkType = "ArrowToTarget" | "ArrowToSource" | "ArrowBidirectional" | "Dashed" | "Solid";
-
 export type CustomLink = {
     source: number;
     target: number;
-    value: number;
-    type: LinkType;
+    value: string;
+    color: string;
+    curvature: number;
+    type: string;
+    context: string;
 };
 
 export type GraphData = {

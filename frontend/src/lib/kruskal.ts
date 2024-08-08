@@ -1,4 +1,4 @@
-class Edge {
+class Link {
     source: number;
     target: number;
     weight: number;
@@ -12,23 +12,23 @@ class Edge {
 
 class Graph {
     numberOfNodes: number;
-    numberOfEdges: number;
-    edges: Edge[];
+    numberOfLinks: number;
+    links: Link[];
 
     constructor(size: number) {
         this.numberOfNodes = size;
-        this.numberOfEdges = 0;
-        this.edges = [];
+        this.numberOfLinks = 0;
+        this.links = [];
     }
 
-    addEdge(edge: Edge): void {
-        this.edges.push(edge);
-        this.numberOfEdges++;
+    addLink(link: Link): void {
+        this.links.push(link);
+        this.numberOfLinks++;
     }
 
     // Kruskal's algorithm to find the minimum spanning tree
     kruskal() {
-        this.edges.sort((a, b) => a.weight - b.weight); // Sort edges by weight
+        this.links.sort((a, b) => a.weight - b.weight); // Sort links by weight
 
         const parent = Array(this.numberOfNodes)
             .fill(0)
@@ -49,12 +49,12 @@ class Graph {
             parent[rootI] = rootJ;
         }
 
-        const mst: Edge[] = []; // Array to store the edges of the minimum spanning tree
-        this.edges.forEach((edge) => {
-            if (find(edge.source) !== find(edge.target)) {
-                // If adding this edge doesn't form a cycle
-                union(edge.source, edge.target);
-                mst.push(edge);
+        const mst: Link[] = []; // Array to store the links of the minimum spanning tree
+        this.links.forEach((link) => {
+            if (find(link.source) !== find(link.target)) {
+                // If adding this link doesn't form a cycle
+                union(link.source, link.target);
+                mst.push(link);
             }
         });
 
@@ -62,4 +62,4 @@ class Graph {
     }
 }
 
-export { Edge, Graph };
+export { Link, Graph };
