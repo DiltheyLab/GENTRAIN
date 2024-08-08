@@ -17,19 +17,19 @@ const defaultGraphSettings: GraphSettings = {
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
-    const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
+    const geneticDistanceThreshold = useAppStore.getState().activePathogen?.genetic_distance_threshold;
     return {
         includeAllCases: true,
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
         showBackground: true,
-        includeCasesWithLowGeneticDistance: false,
+        excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
+        excludeCasesWithoutSequence: true,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
-        geneticDistanceThreshold: relationshipThreshold ?? 0,
-        showContactTracingEdges: false,
-        hideEdgesAboveThreshold: false,
+        geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
+        showContactTracingLinks: false,
         groupColorations: [],
         colorPaletteNodes: COLORPALETTENODES,
         category: null,

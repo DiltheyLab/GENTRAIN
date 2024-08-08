@@ -74,11 +74,14 @@ export const Graph2D = ({
         ctx.fillStyle = node.color;
         ctx.fill();
 
-        // Draw the label if setting is not hidden
-        if (!showNodeLabel) return;
-
         // Draw the label above the circle
-        const label = `${node["caseId"]}`;
+        let label = `${node["caseId"]}`;
+        // Set the label to an empty string if showNodeLabel is false
+        // Info: do not return out of the function. The label should be drawn even if it is empty,
+        // otherwise it leads to a rendering bug
+        if (!showNodeLabel) {
+            label = "";
+        }
         const fontSize = 12;
         ctx.font = `bold ${fontSize}px Sans-Serif`;
         const textWidth = ctx.measureText(label).width;
