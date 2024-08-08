@@ -1,9 +1,6 @@
 import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-import { db } from "@/database/db";
-import { SampleSchema } from "@/database/samples";
 
-const addHeadline = (doc: jsPDF, name: string) => {
+const addHeadline = (doc: jsPDF, name: string = "GenTrain - Ausbruchsanalysebericht") => {
     doc.text(name, 10, 15);
 };
 
@@ -26,7 +23,7 @@ const addGraphAsJpeg = (doc: jsPDF) => {
         );
     }
 };
-
+/*
 const addInformationTable = async (doc: jsPDF) => {
     const samples = await db.samples.toArray();
     const tableHead = [
@@ -56,9 +53,9 @@ const addInformationTable = async (doc: jsPDF) => {
             cellWidth: 30,
         },
     });
-};
+};*/
 
-export const exportGraphAndInformationAsPdf = async (name: string = "GenTrain - Ausbruchsanalysebericht") => {
+export const exportGraphAndInformationAsPdf = async (name: string | null) => {
     const doc = new jsPDF({
         orientation: "l", //landscape
         unit: "mm",
@@ -66,7 +63,7 @@ export const exportGraphAndInformationAsPdf = async (name: string = "GenTrain - 
     });
     doc.setFontSize(20);
     addGraphAsJpeg(doc);
-    addHeadline(doc, name);
+    addHeadline(doc, name ?? "GenTrain - Ausbruchsanalysebericht");
     //doc.addPage();
     // await addInformationTable(doc);
     doc.save("gentrain_graph_export.pdf");
