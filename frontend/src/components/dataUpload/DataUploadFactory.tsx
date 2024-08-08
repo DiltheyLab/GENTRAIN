@@ -1,4 +1,4 @@
-import { formatTextInArray } from "@/services/files";
+import { formatInArray } from "@/services/files";
 import { Button } from "../ui/button";
 import { FileUploadButton } from "../ui/FileUploadButton";
 import { useToast } from "../ui/use-toast";
@@ -65,12 +65,12 @@ export const FileUploadFactory = ({
         try {
             // reset sample status component data
             reset();
-
             // read the file(s) and convert them to text
             const fileReaderResult = await fileReadingStrategy(e.target.files);
 
             // format the file content into an array
-            const fileAsStringArray = formatTextInArray(fileReaderResult);
+            const fileAsStringArray = formatInArray(fileReaderResult);
+
             // validate the data
             const validationResult = await validationStrategy(fileAsStringArray);
             showWarningToasts(validationResult.warnings);

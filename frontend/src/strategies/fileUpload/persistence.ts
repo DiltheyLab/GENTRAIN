@@ -6,9 +6,9 @@ import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services
 import { parseGermanDateFormat } from "@/services/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
-import { getAndPersistVariantsForSample, getAndPersistVariantsForSamplesSynchronously } from "@/services/samples";
-import { recalculateDistances } from "@/services/distanceMatrices";
 import { useSampleUploadStore } from "@/stores/upload";
+import { getPathogenTypeForActivePathogen } from "@/database/pathogen_types";
+import { PathogenStrategyManager } from "../PathogenStrategyManager";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
@@ -43,28 +43,23 @@ export const persistenceStrategies = {
         });
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
-        const activePathogen = useAppStore.getState().activePathogen;
+        const activePathogenType = await getPathogenTypeForActivePathogen();
+        if (!activePathogenType) {
+            return;
+        }
+        const activePathogenTypeName = activePathogenType.name.toString();
         useSampleUploadStore.getState().setIsUploading(true);
-        const variantRequestPromises: Promise<void>[] = [];
-        for (const sample of sampleData) {
-            // skip sample if it was excluded from uploads
-            if (!Object.keys(useSampleUploadStore.getState().uploads).includes(sample.fastaId)) {
-                continue;
-            }
-            // found case (only import if case exists)
-            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
-            // we currently only add samples if a case for the fasta id exists already
-            // otherwise we would maximize the necessary amount of variant calculations
-            if (sampleCase) {
-                variantRequestPromises.push(getAndPersistVariantsForSample(sample));
-            }
-        }
 
-        await getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
+        // analyse sample depending on pathogen type to receive variants for distance calculations
+        const sampleAnalysisStrategy = PathogenStrategyManager.getSampleAnalysisStrategy(activePathogenTypeName);
+        sampleAnalysisStrategy.setSampleData(sampleData);
+        await sampleAnalysisStrategy.execute();
+
         // recalculate all sample distances to enable assembling a fresh distance matrix
-        if (activePathogen) {
-            await recalculateDistances(activePathogen.id);
-        }
+        const distanceCalculationStrategy =
+            PathogenStrategyManager.getDistanceCalculationStrategy(activePathogenTypeName);
+        await distanceCalculationStrategy.execute();
+        useSampleUploadStore.getState().setIsUploading(false);
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];

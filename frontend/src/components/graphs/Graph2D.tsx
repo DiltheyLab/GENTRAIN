@@ -1,9 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { GraphData } from "@/types/graph";
-import { deepCopyData } from "@/lib/utils";
-import { use } from "i18next";
-import { useAnalysisStore } from "@/stores/analysis";
 
 type Graph2DProps = {
     data: GraphData;
@@ -33,24 +30,6 @@ export const Graph2D = ({
     coolDownTicks = 120,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
-    const colorPaletteNodes = useAnalysisStore().settings.colorPaletteNodes;
-
-    let graphData = useMemo(() => {
-        let graphData = deepCopyData(data);
-        // vielleicht hier die colorierung der nodes anpassen bzw. setzen um ein rerendering des Graphen zu vermeiden
-        //oder kann man eventuell das erneute rendern bzw die simulation stoppen bei der änderung von daten?
-        graphData = {
-            links: graphData.links,
-            nodes: graphData.nodes.map((node) => {
-                return {
-                    ...node,
-                    color: "#CCC",
-                };
-            }),
-        };
-        return graphData;
-    }, [data]);
-
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;

@@ -38,12 +38,12 @@ export const setNodeColor = (value: number) => {
     return `hsl(${hue},50%,75%)`;
 };
 
-const setNodeGradientColor = (normalizedIndex: number): string => {
+/* const setNodeGradientColor = (normalizedIndex: number): string => {
     // Interpolate hue from 240 (blue) to 0 (red)
     const hue = 70 - normalizedIndex * 70;
     // Use fixed saturation and lightness values
     return `hsl(${hue}, 100%, 50%)`;
-};
+}; */
 
 type ColorMapForClusters = {
     [key: string]: string;

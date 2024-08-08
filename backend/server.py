@@ -1,13 +1,7 @@
 import os
 from flask import Flask
-from collections import defaultdict
-from os.path import exists
 from flask_cors import CORS
-from routes import api
-
-################################
-#    Define global variables   #
-################################
+from backend.routes import api
 
 app = Flask(__name__)
 

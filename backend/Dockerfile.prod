@@ -2,16 +2,17 @@
 FROM continuumio/miniconda3:latest
 
 # Set working directory in the container
-WORKDIR /app
+WORKDIR /home/backend
 
 # Copy the 'environment.yml' file into the container
-COPY environment.yaml /app
+COPY environment.yaml /home/backend
 
 # Create a new Conda environment from the 'environment.yml' file
-RUN conda env create -f /app/environment.yaml
+RUN conda env create -f /home/backend/environment.yaml
 
 # Create a new user 'uwsgi' and set it as the current user
 RUN useradd -m uwsgi
+RUN chown uwsgi:uwsgi -R /home/backend
 USER uwsgi
 
 # Ensure the Conda environment is activated
@@ -25,4 +26,4 @@ COPY --chown=uwsgi . .
 EXPOSE 8080
 
 # Run app.py when the container launches using uWSGI
-ENTRYPOINT ["/app/init_prod.sh"]
+ENTRYPOINT ["/home/backend/init_prod.sh"]

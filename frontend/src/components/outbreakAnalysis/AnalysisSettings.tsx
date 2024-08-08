@@ -9,6 +9,7 @@ import { BackgroundSelection } from "./BackgroundSelection";
 import { BackgroundFilter } from "./BackgroundFilter";
 import { ContactTracing } from "./ContactTracing";
 import { ColorSelection } from "./ColorSelection";
+import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -43,6 +44,14 @@ export const AnalysisSettings = () => {
                                 <BackgroundFilter />
                                 <ContactTracing />
                                 <ColorSelection />
+                                <Button
+                                    className="mt-2"
+                                    variant="outline"
+                                    type="button"
+                                    onClick={() => exportGraphAndInformationAsPdf(analysisStore.name)}
+                                >
+                                    Analysebericht exportieren
+                                </Button>
                                 <Button type="button" onClick={() => safeAnalysis()}>
                                     Analyse speichern
                                 </Button>
