@@ -3,10 +3,11 @@ import { create } from "zustand";
 import { AnalysisSettings, GraphSettings } from "./analysis";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
+import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 const defaultGraphSettings: GraphSettings = {
     graphDimension: "2D",
-    hideNodeLabel: false,
+    showNodeLabel: true,
     nodeSize: 6,
     linkWidth: 3,
     zoomToFit: false,
@@ -16,20 +17,21 @@ const defaultGraphSettings: GraphSettings = {
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
-    const relationshipThreshold = useAppStore.getState().activePathogen?.relationship_threshold;
+    const geneticDistanceThreshold = useAppStore.getState().activePathogen?.genetic_distance_threshold;
     return {
         includeAllCases: true,
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
         showBackground: true,
-        includeCasesWithLowGeneticDistance: false,
+        excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
+        excludeCasesWithoutSequence: true,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
-        geneticDistanceThreshold: relationshipThreshold ?? 0,
-        showContactTracingEdges: false,
-        hideEdgesAboveThreshold: false,
+        geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
+        showContactTracingLinks: false,
         groupColorations: [],
+        colorPaletteNodes: COLORPALETTENODES,
         category: null,
     };
 };

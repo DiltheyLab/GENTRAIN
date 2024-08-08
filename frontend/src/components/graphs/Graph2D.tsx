@@ -11,7 +11,7 @@ type Graph2DProps = {
     zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
-    hideNodeLabel?: boolean;
+    showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
 };
@@ -24,16 +24,16 @@ export const Graph2D = ({
     charge = -80,
     zoomToFit = false,
     nodeSize = 6,
-    linkWidth = 3,
-    hideNodeLabel = false,
+    linkWidth = 2.5,
+    showNodeLabel = false,
     labelTransparency = 0.3,
-    coolDownTicks = 120,
+    coolDownTicks = 130,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;
-        forceRef.current.d3Force("charge")?.strength(charge);
+        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(350);
         forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
     }, [linkDistance, charge]);
@@ -53,11 +53,14 @@ export const Graph2D = ({
         ctx.fillStyle = node.color;
         ctx.fill();
 
-        // Draw the label if setting is not hidden
-        if (hideNodeLabel) return;
-
         // Draw the label above the circle
-        const label = `${node["caseId"]}`;
+        let label = `${node["caseId"]}`;
+        // Set the label to an empty string if showNodeLabel is false
+        // Info: do not return out of the function. The label should be drawn even if it is empty,
+        // otherwise it leads to a rendering bug
+        if (!showNodeLabel) {
+            label = "";
+        }
         const fontSize = 12;
         ctx.font = `bold ${fontSize}px Sans-Serif`;
         const textWidth = ctx.measureText(label).width;
@@ -82,16 +85,6 @@ export const Graph2D = ({
 
         // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
-
-        // Start line
-        ctx.beginPath();
-        ctx.moveTo(source.x, source.y);
-
-        // End line
-        ctx.lineTo(target.x, target.y);
-        ctx.strokeStyle = "#CCC"; // Line color
-        ctx.lineWidth = linkWidth;
-        ctx.stroke();
 
         // Calculate midpoint for text
         const midX = (source.x + target.x) / 2;
@@ -123,12 +116,26 @@ export const Graph2D = ({
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
             backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
-            linkLabel={(link) => `${link.value}`}
-            linkWidth={linkWidth}
-            d3VelocityDecay={0.3}
+            d3VelocityDecay={0.2}
             onEngineStop={handleEngineStop}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
+            linkCanvasObjectMode={() => "after"}
+            linkCurvature={(link) => link.curvature}
+            linkColor={(link) => link.color}
+            linkWidth={linkWidth}
+            onNodeClick={(node, _event) => {
+                forceRef?.current?.centerAt(node.x, node.y, 1000);
+                forceRef?.current?.zoom(2, 1000);
+            }}
+            onNodeDrag={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
+            onNodeDragEnd={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
         />
     );
 };
