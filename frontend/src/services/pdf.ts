@@ -3,15 +3,13 @@ import autoTable from "jspdf-autotable";
 import { db } from "@/database/db";
 import { SampleSchema } from "@/database/samples";
 
-const addHeadline = (doc: jsPDF) => {
-    doc.text("GENTRAIN Export", 10, 15);
+const addHeadline = (doc: jsPDF, name: string) => {
+    doc.text(name, 10, 15);
 };
 
 const addGraphAsJpeg = (doc: jsPDF) => {
     let width = doc.internal.pageSize.getWidth();
-    let graphCanvasElement = document.querySelector(
-        "#graph-container .force-graph-container canvas"
-    ) as HTMLCanvasElement;
+    let graphCanvasElement = document.querySelector(".force-graph-container canvas") as HTMLCanvasElement;
     if (graphCanvasElement) {
         const pdfGraphWidth = width;
         const pdfGraphHeight = pdfGraphWidth * (graphCanvasElement.height / graphCanvasElement.width);
@@ -22,7 +20,7 @@ const addGraphAsJpeg = (doc: jsPDF) => {
             }),
             "JPEG",
             0,
-            60,
+            10,
             pdfGraphWidth,
             pdfGraphHeight
         );
@@ -60,16 +58,16 @@ const addInformationTable = async (doc: jsPDF) => {
     });
 };
 
-export const exportGraphAndInformationAsPdf = async () => {
+export const exportGraphAndInformationAsPdf = async (name: string = "GenTrain - Ausbruchsanalysebericht") => {
     const doc = new jsPDF({
-        orientation: "p", //portrait
+        orientation: "l", //landscape
         unit: "mm",
         format: "a4",
     });
     doc.setFontSize(20);
     addGraphAsJpeg(doc);
-    addHeadline(doc);
-    doc.addPage();
-    await addInformationTable(doc);
+    addHeadline(doc, name);
+    //doc.addPage();
+    // await addInformationTable(doc);
     doc.save("gentrain_graph_export.pdf");
 };

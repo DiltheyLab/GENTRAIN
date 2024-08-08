@@ -30,7 +30,6 @@ export const Graph2D = ({
     coolDownTicks = 130,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
-
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;

@@ -1,0 +1,4 @@
+Case Id;Sequence Id;Date;Name;First Name;Birth Date;Outbreak;Location;Institution;Geschlecht
+CVD2021-24928;BC_01;01.02.22;Testname;Testvorname;13.05.97;Testausbruch;Köln;Schule;weiblich
+CVD2021-24923;BC_02;01.03.22;Testname;Testvorname;03.02.01;Testausbruch;Köln;;weiblich
+CVD2021-25156;BC_03;05.03.22;Testname;Testvorname;01.01.82;Testausbruch;Düsseldorf;Krankenhaus;männlich

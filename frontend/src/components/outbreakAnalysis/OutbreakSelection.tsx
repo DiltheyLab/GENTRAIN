@@ -1,4 +1,4 @@
-import { useGetAllCasesWithRelationships } from "@/hooks/database/cases/useGetAllCasesWithRelationships";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { useAnalysisStore } from "@/stores/analysis";
@@ -11,11 +11,11 @@ import { StepIndicator } from "../ui/step-indicator";
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
     const outbreaks = useGetOutbreaksForActivePathogen();
-    const caseWithRelationships = useGetAllCasesWithRelationships();
+    const casesWithRelationships = useGetAllCasesForActivePathogenWithRelationships();
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
-        const casesInOutbreak = caseWithRelationships?.filter((caseWithRelationship) => {
-            return caseWithRelationship.outbreak_id === selectedOutbreak.id;
+        const casesInOutbreak = casesWithRelationships?.filter((caseWithRelationships) => {
+            return caseWithRelationships.outbreak_id === selectedOutbreak.id;
         });
 
         let dateRange = casesInOutbreak?.map((caseInOutbreak) => caseInOutbreak.registered_at);

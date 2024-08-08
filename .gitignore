@@ -2,3 +2,4 @@ deploy.sh
 caddy
 .env*
 Caddyfile
+.vscode

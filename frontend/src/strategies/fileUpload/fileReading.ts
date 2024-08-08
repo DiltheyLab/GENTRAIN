@@ -11,9 +11,9 @@ export const fileReadingStrategies = {
     multiFile: async (files: FileList | null) => {
         if (!files) throw new Error("No files selected");
         const texts = await readFilesAsText(files);
-
         const result = texts.map((text, i) => ({
-            [files[i].name]: text,
+            filename: files[i].name,
+            content: text,
             mimetype: files[i].type.includes("csv") ? "csv" : "fasta",
         }));
 

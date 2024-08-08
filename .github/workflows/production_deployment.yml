@@ -76,7 +76,7 @@ jobs:
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
-            rm frontend/.env backend/.env
+            rm -f frontend/.env backend/.env
             touch frontend/.env
             echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> frontend/.env
             echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> frontend/.env

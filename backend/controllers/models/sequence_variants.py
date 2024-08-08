@@ -1,13 +1,12 @@
 from pydantic import BaseModel
 
 
-# request model
+# sequence variants action models
 class SequenceVariantsRequestBodyModel(BaseModel):
     sequence: str
 
 
-# response model
-class SequenceVariantsResponseModel(BaseModel):
+class ViralSequenceVariantsResponseModel(BaseModel):
     lineage: str
     n_count: int
     substitutions: list[object]
@@ -17,3 +16,7 @@ class SequenceVariantsResponseModel(BaseModel):
     nonACGTNs: list[object]
     alignmentStart: int
     alignmentEnd: int
+
+
+class BacterialSequenceVariantsResponseModel(BaseModel):
+    alleles: list[object]
