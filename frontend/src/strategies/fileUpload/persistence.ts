@@ -64,11 +64,27 @@ export const persistenceStrategies = {
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];
 
+        // create Set of caseIds to fetch them from the database
+        const caseIds = new Set<string>();
+        for (const row of contactData) {
+            caseIds.add(row[0]);
+            caseIds.add(row[1]);
+        }
+
+        const cases = await db.cases.where("case_id").anyOf(Array.from(caseIds)).toArray();
+
+        // create lookup table to improve performance
+        // fetching single cases in a loop is very unefficent with indexedDB
+        const casesMap = new Map<string, CaseSchema>();
+        for (const caseData of cases) {
+            casesMap.set(caseData.case_id, caseData);
+        }
+
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
 
-            const case1 = await db.cases.where({ case_id: row[0] }).first();
-            const case2 = await db.cases.where({ case_id: row[1] }).first();
+            const case1 = casesMap.get(row[0]); //use lookup table instead of single db operation
+            const case2 = casesMap.get(row[1]);
 
             if (!case1 || !case2) {
                 return;

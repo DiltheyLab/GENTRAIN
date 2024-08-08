@@ -11,6 +11,8 @@ import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
 import { Legend } from "./Legend";
 import { Loader2 } from "lucide-react";
+import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
+import { ContactSchema } from "@/database/contacts";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -18,10 +20,11 @@ export const AnalysisVisualizationPanel = () => {
     const analyseStore = useAnalysisStore();
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+    const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases) {
+        if (!distanceMatrixAssembly || !cases || !contacts) {
             analyseStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
@@ -29,14 +32,15 @@ export const AnalysisVisualizationPanel = () => {
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
-            settings: AnalysisSettings
+            settings: AnalysisSettings,
+            contacts: ContactSchema[]
         ) => {
-            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings);
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             analyseStore.updateGraphData(graphData);
         };
 
-        getGraphData(distanceMatrixAssembly, cases, analyseStore.settings);
-    }, [cases, distanceMatrixAssembly, analyseStore.settings]);
+        getGraphData(distanceMatrixAssembly, cases, analyseStore.settings, contacts);
+    }, [cases, distanceMatrixAssembly, analyseStore.settings, contacts]);
 
     const renderGraph = () => {
         if (analyseStore.graphData.nodes.length === 0 && analyseStore.settings.selectedOutbreak && !cases) {
@@ -49,7 +53,7 @@ export const AnalysisVisualizationPanel = () => {
                 data={analyseStore.graphData}
                 width={width - 8}
                 height={height - 8}
-                hideNodeLabel={analyseStore.graphSettings.hideNodeLabel}
+                showNodeLabel={analyseStore.graphSettings.showNodeLabel}
                 linkDistance={analyseStore.graphSettings.linkDistance}
             />
         );
@@ -62,7 +66,11 @@ export const AnalysisVisualizationPanel = () => {
         >
             {analyseStore.settings.selectedOutbreak ? (
                 <>
-                    <Legend nodes={analyseStore.graphData.nodes} isOutbreakSeparated />
+                    <Legend
+                        nodes={analyseStore.graphData.nodes}
+                        links={analyseStore.graphData.links}
+                        isOutbreakSeparated
+                    />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}

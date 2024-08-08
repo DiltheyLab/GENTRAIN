@@ -11,7 +11,7 @@ type Graph3DProps = {
     zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
-    hideNodeLabel?: boolean;
+    showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
 };
