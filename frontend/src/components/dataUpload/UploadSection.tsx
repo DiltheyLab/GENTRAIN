@@ -9,6 +9,7 @@ export const UploadSection = () => {
     const activePathogen = useAppStore((state) => state.activePathogen);
     const bacteriaPathogenType = useGetPathogenTypeByName("bacteria");
     const allowMultiFile = activePathogen?.pathogen_type_id === bacteriaPathogenType?.id ? true : false;
+
     return (
         <>
             <FileUploadFactory
