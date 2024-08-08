@@ -9,9 +9,9 @@ import { groupRules, GroupSchema } from "@/database/groups";
  * @returns
  */
 export const getFlexibleCategoryNames = (data: Array<Array<string>>) => {
-    const flexibleCategoryName1 = data[0][7];
-    const flexibleCategoryName2 = data[0][8];
-    const flexibleCategoryName3 = data[0][9];
+    const flexibleCategoryName1 = data[0][4];
+    const flexibleCategoryName2 = data[0][5];
+    const flexibleCategoryName3 = data[0][6];
     return [flexibleCategoryName1, flexibleCategoryName2, flexibleCategoryName3];
 };
 

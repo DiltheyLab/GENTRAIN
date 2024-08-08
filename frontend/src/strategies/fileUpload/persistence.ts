@@ -26,7 +26,7 @@ export const persistenceStrategies = {
             caseData = caseData.slice(1, caseData.length);
             for (const row of caseData) {
                 // persist case from csv columns
-                const outbreakId = await getOrPersistOutbreak(row[6], pathogen.id);
+                const outbreakId = await getOrPersistOutbreak(row[3], pathogen.id);
                 const data = {
                     case_id: row[0],
                     fasta_id: row[1] !== "" ? row[1] : null,
