@@ -1,19 +1,20 @@
 from abc import ABC, abstractmethod
-import pathlib
-import tempfile
 from backend.exceptions.genomic_error_exception import GenomicErrorException
-from backend.config import get_project_path
 
 
 class SampleAnalysisStrategy(ABC):
     """Sample Analisys Strategy Class."""
 
-    def __init__(self, pathogen_id, fasta_id, sequence):
+    def __init__(self, pathogen_name, fasta_id, sequence):
         self.fasta_id = fasta_id
         self.sequence = sequence
-        self.pathogen_id = pathogen_id
-        self.input_file = None
-        self.output_file = None
+        self.pathogen_name = pathogen_name
+        self.input = None
+        self.output = None
+
+    @abstractmethod
+    def create_input_and_output_files(self):
+        """Create input and output for script based on pathogen type."""
 
     @abstractmethod
     def get_response(self, result):
@@ -34,18 +35,3 @@ class SampleAnalysisStrategy(ABC):
             raise GenomicErrorException
         self.create_input_and_output_files()
         return self.run_analysis()
-
-    def create_input_and_output_files(self):
-        """Create a fasta input file and a json output file for script."""
-        # create directory if not existent
-        temp_dir = f"{get_project_path()}/temp_data/sample_analysis/"
-        pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
-
-        # Create a temporary fasta file that is read by the bash script
-        # and a json file in which the response will be written
-        self.input_file = tempfile.NamedTemporaryFile(
-            dir=temp_dir, suffix=".fa", delete=False
-        ).name
-        with open(file=self.input_file, mode="w", encoding="utf-8") as input_file:
-            input_file.write(f">{self.fasta_id}\n{self.sequence}")
-        self.output_file = self.input_file[:-2] + "json"

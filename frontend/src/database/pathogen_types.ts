@@ -3,8 +3,8 @@ import { db } from "./db";
 import { PathogenSchema } from "./pathogens";
 
 export enum PathogenTypeName {
-    bacteria,
-    virus,
+    bacteria = "bacteria",
+    virus = "virus",
 }
 export interface PathogenTypeSchema {
     id: number;

@@ -1,5 +1,5 @@
 import { db } from "@/database/db";
-import { PathogenSchema } from "@/database/pathogens";
+import { PathogenSchema, PathogenWithRelationships } from "@/database/pathogens";
 import { create } from "zustand";
 
 interface AppState {
@@ -9,7 +9,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set, get) => ({
     activePathogen: null,
-    updateActivePathogen: (pathogen: PathogenSchema) => {
+    updateActivePathogen: (pathogen: PathogenWithRelationships) => {
         const activePathogen = get().activePathogen;
         if (activePathogen && activePathogen?.id !== pathogen.id) {
             db.pathogens.update(activePathogen.id, { activated_at: null });

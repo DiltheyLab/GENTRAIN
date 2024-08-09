@@ -1,15 +1,15 @@
-import { PathogenSchema } from "@/database/pathogens";
+import { PathogenWithRelationships } from "@/database/pathogens";
 import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
 import { db } from "@/database/db";
 
 export abstract class SampleAnalysisStrategy {
     protected sampleUploadState: SampleUploadState;
-    protected pathogen: PathogenSchema;
+    protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
 
     abstract createSample(fastaId: string, sequence: string, variantsResult: object): void;
 
-    constructor(pathogen: PathogenSchema) {
+    constructor(pathogen: PathogenWithRelationships) {
         this.sampleUploadState = useSampleUploadStore.getState();
         this.pathogen = pathogen;
     }

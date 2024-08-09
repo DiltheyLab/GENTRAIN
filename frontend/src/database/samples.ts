@@ -18,8 +18,7 @@ interface VariantSchema {
     insertions: any[];
     missing: any[];
     nonACGTNs: any[];
-    alignmentStart: number;
-    alignmentEnd: number;
+    alignmentRange: { begin: number; end: number };
 }
 
 export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {

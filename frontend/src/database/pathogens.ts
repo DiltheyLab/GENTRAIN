@@ -32,7 +32,7 @@ export const getAllPathogensWithRelationships = async () => {
     for (const key in cases) {
         pathogensWithRelationships[key] = cases[key];
         // retrieve pathogen schema object
-        const pathogenType = await db.pathogen_types.where({ pathogenid: cases[key].pathogen_type_id }).first();
+        const pathogenType = await db.pathogen_types.where({ id: cases[key].pathogen_type_id }).first();
         pathogensWithRelationships[key].pathogen_type = pathogenType;
     }
     return pathogensWithRelationships;
