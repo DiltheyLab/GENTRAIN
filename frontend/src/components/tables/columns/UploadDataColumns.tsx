@@ -14,7 +14,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { COLORPALETTENODES } from "@/colors/colorPalettes";
 import { formatDate } from "@/services/dates";
 
 export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
