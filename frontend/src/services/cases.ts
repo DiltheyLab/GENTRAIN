@@ -50,15 +50,14 @@ const extractContactDataForCase = async (contact: ContactSchema, caseId: number,
     return contactForCase;
 };
 
-export const groupContactsForCase = async (caseId: number, contacts: ContactSchema[]) => {
+export const groupContactsForCase = async (
+    caseId: number,
+    contacts: ContactSchema[],
+    cases: Map<number, CaseSchema>
+) => {
     const groupedContacts: GroupedContacts = {};
-    const cases = await db.cases.toArray();
-    const casesMap = new Map<number, CaseSchema>();
-    for (const caseData of cases) {
-        casesMap.set(caseData.id, caseData);
-    }
     for (const contact of contacts) {
-        const contactForCase = await extractContactDataForCase(contact, caseId, casesMap);
+        const contactForCase = await extractContactDataForCase(contact, caseId, cases);
         if (!(contactForCase.case_id in groupedContacts)) {
             groupedContacts[contactForCase.case_id] = [];
         }

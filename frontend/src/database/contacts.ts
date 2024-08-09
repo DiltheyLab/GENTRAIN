@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { db } from "./db";
 import { groupContactsForCase } from "@/services/cases";
+import { CaseSchema } from "./cases";
 
 export interface ContactSchema {
     id: number;
@@ -31,8 +32,8 @@ export const contactRules = z.object({
     context: z.string(),
 });
 
-export const getContactsByCaseId = async (caseId: number) => {
+export const getContactsByCaseId = async (caseId: number, cases: Map<number, CaseSchema>) => {
     const caseContacts = await db.contacts.where({ case_id_1: caseId }).or("case_id_2").equals(caseId).toArray();
-    const groupedContacts = await groupContactsForCase(caseId, caseContacts);
+    const groupedContacts = await groupContactsForCase(caseId, caseContacts, cases);
     return groupedContacts;
 };

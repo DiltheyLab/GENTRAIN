@@ -76,6 +76,10 @@ export const getAllCasesWithRelationships = async () => {
 
 export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+    const casesMap = new Map<number, CaseSchema>();
+    for (const caseData of cases) {
+        casesMap.set(caseData.id, caseData);
+    }
     let casesWithRelationships: CaseWithRelationships[] = [];
     for (const key in cases) {
         casesWithRelationships[key] = cases[key];
@@ -101,7 +105,8 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
             const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(cases[key].group_ids);
             casesWithRelationships[key].groups = groups;
         }
-        const contacts = await getContactsByCaseId(cases[key].id);
+
+        const contacts = await getContactsByCaseId(cases[key].id, casesMap);
         if (Object.keys(contacts).length > 0) {
             casesWithRelationships[key].contacts = contacts;
         }
