@@ -15,6 +15,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { COLORPALETTENODES } from "@/colors/colorPalettes";
+import { formatDate } from "@/services/dates";
 
 export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
     {
@@ -197,7 +198,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
             );
         },
         cell: ({ row }) => {
-            return <div className="capitalize">{row.original.registered_at.toLocaleDateString()}</div>;
+            return <div className="capitalize">{formatDate(row.original.registered_at)}</div>;
         },
     },
     {
