@@ -4,8 +4,8 @@ import { GentrainException } from "@/exceptions/GentrainException";
 import { useAppStore } from "@/stores/app";
 import { useSampleUploadStore } from "@/stores/upload";
 
-const caseColumnNames = ["Case Id", "Sequence Id", "Date", "Name", "First Name", "Birth Date", "Outbreak"];
-const contactColumnNames = ["Case Id 1", "Case Id 2", "Type", "Context"];
+const caseColumnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
+const contactColumnNames = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
 
 const isHeaderValid = (header: string[], columnNames: string[]) => {
     return header.length === columnNames.length && header.every((value, index) => value === columnNames[index]);

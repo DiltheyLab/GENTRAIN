@@ -73,7 +73,7 @@ export const Legend = ({ nodes, links, isOutbreakSeparated = false }: LegendProp
     if (!nodes || nodes.length === 0) return;
 
     return (
-        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted">
+        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
             <legend className="-ml-1 px-1 text-xs font-bold -mb-2">Legende</legend>
             {isOutbreakSeparated ? (
                 <div className="flex flex-col gap-2">

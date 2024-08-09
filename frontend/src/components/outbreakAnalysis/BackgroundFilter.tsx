@@ -59,7 +59,8 @@ export const BackgroundFilter = () => {
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="font-normal text-md leading-5">
-                    Fälle mit genetischer Distanz &le; {analysisStore.settings.geneticDistanceThreshold} ausschließen
+                    Sequenzierte Fälle mit genetischer Distanz &gt; {analysisStore.settings.geneticDistanceThreshold}{" "}
+                    ausschließen
                 </Label>
             </div>
             {analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold && (

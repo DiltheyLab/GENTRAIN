@@ -26,7 +26,7 @@ export const persistenceStrategies = {
             caseData = caseData.slice(1, caseData.length);
             for (const row of caseData) {
                 // persist case from csv columns
-                const outbreakId = await getOrPersistOutbreak(row[6], pathogen.id);
+                const outbreakId = await getOrPersistOutbreak(row[3], pathogen.id);
                 const data = {
                     case_id: row[0],
                     fasta_id: row[1] !== "" ? row[1] : null,
@@ -83,7 +83,7 @@ export const persistenceStrategies = {
         for (let i = 1; i < contactData.length; i++) {
             const row = contactData[i];
 
-            const case1 = casesMap.get(row[0]); //use lookup table instead of single db operation
+            const case1 = casesMap.get(row[0]);
             const case2 = casesMap.get(row[1]);
 
             if (!case1 || !case2) {

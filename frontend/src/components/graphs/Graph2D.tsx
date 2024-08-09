@@ -85,26 +85,7 @@ export const Graph2D = ({
 
         // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
-        /* 
-        // Start line
-        ctx.beginPath();
-        ctx.moveTo(source.x, source.y);
-        
-        // Set line style based on link type
-        if (link.type === "Dashed") {
-            ctx.setLineDash([3, 3]); // Set dashed line pattern
-            ctx.strokeStyle = "#FF0000"; // Line color
-        } else {
-            ctx.setLineDash([]); // Solid line
-            ctx.strokeStyle = "#CCC"; // Line color
-        } 
-        ctx.strokeStyle = link.color; // Line color
-        
-        // End line
-        ctx.lineTo(target.x, target.y);
-        ctx.lineWidth = linkWidth;
-        ctx.stroke();
-        */
+
         // Calculate midpoint for text
         const midX = (source.x + target.x) / 2;
         const midY = (source.y + target.y) / 2;
@@ -129,7 +110,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
+            nodeLabel={(node) => `${node["caseId"]}`}
             nodeRelSize={nodeSize}
             width={width}
             height={height}
@@ -140,7 +121,6 @@ export const Graph2D = ({
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node, ctx)}
             linkCanvasObject={(link, ctx) => createCustomLinkCanvas(link, ctx)}
             linkCanvasObjectMode={() => "after"}
-            //linkLineDash={(link) => (link.contact ? [3, 3] : [])}
             linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
