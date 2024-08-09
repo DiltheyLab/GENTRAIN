@@ -1,4 +1,5 @@
-import { deleteCaseById, getCaseWithSampleById } from "@/database/cases";
+import { CaseSchema, deleteCaseById, getCaseWithSampleById } from "@/database/cases";
+import { ContactForCase, ContactSchema, GroupedContacts } from "@/database/contacts";
 import { db } from "@/database/db";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "@/database/distance_matrices";
 import { deleteDistancesBySampleId } from "@/database/distances";
@@ -22,4 +23,53 @@ export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
             }
         });
     }
+};
+
+const extractContactDataForCase = async (contact: ContactSchema, caseId: number, cases: Map<number, CaseSchema>) => {
+    if (contact.case_id_1 === caseId) {
+        const contactCase = cases.get(contact.case_id_2);
+        const contactForCase = {
+            id: contact.id,
+            case_id: contactCase?.case_id,
+            type: contact.type,
+            context: contact.context,
+            created: contact.created_at,
+            updated_at: contact.updated_at,
+        } as ContactForCase;
+        return contactForCase;
+    }
+    const contactCase = cases.get(contact.case_id_1);
+    const contactForCase = {
+        id: contact.id,
+        case_id: contactCase?.case_id,
+        type: contact.type,
+        context: contact.context,
+        created: contact.created_at,
+        updated_at: contact.updated_at,
+    } as ContactForCase;
+    return contactForCase;
+};
+
+export const groupContactsForCase = async (caseId: number, contacts: ContactSchema[]) => {
+    const groupedContacts: GroupedContacts = {};
+    const cases = await db.cases.toArray();
+    const casesMap = new Map<number, CaseSchema>();
+    for (const caseData of cases) {
+        casesMap.set(caseData.id, caseData);
+    }
+    for (const contact of contacts) {
+        const contactForCase = await extractContactDataForCase(contact, caseId, casesMap);
+        if (!(contactForCase.case_id in groupedContacts)) {
+            groupedContacts[contactForCase.case_id] = [];
+        }
+        groupedContacts[contactForCase.case_id].push({ type: contactForCase.type, context: contactForCase.context });
+    }
+    const groupedAndSortedContacts = Object.keys(groupedContacts)
+        .sort()
+        .reduce((sortedContacts: GroupedContacts, key: string) => {
+            sortedContacts[key] = groupedContacts[key];
+            return sortedContacts;
+        }, {});
+
+    return groupedAndSortedContacts;
 };

@@ -7,6 +7,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 import { useAppStore } from "@/stores/app";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
+import { ContactForCase, getContactsByCaseId, GroupedContacts } from "./contacts";
 
 export interface CaseSchema {
     id: number;
@@ -25,6 +26,7 @@ export interface CaseWithRelationships extends CaseSchema {
     pathogen?: PathogenSchema | null;
     outbreak?: OutbreakSchema | null;
     groups?: GroupWithRelationships[] | null;
+    contacts?: GroupedContacts | null;
 }
 
 export const caseRules = z.object({
@@ -98,6 +100,10 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
         if (cases[key].group_ids.length > 0) {
             const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(cases[key].group_ids);
             casesWithRelationships[key].groups = groups;
+        }
+        const contacts = await getContactsByCaseId(cases[key].id);
+        if (Object.keys(contacts).length > 0) {
+            casesWithRelationships[key].contacts = contacts;
         }
     }
     return casesWithRelationships;
