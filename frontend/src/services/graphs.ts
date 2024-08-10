@@ -1,14 +1,40 @@
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { Graph, Link } from "@/lib/kruskal";
-import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
+import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
 import { CustomNode, CustomLink, GraphData } from "@/types/graph";
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLORPALETTELINKS } from "@/colors/colorPalettes";
+import {
+    COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    COLOR_FOR_SELECTED_OUTBREAK,
+    COLOR_PALETTE_LINKS,
+    COLOR_PALETTE_NODES,
+} from "@/colors/colorPalettes";
 
+export const createInitialColorMap = (nodes: CustomNode[], selectedOutbreak: OutbreakSchema | null) => {
+    const clusters = getUniqueClusters(nodes);
+    const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
+    const noOutbreakAssignedExists = sortedClusters.indexOf("Keinem Ausbruch zugewiesen");
+    const colorMap = {} as Record<string, string>;
+    if (selectedOutbreak) {
+        colorMap[sortedClusters[0]] = COLOR_FOR_SELECTED_OUTBREAK;
+        sortedClusters.splice(0, 1);
+    }
+
+    if (noOutbreakAssignedExists !== -1) {
+        colorMap[sortedClusters[sortedClusters.length - 1]] = COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
+        sortedClusters.pop();
+    }
+
+    for (let i = 0; i < sortedClusters.length; i++) {
+        colorMap[sortedClusters[i]] = COLOR_PALETTE_NODES[i];
+    }
+
+    return colorMap;
+};
 export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
     let uniqueClustersOfNodes = nodes
         .filter((cluster, index, self) => {
@@ -23,6 +49,33 @@ export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
         uniqueClustersOfNodes.push(item[0]);
     }
     return uniqueClustersOfNodes;
+};
+
+export const getUniqueClusters = (nodes: CustomNode[]) => {
+    const clusters = nodes.map((node) => node.cluster);
+    const uniqueClusters = [...new Set(clusters)].sort();
+    return uniqueClusters;
+};
+
+export const sortClusterByOutbreakAndBackground = (clusters: string[]) => {
+    const outbreak = useAnalysisStore.getState().settings.selectedOutbreak?.name;
+    let sortedClusters = [...clusters];
+    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const indexOfBackground = sortedClusters.findIndex(
+        (sortedCluster) => sortedCluster === "Keinem Ausbruch zugewiesen"
+    );
+    if (indexOfBackground !== -1) {
+        const item = sortedClusters.splice(indexOfBackground, 1);
+        sortedClusters.push(item[0]);
+    }
+
+    //find the index of the cluster selected outbreak and put it in the front of the array
+    const indexOfOutbreak = sortedClusters.findIndex((sortedCluster) => sortedCluster === outbreak);
+    if (indexOfOutbreak !== -1) {
+        const item = sortedClusters.splice(indexOfOutbreak, 1);
+        sortedClusters.unshift(item[0]);
+    }
+    return sortedClusters;
 };
 
 export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
@@ -277,7 +330,7 @@ const createColorMapForContacts = (contacts: ContactSchema[]) => {
 
     const colorMapForContacts: ColorMapForClusters = {};
     uniqueContactTypes.forEach((contactType, index) => {
-        colorMapForContacts[contactType] = COLORPALETTELINKS[index] || setNodeColor(index);
+        colorMapForContacts[contactType] = COLOR_PALETTE_LINKS[index] || setNodeColor(index);
     });
 
     return colorMapForContacts;

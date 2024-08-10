@@ -6,7 +6,7 @@ import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLORPALETTENODES } from "@/colors/colorPalettes";
+import { COLOR_PALETTE_NODES } from "@/colors/colorPalettes";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
@@ -43,6 +43,7 @@ export type AnalysisSettings = {
 
 export type GraphSettings = {
     showNodeLabel: boolean;
+    colorMap: Record<string, string>;
     linkDistance: number;
     graphDimension?: "2D" | "3D";
     nodeSize?: number;
@@ -66,6 +67,7 @@ export interface AnalysisStore {
 }
 
 export const defaultGraphSettings: GraphSettings = {
+    colorMap: {},
     showNodeLabel: false,
     linkDistance: 50,
 };
@@ -86,7 +88,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
         groupColorations: [],
-        colorPaletteNodes: COLORPALETTENODES,
+        colorPaletteNodes: COLOR_PALETTE_NODES,
         category: null,
     };
 };

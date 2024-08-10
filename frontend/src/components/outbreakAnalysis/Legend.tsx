@@ -18,7 +18,10 @@ export const Legend = ({ nodes, links, isOutbreakSeparated = false }: LegendProp
     const renderNodeItems = (nodes: CustomNode[]) => {
         return nodes.map((node) => (
             <div className="flex items-center gap-2" key={node.cluster}>
-                <span style={{ backgroundColor: `${node.color}` }} className={"rounded-full h-3 w-3"} />
+                <span
+                    style={{ backgroundColor: `${analyseStore.graphSettings.colorMap?.[node.cluster]}` }}
+                    className={"rounded-full h-3 w-3"}
+                />
                 <p className="text-xs">{node.cluster}</p>
             </div>
         ));

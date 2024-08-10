@@ -6,6 +6,7 @@ type Graph2DProps = {
     data: GraphData;
     width: number;
     height: number;
+    colorMap: Record<string, string>;
     linkDistance?: number;
     charge?: number;
     zoomToFit?: boolean;
@@ -20,6 +21,7 @@ export const Graph2D = ({
     data,
     width,
     height,
+    colorMap,
     linkDistance = 50,
     charge = -80,
     zoomToFit = false,
@@ -30,6 +32,7 @@ export const Graph2D = ({
     coolDownTicks = 120,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
+
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;
@@ -50,7 +53,7 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = node.color;
+        ctx.fillStyle = colorMap[node.cluster] || "rgb(0, 0, 0)";
         ctx.fill();
 
         // Draw the label above the circle
@@ -110,7 +113,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `${node["caseId"]}`}
+            nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
             nodeRelSize={nodeSize}
             width={width}
             height={height}

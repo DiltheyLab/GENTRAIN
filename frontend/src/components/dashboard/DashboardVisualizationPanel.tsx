@@ -2,7 +2,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { createGraphData } from "@/services/graphs";
+import { createGraphData, createInitialColorMap } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -42,6 +42,8 @@ export const DashboardVisualizationPanel = () => {
         ) => {
             const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
+            const colorMap = createInitialColorMap(graphData.nodes, null);
+            dashboardGraphStore.updateGraphSettings({ colorMap });
         };
 
         getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
@@ -69,6 +71,7 @@ export const DashboardVisualizationPanel = () => {
                     data={graphDataCopy as GraphData}
                     width={width - 8}
                     height={height - 8}
+                    colorMap={dashboardGraphStore.graphSettings.colorMap}
                     charge={charge}
                     linkDistance={linkDistance}
                     nodeSize={nodeSize}

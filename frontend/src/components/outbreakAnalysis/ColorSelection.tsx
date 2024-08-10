@@ -6,37 +6,27 @@ import { Info } from "lucide-react";
 import { Switch } from "../ui/switch";
 import { ColorPicker } from "./ColorPicker";
 import { CustomNode } from "@/types/graph";
-import { COLORPALETTEGRADATIONS } from "@/colors/colorPalettes";
 import { getUniqueClustersOfNodes } from "@/services/graphs";
 
 export const ColorSelection = () => {
     const analysisStore = useAnalysisStore();
-    const currentColorPalette = analysisStore.settings.colorPaletteNodes;
-    //const [customColorPalette, setCustomColorPalette] = useState<string[]>(analysisStore.settings.colorPaletteNodes);
+    const colorMap = analysisStore.graphSettings.colorMap;
 
     const changeColor = (cluster: string, newColor: string) => {
-        console.log(cluster);
-        // anstatt array aus farben eine colorpalette erstellen und diese beim Coloring mit keys von den cluster bestücken
-        // dann kann hier mit dem cluster darauf zugegriffen werden
-        // vll vorher testen ob man die similierung des graphen ignorieren kann
-        // dafür als beispiel einfach die settings updaten und testen
-        // falls nicht die colorierung in den graphen verlagern (siehe kommentar dort)
-        const customColorPalette = {
-            Abschiedsparty: "#000FF0",
-            //...
-        };
-
-        analysisStore.updateSettings({ colorPaletteNodes: COLORPALETTEGRADATIONS });
+        colorMap[cluster] = newColor;
+        analysisStore.updateGraphSettings({ colorMap: colorMap });
     };
 
     const renderItems = (node: CustomNode) => {
         return (
             <div className="flex flex-row items-center gap-3" key={node.cluster}>
                 <Switch id={node.cluster} defaultChecked={true} />
-                <Label htmlFor={node.cluster} className="font-normal text-md">
-                    {node.cluster}
-                </Label>
-                <ColorPicker nodeColor={node.color} cluster={node.cluster} changeColor={changeColor} />
+                <div className="flex justify-between w-full">
+                    <Label htmlFor={node.cluster} className="font-normal text-md">
+                        {node.cluster}
+                    </Label>
+                    <ColorPicker nodeColor={colorMap![node.cluster]} cluster={node.cluster} changeColor={changeColor} />
+                </div>
             </div>
         );
     };
