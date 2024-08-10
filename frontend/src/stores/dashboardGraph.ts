@@ -6,14 +6,12 @@ import { addWeeks } from "date-fns";
 import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 const defaultGraphSettings: GraphSettings = {
-    graphDimension: "2D",
-    showNodeLabel: true,
+    showNodeLabel: false,
     nodeSize: 6,
     linkWidth: 3,
     zoomToFit: false,
-    charge: -50,
+    charge: -80,
     linkDistance: 50,
-    coloring: "normal",
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {

@@ -1,11 +1,15 @@
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { GraphData } from "@/types/graph";
+import { useAnalysisStore } from "@/stores/analysis";
+import { CaseWithRelationships } from "@/database/cases";
+import { Loader2 } from "lucide-react";
 
 type Graph2DProps = {
     data: GraphData;
     width: number;
     height: number;
+    cases: CaseWithRelationships[] | undefined;
     linkDistance?: number;
     charge?: number;
     zoomToFit?: boolean;
@@ -20,6 +24,7 @@ export const Graph2D = ({
     data,
     width,
     height,
+    cases,
     linkDistance = 50,
     charge = -80,
     zoomToFit = false,
@@ -30,6 +35,8 @@ export const Graph2D = ({
     coolDownTicks = 130,
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
+    const analysisStore = useAnalysisStore();
+
     // custom d3 force setup
     useEffect(() => {
         if (!forceRef.current || !charge || !linkDistance) return;
@@ -37,6 +44,12 @@ export const Graph2D = ({
         forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
     }, [linkDistance, charge]);
+
+    if (data.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
+        return <Loader2 className="h-24 w-h-24 animate-spin" />;
+    } else if (data.nodes.length === 0 && cases && cases.length === 0) {
+        return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
+    }
 
     const handleEngineStop = () => {
         if (!forceRef.current) return;
