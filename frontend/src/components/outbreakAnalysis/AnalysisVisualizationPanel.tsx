@@ -4,12 +4,14 @@ import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { useAnalysisStore } from "@/stores/analysis";
+import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { Graph2D } from "../graphs/Graph2D";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
 import { Legend } from "./Legend";
-import { Loader2 } from "lucide-react";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
+import { CaseWithRelationships } from "@/database/cases";
+import { ContactSchema } from "@/database/contacts";
+import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -27,29 +29,18 @@ export const AnalysisVisualizationPanel = () => {
             return;
         }
 
-        createGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts).then((graphData) => {
+        const getGraphData = async (
+            distanceMatrixAssembly: DistanceMatrixAssembly,
+            cases: CaseWithRelationships[],
+            settings: AnalysisSettings,
+            contacts: ContactSchema[]
+        ) => {
+            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             analysisStore.updateGraphData(graphData);
-        });
+        };
+
+        getGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts);
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
-
-    const renderGraph = () => {
-        if (analysisStore.graphData.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
-            return <Loader2 className="h-24 w-h-24 animate-spin" />;
-        } else if (analysisStore.graphData.nodes.length === 0 && cases && cases.length === 0) {
-            return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
-        }
-
-        return (
-            <Graph2D
-                data={analysisStore.graphData}
-                width={width - 8}
-                height={height - 8}
-                colorMap={analysisStore.settings.colorMap}
-                showNodeLabel={analysisStore.graphSettings.showNodeLabel}
-                linkDistance={analysisStore.graphSettings.linkDistance}
-            />
-        );
-    };
 
     return (
         <div
@@ -68,7 +59,15 @@ export const AnalysisVisualizationPanel = () => {
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
                     />
-                    {renderGraph()}
+                    <Graph2D
+                        data={analysisStore.graphData}
+                        width={width - 8}
+                        height={height - 8}
+                        colorMap={analysisStore.settings.colorMap}
+                        cases={cases}
+                        showNodeLabel={analysisStore.graphSettings.showNodeLabel}
+                        linkDistance={analysisStore.graphSettings.linkDistance}
+                    />
                 </>
             ) : (
                 <div className="flex justify-center items-center h-full w-full font-semibold">

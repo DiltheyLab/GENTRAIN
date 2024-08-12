@@ -5,12 +5,11 @@ import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 
 const defaultGraphSettings: GraphSettings = {
-    graphDimension: "2D",
-    showNodeLabel: true,
+    showNodeLabel: false,
     nodeSize: 6,
     linkWidth: 3,
     zoomToFit: false,
-    charge: -50,
+    charge: -80,
     linkDistance: 50,
 };
 
