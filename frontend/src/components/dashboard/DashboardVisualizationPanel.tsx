@@ -38,7 +38,7 @@ export const DashboardVisualizationPanel = () => {
             const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
             const colorMap = createColorMapForNodes(cases, null);
-            dashboardGraphStore.updateSettings({ colorMap });
+            dashboardGraphStore.updateGraphSettings({ colorMap });
         };
 
         getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
@@ -49,14 +49,14 @@ export const DashboardVisualizationPanel = () => {
             <Legend
                 nodes={dashboardGraphStore.graphData.nodes}
                 links={dashboardGraphStore.graphData.links}
-                colorMap={dashboardGraphStore.settings.colorMap}
+                colorMap={dashboardGraphStore.graphSettings.colorMap}
             />
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 <Graph2D
                     data={dashboardGraphStore.graphData}
                     width={width - 8}
                     height={height - 8}
-                    colorMap={dashboardGraphStore.settings.colorMap}
+                    colorMap={dashboardGraphStore.graphSettings.colorMap}
                     cases={cases}
                     charge={charge}
                     linkDistance={linkDistance}

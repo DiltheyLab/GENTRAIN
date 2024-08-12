@@ -8,6 +8,7 @@ const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     nodeSize: 6,
     linkWidth: 3,
+    colorMap: {},
     zoomToFit: false,
     charge: -80,
     linkDistance: 50,
@@ -27,10 +28,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
-        groupColorations: [],
         datesOfAllCases: [],
-        colorMap: {},
-        category: null,
     };
 };
 

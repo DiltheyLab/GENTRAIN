@@ -52,7 +52,7 @@ export const AnalysisVisualizationPanel = () => {
                     <Legend
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
-                        colorMap={analysisStore.settings.colorMap}
+                        colorMap={analysisStore.graphSettings.colorMap}
                         isOutbreakSeparated
                     />
                     <AnalysisGraphSettings
@@ -63,7 +63,7 @@ export const AnalysisVisualizationPanel = () => {
                         data={analysisStore.graphData}
                         width={width - 8}
                         height={height - 8}
-                        colorMap={analysisStore.settings.colorMap}
+                        colorMap={analysisStore.graphSettings.colorMap}
                         cases={cases}
                         showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                         linkDistance={analysisStore.graphSettings.linkDistance}
