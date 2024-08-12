@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createGraphData, createInitialColorMap } from "@/services/graphs";
+import { createGraphData, createColorMapForNodes } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -31,11 +31,6 @@ export const AnalysisVisualizationPanel = () => {
             analysisStore.updateGraphData(graphData);
         });
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
-
-    useEffect(() => {
-        const colorMap = createInitialColorMap(analysisStore.graphData.nodes, analysisStore.settings.selectedOutbreak);
-        analysisStore.updateGraphSettings({ colorMap });
-    }, [analysisStore.settings.selectedOutbreak, analysisStore.graphData.nodes]);
 
     const renderGraph = () => {
         if (analysisStore.graphData.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {

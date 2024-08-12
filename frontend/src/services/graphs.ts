@@ -14,8 +14,8 @@ import {
     COLOR_PALETTE_NODES,
 } from "@/colors/colorPalettes";
 
-export const createInitialColorMap = (nodes: CustomNode[], selectedOutbreak: OutbreakSchema | null) => {
-    const clusters = getUniqueClusters(nodes);
+export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema | null) => {
+    const clusters = getUniqueClusterOfCases(cases);
     const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
     const noOutbreakAssignedExists = sortedClusters.indexOf("Keinem Ausbruch zugewiesen");
     const colorMap = {} as Record<string, string>;
@@ -35,6 +35,7 @@ export const createInitialColorMap = (nodes: CustomNode[], selectedOutbreak: Out
 
     return colorMap;
 };
+
 export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
     let uniqueClustersOfNodes = nodes
         .filter((cluster, index, self) => {
@@ -320,6 +321,7 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     // to prevent rendering the same case multiple times we filter out duplicates in the end instead of
     // checking for duplicates in each filter step
     graphCases = deleteDuplicateCases(graphCases);
+    console.log(graphCases);
 
     return graphCases;
 };

@@ -2,7 +2,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useEffect, useMemo, useRef } from "react";
 import { deepCopyData } from "@/lib/utils";
-import { createGraphData, createInitialColorMap } from "@/services/graphs";
+import { createGraphData, createColorMapForNodes } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -42,7 +42,7 @@ export const DashboardVisualizationPanel = () => {
         ) => {
             const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
-            const colorMap = createInitialColorMap(graphData.nodes, null);
+            const colorMap = createColorMapForNodes(cases, null);
             dashboardGraphStore.updateGraphSettings({ colorMap });
         };
 

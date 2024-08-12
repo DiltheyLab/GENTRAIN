@@ -7,6 +7,8 @@ import { CustomTooltip } from "../ui/customTooltip";
 import { Info } from "lucide-react";
 import { useGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { StepIndicator } from "../ui/step-indicator";
+import { createColorMapForNodes } from "@/services/graphs";
+import { CaseWithRelationships } from "@/database/cases";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
@@ -42,6 +44,13 @@ export const OutbreakSelection = () => {
         });
     };
 
+    const createColorMap = (cases: CaseWithRelationships[] | undefined, selectedOutbreak: OutbreakSchema) => {
+        // create the initial color map for all nodes if the selected outbreak is changed
+        if (!cases) return;
+        const colorMap = createColorMapForNodes(cases, selectedOutbreak);
+        analysisStore.updateGraphSettings({ colorMap });
+    };
+
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
@@ -55,6 +64,9 @@ export const OutbreakSelection = () => {
 
         // after changing the outbreak, set the date range for the date range picker
         setDateRange(selectedOutbreak);
+
+        // create color map for nodes after changing the outbreak
+        createColorMap(casesWithRelationships, selectedOutbreak);
     };
     const getOutbreakGroups = () => {
         if (!outbreaks || outbreaks.length === 0) {
