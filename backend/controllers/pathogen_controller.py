@@ -27,7 +27,6 @@ def get_sequence_variants(
             fasta_id=fasta_id,
             sequence=body.sequence,
         )
-
         result = strategy.execute()
         # finally return output as pydantic response model in json format
         return strategy.get_response(result)
@@ -51,6 +50,7 @@ def get_sequence_variants(
             500,
         )
     except FileNotFoundError as exc:
+        print(exc)
         return (
             ErrorResponseModel(message="Pathogen does not exist."),
             404,

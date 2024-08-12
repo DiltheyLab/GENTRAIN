@@ -6,7 +6,7 @@ from backend.strategies.sample_analysis.bacterial_sample_analysis import (
 
 pathogen_type_mappings = {
     "viral": ["covid-19"],
-    "bacterial": ["rse", "vre"],
+    "bacterial": ["rse", "enterococcus-faecium"],
 }
 
 
@@ -35,4 +35,5 @@ class PathogenStrategyManager:
             == "bacterial"
         ):
             return BacterialSampleAnalysis(pathogen_name, fasta_id, sequence)
+
         return

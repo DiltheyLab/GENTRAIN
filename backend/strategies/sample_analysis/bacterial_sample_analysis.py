@@ -1,60 +1,92 @@
 from backend.strategies.sample_analysis.sample_analysis_strategy import (
     SampleAnalysisStrategy,
 )
-from backend.controllers.models.sequence_variants import (
-    BacterialSequenceVariantsResponseModel,
-)
+import shutil
+import time
 import json
 import pathlib
-import subprocess
-from backend.config import get_project_path
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
-from backend.exceptions.genomic_error_exception import GenomicErrorException
+from backend.config import get_project_path
+from backend.controllers.models.sequence_variants import (
+    BacterialSequenceVariantsResponseModel,
+)
+import tempfile
+import sys
+from subprocess import Popen
 
 
 class BacterialSampleAnalysis(SampleAnalysisStrategy):
     """Concrete analysis strategy for bacterial samples."""
 
-    def __init__(self, pathogen_name, fasta_id, sequence, scheme):
-        super().__init__(pathogen_name, fasta_id, sequence)
-        self.scheme = scheme
-
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""
         return []
 
+    def create_input_and_output_files(self):
+        """Create a fasta input file and a json output file for script."""
+        # create directory if not existent
+        self.input = f"{get_project_path()}/temp_data/sample_analysis/{self.fasta_id}/"
+        pathlib.Path(self.input).mkdir(parents=True, exist_ok=True)
+
+        # Create a temporary fasta file that is read by the bash script
+        # and a json file in which the response will be written
+        input_file = tempfile.NamedTemporaryFile(
+            dir=self.input, suffix=".fa", delete=False
+        ).name
+        with open(file=input_file, mode="w", encoding="utf-8") as input_file:
+            input_file.write(self.sequence)
+        self.output = f"{get_project_path()}/temp_data/sample_analysis/outputs/{self.fasta_id}_{round(time.time() * 1000)}"
+
+    def tsv2json(self, file):
+        arr = []
+        a = file.readline()
+
+        # The first line consist of headings of the record
+        # so we will store it in an array and move to
+        # next line in input_file.
+        titles = [t.strip() for t in a.split("\t")]
+        for line in file:
+            d = {}
+            for t, f in zip(titles, line.split("\t")):
+
+                # Convert each row into dictionary with keys as titles
+                d[t] = f.strip()
+
+            # we will use strip to remove '\n'.
+            arr.append(d)
+
+            # we will append all the individual dictionaires into list
+            # and dump into file.
+        return json.dumps(arr, indent=4)
+
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
-        process = subprocess.Popen(
+        process = Popen(
             [
                 "perl",
-                "bacterial.sh",
-                f"{get_project_path()}/scripts/sample_analysis/",
+                f"{get_project_path()}/scripts/sample_analysis/bacterial.pl",
+                "-input",
                 self.input,
-                self.scheme,
+                "-scheme",
+                f"{get_project_path()}/datasets/chewBBACA_schemes/{self.pathogen_name}",
+                "-output",
                 self.output,
-            ]
+            ],
+            stdout=sys.stdout,
         )
-
+        process.wait()
         if process.returncode != 0:
-            pathlib.Path(self.input).unlink(missing_ok=True)
-            pathlib.Path(self.output).unlink(missing_ok=True)
             raise SequenceAnalysisFailedException
         else:
-            with open(file=self.output, mode="r", encoding="utf-8") as json_file:
-                # check for script errors
-                content = json.load(json_file)
-                if content["errors"] and len(content["errors"]) > 0:
-                    raise GenomicErrorException
+            with open(
+                file=f"{self.output}/results_alleles_hashed.tsv",
+                mode="r",
+                encoding="utf-8",
+            ) as tsv_file:
+                return self.tsv2json(tsv_file)
 
-                content = content["results"][0]
-                # delete the temporary files. If they can not be found ignore it
-                pathlib.Path(self.input).unlink(missing_ok=True)
-                pathlib.Path(self.output).unlink(missing_ok=True)
-                return content
-
-    def get_response(self, _):
+    def get_response(self, result):
         """Return a response model for bacterial analysises."""
-        return BacterialSequenceVariantsResponseModel(alleles=[])
+        return result
