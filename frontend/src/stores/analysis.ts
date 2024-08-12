@@ -4,9 +4,8 @@ import { CategorySchema } from "@/database/categories";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { GraphData } from "@/types/graph";
+import { ColorMap, GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLOR_PALETTE_NODES } from "@/colors/colorPalettes";
 
 export type Filter = "all" | "outbreaks";
 export type Coloring = "normal" | "registered_at" | "outbreaks";
@@ -37,20 +36,18 @@ export type AnalysisSettings = {
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
     groupColorations: GroupColoration;
-    colorPaletteNodes: string[];
+    colorMap: ColorMap;
     category: CategorySchema | null;
 };
 
 export type GraphSettings = {
     showNodeLabel: boolean;
-    colorMap: Record<string, string>;
     linkDistance: number;
     graphDimension?: "2D" | "3D";
     nodeSize?: number;
     linkWidth?: number;
     zoomToFit?: boolean;
     charge?: number;
-    coloring?: Coloring;
 };
 
 export interface AnalysisStore {
@@ -67,7 +64,6 @@ export interface AnalysisStore {
 }
 
 export const defaultGraphSettings: GraphSettings = {
-    colorMap: {},
     showNodeLabel: false,
     linkDistance: 50,
 };
@@ -88,7 +84,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
         groupColorations: [],
-        colorPaletteNodes: COLOR_PALETTE_NODES,
+        colorMap: {},
         category: null,
     };
 };

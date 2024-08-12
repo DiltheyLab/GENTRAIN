@@ -1,15 +1,16 @@
 import { useAnalysisStore } from "@/stores/analysis";
-import { CustomLink, CustomNode } from "@/types/graph";
+import { ColorMap, CustomLink, CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
 import { getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
 
 type LegendProps = {
     nodes: CustomNode[];
     links: CustomLink[];
+    colorMap: ColorMap;
     isOutbreakSeparated?: boolean;
 };
 
-export const Legend = ({ nodes, links, isOutbreakSeparated = false }: LegendProps) => {
+export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: LegendProps) => {
     const analyseStore = useAnalysisStore();
 
     const uniqueClusterOfNodes = getUniqueClustersOfNodes(nodes);
@@ -18,10 +19,7 @@ export const Legend = ({ nodes, links, isOutbreakSeparated = false }: LegendProp
     const renderNodeItems = (nodes: CustomNode[]) => {
         return nodes.map((node) => (
             <div className="flex items-center gap-2" key={node.cluster}>
-                <span
-                    style={{ backgroundColor: `${analyseStore.graphSettings.colorMap?.[node.cluster]}` }}
-                    className={"rounded-full h-3 w-3"}
-                />
+                <span style={{ backgroundColor: `${colorMap[node.cluster]}` }} className={"rounded-full h-3 w-3"} />
                 <p className="text-xs">{node.cluster}</p>
             </div>
         ));

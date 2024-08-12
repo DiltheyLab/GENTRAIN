@@ -4,7 +4,7 @@ import { Graph, Link } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
-import { CustomNode, CustomLink, GraphData } from "@/types/graph";
+import { CustomNode, CustomLink, GraphData, ColorMap } from "@/types/graph";
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
@@ -18,7 +18,7 @@ export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedO
     const clusters = getUniqueClusterOfCases(cases);
     const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
     const noOutbreakAssignedExists = sortedClusters.indexOf("Keinem Ausbruch zugewiesen");
-    const colorMap = {} as Record<string, string>;
+    const colorMap = {} as ColorMap;
     if (selectedOutbreak) {
         colorMap[sortedClusters[0]] = COLOR_FOR_SELECTED_OUTBREAK;
         sortedClusters.splice(0, 1);
@@ -122,54 +122,6 @@ const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
         return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
     });
     return [...new Set(cluster)];
-};
-
-const sortCluster = (uniqueCluster: string[], selectedOutbreak: OutbreakSchema | null) => {
-    const sortedCluster = uniqueCluster.sort();
-
-    //find the index of the group "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const noOutbreakIndex = sortedCluster.indexOf("Keinem Ausbruch zugewiesen");
-    if (noOutbreakIndex !== -1) {
-        sortedCluster.splice(noOutbreakIndex, 1);
-        sortedCluster.push("Keinem Ausbruch zugewiesen");
-    }
-
-    // if no outbreak is selected return the sorted cluster -> no special sorting needed for dashboard graph
-    if (!selectedOutbreak) return sortedCluster;
-
-    // find the index of the selected outbreak in the sorted cluster and put it at the beginning of the array
-    const outbreakIndex = sortedCluster.indexOf(selectedOutbreak?.name);
-    if (outbreakIndex !== -1) {
-        sortedCluster.splice(outbreakIndex, 1);
-        sortedCluster.unshift(selectedOutbreak?.name);
-    }
-
-    return sortedCluster;
-};
-
-export const createColorMapForClusters = (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
-    const selectedOutbreak = analysisSettings.selectedOutbreak;
-    const colorPalette = analysisSettings.colorPaletteNodes;
-
-    // Extract unique cluster
-    const uniqueCluster = getUniqueClusterOfCases(cases);
-
-    // Sort cluster that the selected outbreak is at the beginning of the array and the cluster "Keinem Ausbruch zugewiesen" at the end
-    const sortedCluster = sortCluster(uniqueCluster as string[], selectedOutbreak);
-
-    const colorMapForClusters: ColorMapForClusters = {};
-    sortedCluster.forEach((cluster, index) => {
-        if (cluster === "Keinem Ausbruch zugewiesen") {
-            // the cluster "Keinem Ausbruch zugewiesen" gets a grey color which is always the last color in the color palette
-            colorMapForClusters[cluster] = colorPalette[colorPalette.length - 1];
-        } else {
-            // the color pallete has 34 specific colors
-            // if there are more clusters than colors we use the setNodeColor function to generate a color
-            colorMapForClusters[cluster] = colorPalette[index] || setNodeColor(index);
-        }
-    });
-
-    return colorMapForClusters;
 };
 
 const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
@@ -321,7 +273,6 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     // to prevent rendering the same case multiple times we filter out duplicates in the end instead of
     // checking for duplicates in each filter step
     graphCases = deleteDuplicateCases(graphCases);
-    console.log(graphCases);
 
     return graphCases;
 };
@@ -439,18 +390,13 @@ export const createGraphData = async (
     // calculate links that are in the mst by using kruskal's algorithm
     const mstLinks = createMSTLinks(graphCases, matrixDataAssembly, graph);
 
-    const colorMapForClusters = createColorMapForClusters(cases, analysisSettings);
-
     // create node objects for forced directed graph
     const nodes: CustomNode[] = graphCases.map((caseData) => {
-        const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
-
         return {
             id: caseData.id,
             caseId: caseData.case_id,
             caseData: caseData,
             cluster: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
-            color: colorMapForClusters[outbreakName],
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
     });

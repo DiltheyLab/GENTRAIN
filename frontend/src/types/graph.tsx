@@ -5,7 +5,6 @@ export type CustomNode = {
     caseId: string;
     caseData: CaseWithRelationships;
     cluster: string;
-    color: string;
     registeredAt?: string;
 };
 
@@ -23,3 +22,5 @@ export type GraphData = {
     nodes: CustomNode[];
     links: CustomLink[];
 };
+
+export type ColorMap = Record<string, string>;

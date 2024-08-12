@@ -10,11 +10,11 @@ import { getUniqueClustersOfNodes } from "@/services/graphs";
 
 export const ColorSelection = () => {
     const analysisStore = useAnalysisStore();
-    const colorMap = analysisStore.graphSettings.colorMap;
+    const colorMap = analysisStore.settings.colorMap;
 
     const changeColor = (cluster: string, newColor: string) => {
         colorMap[cluster] = newColor;
-        analysisStore.updateGraphSettings({ colorMap: colorMap });
+        analysisStore.updateSettings({ colorMap: colorMap });
     };
 
     const renderItems = (node: CustomNode) => {

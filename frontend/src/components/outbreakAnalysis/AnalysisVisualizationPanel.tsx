@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createGraphData, createColorMapForNodes } from "@/services/graphs";
+import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -44,7 +44,7 @@ export const AnalysisVisualizationPanel = () => {
                 data={analysisStore.graphData}
                 width={width - 8}
                 height={height - 8}
-                colorMap={analysisStore.graphSettings.colorMap}
+                colorMap={analysisStore.settings.colorMap}
                 showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                 linkDistance={analysisStore.graphSettings.linkDistance}
             />
@@ -61,6 +61,7 @@ export const AnalysisVisualizationPanel = () => {
                     <Legend
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
+                        colorMap={analysisStore.settings.colorMap}
                         isOutbreakSeparated
                     />
                     <AnalysisGraphSettings

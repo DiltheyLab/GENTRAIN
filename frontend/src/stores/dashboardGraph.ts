@@ -3,10 +3,8 @@ import { create } from "zustand";
 import { AnalysisSettings, GraphSettings } from "./analysis";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
-import { COLOR_PALETTE_NODES } from "@/colors/colorPalettes";
 
 const defaultGraphSettings: GraphSettings = {
-    colorMap: {},
     graphDimension: "2D",
     showNodeLabel: true,
     nodeSize: 6,
@@ -14,7 +12,6 @@ const defaultGraphSettings: GraphSettings = {
     zoomToFit: false,
     charge: -50,
     linkDistance: 50,
-    coloring: "normal",
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
@@ -32,8 +29,8 @@ export const getDefaultSettings = (): AnalysisSettings => {
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
         groupColorations: [],
-        colorPaletteNodes: COLOR_PALETTE_NODES,
         datesOfAllCases: [],
+        colorMap: {},
         category: null,
     };
 };

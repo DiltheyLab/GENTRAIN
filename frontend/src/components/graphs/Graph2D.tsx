@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { GraphData } from "@/types/graph";
+import { ColorMap, GraphData } from "@/types/graph";
 
 type Graph2DProps = {
     data: GraphData;
     width: number;
     height: number;
-    colorMap: Record<string, string>;
+    colorMap: ColorMap;
     linkDistance?: number;
     charge?: number;
     zoomToFit?: boolean;

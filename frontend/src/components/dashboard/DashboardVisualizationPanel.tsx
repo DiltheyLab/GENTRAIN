@@ -43,11 +43,11 @@ export const DashboardVisualizationPanel = () => {
             const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             dashboardGraphStore.updateGraphData(graphData);
             const colorMap = createColorMapForNodes(cases, null);
-            dashboardGraphStore.updateGraphSettings({ colorMap });
+            dashboardGraphStore.updateSettings({ colorMap });
         };
 
         getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
-    }, [cases, distanceMatrixAssembly, dashboardGraphStore.settings, contacts]);
+    }, [cases, distanceMatrixAssembly, contacts]);
 
     // Creating deep copy of the graph data for each graph component and
     // use useMemo hook to safe the graphData with updated simulation data to prevent to start simulation
@@ -71,7 +71,7 @@ export const DashboardVisualizationPanel = () => {
                     data={graphDataCopy as GraphData}
                     width={width - 8}
                     height={height - 8}
-                    colorMap={dashboardGraphStore.graphSettings.colorMap}
+                    colorMap={dashboardGraphStore.settings.colorMap}
                     charge={charge}
                     linkDistance={linkDistance}
                     nodeSize={nodeSize}
@@ -104,7 +104,11 @@ export const DashboardVisualizationPanel = () => {
             <Button variant="outline" className="absolute z-20 bottom-3 right-3">
                 Reset
             </Button>
-            <Legend nodes={dashboardGraphStore.graphData.nodes} links={dashboardGraphStore.graphData.links} />
+            <Legend
+                nodes={dashboardGraphStore.graphData.nodes}
+                links={dashboardGraphStore.graphData.links}
+                colorMap={dashboardGraphStore.settings.colorMap}
+            />
 
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 {renderGraph()}
