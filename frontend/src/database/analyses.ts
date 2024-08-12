@@ -39,7 +39,7 @@ export const getAnalysisByID = (id: number) => {
 };
 
 export const updateAnalysisSettings = async (id: number, settings: AnalysisSettings, graphSettings: GraphSettings) => {
-    return await db.analyses.update(id, { settings: settings }, { graphSettings: graphSettings });
+    return await db.analyses.update(id, { settings: settings, graphSettings: graphSettings });
 };
 
 export const deleteAnalysesByPathogenId = async (pathogen_id: number) => {

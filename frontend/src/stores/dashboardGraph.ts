@@ -11,7 +11,7 @@ const defaultGraphSettings: GraphSettings = {
     colorMap: {},
     zoomToFit: false,
     charge: -80,
-    linkDistance: 50,
+    linkDistance: 60,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {

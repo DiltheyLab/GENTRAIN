@@ -50,7 +50,7 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
         try {
             const defaultSettings = getDefaultSettings();
             //create a new analysis in db and update the name in the store
-            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings);
+            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
             analysisStore.updateName(analysisName);
             analysisStore.updateId(id);
             analysisStore.updateSettings(defaultSettings);

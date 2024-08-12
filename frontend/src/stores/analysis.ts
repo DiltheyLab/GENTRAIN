@@ -37,7 +37,6 @@ export type GraphSettings = {
     showNodeLabel: boolean;
     linkDistance: number;
     colorMap: ColorMap;
-    graphDimension?: "2D" | "3D";
     nodeSize?: number;
     linkWidth?: number;
     zoomToFit?: boolean;
@@ -59,7 +58,7 @@ export interface AnalysisStore {
 
 export const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
-    linkDistance: 50,
+    linkDistance: 70,
     colorMap: {},
 };
 

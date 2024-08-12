@@ -17,7 +17,11 @@ export const AnalysisSettings = () => {
     const safeAnalysis = async () => {
         try {
             if (!analysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
-            const success = await updateAnalysisSettings(analysisStore.id, analysisStore.settings);
+            const success = await updateAnalysisSettings(
+                analysisStore.id,
+                analysisStore.settings,
+                analysisStore.graphSettings
+            );
             if (success) {
                 toast({
                     title: "Analyse gespeichert",

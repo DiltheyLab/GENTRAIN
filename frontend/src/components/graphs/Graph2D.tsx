@@ -27,7 +27,7 @@ export const Graph2D = ({
     height,
     colorMap,
     cases,
-    linkDistance = 50,
+    linkDistance = 70,
     charge = -80,
     zoomToFit = false,
     nodeSize = 6,
@@ -38,6 +38,7 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
     const analysisStore = useAnalysisStore();
+    console.log(linkDistance);
 
     // custom d3 force setup
     useEffect(() => {
