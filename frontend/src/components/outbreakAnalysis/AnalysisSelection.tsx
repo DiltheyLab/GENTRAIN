@@ -31,8 +31,6 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
         analysisStore.updateName(selectedAnalysis.name);
         analysisStore.updateId(selectedAnalysis.id);
         analysisStore.updateSettings(selectedAnalysis.settings);
-        console.log("selection", selectedAnalysis.graphSettings);
-
         analysisStore.updateGraphSettings(selectedAnalysis.graphSettings);
         changeIsOpen();
     };

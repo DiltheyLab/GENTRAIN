@@ -38,7 +38,6 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const forceRef = useRef<ForceGraphMethods>();
     const analysisStore = useAnalysisStore();
-    console.log(linkDistance);
 
     // custom d3 force setup
     useEffect(() => {
@@ -46,7 +45,7 @@ export const Graph2D = ({
         forceRef.current.d3Force("charge")?.strength(charge).distanceMax(350);
         forceRef.current.d3Force("link")?.distance(linkDistance);
         forceRef.current.d3ReheatSimulation();
-    }, [linkDistance, charge]);
+    }, [linkDistance, charge, forceRef.current]);
 
     if (data.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
