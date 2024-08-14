@@ -1,12 +1,8 @@
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { CustomTooltip } from "../ui/customTooltip";
-import { Info } from "lucide-react";
 import { useGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { StepIndicator } from "../ui/step-indicator";
 import { createColorMapForNodes } from "@/services/graphs";
 import { CaseWithRelationships } from "@/database/cases";
 
@@ -90,16 +86,7 @@ export const OutbreakSelection = () => {
         );
     };
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-                <Label className="flex items-center font-bold text-md mr-3">
-                    <StepIndicator>1</StepIndicator> Ausbruch auswählen
-                </Label>
-                <CustomTooltip
-                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
-                    content={<p>Wählen Sie für die Analyse eines Ausbruchs den enstprechenden Datensatz aus. </p>}
-                />
-            </div>
+        <div className="flex flex-col gap-4 p-0">
             <Select
                 value={analysisStore.settings.selectedOutbreak?.id?.toString()}
                 onValueChange={(value) => changeSelectedOutbreak(value)}
