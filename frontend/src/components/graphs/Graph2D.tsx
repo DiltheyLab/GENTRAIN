@@ -41,11 +41,10 @@ export const Graph2D = ({
 
     // custom d3 force setup
     useEffect(() => {
-        if (!forceRef.current || !charge || !linkDistance) return;
-        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(350);
-        forceRef.current.d3Force("link")?.distance(linkDistance);
-        forceRef.current.d3ReheatSimulation();
-    }, [linkDistance, charge, forceRef.current]);
+        forceRef?.current?.d3Force("charge")?.strength(charge).distanceMax(350);
+        forceRef?.current?.d3Force("link")?.distance(linkDistance);
+        forceRef?.current?.d3ReheatSimulation();
+    }, [linkDistance, charge, data]);
 
     if (data.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
