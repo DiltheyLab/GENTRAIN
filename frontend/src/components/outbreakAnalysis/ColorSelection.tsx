@@ -1,61 +1,20 @@
 import { useAnalysisStore } from "@/stores/analysis";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
-import { ColorPicker } from "./ColorPicker";
-import { CustomNode } from "@/types/graph";
-import { getUniqueClustersOfNodes } from "@/services/graphs";
+import { getSelectedClusters } from "@/services/graphs";
+import { useMemo } from "react";
+import { ColorSection } from "./ColorSection";
 
 export const ColorSelection = () => {
     const analysisStore = useAnalysisStore();
-    const colorMap = analysisStore.graphSettings.colorMap;
-
-    const changeColor = (cluster: string, newColor: string) => {
-        colorMap[cluster] = newColor;
-        analysisStore.updateGraphSettings({ colorMap: colorMap });
-    };
-
-    const renderItems = (node: CustomNode) => {
-        return (
-            <div className="flex flex-row items-center gap-3" key={node.cluster}>
-                <Switch id={node.cluster} defaultChecked={true} />
-                <div className="flex justify-between w-full">
-                    <Label htmlFor={node.cluster} className="font-normal text-md">
-                        {node.cluster}
-                    </Label>
-                    <ColorPicker nodeColor={colorMap![node.cluster]} cluster={node.cluster} changeColor={changeColor} />
-                </div>
-            </div>
-        );
-    };
-
-    const renderOutbreakColoring = () => {
-        if (!analysisStore.graphData.nodes) return;
-        const clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
-        const selectedOutbreak = clustersOfNodes.filter(
-            (nodes) => nodes.cluster === analysisStore.settings.selectedOutbreak?.name
-        );
-        const selectectedBackgrounds = clustersOfNodes.filter(
-            (nodes) => nodes.cluster !== analysisStore.settings.selectedOutbreak?.name
-        );
-        return (
-            <>
-                <Label>Selektierter Ausbruch umfärben</Label>
-                {selectedOutbreak.map((node) => renderItems(node))}
-                {selectectedBackgrounds.length > 0 && (
-                    <>
-                        <Label>Background umfärben</Label>
-                        {selectectedBackgrounds.map((node) => renderItems(node))}
-                    </>
-                )}
-            </>
-        );
-    };
+    const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [analysisStore.graphData]);
 
     return (
         <div className="flex flex-col gap-4 mt-2">
-            {renderOutbreakColoring()}
-            <Label>Nach Zeitspanne umfärben</Label>
+            <ColorSection label="Selektierter Ausbruch umfärben" nodes={selectedOutbreak} />
+            <ColorSection label="Background umfärben" nodes={selectedBackground} />
 
+            <Label>Nach Zeitspanne umfärben</Label>
             <div className="flex flex-row items-center gap-3">
                 <Switch id="showBackground" />
                 <Label htmlFor="showBackground" className="font-normal text-md">

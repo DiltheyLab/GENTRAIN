@@ -14,6 +14,18 @@ import {
     COLOR_PALETTE_NODES,
 } from "@/colors/colorPalettes";
 
+export const getSelectedClusters = () => {
+    const analysisStore = useAnalysisStore.getState();
+    const clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
+    const selectedOutbreak = clustersOfNodes.filter(
+        (nodes) => nodes.cluster === analysisStore.settings.selectedOutbreak?.name
+    );
+    const selectedBackground = clustersOfNodes.filter(
+        (nodes) => nodes.cluster !== analysisStore.settings.selectedOutbreak?.name
+    );
+    return { selectedOutbreak, selectedBackground };
+};
+
 export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema | null) => {
     const clusters = getUniqueClusterOfCases(cases);
     const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
