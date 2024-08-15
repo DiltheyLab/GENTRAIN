@@ -30,3 +30,7 @@ export type NodeColor = {
 export type ColorMap = {
     [cluster: string]: NodeColor;
 };
+
+export type ContactLinksColorMap = {
+    [type: string]: string;
+};

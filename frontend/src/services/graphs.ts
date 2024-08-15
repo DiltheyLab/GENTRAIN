@@ -4,7 +4,7 @@ import { Graph, Link } from "@/lib/kruskal";
 import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
-import { CustomNode, CustomLink, GraphData, ColorMap } from "@/types/graph";
+import { CustomNode, CustomLink, GraphData, ColorMap, ContactLinksColorMap } from "@/types/graph";
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
@@ -52,9 +52,9 @@ export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedO
     }
 
     for (let i = 0; i < sortedClusters.length; i++) {
-        colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i], isActive: true };
+        // create colors for every cluster. If there are more clusters then colors create a color dynamically
+        colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
     }
-    console.log(colorMap);
 
     return colorMap;
 };
@@ -110,7 +110,7 @@ export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
         .sort((a, b) => a.type.localeCompare(b.type));
 };
 
-export const setNodeColor = (value: number) => {
+export const createColorByIndex = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
     return `hsl(${hue},50%,75%)`;
 };
@@ -121,10 +121,6 @@ export const setNodeColor = (value: number) => {
     // Use fixed saturation and lightness values
     return `hsl(${hue}, 100%, 50%)`;
 }; */
-
-type ColorMapForClusters = {
-    [key: string]: string;
-};
 
 export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
     const uniqueSamplingTimes = nodes.filter((group, index, self) => {
@@ -300,16 +296,16 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     return graphCases;
 };
 
-const createColorMapForContacts = (contacts: ContactSchema[]) => {
+const createColorMapForContactLinks = (contacts: ContactSchema[]) => {
     const contactTypes = contacts.map((contact) => contact.type);
     const uniqueContactTypes = [...new Set(contactTypes)];
 
-    const colorMapForContacts: ColorMapForClusters = {};
+    const contactLinksColorMap: ContactLinksColorMap = {};
     uniqueContactTypes.forEach((contactType, index) => {
-        colorMapForContacts[contactType] = COLOR_PALETTE_LINKS[index] || setNodeColor(index);
+        contactLinksColorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColorByIndex(index);
     });
 
-    return colorMapForContacts;
+    return contactLinksColorMap;
 };
 
 const createCurvatures = (links: CustomLink[]) => {
@@ -365,7 +361,7 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
     const graphCasesIds = graphCases.map((caseData) => caseData.id);
 
     // create a color map for the contact types
-    const colorMapForContacts = createColorMapForContacts(contacts);
+    const contactLinksColorMap = createColorMapForContactLinks(contacts);
 
     const contactTracingLinks: CustomLink[] = [];
     // create link objects for contacts
@@ -376,7 +372,7 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
                 source: contact.case_id_1,
                 target: contact.case_id_2,
                 value: "",
-                color: colorMapForContacts[contact.type],
+                color: contactLinksColorMap[contact.type],
                 type: contact.type,
                 context: contact.context,
                 curvature: 0,
