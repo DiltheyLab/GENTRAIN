@@ -4,6 +4,7 @@ import { ColorMap, GraphData } from "@/types/graph";
 import { useAnalysisStore } from "@/stores/analysis";
 import { CaseWithRelationships } from "@/database/cases";
 import { Loader2 } from "lucide-react";
+import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
 
 type Graph2DProps = {
     data: GraphData;
@@ -64,7 +65,9 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = colorMap[node.cluster] || "rgb(0, 0, 0)";
+        ctx.fillStyle = colorMap[node.cluster].isActive
+            ? colorMap[node.cluster].color
+            : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
         ctx.fill();
 
         // Draw the label above the circle

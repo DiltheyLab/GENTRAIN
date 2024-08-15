@@ -23,4 +23,10 @@ export type GraphData = {
     links: CustomLink[];
 };
 
-export type ColorMap = Record<string, string>;
+export type NodeColor = {
+    color: string;
+    isActive: boolean;
+};
+export type ColorMap = {
+    [cluster: string]: NodeColor;
+};

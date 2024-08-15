@@ -70,66 +70,73 @@ export const AnalysisSettings = () => {
                                     <OutbreakSelection />
                                 </AccordionContent>
                             </AccordionItem>
+                            {analysisStore.settings.selectedOutbreak && (
+                                <>
+                                    <AccordionItem value="item-2">
+                                        <div className="flex w-full justify-between items-center">
+                                            <SectionHeader
+                                                step={2}
+                                                title="Background auswählen"
+                                                tooltipContent={tooltipBackgroundSelection}
+                                            />
+                                            <AccordionTrigger>
+                                                <span />
+                                            </AccordionTrigger>
+                                        </div>
+                                        <AccordionContent>
+                                            <BackgroundSelection />
+                                        </AccordionContent>
+                                    </AccordionItem>
 
-                            <AccordionItem value="item-2">
-                                <div className="flex w-full justify-between items-center">
-                                    <SectionHeader
-                                        step={2}
-                                        title="Background auswählen"
-                                        tooltipContent={tooltipBackgroundSelection}
-                                    />
-                                    <AccordionTrigger>
-                                        <span />
-                                    </AccordionTrigger>
-                                </div>
-                                <AccordionContent>
-                                    <BackgroundSelection />
-                                </AccordionContent>
-                            </AccordionItem>
+                                    <AccordionItem value="item-3">
+                                        <div className="flex w-full justify-between items-center">
+                                            <SectionHeader
+                                                step={3}
+                                                title="Background filtern"
+                                                tooltipContent={tooltipBackgroundFilter}
+                                            />
+                                            <AccordionTrigger>
+                                                <span />
+                                            </AccordionTrigger>
+                                        </div>
+                                        <AccordionContent>
+                                            <BackgroundFilter />
+                                        </AccordionContent>
+                                    </AccordionItem>
 
-                            <AccordionItem value="item-3">
-                                <div className="flex w-full justify-between items-center">
-                                    <SectionHeader
-                                        step={3}
-                                        title="Background filtern"
-                                        tooltipContent={tooltipBackgroundFilter}
-                                    />
-                                    <AccordionTrigger>
-                                        <span />
-                                    </AccordionTrigger>
-                                </div>
-                                <AccordionContent>
-                                    <BackgroundFilter />
-                                </AccordionContent>
-                            </AccordionItem>
+                                    <AccordionItem value="item-4">
+                                        <div className="flex w-full justify-between items-center">
+                                            <SectionHeader
+                                                step={4}
+                                                title="Kontaktnachverfolgung"
+                                                tooltipContent={tooltipContactTracing}
+                                            />
+                                            <AccordionTrigger>
+                                                <span />
+                                            </AccordionTrigger>
+                                        </div>
+                                        <AccordionContent>
+                                            <ContactTracing />
+                                        </AccordionContent>
+                                    </AccordionItem>
 
-                            <AccordionItem value="item-4">
-                                <div className="flex w-full justify-between items-center">
-                                    <SectionHeader
-                                        step={4}
-                                        title="Kontaktnachverfolgung"
-                                        tooltipContent={tooltipContactTracing}
-                                    />
-                                    <AccordionTrigger>
-                                        <span />
-                                    </AccordionTrigger>
-                                </div>
-                                <AccordionContent>
-                                    <ContactTracing />
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="item-5">
-                                <div className="flex w-full justify-between items-center">
-                                    <SectionHeader step={5} title="Einfärbung" tooltipContent={tooltipColorSelection} />
-                                    <AccordionTrigger>
-                                        <span />
-                                    </AccordionTrigger>
-                                </div>
-                                <AccordionContent>
-                                    <ColorSelection />
-                                </AccordionContent>
-                            </AccordionItem>
+                                    <AccordionItem value="item-5">
+                                        <div className="flex w-full justify-between items-center">
+                                            <SectionHeader
+                                                step={5}
+                                                title="Einfärbung"
+                                                tooltipContent={tooltipColorSelection}
+                                            />
+                                            <AccordionTrigger>
+                                                <span />
+                                            </AccordionTrigger>
+                                        </div>
+                                        <AccordionContent>
+                                            <ColorSelection />
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </>
+                            )}
                         </Accordion>
                         <Button
                             className="mt-2"

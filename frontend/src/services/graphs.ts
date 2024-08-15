@@ -31,19 +31,30 @@ export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedO
     const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
     const noOutbreakAssignedExists = sortedClusters.indexOf("Keinem Ausbruch zugewiesen");
     const colorMap = {} as ColorMap;
+
+    // the selected outbreak is the first cluster
+    const selectedOutbreakCluster = sortedClusters[0];
+
+    // "keinem Ausbruch zugewiesen" is the last cluster
+    const noOutbreakAssignedCluster = sortedClusters[sortedClusters.length - 1];
+
     if (selectedOutbreak) {
-        colorMap[sortedClusters[0]] = COLOR_FOR_SELECTED_OUTBREAK;
+        colorMap[selectedOutbreakCluster] = { color: COLOR_FOR_SELECTED_OUTBREAK, isActive: true };
         sortedClusters.splice(0, 1);
     }
 
     if (noOutbreakAssignedExists !== -1) {
-        colorMap[sortedClusters[sortedClusters.length - 1]] = COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
+        colorMap[noOutbreakAssignedCluster] = {
+            color: COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+            isActive: true,
+        };
         sortedClusters.pop();
     }
 
     for (let i = 0; i < sortedClusters.length; i++) {
-        colorMap[sortedClusters[i]] = COLOR_PALETTE_NODES[i];
+        colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i], isActive: true };
     }
+    console.log(colorMap);
 
     return colorMap;
 };
