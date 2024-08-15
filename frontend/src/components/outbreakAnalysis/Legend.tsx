@@ -1,4 +1,3 @@
-import { useAnalysisStore } from "@/stores/analysis";
 import { ColorMap, CustomLink, CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
 import { getSelectedClusters, getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
@@ -13,7 +12,7 @@ type LegendProps = {
 
 export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: LegendProps) => {
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
-    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes]);
+    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes, isOutbreakSeparated]);
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
 
     const renderNodeItems = (nodes: CustomNode[]) => {
