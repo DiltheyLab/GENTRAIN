@@ -1,7 +1,8 @@
 import { useAnalysisStore } from "@/stores/analysis";
 import { ColorMap, CustomLink, CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
-import { getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
+import { getSelectedClusters, getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
+import { useMemo } from "react";
 
 type LegendProps = {
     nodes: CustomNode[];
@@ -11,10 +12,9 @@ type LegendProps = {
 };
 
 export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: LegendProps) => {
-    const analyseStore = useAnalysisStore();
-
-    const uniqueClusterOfNodes = getUniqueClustersOfNodes(nodes);
-    const uniqueTypesOfLinks = getUniqueTypesOfLinks(links);
+    const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
+    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes]);
+    const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
 
     const renderNodeItems = (nodes: CustomNode[]) => {
         return nodes.map((node) => (
@@ -35,15 +35,12 @@ export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: 
     };
 
     const renderBackgroundLegend = () => {
-        const selectedOutbreak = analyseStore.settings.selectedOutbreak;
-        const nodesFromBackground = uniqueClusterOfNodes.filter((node) => node.cluster !== selectedOutbreak?.name);
-
-        if (!selectedOutbreak || nodesFromBackground.length === 0) return;
+        if (selectedOutbreak.length === 0 || selectedBackground.length === 0) return;
 
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Background</Label>
-                {renderNodeItems(nodesFromBackground)}
+                {renderNodeItems(selectedBackground)}
             </div>
         );
     };
@@ -58,15 +55,12 @@ export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: 
     };
 
     const renderOutbreakLegend = () => {
-        const selectedOutbreak = analyseStore.settings.selectedOutbreak;
-        const nodeFromSelectedOutbreak = uniqueClusterOfNodes.find((node) => node.cluster === selectedOutbreak?.name);
-
-        if (!selectedOutbreak || !nodeFromSelectedOutbreak) return;
+        if (selectedOutbreak.length === 0) return;
 
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Ausbruch</Label>
-                {renderNodeItems([nodeFromSelectedOutbreak])}
+                {renderNodeItems(selectedOutbreak)}
             </div>
         );
     };
@@ -82,7 +76,7 @@ export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: 
                     {renderBackgroundLegend()}
                 </div>
             ) : (
-                <div className="flex flex-col">{renderNodeItems(uniqueClusterOfNodes)}</div>
+                <div className="flex flex-col">{renderNodeItems(allClustersOfNodes)}</div>
             )}
             <div className="flex flex-col mt-2">{links.length !== 0 && renderLinkLegend()}</div>
         </fieldset>
