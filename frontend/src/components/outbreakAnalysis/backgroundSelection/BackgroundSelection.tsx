@@ -1,8 +1,8 @@
-import { Label } from "../ui/label";
-import MultipleSelector, { Option } from "../ui/multiSelect";
+import { Label } from "../../ui/label";
+import MultipleSelector, { Option } from "../../ui/multiSelect";
 import { SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
 import { GroupWithCategory } from "@/database/groups";
 

@@ -1,6 +1,6 @@
 import { useAnalysisStore } from "@/stores/analysis";
-import { Label } from "../ui/label";
-import { Switch } from "../ui/switch";
+import { Label } from "../../ui/label";
+import { Switch } from "../../ui/switch";
 
 export const ContactTracing = () => {
     const analysisStore = useAnalysisStore();

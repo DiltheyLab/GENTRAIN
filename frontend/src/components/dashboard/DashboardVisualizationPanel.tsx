@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { Legend } from "../outbreakAnalysis/Legend";
+import { Legend } from "../layout/Legend";
 import { Graph2D } from "../graphs/Graph2D";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseWithRelationships } from "@/database/cases";

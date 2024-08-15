@@ -7,7 +7,7 @@ import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/databa
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { Graph2D } from "../graphs/Graph2D";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
-import { Legend } from "./Legend";
+import { Legend } from "../layout/Legend";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { CaseWithRelationships } from "@/database/cases";
 import { ContactSchema } from "@/database/contacts";
