@@ -8,10 +8,17 @@ import { handleError } from "@/services/errors";
 import { BackgroundSelection } from "./backgroundSelection/BackgroundSelection";
 import { BackgroundFilter } from "./backgroundFilter/BackgroundFilter";
 import { ContactTracing } from "./contactTracing/ContactTracing";
-import { ColorSelection } from "./ColorSelection";
 import { exportGraphAndInformationAsPdf } from "@/services/pdf";
 import { SectionHeader } from "./SectionHeader";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import {
+    tooltipOutbreakSelection,
+    tooltipBackgroundSelection,
+    tooltipBackgroundFilter,
+    tooltipContactTracing,
+    tooltipColorSelection,
+} from "../tooltips/outbreakAnalysis/tooltips";
+import { ColorSelection } from "./colorSelection/ColorSelection";
 
 export const AnalysisSettings = () => {
     const analysisStore = useAnalysisStore();
@@ -38,26 +45,6 @@ export const AnalysisSettings = () => {
         }
     };
 
-    const tooltipContentOutbreakSelection = (
-        <p>Wählen Sie für die Analyse eines Ausbruchs den enstprechenden Datensatz aus.</p>
-    );
-    const tooltipContentBackgroundSelection = (
-        <p>
-            Sie können entweder <u>alle</u> gespeicherten oder <u>bestimmte</u> Falldaten von Ausbrüchen oder Kategorien
-            als Background auswählen.
-        </p>
-    );
-    const tooltipContentBackgroundFilter = (
-        <p>
-            Sie können die in Schritt 2 ausgewählten Falldaten (Background) nach genetisch verwandten Fällen oder einer
-            Zeitspanne filtern.
-        </p>
-    );
-    const tooltipContentColorSelection = <p>Sie können hier Einstellungen an der Farbe vornehmen.</p>;
-    const tooltipContentContactTracing = (
-        <p>Sie können hier die Kontakte, die sie hochgeladen haben, anzeigen lassen.</p>
-    );
-
     return (
         <div className="relative flex-col items-center gap-8 flex min-h-[80vh]" x-chunk="dashboard-03-chunk-0">
             <form className="w-full items-start gap-3">
@@ -73,7 +60,7 @@ export const AnalysisSettings = () => {
                                     <SectionHeader
                                         step={1}
                                         title="Ausbruch auswählen"
-                                        tooltipContent={tooltipContentOutbreakSelection}
+                                        tooltipContent={tooltipOutbreakSelection}
                                     />
                                     <AccordionTrigger>
                                         <span />
@@ -89,7 +76,7 @@ export const AnalysisSettings = () => {
                                     <SectionHeader
                                         step={2}
                                         title="Background auswählen"
-                                        tooltipContent={tooltipContentBackgroundSelection}
+                                        tooltipContent={tooltipBackgroundSelection}
                                     />
                                     <AccordionTrigger>
                                         <span />
@@ -105,7 +92,7 @@ export const AnalysisSettings = () => {
                                     <SectionHeader
                                         step={3}
                                         title="Background filtern"
-                                        tooltipContent={tooltipContentBackgroundFilter}
+                                        tooltipContent={tooltipBackgroundFilter}
                                     />
                                     <AccordionTrigger>
                                         <span />
@@ -121,7 +108,7 @@ export const AnalysisSettings = () => {
                                     <SectionHeader
                                         step={4}
                                         title="Kontaktnachverfolgung"
-                                        tooltipContent={tooltipContentContactTracing}
+                                        tooltipContent={tooltipContactTracing}
                                     />
                                     <AccordionTrigger>
                                         <span />
@@ -134,11 +121,7 @@ export const AnalysisSettings = () => {
 
                             <AccordionItem value="item-5">
                                 <div className="flex w-full justify-between items-center">
-                                    <SectionHeader
-                                        step={5}
-                                        title="Einfärbung"
-                                        tooltipContent={tooltipContentColorSelection}
-                                    />
+                                    <SectionHeader step={5} title="Einfärbung" tooltipContent={tooltipColorSelection} />
                                     <AccordionTrigger>
                                         <span />
                                     </AccordionTrigger>

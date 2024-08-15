@@ -1,9 +1,9 @@
 import { useAnalysisStore } from "@/stores/analysis";
-import { Label } from "../ui/label";
-import { Switch } from "../ui/switch";
 import { getSelectedClusters } from "@/services/graphs";
 import { useMemo } from "react";
 import { ColorSection } from "./ColorSection";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export const ColorSelection = () => {
     const analysisStore = useAnalysisStore();

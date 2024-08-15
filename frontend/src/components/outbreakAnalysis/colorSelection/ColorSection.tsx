@@ -1,6 +1,6 @@
 import { CustomNode } from "@/types/graph";
-import { Label } from "../ui/label";
 import { ColorSwitch } from "./ColorSwitch";
+import { Label } from "@/components/ui/label";
 
 type ColorSectionProps = {
     nodes: CustomNode[];

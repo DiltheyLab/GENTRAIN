@@ -1,7 +1,7 @@
-import { Label } from "../ui/label";
-import { Switch } from "../ui/switch";
+import { Switch } from "@/components/ui/switch";
 import { ColorPicker } from "./ColorPicker";
 import { useAnalysisStore } from "@/stores/analysis";
+import { Label } from "@/components/ui/label";
 
 type ColorSwitchProps = {
     cluster: string;

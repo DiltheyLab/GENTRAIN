@@ -3,9 +3,6 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { DateRangePicker } from "./DateRangePicker";
 import { Switch } from "../../ui/switch";
 import { Input } from "../../ui/input";
-import { CustomTooltip } from "../../ui/customTooltip";
-import { Info } from "lucide-react";
-import { StepIndicator } from "../../ui/step-indicator";
 
 export const BackgroundFilter = () => {
     const analysisStore = useAnalysisStore();
