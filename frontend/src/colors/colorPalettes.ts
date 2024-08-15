@@ -34,6 +34,7 @@ export const COLOR_PALETTE_NODES = [
 ];
 
 export const COLOR_FOR_CASES_WITHOUT_OUTBREAKS = "#CCCCCC";
+
 export const COLOR_FOR_SELECTED_OUTBREAK = "#FF0000";
 
 export const COLOR_PALETTE_LINKS = [
@@ -48,3 +49,5 @@ export const COLOR_PALETTE_LINKS = [
     "#f2f2f2",
     "#f2b6e3",
 ];
+
+export const COLOR_FOR_GENETIC_DISTANCE_LINKS = "#CCCCCC";

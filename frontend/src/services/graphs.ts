@@ -9,6 +9,7 @@ import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
     COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    COLOR_FOR_GENETIC_DISTANCE_LINKS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_LINKS,
     COLOR_PALETTE_NODES,
@@ -426,7 +427,7 @@ export const createGraphData = async (
             source: graphCases[link.source].id,
             target: graphCases[link.target].id,
             value: link.weight.toString(),
-            color: "#CCC",
+            color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
             curvature: 0,
             type: "Genetische Distanz",
             context: "",
