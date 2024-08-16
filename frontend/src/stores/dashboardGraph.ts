@@ -29,7 +29,6 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
-        datesOfAllCases: [],
     };
 };
 
