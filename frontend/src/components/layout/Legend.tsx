@@ -47,16 +47,16 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         return (
             <>
                 <Label className="-ml-1 px-1 text-xs font-medium">Zeitraum</Label>
-                <div className="flex flex-row justify-between">
-                    <p className="text-xs">{startDate}</p>
-                    <p className="text-xs">{endDate}</p>
-                </div>
                 <div
                     style={{
                         backgroundImage: `linear-gradient(to right, ${colorMap[startDate]?.color}, ${colorMap[endDate]?.color})`,
                     }}
-                    className="w-full h-5 rounded-md"
+                    className="w-full h-5 rounded-md min-w-36"
                 />
+                <div className="flex flex-row justify-between">
+                    <p className="text-xs">{startDate}</p>
+                    <p className="text-xs">{endDate}</p>
+                </div>
             </>
         );
     };
