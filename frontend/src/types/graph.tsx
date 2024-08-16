@@ -25,8 +25,9 @@ export type GraphData = {
 
 export type NodeColor = {
     color: string;
-    isActive: boolean;
+    isActive?: boolean;
 };
+
 export type ColorMap = {
     [cluster: string]: NodeColor;
 };

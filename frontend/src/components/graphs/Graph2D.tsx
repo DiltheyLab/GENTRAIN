@@ -65,9 +65,13 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = colorMap[node.cluster].isActive
-            ? colorMap[node.cluster].color
-            : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
+        if (!analysisStore.graphSettings.isColoredByTimeSpan) {
+            ctx.fillStyle = colorMap[node.cluster].isActive
+                ? colorMap[node.cluster].color
+                : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
+        } else {
+            ctx.fillStyle = colorMap[node.registeredAt].color;
+        }
         ctx.fill();
 
         // Draw the label above the circle

@@ -50,6 +50,7 @@ export const DashboardVisualizationPanel = () => {
                 nodes={dashboardGraphStore.graphData.nodes}
                 links={dashboardGraphStore.graphData.links}
                 colorMap={dashboardGraphStore.graphSettings.colorMap}
+                variant={dashboardGraphStore.graphSettings.isColoredByTimeSpan ? "timeSpan" : "dashboard"}
             />
             <div className=" flex justify-center items-center h-full w-full" id="graph-container">
                 <Graph2D

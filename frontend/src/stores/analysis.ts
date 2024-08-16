@@ -37,6 +37,7 @@ export type GraphSettings = {
     showNodeLabel: boolean;
     linkDistance: number;
     colorMap: ColorMap;
+    isColoredByTimeSpan: boolean;
     nodeSize?: number;
     linkWidth?: number;
     zoomToFit?: boolean;
@@ -60,6 +61,7 @@ export const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     linkDistance: 70,
     colorMap: {},
+    isColoredByTimeSpan: false,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {

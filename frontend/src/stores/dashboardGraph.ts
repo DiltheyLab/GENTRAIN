@@ -9,6 +9,7 @@ const defaultGraphSettings: GraphSettings = {
     nodeSize: 6,
     linkWidth: 3,
     colorMap: {},
+    isColoredByTimeSpan: false,
     zoomToFit: false,
     charge: -80,
     linkDistance: 60,

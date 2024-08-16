@@ -9,11 +9,13 @@ import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
     COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    COLOR_FOR_CASES_WITHOUT_REGISTERED_AT_TIMESTAMP,
     COLOR_FOR_GENETIC_DISTANCE_LINKS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_LINKS,
     COLOR_PALETTE_NODES,
 } from "@/colors/colorPalettes";
+import { parseGermanDateFormat } from "./dates";
 
 export const getSelectedClusters = () => {
     const analysisStore = useAnalysisStore.getState();
@@ -56,6 +58,23 @@ export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedO
         // create colors for every cluster. If there are more clusters then colors create a color dynamically
         colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
     }
+
+    return colorMap;
+};
+
+export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
+    const registeredAtTimestamps = getRegisteredAtTimestamps(nodes);
+    const colorMap = {} as ColorMap;
+
+    for (let i = 0; i < registeredAtTimestamps.length; i++) {
+        const normalizedIndex = i / registeredAtTimestamps.length;
+        if (registeredAtTimestamps[i] === "Keine Zeitangabe") {
+            colorMap[registeredAtTimestamps[i]] = { color: COLOR_FOR_CASES_WITHOUT_REGISTERED_AT_TIMESTAMP };
+            continue;
+        }
+        colorMap[registeredAtTimestamps[i]] = { color: setNodeGradientColor(normalizedIndex) };
+    }
+    console.log(colorMap);
 
     return colorMap;
 };
@@ -116,24 +135,27 @@ export const createColorByIndex = (value: number) => {
     return `hsl(${hue},50%,75%)`;
 };
 
-/* const setNodeGradientColor = (normalizedIndex: number): string => {
+const setNodeGradientColor = (normalizedIndex: number): string => {
     // Interpolate hue from 240 (blue) to 0 (red)
     const hue = 70 - normalizedIndex * 70;
     // Use fixed saturation and lightness values
     return `hsl(${hue}, 100%, 50%)`;
-}; */
+};
 
-export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
-    const uniqueSamplingTimes = nodes.filter((group, index, self) => {
-        return index === self.findIndex((t) => t.registeredAt === group.registeredAt);
+export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
+    const times = nodes.map((node) => node.registeredAt ?? "Keine Zeitangabe");
+    const uniqueTimes = [...new Set(times)];
+
+    // Sort by date and put "Keine Zeitangabe" at the end
+    const sortedTimes = uniqueTimes.sort((a, b) => {
+        if (a === "Keine Zeitangabe") return 1;
+        if (b === "Keine Zeitangabe") return -1;
+        const dateA = parseGermanDateFormat(a);
+        const dateB = parseGermanDateFormat(b);
+        return dateA.getTime() - dateB.getTime();
     });
-    uniqueSamplingTimes.sort((a, b) => {
-        if (a.registeredAt && b.registeredAt) {
-            return new Date(a.registeredAt).getTime() - new Date(b.registeredAt).getTime();
-        }
-        return 0;
-    });
-    return uniqueSamplingTimes;
+
+    return sortedTimes;
 };
 
 const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {

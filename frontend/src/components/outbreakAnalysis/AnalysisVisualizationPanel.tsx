@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createGraphData } from "@/services/graphs";
+import { createColorMapForTimeSpan, createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -42,6 +42,14 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts);
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
 
+    useEffect(() => {
+        // create color map for time span every time the cases change
+        const colorMap = createColorMapForTimeSpan(analysisStore.graphData.nodes);
+        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
+        // merge the timeSpan colorMap with the current color map in case there are already colors set and prevent overwriting
+        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
+    }, [analysisStore.graphData.nodes]);
+
     return (
         <div
             ref={containerRef}
@@ -53,7 +61,7 @@ export const AnalysisVisualizationPanel = () => {
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
                         colorMap={analysisStore.graphSettings.colorMap}
-                        isOutbreakSeparated
+                        variant={analysisStore.graphSettings.isColoredByTimeSpan ? "timeSpan" : "outbreakAnalysis"}
                     />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}

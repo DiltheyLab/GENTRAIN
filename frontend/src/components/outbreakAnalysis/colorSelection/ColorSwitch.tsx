@@ -25,7 +25,7 @@ export const ColorSwitch = ({ cluster }: ColorSwitchProps) => {
         <div className="flex flex-row items-center gap-3" key={cluster}>
             <Switch
                 id={cluster}
-                checked={colorMap[cluster].isActive}
+                checked={colorMap[cluster]?.isActive}
                 onCheckedChange={(isChecked) => handleColorSwitchChanged(isChecked, cluster)}
             />
             <div className="flex justify-between w-full">
@@ -33,8 +33,8 @@ export const ColorSwitch = ({ cluster }: ColorSwitchProps) => {
                     {cluster}
                 </Label>
                 <ColorPicker
-                    color={colorMap[cluster].color}
-                    disabled={!colorMap[cluster].isActive}
+                    color={colorMap[cluster]?.color}
+                    disabled={!colorMap[cluster]?.isActive}
                     cluster={cluster}
                     changeColor={changeColor}
                 />

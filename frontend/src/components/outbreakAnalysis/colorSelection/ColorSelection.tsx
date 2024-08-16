@@ -9,18 +9,29 @@ export const ColorSelection = () => {
     const analysisStore = useAnalysisStore();
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [analysisStore.graphData]);
 
+    const handleColorChangeByTimeSpan = (isColoredByTimeSpan: boolean) => {
+        analysisStore.updateGraphSettings({ isColoredByTimeSpan: isColoredByTimeSpan });
+    };
+
     return (
         <div className="flex flex-col gap-4 mt-2">
-            <ColorSection label="Selektierter Ausbruch umfärben" nodes={selectedOutbreak} />
-            <ColorSection label="Background umfärben" nodes={selectedBackground} />
-
-            <Label>Nach Zeitspanne umfärben</Label>
+            <Label>Nach Zeitspanne einfärben</Label>
             <div className="flex flex-row items-center gap-3">
-                <Switch id="showBackground" />
-                <Label htmlFor="showBackground" className="font-normal text-md">
+                <Switch
+                    id="registeredAtTimeSpan"
+                    checked={analysisStore.graphSettings.isColoredByTimeSpan}
+                    onCheckedChange={(isChecked) => handleColorChangeByTimeSpan(isChecked)}
+                />
+                <Label htmlFor="registeredAtTimeSpan" className="font-normal text-md">
                     Registrierungsdatum
                 </Label>
             </div>
+            {!analysisStore.graphSettings.isColoredByTimeSpan && (
+                <>
+                    <ColorSection label="Selektierter Ausbruch umfärben" nodes={selectedOutbreak} />
+                    <ColorSection label="Background umfärben" nodes={selectedBackground} />
+                </>
+            )}
         </div>
     );
 };

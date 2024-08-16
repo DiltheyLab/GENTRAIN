@@ -52,7 +52,9 @@ export const OutbreakSelection = () => {
         // create the initial color map for all nodes if the selected outbreak is changed
         if (!cases) return;
         const colorMap = createColorMapForNodes(cases, selectedOutbreak);
-        analysisStore.updateGraphSettings({ colorMap });
+        // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
+        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
+        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
     };
 
     const changeSelectedOutbreak = (id: string) => {

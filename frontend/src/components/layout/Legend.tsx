@@ -1,6 +1,11 @@
 import { ColorMap, CustomLink, CustomNode } from "@/types/graph";
 import { Label } from "../ui/label";
-import { getSelectedClusters, getUniqueClustersOfNodes, getUniqueTypesOfLinks } from "@/services/graphs";
+import {
+    getRegisteredAtTimestamps,
+    getSelectedClusters,
+    getUniqueClustersOfNodes,
+    getUniqueTypesOfLinks,
+} from "@/services/graphs";
 import { useMemo } from "react";
 import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
 
@@ -8,12 +13,13 @@ type LegendProps = {
     nodes: CustomNode[];
     links: CustomLink[];
     colorMap: ColorMap;
-    isOutbreakSeparated?: boolean;
+    variant: "outbreakAnalysis" | "dashboard" | "timeSpan";
 };
 
-export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: LegendProps) => {
+export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
-    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes, isOutbreakSeparated]);
+    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes, variant]);
+    const registeredAtTimeStamps = useMemo(() => getRegisteredAtTimestamps(nodes), [nodes, variant]);
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
 
     const renderNodeItems = (nodes: CustomNode[]) => {
@@ -30,6 +36,21 @@ export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: 
                     className={"rounded-full h-3 w-3"}
                 />
                 <p className="text-xs">{node.cluster}</p>
+            </div>
+        ));
+    };
+    const renderTimeSpan = (timestamps: string[]) => {
+        console.log(colorMap);
+
+        return timestamps.map((timestamp) => (
+            <div className="flex items-center gap-2" key={timestamp}>
+                <span
+                    style={{
+                        backgroundColor: `${colorMap[timestamp]?.color}`,
+                    }}
+                    className={"rounded-full h-3 w-3"}
+                />
+                <p className="text-xs">{timestamp}</p>
             </div>
         ));
     };
@@ -76,17 +97,27 @@ export const Legend = ({ nodes, links, colorMap, isOutbreakSeparated = false }: 
 
     if (!nodes || nodes.length === 0) return;
 
+    const renderNodeLegend = () => {
+        switch (variant) {
+            case "dashboard":
+                return <div className="flex flex-col">{renderNodeItems(allClustersOfNodes)}</div>;
+
+            case "outbreakAnalysis":
+                return (
+                    <div className="flex flex-col gap-2">
+                        {renderOutbreakLegend()}
+                        {renderBackgroundLegend()}
+                    </div>
+                );
+            case "timeSpan":
+                return <div className="flex flex-col">{renderTimeSpan(registeredAtTimeStamps)}</div>;
+        }
+    };
+
     return (
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
             <legend className="-ml-1 px-1 text-xs font-bold -mb-2">Legende</legend>
-            {isOutbreakSeparated ? (
-                <div className="flex flex-col gap-2">
-                    {renderOutbreakLegend()}
-                    {renderBackgroundLegend()}
-                </div>
-            ) : (
-                <div className="flex flex-col">{renderNodeItems(allClustersOfNodes)}</div>
-            )}
+            {renderNodeLegend()}
             <div className="flex flex-col mt-2">{links.length !== 0 && renderLinkLegend()}</div>
         </fieldset>
     );
