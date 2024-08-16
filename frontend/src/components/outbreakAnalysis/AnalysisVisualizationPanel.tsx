@@ -72,6 +72,7 @@ export const AnalysisVisualizationPanel = () => {
                         width={width - 8}
                         height={height - 8}
                         colorMap={analysisStore.graphSettings.colorMap}
+                        isColoredByTimeSpan={analysisStore.graphSettings.isColoredByTimeSpan}
                         cases={cases}
                         showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                         linkDistance={analysisStore.graphSettings.linkDistance}

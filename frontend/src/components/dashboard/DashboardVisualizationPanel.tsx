@@ -21,7 +21,7 @@ export const DashboardVisualizationPanel = () => {
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
-    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, zoomToFit } = dashboardGraphStore.graphSettings;
+    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardGraphStore.graphSettings;
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
@@ -58,13 +58,14 @@ export const DashboardVisualizationPanel = () => {
                     width={width - 8}
                     height={height - 8}
                     colorMap={dashboardGraphStore.graphSettings.colorMap}
+                    isColoredByTimeSpan={dashboardGraphStore.graphSettings.isColoredByTimeSpan}
                     cases={cases}
                     charge={charge}
                     linkDistance={linkDistance}
                     nodeSize={nodeSize}
                     showNodeLabel={showNodeLabel}
                     linkWidth={linkWidth}
-                    zoomToFit={zoomToFit}
+                    initialCenter={true}
                 />
             </div>
         </div>

@@ -39,7 +39,6 @@ export type GraphSettings = {
     isColoredByTimeSpan: boolean;
     nodeSize?: number;
     linkWidth?: number;
-    zoomToFit?: boolean;
     charge?: number;
 };
 

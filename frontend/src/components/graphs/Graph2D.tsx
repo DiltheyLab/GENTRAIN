@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { ColorMap, GraphData } from "@/types/graph";
 import { useAnalysisStore } from "@/stores/analysis";
@@ -12,14 +12,15 @@ type Graph2DProps = {
     height: number;
     colorMap: ColorMap;
     cases: CaseWithRelationships[] | undefined;
+    isColoredByTimeSpan: boolean;
     linkDistance?: number;
     charge?: number;
-    zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
     showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
+    initialCenter?: boolean;
 };
 
 export const Graph2D = ({
@@ -28,15 +29,17 @@ export const Graph2D = ({
     height,
     colorMap,
     cases,
+    isColoredByTimeSpan,
     linkDistance = 70,
     charge = -80,
-    zoomToFit = false,
     nodeSize = 6,
     linkWidth = 2.5,
     showNodeLabel = false,
     labelTransparency = 0.3,
     coolDownTicks = 120,
+    initialCenter = false,
 }: Graph2DProps) => {
+    const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
     const analysisStore = useAnalysisStore();
 
@@ -54,9 +57,9 @@ export const Graph2D = ({
     }
 
     const handleEngineStop = () => {
-        if (!forceRef.current) return;
         if (zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
+        setZoomToFit(false);
     };
 
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
@@ -65,7 +68,7 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        if (!analysisStore.graphSettings.isColoredByTimeSpan) {
+        if (!isColoredByTimeSpan) {
             ctx.fillStyle = colorMap[node.cluster].isActive
                 ? colorMap[node.cluster].color
                 : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
