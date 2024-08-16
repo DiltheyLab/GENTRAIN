@@ -39,20 +39,26 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
             </div>
         ));
     };
-    const renderTimeSpan = (timestamps: string[]) => {
-        console.log(colorMap);
 
-        return timestamps.map((timestamp) => (
-            <div className="flex items-center gap-2" key={timestamp}>
-                <span
+    const renderTimeSpan = (timestamps: string[]) => {
+        const startDate = timestamps[0];
+        const endDate = timestamps[timestamps.length - 1];
+
+        return (
+            <>
+                <Label className="-ml-1 px-1 text-xs font-medium">Zeitraum</Label>
+                <div className="flex flex-row justify-between">
+                    <p className="text-xs">{startDate}</p>
+                    <p className="text-xs">{endDate}</p>
+                </div>
+                <div
                     style={{
-                        backgroundColor: `${colorMap[timestamp]?.color}`,
+                        backgroundImage: `linear-gradient(to right, ${colorMap[startDate]?.color}, ${colorMap[endDate]?.color})`,
                     }}
-                    className={"rounded-full h-3 w-3"}
+                    className="w-full h-5 rounded-md"
                 />
-                <p className="text-xs">{timestamp}</p>
-            </div>
-        ));
+            </>
+        );
     };
 
     const renderLinkItems = (links: CustomLink[]) => {

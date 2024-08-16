@@ -9,7 +9,6 @@ import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
     COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
-    COLOR_FOR_CASES_WITHOUT_REGISTERED_AT_TIMESTAMP,
     COLOR_FOR_GENETIC_DISTANCE_LINKS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_LINKS,
@@ -130,7 +129,7 @@ export const createColorByIndex = (value: number) => {
 };
 
 const setNodeGradientColor = (normalizedIndex: number): string => {
-    // Interpolate hue from 240 (blue) to 0 (red)
+    // Interpolate hue from 70 (yellow-green) to 0 (red)
     const hue = 70 - normalizedIndex * 70;
     // Use fixed saturation and lightness values
     return `hsl(${hue}, 100%, 50%)`;
