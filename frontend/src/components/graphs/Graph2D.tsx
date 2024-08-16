@@ -131,7 +131,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `${JSON.stringify(node["caseData"])}`}
+            nodeLabel={(node) => node.caseId}
             nodeRelSize={nodeSize}
             width={width}
             height={height}
