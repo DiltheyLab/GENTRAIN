@@ -41,7 +41,6 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
-    const analysisStore = useAnalysisStore();
 
     // custom d3 force setup
     useEffect(() => {
@@ -50,7 +49,7 @@ export const Graph2D = ({
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
 
-    if (data.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
+    if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
     } else if (data.nodes.length === 0 && cases && cases.length === 0) {
         return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
