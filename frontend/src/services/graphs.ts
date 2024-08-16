@@ -68,14 +68,8 @@ export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
 
     for (let i = 0; i < registeredAtTimestamps.length; i++) {
         const normalizedIndex = i / registeredAtTimestamps.length;
-        if (registeredAtTimestamps[i] === "Keine Zeitangabe") {
-            colorMap[registeredAtTimestamps[i]] = { color: COLOR_FOR_CASES_WITHOUT_REGISTERED_AT_TIMESTAMP };
-            continue;
-        }
         colorMap[registeredAtTimestamps[i]] = { color: setNodeGradientColor(normalizedIndex) };
     }
-    console.log(colorMap);
-
     return colorMap;
 };
 
@@ -143,13 +137,10 @@ const setNodeGradientColor = (normalizedIndex: number): string => {
 };
 
 export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
-    const times = nodes.map((node) => node.registeredAt ?? "Keine Zeitangabe");
+    const times = nodes.map((node) => node.registeredAt);
     const uniqueTimes = [...new Set(times)];
 
-    // Sort by date and put "Keine Zeitangabe" at the end
     const sortedTimes = uniqueTimes.sort((a, b) => {
-        if (a === "Keine Zeitangabe") return 1;
-        if (b === "Keine Zeitangabe") return -1;
         const dateA = parseGermanDateFormat(a);
         const dateB = parseGermanDateFormat(b);
         return dateA.getTime() - dateB.getTime();

@@ -5,7 +5,7 @@ export type CustomNode = {
     caseId: string;
     caseData: CaseWithRelationships;
     cluster: string;
-    registeredAt?: string;
+    registeredAt: string;
 };
 
 export type CustomLink = {
