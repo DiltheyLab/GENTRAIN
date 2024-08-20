@@ -12,7 +12,7 @@ import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { CaseWithRelationships } from "@/database/cases";
 import { ContactSchema } from "@/database/contacts";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
-import { CaseInfo } from "./CaseInfo";
+import { CaseInfo } from "../layout/CaseInfo";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);

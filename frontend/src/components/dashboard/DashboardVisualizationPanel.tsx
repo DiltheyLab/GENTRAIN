@@ -12,7 +12,7 @@ import { useDashboardGraphStore } from "@/stores/dashboardGraph";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
-import { CaseInfo } from "../outbreakAnalysis/CaseInfo";
+import { CaseInfo } from "../layout/CaseInfo";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
