@@ -17,7 +17,7 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
         const variantRequestPromises: Promise<void>[] = [];
         let delay = 0;
         for (const sample of this.sampleData) {
-            delay += 1000;
+            delay += 5000;
             // skip sample if it was excluded from uploads
             if (!Object.keys(this.sampleUploadState.uploads).includes(sample.fastaId)) {
                 continue;
