@@ -14,9 +14,8 @@ import error_de from "@/translations/de/error.json";
 import { Toaster } from "./components/ui/toaster.tsx";
 import { OutbreakAnalysis } from "./pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
-import { db } from "./database/db.ts";
 import { useAppStore } from "./stores/app.ts";
-import { PathogenSchema } from "./database/pathogens.ts";
+import { getAllPathogensWithRelationships, PathogenWithRelationships } from "./database/pathogens.ts";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -44,8 +43,8 @@ const router = createBrowserRouter([
     },
 ]);
 
-db.pathogens.toArray().then((response) => {
-    const activelyPersistedPathogen = response.find((pathogen: PathogenSchema) => pathogen.activated_at);
+getAllPathogensWithRelationships().then((response) => {
+    const activelyPersistedPathogen = response.find((pathogen: PathogenWithRelationships) => pathogen.activated_at);
     if (activelyPersistedPathogen) {
         useAppStore.setState({ activePathogen: activelyPersistedPathogen });
     }

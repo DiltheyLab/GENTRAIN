@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+
+jobs:
+  frontend_build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "latest"
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "Frontend Build"
+          icon_failure: 💥
