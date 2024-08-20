@@ -14,9 +14,8 @@ import error_de from "@/translations/de/error.json";
 import { Toaster } from "./components/ui/toaster.tsx";
 import { OutbreakAnalysis } from "./pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
-import { db } from "./database/db.ts";
 import { useAppStore } from "./stores/app.ts";
-import { getAllPathogensWithRelationships, PathogenSchema, PathogenWithRelationships } from "./database/pathogens.ts";
+import { getAllPathogensWithRelationships, PathogenWithRelationships } from "./database/pathogens.ts";
 
 i18next.init({
     interpolation: { escapeValue: false },
