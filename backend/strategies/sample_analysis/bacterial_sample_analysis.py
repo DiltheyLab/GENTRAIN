@@ -9,9 +9,6 @@ from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.config import get_project_path
-from backend.controllers.models.sequence_variants import (
-    BacterialSequenceVariantsResponseModel,
-)
 import tempfile
 import sys
 from subprocess import Popen
@@ -65,6 +62,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
 
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
+        print(f"input: {self.input}")
         process = Popen(
             [
                 "perl",
@@ -80,8 +78,6 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         )
         process.wait()
         if process.returncode != 0:
-            shutil.rmtree(self.input)
-            shutil.rmtree(self.output)
             raise SequenceAnalysisFailedException
         else:
             with open(
@@ -89,8 +85,6 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                shutil.rmtree(self.input)
-                shutil.rmtree(self.output)
                 return self.tsv2json(tsv_file)
 
     def get_response(self, result):
