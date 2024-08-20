@@ -7,19 +7,10 @@ interface SampleSchema {
     n_count?: number;
     sequence_length?: number;
     lineage?: string;
-    variants?: VariantSchema;
+    variants?: any;
     metadata?: string;
     created_at?: Date;
     updated_at?: Date;
-}
-interface VariantSchema {
-    substitutions: any[];
-    deletions: any[];
-    insertions: any[];
-    missing: any[];
-    nonACGTNs: any[];
-    alignmentStart: number;
-    alignmentEnd: number;
 }
 
 export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {

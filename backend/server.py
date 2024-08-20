@@ -5,7 +5,7 @@ from backend.routes import api
 
 app = Flask(__name__)
 
-if os.environ.get("FLASK_ENV") == "local":
+if os.environ.get("FLASK_ENV") == "development":
     CORS(app, origins=["http://localhost:3000", "http://localhost:4173"])
 
 app.register_blueprint(api, url_prefix="/api")
