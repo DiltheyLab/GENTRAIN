@@ -44,29 +44,37 @@ export abstract class SampleAnalysisStrategy {
 
         return str;
     }
-    getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/pathogens/${this.string_to_slug(
-                this.pathogen.name
-            )}/sequences/${fastaId}/variants`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization:
-                        "Basic " +
-                        btoa(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`),
-                },
-                body: JSON.stringify({ sequence: sequence }),
+
+    delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+    getAndPersistVariantsForSample = async (
+        { fastaId, sequence }: { fastaId: string; sequence: string },
+        delay: number = 0
+    ) => {
+        setTimeout(async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/pathogens/${this.string_to_slug(
+                    this.pathogen.name
+                )}/sequences/${fastaId}/variants`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization:
+                            "Basic " +
+                            btoa(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`),
+                    },
+                    body: JSON.stringify({ sequence: sequence }),
+                }
+            );
+            if (response.status === 422) {
+                // on validation error add fasta ifs to list of failed upload in order to display meaningful toast message
+                this.sampleUploadState.changeUpload(fastaId, "failed");
+                return;
             }
-        );
-        if (response.status === 422) {
-            // on validation error add fasta ifs to list of failed upload in order to display meaningful toast message
-            this.sampleUploadState.changeUpload(fastaId, "failed");
-            return;
-        }
-        let variantsResult = await response.json();
-        this.createSample(fastaId, sequence, variantsResult);
-        this.sampleUploadState.changeUpload(fastaId, "finished");
+            let variantsResult = await response.json();
+            this.createSample(fastaId, sequence, variantsResult);
+            this.sampleUploadState.changeUpload(fastaId, "finished");
+        }, delay);
     };
 }

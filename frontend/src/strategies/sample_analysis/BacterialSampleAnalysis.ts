@@ -14,7 +14,10 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
         if (!this.sampleData) {
             return;
         }
+        const variantRequestPromises: Promise<void>[] = [];
+        let delay = 0;
         for (const sample of this.sampleData) {
+            delay += 1000;
             // skip sample if it was excluded from uploads
             if (!Object.keys(this.sampleUploadState.uploads).includes(sample.fastaId)) {
                 continue;
@@ -24,8 +27,9 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                await this.getAndPersistVariantsForSample(sample);
+                variantRequestPromises.push(this.getAndPersistVariantsForSample(sample, delay));
             }
         }
+        await Promise.all(variantRequestPromises);
     };
 }
