@@ -50,7 +50,6 @@ def get_sequence_variants(
             500,
         )
     except FileNotFoundError as exc:
-        print(exc)
         return (
             ErrorResponseModel(message="Pathogen does not exist."),
             404,
