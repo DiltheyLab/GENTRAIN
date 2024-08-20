@@ -53,15 +53,15 @@ export const Graph2D = ({
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
 
+    // set selectedCase to null to hide infobox by click on canvas
     useEffect(() => {
         canvasRef.current = document.querySelector("canvas");
-        const handleClick = () => {
+        const handleCanvasClick = () => {
             updateSelectedCase?.(null);
         };
-        canvasRef.current?.addEventListener("click", handleClick);
-        return () => {
-            canvasRef.current?.removeEventListener("click", handleClick);
-        };
+        canvasRef.current?.addEventListener("click", handleCanvasClick);
+
+        return () => canvasRef.current?.removeEventListener("click", handleCanvasClick);
     }, []);
 
     if (data.nodes.length === 0 && !cases) {
