@@ -13,5 +13,5 @@ export const useCanvasClick = (updateSelectedCase: (selectedCase: CaseWithRelati
         canvasRef.current?.addEventListener("click", handleCanvasClick);
 
         return () => canvasRef.current?.removeEventListener("click", handleCanvasClick);
-    }, []);
+    }, [updateSelectedCase]);
 };
