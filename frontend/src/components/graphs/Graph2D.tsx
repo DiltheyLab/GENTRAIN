@@ -4,6 +4,7 @@ import { ColorMap, CustomLink, CustomNode, GraphData } from "@/types/graph";
 import { CaseWithRelationships } from "@/database/cases";
 import { Loader2 } from "lucide-react";
 import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
+import { useCanvasClick } from "@/hooks/useCanvasClick";
 
 type Graph2DProps = {
     data: GraphData;
@@ -20,8 +21,8 @@ type Graph2DProps = {
     labelTransparency?: number;
     coolDownTicks?: number;
     initialCenter?: boolean;
-    updateSelectedCase?: (selectedCase: CaseWithRelationships | null) => void;
-    selectedCase?: CaseWithRelationships | null;
+    updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void;
+    selectedCase: CaseWithRelationships | null;
 };
 
 export const Graph2D = ({
@@ -44,7 +45,7 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    useCanvasClick(updateSelectedCase);
 
     // custom d3 force setup
     useEffect(() => {
@@ -52,17 +53,6 @@ export const Graph2D = ({
         forceRef?.current?.d3Force("link")?.distance(linkDistance);
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
-
-    // set selectedCase to null to hide infobox by click on canvas
-    useEffect(() => {
-        canvasRef.current = document.querySelector("canvas");
-        const handleCanvasClick = () => {
-            updateSelectedCase?.(null);
-        };
-        canvasRef.current?.addEventListener("click", handleCanvasClick);
-
-        return () => canvasRef.current?.removeEventListener("click", handleCanvasClick);
-    }, []);
 
     if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
@@ -153,7 +143,7 @@ export const Graph2D = ({
         // Center the graph on the selected node
         // forceRef?.current?.centerAt(node.x, node.y, 1000);
         // forceRef?.current?.zoom(2, 1000);
-        updateSelectedCase?.(node.caseData);
+        updateSelectedCase(node.caseData);
     };
 
     return (
