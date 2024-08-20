@@ -145,9 +145,10 @@ export const Graph2D = ({
     };
 
     const setClickCurser = (object: NodeObject | null) => {
-        // add the classlist of the canvas the clickcursor css class, else remove it
         const canvas = document.querySelector("canvas");
         // remove pointer if no object is hovered and add pointer if object is hovered
+        // has to be done because the onBackgroundClick event adds a pointer to the hole canvas and to
+        // prevent this the pointer has to be removed in the global CSS file.
         if (!object) {
             canvas?.classList.add("clickcursor");
         } else {

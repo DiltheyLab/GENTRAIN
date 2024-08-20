@@ -62,7 +62,3 @@ a {
 .clickcursor {
     cursor: default !important;
 }
-
-.scene-container .clickable {
-    cursor: default !important;
-}
