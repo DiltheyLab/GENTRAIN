@@ -1,6 +1,5 @@
 import { PathogenWithRelationships } from "@/database/pathogens";
 import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
-import { db } from "@/database/db";
 
 export abstract class SampleAnalysisStrategy {
     protected sampleUploadState: SampleUploadState;
