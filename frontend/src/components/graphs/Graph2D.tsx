@@ -144,12 +144,24 @@ export const Graph2D = ({
         updateSelectedCase?.(node.caseData);
     };
 
+    const setClickCurser = (object: NodeObject | null) => {
+        // add the classlist of the canvas the clickcursor css class, else remove it
+        const canvas = document.querySelector("canvas");
+        // remove pointer if no object is hovered and add pointer if object is hovered
+        if (!object) {
+            canvas?.classList.add("clickcursor");
+        } else {
+            canvas?.classList.remove("clickcursor");
+        }
+    };
+
     return (
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => node.caseId}
             nodeRelSize={nodeSize}
+            onNodeHover={(node) => setClickCurser(node)}
             width={width}
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
