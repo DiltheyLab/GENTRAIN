@@ -104,12 +104,10 @@ export class ViralDistanceExtractor {
     };
 
     private incrementDistanceForDifferingChars = () => {
-        if (this.bothCharsAreNoGap()) {
-            if (!this.ambiguousCharsOverlap()) {
-                this.distance += 1;
-                this.activeGap1 = false;
-                this.activeGap2 = false;
-            }
+        if (this.bothCharsAreNoGap() && !this.ambiguousCharsOverlap()) {
+            this.distance += 1;
+            this.activeGap1 = false;
+            this.activeGap2 = false;
         }
     };
 

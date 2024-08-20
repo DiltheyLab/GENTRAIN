@@ -42,7 +42,7 @@ export class ViralPositionExtractor {
             return;
         }
         for (const mutation of this.sample.variants["substitutions"]) {
-            this.addSubstitutionToPositions(mutation["queryNuc"], mutation["pos"]);
+            this.addSubstitutionToPositions(mutation["qryNuc"], mutation["pos"]);
         }
     };
 
@@ -53,8 +53,8 @@ export class ViralPositionExtractor {
         // Ns
         for (const mutation of this.sample.variants["missing"]) {
             // { begin: 28881, end: 28883, character: "N" }
-            let start = mutation["begin"];
-            let end = mutation["end"];
+            let start = mutation["range"]["begin"];
+            let end = mutation["range"]["end"];
             let char = mutation["character"];
 
             // add each position of a N block separately
@@ -66,8 +66,8 @@ export class ViralPositionExtractor {
         // other ambious characters
         for (const mutation of this.sample.variants["nonACGTNs"]) {
             // { begin: 60, end: 61, character: "Y" }
-            let start = mutation["begin"];
-            let end = mutation["end"];
+            let start = mutation["range"]["begin"];
+            let end = mutation["range"]["end"];
             let char = mutation["character"];
 
             // add each position of a ambig char block separately
@@ -83,22 +83,22 @@ export class ViralPositionExtractor {
         }
         // Deletions
         for (const mutation of this.sample.variants["deletions"]) {
-            let start = mutation["start"];
-            let len = mutation["length"];
+            let start = mutation["range"]["begin"];
+            let end = mutation["range"]["end"];
 
             // add each position of a deletion on its own
-            for (let j = start; j < start + len; j++) {
+            for (let j = start; j < end; j++) {
                 this.addDeletionToPositions(j);
             }
         }
 
         // Start of alignment
-        for (let i = 0; i < this.sample.variants["alignmentStart"]; i++) {
+        for (let i = 0; i < this.sample.variants["alignmentRange"]["begin"]; i++) {
             this.addDeletionToPositions(i);
         }
 
         // End of alignment
-        for (let i = this.sample.variants["alignmentEnd"]; i < referenceString.length; i++) {
+        for (let i = this.sample.variants["alignmentRange"]["end"]; i < referenceString.length; i++) {
             this.addDeletionToPositions(i);
         }
     };
