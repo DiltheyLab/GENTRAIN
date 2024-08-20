@@ -163,6 +163,9 @@ export const Graph2D = ({
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
             onNodeClick={(node, _event) => handleNodeClick(node as CustomNode)}
+            onBackgroundClick={(_event) => {
+                updateSelectedCase?.(null);
+            }}
             onNodeDrag={(node) => {
                 node.fx = node.x;
                 node.fy = node.y;
