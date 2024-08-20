@@ -1,11 +1,11 @@
 Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;Location;Institution;Geschlecht
 CVD2021-24928;BC_01;01.02.22;Schule A;Köln;Schule;weiblich
-CVD2021-24923;BC_02;01.03.22;Schule B;Köln;;weiblich
-CVD2021-25156;BC_03;05.03.22;Kita A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25157;BC_04;05.03.22;Kita A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25158;BC_05;05.03.22;Kita A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25159;BC_06;05.03.22;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-24923;BC_02;01.03.22;Schule A;Köln;;weiblich
+CVD2021-25156;BC_03;05.03.22;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25157;BC_04;05.03.22;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25158;BC_05;05.03.22;;Düsseldorf;Krankenhaus;männlich
+CVD2021-25159;BC_06;05.03.22;Schule A;Düsseldorf;Krankenhaus;männlich
 CVD2021-25161;BC_07;05.03.22;Schule B;Düsseldorf;Krankenhaus;männlich
 CVD2021-25160;BC_08;05.03.22;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25162;BC_09;05.03.22;;Düsseldorf;Krankenhaus;männlich
-CVD2021-25163;BC_10;05.03.22;;Düsseldorf;Krankenhaus;männlich
+CVD2021-25162;BC_09;05.03.22;Schule C;Düsseldorf;Krankenhaus;männlich
+CVD2021-25163;BC_10;05.03.22;Schule C;Düsseldorf;Krankenhaus;männlich
