@@ -12,6 +12,7 @@ import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { CaseWithRelationships } from "@/database/cases";
 import { ContactSchema } from "@/database/contacts";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { CaseInfo } from "./CaseInfo";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +23,7 @@ export const AnalysisVisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
+    const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
@@ -67,6 +69,10 @@ export const AnalysisVisualizationPanel = () => {
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
                     />
+                    <CaseInfo
+                        selectedCase={selectedCase}
+                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
+                    />
                     <Graph2D
                         data={analysisStore.graphData}
                         width={width - 8}
@@ -76,6 +82,8 @@ export const AnalysisVisualizationPanel = () => {
                         cases={cases}
                         showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                         linkDistance={analysisStore.graphSettings.linkDistance}
+                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
+                        selectedCase={selectedCase}
                     />
                 </>
             ) : (
