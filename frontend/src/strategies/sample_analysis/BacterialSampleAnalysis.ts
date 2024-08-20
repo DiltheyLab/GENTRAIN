@@ -6,6 +6,7 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
         const sampleId = await db.samples.add({
             fasta_id: fastaId,
             sequence_length: sequence.length,
+            variants: variantsResult,
         });
         return sampleId;
     };

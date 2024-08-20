@@ -27,7 +27,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        self.input = f"{get_project_path()}/temp_data/sample_analysis/{self.fasta_id}/"
+        self.input = f"{get_project_path()}/temp_data/sample_analysis/{self.fasta_id}_{round(time.time() * 1000)}/"
         pathlib.Path(self.input).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
@@ -50,7 +50,8 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         for line in file:
             d = {}
             for t, f in zip(titles, line.split("\t")):
-
+                if t == "FILE":
+                    continue
                 # Convert each row into dictionary with keys as titles
                 d[t] = f.strip()
 
@@ -59,7 +60,8 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
 
             # we will append all the individual dictionaires into list
             # and dump into file.
-        return json.dumps(arr, indent=4)
+            result = json.dumps(arr[0], indent=4)
+        return result
 
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
@@ -78,6 +80,8 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         )
         process.wait()
         if process.returncode != 0:
+            shutil.rmtree(self.input)
+            shutil.rmtree(self.output)
             raise SequenceAnalysisFailedException
         else:
             with open(
@@ -85,6 +89,8 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
+                shutil.rmtree(self.input)
+                shutil.rmtree(self.output)
                 return self.tsv2json(tsv_file)
 
     def get_response(self, result):
