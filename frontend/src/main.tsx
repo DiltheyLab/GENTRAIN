@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     },
 ]);
 
-await getAllPathogensWithRelationships().then((response) => {
+getAllPathogensWithRelationships().then((response) => {
     const activelyPersistedPathogen = response.find((pathogen: PathogenWithRelationships) => pathogen.activated_at);
     if (activelyPersistedPathogen) {
         useAppStore.setState({ activePathogen: activelyPersistedPathogen });
