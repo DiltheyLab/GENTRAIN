@@ -57,8 +57,3 @@
 a {
     @apply text-primary;
 }
-
-/* set cursor to default for clickable elements in force-directed-graph to prevent a pointer for canvas background */
-.clickcursor {
-    cursor: default !important;
-}

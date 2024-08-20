@@ -44,6 +44,7 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // custom d3 force setup
     useEffect(() => {
@@ -51,6 +52,17 @@ export const Graph2D = ({
         forceRef?.current?.d3Force("link")?.distance(linkDistance);
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
+
+    useEffect(() => {
+        canvasRef.current = document.querySelector("canvas");
+        const handleClick = () => {
+            updateSelectedCase?.(null);
+        };
+        canvasRef.current?.addEventListener("click", handleClick);
+        return () => {
+            canvasRef.current?.removeEventListener("click", handleClick);
+        };
+    }, []);
 
     if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
@@ -144,25 +156,12 @@ export const Graph2D = ({
         updateSelectedCase?.(node.caseData);
     };
 
-    const setClickCurser = (object: NodeObject | null) => {
-        const canvas = document.querySelector("canvas");
-        // remove pointer if no object is hovered and add pointer if object is hovered
-        // has to be done because the onBackgroundClick event adds a pointer to the hole canvas and to
-        // prevent this the pointer has to be removed in the global CSS file.
-        if (!object) {
-            canvas?.classList.add("clickcursor");
-        } else {
-            canvas?.classList.remove("clickcursor");
-        }
-    };
-
     return (
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
             nodeLabel={(node) => node.caseId}
             nodeRelSize={nodeSize}
-            onNodeHover={(node) => setClickCurser(node)}
             width={width}
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
@@ -176,9 +175,6 @@ export const Graph2D = ({
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
             onNodeClick={(node, _event) => handleNodeClick(node as CustomNode)}
-            onBackgroundClick={(_event) => {
-                updateSelectedCase?.(null);
-            }}
             onNodeDrag={(node) => {
                 node.fx = node.x;
                 node.fy = node.y;
