@@ -14,8 +14,7 @@ export class ViralSampleAnalysis extends SampleAnalysisStrategy {
                 insertions: variantsResult["insertions"],
                 missing: variantsResult["missing"],
                 nonACGTNs: variantsResult["nonACGTNs"],
-                alignmentStart: variantsResult["alignmentStart"],
-                alignmentEnd: variantsResult["alignmentEnd"],
+                alignmentRange: variantsResult["alignmentRange"],
             },
         });
         return sampleId;

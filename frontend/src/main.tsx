@@ -16,7 +16,7 @@ import { OutbreakAnalysis } from "./pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
 import { db } from "./database/db.ts";
 import { useAppStore } from "./stores/app.ts";
-import { PathogenSchema } from "./database/pathogens.ts";
+import { getAllPathogensWithRelationships, PathogenSchema, PathogenWithRelationships } from "./database/pathogens.ts";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -44,8 +44,8 @@ const router = createBrowserRouter([
     },
 ]);
 
-db.pathogens.toArray().then((response) => {
-    const activelyPersistedPathogen = response.find((pathogen: PathogenSchema) => pathogen.activated_at);
+await getAllPathogensWithRelationships().then((response) => {
+    const activelyPersistedPathogen = response.find((pathogen: PathogenWithRelationships) => pathogen.activated_at);
     if (activelyPersistedPathogen) {
         useAppStore.setState({ activePathogen: activelyPersistedPathogen });
     }

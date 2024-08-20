@@ -14,8 +14,7 @@ class ViralSequenceVariantsResponseModel(BaseModel):
     insertions: list[object]
     missing: list[object]
     nonACGTNs: list[object]
-    alignmentStart: int
-    alignmentEnd: int
+    alignmentRange: object
 
 
 class BacterialSequenceVariantsResponseModel(BaseModel):

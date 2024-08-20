@@ -1,15 +1,15 @@
-import { PathogenSchema } from "@/database/pathogens";
+import { PathogenWithRelationships } from "@/database/pathogens";
 import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
 import { db } from "@/database/db";
 
 export abstract class SampleAnalysisStrategy {
     protected sampleUploadState: SampleUploadState;
-    protected pathogen: PathogenSchema;
+    protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
 
     abstract createSample(fastaId: string, sequence: string, variantsResult: object): void;
 
-    constructor(pathogen: PathogenSchema) {
+    constructor(pathogen: PathogenWithRelationships) {
         this.sampleUploadState = useSampleUploadStore.getState();
         this.pathogen = pathogen;
     }
@@ -40,10 +40,30 @@ export abstract class SampleAnalysisStrategy {
         await this.getAndPersistVariantsForSamplesSynchronously(variantRequestPromises);
     };
 
+    string_to_slug(str: string) {
+        str = str.replace(/^\s+|\s+$/g, ""); // trim
+        str = str.toLowerCase();
+
+        // remove accents, swap ñ for n, etc
+        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var to = "aaaaeeeeiiiioooouuuunc------";
+        for (var i = 0, l = from.length; i < l; i++) {
+            str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+        }
+
+        str = str
+            .replace(/[^a-z0-9 -]/g, "") // remove invalid chars
+            .replace(/\s+/g, "-") // collapse whitespace and replace by -
+            .replace(/-+/g, "-"); // collapse dashes
+
+        return str;
+    }
+
     getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        const pathogenName = encodeURI(this.pathogen.name).toLowerCase();
         const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/pathogens/${pathogenName}/sequences/${fastaId}/variants`,
+            `${import.meta.env.VITE_API_BASE_URL}/pathogens/${this.string_to_slug(
+                this.pathogen.name
+            )}/sequences/${fastaId}/variants`,
             {
                 method: "POST",
                 headers: {
