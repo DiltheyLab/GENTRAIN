@@ -1,5 +1,5 @@
 import { ColorMap, CustomLink, CustomNode } from "@/types/graph";
-import { Label } from "../ui/label";
+import { Label } from "../../ui/label";
 import {
     getRegisteredAtTimestamps,
     getSelectedClusters,

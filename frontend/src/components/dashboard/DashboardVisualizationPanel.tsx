@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { Legend } from "../layout/Legend";
+import { Legend } from "../graphs/panelLayout/Legend";
 import { Graph2D } from "../graphs/Graph2D";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseWithRelationships } from "@/database/cases";
@@ -12,7 +12,7 @@ import { useDashboardGraphStore } from "@/stores/dashboardGraph";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
-import { CaseInfo } from "../layout/CaseInfo";
+import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);

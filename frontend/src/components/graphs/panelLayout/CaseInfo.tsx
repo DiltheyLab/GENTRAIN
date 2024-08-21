@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { X } from "lucide-react";
 import { CaseWithRelationships } from "@/database/cases";
 import { CaseInfoItem } from "./CaseInfoItem";
