@@ -84,6 +84,7 @@ export const AnalysisVisualizationPanel = () => {
                         linkDistance={analysisStore.graphSettings.linkDistance}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
+                        initialCenter
                     />
                 </>
             ) : (
