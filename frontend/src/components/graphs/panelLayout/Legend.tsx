@@ -115,8 +115,6 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         );
     };
 
-    if (!nodes || nodes.length === 0) return;
-
     const renderNodeLegend = () => {
         switch (variant) {
             case "dashboard":
@@ -133,6 +131,8 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
                 return <div className="flex flex-col">{renderTimeSpan(registeredAtTimeStamps)}</div>;
         }
     };
+
+    if (!nodes || nodes.length === 0) return;
 
     return (
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
