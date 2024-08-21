@@ -8,6 +8,7 @@ import {
 } from "@/services/graphs";
 import { useMemo } from "react";
 import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
+import { useTranslation } from "react-i18next";
 
 type LegendProps = {
     nodes: CustomNode[];
@@ -21,6 +22,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes, variant]);
     const registeredAtTimeStamps = useMemo(() => getRegisteredAtTimestamps(nodes), [nodes, variant]);
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
+    const { t } = useTranslation();
 
     const renderNodeItems = (nodes: CustomNode[]) => {
         return nodes.map((node) => (
@@ -82,10 +84,22 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderLinkLegend = () => {
+        const geneticDistanceLinks = uniqueTypesOfLinks.filter((link) => link.type === t(`linkTypes.geneticDistance`));
+        const contactTracingLinks = uniqueTypesOfLinks.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
         return (
-            <div className="flex flex-col">
-                <Label className="-ml-1 px-1 text-xs font-medium">Kanten</Label>
-                {renderLinkItems(uniqueTypesOfLinks)}
+            <div className="flex flex-col mt-2">
+                {geneticDistanceLinks.length > 0 && (
+                    <div className="flex flex-col">
+                        <Label className="-ml-1 px-1 text-xs font-medium">Genetische Kanten</Label>
+                        {renderLinkItems(geneticDistanceLinks)}
+                    </div>
+                )}
+                {contactTracingLinks.length > 0 && (
+                    <div className="flex flex-col">
+                        <Label className="-ml-1 px-1 text-xs font-medium">Kontaktkanten</Label>
+                        {renderLinkItems(contactTracingLinks)}
+                    </div>
+                )}
             </div>
         );
     };
@@ -124,7 +138,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
             <legend className="-ml-1 px-1 text-xs font-bold -mb-2">Legende</legend>
             {renderNodeLegend()}
-            <div className="flex flex-col mt-2">{links.length !== 0 && renderLinkLegend()}</div>
+            {renderLinkLegend()}
         </fieldset>
     );
 };

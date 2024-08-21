@@ -2,6 +2,7 @@ import { Button } from "../../ui/button";
 import { X } from "lucide-react";
 import { CaseWithRelationships } from "@/database/cases";
 import { CaseInfoItem } from "./CaseInfoItem";
+import { useTranslation } from "react-i18next";
 
 type CaseInfoProps = {
     selectedCase: CaseWithRelationships | null;
@@ -9,6 +10,8 @@ type CaseInfoProps = {
 };
 
 export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) => {
+    const { t } = useTranslation();
+
     if (!selectedCase) return;
 
     return (
@@ -31,7 +34,7 @@ export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) =>
                 />
                 <CaseInfoItem
                     label="Ausbruch"
-                    description={selectedCase.outbreak?.name ?? "Keinem Ausbruch zugewiesen"}
+                    description={selectedCase.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}
                 />
                 <CaseInfoItem
                     label="Registrierungsdatum"
