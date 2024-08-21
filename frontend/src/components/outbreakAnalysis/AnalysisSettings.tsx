@@ -48,7 +48,7 @@ export const AnalysisSettings = () => {
     return (
         <div className="relative flex flex-col items-center gap-8" x-chunk="dashboard-03-chunk-0">
             <form className="w-full items-start gap-3">
-                <fieldset className="flex flex-col gap-3 rounded-lg border- border px-4 pt-2 pb-4 overflow-y-auto h-[85vh] scrollbar-thin">
+                <fieldset className="flex flex-col gap-3 rounded-lg border px-4 pt-2 pb-4 overflow-y-auto h-[85vh] scrollbar-thin">
                     <Accordion
                         type="multiple"
                         className="w-full flex flex-col gap-3"
