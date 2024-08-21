@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { createGraphData } from "@/services/graphs";
+import { createColorMapForTimeSpan, createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
 import { Graph2D } from "../graphs/Graph2D";
-import { CaseWithRelationships } from "@/database/cases";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
-import { Legend } from "./Legend";
+import { Legend } from "../layout/Legend";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
+import { CaseWithRelationships } from "@/database/cases";
 import { ContactSchema } from "@/database/contacts";
+import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +22,7 @@ export const AnalysisVisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
+
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
             analysisStore.updateGraphData({ nodes: [], links: [] });
@@ -41,6 +42,14 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts);
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
 
+    useEffect(() => {
+        // create color map for time span every time the cases change
+        const colorMap = createColorMapForTimeSpan(analysisStore.graphData.nodes);
+        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
+        // merge the timeSpan colorMap with the current color map in case there are already colors set and prevent overwriting
+        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
+    }, [analysisStore.graphData.nodes]);
+
     return (
         <div
             ref={containerRef}
@@ -51,7 +60,8 @@ export const AnalysisVisualizationPanel = () => {
                     <Legend
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
-                        isOutbreakSeparated
+                        colorMap={analysisStore.graphSettings.colorMap}
+                        variant={analysisStore.graphSettings.isColoredByTimeSpan ? "timeSpan" : "outbreakAnalysis"}
                     />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
@@ -61,10 +71,12 @@ export const AnalysisVisualizationPanel = () => {
                         data={analysisStore.graphData}
                         width={width - 8}
                         height={height - 8}
+                        colorMap={analysisStore.graphSettings.colorMap}
+                        isColoredByTimeSpan={analysisStore.graphSettings.isColoredByTimeSpan}
                         cases={cases}
                         showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                         linkDistance={analysisStore.graphSettings.linkDistance}
-                    />{" "}
+                    />
                 </>
             ) : (
                 <div className="flex justify-center items-center h-full w-full font-semibold">

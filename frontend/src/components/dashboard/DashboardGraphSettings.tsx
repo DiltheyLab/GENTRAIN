@@ -26,10 +26,6 @@ export const DashboardGraphSettings = () => {
         dashboardGraphStore.updateGraphSettings({ linkDistance: value });
     };
 
-    const changeZoomToFit = (checked: boolean) => {
-        dashboardGraphStore.updateGraphSettings({ zoomToFit: checked });
-    };
-
     const changeNodeStyle = (checked: boolean) => {
         dashboardGraphStore.updateGraphSettings({ showNodeLabel: checked });
     };
@@ -88,19 +84,6 @@ export const DashboardGraphSettings = () => {
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                             Knotenbeschreibung ausblenden
-                        </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox
-                            id="zoomToFit"
-                            checked={dashboardGraphStore.graphSettings.zoomToFit}
-                            onCheckedChange={(value) => changeZoomToFit(Boolean(value))}
-                        />
-                        <label
-                            htmlFor="zoomToFit"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                            Zoom auf Fenstergröße aktivieren
                         </label>
                     </div>
                 </fieldset>

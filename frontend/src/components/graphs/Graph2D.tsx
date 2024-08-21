@@ -1,49 +1,54 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { GraphData } from "@/types/graph";
+import { ColorMap, GraphData } from "@/types/graph";
 import { useAnalysisStore } from "@/stores/analysis";
 import { CaseWithRelationships } from "@/database/cases";
 import { Loader2 } from "lucide-react";
+import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
 
 type Graph2DProps = {
     data: GraphData;
     width: number;
     height: number;
+    colorMap: ColorMap;
     cases: CaseWithRelationships[] | undefined;
+    isColoredByTimeSpan: boolean;
     linkDistance?: number;
     charge?: number;
-    zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
     showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
+    initialCenter?: boolean;
 };
 
 export const Graph2D = ({
     data,
     width,
     height,
+    colorMap,
     cases,
-    linkDistance = 50,
+    isColoredByTimeSpan,
+    linkDistance = 70,
     charge = -80,
-    zoomToFit = false,
     nodeSize = 6,
     linkWidth = 2.5,
     showNodeLabel = false,
     labelTransparency = 0.3,
-    coolDownTicks = 130,
+    coolDownTicks = 120,
+    initialCenter = false,
 }: Graph2DProps) => {
+    const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
     const analysisStore = useAnalysisStore();
 
     // custom d3 force setup
     useEffect(() => {
-        if (!forceRef.current || !charge || !linkDistance) return;
-        forceRef.current.d3Force("charge")?.strength(charge).distanceMax(350);
-        forceRef.current.d3Force("link")?.distance(linkDistance);
-        forceRef.current.d3ReheatSimulation();
-    }, [linkDistance, charge]);
+        forceRef?.current?.d3Force("charge")?.strength(charge).distanceMax(350);
+        forceRef?.current?.d3Force("link")?.distance(linkDistance);
+        forceRef?.current?.d3ReheatSimulation();
+    }, [linkDistance, charge, data]);
 
     if (data.nodes.length === 0 && analysisStore.settings.selectedOutbreak && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
@@ -52,9 +57,9 @@ export const Graph2D = ({
     }
 
     const handleEngineStop = () => {
-        if (!forceRef.current) return;
         if (zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
+        setZoomToFit(false);
     };
 
     const createCustomNodeCanvas = (node: NodeObject, ctx: CanvasRenderingContext2D) => {
@@ -63,7 +68,13 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = node.color;
+        if (!isColoredByTimeSpan) {
+            ctx.fillStyle = colorMap[node.cluster].isActive
+                ? colorMap[node.cluster].color
+                : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
+        } else {
+            ctx.fillStyle = colorMap[node.registeredAt].color;
+        }
         ctx.fill();
 
         // Draw the label above the circle
@@ -123,7 +134,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => `${node["caseId"]}`}
+            nodeLabel={(node) => node.caseId}
             nodeRelSize={nodeSize}
             width={width}
             height={height}

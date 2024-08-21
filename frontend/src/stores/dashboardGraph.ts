@@ -3,15 +3,15 @@ import { create } from "zustand";
 import { AnalysisSettings, GraphSettings } from "./analysis";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
-import { COLORPALETTENODES } from "@/colors/colorPalettes";
 
 const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     nodeSize: 6,
     linkWidth: 3,
-    zoomToFit: false,
+    colorMap: {},
+    isColoredByTimeSpan: false,
     charge: -80,
-    linkDistance: 50,
+    linkDistance: 60,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
@@ -28,9 +28,6 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
-        groupColorations: [],
-        colorPaletteNodes: COLORPALETTENODES,
-        category: null,
     };
 };
 

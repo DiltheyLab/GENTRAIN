@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { getDefaultSettings, useAnalysisStore } from "@/stores/analysis";
+import { defaultGraphSettings, getDefaultSettings, useAnalysisStore } from "@/stores/analysis";
 import { useToast } from "../ui/use-toast";
 import { createAnalysis } from "@/database/analyses";
 import { useAppStore } from "@/stores/app";
@@ -50,10 +50,11 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
         try {
             const defaultSettings = getDefaultSettings();
             //create a new analysis in db and update the name in the store
-            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings);
+            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
             analysisStore.updateName(analysisName);
             analysisStore.updateId(id);
             analysisStore.updateSettings(defaultSettings);
+            analysisStore.updateGraphSettings(defaultGraphSettings);
             //close the dialog after saving the analysis
             changeIsOpen();
         } catch (error) {

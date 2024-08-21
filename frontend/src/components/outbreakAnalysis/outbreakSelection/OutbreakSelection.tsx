@@ -1,12 +1,18 @@
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { Label } from "../ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "../../ui/select";
 import { useAnalysisStore } from "@/stores/analysis";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { CustomTooltip } from "../ui/customTooltip";
-import { Info } from "lucide-react";
 import { useGetOutbreaksForActivePathogen } from "@/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { StepIndicator } from "../ui/step-indicator";
+import { createColorMapForNodes } from "@/services/graphs";
+import { CaseWithRelationships } from "@/database/cases";
 
 export const OutbreakSelection = () => {
     const analysisStore = useAnalysisStore();
@@ -42,6 +48,15 @@ export const OutbreakSelection = () => {
         });
     };
 
+    const createColorMap = (cases: CaseWithRelationships[] | undefined, selectedOutbreak: OutbreakSchema) => {
+        // create the initial color map for all nodes if the selected outbreak is changed
+        if (!cases) return;
+        const colorMap = createColorMapForNodes(cases, selectedOutbreak);
+        // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
+        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
+        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
+    };
+
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
@@ -55,6 +70,9 @@ export const OutbreakSelection = () => {
 
         // after changing the outbreak, set the date range for the date range picker
         setDateRange(selectedOutbreak);
+
+        // create color map for nodes after changing the outbreak
+        createColorMap(casesWithRelationships, selectedOutbreak);
     };
     const getOutbreakGroups = () => {
         if (!outbreaks || outbreaks.length === 0) {
@@ -78,16 +96,7 @@ export const OutbreakSelection = () => {
         );
     };
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-                <Label className="flex items-center font-bold text-md mr-3">
-                    <StepIndicator>1</StepIndicator> Ausbruch auswählen
-                </Label>
-                <CustomTooltip
-                    trigger={<Info className="h-5 w-5 cursor-pointer" />}
-                    content={<p>Wählen Sie für die Analyse eines Ausbruchs den enstprechenden Datensatz aus. </p>}
-                />
-            </div>
+        <div className="flex flex-col gap-4 p-0">
             <Select
                 value={analysisStore.settings.selectedOutbreak?.id?.toString()}
                 onValueChange={(value) => changeSelectedOutbreak(value)}

@@ -8,7 +8,6 @@ type Graph3DProps = {
     height: number;
     linkDistance?: number;
     charge?: number;
-    zoomToFit?: boolean;
     nodeSize?: number;
     linkWidth?: number;
     showNodeLabel?: boolean;
@@ -22,18 +21,11 @@ export const Graph3D = ({
     height,
     linkDistance = 50,
     charge = -80,
-    zoomToFit = false,
     nodeSize = 6,
     linkWidth = 3,
 }: Graph3DProps) => {
     // set ref to use own d3 force simulation
     const forceRef = useRef<ForceGraphMethods>();
-
-    const handleEngineStop = () => {
-        if (!forceRef.current) return;
-        if (zoomToFit === false) return;
-        forceRef.current?.zoomToFit(100);
-    };
 
     useEffect(() => {
         if (!forceRef.current) return;
@@ -65,7 +57,6 @@ export const Graph3D = ({
             linkColor="black"
             linkOpacity={0.7}
             cooldownTicks={100}
-            onEngineStop={handleEngineStop}
             showNavInfo={false}
         />
     );

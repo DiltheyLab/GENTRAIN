@@ -1,5 +1,4 @@
-export const COLORPALETTENODES = [
-    "#FF0000", // red for selected outbreak
+export const COLOR_PALETTE_NODES = [
     "#FFD700", // gold
     "#8A2BE2", // blue violet
     "#FF7F50", // coral
@@ -32,62 +31,13 @@ export const COLORPALETTENODES = [
     "#CD5C5C", // indian red
     "#6A5ACD", // slate blue
     "#32CD32", // lime green
-    "#CCCCCC", // last color
 ];
 
-export const COLORPALETTEGRADATIONS = [
-    "#FF0000", // red for selected outbreak
-    "#FF3300",
-    "#FF6600",
-    "#FF9933",
-    "#FFCC33",
-    "#FFFF33",
-    "#CCFF33",
-    "#99FF33",
-    "#66FF33",
-    "#33FF33",
-    "#33FF66",
-    "#33FF99",
-    "#33FFCC",
-    "#33FFFF",
-    "#33CCFF",
-    "#3399FF",
-    "#3366FF",
-    "#3333FF",
-    "#6633FF",
-    "#9933FF",
-    "#CC33FF",
-    "#FF33FF",
-    "#FF33CC",
-    "#FF3399",
-    "#FF3366",
-    "#FF3333",
-    "#FF6633",
-    "#FF9966",
-    "#FFCC99",
-    "#FFFFCC",
-    "#CCFFFF",
-    "#99FFFF",
-    "#66FFFF",
-    "#33FFFF",
-    "#33CCFF",
-    "#3399FF",
-    "#3366FF",
-    "#3333FF",
-    "#6633FF",
-    "#9933FF",
-    "#CC33FF",
-    "#FF33FF",
-    "#FF33CC",
-    "#FF3399",
-    "#FF3366",
-    "#FF3333",
-    "#FF6666",
-    "#FF9999",
-    "#CCCCCC", // last color for cluster "keinem Ausbruch zugewiesen"
-];
+export const COLOR_FOR_CASES_WITHOUT_OUTBREAKS = "#CCCCCC";
 
-export const COLORPALETTELINKS = [
+export const COLOR_FOR_SELECTED_OUTBREAK = "#FF0000";
+
+export const COLOR_PALETTE_LINKS = [
     "#d48fc0",
     "#94a0c7",
     "#e5926b",
@@ -99,3 +49,5 @@ export const COLORPALETTELINKS = [
     "#f2f2f2",
     "#f2b6e3",
 ];
+
+export const COLOR_FOR_GENETIC_DISTANCE_LINKS = "#CCCCCC";
