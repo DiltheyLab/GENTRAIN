@@ -5,10 +5,12 @@ import { OutbreakSchema } from "@/database/outbreaks";
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
 import { GroupWithCategory } from "@/database/groups";
+import { useTranslation } from "react-i18next";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaksForActivePathogen();
     const analysisStore = useAnalysisStore();
+    const { t } = useTranslation();
 
     const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         if (!groupsAndOutbreaks) return;
@@ -23,8 +25,8 @@ export const BackgroundSelection = () => {
         }
         if (groupsAndOutbreaks.casesWithoutOutbreakExist) {
             options.push({
-                label: "Keinem Ausbruch zugewiesen",
-                value: "Keinem Ausbruch zugewiesen",
+                label: t("clusterTypes.noOutbreakAssigned"),
+                value: t("clusterTypes.noOutbreakAssigned"),
                 id: "0",
                 group: "Ausbrüche",
             });
@@ -57,13 +59,13 @@ export const BackgroundSelection = () => {
             casesWithoutOutbreakExist: false,
         };
         for (const value of values) {
-            if (value.group === "Ausbrüche" && value.label !== "Keinem Ausbruch zugewiesen") {
+            if (value.group === "Ausbrüche" && value.label !== t("clusterTypes.noOutbreakAssigned")) {
                 const outbreak = {
                     id: +value.id,
                     name: value.value,
                 } satisfies OutbreakSchema;
                 selectedBackground.outbreaks.push(outbreak);
-            } else if (value.group === "Ausbrüche" && value.label === "Keinem Ausbruch zugewiesen") {
+            } else if (value.group === "Ausbrüche" && value.label === t("clusterTypes.noOutbreakAssigned")) {
                 selectedBackground.casesWithoutOutbreakExist = true;
             } else {
                 const group = {
