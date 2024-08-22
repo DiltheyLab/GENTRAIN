@@ -273,20 +273,12 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             geneticDistanceThreshold
         );
 
-        // Fall 1: Es gibt nur Fälle mit genetischer distanz
-
-        // because we only want to show cases which have a distance below the threshold and are connected to the selected outbreak
-        // we have to filter out cases without a sample because they have no distance
-        //graphCases = filterCasesWithoutSample(graphCases);
-        //casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
-
-        // Fall2: Die Kontaktfälle bleiben auch ohne genetische Distanz erhalten
+        // get contact cases which are left in graphCases
         const contactCases = graphCases.filter((caseData) => !caseData.sample);
 
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
 
-        // -> gehört zu Fall 2
         // we have to add contact cases in the end because they were filtered out by filterCasesByGeneticDistanceThreshold
         graphCases = graphCases.concat(contactCases);
     }
