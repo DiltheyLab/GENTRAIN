@@ -11,8 +11,10 @@ export const CaseInfoItem = ({ label, description, copyToClipboard = false }: Ca
     return (
         <div className="flex space-x-1 pointer-events-auto items-baseline">
             <Label htmlFor="nodeLabel">{label}:</Label>
-            <p className="font-normal text-sm">{description}</p>
-            {copyToClipboard && <CopyToClipboardButton description={description} />}
+            <div className="flex items-center space-x-1">
+                <p className="font-normal text-sm">{description}</p>
+                {copyToClipboard && <CopyToClipboardButton description={description} />}
+            </div>
         </div>
     );
 };

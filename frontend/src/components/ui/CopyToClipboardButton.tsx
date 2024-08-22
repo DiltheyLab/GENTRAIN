@@ -1,9 +1,9 @@
 import { ClipboardCopy } from "lucide-react";
 import { Button } from "./button";
-import copy from "copy-to-clipboard";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 import { useState } from "react";
 import { useTimeout } from "@/hooks/useTimeout";
+
 type CopyToClipboardButtonProps = {
     description: string;
 };
@@ -13,7 +13,7 @@ export const CopyToClipboardButton = ({ description }: CopyToClipboardButtonProp
     useTimeout(() => setIsOpen(false), [isOpen]);
 
     const handleClick = () => {
-        copy(description);
+        navigator.clipboard.writeText(description);
         setIsOpen(true);
     };
 
@@ -32,7 +32,7 @@ export const CopyToClipboardButton = ({ description }: CopyToClipboardButtonProp
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Kopiert!</p>
+                    <p>Kopiert</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
