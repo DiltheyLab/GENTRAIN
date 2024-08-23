@@ -2,7 +2,6 @@ import { CaseWithRelationships } from "@/database/cases";
 
 export type CustomNode = {
     id: number;
-    caseId: string;
     caseData: CaseWithRelationships;
     cluster: string;
     registeredAt: string;
