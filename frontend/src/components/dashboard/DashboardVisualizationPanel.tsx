@@ -32,10 +32,7 @@ export const DashboardVisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) {
-            dashboardGraphStore.updateGraphData({ nodes: [], links: [] });
-            return;
-        }
+        if (!distanceMatrixAssembly || !cases || !contacts) return;
 
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,

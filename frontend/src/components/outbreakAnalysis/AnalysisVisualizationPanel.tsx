@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createColorMapForTimeSpan, createGraphData } from "@/services/graphs";
+import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -33,10 +33,7 @@ export const AnalysisVisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) {
-            analysisStore.updateGraphData({ nodes: [], links: [] }); //ist das nötig? es ist initial ein leeres objekt
-            return;
-        }
+        if (!distanceMatrixAssembly || !cases || !contacts) return;
 
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
