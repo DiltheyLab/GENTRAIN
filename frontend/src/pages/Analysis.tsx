@@ -1,6 +1,6 @@
-import { Layout } from "../layout/Layout";
-import { AnalysisSettings } from "./AnalysisSettings";
-import { AnalysisVisualizationPanel } from "./AnalysisVisualizationPanel";
+import { Layout } from "../components/layout/Layout";
+import { AnalysisSettings } from "../components/outbreakAnalysis/AnalysisSettings";
+import { AnalysisVisualizationPanel } from "../components/outbreakAnalysis/AnalysisVisualizationPanel";
 
 export const Analysis = () => {
     return (

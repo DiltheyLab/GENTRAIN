@@ -26,7 +26,7 @@ export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) =>
             >
                 <X size={23} className="text-slate-700" />
             </Button>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedCase.case_id} copyToClipboard />
                 <CaseInfoItem
                     label="Sequenz ID"

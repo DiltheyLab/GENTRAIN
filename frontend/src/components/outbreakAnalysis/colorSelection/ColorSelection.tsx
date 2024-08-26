@@ -5,11 +5,11 @@ import { ColorSection } from "./ColorSection";
 import { Label } from "@/components/ui/label";
 import { ColoringMode } from "@/types/graph";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { DashboardGraphStore } from "@/stores/dashboardGraph";
+import { DashboardStore } from "@/stores/dashboard";
 import { Input } from "@/components/ui/input";
 
 type ColorSelectionProps = {
-    store: AnalysisStore | DashboardGraphStore;
+    store: AnalysisStore | DashboardStore;
     showClusters: boolean;
     showTimeSpan: boolean;
     showOutbreaks: boolean;
