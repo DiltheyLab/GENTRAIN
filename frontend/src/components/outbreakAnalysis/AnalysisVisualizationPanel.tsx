@@ -14,6 +14,7 @@ import { ContactSchema } from "@/database/contacts";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
+import { useLocation } from "react-router-dom";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,8 @@ export const AnalysisVisualizationPanel = () => {
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const pathname = decodeURI(useLocation().pathname.split("/")[2]);
+
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
         analysisStore.graphData.nodes,
@@ -58,6 +61,9 @@ export const AnalysisVisualizationPanel = () => {
         >
             {analysisStore.settings.selectedOutbreak ? (
                 <>
+                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm font-medium bg-muted/80 pointer-events-none">
+                        Analyse: {pathname}
+                    </fieldset>
                     <Legend
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
