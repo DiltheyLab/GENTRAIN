@@ -8,7 +8,7 @@ import { PathogenSwitch } from "@/components/dashboard/PathogenSwitch";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
-    const pathName = useLocation().pathname;
+    const pathName = useLocation().pathname.split("/")[1];
 
     const isSelected = (url: string) => {
         return pathName === url ? "text-foreground" : "text-muted-foreground";
@@ -21,18 +21,18 @@ export const Header = () => {
                     <Share2 className="h-6 w-6 text-primary" />
                     <span className="not-sr-only text-primary text-xl">Gentrain</span>
                 </Link>
-                <Link to="/" className={`${isSelected("/")} transition-colors hover:text-foreground`}>
+                <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground`}>
                     Dashboard
                 </Link>
                 <Link
                     to="/outbreak-analysis"
-                    className={`${isSelected("/outbreak-analysis")} transition-colors hover:text-foreground`}
+                    className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground`}
                 >
                     Ausbruchsanalyse
                 </Link>
                 <Link
                     to="/data-upload"
-                    className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
+                    className={`${isSelected("data-upload")} transition-colors hover:text-foreground`}
                 >
                     Datenbestand
                 </Link>
