@@ -5,30 +5,33 @@ import { Input } from "@/components/ui/input";
 import { useDashboardStore } from "@/stores/dashboard";
 
 export const ColorSelection = () => {
-    const dashboardStore = useDashboardStore();
+    const updateGraphSettings = useDashboardStore((state) => state.updateGraphSettings);
+    const updateSettings = useDashboardStore((state) => state.updateSettings);
+    const coloringMode = useDashboardStore((state) => state.graphSettings.coloringMode);
+    const clusteringThreshold = useDashboardStore((state) => state.settings.clusteringThreshold);
 
     const handleColoringChange = (value: ColoringMode) => {
         switch (value) {
             case "clusters":
-                dashboardStore.updateGraphSettings({ coloringMode: "clusters" });
+                updateGraphSettings({ coloringMode: "clusters" });
                 break;
             case "outbreaks":
-                dashboardStore.updateGraphSettings({ coloringMode: "outbreaks" });
+                updateGraphSettings({ coloringMode: "outbreaks" });
                 break;
             case "timeSpan":
-                dashboardStore.updateGraphSettings({ coloringMode: "timeSpan" });
+                updateGraphSettings({ coloringMode: "timeSpan" });
                 break;
         }
     };
 
     const changeClusteringThreshold = (value: number) => {
-        dashboardStore.updateSettings({ clusteringThreshold: value });
+        updateSettings({ clusteringThreshold: value });
     };
 
     return (
         <div>
             <RadioGroup
-                defaultValue={dashboardStore.graphSettings.coloringMode}
+                defaultValue={coloringMode}
                 onValueChange={(value: ColoringMode) => handleColoringChange(value)}
             >
                 <div className="flex items-center space-x-2">
@@ -50,17 +53,13 @@ export const ColorSelection = () => {
                             Nach Clustern einfärben
                         </Label>
                     </div>
-                    <div
-                        className={`${
-                            dashboardStore.graphSettings.coloringMode === "clusters" ? "block" : "hidden"
-                        } -mt-1`}
-                    >
+                    <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
                         <Label htmlFor="geneticDistanceThreshold">Cluster Schwellenwert</Label>
                         <Input
                             type="number"
                             min={0}
                             id="clusteringThreshold"
-                            value={dashboardStore.settings.clusteringThreshold}
+                            value={clusteringThreshold}
                             onChange={(e) => changeClusteringThreshold(+e.target.value)}
                         />
                     </div>
