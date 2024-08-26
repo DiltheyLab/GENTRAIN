@@ -1,9 +1,7 @@
-import { useDashboardStore } from "@/stores/dashboard";
 import { SectionHeader } from "../outbreakAnalysis/SectionHeader";
-import { ColorSelection } from "../outbreakAnalysis/colorSelection/ColorSelection";
+import { ColorSelection } from "./ColorSelection";
 
 export const DashboardSettings = () => {
-    const dashboardStore = useDashboardStore();
     return (
         <div className="relative flex-col items-center flex min-h-[80vh]">
             <form className="w-full">
@@ -13,7 +11,7 @@ export const DashboardSettings = () => {
                             title="Einfärbung"
                             tooltipContent={<p>Färben sie die Knoten nach verschiedenen Kriterien ein</p>}
                         />
-                        <ColorSelection store={dashboardStore} showTimeSpan showClusters showOutbreaks />
+                        <ColorSelection />
                     </div>
                 </fieldset>
             </form>

@@ -131,13 +131,7 @@ export const AnalysisSettings = () => {
                                         </AccordionTrigger>
                                     </div>
                                     <AccordionContent>
-                                        <ColorSelection
-                                            store={analysisStore}
-                                            showOutbreaks={true}
-                                            showTimeSpan={true}
-                                            showClusters={false}
-                                            allowChangingOutbreakColoring={true}
-                                        />
+                                        <ColorSelection />
                                     </AccordionContent>
                                 </AccordionItem>
                             </>
