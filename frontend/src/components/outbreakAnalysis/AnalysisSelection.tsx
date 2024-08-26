@@ -9,16 +9,14 @@ import { db } from "@/database/db";
 import { useToast } from "../ui/use-toast";
 import { DeleteDialog } from "../ui/deleteDialog";
 import { useGetAnalysesForActivePathogen } from "@/hooks/database/analyses/useGetAnalysesForActivePathogen";
+import { useNavigate } from "react-router-dom";
 
-type AnalysisSelectionProps = {
-    changeIsOpen: () => void;
-};
-
-export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
+export const AnalysisSelection = () => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
     const analyses = useGetAnalysesForActivePathogen();
     const analysisStore = useAnalysisStore();
     const { toast } = useToast();
+    const navigate = useNavigate();
 
     const changeSelectedAnalysis = (id: string) => {
         const selectedAnalysis = analyses?.find((analysis) => analysis.id === +id);
@@ -32,7 +30,7 @@ export const AnalysisSelection = ({ changeIsOpen }: AnalysisSelectionProps) => {
         analysisStore.updateId(selectedAnalysis.id);
         analysisStore.updateSettings(selectedAnalysis.settings);
         analysisStore.updateGraphSettings(selectedAnalysis.graphSettings);
-        changeIsOpen();
+        navigate(`${selectedAnalysis.name}`);
     };
 
     const deleteAnalysis = async (id: number) => {

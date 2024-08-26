@@ -16,6 +16,7 @@ import { OutbreakAnalysis } from "./pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
 import { useAppStore } from "./stores/app.ts";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "./database/pathogens.ts";
+import { Analysis } from "./components/outbreakAnalysis/Analysis.tsx";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         element: <OutbreakAnalysis />,
     },
+    { path: "/outbreak-analysis/:name", element: <Analysis />, errorElement: <ErrorPage /> },
     {
         path: "/data-upload",
         errorElement: <ErrorPage />,
