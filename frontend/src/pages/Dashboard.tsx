@@ -4,8 +4,22 @@ import { DistanceMatrixTable } from "@/components/tables/DistanceMatrixTable";
 import { SampleInformationTable } from "@/components/tables/SampleInformationTable";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Layout } from "@/components/layout/Layout";
+import { useAppStore } from "@/stores/app";
+import { useDashboardStore } from "@/stores/dashboard";
+import { useEffect } from "react";
 
 export function Dashboard() {
+    const activePathogen = useAppStore().activePathogen;
+    const updateSettings = useDashboardStore((state) => state.updateSettings);
+
+    useEffect(() => {
+        if (!activePathogen) return;
+        updateSettings({
+            clusteringThreshold: activePathogen?.genetic_distance_threshold ?? 0,
+            geneticDistanceThreshold: activePathogen?.genetic_distance_threshold ?? 0,
+        });
+    }, [activePathogen]);
+
     return (
         <Layout>
             <div className="relative mx-auto p-4">
