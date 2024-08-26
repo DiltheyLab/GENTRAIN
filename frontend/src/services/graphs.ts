@@ -444,11 +444,7 @@ export const createGraphData = async (
     };
 };
 
-export const findClustersOfNodes = (
-    graphData: GraphData,
-    clusteringThreshold: number,
-    minClusterSize = 2
-): CustomNode[] => {
+export const findClustersOfNodes = (graphData: GraphData, clusteringThreshold: number, minClusterSize = 2) => {
     //delete links above clusteringThreshold to find clusters in the graph
     const linksAboveThreshold = graphData.links.filter((link) => +link.value <= clusteringThreshold);
     const formatedLinks: Link[] = linksAboveThreshold.map((link) => {
@@ -476,9 +472,9 @@ export const findClustersOfNodes = (
     }
 
     //overwrite the clusters name. If there is no key for the case id in the components map, the node belongs not to a cluster
-    const nodesWithClusterNameSetByAlgorithm = graphData.nodes.map((node) => {
+    const nodes = graphData.nodes.map((node) => {
         return { ...node, cluster: componentsMap.get(node.id) ?? i18next.t("clusterTypes.noClusterAssigned") };
     });
 
-    return nodesWithClusterNameSetByAlgorithm;
+    return { nodes, clusters };
 };

@@ -42,7 +42,7 @@ export const DashboardVisualizationPanel = () => {
         ) => {
             let graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
             if (dashboardGraphStore.graphSettings.coloringMode === "clusters") {
-                const nodes = findClustersOfNodes(graphData, dashboardGraphStore.settings.clusteringThreshold);
+                const { nodes } = findClustersOfNodes(graphData, dashboardGraphStore.settings.clusteringThreshold);
                 graphData = { nodes, links: graphData.links };
             }
             dashboardGraphStore.updateGraphData(graphData);
