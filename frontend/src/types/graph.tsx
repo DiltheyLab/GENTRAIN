@@ -34,3 +34,5 @@ export type ColorMap = {
 export type ContactLinksColorMap = {
     [type: string]: string;
 };
+
+export type ColoringMode = "clusters" | "outbreaks" | "timeSpan";

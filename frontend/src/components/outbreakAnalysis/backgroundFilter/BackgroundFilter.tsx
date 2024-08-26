@@ -24,7 +24,7 @@ export const BackgroundFilter = () => {
     };
 
     return (
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="excludeCasesWithoutSequence"

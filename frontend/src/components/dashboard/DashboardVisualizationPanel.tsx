@@ -1,4 +1,4 @@
-import { createGraphData, createColorMapForNodes } from "@/services/graphs";
+import { createGraphData, createColorMapForNodes, findClustersOfNodes } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -13,6 +13,7 @@ import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
+import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -23,8 +24,12 @@ export const DashboardVisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
-
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardGraphStore.graphSettings;
+    useCreateColorMapForTimeSpan(
+        dashboardGraphStore.graphData.nodes,
+        dashboardGraphStore.graphSettings,
+        dashboardGraphStore.updateGraphSettings
+    );
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
@@ -38,14 +43,24 @@ export const DashboardVisualizationPanel = () => {
             settings: AnalysisSettings,
             contacts: ContactSchema[]
         ) => {
-            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
+            let graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
+            if (dashboardGraphStore.graphSettings.coloringMode === "clusters") {
+                const nodes = findClustersOfNodes(graphData, dashboardGraphStore.settings.clusteringThreshold);
+                graphData = { nodes, links: graphData.links };
+            }
             dashboardGraphStore.updateGraphData(graphData);
-            const colorMap = createColorMapForNodes(cases, null);
+            const colorMap = createColorMapForNodes(undefined, undefined, graphData.nodes);
             dashboardGraphStore.updateGraphSettings({ colorMap });
         };
 
         getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
-    }, [cases, distanceMatrixAssembly, contacts]);
+    }, [
+        cases,
+        distanceMatrixAssembly,
+        contacts,
+        dashboardGraphStore.settings,
+        dashboardGraphStore.graphSettings.coloringMode,
+    ]);
 
     return (
         <div
@@ -56,7 +71,7 @@ export const DashboardVisualizationPanel = () => {
                 nodes={dashboardGraphStore.graphData.nodes}
                 links={dashboardGraphStore.graphData.links}
                 colorMap={dashboardGraphStore.graphSettings.colorMap}
-                variant={dashboardGraphStore.graphSettings.isColoredByTimeSpan ? "timeSpan" : "dashboard"}
+                variant={dashboardGraphStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
             <CaseInfo
                 selectedCase={selectedCase}
@@ -67,7 +82,7 @@ export const DashboardVisualizationPanel = () => {
                 width={width - 8}
                 height={height - 8}
                 colorMap={dashboardGraphStore.graphSettings.colorMap}
-                isColoredByTimeSpan={dashboardGraphStore.graphSettings.isColoredByTimeSpan}
+                coloringMode={dashboardGraphStore.graphSettings.coloringMode}
                 cases={cases}
                 charge={charge}
                 linkDistance={linkDistance}

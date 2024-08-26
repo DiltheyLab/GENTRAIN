@@ -9,7 +9,7 @@ const defaultGraphSettings: GraphSettings = {
     nodeSize: 6,
     linkWidth: 3,
     colorMap: {},
-    isColoredByTimeSpan: false,
+    coloringMode: "outbreaks",
     charge: -80,
     linkDistance: 60,
 };
@@ -28,6 +28,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
+        clusteringThreshold: geneticDistanceThreshold ?? 0,
     };
 };
 

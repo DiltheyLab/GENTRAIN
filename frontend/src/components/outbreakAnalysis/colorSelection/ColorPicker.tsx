@@ -1,4 +1,4 @@
-import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/colors/colorPalettes";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { HexColorPicker } from "react-colorful";
@@ -16,7 +16,7 @@ export const ColorPicker = ({ color, cluster, disabled, changeColor }: ColorPick
             <PopoverTrigger asChild>
                 <Button
                     type="button"
-                    style={{ backgroundColor: `${disabled ? COLOR_FOR_CASES_WITHOUT_OUTBREAKS : color}` }}
+                    style={{ backgroundColor: `${disabled ? COLOR_FOR_CASES_WITHOUT_CLUSTERS : color}` }}
                     className={" h-5 w-5 p-0 hover:ring-2 ring-gray-300 disabled:opacity-100"}
                     disabled={disabled}
                 />
