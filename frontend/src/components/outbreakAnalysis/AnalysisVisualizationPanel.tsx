@@ -33,7 +33,10 @@ export const AnalysisVisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) return;
+        if (!distanceMatrixAssembly || !cases || !contacts) {
+            analysisStore.updateGraphData({ nodes: [], links: [] });
+            return;
+        }
 
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
