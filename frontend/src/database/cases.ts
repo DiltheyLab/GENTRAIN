@@ -7,7 +7,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 import { useAppStore } from "@/stores/app";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
-import { addContactForCases, getContactsByCaseId, GroupedContacts } from "./contacts";
+import { addContactForCases, GroupedContacts } from "./contacts";
 
 export interface CaseSchema {
     id: number;
@@ -76,45 +76,40 @@ export const getAllCasesWithRelationships = async () => {
 
 export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
-    const casesMap = new Map<number, CaseSchema>();
-    for (const caseData of cases) {
-        casesMap.set(caseData.id, caseData);
-    }
-    let casesWithRelationships: CaseWithRelationships[] = [];
-    for (const key in cases) {
-        casesWithRelationships[key] = cases[key];
+
+    let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
+    for (const currentCase of cases) {
+        let caseWithRelationships: CaseWithRelationships = currentCase;
+
         // retrieve pathogen schema object
-        const pathogen = await db.pathogens.where({ id: cases[key].pathogen_id }).first();
-        casesWithRelationships[key].pathogen = pathogen;
+        const pathogen = await db.pathogens.where({ id: currentCase.pathogen_id }).first();
+        caseWithRelationships.pathogen = pathogen;
         // retrieve sample schema object
-        if (cases[key].fasta_id) {
-            const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
+        if (currentCase.fasta_id) {
+            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
             if (sample) {
-                casesWithRelationships[key].sample = sample;
+                caseWithRelationships.sample = sample;
             }
         }
         // retrieve outbreak schema object
-        if (cases[key].outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: cases[key].outbreak_id }).first();
+        if (currentCase.outbreak_id) {
+            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
             if (outbreak) {
-                casesWithRelationships[key].outbreak = outbreak;
+                caseWithRelationships.outbreak = outbreak;
             }
         }
         // retrieve group schema objects
-        if (cases[key].group_ids.length > 0) {
-            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(cases[key].group_ids);
-            casesWithRelationships[key].groups = groups;
+        if (currentCase.group_ids.length > 0) {
+            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(currentCase.group_ids);
+            caseWithRelationships.groups = groups;
         }
-        const contacts = await getContactsByCaseId(cases[key].id, casesMap);
-        if (Object.keys(contacts).length > 0) {
-            casesWithRelationships[key].contacts = contacts;
-        }
+        casesWithRelationships[currentCase.id] = caseWithRelationships;
     }
 
     const contacts = await db.contacts.toArray();
     for (const contact of contacts) {
         if (contact.case_id_1 in casesWithRelationships && contact.case_id_2 in casesWithRelationships) {
-            [casesWithRelationships[contact.case_id_1], casesWithRelationships[contact.case_id_1]] = addContactForCases(
+            [casesWithRelationships[contact.case_id_1], casesWithRelationships[contact.case_id_2]] = addContactForCases(
                 casesWithRelationships[contact.case_id_1],
                 casesWithRelationships[contact.case_id_2],
                 contact.type,
@@ -122,7 +117,7 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
             );
         }
     }
-    return casesWithRelationships;
+    return Object.values(casesWithRelationships);
 };
 
 export const getCaseByFastaId = async (fastaId: string) => {

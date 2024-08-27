@@ -46,17 +46,18 @@ export const addContactForCases = (
 ) => {
     // add contact entry to first case contact object
     const groupedContacts1 = case1.contacts ?? {};
-    if (!(case2.id in groupedContacts1)) {
-        groupedContacts1[case2.id] = [];
+    if (!(case2.case_id in groupedContacts1)) {
+        groupedContacts1[case2.case_id] = [];
     }
-    groupedContacts1[case2.id].push({ type: type, context: context });
+    groupedContacts1[case2.case_id].push({ type: type, context: context });
     case1.contacts = groupedContacts1;
     // add contact entry to second case contact object
     const groupedContacts2 = case2.contacts ?? {};
-    if (!(case1.id in groupedContacts2)) {
-        groupedContacts2[case1.id] = [];
+    if (!(case1.case_id in groupedContacts2)) {
+        groupedContacts2[case1.case_id] = [];
     }
-    groupedContacts2[case1.id].push({ type: type, context: context });
+    groupedContacts2[case1.case_id].push({ type: type, context: context });
     case2.contacts = groupedContacts2;
+    console.log(case1, case2);
     return [case1, case2];
 };
