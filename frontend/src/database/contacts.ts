@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { db } from "./db";
 import { groupContactsForCase } from "@/services/cases";
-import { CaseSchema } from "./cases";
+import { CaseSchema, CaseWithRelationships } from "./cases";
 
 export interface ContactSchema {
     id: number;
@@ -36,4 +36,27 @@ export const getContactsByCaseId = async (caseId: number, cases: Map<number, Cas
     const caseContacts = await db.contacts.where({ case_id_1: caseId }).or("case_id_2").equals(caseId).toArray();
     const groupedContacts = await groupContactsForCase(caseId, caseContacts, cases);
     return groupedContacts;
+};
+
+export const addContactForCase = (
+    case1: CaseWithRelationships,
+    case2: CaseWithRelationships,
+    type: string,
+    context: string
+) => {
+    // add contact entry to first case contact object
+    const groupedContacts1 = case1.contacts ?? {};
+    if (!(case2.id in groupedContacts1)) {
+        groupedContacts1[case2.id] = [];
+    }
+    groupedContacts1[case2.id].push({ type: type, context: context });
+    case1.contacts = groupedContacts1;
+    // add contact entry to second case contact object
+    const groupedContacts2 = case2.contacts ?? {};
+    if (!(case1.id in groupedContacts2)) {
+        groupedContacts2[case1.id] = [];
+    }
+    groupedContacts2[case1.id].push({ type: type, context: context });
+    case2.contacts = groupedContacts2;
+    return [case1, case2];
 };
