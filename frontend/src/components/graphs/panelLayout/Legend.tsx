@@ -77,7 +77,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderBackgroundLegend = () => {
-        if (selectedOutbreak.length === 0 || selectedBackground.length === 0) return;
+        if (selectedOutbreak.length === 0 || selectedBackground.length === 0) return null;
 
         return (
             <div className="flex flex-col">
@@ -109,7 +109,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderOutbreakLegend = () => {
-        if (selectedOutbreak.length === 0) return;
+        if (selectedOutbreak.length === 0) return null;
 
         return (
             <div className="flex flex-col">
@@ -136,7 +136,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         }
     };
 
-    if (!nodes || nodes.length === 0) return;
+    if (!nodes || nodes.length === 0) return null;
 
     return (
         <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">

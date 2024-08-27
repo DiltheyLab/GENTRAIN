@@ -12,7 +12,7 @@ type CaseInfoProps = {
 export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) => {
     const { t } = useTranslation();
 
-    if (!selectedCase) return;
+    if (!selectedCase) return null;
 
     return (
         <fieldset className="absolute z-10 right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/80 pointer-events-none">
