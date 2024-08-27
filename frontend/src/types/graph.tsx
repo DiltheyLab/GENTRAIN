@@ -36,3 +36,9 @@ export type ContactLinksColorMap = {
 };
 
 export type ColoringMode = "clusters" | "outbreaks" | "timeSpan";
+
+export type Link = {
+    source: number;
+    target: number;
+    weight: number;
+};
