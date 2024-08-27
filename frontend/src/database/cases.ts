@@ -7,7 +7,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 import { useAppStore } from "@/stores/app";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
-import { addContactForCase, getContactsByCaseId, GroupedContacts } from "./contacts";
+import { addContactForCases, getContactsByCaseId, GroupedContacts } from "./contacts";
 
 export interface CaseSchema {
     id: number;
@@ -114,7 +114,7 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
     const contacts = await db.contacts.toArray();
     for (const contact of contacts) {
         if (contact.case_id_1 in casesWithRelationships && contact.case_id_2 in casesWithRelationships) {
-            [casesWithRelationships[contact.case_id_1], casesWithRelationships[contact.case_id_1]] = addContactForCase(
+            [casesWithRelationships[contact.case_id_1], casesWithRelationships[contact.case_id_1]] = addContactForCases(
                 casesWithRelationships[contact.case_id_1],
                 casesWithRelationships[contact.case_id_2],
                 contact.type,

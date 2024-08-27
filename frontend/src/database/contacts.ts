@@ -38,7 +38,7 @@ export const getContactsByCaseId = async (caseId: number, cases: Map<number, Cas
     return groupedContacts;
 };
 
-export const addContactForCase = (
+export const addContactForCases = (
     case1: CaseWithRelationships,
     case2: CaseWithRelationships,
     type: string,
