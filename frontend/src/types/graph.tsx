@@ -2,7 +2,6 @@ import { CaseWithRelationships } from "@/database/cases";
 
 export type CustomNode = {
     id: number;
-    caseId: string;
     caseData: CaseWithRelationships;
     cluster: string;
     registeredAt: string;
@@ -35,3 +34,5 @@ export type ColorMap = {
 export type ContactLinksColorMap = {
     [type: string]: string;
 };
+
+export type ColoringMode = "clusters" | "outbreaks" | "timeSpan";

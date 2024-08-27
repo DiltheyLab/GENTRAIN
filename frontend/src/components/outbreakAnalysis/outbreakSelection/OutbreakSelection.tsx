@@ -48,10 +48,9 @@ export const OutbreakSelection = () => {
         });
     };
 
-    const createColorMap = (cases: CaseWithRelationships[] | undefined, selectedOutbreak: OutbreakSchema) => {
+    const createColorMap = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
         // create the initial color map for all nodes if the selected outbreak is changed
-        if (!cases) return;
-        const colorMap = createColorMapForNodes(cases, selectedOutbreak);
+        const colorMap = createColorMapForNodes(selectedOutbreak, cases);
         // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
         const currentColorMap = { ...analysisStore.graphSettings.colorMap };
         analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
@@ -72,8 +71,10 @@ export const OutbreakSelection = () => {
         setDateRange(selectedOutbreak);
 
         // create color map for nodes after changing the outbreak
+        if (!casesWithRelationships) return;
         createColorMap(casesWithRelationships, selectedOutbreak);
     };
+
     const getOutbreakGroups = () => {
         if (!outbreaks || outbreaks.length === 0) {
             return (

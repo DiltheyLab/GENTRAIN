@@ -5,9 +5,10 @@ import {
     getSelectedClusters,
     getUniqueClustersOfNodes,
     getUniqueTypesOfLinks,
+    sortNoOutbreakAssignedToEndOfArray,
 } from "@/services/graphs";
 import { useMemo } from "react";
-import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/colors/colorPalettes";
 import { useTranslation } from "react-i18next";
 
 type LegendProps = {
@@ -19,7 +20,10 @@ type LegendProps = {
 
 export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
-    const allClustersOfNodes = useMemo(() => getUniqueClustersOfNodes(nodes), [nodes, variant]);
+    const allClustersOfNodes = useMemo(() => {
+        const uniqueClustersOfNodes = getUniqueClustersOfNodes(nodes);
+        return sortNoOutbreakAssignedToEndOfArray(uniqueClustersOfNodes);
+    }, [nodes, variant]);
     const registeredAtTimeStamps = useMemo(() => getRegisteredAtTimestamps(nodes), [nodes, variant]);
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
     const { t } = useTranslation();
@@ -30,9 +34,9 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
                 <span
                     style={{
                         backgroundColor: `${
-                            colorMap[node.cluster].isActive
+                            colorMap[node.cluster]?.isActive
                                 ? colorMap[node.cluster].color
-                                : COLOR_FOR_CASES_WITHOUT_OUTBREAKS
+                                : COLOR_FOR_CASES_WITHOUT_CLUSTERS
                         }`,
                     }}
                     className={"rounded-full h-3 w-3"}

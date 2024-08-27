@@ -24,6 +24,7 @@
         "geneticDistance": "Genetische Distanz"
     },
     "clusterTypes": {
-        "noOutbreakAssigned": "Keinem Ausbruch zugewiesen"
+        "noOutbreakAssigned": "Keinem Ausbruch zugewiesen",
+        "noClusterAssigned": "Keinem Cluster zugewiesen"
     }
 }

@@ -3,7 +3,7 @@ import { GroupSchema, GroupWithCategory } from "@/database/groups";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { ColorMap, GraphData } from "@/types/graph";
+import { ColoringMode, ColorMap, GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
 
 export type GroupColoration = {
@@ -30,13 +30,14 @@ export type AnalysisSettings = {
     dateRange: DateRange;
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
+    clusteringThreshold: number;
 };
 
 export type GraphSettings = {
     showNodeLabel: boolean;
     linkDistance: number;
     colorMap: ColorMap;
-    isColoredByTimeSpan: boolean;
+    coloringMode: ColoringMode;
     nodeSize?: number;
     linkWidth?: number;
     charge?: number;
@@ -59,7 +60,7 @@ export const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     linkDistance: 70,
     colorMap: {},
-    isColoredByTimeSpan: false,
+    coloringMode: "outbreaks",
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
@@ -76,6 +77,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
+        clusteringThreshold: geneticDistanceThreshold ?? 0,
     };
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createColorMapForTimeSpan, createGraphData } from "@/services/graphs";
+import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -13,6 +13,7 @@ import { CaseWithRelationships } from "@/database/cases";
 import { ContactSchema } from "@/database/contacts";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
+import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,12 @@ export const AnalysisVisualizationPanel = () => {
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    // update color map for time span every time the cases (nodes) change
+    useCreateColorMapForTimeSpan(
+        analysisStore.graphData.nodes,
+        analysisStore.graphSettings,
+        analysisStore.updateGraphSettings
+    );
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
@@ -44,14 +51,6 @@ export const AnalysisVisualizationPanel = () => {
         getGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts);
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
 
-    useEffect(() => {
-        // create color map for time span every time the cases change
-        const colorMap = createColorMapForTimeSpan(analysisStore.graphData.nodes);
-        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
-        // merge the timeSpan colorMap with the current color map in case there are already colors set and prevent overwriting
-        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
-    }, [analysisStore.graphData.nodes]);
-
     return (
         <div
             ref={containerRef}
@@ -63,7 +62,9 @@ export const AnalysisVisualizationPanel = () => {
                         nodes={analysisStore.graphData.nodes}
                         links={analysisStore.graphData.links}
                         colorMap={analysisStore.graphSettings.colorMap}
-                        variant={analysisStore.graphSettings.isColoredByTimeSpan ? "timeSpan" : "outbreakAnalysis"}
+                        variant={
+                            analysisStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "outbreakAnalysis"
+                        }
                     />
                     <AnalysisGraphSettings
                         showGraphSettings={showGraphSettings}
@@ -78,13 +79,12 @@ export const AnalysisVisualizationPanel = () => {
                         width={width - 8}
                         height={height - 8}
                         colorMap={analysisStore.graphSettings.colorMap}
-                        isColoredByTimeSpan={analysisStore.graphSettings.isColoredByTimeSpan}
+                        coloringMode={analysisStore.graphSettings.coloringMode}
                         cases={cases}
                         showNodeLabel={analysisStore.graphSettings.showNodeLabel}
                         linkDistance={analysisStore.graphSettings.linkDistance}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
-                        initialCenter
                     />
                 </>
             ) : (

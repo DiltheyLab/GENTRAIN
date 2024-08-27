@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { ColorMap, CustomLink, CustomNode, GraphData } from "@/types/graph";
+import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/types/graph";
 import { CaseWithRelationships } from "@/database/cases";
 import { Loader2 } from "lucide-react";
-import { COLOR_FOR_CASES_WITHOUT_OUTBREAKS } from "@/colors/colorPalettes";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/colors/colorPalettes";
 import { useCanvasClick } from "@/hooks/useCanvasClick";
 
 type Graph2DProps = {
@@ -12,7 +12,7 @@ type Graph2DProps = {
     height: number;
     colorMap: ColorMap;
     cases: CaseWithRelationships[] | undefined;
-    isColoredByTimeSpan: boolean;
+    coloringMode: ColoringMode;
     linkDistance?: number;
     charge?: number;
     nodeSize?: number;
@@ -31,7 +31,7 @@ export const Graph2D = ({
     height,
     colorMap,
     cases,
-    isColoredByTimeSpan,
+    coloringMode,
     updateSelectedCase,
     selectedCase,
     linkDistance = 70,
@@ -71,22 +71,23 @@ export const Graph2D = ({
         const radius = nodeSize;
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-        if (!isColoredByTimeSpan) {
-            ctx.fillStyle = colorMap[node.cluster].isActive
-                ? colorMap[node.cluster].color
-                : COLOR_FOR_CASES_WITHOUT_OUTBREAKS;
-        } else {
+
+        if (coloringMode === "timeSpan") {
             ctx.fillStyle = colorMap[node.registeredAt].color;
+        } else {
+            ctx.fillStyle = colorMap[node.cluster]?.isActive
+                ? colorMap[node.cluster].color
+                : COLOR_FOR_CASES_WITHOUT_CLUSTERS;
         }
         ctx.fill();
-        if (selectedCase && selectedCase.case_id === node.caseId) {
+        if (selectedCase && selectedCase.case_id === node.caseData.case_id) {
             ctx.strokeStyle = "black";
             ctx.lineWidth = 2;
             ctx.stroke();
         }
 
         // Draw the label above the circle
-        let label = `${node["caseId"]}`;
+        let label = `${node.caseData.case_id}`;
         // Set the label to an empty string if showNodeLabel is false
         // Info: do not return out of the function. The label should be drawn even if it is empty,
         // otherwise it leads to a rendering bug
@@ -150,7 +151,7 @@ export const Graph2D = ({
         <ForceGraph2D
             ref={forceRef}
             graphData={data}
-            nodeLabel={(node) => node.caseId}
+            nodeLabel={(node) => node.caseData.case_id}
             nodeRelSize={nodeSize}
             width={width}
             height={height}

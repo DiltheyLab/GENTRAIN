@@ -11,14 +11,20 @@ class Link {
 }
 
 class Graph {
-    numberOfNodes: number;
-    numberOfLinks: number;
-    links: Link[];
+    private numberOfNodes: number;
+    private numberOfLinks: number;
+    private links: Link[];
+    private adjacencyList: { [key: number]: number[] };
 
-    constructor(size: number) {
+    constructor(size: number, nodes?: number[], links?: Link[]) {
         this.numberOfNodes = size;
         this.numberOfLinks = 0;
         this.links = [];
+        this.adjacencyList = {};
+        nodes?.forEach((node) => {
+            this.addNodeToAdjacencyList(node);
+        });
+        links?.forEach((link) => this.addLinkToAdjacencyList(link.source, link.target));
     }
 
     addLink(link: Link): void {
@@ -59,6 +65,43 @@ class Graph {
         });
 
         return mst;
+    }
+
+    addNodeToAdjacencyList(node: number): void {
+        if (!this.adjacencyList[node]) {
+            this.adjacencyList[node] = [];
+        }
+    }
+
+    addLinkToAdjacencyList(node1: number, node2: number): void {
+        this.adjacencyList[node1].push(node2);
+        this.adjacencyList[node2].push(node1);
+    }
+
+    getConnectedComponents(): number[][] {
+        const visited = new Set<number>();
+        const components: number[][] = [];
+
+        const dfs = (node: number, component: number[]): void => {
+            visited.add(node);
+            component.push(node);
+
+            this.adjacencyList[node].forEach((neighbor) => {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor, component);
+                }
+            });
+        };
+
+        for (let node in this.adjacencyList) {
+            if (!visited.has(Number(node))) {
+                const component: number[] = [];
+                dfs(Number(node), component);
+                components.push(component);
+            }
+        }
+
+        return components;
     }
 }
 

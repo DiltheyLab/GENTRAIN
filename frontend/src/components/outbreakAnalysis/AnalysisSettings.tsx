@@ -46,8 +46,8 @@ export const AnalysisSettings = () => {
     };
 
     return (
-        <div className="relative flex flex-col items-center gap-8" x-chunk="dashboard-03-chunk-0">
-            <form className="w-full items-start border rounded-xl px-1 ">
+        <div className="relative flex flex-col items-center gap-8 overflow-y-hidden">
+            <form className="w-full items-start border rounded-xl px-1">
                 <fieldset className="flex flex-col gap-3 px-3 pb-4 pt-1 overflow-y-auto h-[85vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
                     <Accordion
                         type="multiple"
@@ -131,7 +131,13 @@ export const AnalysisSettings = () => {
                                         </AccordionTrigger>
                                     </div>
                                     <AccordionContent>
-                                        <ColorSelection />
+                                        <ColorSelection
+                                            store={analysisStore}
+                                            showOutbreaks={true}
+                                            showTimeSpan={true}
+                                            showClusters={false}
+                                            allowChangingOutbreakColoring={true}
+                                        />
                                     </AccordionContent>
                                 </AccordionItem>
                             </>

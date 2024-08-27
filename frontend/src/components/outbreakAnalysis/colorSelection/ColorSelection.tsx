@@ -1,36 +1,97 @@
-import { useAnalysisStore } from "@/stores/analysis";
+import { AnalysisStore } from "@/stores/analysis";
 import { getSelectedClusters } from "@/services/graphs";
 import { useMemo } from "react";
 import { ColorSection } from "./ColorSection";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { ColoringMode } from "@/types/graph";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DashboardGraphStore } from "@/stores/dashboardGraph";
+import { Input } from "@/components/ui/input";
 
-export const ColorSelection = () => {
-    const analysisStore = useAnalysisStore();
-    const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [analysisStore.graphData]);
+type ColorSelectionProps = {
+    store: AnalysisStore | DashboardGraphStore;
+    showClusters: boolean;
+    showTimeSpan: boolean;
+    showOutbreaks: boolean;
+    allowChangingOutbreakColoring?: boolean;
+};
+export const ColorSelection = ({
+    store,
+    showTimeSpan,
+    showOutbreaks,
+    showClusters = false,
+    allowChangingOutbreakColoring,
+}: ColorSelectionProps) => {
+    const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [store.graphData]);
 
-    const handleColorChangeByTimeSpan = (isColoredByTimeSpan: boolean) => {
-        analysisStore.updateGraphSettings({ isColoredByTimeSpan: isColoredByTimeSpan });
+    const handleColoringChange = (value: ColoringMode) => {
+        switch (value) {
+            case "clusters":
+                store.updateGraphSettings({ coloringMode: "clusters" });
+                break;
+            case "outbreaks":
+                store.updateGraphSettings({ coloringMode: "outbreaks" });
+                break;
+            case "timeSpan":
+                store.updateGraphSettings({ coloringMode: "timeSpan" });
+                break;
+        }
+    };
+
+    const changeClusteringThreshold = (value: number) => {
+        store.updateSettings({ clusteringThreshold: value });
     };
 
     return (
-        <div className="flex flex-col gap-4 mt-2">
-            <Label>Nach Zeitspanne einfärben</Label>
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="registeredAtTimeSpan"
-                    checked={analysisStore.graphSettings.isColoredByTimeSpan}
-                    onCheckedChange={(isChecked) => handleColorChangeByTimeSpan(isChecked)}
-                />
-                <Label htmlFor="registeredAtTimeSpan" className="font-normal text-md">
-                    Registrierungsdatum
-                </Label>
-            </div>
-            {!analysisStore.graphSettings.isColoredByTimeSpan && (
-                <>
+        <div>
+            <RadioGroup
+                defaultValue={store.graphSettings.coloringMode}
+                onValueChange={(value: ColoringMode) => handleColoringChange(value)}
+            >
+                {showTimeSpan && (
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="timeSpan" id="timeSpan" />
+                        <Label htmlFor="timeSpan" className="font-normal text-md">
+                            Nach Zeitspanne einfärben
+                        </Label>
+                    </div>
+                )}
+                {showClusters && (
+                    <>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="clusters" id="clusters" />
+                            <Label htmlFor="clusters" className="font-normal text-md">
+                                Nach Clustern einfärben
+                            </Label>
+                        </div>
+                        <div
+                            className={`${store.graphSettings.coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}
+                        >
+                            <Label htmlFor="geneticDistanceThreshold">Cluster Schwellenwert</Label>
+                            <Input
+                                type="number"
+                                min={0}
+                                id="clusteringThreshold"
+                                value={store.settings.clusteringThreshold}
+                                onChange={(e) => changeClusteringThreshold(+e.target.value)}
+                            />
+                        </div>
+                    </>
+                )}
+                {showOutbreaks && (
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="outbreaks" id="outbreaks" />
+                        <Label htmlFor="outbreaks" className="font-normal text-md">
+                            Nach Ausbrüchen einfärben
+                        </Label>
+                    </div>
+                )}
+            </RadioGroup>
+            {store.graphSettings.coloringMode === "outbreaks" && allowChangingOutbreakColoring && (
+                <div className="flex flex-col gap-3 mt-4">
                     <ColorSection label="Selektierten Ausbruch umfärben" nodes={selectedOutbreak} />
                     <ColorSection label="Background umfärben" nodes={selectedBackground} />
-                </>
+                </div>
             )}
         </div>
     );

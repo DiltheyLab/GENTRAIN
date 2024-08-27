@@ -33,7 +33,7 @@ export const COLOR_PALETTE_NODES = [
     "#32CD32", // lime green
 ];
 
-export const COLOR_FOR_CASES_WITHOUT_OUTBREAKS = "#CCCCCC";
+export const COLOR_FOR_CASES_WITHOUT_CLUSTERS = "#CCCCCC";
 
 export const COLOR_FOR_SELECTED_OUTBREAK = "#FF0000";
 

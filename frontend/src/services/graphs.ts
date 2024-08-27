@@ -1,6 +1,6 @@
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
-import { Graph, Link } from "@/lib/kruskal";
+import { Graph, Link } from "@/lib/graph";
 import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
@@ -8,7 +8,7 @@ import { CustomNode, CustomLink, GraphData, ColorMap, ContactLinksColorMap } fro
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
 import {
-    COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    COLOR_FOR_CASES_WITHOUT_CLUSTERS,
     COLOR_FOR_GENETIC_DISTANCE_LINKS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_LINKS,
@@ -19,7 +19,8 @@ import i18next from "i18next";
 
 export const getSelectedClusters = () => {
     const analysisStore = useAnalysisStore.getState();
-    const clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
+    let clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
+    clustersOfNodes = sortNoOutbreakAssignedToEndOfArray(clustersOfNodes);
     const selectedOutbreak = clustersOfNodes.filter(
         (nodes) => nodes.cluster === analysisStore.settings.selectedOutbreak?.name
     );
@@ -29,34 +30,56 @@ export const getSelectedClusters = () => {
     return { selectedOutbreak, selectedBackground };
 };
 
-export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema | null) => {
-    const clusters = getUniqueClusterOfCases(cases);
-    const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
-    const noOutbreakAssignedExists = sortedClusters.indexOf(i18next.t("clusterTypes.noOutbreakAssigned"));
+export const sortNoOutbreakAssignedToEndOfArray = (nodes: CustomNode[]) => {
+    const clusterOfNodes = [...nodes];
+    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const index = clusterOfNodes.findIndex((node) => node.cluster === i18next.t("clusterTypes.noOutbreakAssigned"));
+    if (index !== -1) {
+        const item = clusterOfNodes.splice(index, 1);
+        clusterOfNodes.push(item[0]);
+    }
+    return clusterOfNodes;
+};
+
+export const createColorMapForNodes = (
+    selectedOutbreak?: OutbreakSchema,
+    cases?: CaseWithRelationships[],
+    nodes?: CustomNode[]
+) => {
+    let clusters: string[] = [];
+    if (cases) {
+        clusters = getUniqueClusterOfCases(cases); // get unique clusters of cases, used by the outbreak analysis
+    } else if (nodes) {
+        clusters = getUniqueClusters(nodes); // get unique clusters of nodes, used by the dashboard
+    }
+
     const colorMap = {} as ColorMap;
 
-    // the selected outbreak is the first cluster
-    const selectedOutbreakCluster = sortedClusters[0];
+    const noAssignedCluster = clusters.find(
+        (cluster) =>
+            cluster === i18next.t("clusterTypes.noOutbreakAssigned") ||
+            cluster === i18next.t("clusterTypes.noClusterAssigned")
+    );
 
-    // "keinem Ausbruch zugewiesen" is the last cluster
-    const noOutbreakAssignedCluster = sortedClusters[sortedClusters.length - 1];
-
-    if (selectedOutbreak) {
+    // if there is an outbreak selected give this cluster a specific color
+    const selectedOutbreakCluster = clusters.find((cluster) => cluster === selectedOutbreak?.name);
+    if (selectedOutbreak && selectedOutbreakCluster) {
         colorMap[selectedOutbreakCluster] = { color: COLOR_FOR_SELECTED_OUTBREAK, isActive: true };
-        sortedClusters.splice(0, 1);
+        clusters.splice(clusters.indexOf(selectedOutbreakCluster), 1);
     }
 
-    if (noOutbreakAssignedExists !== -1) {
-        colorMap[noOutbreakAssignedCluster] = {
-            color: COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    // if there are clusters like noOutbreakAssigned or noClusterAssigned give this cluster a specific color
+    if (noAssignedCluster) {
+        colorMap[noAssignedCluster] = {
+            color: COLOR_FOR_CASES_WITHOUT_CLUSTERS,
             isActive: true,
         };
-        sortedClusters.pop();
+        clusters.splice(clusters.indexOf(noAssignedCluster), 1);
     }
 
-    for (let i = 0; i < sortedClusters.length; i++) {
-        // create colors for every cluster. If there are more clusters then colors create a color dynamically
-        colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
+    // create colors for every cluster. If there are more clusters then colors create a color dynamically
+    for (let i = 0; i < clusters.length; i++) {
+        colorMap[clusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
     }
 
     return colorMap;
@@ -74,20 +97,11 @@ export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
 };
 
 export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
-    let uniqueClustersOfNodes = nodes
+    const uniqueClustersOfNodes = nodes
         .filter((cluster, index, self) => {
             return index === self.findIndex((node) => node.cluster === cluster.cluster);
         })
         .sort((a, b) => a.cluster.localeCompare(b.cluster));
-
-    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const index = uniqueClustersOfNodes.findIndex(
-        (node) => node.cluster === i18next.t("clusterTypes.noOutbreakAssigned")
-    );
-    if (index !== -1) {
-        const item = uniqueClustersOfNodes.splice(index, 1);
-        uniqueClustersOfNodes.push(item[0]);
-    }
     return uniqueClustersOfNodes;
 };
 
@@ -95,27 +109,6 @@ export const getUniqueClusters = (nodes: CustomNode[]) => {
     const clusters = nodes.map((node) => node.cluster);
     const uniqueClusters = [...new Set(clusters)].sort();
     return uniqueClusters;
-};
-
-export const sortClusterByOutbreakAndBackground = (clusters: string[]) => {
-    const outbreak = useAnalysisStore.getState().settings.selectedOutbreak?.name;
-    let sortedClusters = [...clusters];
-    //find the index of the cluster "keinem Ausbruch zugewiesen" and put it at the end of the array
-    const indexOfBackground = sortedClusters.findIndex(
-        (sortedCluster) => sortedCluster === i18next.t("clusterTypes.noOutbreakAssigned")
-    );
-    if (indexOfBackground !== -1) {
-        const item = sortedClusters.splice(indexOfBackground, 1);
-        sortedClusters.push(item[0]);
-    }
-
-    //find the index of the cluster selected outbreak and put it in the front of the array
-    const indexOfOutbreak = sortedClusters.findIndex((sortedCluster) => sortedCluster === outbreak);
-    if (indexOfOutbreak !== -1) {
-        const item = sortedClusters.splice(indexOfOutbreak, 1);
-        sortedClusters.unshift(item[0]);
-    }
-    return sortedClusters;
 };
 
 export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
@@ -418,10 +411,9 @@ export const createGraphData = async (
     const mstLinks = createMSTLinks(graphCases, matrixDataAssembly, graph);
 
     // create node objects for forced directed graph
-    const nodes: CustomNode[] = graphCases.map((caseData) => {
+    let nodes: CustomNode[] = graphCases.map((caseData) => {
         return {
             id: caseData.id,
-            caseId: caseData.case_id,
             caseData: caseData,
             cluster: caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned"),
             registeredAt: caseData.registered_at.toLocaleDateString(),
@@ -450,4 +442,39 @@ export const createGraphData = async (
         nodes: nodes,
         links: links,
     };
+};
+
+export const findClustersOfNodes = (graphData: GraphData, clusteringThreshold: number, minClusterSize = 2) => {
+    //delete links above clusteringThreshold to find clusters in the graph
+    const linksAboveThreshold = graphData.links.filter((link) => +link.value <= clusteringThreshold);
+    const formatedLinks: Link[] = linksAboveThreshold.map((link) => {
+        return { source: link.source, target: link.target, weight: +link.value };
+    });
+
+    const graph = new Graph(
+        graphData.nodes.length,
+        graphData.nodes.map((node) => node.id),
+        formatedLinks
+    );
+
+    //all connected nodes build a component
+    const components = graph.getConnectedComponents();
+
+    //all components above the clusteringThreshold build a cluster
+    const clusters = components.filter((component) => component.length >= minClusterSize);
+
+    //create the components map where the key is the case id and the value is the cluster name
+    const componentsMap = new Map<number, string>();
+    for (let i = 0; i < clusters.length; i++) {
+        for (let j = 0; j < clusters[i].length; j++) {
+            componentsMap.set(clusters[i][j], `Cluster ${i + 1}`);
+        }
+    }
+
+    //overwrite the clusters name. If there is no key for the case id in the components map, the node belongs not to a cluster
+    const nodes = graphData.nodes.map((node) => {
+        return { ...node, cluster: componentsMap.get(node.id) ?? i18next.t("clusterTypes.noClusterAssigned") };
+    });
+
+    return { nodes, clusters };
 };
