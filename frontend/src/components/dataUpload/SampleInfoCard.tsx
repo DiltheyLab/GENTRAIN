@@ -1,4 +1,5 @@
 import { useGetCaseByFastaId } from "@/hooks/database/cases/useGetCaseByFastaId";
+import { formatDate } from "@/services/dates";
 
 export function SampleInfoCard({ fastaId }: { fastaId: string }) {
     const caseData = useGetCaseByFastaId(fastaId);
@@ -11,9 +12,7 @@ export function SampleInfoCard({ fastaId }: { fastaId: string }) {
             </div>
             <div>
                 <h4 className="mb-1 font-medium leading-none text-sm">Registrierungsdatum</h4>
-                <p className="text-sm text-muted-foreground">
-                    {caseData ? caseData.registered_at.toLocaleDateString() : ""}
-                </p>
+                <p className="text-sm text-muted-foreground">{caseData ? formatDate(caseData.registered_at) : ""}</p>
             </div>
         </div>
     );

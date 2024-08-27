@@ -19,5 +19,11 @@
             "samples": "Laden Sie <a href='/upload_templates/MAGS/Sequenzdaten.fasta'>hier</a> Beispieldaten herunter.",
             "contacts": "Laden Sie <a href='/upload_templates/MAGS/Kontaktdaten.csv'>hier</a> Beispieldaten herunter."
         }
+    },
+    "linkTypes": {
+        "geneticDistance": "Genetische Distanz"
+    },
+    "clusterTypes": {
+        "noOutbreakAssigned": "Keinem Ausbruch zugewiesen"
     }
 }

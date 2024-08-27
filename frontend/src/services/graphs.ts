@@ -1,97 +1,162 @@
 import { CaseWithRelationships } from "@/database/cases";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { Graph, Link } from "@/lib/kruskal";
-import { AnalysisSettings, SelectedBackground } from "@/stores/analysis";
+import { AnalysisSettings, SelectedBackground, useAnalysisStore } from "@/stores/analysis";
 import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
 import { DateRange } from "react-day-picker";
-import { CustomNode, CustomLink, GraphData } from "@/types/graph";
+import { CustomNode, CustomLink, GraphData, ColorMap, ContactLinksColorMap } from "@/types/graph";
 import { ContactSchema } from "@/database/contacts";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLORPALETTELINKS } from "@/colors/colorPalettes";
+import {
+    COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+    COLOR_FOR_GENETIC_DISTANCE_LINKS,
+    COLOR_FOR_SELECTED_OUTBREAK,
+    COLOR_PALETTE_LINKS,
+    COLOR_PALETTE_NODES,
+} from "@/colors/colorPalettes";
+import { parseGermanDateFormat } from "./dates";
+import i18next from "i18next";
 
-export const setNodeColor = (value: number) => {
+export const getSelectedClusters = () => {
+    const analysisStore = useAnalysisStore.getState();
+    const clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
+    const selectedOutbreak = clustersOfNodes.filter(
+        (nodes) => nodes.cluster === analysisStore.settings.selectedOutbreak?.name
+    );
+    const selectedBackground = clustersOfNodes.filter(
+        (nodes) => nodes.cluster !== analysisStore.settings.selectedOutbreak?.name
+    );
+    return { selectedOutbreak, selectedBackground };
+};
+
+export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema | null) => {
+    const clusters = getUniqueClusterOfCases(cases);
+    const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
+    const noOutbreakAssignedExists = sortedClusters.indexOf(i18next.t("clusterTypes.noOutbreakAssigned"));
+    const colorMap = {} as ColorMap;
+
+    // the selected outbreak is the first cluster
+    const selectedOutbreakCluster = sortedClusters[0];
+
+    // "keinem Ausbruch zugewiesen" is the last cluster
+    const noOutbreakAssignedCluster = sortedClusters[sortedClusters.length - 1];
+
+    if (selectedOutbreak) {
+        colorMap[selectedOutbreakCluster] = { color: COLOR_FOR_SELECTED_OUTBREAK, isActive: true };
+        sortedClusters.splice(0, 1);
+    }
+
+    if (noOutbreakAssignedExists !== -1) {
+        colorMap[noOutbreakAssignedCluster] = {
+            color: COLOR_FOR_CASES_WITHOUT_OUTBREAKS,
+            isActive: true,
+        };
+        sortedClusters.pop();
+    }
+
+    for (let i = 0; i < sortedClusters.length; i++) {
+        // create colors for every cluster. If there are more clusters then colors create a color dynamically
+        colorMap[sortedClusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
+    }
+
+    return colorMap;
+};
+
+export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
+    const registeredAtTimestamps = getRegisteredAtTimestamps(nodes);
+    const colorMap = {} as ColorMap;
+
+    for (let i = 0; i < registeredAtTimestamps.length; i++) {
+        const normalizedIndex = i / registeredAtTimestamps.length;
+        colorMap[registeredAtTimestamps[i]] = { color: setNodeGradientColor(normalizedIndex) };
+    }
+    return colorMap;
+};
+
+export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
+    let uniqueClustersOfNodes = nodes
+        .filter((cluster, index, self) => {
+            return index === self.findIndex((node) => node.cluster === cluster.cluster);
+        })
+        .sort((a, b) => a.cluster.localeCompare(b.cluster));
+
+    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    const index = uniqueClustersOfNodes.findIndex(
+        (node) => node.cluster === i18next.t("clusterTypes.noOutbreakAssigned")
+    );
+    if (index !== -1) {
+        const item = uniqueClustersOfNodes.splice(index, 1);
+        uniqueClustersOfNodes.push(item[0]);
+    }
+    return uniqueClustersOfNodes;
+};
+
+export const getUniqueClusters = (nodes: CustomNode[]) => {
+    const clusters = nodes.map((node) => node.cluster);
+    const uniqueClusters = [...new Set(clusters)].sort();
+    return uniqueClusters;
+};
+
+export const sortClusterByOutbreakAndBackground = (clusters: string[]) => {
+    const outbreak = useAnalysisStore.getState().settings.selectedOutbreak?.name;
+    let sortedClusters = [...clusters];
+    //find the index of the cluster "keinem Ausbruch zugewiesen" and put it at the end of the array
+    const indexOfBackground = sortedClusters.findIndex(
+        (sortedCluster) => sortedCluster === i18next.t("clusterTypes.noOutbreakAssigned")
+    );
+    if (indexOfBackground !== -1) {
+        const item = sortedClusters.splice(indexOfBackground, 1);
+        sortedClusters.push(item[0]);
+    }
+
+    //find the index of the cluster selected outbreak and put it in the front of the array
+    const indexOfOutbreak = sortedClusters.findIndex((sortedCluster) => sortedCluster === outbreak);
+    if (indexOfOutbreak !== -1) {
+        const item = sortedClusters.splice(indexOfOutbreak, 1);
+        sortedClusters.unshift(item[0]);
+    }
+    return sortedClusters;
+};
+
+export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
+    return links
+        .filter((link, index, self) => {
+            return index === self.findIndex((l) => l.type === link.type);
+        })
+        .sort((a, b) => a.type.localeCompare(b.type));
+};
+
+export const createColorByIndex = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
     return `hsl(${hue},50%,75%)`;
 };
 
-/* const setNodeGradientColor = (normalizedIndex: number): string => {
-    // Interpolate hue from 240 (blue) to 0 (red)
+const setNodeGradientColor = (normalizedIndex: number): string => {
+    // Interpolate hue from 70 (yellow-green) to 0 (red)
     const hue = 70 - normalizedIndex * 70;
     // Use fixed saturation and lightness values
     return `hsl(${hue}, 100%, 50%)`;
-}; */
-
-type ColorMapForClusters = {
-    [key: string]: string;
 };
 
-export const getUniqueSamplingTimes = (nodes: CustomNode[]) => {
-    const uniqueSamplingTimes = nodes.filter((group, index, self) => {
-        return index === self.findIndex((t) => t.registeredAt === group.registeredAt);
+export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
+    const times = nodes.map((node) => node.registeredAt);
+    const uniqueTimes = [...new Set(times)];
+
+    const sortedTimes = uniqueTimes.sort((a, b) => {
+        const dateA = parseGermanDateFormat(a);
+        const dateB = parseGermanDateFormat(b);
+        return dateA.getTime() - dateB.getTime();
     });
-    uniqueSamplingTimes.sort((a, b) => {
-        if (a.registeredAt && b.registeredAt) {
-            return new Date(a.registeredAt).getTime() - new Date(b.registeredAt).getTime();
-        }
-        return 0;
-    });
-    return uniqueSamplingTimes;
+
+    return sortedTimes;
 };
 
 const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     // Extract unique cluster
     const cluster = cases.map((caseData) => {
-        return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
+        return caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned");
     });
     return [...new Set(cluster)];
-};
-
-const sortCluster = (uniqueCluster: string[], selectedOutbreak: OutbreakSchema | null) => {
-    const sortedCluster = uniqueCluster.sort();
-
-    //find the index of the group "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const noOutbreakIndex = sortedCluster.indexOf("Keinem Ausbruch zugewiesen");
-    if (noOutbreakIndex !== -1) {
-        sortedCluster.splice(noOutbreakIndex, 1);
-        sortedCluster.push("Keinem Ausbruch zugewiesen");
-    }
-
-    // if no outbreak is selected return the sorted cluster -> no special sorting needed for dashboard graph
-    if (!selectedOutbreak) return sortedCluster;
-
-    // find the index of the selected outbreak in the sorted cluster and put it at the beginning of the array
-    const outbreakIndex = sortedCluster.indexOf(selectedOutbreak?.name);
-    if (outbreakIndex !== -1) {
-        sortedCluster.splice(outbreakIndex, 1);
-        sortedCluster.unshift(selectedOutbreak?.name);
-    }
-
-    return sortedCluster;
-};
-
-export const createColorMapForClusters = (cases: CaseWithRelationships[], analysisSettings: AnalysisSettings) => {
-    const selectedOutbreak = analysisSettings.selectedOutbreak;
-    const colorPalette = analysisSettings.colorPaletteNodes;
-
-    // Extract unique cluster
-    const uniqueCluster = getUniqueClusterOfCases(cases);
-
-    // Sort cluster that the selected outbreak is at the beginning of the array and the cluster "Keinem Ausbruch zugewiesen" at the end
-    const sortedCluster = sortCluster(uniqueCluster as string[], selectedOutbreak);
-
-    const colorMapForClusters: ColorMapForClusters = {};
-    sortedCluster.forEach((cluster, index) => {
-        if (cluster === "Keinem Ausbruch zugewiesen") {
-            // the cluster "Keinem Ausbruch zugewiesen" gets a grey color which is always the last color in the color palette
-            colorMapForClusters[cluster] = colorPalette[colorPalette.length - 1];
-        } else {
-            // the color pallete has 34 specific colors
-            // if there are more clusters than colors we use the setNodeColor function to generate a color
-            colorMapForClusters[cluster] = colorPalette[index] || setNodeColor(index);
-        }
-    });
-
-    return colorMapForClusters;
 };
 
 const filterCasesByOutbreak = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
@@ -208,20 +273,12 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             geneticDistanceThreshold
         );
 
-        // Fall 1: Es gibt nur Fälle mit genetischer distanz
-
-        // because we only want to show cases which have a distance below the threshold and are connected to the selected outbreak
-        // we have to filter out cases without a sample because they have no distance
-        //graphCases = filterCasesWithoutSample(graphCases);
-        //casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
-
-        // Fall2: Die Kontaktfälle bleiben auch ohne genetische Distanz erhalten
+        // get contact cases which are left in graphCases
         const contactCases = graphCases.filter((caseData) => !caseData.sample);
 
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
 
-        // -> gehört zu Fall 2
         // we have to add contact cases in the end because they were filtered out by filterCasesByGeneticDistanceThreshold
         graphCases = graphCases.concat(contactCases);
     }
@@ -247,16 +304,16 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
     return graphCases;
 };
 
-const createColorMapForContacts = (contacts: ContactSchema[]) => {
+const createColorMapForContactLinks = (contacts: ContactSchema[]) => {
     const contactTypes = contacts.map((contact) => contact.type);
     const uniqueContactTypes = [...new Set(contactTypes)];
 
-    const colorMapForContacts: ColorMapForClusters = {};
+    const contactLinksColorMap: ContactLinksColorMap = {};
     uniqueContactTypes.forEach((contactType, index) => {
-        colorMapForContacts[contactType] = COLORPALETTELINKS[index] || setNodeColor(index);
+        contactLinksColorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColorByIndex(index);
     });
 
-    return colorMapForContacts;
+    return contactLinksColorMap;
 };
 
 const createCurvatures = (links: CustomLink[]) => {
@@ -312,7 +369,7 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
     const graphCasesIds = graphCases.map((caseData) => caseData.id);
 
     // create a color map for the contact types
-    const colorMapForContacts = createColorMapForContacts(contacts);
+    const contactLinksColorMap = createColorMapForContactLinks(contacts);
 
     const contactTracingLinks: CustomLink[] = [];
     // create link objects for contacts
@@ -323,7 +380,7 @@ const createContactLinks = (graphCases: CaseWithRelationships[], contacts: Conta
                 source: contact.case_id_1,
                 target: contact.case_id_2,
                 value: "",
-                color: colorMapForContacts[contact.type],
+                color: contactLinksColorMap[contact.type],
                 type: contact.type,
                 context: contact.context,
                 curvature: 0,
@@ -360,18 +417,13 @@ export const createGraphData = async (
     // calculate links that are in the mst by using kruskal's algorithm
     const mstLinks = createMSTLinks(graphCases, matrixDataAssembly, graph);
 
-    const colorMapForClusters = createColorMapForClusters(cases, analysisSettings);
-
     // create node objects for forced directed graph
     const nodes: CustomNode[] = graphCases.map((caseData) => {
-        const outbreakName = caseData?.outbreak?.name || "Keinem Ausbruch zugewiesen";
-
         return {
             id: caseData.id,
             caseId: caseData.case_id,
             caseData: caseData,
-            cluster: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
-            color: colorMapForClusters[outbreakName],
+            cluster: caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned"),
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
     });
@@ -382,9 +434,9 @@ export const createGraphData = async (
             source: graphCases[link.source].id,
             target: graphCases[link.target].id,
             value: link.weight.toString(),
-            color: "#CCC",
+            color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
             curvature: 0,
-            type: "Genetische Distanz",
+            type: i18next.t("linkTypes.geneticDistance"),
             context: "",
         };
     }) satisfies CustomLink[];

@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Label } from "../ui/label";
+import { Label } from "../../ui/label";
 import { useAnalysisStore } from "@/stores/analysis";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "../../ui/checkbox";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const analysisStore = useAnalysisStore();
