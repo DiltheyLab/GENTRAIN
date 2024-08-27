@@ -87,7 +87,7 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                    Es existieren noch keine Falldaten.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -96,8 +96,8 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length}{" "}
-                    row(s) selected.
+                    {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
+                    Spalte(n) ausgewählt.
                 </div>
                 <div className="space-x-2">
                     <Button
@@ -106,7 +106,7 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Previous
+                        Vorherige
                     </Button>
                     <Button
                         variant="outline"
@@ -114,7 +114,7 @@ export function UploadDataTable({ data }: { data: CaseWithRelationships[] }) {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Next
+                        Nächste
                     </Button>
                 </div>
             </div>
