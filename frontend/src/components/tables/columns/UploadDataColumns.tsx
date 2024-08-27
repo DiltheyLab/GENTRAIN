@@ -139,7 +139,7 @@ export const UploadDataColumns: ColumnDef<CaseWithRelationships>[] = [
                         <HoverCard key={case_id} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>
                                 <div className="mb-1">
-                                    <small className="cursor-default bg-slate-900 text-white py-1 px-2 rounded-xl font-bold">
+                                    <small className="cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl font-bold">
                                         {case_id}
                                     </small>
                                 </div>
