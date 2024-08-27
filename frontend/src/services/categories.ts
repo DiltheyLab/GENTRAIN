@@ -68,9 +68,9 @@ export const persistGroupsForCategories = async (
 ) => {
     let groups = [];
     for (const category of [
-        collectCategoryData(flexibleCategoryNames[0], caseData[7]),
-        collectCategoryData(flexibleCategoryNames[1], caseData[8]),
-        collectCategoryData(flexibleCategoryNames[2], caseData[9]),
+        collectCategoryData(flexibleCategoryNames[0], caseData[4]),
+        collectCategoryData(flexibleCategoryNames[1], caseData[5]),
+        collectCategoryData(flexibleCategoryNames[2], caseData[6]),
     ]) {
         if (!category) {
             continue;
