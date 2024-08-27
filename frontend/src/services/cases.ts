@@ -33,7 +33,7 @@ const extractContactDataForCase = async (contact: ContactSchema, caseId: number,
             case_id: contactCase?.case_id,
             type: contact.type,
             context: contact.context,
-            created: contact.created_at,
+            created_at: contact.created_at,
             updated_at: contact.updated_at,
         } as ContactForCase;
         return contactForCase;
@@ -44,7 +44,7 @@ const extractContactDataForCase = async (contact: ContactSchema, caseId: number,
         case_id: contactCase?.case_id,
         type: contact.type,
         context: contact.context,
-        created: contact.created_at,
+        created_at: contact.created_at,
         updated_at: contact.updated_at,
     } as ContactForCase;
     return contactForCase;
