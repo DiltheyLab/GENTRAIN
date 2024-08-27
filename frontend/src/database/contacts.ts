@@ -61,3 +61,18 @@ export const addContactForCases = (
     console.log(case1, case2);
     return [case1, case2];
 };
+
+export const collectContactsForCases = async (casesWithRelationships: { [caseId: number]: CaseWithRelationships }) => {
+    const contacts = await db.contacts.toArray();
+    for (const contact of contacts) {
+        if (contact.case_id_1 in casesWithRelationships && contact.case_id_2 in casesWithRelationships) {
+            [casesWithRelationships[contact.case_id_1], casesWithRelationships[contact.case_id_2]] = addContactForCases(
+                casesWithRelationships[contact.case_id_1],
+                casesWithRelationships[contact.case_id_2],
+                contact.type,
+                contact.context
+            );
+        }
+    }
+    return casesWithRelationships;
+};
