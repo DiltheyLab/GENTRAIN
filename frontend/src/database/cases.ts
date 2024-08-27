@@ -7,7 +7,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 import { useAppStore } from "@/stores/app";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
-import { addContactForCases, collectContactsForCases, GroupedContacts } from "./contacts";
+import { collectContactsForCases, GroupedContacts } from "./contacts";
 
 export interface CaseSchema {
     id: number;
