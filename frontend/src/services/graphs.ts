@@ -15,6 +15,7 @@ import {
     COLOR_PALETTE_NODES,
 } from "@/colors/colorPalettes";
 import { parseGermanDateFormat } from "./dates";
+import i18next from "i18next";
 
 export const getSelectedClusters = () => {
     const analysisStore = useAnalysisStore.getState();
@@ -31,7 +32,7 @@ export const getSelectedClusters = () => {
 export const createColorMapForNodes = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema | null) => {
     const clusters = getUniqueClusterOfCases(cases);
     const sortedClusters = sortClusterByOutbreakAndBackground(clusters);
-    const noOutbreakAssignedExists = sortedClusters.indexOf("Keinem Ausbruch zugewiesen");
+    const noOutbreakAssignedExists = sortedClusters.indexOf(i18next.t("clusterTypes.noOutbreakAssigned"));
     const colorMap = {} as ColorMap;
 
     // the selected outbreak is the first cluster
@@ -80,7 +81,9 @@ export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
         .sort((a, b) => a.cluster.localeCompare(b.cluster));
 
     //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const index = uniqueClustersOfNodes.findIndex((node) => node.cluster === "Keinem Ausbruch zugewiesen");
+    const index = uniqueClustersOfNodes.findIndex(
+        (node) => node.cluster === i18next.t("clusterTypes.noOutbreakAssigned")
+    );
     if (index !== -1) {
         const item = uniqueClustersOfNodes.splice(index, 1);
         uniqueClustersOfNodes.push(item[0]);
@@ -97,9 +100,9 @@ export const getUniqueClusters = (nodes: CustomNode[]) => {
 export const sortClusterByOutbreakAndBackground = (clusters: string[]) => {
     const outbreak = useAnalysisStore.getState().settings.selectedOutbreak?.name;
     let sortedClusters = [...clusters];
-    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
+    //find the index of the cluster "keinem Ausbruch zugewiesen" and put it at the end of the array
     const indexOfBackground = sortedClusters.findIndex(
-        (sortedCluster) => sortedCluster === "Keinem Ausbruch zugewiesen"
+        (sortedCluster) => sortedCluster === i18next.t("clusterTypes.noOutbreakAssigned")
     );
     if (indexOfBackground !== -1) {
         const item = sortedClusters.splice(indexOfBackground, 1);
@@ -151,7 +154,7 @@ export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
 const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     // Extract unique cluster
     const cluster = cases.map((caseData) => {
-        return caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen";
+        return caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned");
     });
     return [...new Set(cluster)];
 };
@@ -270,20 +273,12 @@ const getGraphCases = async (cases: CaseWithRelationships[], analysisSettings: A
             geneticDistanceThreshold
         );
 
-        // Fall 1: Es gibt nur Fälle mit genetischer distanz
-
-        // because we only want to show cases which have a distance below the threshold and are connected to the selected outbreak
-        // we have to filter out cases without a sample because they have no distance
-        //graphCases = filterCasesWithoutSample(graphCases);
-        //casesInOutbreak = filterCasesWithoutSample(casesInOutbreak);
-
-        // Fall2: Die Kontaktfälle bleiben auch ohne genetische Distanz erhalten
+        // get contact cases which are left in graphCases
         const contactCases = graphCases.filter((caseData) => !caseData.sample);
 
         // add cases with low genetic distance to the cases in the outbreak
         graphCases = casesInOutbreak.concat(casesWithLowGeneticDistance);
 
-        // -> gehört zu Fall 2
         // we have to add contact cases in the end because they were filtered out by filterCasesByGeneticDistanceThreshold
         graphCases = graphCases.concat(contactCases);
     }
@@ -428,7 +423,7 @@ export const createGraphData = async (
             id: caseData.id,
             caseId: caseData.case_id,
             caseData: caseData,
-            cluster: caseData.outbreak ? caseData.outbreak.name : "Keinem Ausbruch zugewiesen",
+            cluster: caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned"),
             registeredAt: caseData.registered_at.toLocaleDateString(),
         } satisfies CustomNode;
     });
@@ -441,7 +436,7 @@ export const createGraphData = async (
             value: link.weight.toString(),
             color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
             curvature: 0,
-            type: "Genetische Distanz",
+            type: i18next.t("linkTypes.geneticDistance"),
             context: "",
         };
     }) satisfies CustomLink[];

@@ -27,10 +27,10 @@ export const AnalysisGraphSettings = ({ showGraphSettings, updateShowGraphSettin
     }
 
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted ">
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none ">
             <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
             <Button
-                className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1"
+                className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
                 type="button"
                 size="sm"
                 variant={"ghost"}
@@ -38,7 +38,7 @@ export const AnalysisGraphSettings = ({ showGraphSettings, updateShowGraphSettin
             >
                 <X size={23} className="text-slate-700" />
             </Button>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 pointer-events-auto">
                 <div className="flex items-center space-x-3">
                     <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
                         Knotenbeschreibung

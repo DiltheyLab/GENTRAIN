@@ -28,7 +28,7 @@ export const ColorSelection = () => {
             </div>
             {!analysisStore.graphSettings.isColoredByTimeSpan && (
                 <>
-                    <ColorSection label="Selektierter Ausbruch umfärben" nodes={selectedOutbreak} />
+                    <ColorSection label="Selektierten Ausbruch umfärben" nodes={selectedOutbreak} />
                     <ColorSection label="Background umfärben" nodes={selectedBackground} />
                 </>
             )}
