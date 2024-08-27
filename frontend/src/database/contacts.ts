@@ -58,7 +58,6 @@ export const addContactForCases = (
     }
     groupedContacts2[case1.case_id].push({ type: type, context: context });
     case2.contacts = groupedContacts2;
-    console.log(case1, case2);
     return [case1, case2];
 };
 
