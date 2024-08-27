@@ -15,19 +15,18 @@ from backend.controllers.models.sequence_variants import (
 pathogens = Blueprint("pathogens", __name__)
 
 
-@pathogens.route("/<pathogen_id>/sequences/<fasta_id>/variants", methods=["POST"])
+@pathogens.route("/<pathogen_name>/sequences/<fasta_id>/variants", methods=["POST"])
 @validate()
 def get_sequence_variants(
-    body: SequenceVariantsRequestBodyModel, pathogen_id: str, fasta_id: str
+    body: SequenceVariantsRequestBodyModel, pathogen_name: str, fasta_id: str
 ):
     """Action to analyse sequence variants."""
     try:
         strategy = PathogenStrategyManager.get_sample_analysis_strategy(
-            pathogen_id=pathogen_id,
+            pathogen_name=pathogen_name,
             fasta_id=fasta_id,
             sequence=body.sequence,
         )
-
         result = strategy.execute()
         # finally return output as pydantic response model in json format
         return strategy.get_response(result)

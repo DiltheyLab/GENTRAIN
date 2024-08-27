@@ -10,8 +10,8 @@ COPY environment.yaml .
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /backend/environment.yaml
 # Ensure the Conda environment is activated
-RUN echo "source activate dashboard" > ~/.bashrc
-ENV PATH /opt/conda/envs/dashboard/bin:$PATH
+RUN echo "source activate gentrain" > ~/.bashrc
+ENV PATH /opt/conda/envs/gentrain/bin:$PATH
 
 # Copy the current directory contents into the container at the working directory
 COPY . .

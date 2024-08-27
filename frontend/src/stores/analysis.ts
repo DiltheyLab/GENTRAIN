@@ -1,15 +1,10 @@
 import { create } from "zustand";
 import { GroupSchema, GroupWithCategory } from "@/database/groups";
-import { CategorySchema } from "@/database/categories";
 import { useAppStore } from "./app";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { GraphData } from "@/types/graph";
+import { ColorMap, GraphData } from "@/types/graph";
 import { OutbreakSchema } from "@/database/outbreaks";
-import { COLORPALETTENODES } from "@/colors/colorPalettes";
-
-export type Filter = "all" | "outbreaks";
-export type Coloring = "normal" | "registered_at" | "outbreaks";
 
 export type GroupColoration = {
     group: GroupSchema;
@@ -35,20 +30,16 @@ export type AnalysisSettings = {
     dateRange: DateRange;
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
-    groupColorations: GroupColoration;
-    colorPaletteNodes: string[];
-    category: CategorySchema | null;
 };
 
 export type GraphSettings = {
     showNodeLabel: boolean;
     linkDistance: number;
-    graphDimension?: "2D" | "3D";
+    colorMap: ColorMap;
+    isColoredByTimeSpan: boolean;
     nodeSize?: number;
     linkWidth?: number;
-    zoomToFit?: boolean;
     charge?: number;
-    coloring?: Coloring;
 };
 
 export interface AnalysisStore {
@@ -66,7 +57,9 @@ export interface AnalysisStore {
 
 export const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
-    linkDistance: 50,
+    linkDistance: 70,
+    colorMap: {},
+    isColoredByTimeSpan: false,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
@@ -83,9 +76,6 @@ export const getDefaultSettings = (): AnalysisSettings => {
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
-        groupColorations: [],
-        colorPaletteNodes: COLORPALETTENODES,
-        category: null,
     };
 };
 

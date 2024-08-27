@@ -9,7 +9,7 @@ import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 export const Pathogens = {
     "Covid-19": { type: PathogenTypeName.virus, geneticDistanceThreshold: 2 },
     MRSA: { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 20 },
-    VRE: { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 10 },
+    "Enterococcus Faecium": { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 10 },
 };
 
 export interface PathogenSchema {
@@ -32,7 +32,7 @@ export const getAllPathogensWithRelationships = async () => {
     for (const key in cases) {
         pathogensWithRelationships[key] = cases[key];
         // retrieve pathogen schema object
-        const pathogenType = await db.pathogen_types.where({ pathogenid: cases[key].pathogen_type_id }).first();
+        const pathogenType = await db.pathogen_types.where({ id: cases[key].pathogen_type_id }).first();
         pathogensWithRelationships[key].pathogen_type = pathogenType;
     }
     return pathogensWithRelationships;
