@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { createGraphData } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { AnalysisSettings, useAnalysisStore } from "@/stores/analysis";
+import { useAnalysisStore } from "@/stores/analysis";
 import { Graph2D } from "../graphs/Graph2D";
 import { AnalysisGraphSettings } from "./AnalysisGraphSettings";
 import { Legend } from "../graphs/panelLayout/Legend";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { CaseWithRelationships } from "@/database/cases";
-import { ContactSchema } from "@/database/contacts";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
 import { useLocation } from "react-router-dom";
+import { GraphDataGenerator } from "@/services/Graph/GraphDataGenerator";
 
 export const AnalysisVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -41,17 +39,13 @@ export const AnalysisVisualizationPanel = () => {
             return;
         }
 
-        const getGraphData = async (
-            distanceMatrixAssembly: DistanceMatrixAssembly,
-            cases: CaseWithRelationships[],
-            settings: AnalysisSettings,
-            contacts: ContactSchema[]
-        ) => {
-            const graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
-            analysisStore.updateGraphData(graphData);
-        };
-
-        getGraphData(distanceMatrixAssembly, cases, analysisStore.settings, contacts);
+        const graphDataGenerator = new GraphDataGenerator(
+            cases,
+            distanceMatrixAssembly,
+            contacts,
+            analysisStore.settings
+        );
+        graphDataGenerator.execute().then((graphData) => analysisStore.updateGraphData(graphData));
     }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
 
     return (

@@ -1,4 +1,4 @@
-import { createGraphData, createColorMapForNodes, findClustersOfNodes } from "@/services/graphs";
+import { createColorMapForNodes } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -14,6 +14,8 @@ import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
+import { GraphDataGenerator } from "@/services/Graph/GraphDataGenerator";
+import { ClusterAnalyser } from "@/services/Graph/ClusterAnalyser";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,14 +46,14 @@ export const DashboardVisualizationPanel = () => {
             settings: AnalysisSettings,
             contacts: ContactSchema[]
         ) => {
-            let graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
-            if (
-                dashboardStore.graphSettings.coloringMode === "clusters" &&
-                dashboardStore.settings.clusteringThreshold
-            ) {
-                const { nodes } = findClustersOfNodes(graphData, dashboardStore.settings.clusteringThreshold);
-                graphData = { nodes, links: graphData.links };
+            const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
+            let graphData = await graphDataGenerator.execute();
+
+            if (dashboardStore.graphSettings.coloringMode === "clusters") {
+                const clusterAnalyser = new ClusterAnalyser(settings.clusteringThreshold);
+                graphData = clusterAnalyser.getClusteredGraphData(graphData);
             }
+
             dashboardStore.updateGraphData(graphData);
             const colorMap = createColorMapForNodes(undefined, undefined, graphData.nodes);
             dashboardStore.updateGraphSettings({ colorMap });
