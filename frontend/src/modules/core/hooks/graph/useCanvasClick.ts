@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CaseWithRelationships } from "../../models/cases";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const useCanvasClick = (updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

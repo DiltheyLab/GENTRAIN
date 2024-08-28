@@ -1,5 +1,5 @@
 import { ColorMap, CustomLink, CustomNode } from "@/modules/core/types/graph";
-import { Label } from "../ui/Label";
+import { Label } from "@/modules/core/components/ui/Label";
 import {
     getRegisteredAtTimestamps,
     getSelectedClusters,
@@ -9,7 +9,7 @@ import {
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "../../helpers/colors";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 
 type LegendProps = {
     nodes: CustomNode[];

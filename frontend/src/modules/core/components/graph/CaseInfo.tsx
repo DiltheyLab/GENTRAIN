@@ -1,13 +1,12 @@
-import { Button } from "../ui/Button";
-import { X } from "lucide-react";
-import { CaseInfoItem } from "./CaseInfoItem";
-import { useTranslation } from "react-i18next";
-import { CaseWithRelationships } from "../../models/cases";
-
 type CaseInfoProps = {
     selectedCase: CaseWithRelationships | null;
     updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void;
 };
+import { Button } from "@/modules/core/components/ui/Button";
+import { X } from "lucide-react";
+import { CaseInfoItem } from "./CaseInfoItem";
+import { useTranslation } from "react-i18next";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) => {
     const { t } = useTranslation();

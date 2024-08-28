@@ -1,15 +1,15 @@
 import Dexie, { type EntityTable } from "dexie";
-import { AnalysisSchema } from "../models/analyses";
-import { CaseSchema } from "../models/cases";
-import { CategorySchema } from "../models/categories";
-import { ContactSchema } from "../models/contacts";
-import { DistanceMatricesSchema } from "../models/distance_matrices";
-import { DistancesSchema } from "../models/distances";
-import { GroupSchema } from "../models/groups";
-import { OutbreakSchema } from "../models/outbreaks";
-import { PathogenTypeSchema, PathogenTypeName } from "../models/pathogen_types";
-import { PathogenSchema, Pathogens } from "../models/pathogens";
-import { SampleSchema } from "../models/samples";
+import { AnalysisSchema } from "@/modules/core/models/analyses";
+import { CaseSchema } from "@/modules/core/models/cases";
+import { CategorySchema } from "@/modules/core/models/categories";
+import { ContactSchema } from "@/modules/core/models/contacts";
+import { DistanceMatricesSchema } from "@/modules/core/models/distance_matrices";
+import { DistancesSchema } from "@/modules/core/models/distances";
+import { GroupSchema } from "@/modules/core/models/groups";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { PathogenSchema, Pathogens } from "@/modules/core/models/pathogens";
+import { SampleSchema } from "@/modules/core/models/samples";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;

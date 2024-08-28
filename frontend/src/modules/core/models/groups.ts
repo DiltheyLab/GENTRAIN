@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { CategorySchema, persistCategoryIfNotExist } from "./categories";
+import { CategorySchema, persistCategoryIfNotExist } from "@/modules/core/models/categories";
 import { db } from "@/core/infrastructure/database";
-import { collectCategoryData } from "../helpers/categories";
+import { collectCategoryData } from "@/modules/core/helpers/categories";
 
 export interface GroupSchema {
     id: number;

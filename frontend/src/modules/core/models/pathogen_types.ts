@@ -1,6 +1,6 @@
 import { db } from "@/core/infrastructure/database";
-import { PathogenSchema } from "./pathogens";
-import { useCoreStore } from "../stores/core";
+import { PathogenSchema } from "@/modules/core/models/pathogens";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export enum PathogenTypeName {
     bacteria = "bacteria",

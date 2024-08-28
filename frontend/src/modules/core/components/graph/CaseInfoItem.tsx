@@ -1,5 +1,5 @@
-import { Label } from "../ui/Label";
-import { CopyToClipboardButton } from "../ui/CopyToClipboardButton";
+import { CopyToClipboardButton } from "@/modules/core/components/ui/CopyToClipboardButton";
+import { Label } from "@/modules/core/components/ui/Label";
 
 type CaseInfoItemProps = {
     label: string;

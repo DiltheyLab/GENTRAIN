@@ -2,9 +2,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/modules/core/components/ui/
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
-import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
+import { exportDatabaseToJson, importDataFromJson } from "@/modules/core/helpers/database";
 import { useRef } from "react";
-import { PathogenSwitch } from "../ui/PathogenSwitch";
+import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);

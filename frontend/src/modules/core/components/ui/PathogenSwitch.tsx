@@ -4,8 +4,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/componen
 import { useState } from "react";
 import { useGetAllPathogenTypes } from "@/modules/core/hooks/database/pathogen_types/useGetAllPathogenTypes";
 import { useTranslation } from "react-i18next";
-import { useCoreStore } from "../../stores/core";
-import { PathogenTypeWithRelationships } from "../../models/pathogen_types";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { PathogenTypeWithRelationships } from "@/modules/core/models/pathogen_types";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
-import { CaseWithRelationships } from "@/database/cases";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { Loader2 } from "lucide-react";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "../../helpers/colors";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 
 type Graph2DProps = {
     data: GraphData;

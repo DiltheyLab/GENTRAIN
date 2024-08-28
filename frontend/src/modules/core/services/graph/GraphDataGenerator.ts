@@ -3,11 +3,11 @@ import { ContactLinksColorMap, CustomLink, CustomNode, Link } from "@/modules/co
 import { GraphCaseCollector } from "./GraphCaseCollector";
 import { Kruskal } from "./Kruskal";
 import i18next from "i18next";
-import { createColorByIndex } from "../../helpers/graphs";
-import { COLOR_FOR_GENETIC_DISTANCE_LINKS, COLOR_PALETTE_LINKS } from "../../helpers/colors";
-import { CaseWithRelationships } from "../../models/cases";
-import { ContactSchema } from "../../models/contacts";
-import { DistanceMatrixAssembly } from "../../models/distance_matrices";
+import { createColorByIndex } from "@/modules/core/helpers/graphs";
+import { COLOR_FOR_GENETIC_DISTANCE_LINKS, COLOR_PALETTE_LINKS } from "@/modules/core/helpers/colors";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { ContactSchema } from "@/modules/core/models/contacts";
+import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 
 export class GraphDataGenerator {
     private nodes: CustomNode[] = [];

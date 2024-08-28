@@ -1,6 +1,6 @@
 import { db } from "@/core/infrastructure/database";
 import { create } from "zustand";
-import { PathogenSchema, PathogenWithRelationships } from "../models/pathogens";
+import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 
 interface CoreState {
     activePathogen: PathogenSchema | null;

@@ -1,5 +1,5 @@
 import { db } from "@/core/infrastructure/database";
-import { DistanceMatrix } from "../services/distance_matrix/DistanceMatrix";
+import { DistanceMatrix } from "@/modules/core/services/distance_matrix/DistanceMatrix";
 
 export interface DistanceMatricesSchema {
     id: number;

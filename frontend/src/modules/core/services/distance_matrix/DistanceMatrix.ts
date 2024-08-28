@@ -1,5 +1,5 @@
-import { DistanceMatrixAssembly } from "../../models/distance_matrices";
-import { getAllDistancesForDistanceMatrixWithFastaIds } from "../../models/distances";
+import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
+import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/modules/core/models/distances";
 
 export class DistanceMatrix {
     private id: number;
