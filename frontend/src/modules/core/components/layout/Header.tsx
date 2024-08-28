@@ -34,7 +34,7 @@ export const Header = () => {
                     to="/data-management"
                     className={`${isSelected("data-management")} transition-colors hover:text-foreground`}
                 >
-                    Datenbestand
+                    Datenverwaltung
                 </Link>
                 <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground`}>
                     Hilfe/FAQ
