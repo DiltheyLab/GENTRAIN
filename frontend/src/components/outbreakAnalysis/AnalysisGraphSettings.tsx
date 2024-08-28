@@ -20,6 +20,7 @@ export const AnalysisGraphSettings = ({ showGraphSettings, updateShowGraphSettin
                 type="button"
                 variant="ghost"
                 onClick={() => updateShowGraphSettings(true)}
+                title="Grapheinstellungen"
             >
                 <Settings />
             </Button>

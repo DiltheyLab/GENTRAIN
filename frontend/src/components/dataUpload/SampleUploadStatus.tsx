@@ -20,7 +20,7 @@ const getColorClassNames = (status: string) => {
 export function SampleUploadStatus() {
     const { uploads, isUploading, removeUpload } = useSampleUploadStore();
 
-    if (Object.keys(uploads).length === 0) return;
+    if (Object.keys(uploads).length === 0) return null;
     return (
         <div className="bg-muted p-6">
             <div className="mb-2 flex items-center text-sm">

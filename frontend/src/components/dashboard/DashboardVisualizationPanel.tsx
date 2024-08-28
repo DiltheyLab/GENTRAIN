@@ -1,4 +1,4 @@
-import { createGraphData, createColorMapForNodes, findClustersOfNodes } from "@/services/graphs";
+import { createColorMapForNodes } from "@/services/graphs";
 import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
@@ -8,32 +8,35 @@ import { Graph2D } from "../graphs/Graph2D";
 import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { CaseWithRelationships } from "@/database/cases";
 import { AnalysisSettings } from "@/stores/analysis";
-import { useDashboardGraphStore } from "@/stores/dashboardGraph";
+import { useDashboardStore } from "@/stores/dashboard";
 import { useGetAllContacts } from "@/hooks/database/contacts/useGetAllContacts";
 import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
 import { CaseInfo } from "../graphs/panelLayout/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/hooks/useCreateColorMapForTimeSpan";
+import { GraphDataGenerator } from "@/services/Graph/GraphDataGenerator";
+import { ClusterAnalyser } from "@/services/Graph/ClusterAnalyser";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
-    const dashboardGraphStore = useDashboardGraphStore();
+    const dashboardStore = useDashboardStore();
+
     const activePathogen = useAppStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
-    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardGraphStore.graphSettings;
+    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardStore.graphSettings;
     useCreateColorMapForTimeSpan(
-        dashboardGraphStore.graphData.nodes,
-        dashboardGraphStore.graphSettings,
-        dashboardGraphStore.updateGraphSettings
+        dashboardStore.graphData.nodes,
+        dashboardStore.graphSettings,
+        dashboardStore.updateGraphSettings
     );
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
-            dashboardGraphStore.updateGraphData({ nodes: [], links: [] });
+            dashboardStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
 
@@ -43,24 +46,21 @@ export const DashboardVisualizationPanel = () => {
             settings: AnalysisSettings,
             contacts: ContactSchema[]
         ) => {
-            let graphData = await createGraphData(distanceMatrixAssembly, cases, settings, contacts);
-            if (dashboardGraphStore.graphSettings.coloringMode === "clusters") {
-                const { nodes } = findClustersOfNodes(graphData, dashboardGraphStore.settings.clusteringThreshold);
-                graphData = { nodes, links: graphData.links };
+            const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
+            let graphData = await graphDataGenerator.execute();
+
+            if (dashboardStore.graphSettings.coloringMode === "clusters") {
+                const clusterAnalyser = new ClusterAnalyser(settings.clusteringThreshold);
+                graphData = clusterAnalyser.getClusteredGraphData(graphData);
             }
-            dashboardGraphStore.updateGraphData(graphData);
+
+            dashboardStore.updateGraphData(graphData);
             const colorMap = createColorMapForNodes(undefined, undefined, graphData.nodes);
-            dashboardGraphStore.updateGraphSettings({ colorMap });
+            dashboardStore.updateGraphSettings({ colorMap });
         };
 
-        getGraphData(distanceMatrixAssembly, cases, dashboardGraphStore.settings, contacts);
-    }, [
-        cases,
-        distanceMatrixAssembly,
-        contacts,
-        dashboardGraphStore.settings,
-        dashboardGraphStore.graphSettings.coloringMode,
-    ]);
+        getGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
+    }, [cases, distanceMatrixAssembly, contacts, dashboardStore.settings, dashboardStore.graphSettings.coloringMode]);
 
     return (
         <div
@@ -68,21 +68,21 @@ export const DashboardVisualizationPanel = () => {
             className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
         >
             <Legend
-                nodes={dashboardGraphStore.graphData.nodes}
-                links={dashboardGraphStore.graphData.links}
-                colorMap={dashboardGraphStore.graphSettings.colorMap}
-                variant={dashboardGraphStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
+                nodes={dashboardStore.graphData.nodes}
+                links={dashboardStore.graphData.links}
+                colorMap={dashboardStore.graphSettings.colorMap}
+                variant={dashboardStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
             <CaseInfo
                 selectedCase={selectedCase}
                 updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
             />
             <Graph2D
-                data={dashboardGraphStore.graphData}
+                data={dashboardStore.graphData}
                 width={width - 8}
                 height={height - 8}
-                colorMap={dashboardGraphStore.graphSettings.colorMap}
-                coloringMode={dashboardGraphStore.graphSettings.coloringMode}
+                colorMap={dashboardStore.graphSettings.colorMap}
+                coloringMode={dashboardStore.graphSettings.coloringMode}
                 cases={cases}
                 charge={charge}
                 linkDistance={linkDistance}

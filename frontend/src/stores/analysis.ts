@@ -65,6 +65,7 @@ export const defaultGraphSettings: GraphSettings = {
 
 export const getDefaultSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useAppStore.getState().activePathogen?.genetic_distance_threshold;
+
     return {
         includeAllCases: true,
         selectedOutbreak: null,

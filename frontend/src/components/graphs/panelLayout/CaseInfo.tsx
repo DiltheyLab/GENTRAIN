@@ -12,7 +12,7 @@ type CaseInfoProps = {
 export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) => {
     const { t } = useTranslation();
 
-    if (!selectedCase) return;
+    if (!selectedCase) return null;
 
     return (
         <fieldset className="absolute z-10 right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/80 pointer-events-none">
@@ -26,7 +26,7 @@ export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) =>
             >
                 <X size={23} className="text-slate-700" />
             </Button>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedCase.case_id} copyToClipboard />
                 <CaseInfoItem
                     label="Sequenz ID"

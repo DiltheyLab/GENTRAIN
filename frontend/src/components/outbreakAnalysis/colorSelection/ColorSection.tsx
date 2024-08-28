@@ -7,7 +7,7 @@ type ColorSectionProps = {
     label: string;
 };
 export const ColorSection = ({ nodes, label }: ColorSectionProps) => {
-    if (nodes.length === 0) return;
+    if (nodes.length === 0) return null;
 
     return (
         <>

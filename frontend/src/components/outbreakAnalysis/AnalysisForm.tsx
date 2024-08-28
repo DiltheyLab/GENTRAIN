@@ -9,12 +9,7 @@ import { useAppStore } from "@/stores/app";
 import { useNavigate } from "react-router-dom";
 import { useGetAnalysesForActivePathogen } from "@/hooks/database/analyses/useGetAnalysesForActivePathogen";
 
-type AnalysisFormProps = {
-    changeIsOpen: () => void;
-    isOpen: boolean;
-};
-
-export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
+export const AnalysisForm = () => {
     const [analysisName, setAnalysisName] = useState("");
     const analysisStore = useAnalysisStore();
     const analyses = useGetAnalysesForActivePathogen();
@@ -36,8 +31,6 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
 
     const safeAnalysis = async () => {
         if (!activePathogen) {
-            changeIsOpen();
-
             navigate("/");
             toast({
                 title: "Fehler beim Speichern der Analyse",
@@ -55,8 +48,7 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
             analysisStore.updateId(id);
             analysisStore.updateSettings(defaultSettings);
             analysisStore.updateGraphSettings(defaultGraphSettings);
-            //close the dialog after saving the analysis
-            changeIsOpen();
+            navigate(`${analysisName}`);
         } catch (error) {
             toast({
                 title: "Fehler beim Speichern der Analyse",
@@ -77,7 +69,7 @@ export const AnalysisForm = ({ changeIsOpen, isOpen }: AnalysisFormProps) => {
                 placeholder="Analyse 1"
                 onChange={(e) => setAnalysisName(e.target.value)}
             />
-            {!isUniqueName() && isOpen && (
+            {!isUniqueName() && (
                 <p className="text-red-500 text-sm">
                     Der Name der Analyse ist bereits vergeben. Bitte wählen Sie einen anderen.
                 </p>

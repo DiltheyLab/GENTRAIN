@@ -16,6 +16,7 @@ const defaultGraphSettings: GraphSettings = {
 
 export const getDefaultSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useAppStore.getState().activePathogen?.genetic_distance_threshold;
+
     return {
         includeAllCases: true,
         selectedOutbreak: null,
@@ -32,7 +33,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
     };
 };
 
-export interface DashboardGraphStore {
+export interface DashboardStore {
     graphData: GraphData;
     settings: AnalysisSettings;
     graphSettings: GraphSettings;
@@ -40,7 +41,7 @@ export interface DashboardGraphStore {
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
 }
-export const useDashboardGraphStore = create<DashboardGraphStore>((set) => {
+export const useDashboardStore = create<DashboardStore>((set) => {
     // Initialize the settings with the default settings and variables from add store
     const initializedSettings = getDefaultSettings();
 
