@@ -1,11 +1,11 @@
-import { Label } from "../../../../core/components/ui/Label";
-import MultipleSelector, { Option } from "../../../../core/components/ui/MultiSelect";
+import { Label } from "@/core/components/ui/Label";
+import MultipleSelector, { Option } from "@/core/components/ui/MultiSelect";
 import { SelectedBackground, useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { OutbreakSchema } from "@/database/outbreaks";
-import { RadioGroup, RadioGroupItem } from "../../../../core/components/ui/RadioGroup";
+import { RadioGroup, RadioGroupItem } from "@/core/components/ui/RadioGroup";
 import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
-import { GroupWithCategory } from "@/database/groups";
 import { useTranslation } from "react-i18next";
+import { GroupWithCategory } from "@/modules/core/models/groups";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaksForActivePathogen();

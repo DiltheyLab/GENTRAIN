@@ -1,6 +1,6 @@
-import { Layout } from "../components/layout/Layout";
+import { Layout } from "@/modules/core/components/layout/Layout";
 import { Settings } from "../components/settings/Settings";
-import { AnalysisVisualizationPanel } from "../components/graph/VisualizationPanel";
+import { VisualizationPanel } from "../components/graph/VisualizationPanel";
 
 export const Analysis = () => {
     return (
@@ -11,7 +11,7 @@ export const Analysis = () => {
                         <Settings />
                     </div>
                     <div className="w-full md:w-2/3 lg:w-3/4">
-                        <AnalysisVisualizationPanel />
+                        <VisualizationPanel />
                     </div>
                 </div>
             </div>
