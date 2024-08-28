@@ -1,8 +1,8 @@
 import { PathogenWithRelationships } from "@/database/pathogens";
-import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
+import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export abstract class SampleAnalysisStrategy {
-    protected sampleUploadState: SampleUploadState;
+    protected sampleUploadState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
 
@@ -10,7 +10,7 @@ export abstract class SampleAnalysisStrategy {
     abstract getAndPersistVariantsForSamples(): void;
 
     constructor(pathogen: PathogenWithRelationships) {
-        this.sampleUploadState = useSampleUploadStore.getState();
+        this.sampleUploadState = useDataManagementStore.getState();
         this.pathogen = pathogen;
     }
 

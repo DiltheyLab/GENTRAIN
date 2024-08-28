@@ -3,13 +3,13 @@ import { getOrCreateDistanceMatrixIdByPathogenId } from "@/database/distance_mat
 import { PathogenSchema } from "@/database/pathogens";
 import { SampleSchema } from "@/database/samples";
 import { extractSamplesFromCases } from "@/services/samples";
-import { SampleUploadState, useSampleUploadStore } from "@/stores/upload";
+import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import Aioli from "@biowasm/aioli";
 import { deleteDistancesByPathogenId } from "@/database/distances";
 import { db } from "@/database/db";
 
 export abstract class DistanceCalculationStrategy {
-    protected sampleUploadState: SampleUploadState;
+    protected sampleUploadState: DataManagementState;
     protected pathogen: PathogenSchema;
     protected cli: any;
     protected distanceMatrixId: number | undefined;
@@ -18,7 +18,7 @@ export abstract class DistanceCalculationStrategy {
     protected abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
-        this.sampleUploadState = useSampleUploadStore.getState();
+        this.sampleUploadState = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.samples = [];
     }
@@ -74,7 +74,7 @@ export abstract class DistanceCalculationStrategy {
                     distance_matrix_id: this.distanceMatrixId,
                 });
             }
-            useSampleUploadStore.getState().incrementDistanceCalculationCount();
+            useDataManagementStore.getState().incrementDistanceCalculationCount();
         }
     };
 }

@@ -1,17 +1,21 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.app.json"
+        },
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"],
+            "@/core/*": ["./src/modules/core/*"],
+            "@/dashboard/*": ["./src/modules/dashboard/*"],
+            "@/outbreak_analysis/*": ["./src/modules/outbreak_analysis/*"],
+            "@/data_management/*": ["./src/modules/data_management/*"]
+        }
     }
-  ],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
 }

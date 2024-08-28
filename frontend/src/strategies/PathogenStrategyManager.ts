@@ -1,5 +1,5 @@
 import { PathogenTypeName } from "@/database/pathogen_types";
-import { GentrainException } from "@/exceptions/GentrainException";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { useAppStore } from "@/stores/app";
 import { BacterialDistanceCalculation } from "@/strategies/distance_calculation/BacterialDistanceCalculation";
 import { ViralDistanceCalculation } from "@/strategies/distance_calculation/ViralDistanceCalculation";

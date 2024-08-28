@@ -1,4 +1,4 @@
-import { readFileAsText, readFilesAsText } from "@/services/files";
+import { readFileAsText, readFilesAsText } from "@/modules/core/helpers/files";
 
 export const fileReadingStrategies = {
     singleFile: async (files: FileList | null) => {

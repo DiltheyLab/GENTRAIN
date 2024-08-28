@@ -1,12 +1,12 @@
 import { caseRules, CaseSchema } from "@/database/cases";
 import { contactRules, ContactSchema } from "@/database/contacts";
 import { db } from "@/database/db";
-import { GentrainException } from "@/exceptions/GentrainException";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
-import { parseGermanDateFormat } from "@/services/dates";
+import { parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { useAppStore } from "@/stores/app";
 import { getOrPersistOutbreak } from "@/services/outbreaks";
-import { useSampleUploadStore } from "@/stores/upload";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { getPathogenTypeForActivePathogen } from "@/database/pathogen_types";
 import { PathogenStrategyManager } from "../PathogenStrategyManager";
 
@@ -48,7 +48,7 @@ export const persistenceStrategies = {
             return;
         }
         const activePathogenTypeName = activePathogenType.name.toString();
-        useSampleUploadStore.getState().setIsUploading(true);
+        useDataManagementStore.getState().setIsUploading(true);
 
         // analyse sample depending on pathogen type to receive variants for distance calculations
         const sampleAnalysisStrategy = PathogenStrategyManager.getSampleAnalysisStrategy(activePathogenTypeName);
@@ -59,7 +59,7 @@ export const persistenceStrategies = {
         const distanceCalculationStrategy =
             PathogenStrategyManager.getDistanceCalculationStrategy(activePathogenTypeName);
         await distanceCalculationStrategy.execute();
-        useSampleUploadStore.getState().setIsUploading(false);
+        useDataManagementStore.getState().setIsUploading(false);
     },
     contactsStrategy: async (contactData: string[][]) => {
         const bulkData = [] as ContactSchema[];

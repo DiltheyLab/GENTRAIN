@@ -1,8 +1,8 @@
 import { CaseSchema, getAllCasesForPathogenWithRelationships } from "@/database/cases";
 import { db } from "@/database/db";
-import { GentrainException } from "@/exceptions/GentrainException";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { useAppStore } from "@/stores/app";
-import { useSampleUploadStore } from "@/stores/upload";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 const caseColumnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 const contactColumnNames = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
@@ -103,7 +103,7 @@ export const validationStrategies = {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                useSampleUploadStore.getState().changeUpload(sample.fastaId, "pending");
+                useDataManagementStore.getState().changeUpload(sample.fastaId, "pending");
             }
         }
 
