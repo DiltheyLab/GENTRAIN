@@ -12,6 +12,7 @@ import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/out
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { createColorMapForNodes } from "@/modules/core/helpers/graphs";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const OutbreakSelection = () => {
     const analysisStore = useOutbreakAnalysisStore();
