@@ -1,13 +1,8 @@
 export const COLOR_PALETTE_NODES = [
     "#FFD700", // gold
     "#8A2BE2", // blue violet
-    "#FF7F50", // coral
     "#00FA9A", // medium spring green
-    "#B22222", // firebrick
-    "#ADFF2F", // green yellow
-    "#00FF00", // green
     "#0000FF", // blue
-    "#FFFF00", // yellow
     "#FF00FF", // magenta
     "#00FFFF", // cyan
     "#800000", // maroon
@@ -16,7 +11,6 @@ export const COLOR_PALETTE_NODES = [
     "#800080", // purple
     "#008080", // teal
     "#000080", // navy
-    "#FF4500", // orange red
     "#2E8B57", // sea green
     "#DAA520", // goldenrod
     "#4B0082", // indigo
