@@ -2,16 +2,16 @@ import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/components/ui/Popover";
 import { useState } from "react";
-import { useAppStore } from "@/stores/app";
 import { useGetAllPathogenTypes } from "@/modules/core/hooks/database/pathogen_types/useGetAllPathogenTypes";
 import { useTranslation } from "react-i18next";
-import { PathogenTypeWithRelationships } from "@/database/pathogen_types";
+import { useCoreStore } from "../../stores/core";
+import { PathogenTypeWithRelationships } from "../../models/pathogen_types";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
     const pathogenTypes = useGetAllPathogenTypes();
-    const activePathogen = useAppStore((state) => state.activePathogen);
-    const updateActivePathogen = useAppStore((state) => state.updateActivePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const { t } = useTranslation();
 
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {

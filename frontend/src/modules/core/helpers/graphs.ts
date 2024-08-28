@@ -1,14 +1,10 @@
-import { CaseWithRelationships } from "@/database/cases";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { CustomNode, CustomLink, ColorMap } from "@/modules/core/types/graph";
-import { OutbreakSchema } from "@/database/outbreaks";
-import {
-    COLOR_FOR_CASES_WITHOUT_CLUSTERS,
-    COLOR_FOR_SELECTED_OUTBREAK,
-    COLOR_PALETTE_NODES,
-} from "@/modules/core/helpers/colors/colorPalettes";
 import { parseGermanDateFormat } from "./dates";
 import i18next from "i18next";
+import { OutbreakSchema } from "../models/outbreaks";
+import { CaseWithRelationships } from "../models/cases";
+import { COLOR_FOR_SELECTED_OUTBREAK, COLOR_FOR_CASES_WITHOUT_CLUSTERS, COLOR_PALETTE_NODES } from "./colors";
 
 export const getSelectedClusters = () => {
     const analysisStore = useOutbreakAnalysisStore.getState();

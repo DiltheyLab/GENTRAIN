@@ -1,4 +1,4 @@
-import { assembleDistanceMatrixByPathogenId, DistanceMatrixAssembly } from "@/database/distance_matrices";
+import { assembleDistanceMatrixByPathogenId, DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetDistanceMatrixAssemblyByPathogenId = (

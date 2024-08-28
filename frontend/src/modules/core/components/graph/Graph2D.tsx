@@ -3,8 +3,8 @@ import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-f
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import { CaseWithRelationships } from "@/database/cases";
 import { Loader2 } from "lucide-react";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors/colorPalettes";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "../../helpers/colors";
 
 type Graph2DProps = {
     data: GraphData;

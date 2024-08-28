@@ -5,7 +5,7 @@ import { forwardRef, useEffect } from "react";
 
 import { Badge } from "@/modules/core/components/ui/Badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/modules/core/components/ui/Command";
-import { cn } from "@/lib/utils";
+import { cn } from "@/core/helpers/cn";
 
 export interface Option {
     value: string;

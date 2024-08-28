@@ -1,11 +1,11 @@
-import { db } from "@/database/db";
-import { getGroupsForPathogenId } from "@/database/groups";
-import { getOutbreaksForPathogenId } from "@/database/outbreaks";
-import { useAppStore } from "@/stores/app";
+import { db } from "@/core/infrastructure/database";
+import { getGroupsForPathogenId } from "@/modules/core/models/groups";
+import { getOutbreaksForPathogenId } from "@/modules/core/models/outbreaks";
+import { useCoreStore } from "@/modules/core/stores/core";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetAllGroupsAndOutbreaksForActivePathogen = () => {
-    const activePathogen = useAppStore.getState().activePathogen;
+    const activePathogen = useCoreStore.getState().activePathogen;
     return useLiveQuery(async () => {
         if (!activePathogen) {
             return;

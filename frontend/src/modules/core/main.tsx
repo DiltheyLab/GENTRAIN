@@ -8,15 +8,14 @@ import { DataManagement } from "../data_management/pages/DataManagement.tsx";
 import "@/assets/css/main.css";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
-import translation_de from "@/translations/de/common.json";
-import error_de from "@/translations/de/error.json";
-
+import translation_de from "@/core/translations/de/common.json";
+import error_de from "@/core/translations/de/error.json";
 import { Toaster } from "./components/ui/Toaster.tsx";
 import { OutbreakAnalysisSelection } from "../outbreak_analysis/pages/OutbreakAnalysisSelection.tsx";
-import { PathogenDialog } from "./components/dataUpload/PathogenDialog.tsx";
 import { useCoreStore } from "./stores/core.ts";
-import { getAllPathogensWithRelationships, PathogenWithRelationships } from "./database/pathogens.ts";
 import { Analysis } from "../outbreak_analysis/pages/OutbreakAnalysis.tsx";
+import { PathogenDialog } from "./components/ui/PathogenDialog.tsx";
+import { getAllPathogensWithRelationships, PathogenWithRelationships } from "./models/pathogens.ts";
 
 i18next.init({
     interpolation: { escapeValue: false },

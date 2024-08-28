@@ -1,5 +1,5 @@
 import { CaseSchema, getAllCasesForPathogenWithRelationships } from "@/database/cases";
-import { db } from "@/database/db";
+import { db } from "@/core/infrastructure/database";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { useAppStore } from "@/stores/app";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";

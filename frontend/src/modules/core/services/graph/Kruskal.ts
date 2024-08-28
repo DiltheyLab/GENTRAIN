@@ -1,6 +1,6 @@
-import { CaseWithRelationships } from "@/database/cases";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
 import { type Link } from "@/modules/core/types/graph";
+import { CaseWithRelationships } from "../../models/cases";
+import { DistanceMatrixAssembly } from "../../models/distance_matrices";
 
 export class Kruskal {
     private numberOfNodes: number;

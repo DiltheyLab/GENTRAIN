@@ -3,7 +3,7 @@ import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/core/helpers/cn";
 import { Dialog, DialogContent } from "@/modules/core/components/ui/Dialog";
 
 // change original shadcn component with this fix: https://shadcnui-expansions.typeart.cc/docs/multiple-selector

@@ -1,8 +1,8 @@
 import { Button } from "../ui/Button";
 import { X } from "lucide-react";
-import { CaseWithRelationships } from "@/database/cases";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { useTranslation } from "react-i18next";
+import { CaseWithRelationships } from "../../models/cases";
 
 type CaseInfoProps = {
     selectedCase: CaseWithRelationships | null;

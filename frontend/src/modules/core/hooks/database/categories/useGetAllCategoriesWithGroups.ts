@@ -1,4 +1,4 @@
-import { CategoriesWithGroups, getAllCategoriesWithGroups } from "@/database/categories";
+import { CategoriesWithGroups, getAllCategoriesWithGroups } from "@/modules/core/models/categories";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetAllCategoriesWithGroups = (): CategoriesWithGroups[] | undefined => {

@@ -8,8 +8,8 @@ import {
     sortNoOutbreakAssignedToEndOfArray,
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors/colorPalettes";
 import { useTranslation } from "react-i18next";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "../../helpers/colors";
 
 type LegendProps = {
     nodes: CustomNode[];

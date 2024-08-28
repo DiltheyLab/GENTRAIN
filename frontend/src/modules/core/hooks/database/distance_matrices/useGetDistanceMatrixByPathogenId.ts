@@ -1,5 +1,4 @@
-import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "@/database/distance_matrices";
-
+import { DistanceMatricesSchema, getDistanceMatrixByPathogenId } from "@/modules/core/models/distance_matrices";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetDistanceMatrixByPathogenId = (

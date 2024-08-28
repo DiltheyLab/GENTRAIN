@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 import { CaseWithRelationships } from "./cases";
 
 export interface ContactSchema {

@@ -4,7 +4,7 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/database/db";
 import { useRef } from "react";
-import { PathogenSwitch } from "@/modules/core/components/layout/PathogenSwitch";
+import { PathogenSwitch } from "../ui/PathogenSwitch";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);

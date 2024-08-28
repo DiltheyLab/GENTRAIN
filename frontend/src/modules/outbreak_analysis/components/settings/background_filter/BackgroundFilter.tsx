@@ -1,8 +1,8 @@
-import { Label } from "../../../../core/components/ui/Label";
+import { Label } from "@/core/components/ui/Label";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { DateRangePicker } from "./DateRangePicker";
-import { Switch } from "../../../../core/components/ui/Switch";
-import { Input } from "../../../../core/components/ui/Input";
+import { Switch } from "@/core/components/ui/Switch";
+import { Input } from "@/core/components/ui/Input";
 
 export const BackgroundFilter = () => {
     const analysisStore = useOutbreakAnalysisStore();

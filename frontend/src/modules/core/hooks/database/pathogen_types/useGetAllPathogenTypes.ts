@@ -1,5 +1,5 @@
-import { db } from "@/database/db";
-import { getAllPathogenTypesWithRelationships } from "@/database/pathogen_types";
+import { db } from "@/core/infrastructure/database";
+import { getAllPathogenTypesWithRelationships } from "@/modules/core/models/pathogen_types";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetAllPathogenTypes = () => {

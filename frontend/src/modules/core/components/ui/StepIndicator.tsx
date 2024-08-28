@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/core/helpers/cn";
 
 export const StepIndicator = ({ className, children }: { className?: string; children: number | string }) => {
     return (

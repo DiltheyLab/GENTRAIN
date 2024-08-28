@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 import { GroupSchema } from "./groups";
 
 export interface CategorySchema {

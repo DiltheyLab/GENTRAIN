@@ -1,5 +1,6 @@
 import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
+
 export interface AnalysisSchema {
     id: number;
     name: string;

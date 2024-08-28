@@ -1,4 +1,4 @@
-import { FileReaderResult } from "@/components/dataUpload/DataUploadFactory";
+import { FileReaderResult } from "@/modules/data_management/components/upload_section/DataUploadFactory";
 
 export const downloadFile = (blob: Blob, name: string) => {
     const jsonURL = window.URL.createObjectURL(blob);

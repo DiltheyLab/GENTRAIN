@@ -1,23 +1,23 @@
 import { useState } from "react";
-import { Label } from "../../../../core/components/ui/Label";
-import { Input } from "../../../../core/components/ui/Input";
-import { Button } from "../../../../core/components/ui/Button";
+import { Label } from "@/core/components/ui/Label";
+import { Input } from "@/core/components/ui/Input";
+import { Button } from "@/core/components/ui/Button";
 import {
     defaultGraphSettings,
     getDefaultSettings,
     useOutbreakAnalysisStore,
 } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { useToast } from "../../../../core/components/ui/UseToast";
-import { createAnalysis } from "@/database/analyses";
-import { useAppStore } from "@/stores/app";
+import { useToast } from "@/core/components/ui/UseToast";
 import { useNavigate } from "react-router-dom";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { createAnalysis } from "@/modules/core/models/analyses";
 
 export const AnalysisForm = () => {
     const [analysisName, setAnalysisName] = useState("");
     const analysisStore = useOutbreakAnalysisStore();
     const analyses = useGetAnalysesForActivePathogen();
-    const { activePathogen } = useAppStore();
+    const { activePathogen } = useCoreStore();
     const { toast } = useToast();
     const navigate = useNavigate();
 

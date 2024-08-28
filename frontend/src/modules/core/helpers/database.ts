@@ -1,5 +1,5 @@
 import { exportDB, importInto } from "dexie-export-import";
-import { db } from "../infrastructure/database";
+import { db } from "@/core/infrastructure/database";
 import { downloadFile } from "@/modules/core/helpers/files";
 
 export const importDataFromJson = async (file: Blob) => {

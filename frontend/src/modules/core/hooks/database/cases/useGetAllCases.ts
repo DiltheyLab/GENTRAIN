@@ -1,4 +1,4 @@
-import { CaseSchema, getAllCases } from "@/database/cases";
+import { CaseSchema, getAllCases } from "@/modules/core/models/cases";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetAllCases = (): CaseSchema[] | undefined => {

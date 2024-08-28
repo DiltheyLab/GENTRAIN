@@ -1,6 +1,6 @@
 import { caseRules, CaseSchema } from "@/database/cases";
 import { contactRules, ContactSchema } from "@/database/contacts";
-import { db } from "@/database/db";
+import { db } from "@/core/infrastructure/database";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
 import { parseGermanDateFormat } from "@/modules/core/helpers/dates";

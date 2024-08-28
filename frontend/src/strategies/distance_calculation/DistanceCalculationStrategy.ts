@@ -6,7 +6,7 @@ import { extractSamplesFromCases } from "@/services/samples";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import Aioli from "@biowasm/aioli";
 import { deleteDistancesByPathogenId } from "@/database/distances";
-import { db } from "@/database/db";
+import { db } from "@/core/infrastructure/database";
 
 export abstract class DistanceCalculationStrategy {
     protected sampleUploadState: DataManagementState;

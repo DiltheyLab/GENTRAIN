@@ -1,8 +1,8 @@
-import { CaseWithRelationships } from "@/database/cases";
-import { getDistancesFromSampleIdsBelowThreshold } from "@/database/distances";
-import { OutbreakSchema } from "@/database/outbreaks";
 import { AnalysisSettings, SelectedBackground } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { DateRange } from "react-day-picker";
+import { CaseWithRelationships } from "../../models/cases";
+import { getDistancesFromSampleIdsBelowThreshold } from "../../models/distances";
+import { OutbreakSchema } from "../../models/outbreaks";
 
 export class GraphCaseCollector {
     private casesInGraph: CaseWithRelationships[];

@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreaks";
 import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
-import { useAppStore } from "@/stores/app";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
+import { useCoreStore } from "../stores/core";
 
 export interface CaseSchema {
     id: number;
@@ -145,7 +145,7 @@ export const deleteCaseById = async (id: number) => {
 };
 
 export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
-    const activePathogen = useAppStore.getState().activePathogen;
+    const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
             const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
@@ -164,7 +164,7 @@ export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
 };
 
 export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
-    const activePathogen = useAppStore.getState().activePathogen;
+    const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
             const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);

@@ -5,11 +5,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/modules/core/components/ui/Dialog";
-import { PathogenSwitch } from "../../modules/core/components/ui/PathogenSwitch";
-import { useAppStore } from "@/stores/app";
+import { useCoreStore } from "../../stores/core";
+import { PathogenSwitch } from "./PathogenSwitch";
 
 export function PathogenDialog() {
-    const activePathogen = useAppStore((state) => state.activePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
 
     if (activePathogen) {
         return;

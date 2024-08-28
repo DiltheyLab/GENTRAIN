@@ -1,5 +1,4 @@
-import { assembleDistanceMatrix } from "@/services/distanceMatrices";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 
 export interface DistanceMatricesSchema {
     id: number;

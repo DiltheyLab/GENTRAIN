@@ -1,5 +1,5 @@
-import { db } from "@/database/db";
-import { PathogenSchema } from "@/database/pathogens";
+import { db } from "@/core/infrastructure/database";
+import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetAllPathogens = (): PathogenSchema[] | undefined => {

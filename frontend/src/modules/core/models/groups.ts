@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CategorySchema, persistCategoryIfNotExist } from "./categories";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 import { collectCategoryData } from "../helpers/categories";
 
 export interface GroupSchema {

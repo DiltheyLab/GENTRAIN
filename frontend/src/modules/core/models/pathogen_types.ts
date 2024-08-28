@@ -1,6 +1,6 @@
-import { useAppStore } from "@/stores/app";
-import { db } from "./db";
+import { db } from "@/core/infrastructure/database";
 import { PathogenSchema } from "./pathogens";
+import { useCoreStore } from "../stores/core";
 
 export enum PathogenTypeName {
     bacteria = "bacteria",
@@ -30,7 +30,7 @@ export const getAllPathogenTypesWithRelationships = async () => {
 };
 
 export const getPathogenTypeForActivePathogen = async () => {
-    const activePathogen = useAppStore.getState().activePathogen;
+    const activePathogen = useCoreStore.getState().activePathogen;
     if (!activePathogen) {
         return;
     }
