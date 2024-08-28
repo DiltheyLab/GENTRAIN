@@ -12,9 +12,9 @@ import {
 import { Button } from "@/modules/core/components/ui/Button";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { CaseWithRelationships } from "@/database/cases";
 import { DataColumns } from "./DataColumns";
 import { customFilterFn } from "../../helpers/dataTable";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 const columns = DataColumns;
 

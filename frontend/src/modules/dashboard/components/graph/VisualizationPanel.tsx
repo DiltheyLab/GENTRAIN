@@ -1,28 +1,28 @@
 import { createColorMapForNodes } from "@/modules/core/helpers/graphs";
-import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Legend } from "../../../core/components/graph/Legend";
 import { Graph2D } from "../../../core/components/graph/Graph2D";
-import { DistanceMatrixAssembly } from "@/database/distance_matrices";
-import { CaseWithRelationships } from "@/database/cases";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 import { useGetAllContacts } from "@/modules/core/hooks/database/contacts/useGetAllContacts";
-import { ContactSchema } from "@/database/contacts";
 import { useEffect, useRef, useState } from "react";
 import { CaseInfo } from "../../../core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { ContactSchema } from "@/modules/core/models/contacts";
+import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const dashboardStore = useDashboardStore();
 
-    const activePathogen = useAppStore((state) => state.activePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();

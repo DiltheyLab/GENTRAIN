@@ -1,4 +1,4 @@
-import { SectionHeader } from "../../../outbreak_analysis/components/settings/SectionHeader";
+import { SectionHeader } from "@/modules/outbreak_analysis/components/settings/SectionHeader";
 import { ColorSelection } from "./ColorSelection";
 
 export const DashboardSettings = () => {

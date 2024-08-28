@@ -1,8 +1,8 @@
 import { GraphData } from "@/modules/core/types/graph";
 import { create } from "zustand";
-import { AnalysisSettings, GraphSettings } from "../../outbreak_analysis/stores/outbreakAnalysis";
-import { useCoreStore } from "../../core/stores/core";
 import { addWeeks } from "date-fns";
+import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,

@@ -3,13 +3,13 @@ import { DashboardVisualizationPanel } from "@/modules/dashboard/components/grap
 import { DistanceMatrixTable } from "@/modules/dashboard/components/distance_matrix/DistanceMatrixTable";
 import { SampleInformationTable } from "@/modules/dashboard/components/information_table/SampleInformationTable";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { Layout } from "@/components/layout/Layout";
-import { useAppStore } from "@/stores/app";
 import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 import { useEffect } from "react";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { Layout } from "@/modules/core/components/layout/Layout";
 
 export function Dashboard() {
-    const activePathogen = useAppStore().activePathogen;
+    const activePathogen = useCoreStore().activePathogen;
     const updateSettings = useDashboardStore((state) => state.updateSettings);
 
     useEffect(() => {
