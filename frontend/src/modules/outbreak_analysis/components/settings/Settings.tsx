@@ -1,7 +1,6 @@
-import { Button } from "../../../core/components/ui/Button";
+import { Button } from "@/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { updateAnalysisSettings } from "@/database/analyses";
-import { toast } from "../../../core/components/ui/UseToast";
+import { toast } from "@/core/components/ui/UseToast";
 import { OutbreakSelection } from "./outbreak_selection/OutbreakSelection";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { handleError } from "@/modules/core/helpers/errors";
@@ -10,7 +9,7 @@ import { BackgroundFilter } from "./background_filter/BackgroundFilter";
 import { ContactTracing } from "./contact_tracing/ContactTracing";
 import { exportGraphAndInformationAsPdf } from "@/modules/outbreak_analysis/helpers/pdf";
 import { SectionHeader } from "./SectionHeader";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../core/components/ui/Accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/core/components/ui/Accordion";
 import {
     tooltipOutbreakSelection,
     tooltipBackgroundSelection,
@@ -19,6 +18,7 @@ import {
     tooltipColorSelection,
 } from "./Tooltips";
 import { ColorSelection } from "./color_selection/ColorSelection";
+import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 
 export const Settings = () => {
     const analysisStore = useOutbreakAnalysisStore();

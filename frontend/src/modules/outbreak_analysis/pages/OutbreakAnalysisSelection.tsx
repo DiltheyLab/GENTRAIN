@@ -1,8 +1,8 @@
-import { Layout } from "@/components/layout/Layout";
 import { AnalysisForm } from "@/modules/outbreak_analysis/components/settings/analysis_selection/AnalysisForm";
 import { AnalysisSelection } from "@/modules/outbreak_analysis/components/settings/analysis_selection/AnalysisSelection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/modules/core/components/ui/Card";
 import { Separator } from "@/modules/core/components/ui/Separator";
+import { Layout } from "@/modules/core/components/layout/Layout";
 
 export const OutbreakAnalysisSelection = () => {
     return (

@@ -7,12 +7,11 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "../../../../core/components/ui/Select";
+} from "@/core/components/ui/Select";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { OutbreakSchema } from "@/database/outbreaks";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { createColorMapForNodes } from "@/modules/core/helpers/graphs";
-import { CaseWithRelationships } from "@/database/cases";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export const OutbreakSelection = () => {
     const analysisStore = useOutbreakAnalysisStore();

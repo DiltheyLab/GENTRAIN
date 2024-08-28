@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { GroupSchema, GroupWithCategory } from "@/database/groups";
 import { useCoreStore } from "../../core/stores/core";
 import { addWeeks } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { ColoringMode, ColorMap, GraphData } from "@/modules/core/types/graph";
-import { OutbreakSchema } from "@/database/outbreaks";
+import { GroupSchema, GroupWithCategory } from "@/modules/core/models/groups";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export type GroupColoration = {
     group: GroupSchema;

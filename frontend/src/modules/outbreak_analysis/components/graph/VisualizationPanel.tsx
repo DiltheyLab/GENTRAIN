@@ -1,24 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { useAppStore } from "@/stores/app";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { Graph2D } from "../../../core/components/graph/Graph2D";
+import { Graph2D } from "@/core/components/graph/Graph2D";
 import { GraphSettings } from "./GraphSettings";
-import { Legend } from "../../../core/components/graph/Legend";
+import { Legend } from "@/core/components/graph/Legend";
 import { useGetAllContacts } from "@/modules/core/hooks/database/contacts/useGetAllContacts";
-import { CaseWithRelationships } from "@/database/cases";
-import { CaseInfo } from "../../../core/components/graph/CaseInfo";
+import { CaseInfo } from "@/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { useLocation } from "react-router-dom";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const analysisStore = useOutbreakAnalysisStore();
-    const activePathogen = useAppStore((state) => state.activePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useGetAllCasesForActivePathogenWithRelationships();

@@ -1,6 +1,6 @@
-import { Label } from "../../../core/components/ui/Label";
-import { StepIndicator } from "../../../core/components/ui/StepIndicator";
-import { CustomTooltip } from "../../../core/components/ui/CustomTooltip";
+import { Label } from "@/core/components/ui/Label";
+import { StepIndicator } from "@/core/components/ui/StepIndicator";
+import { CustomTooltip } from "@/core/components/ui/CustomTooltip";
 import { Info } from "lucide-react";
 import { cn } from "@/core/helpers/cn";
 

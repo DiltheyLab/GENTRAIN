@@ -1,6 +1,6 @@
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors/colorPalettes";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/components/ui/Popover";
+import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 import { HexColorPicker } from "react-colorful";
 
 type ColorPickerProps = {
