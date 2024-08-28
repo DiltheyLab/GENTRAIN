@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     },
     { path: "/outbreak-analysis/:name", element: <Analysis />, errorElement: <Error /> },
     {
-        path: "/data-upload",
+        path: "/data-management",
         errorElement: <Error />,
         element: <DataManagement />,
     },

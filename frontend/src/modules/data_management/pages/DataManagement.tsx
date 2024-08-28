@@ -6,9 +6,9 @@ import { useState } from "react";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
-import { Layout } from "lucide-react";
 import { UploadSection } from "../components/upload_section/UploadSection";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { Layout } from "@/modules/core/components/layout/Layout";
 
 export function DataManagement() {
     const { activePathogen } = useCoreStore();

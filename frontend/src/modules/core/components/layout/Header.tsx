@@ -31,8 +31,8 @@ export const Header = () => {
                     Ausbruchsanalyse
                 </Link>
                 <Link
-                    to="/data-upload"
-                    className={`${isSelected("data-upload")} transition-colors hover:text-foreground`}
+                    to="/data-management"
+                    className={`${isSelected("data-management")} transition-colors hover:text-foreground`}
                 >
                     Datenbestand
                 </Link>
@@ -63,8 +63,8 @@ export const Header = () => {
                             Ausbruchsanalyse
                         </Link>
                         <Link
-                            to="/data-upload"
-                            className={`${isSelected("/data-upload")} transition-colors hover:text-foreground`}
+                            to="/data-management"
+                            className={`${isSelected("/data-management")} transition-colors hover:text-foreground`}
                         >
                             Daten
                         </Link>
