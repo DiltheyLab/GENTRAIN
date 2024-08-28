@@ -9,12 +9,12 @@ import {
     DropdownMenuTrigger,
 } from "@/modules/core/components/ui/Dropdown-menu";
 import { toast } from "@/modules/core/components/ui/UseToast";
-import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/database/cases";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
+import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/modules/core/models/cases";
 
 export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     {

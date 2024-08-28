@@ -2,11 +2,11 @@ import { fileReadingStrategies } from "@/strategies/fileUpload/fileReading";
 import { FileUploadFactory } from "./DataUploadFactory";
 import { validationStrategies } from "@/strategies/fileUpload/validation";
 import { persistenceStrategies } from "@/strategies/fileUpload/persistence";
-import { useAppStore } from "@/stores/app";
 import { useGetPathogenTypeByName } from "@/modules/core/hooks/database/pathogen_types/useGetAllPathogenTypes";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const UploadSection = () => {
-    const activePathogen = useAppStore((state) => state.activePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const bacteriaPathogenType = useGetPathogenTypeByName("bacteria");
     const allowMultiFile = activePathogen?.pathogen_type_id === bacteriaPathogenType?.id ? true : false;
 

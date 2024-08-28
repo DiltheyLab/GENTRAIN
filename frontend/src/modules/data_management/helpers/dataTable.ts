@@ -1,4 +1,4 @@
-import { CaseWithRelationships } from "@/database/cases";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 const caseIdContainsValue = (caseData: CaseWithRelationships, value: string) => {
     return caseData.case_id.toLowerCase().includes(value);

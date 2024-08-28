@@ -1,17 +1,17 @@
-import { Layout } from "@/components/layout/Layout";
 import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
 import { Separator } from "@/modules/core/components/ui/Separator";
-import { UploadSection } from "@/components/dataUpload/UploadSection";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useAppStore } from "@/stores/app";
 import { useState } from "react";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
-import { deleteDataForPathogen } from "@/database/pathogens";
+import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
+import { Layout } from "lucide-react";
+import { UploadSection } from "../components/upload_section/UploadSection";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export function DataManagement() {
-    const { activePathogen } = useAppStore();
+    const { activePathogen } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const casesData = useGetAllCasesForActivePathogenWithRelationships();
 

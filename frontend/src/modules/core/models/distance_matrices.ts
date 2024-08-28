@@ -1,5 +1,5 @@
-import { assembleDistanceMatrix } from "@/services/distanceMatrices";
 import { db } from "./db";
+import { DistanceMatrix } from "../services/distance_matrix/DistanceMatrix";
 
 export interface DistanceMatricesSchema {
     id: number;
@@ -42,6 +42,6 @@ export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) =>
     const distanceMatrix = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
     if (!distanceMatrix) return;
 
-    const matrix = await assembleDistanceMatrix(distanceMatrix.id);
-    return matrix;
+    const matrix = new DistanceMatrix(distanceMatrix.id);
+    return matrix.assemble();
 };

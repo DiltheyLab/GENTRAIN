@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { CaseWithRelationships } from "@/database/cases";
 import { useGetAllCases } from "@/modules/core/hooks/database/cases/useGetAllCases";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export function CaseInformationTable() {
     const caseData = useGetAllCases();
