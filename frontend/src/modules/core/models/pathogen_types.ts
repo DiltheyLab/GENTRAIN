@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { useCoreStore } from "@/modules/core/stores/core";
 

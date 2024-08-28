@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { create } from "zustand";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 

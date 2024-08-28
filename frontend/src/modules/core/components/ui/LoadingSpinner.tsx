@@ -1,4 +1,4 @@
-import { cn } from "@/core/helpers/cn";
+import { cn } from "@/modules/core/helpers/cn";
 
 export const LoadingSpinner = ({ className }: { className?: string }) => {
     return (

@@ -12,10 +12,6 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
-            "@/core/*": ["./src/modules/core/*"],
-            "@/dashboard/*": ["./src/modules/dashboard/*"],
-            "@/outbreak_analysis/*": ["./src/modules/outbreak_analysis/*"],
-            "@/data_management/*": ["./src/modules/data_management/*"]
         }
     }
 }

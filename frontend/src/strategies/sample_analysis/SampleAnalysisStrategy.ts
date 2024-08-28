@@ -1,4 +1,4 @@
-import { PathogenWithRelationships } from "@/database/pathogens";
+import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export abstract class SampleAnalysisStrategy {

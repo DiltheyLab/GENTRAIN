@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { getAllPathogenTypesWithRelationships } from "@/modules/core/models/pathogen_types";
 import { useLiveQuery } from "dexie-react-hooks";
 

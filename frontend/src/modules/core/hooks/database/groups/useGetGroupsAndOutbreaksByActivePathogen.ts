@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { getGroupsForPathogenId } from "@/modules/core/models/groups";
 import { getOutbreaksForPathogenId } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";

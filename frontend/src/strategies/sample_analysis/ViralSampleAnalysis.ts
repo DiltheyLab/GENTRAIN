@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { SampleAnalysisStrategy } from "./SampleAnalysisStrategy";
 
 export class ViralSampleAnalysis extends SampleAnalysisStrategy {

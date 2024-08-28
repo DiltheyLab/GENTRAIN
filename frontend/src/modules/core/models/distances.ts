@@ -1,4 +1,4 @@
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { SampleSchema } from "./samples";
 export interface DistancesSchema {
     id: number;

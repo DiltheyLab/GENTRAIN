@@ -1,7 +1,7 @@
-import { CaseSchema, getAllCasesForPathogenWithRelationships } from "@/database/cases";
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { useAppStore } from "@/stores/app";
+import { CaseSchema, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
+import { useCoreStore } from "@/modules/core/stores/core";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 const caseColumnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
@@ -53,7 +53,7 @@ const removeDuplicates = (array: string[]) => {
 
 const getAlreadyExistingCases = async (data: Array<Array<string>>) => {
     let existingCases = [];
-    const activePathogen = await useAppStore.getState().activePathogen;
+    const activePathogen = await useCoreStore.getState().activePathogen;
     if (!activePathogen) {
         return;
     }
@@ -89,7 +89,7 @@ export const validationStrategies = {
     },
     sampleStrategy: async (sampleData: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
-        const activePathogen = await useAppStore.getState().activePathogen;
+        const activePathogen = await useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
@@ -126,7 +126,7 @@ export const validationStrategies = {
         };
     },
     contactsStrategy: async (contactData: string[][]) => {
-        const activePathogen = await useAppStore.getState().activePathogen;
+        const activePathogen = await useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }

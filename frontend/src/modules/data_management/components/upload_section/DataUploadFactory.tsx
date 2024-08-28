@@ -8,7 +8,7 @@ import { SampleUploadStatus } from "./SampleUploadStatus";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
 import { useToast } from "@/modules/core/components/ui/UseToast";
-import { Button } from "react-day-picker";
+import { Button } from "@/modules/core/components/ui/Button";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 export type FileReaderResult = {

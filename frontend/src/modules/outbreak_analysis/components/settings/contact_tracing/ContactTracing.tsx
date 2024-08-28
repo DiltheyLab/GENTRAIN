@@ -1,6 +1,6 @@
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { Label } from "@/core/components/ui/Label";
-import { Switch } from "@/core/components/ui/Switch";
+import { Label } from "@/modules/core/components/ui/Label";
+import { Switch } from "@/modules/core/components/ui/Switch";
 
 export const ContactTracing = () => {
     const analysisStore = useOutbreakAnalysisStore();

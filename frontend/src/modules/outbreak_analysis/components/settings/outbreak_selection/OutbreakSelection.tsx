@@ -7,7 +7,7 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/core/components/ui/Select";
+} from "@/modules/core/components/ui/Select";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { createColorMapForNodes } from "@/modules/core/helpers/graphs";

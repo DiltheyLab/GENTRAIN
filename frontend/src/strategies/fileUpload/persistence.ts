@@ -1,21 +1,22 @@
-import { caseRules, CaseSchema } from "@/database/cases";
-import { contactRules, ContactSchema } from "@/database/contacts";
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { getFlexibleCategoryNames, persistGroupsForCategories } from "@/services/categories";
 import { parseGermanDateFormat } from "@/modules/core/helpers/dates";
-import { useAppStore } from "@/stores/app";
-import { getOrPersistOutbreak } from "@/services/outbreaks";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { getPathogenTypeForActivePathogen } from "@/database/pathogen_types";
 import { PathogenStrategyManager } from "../PathogenStrategyManager";
+import { getFlexibleCategoryNames } from "@/modules/core/helpers/categories";
+import { CaseSchema, caseRules } from "@/modules/core/models/cases";
+import { ContactSchema, contactRules } from "@/modules/core/models/contacts";
+import { persistGroupsForCategories } from "@/modules/core/models/groups";
+import { getOrPersistOutbreak } from "@/modules/core/models/outbreaks";
+import { getPathogenTypeForActivePathogen } from "@/modules/core/models/pathogen_types";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 /**
  * Object containing persistence strategies for uploads of type cases, samples and contacts.
  */
 export const persistenceStrategies = {
     casesStrategy: async (caseData: Array<Array<string>>) => {
-        const pathogen = useAppStore.getState().activePathogen;
+        const pathogen = useCoreStore.getState().activePathogen;
         if (!pathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }

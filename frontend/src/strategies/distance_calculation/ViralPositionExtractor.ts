@@ -1,5 +1,5 @@
 import { referenceString } from "@/data/referenceString";
-import { SampleSchema } from "@/database/samples";
+import { SampleSchema } from "@/modules/core/models/samples";
 
 export interface MutationsSchema {
     [type: string]: string;

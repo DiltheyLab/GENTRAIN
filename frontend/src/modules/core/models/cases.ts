@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreaks";

@@ -1,4 +1,4 @@
-import { SampleSchema } from "@/database/samples";
+import { SampleSchema } from "@/modules/core/models/samples";
 import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
 
 export class BacterialDistanceCalculation extends DistanceCalculationStrategy {

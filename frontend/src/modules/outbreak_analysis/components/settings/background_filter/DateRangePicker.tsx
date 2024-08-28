@@ -1,13 +1,13 @@
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/core/helpers/cn";
+import { cn } from "@/modules/core/helpers/cn";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Calendar } from "@/modules/core/components/ui/Calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/components/ui/Popover";
-import { Label } from "@/core/components/ui/Label";
+import { Label } from "@/modules/core/components/ui/Label";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { Checkbox } from "@/core/components/ui/Checkbox";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const analysisStore = useOutbreakAnalysisStore();

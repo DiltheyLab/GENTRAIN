@@ -1,8 +1,8 @@
-import { Button } from "@/core/components/ui/Button";
+import { Button } from "@/modules/core/components/ui/Button";
 import { Settings, X } from "lucide-react";
-import { Label } from "@/core/components/ui/Label";
-import { Slider } from "@/core/components/ui/Slider";
-import { Switch } from "@/core/components/ui/Switch";
+import { Label } from "@/modules/core/components/ui/Label";
+import { Slider } from "@/modules/core/components/ui/Slider";
+import { Switch } from "@/modules/core/components/ui/Switch";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 type GraphSettingsProps = {

@@ -8,8 +8,8 @@ import { DataManagement } from "@/modules/data_management/pages/DataManagement.t
 import "@/assets/css/main.css";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
-import translation_de from "@/core/translations/de/common.json";
-import error_de from "@/core/translations/de/error.json";
+import translation_de from "@/modules/core/translations/de/common.json";
+import error_de from "@/modules/core/translations/de/error.json";
 import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisSelection } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisSelection.tsx";
 import { useCoreStore } from "@/modules/core/stores/core.ts";

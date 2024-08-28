@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Label } from "@/core/components/ui/Label";
-import { Input } from "@/core/components/ui/Input";
-import { Button } from "@/core/components/ui/Button";
+import { Label } from "@/modules/core/components/ui/Label";
+import { Input } from "@/modules/core/components/ui/Input";
+import { Button } from "@/modules/core/components/ui/Button";
 import {
     defaultGraphSettings,
     getDefaultSettings,
     useOutbreakAnalysisStore,
 } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { useToast } from "@/core/components/ui/UseToast";
+import { useToast } from "@/modules/core/components/ui/UseToast";
 import { useNavigate } from "react-router-dom";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
 import { useCoreStore } from "@/modules/core/stores/core";

@@ -1,6 +1,6 @@
 import { deleteAnalysesByPathogenId } from "./analyses";
 import { deleteCategoriesByPathogenId } from "./categories";
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";

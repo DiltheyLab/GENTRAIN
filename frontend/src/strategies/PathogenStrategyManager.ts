@@ -1,6 +1,6 @@
-import { PathogenTypeName } from "@/database/pathogen_types";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { useAppStore } from "@/stores/app";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { useCoreStore } from "@/modules/core/stores/core";
 import { BacterialDistanceCalculation } from "@/strategies/distance_calculation/BacterialDistanceCalculation";
 import { ViralDistanceCalculation } from "@/strategies/distance_calculation/ViralDistanceCalculation";
 import { BacterialSampleAnalysis } from "@/strategies/sample_analysis/BacterialSampleAnalysis";
@@ -28,7 +28,7 @@ export class PathogenStrategyManager {
     };
 
     static getPathogen = () => {
-        const activePathogen = useAppStore.getState().activePathogen;
+        const activePathogen = useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }

@@ -1,4 +1,4 @@
-import { CaseWithRelationships } from "@/database/cases";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export type CustomNode = {
     id: number;

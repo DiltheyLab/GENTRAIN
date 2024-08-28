@@ -1,12 +1,12 @@
-import { getCasesForPathogenWithSample } from "@/database/cases";
-import { getOrCreateDistanceMatrixIdByPathogenId } from "@/database/distance_matrices";
-import { PathogenSchema } from "@/database/pathogens";
-import { SampleSchema } from "@/database/samples";
-import { extractSamplesFromCases } from "@/services/samples";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import Aioli from "@biowasm/aioli";
-import { deleteDistancesByPathogenId } from "@/database/distances";
-import { db } from "@/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
+import { getCasesForPathogenWithSample } from "@/modules/core/models/cases";
+import { getOrCreateDistanceMatrixIdByPathogenId } from "@/modules/core/models/distance_matrices";
+import { deleteDistancesByPathogenId } from "@/modules/core/models/distances";
+import { PathogenSchema } from "@/modules/core/models/pathogens";
+import { SampleSchema } from "@/modules/core/models/samples";
+import { extractSamplesFromCases } from "@/modules/data_management/helpers/samples";
 
 export abstract class DistanceCalculationStrategy {
     protected sampleUploadState: DataManagementState;

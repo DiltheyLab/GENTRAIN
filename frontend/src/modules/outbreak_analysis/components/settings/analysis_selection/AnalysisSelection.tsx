@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Label } from "@/core/components/ui/Label";
+import { Label } from "@/modules/core/components/ui/Label";
 import {
     Select,
     SelectContent,
@@ -8,13 +8,13 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/core/components/ui/Select";
-import { Button } from "@/core/components/ui/Button";
+} from "@/modules/core/components/ui/Select";
+import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { X } from "lucide-react";
-import { db } from "@/core/infrastructure/database";
-import { useToast } from "@/core/components/ui/UseToast";
-import { DeleteDialog } from "@/core/components/ui/DeleteDialog";
+import { db } from "@/modules/core/infrastructure/database";
+import { useToast } from "@/modules/core/components/ui/UseToast";
+import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
 import { useNavigate } from "react-router-dom";
 import { AnalysisSchema } from "@/modules/core/models/analyses";

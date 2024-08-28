@@ -1,8 +1,8 @@
 import { referenceString } from "@/data/referenceString";
-import { SampleSchema } from "@/database/samples";
+import { SampleSchema } from "@/modules/core/models/samples";
 import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
 import { ViralDistanceExtractor } from "./ViralDistanceExtractor";
-import { MutationsSchema, ViralPositionExtractor } from "./ViralPositionExtractor";
+import { ViralPositionExtractor, MutationsSchema } from "./ViralPositionExtractor";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     protected calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
