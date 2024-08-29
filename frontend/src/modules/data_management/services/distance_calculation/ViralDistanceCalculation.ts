@@ -1,8 +1,11 @@
 import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/modules/core/models/samples";
-import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
-import { ViralDistanceExtractor } from "./ViralDistanceExtractor";
-import { ViralPositionExtractor, MutationsSchema } from "./ViralPositionExtractor";
+import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
+import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
+import {
+    ViralPositionExtractor,
+    MutationsSchema,
+} from "@/modules/data_management/services/distance_calculation/ViralPositionExtractor";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     protected calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {

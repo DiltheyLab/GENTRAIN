@@ -1,5 +1,5 @@
 import { SampleSchema } from "@/modules/core/models/samples";
-import { DistanceCalculationStrategy } from "./DistanceCalculationStrategy";
+import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
 
 export class BacterialDistanceCalculation extends DistanceCalculationStrategy {
     protected calculateSampleDistance = (sample1: SampleSchema, sample2: SampleSchema) => {

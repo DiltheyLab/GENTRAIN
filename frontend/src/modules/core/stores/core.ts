@@ -2,7 +2,7 @@ import { db } from "@/modules/core/infrastructure/database";
 import { create } from "zustand";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 
-interface CoreState {
+export interface CoreState {
     activePathogen: PathogenSchema | null;
     updateActivePathogen: (pathogen: PathogenSchema) => void;
 }

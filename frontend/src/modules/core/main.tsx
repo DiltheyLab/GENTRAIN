@@ -16,6 +16,8 @@ import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
 import { PathogenDialog } from "@/modules/core/components/ui/PathogenDialog.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
+import { Cookies } from "react-cookie";
+import { socket } from "@/modules/core/helpers/socket";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -49,6 +51,13 @@ getAllPathogensWithRelationships().then((response) => {
     if (activelyPersistedPathogen) {
         useCoreStore.getState().updateActivePathogen(activelyPersistedPathogen);
     }
+});
+
+const cookies = new Cookies();
+const roomIdentifier = cookies.get("gentrain_room") ?? Math.random().toString(16).slice(2);
+socket.emit("join", roomIdentifier);
+socket.on("room_created", (roomIdentifier) => {
+    cookies.set("gentrain_room", roomIdentifier);
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

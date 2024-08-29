@@ -1,44 +1,38 @@
-import { formatInArray } from "@/modules/core/helpers/files";
-import { useTranslation } from "react-i18next";
-import { useRef, useState } from "react";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { ZodError } from "zod";
-import { getToastDescription } from "@/modules/core/helpers/errors";
-import { SampleUploadStatus } from "./SampleUploadStatus";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
 import { useToast } from "@/modules/core/components/ui/UseToast";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { getToastDescription } from "@/modules/core/helpers/errors";
+import { formatInArray } from "@/modules/core/helpers/files";
+import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { ZodError } from "zod";
+import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
+import { PersistenceStrategy } from "@/modules/data_management/services/data_upload/persistence/PersistenceStrategy";
+import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
-export type FileReaderResult = {
-    [filename: string]: string;
-    mimetype: string;
-};
 
 export type FileUploadComponentProps = {
-    validationStrategy: (
-        data: any
-    ) =>
-        | Promise<{ data: any; warnings: { title: string; description: string }[] }>
-        | { data: any; warnings: { title: string; description: string }[] };
-    persistenceStrategy: (data: any) => Promise<void> | void;
-    fileReadingStrategy: (files: FileList | null) => Promise<FileReaderResult> | Promise<FileReaderResult[]>;
+    validationStrategy: ValidationStrategy;
+    persistenceStrategy: PersistenceStrategy;
+    fileReadingStrategy: FileReadingStrategy;
     type: FileUploadTypes;
-    allowMultiFile: boolean;
 };
 
-export const FileUploadFactory = ({
+export const FileUpload = ({
     validationStrategy,
     persistenceStrategy,
     fileReadingStrategy,
     type,
-    allowMultiFile,
 }: FileUploadComponentProps) => {
     const { toast } = useToast();
     const { t, i18n } = useTranslation();
     const [fileDataIsValid, setFileDataIsValid] = useState(false);
-    const [fileData, setFileData] = useState<string[][] | object[]>();
+    const [fileData, setFileData] = useState<
+        Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]
+    >();
     const containerRef = useRef<HTMLDivElement>(null);
 
     const { reset } = useDataManagementStore();
@@ -65,15 +59,17 @@ export const FileUploadFactory = ({
         try {
             // reset sample status component data
             reset();
-            // read the file(s) and convert them to text
-            const fileReaderResult = await fileReadingStrategy(e.target.files);
-
+            const fileReaderResult = await fileReadingStrategy.execute(e.target.files);
+            console.log(fileReaderResult);
+            if (!fileReaderResult) return;
             // format the file content into an array
             const fileAsStringArray = formatInArray(fileReaderResult);
 
             // validate the data
-            const validationResult = await validationStrategy(fileAsStringArray);
-            showWarningToasts(validationResult.warnings);
+            const validationResult = await validationStrategy.execute(fileAsStringArray);
+            if (validationResult.warnings) {
+                showWarningToasts(validationResult.warnings);
+            }
             setFileDataIsValid(true);
             if (validationResult.data.length === 0) {
                 resetUpload();
@@ -108,7 +104,7 @@ export const FileUploadFactory = ({
         if (!fileDataIsValid || !fileData) return;
         try {
             // persist the data
-            await persistenceStrategy(fileData);
+            await persistenceStrategy.execute(fileData);
             resetUpload();
             // show a success toast notification
             toast({
@@ -138,18 +134,13 @@ export const FileUploadFactory = ({
                     <FileUploadButton
                         type={type}
                         accept={type === "samples" ? ".fasta" : ".csv"}
-                        multiple={allowMultiFile}
+                        multiple={fileReadingStrategy.allowMultifile()}
                         onUpload={handleFileUpload}
                     />
                     <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                        Start
+                        Bestätigen
                     </Button>
                 </div>
-                {type === "samples" && (
-                    <div>
-                        <SampleUploadStatus />
-                    </div>
-                )}
             </div>
             {i18n.exists(`upload.help.${type}`) && (
                 <small

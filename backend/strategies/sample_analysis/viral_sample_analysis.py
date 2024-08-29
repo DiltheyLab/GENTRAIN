@@ -78,4 +78,4 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
             missing=result["missing"],
             nonACGTNs=result["nonACGTNs"],
             alignmentRange=result["alignmentRange"],
-        )
+        ).model_dump()
