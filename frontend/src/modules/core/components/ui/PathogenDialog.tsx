@@ -1,31 +1,22 @@
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/modules/core/components/ui/Dialog";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
+import { Button } from "./Button";
+import { Label } from "./Label";
 
 export function PathogenDialog() {
-    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const initSession = useCoreStore((state) => state.initSession);
 
-    if (activePathogen) {
-        return;
-    }
+    const handleClick = () => {
+        initSession();
+    };
 
     return (
-        <Dialog defaultOpen>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Pathogen auswählen</DialogTitle>
-                    <DialogDescription>
-                        Für welches Pathogen möchten sie Ausbruchanalysen durchführen?
-                    </DialogDescription>
-                </DialogHeader>
-                <PathogenSwitch />
-            </DialogContent>
-        </Dialog>
+        <>
+            <h1> Willkommen bei Gentrain!</h1>
+            <Label>Pathogen auswählen</Label>
+            <p>Für welches Pathogen möchten sie Ausbruchanalysen durchführen?</p>
+            <PathogenSwitch />
+            <Button onClick={() => handleClick()}>Weiter</Button>
+        </>
     );
 }

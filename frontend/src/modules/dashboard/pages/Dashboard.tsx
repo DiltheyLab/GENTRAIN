@@ -9,7 +9,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
 
 export function Dashboard() {
-    const activePathogen = useCoreStore().activePathogen;
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const updateSettings = useDashboardStore((state) => state.updateSettings);
 
     useEffect(() => {

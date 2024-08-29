@@ -4,7 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/mod
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { Layout } from "@/modules/core/components/layout/Layout";
 
-export const OutbreakAnalysisSelection = () => {
+export const OutbreakAnalysisOverview = () => {
+    console.log("OutbreakAnalysisSelection");
+
     return (
         <Layout>
             <div className="flex items-center justify-center min-h-[calc(100vh-185px)]">

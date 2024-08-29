@@ -11,14 +11,14 @@ import {
 } from "@/modules/core/helpers/colors";
 
 export const getSelectedClusters = () => {
-    const analysisStore = useOutbreakAnalysisStore.getState();
-    let clustersOfNodes = getUniqueClustersOfNodes(analysisStore.graphData.nodes);
+    const outbreakAnalysisStore = useOutbreakAnalysisStore.getState();
+    let clustersOfNodes = getUniqueClustersOfNodes(outbreakAnalysisStore.graphData.nodes);
     clustersOfNodes = sortNoOutbreakAssignedToEndOfArray(clustersOfNodes);
     const selectedOutbreak = clustersOfNodes.filter(
-        (nodes) => nodes.cluster === analysisStore.settings.selectedOutbreak?.name
+        (nodes) => nodes.cluster === outbreakAnalysisStore.settings.selectedOutbreak?.name
     );
     const selectedBackground = clustersOfNodes.filter(
-        (nodes) => nodes.cluster !== analysisStore.settings.selectedOutbreak?.name
+        (nodes) => nodes.cluster !== outbreakAnalysisStore.settings.selectedOutbreak?.name
     );
     return { selectedOutbreak, selectedBackground };
 };

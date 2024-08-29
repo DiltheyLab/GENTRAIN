@@ -10,6 +10,13 @@ import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { PathogenSchema, Pathogens } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
+import { v4 as uuidv4 } from "uuid";
+
+export interface SessionsSchema {
+    id: string;
+    created_at?: Date;
+    updated_at?: Date;
+}
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -23,6 +30,7 @@ const db = new Dexie("gentrain") as Dexie & {
     categories: EntityTable<CategorySchema, "id">;
     analyses: EntityTable<AnalysisSchema, "id">;
     outbreaks: EntityTable<OutbreakSchema, "id">;
+    sessions: EntityTable<SessionsSchema, "id">;
 };
 
 // define the database tables (https://dexie.org/)
@@ -42,6 +50,7 @@ db.version(1).stores({
     categories: "++id, name, pathogen_id, created_at, updated_at",
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
     outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
+    sessions: "id, created_at, updated_at",
 });
 
 db.on("populate", async () => {
@@ -68,6 +77,10 @@ db.on("populate", async () => {
             });
         }
     }
+});
+
+db.sessions.hook("creating", function (_primKey, obj, _transaction) {
+    obj.id = uuidv4();
 });
 
 db.tables.forEach(function (table) {
