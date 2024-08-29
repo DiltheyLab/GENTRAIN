@@ -14,10 +14,11 @@ import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
 import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
-import { PathogenDialog } from "@/modules/core/components/ui/PathogenDialog.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
-import { Cookies } from "react-cookie";
 import { socket } from "@/modules/core/helpers/socket";
+import { Onboarding } from "@/modules/core/pages/Onboarding";
+import { LoadingSpinner } from "./components/ui/LoadingSpinner";
+import { Share2 } from "lucide-react";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -45,12 +46,21 @@ const App = () => {
     }, []);
 
     if (session === undefined) {
-        return <div>Loading...</div>;
+        return (
+            <div className="w-screen h-screen flex flex-col items-center justify-center">
+                <LoadingSpinner width={50} height={50} />
+                <div className="flex items-center text-primary mt-8">
+                    <Share2 className="w-14 h-14 mr-2" /> <span className="text-[50px]">Gentrain</span>
+                </div>
+            </div>
+        );
     }
 
     if (session === null) {
-        return <PathogenDialog />; //Ersetzen durch On-Boarding
+        return <Onboarding />;
     }
+
+    socket.emit("join", session.id);
 
     const router = createBrowserRouter([
         {
@@ -73,13 +83,6 @@ const App = () => {
 
     return <RouterProvider router={router} />;
 };
-
-const cookies = new Cookies();
-const roomIdentifier = cookies.get("gentrain_room") ?? Math.random().toString(16).slice(2);
-socket.emit("join", roomIdentifier);
-socket.on("room_created", (roomIdentifier) => {
-    cookies.set("gentrain_room", roomIdentifier);
-});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
