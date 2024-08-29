@@ -10,11 +10,11 @@ import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/out
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-    const analysisStore = useOutbreakAnalysisStore();
-    const date = analysisStore.settings.dateRange;
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const date = outbreakAnalysisStore.settings.dateRange;
 
     const handleDateChange = (start: Date | undefined, end: Date | undefined) => {
-        analysisStore.updateSettings({ dateRange: { from: start, to: end } });
+        outbreakAnalysisStore.updateSettings({ dateRange: { from: start, to: end } });
     };
 
     return (
@@ -23,9 +23,9 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                 <Label htmlFor="excludeCasesOutsideOfDateRange">Zeitspanne auswählen</Label>
                 <Checkbox
                     id="excludeCasesOutsideOfDateRange"
-                    checked={analysisStore.settings.excludeCasesOutsideOfDateRange}
+                    checked={outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange}
                     onCheckedChange={(value) =>
-                        analysisStore.updateSettings({ excludeCasesOutsideOfDateRange: Boolean(value) })
+                        outbreakAnalysisStore.updateSettings({ excludeCasesOutsideOfDateRange: Boolean(value) })
                     }
                 />
             </div>
@@ -33,7 +33,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                 <PopoverTrigger asChild>
                     <Button
                         id="date"
-                        disabled={!analysisStore.settings.excludeCasesOutsideOfDateRange}
+                        disabled={!outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange}
                         variant="outline"
                         className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
                     >
@@ -58,7 +58,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         mode="range"
                         defaultMonth={date.from}
                         modifiers={{
-                            outbreakRange: analysisStore.settings.datesOfCasesInSelectedOutbreak,
+                            outbreakRange: outbreakAnalysisStore.settings.datesOfCasesInSelectedOutbreak,
                         }}
                         modifiersClassNames={{
                             outbreakRange:

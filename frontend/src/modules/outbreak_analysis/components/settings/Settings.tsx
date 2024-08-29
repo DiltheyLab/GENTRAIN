@@ -21,15 +21,15 @@ import { ColorSelection } from "./color_selection/ColorSelection";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 
 export const Settings = () => {
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const safeAnalysis = async () => {
         try {
-            if (!analysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
+            if (!outbreakAnalysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
             const success = await updateAnalysisSettings(
-                analysisStore.id,
-                analysisStore.settings,
-                analysisStore.graphSettings
+                outbreakAnalysisStore.id,
+                outbreakAnalysisStore.settings,
+                outbreakAnalysisStore.graphSettings
             );
             if (success) {
                 toast({
@@ -69,7 +69,7 @@ export const Settings = () => {
                                 <OutbreakSelection />
                             </AccordionContent>
                         </AccordionItem>
-                        {analysisStore.settings.selectedOutbreak && (
+                        {outbreakAnalysisStore.settings.selectedOutbreak && (
                             <>
                                 <AccordionItem value="item-2">
                                     <div className="flex w-full justify-between items-center">
@@ -141,7 +141,7 @@ export const Settings = () => {
                         className="mt-2"
                         variant="outline"
                         type="button"
-                        onClick={() => exportGraphAndInformationAsPdf(analysisStore.name)}
+                        onClick={() => exportGraphAndInformationAsPdf(outbreakAnalysisStore.name)}
                     >
                         Analysebericht exportieren
                     </Button>

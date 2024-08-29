@@ -15,7 +15,7 @@ import { createAnalysis } from "@/modules/core/models/analyses";
 
 export const AnalysisForm = () => {
     const [analysisName, setAnalysisName] = useState("");
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const analyses = useGetAnalysesForActivePathogen();
     const { activePathogen } = useCoreStore();
     const { toast } = useToast();
@@ -48,10 +48,10 @@ export const AnalysisForm = () => {
             const defaultSettings = getDefaultSettings();
             //create a new analysis in db and update the name in the store
             const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
-            analysisStore.updateName(analysisName);
-            analysisStore.updateId(id);
-            analysisStore.updateSettings(defaultSettings);
-            analysisStore.updateGraphSettings(defaultGraphSettings);
+            outbreakAnalysisStore.updateName(analysisName);
+            outbreakAnalysisStore.updateId(id);
+            outbreakAnalysisStore.updateSettings(defaultSettings);
+            outbreakAnalysisStore.updateGraphSettings(defaultGraphSettings);
             navigate(`${analysisName}`);
         } catch (error) {
             toast({

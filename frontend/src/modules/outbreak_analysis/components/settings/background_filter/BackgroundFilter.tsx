@@ -5,22 +5,22 @@ import { Switch } from "@/modules/core/components/ui/Switch";
 import { Input } from "@/modules/core/components/ui/Input";
 
 export const BackgroundFilter = () => {
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const handleShowBackground = (value: boolean) => {
-        analysisStore.updateSettings({ showBackground: value });
+        outbreakAnalysisStore.updateSettings({ showBackground: value });
     };
 
     const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
-        analysisStore.updateSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
+        outbreakAnalysisStore.updateSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
     };
 
     const changeGeneticDistanceThreshold = (value: number) => {
-        analysisStore.updateSettings({ geneticDistanceThreshold: value });
+        outbreakAnalysisStore.updateSettings({ geneticDistanceThreshold: value });
     };
 
     const handleExcludeCasesWithoutSequence = (value: boolean) => {
-        analysisStore.updateSettings({ excludeCasesWithoutSequence: value });
+        outbreakAnalysisStore.updateSettings({ excludeCasesWithoutSequence: value });
     };
 
     return (
@@ -28,7 +28,7 @@ export const BackgroundFilter = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="excludeCasesWithoutSequence"
-                    checked={analysisStore.settings.excludeCasesWithoutSequence}
+                    checked={outbreakAnalysisStore.settings.excludeCasesWithoutSequence}
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
                 />
                 <Label htmlFor="excludeCasesWithoutSequence" className="font-normal text-md leading-5">
@@ -38,22 +38,22 @@ export const BackgroundFilter = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="excludeCasesAboveGeneticDistanceThreshold"
-                    checked={analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
+                    checked={outbreakAnalysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="font-normal text-md leading-5">
-                    Sequenzierte Fälle mit genetischer Distanz &gt; {analysisStore.settings.geneticDistanceThreshold}{" "}
-                    ausschließen
+                    Sequenzierte Fälle mit genetischer Distanz &gt;{" "}
+                    {outbreakAnalysisStore.settings.geneticDistanceThreshold} ausschließen
                 </Label>
             </div>
-            {analysisStore.settings.excludeCasesAboveGeneticDistanceThreshold && (
+            {outbreakAnalysisStore.settings.excludeCasesAboveGeneticDistanceThreshold && (
                 <>
                     <Label htmlFor="geneticDistanceThreshold">Genetischer Distanzschwellenwert</Label>
                     <Input
                         type="number"
                         min={0}
                         id="geneticDistanceThreshold"
-                        value={analysisStore.settings.geneticDistanceThreshold}
+                        value={outbreakAnalysisStore.settings.geneticDistanceThreshold}
                         onChange={(e) => changeGeneticDistanceThreshold(+e.target.value)}
                     />
                 </>
@@ -62,7 +62,7 @@ export const BackgroundFilter = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="showBackground"
-                    checked={analysisStore.settings.showBackground}
+                    checked={outbreakAnalysisStore.settings.showBackground}
                     onCheckedChange={(value) => handleShowBackground(value)}
                 />
                 <Label htmlFor="showBackground" className="font-normal text-md">

@@ -8,17 +8,17 @@ type ColorSwitchProps = {
 };
 
 export const ColorSwitch = ({ cluster }: ColorSwitchProps) => {
-    const analysisStore = useOutbreakAnalysisStore();
-    const colorMap = { ...analysisStore.graphSettings.colorMap };
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const colorMap = { ...outbreakAnalysisStore.graphSettings.colorMap };
 
     const changeColor = (cluster: string, newColor: string) => {
         colorMap[cluster].color = newColor;
-        analysisStore.updateGraphSettings({ colorMap: colorMap });
+        outbreakAnalysisStore.updateGraphSettings({ colorMap: colorMap });
     };
 
     const handleColorSwitchChanged = (isChecked: boolean, cluster: string) => {
         colorMap[cluster].isActive = isChecked;
-        analysisStore.updateGraphSettings({ colorMap: colorMap });
+        outbreakAnalysisStore.updateGraphSettings({ colorMap: colorMap });
     };
 
     return (
