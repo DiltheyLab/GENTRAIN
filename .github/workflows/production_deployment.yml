@@ -84,6 +84,8 @@ jobs:
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             echo -e "FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE=${{vars.FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE}}" >> backend/.env
+            echo -e "RQ_SECRET=${{secrets.RQ_SECRET}}" >> backend/.env
+            echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> backend/.env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3

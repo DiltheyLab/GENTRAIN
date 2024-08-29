@@ -50,6 +50,7 @@ def leave(session_id):
 
 @socketio.event
 def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
+    print(session_id)
     strategy = PathogenStrategyManager.get_sample_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,

@@ -2,8 +2,10 @@ import { Cookies } from "react-cookie";
 import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { DataManagementState, useDataManagementStore } from "../../stores/dataManagement";
 import { socket } from "@/modules/core/helpers/socket";
+import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 
 export abstract class SampleAnalysisStrategy {
+    protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
@@ -13,6 +15,7 @@ export abstract class SampleAnalysisStrategy {
     abstract getAndPersistVariantsForSamples(): void;
 
     constructor(pathogen: PathogenWithRelationships) {
+        this.coreState = useCoreStore.getState();
         this.dataManagementState = useDataManagementStore.getState();
         this.pathogen = pathogen;
     }
@@ -51,10 +54,9 @@ export abstract class SampleAnalysisStrategy {
     delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
     getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        const cookies = new Cookies();
         socket.emit(
             "sample_analysis",
-            cookies.get("gentrain_room"),
+            this.coreState.session?.id,
             this.string_to_slug(this.pathogen.name),
             fastaId,
             sequence

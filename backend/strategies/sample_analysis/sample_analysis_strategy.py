@@ -31,7 +31,7 @@ class SampleAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
-    def execute(self, room_identifier):
+    def execute(self, session_id):
         """Run strategy actions."""
         genomic_errors = self.find_genomic_validation_errors()
         if genomic_errors and len(genomic_errors) > 0:
@@ -46,6 +46,6 @@ class SampleAnalysisStrategy(ABC):
                 "fasta_id": self.fasta_id,
                 "sequence_length": len(self.sequence),
             },
-            room=room_identifier,
+            room=session_id,
         )
         return result

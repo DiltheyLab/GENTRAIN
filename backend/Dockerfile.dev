@@ -9,10 +9,13 @@ COPY environment.yaml .
 
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /backend/environment.yaml
+
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
 ENV PATH /opt/conda/envs/gentrain/bin:$PATH
 ENV PYTHONPATH="$PYTHONPATH:/"
+
+RUN nextclade dataset get --name 'sars-cov-2' --output-dir '/backend/datasets/nextclade_covid/'
 
 # Copy the current directory contents into the container at the working directory
 COPY . .
