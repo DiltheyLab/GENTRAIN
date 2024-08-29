@@ -16,8 +16,8 @@ queue = Queue(
     )
 )
 
-app.config["SECRET_KEY"] = "secret!"
-app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://redis:6379"
+app.config["SECRET_KEY"] = os.environ.get("RQ_SECRET")
+app.config["RQ_DASHBOARD_REDIS_URL"] = os.environ.get("REDIS_URL")
 
 MAX_BUFFER_SIZE = 5 * 1000 * 1000
 socketio = SocketIO(

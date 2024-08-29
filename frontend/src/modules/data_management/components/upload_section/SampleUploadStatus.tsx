@@ -1,10 +1,10 @@
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { HoverCard, HoverCardTrigger, HoverCardContent } from "@radix-ui/react-hover-card";
 import { Check, CircleAlert, X } from "lucide-react";
-import { DistanceCalculationProgress } from "./DistanceCalculationProgress";
-import { SampleInfoCard } from "./SampleInfoCard";
+import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
+import { SampleInfoCard } from "@/modules/data_management/components/upload_section/SampleInfoCard";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
