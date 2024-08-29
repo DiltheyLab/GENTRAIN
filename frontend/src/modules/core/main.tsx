@@ -14,10 +14,10 @@ import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
 import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
-import { PathogenDialog } from "@/modules/core/components/ui/PathogenDialog.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { Cookies } from "react-cookie";
 import { socket } from "@/modules/core/helpers/socket";
+import { Onboarding } from "@/modules/core/pages/Onboarding";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -49,7 +49,7 @@ const App = () => {
     }
 
     if (session === null) {
-        return <PathogenDialog />; //Ersetzen durch On-Boarding
+        return <Onboarding />; //Ersetzen durch On-Boarding
     }
 
     const router = createBrowserRouter([
