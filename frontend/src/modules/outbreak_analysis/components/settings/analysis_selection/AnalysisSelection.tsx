@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/modules/core/components/ui/Label";
 import {
     Select,
@@ -22,9 +22,15 @@ import { AnalysisSchema } from "@/modules/core/models/analyses";
 export const AnalysisSelection = () => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
     const analyses = useGetAnalysesForActivePathogen();
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const { toast } = useToast();
     const navigate = useNavigate();
+
+    // reset selected analysis if the analyses change which happens if the pathogen changes
+    useEffect(() => {
+        if (!analyses) return;
+        setSelectedAnalysis(undefined);
+    }, [analyses]);
 
     const changeSelectedAnalysis = (id: string) => {
         const selectedAnalysis = analyses?.find((analysis) => analysis.id === +id);
@@ -34,10 +40,10 @@ export const AnalysisSelection = () => {
     const handleSubmit = () => {
         if (!selectedAnalysis) return;
         // update the analysis in the store with the analysis from the database
-        analysisStore.updateName(selectedAnalysis.name);
-        analysisStore.updateId(selectedAnalysis.id);
-        analysisStore.updateSettings(selectedAnalysis.settings);
-        analysisStore.updateGraphSettings(selectedAnalysis.graphSettings);
+        outbreakAnalysisStore.updateName(selectedAnalysis.name);
+        outbreakAnalysisStore.updateId(selectedAnalysis.id);
+        outbreakAnalysisStore.updateSettings(selectedAnalysis.settings);
+        outbreakAnalysisStore.updateGraphSettings(selectedAnalysis.graphSettings);
         navigate(`${selectedAnalysis.name}`);
     };
 
@@ -92,10 +98,14 @@ export const AnalysisSelection = () => {
             </SelectGroup>
         );
     };
+
     return (
         <div className="flex flex-col w-1/2 gap-2" id="analysis-selection">
             <Label htmlFor="name">Vorhandene Analyse auswählen:</Label>
-            <Select onValueChange={(value) => changeSelectedAnalysis(value)}>
+            <Select
+                onValueChange={(value) => changeSelectedAnalysis(value)}
+                value={selectedAnalysis?.id.toString() ?? ""}
+            >
                 <SelectTrigger>
                     <SelectValue placeholder="Analyse auswählen" />
                 </SelectTrigger>
