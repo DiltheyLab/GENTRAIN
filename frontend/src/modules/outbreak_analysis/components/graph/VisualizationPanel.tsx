@@ -17,7 +17,7 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
@@ -28,14 +28,14 @@ export const VisualizationPanel = () => {
 
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
-        analysisStore.graphData.nodes,
-        analysisStore.graphSettings,
-        analysisStore.updateGraphSettings
+        outbreakAnalysisStore.graphData.nodes,
+        outbreakAnalysisStore.graphSettings,
+        outbreakAnalysisStore.updateGraphSettings
     );
 
     useEffect(() => {
         if (!distanceMatrixAssembly || !cases || !contacts) {
-            analysisStore.updateGraphData({ nodes: [], links: [] });
+            outbreakAnalysisStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
 
@@ -43,27 +43,29 @@ export const VisualizationPanel = () => {
             cases,
             distanceMatrixAssembly,
             contacts,
-            analysisStore.settings
+            outbreakAnalysisStore.settings
         );
-        graphDataGenerator.execute().then((graphData) => analysisStore.updateGraphData(graphData));
-    }, [cases, distanceMatrixAssembly, analysisStore.settings, contacts]);
+        graphDataGenerator.execute().then((graphData) => outbreakAnalysisStore.updateGraphData(graphData));
+    }, [cases, distanceMatrixAssembly, outbreakAnalysisStore.settings, contacts]);
 
     return (
         <div
             ref={containerRef}
             className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
         >
-            {analysisStore.settings.selectedOutbreak ? (
+            {outbreakAnalysisStore.settings.selectedOutbreak ? (
                 <>
                     <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm font-medium bg-muted/80 pointer-events-none">
                         Analyse: {pathname}
                     </fieldset>
                     <Legend
-                        nodes={analysisStore.graphData.nodes}
-                        links={analysisStore.graphData.links}
-                        colorMap={analysisStore.graphSettings.colorMap}
+                        nodes={outbreakAnalysisStore.graphData.nodes}
+                        links={outbreakAnalysisStore.graphData.links}
+                        colorMap={outbreakAnalysisStore.graphSettings.colorMap}
                         variant={
-                            analysisStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "outbreakAnalysis"
+                            outbreakAnalysisStore.graphSettings.coloringMode === "timeSpan"
+                                ? "timeSpan"
+                                : "outbreakAnalysis"
                         }
                     />
                     <GraphSettings
@@ -75,14 +77,14 @@ export const VisualizationPanel = () => {
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                     />
                     <Graph2D
-                        data={analysisStore.graphData}
+                        data={outbreakAnalysisStore.graphData}
                         width={width - 8}
                         height={height - 8}
-                        colorMap={analysisStore.graphSettings.colorMap}
-                        coloringMode={analysisStore.graphSettings.coloringMode}
+                        colorMap={outbreakAnalysisStore.graphSettings.colorMap}
+                        coloringMode={outbreakAnalysisStore.graphSettings.coloringMode}
                         cases={cases}
-                        showNodeLabel={analysisStore.graphSettings.showNodeLabel}
-                        linkDistance={analysisStore.graphSettings.linkDistance}
+                        showNodeLabel={outbreakAnalysisStore.graphSettings.showNodeLabel}
+                        linkDistance={outbreakAnalysisStore.graphSettings.linkDistance}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
                     />

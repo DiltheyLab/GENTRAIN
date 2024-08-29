@@ -9,7 +9,7 @@ import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export const BackgroundSelection = () => {
     const groupsAndOutbreaks = useGetAllGroupsAndOutbreaksForActivePathogen();
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const { t } = useTranslation();
 
     const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
@@ -47,7 +47,7 @@ export const BackgroundSelection = () => {
     const createFilteredOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         const options = createOptions(groupsAndOutbreaks);
         const filteredOptions = options?.filter(
-            (option) => option.value !== analysisStore.settings.selectedOutbreak?.name
+            (option) => option.value !== outbreakAnalysisStore.settings.selectedOutbreak?.name
         );
         return filteredOptions;
     };
@@ -77,21 +77,23 @@ export const BackgroundSelection = () => {
                 selectedBackground.groupsWithCategories.push(group);
             }
         }
-        analysisStore.updateSettings({ selectedBackground: selectedBackground });
+        outbreakAnalysisStore.updateSettings({ selectedBackground: selectedBackground });
     };
 
     const handleBackgroundDataChange = (value: "specificBackgroundData" | "allBackgroundData") => {
         if (value === "allBackgroundData") {
-            analysisStore.updateSettings({ includeAllCases: true });
+            outbreakAnalysisStore.updateSettings({ includeAllCases: true });
         } else {
-            analysisStore.updateSettings({ includeAllCases: false });
+            outbreakAnalysisStore.updateSettings({ includeAllCases: false });
         }
     };
 
     return (
         <div className="flex flex-col gap-4">
             <RadioGroup
-                defaultValue={analysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"}
+                defaultValue={
+                    outbreakAnalysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"
+                }
                 onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
                     handleBackgroundDataChange(value)
                 }
@@ -109,10 +111,10 @@ export const BackgroundSelection = () => {
                     </Label>
                 </div>
             </RadioGroup>
-            {!analysisStore.settings.includeAllCases && (
+            {!outbreakAnalysisStore.settings.includeAllCases && (
                 <MultipleSelector
                     options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                    value={createOptions(analysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                    value={createOptions(outbreakAnalysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
                     onChange={(value) => handleMultipleSelectChange(value)}
                     placeholder="Bitte auswählen"
                     emptyIndicator={

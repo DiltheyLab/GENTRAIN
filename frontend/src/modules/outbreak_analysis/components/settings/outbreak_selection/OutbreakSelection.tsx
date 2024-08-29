@@ -15,7 +15,7 @@ import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const OutbreakSelection = () => {
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const outbreaks = useGetOutbreaksForActivePathogen();
     const casesWithRelationships = useGetAllCasesForActivePathogenWithRelationships();
 
@@ -38,12 +38,12 @@ export const OutbreakSelection = () => {
         };
 
         // set the initial date range for the date range filter
-        analysisStore.updateSettings({
+        outbreakAnalysisStore.updateSettings({
             dateRange: modifiedDateRange,
         });
 
         // set the date range for the outbreak to color it in the date picker
-        analysisStore.updateSettings({
+        outbreakAnalysisStore.updateSettings({
             datesOfCasesInSelectedOutbreak: dateRange,
         });
     };
@@ -52,14 +52,14 @@ export const OutbreakSelection = () => {
         // create the initial color map for all nodes if the selected outbreak is changed
         const colorMap = createColorMapForNodes(selectedOutbreak, cases);
         // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
-        const currentColorMap = { ...analysisStore.graphSettings.colorMap };
-        analysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
+        const currentColorMap = { ...outbreakAnalysisStore.graphSettings.colorMap };
+        outbreakAnalysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
     };
 
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
-        analysisStore.updateSettings({
+        outbreakAnalysisStore.updateSettings({
             selectedOutbreak: {
                 name: selectedOutbreak.name,
                 pathogen_id: selectedOutbreak.pathogen_id,
@@ -99,7 +99,7 @@ export const OutbreakSelection = () => {
     return (
         <div className="flex flex-col gap-4 p-0">
             <Select
-                value={analysisStore.settings.selectedOutbreak?.id?.toString()}
+                value={outbreakAnalysisStore.settings.selectedOutbreak?.id?.toString()}
                 onValueChange={(value) => changeSelectedOutbreak(value)}
             >
                 <SelectTrigger>

@@ -3,10 +3,10 @@ import { Label } from "@/modules/core/components/ui/Label";
 import { Switch } from "@/modules/core/components/ui/Switch";
 
 export const ContactTracing = () => {
-    const analysisStore = useOutbreakAnalysisStore();
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const handleShowContactTracingLinks = (value: boolean) => {
-        analysisStore.updateSettings({ showContactTracingLinks: value });
+        outbreakAnalysisStore.updateSettings({ showContactTracingLinks: value });
     };
 
     return (
@@ -14,7 +14,7 @@ export const ContactTracing = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="showContactTracingLinks"
-                    checked={analysisStore.settings.showContactTracingLinks}
+                    checked={outbreakAnalysisStore.settings.showContactTracingLinks}
                     onCheckedChange={(value) => handleShowContactTracingLinks(value)}
                 />
                 <Label htmlFor="showContactTracingLinks" className="font-normal text-md">

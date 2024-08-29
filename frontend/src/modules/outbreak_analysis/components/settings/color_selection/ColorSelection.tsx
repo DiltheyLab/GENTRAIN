@@ -7,16 +7,19 @@ import { ColoringMode } from "@/modules/core/types/graph";
 import { RadioGroup, RadioGroupItem } from "@/modules/core/components/ui/RadioGroup";
 
 export const ColorSelection = () => {
-    const analysisStore = useOutbreakAnalysisStore();
-    const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [analysisStore.graphData]);
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const { selectedOutbreak, selectedBackground } = useMemo(
+        () => getSelectedClusters(),
+        [outbreakAnalysisStore.graphData]
+    );
 
     const handleColoringChange = (value: ColoringMode) => {
         switch (value) {
             case "outbreaks":
-                analysisStore.updateGraphSettings({ coloringMode: "outbreaks" });
+                outbreakAnalysisStore.updateGraphSettings({ coloringMode: "outbreaks" });
                 break;
             case "timeSpan":
-                analysisStore.updateGraphSettings({ coloringMode: "timeSpan" });
+                outbreakAnalysisStore.updateGraphSettings({ coloringMode: "timeSpan" });
                 break;
         }
     };
@@ -24,7 +27,7 @@ export const ColorSelection = () => {
     return (
         <div>
             <RadioGroup
-                defaultValue={analysisStore.graphSettings.coloringMode}
+                defaultValue={outbreakAnalysisStore.graphSettings.coloringMode}
                 onValueChange={(value: ColoringMode) => handleColoringChange(value)}
             >
                 <div className="flex items-center space-x-2">
@@ -41,7 +44,7 @@ export const ColorSelection = () => {
                     </Label>
                 </div>
             </RadioGroup>
-            {analysisStore.graphSettings.coloringMode === "outbreaks" && (
+            {outbreakAnalysisStore.graphSettings.coloringMode === "outbreaks" && (
                 <div className="flex flex-col gap-3 mt-4">
                     <ColorSection label="Selektierten Ausbruch umfärben" nodes={selectedOutbreak} />
                     <ColorSection label="Background umfärben" nodes={selectedBackground} />
