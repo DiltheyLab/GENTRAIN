@@ -10,8 +10,8 @@ import { PathogenTypeWithRelationships } from "@/modules/core/models/pathogen_ty
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
     const pathogenTypes = useGetAllPathogenTypes();
-    const activePathogen = useCoreStore((state) => state.activePathogen);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const { t } = useTranslation();
 
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
