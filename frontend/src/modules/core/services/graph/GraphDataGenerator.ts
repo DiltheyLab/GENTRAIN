@@ -3,7 +3,7 @@ import { ContactLinksColorMap, CustomLink, CustomNode, Link } from "@/modules/co
 import { GraphCaseCollector } from "./GraphCaseCollector";
 import { Kruskal } from "./Kruskal";
 import i18next from "i18next";
-import { createColorByIndex } from "@/modules/core/helpers/graphs";
+import { createColor } from "@/modules/core/helpers/graphs";
 import { COLOR_FOR_GENETIC_DISTANCE_LINKS, COLOR_PALETTE_LINKS } from "@/modules/core/helpers/colors";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
@@ -111,7 +111,7 @@ export class GraphDataGenerator {
 
         const contactLinksColorMap: ContactLinksColorMap = {};
         uniqueContactTypes.forEach((contactType, index) => {
-            contactLinksColorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColorByIndex(index);
+            contactLinksColorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColor(index);
         });
 
         return contactLinksColorMap;

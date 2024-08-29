@@ -3,9 +3,9 @@ import { Label } from "@/modules/core/components/ui/Label";
 import {
     getRegisteredAtTimestamps,
     getSelectedClusters,
-    getUniqueClustersOfNodes,
+    getUniqueClusters,
     getUniqueTypesOfLinks,
-    sortNoOutbreakAssignedToEndOfArray,
+    moveNoOutbreakAssignedToEnd,
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -20,28 +20,26 @@ type LegendProps = {
 
 export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
-    const allClustersOfNodes = useMemo(() => {
-        const uniqueClustersOfNodes = getUniqueClustersOfNodes(nodes);
-        return sortNoOutbreakAssignedToEndOfArray(uniqueClustersOfNodes);
+    const clusterNames = useMemo(() => {
+        const uniqueClusterNames = getUniqueClusters(nodes);
+        return moveNoOutbreakAssignedToEnd(uniqueClusterNames);
     }, [nodes, variant]);
     const registeredAtTimeStamps = useMemo(() => getRegisteredAtTimestamps(nodes), [nodes, variant]);
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
     const { t } = useTranslation();
 
-    const renderNodeItems = (nodes: CustomNode[]) => {
-        return nodes.map((node) => (
-            <div className="flex items-center gap-2" key={node.cluster}>
+    const renderClusterItems = (clusters: string[]) => {
+        return clusters.map((cluster) => (
+            <div className="flex items-center gap-2" key={cluster}>
                 <span
                     style={{
                         backgroundColor: `${
-                            colorMap[node.cluster]?.isActive
-                                ? colorMap[node.cluster].color
-                                : COLOR_FOR_CASES_WITHOUT_CLUSTERS
+                            colorMap[cluster]?.isActive ? colorMap[cluster].color : COLOR_FOR_CASES_WITHOUT_CLUSTERS
                         }`,
                     }}
                     className={"rounded-full h-3 w-3"}
                 />
-                <p className="text-xs">{node.cluster}</p>
+                <p className="text-xs">{cluster}</p>
             </div>
         ));
     };
@@ -82,7 +80,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Background</Label>
-                {renderNodeItems(selectedBackground)}
+                {renderClusterItems(selectedBackground)}
             </div>
         );
     };
@@ -114,7 +112,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Ausbruch</Label>
-                {renderNodeItems(selectedOutbreak)}
+                {renderClusterItems(selectedOutbreak)}
             </div>
         );
     };
@@ -122,7 +120,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const renderNodeLegend = () => {
         switch (variant) {
             case "dashboard":
-                return <div className="flex flex-col">{renderNodeItems(allClustersOfNodes)}</div>;
+                return <div className="flex flex-col">{renderClusterItems(clusterNames)}</div>;
 
             case "outbreakAnalysis":
                 return (

@@ -12,27 +12,33 @@ import {
 
 export const getSelectedClusters = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore.getState();
-    let clustersOfNodes = getUniqueClustersOfNodes(outbreakAnalysisStore.graphData.nodes);
-    clustersOfNodes = sortNoOutbreakAssignedToEndOfArray(clustersOfNodes);
-    const selectedOutbreak = clustersOfNodes.filter(
-        (nodes) => nodes.cluster === outbreakAnalysisStore.settings.selectedOutbreak?.name
+    let clusterNames = getUniqueClusters(outbreakAnalysisStore.graphData.nodes);
+    clusterNames = moveNoOutbreakAssignedToEnd(clusterNames);
+    const selectedOutbreak = clusterNames.filter(
+        (clusterName) => clusterName === outbreakAnalysisStore.settings.selectedOutbreak?.name
     );
-    const selectedBackground = clustersOfNodes.filter(
-        (nodes) => nodes.cluster !== outbreakAnalysisStore.settings.selectedOutbreak?.name
+    const selectedBackground = clusterNames.filter(
+        (clusterName) => clusterName !== outbreakAnalysisStore.settings.selectedOutbreak?.name
     );
     return { selectedOutbreak, selectedBackground };
 };
 
-export const sortNoOutbreakAssignedToEndOfArray = (nodes: CustomNode[]) => {
-    const clusterOfNodes = [...nodes];
+export const moveNoOutbreakAssignedToEnd = (clusterNames: string[]) => {
+    const clusterNamesCopy = [...clusterNames];
     //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
-    const index = clusterOfNodes.findIndex((node) => node.cluster === i18next.t("clusterTypes.noOutbreakAssigned"));
+    const index = clusterNamesCopy.findIndex(
+        (clusterName) => clusterName === i18next.t("clusterTypes.noOutbreakAssigned")
+    );
     if (index !== -1) {
-        const item = clusterOfNodes.splice(index, 1);
-        clusterOfNodes.push(item[0]);
+        const item = clusterNamesCopy.splice(index, 1);
+        clusterNamesCopy.push(item[0]);
     }
-    return clusterOfNodes;
+    return clusterNamesCopy;
 };
+
+export class ColorMapGenerator {
+    public generateColorMap = () => {};
+}
 
 export const createColorMapForNodes = (
     selectedOutbreak?: OutbreakSchema,
@@ -72,7 +78,7 @@ export const createColorMapForNodes = (
 
     // create colors for every cluster. If there are more clusters then colors create a color dynamically
     for (let i = 0; i < clusters.length; i++) {
-        colorMap[clusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColorByIndex(i), isActive: true };
+        colorMap[clusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColor(i), isActive: true };
     }
 
     return colorMap;
@@ -84,7 +90,7 @@ export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
 
     for (let i = 0; i < registeredAtTimestamps.length; i++) {
         const normalizedIndex = i / registeredAtTimestamps.length;
-        colorMap[registeredAtTimestamps[i]] = { color: setNodeGradientColor(normalizedIndex) };
+        colorMap[registeredAtTimestamps[i]] = { color: createColorGradient(normalizedIndex) };
     }
     return colorMap;
 };
@@ -112,12 +118,12 @@ export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
         .sort((a, b) => a.type.localeCompare(b.type));
 };
 
-export const createColorByIndex = (value: number) => {
+export const createColor = (value: number) => {
     const hue = value * 137.508; // use golden angle approximation
     return `hsl(${hue},50%,75%)`;
 };
 
-const setNodeGradientColor = (normalizedIndex: number): string => {
+const createColorGradient = (normalizedIndex: number): string => {
     // Interpolate hue from 70 (yellow-green) to 0 (red)
     const hue = 70 - normalizedIndex * 70;
     // Use fixed saturation and lightness values
