@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from backend.exceptions.genomic_error_exception import GenomicErrorException
+from flask_socketio import SocketIO
+
+socket = SocketIO(message_queue="redis://redis:6379")
 
 
 class SampleAnalysisStrategy(ABC):
@@ -28,10 +31,21 @@ class SampleAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
-    def execute(self):
+    def execute(self, session_id):
         """Run strategy actions."""
         genomic_errors = self.find_genomic_validation_errors()
         if genomic_errors and len(genomic_errors) > 0:
             raise GenomicErrorException
         self.create_input_and_output_files()
-        return self.run_analysis()
+        result = self.run_analysis()
+        response = self.get_response(result)
+        socket.emit(
+            "sample_analysis_response",
+            {
+                "result": response,
+                "fasta_id": self.fasta_id,
+                "sequence_length": len(self.sequence),
+            },
+            room=session_id,
+        )
+        return result

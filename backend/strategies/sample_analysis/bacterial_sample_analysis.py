@@ -3,7 +3,6 @@ from backend.strategies.sample_analysis.sample_analysis_strategy import (
 )
 import shutil
 import time
-import json
 import pathlib
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
@@ -57,7 +56,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
 
             # we will append all the individual dictionaires into list
             # and dump into file.
-            result = json.dumps(arr[0], indent=4)
+            result = arr[0]
         return result
 
     def run_analysis(self):

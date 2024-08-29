@@ -32,6 +32,11 @@ services:
       backend:
         condition: service_started
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
   backend:
     image: gentrain-backend
     restart: unless-stopped
@@ -43,6 +48,14 @@ services:
     env_file: "./backend/backend/.env"
     networks:
       - caddy
+
+  worker:
+    image: gentrain-backend:latest
+    depends_on:
+      - redis
+    command: rq worker --url redis://redis:6379 --path /home
+    links:
+      - redis
 
   frontend:
     image: gentrain-frontend
