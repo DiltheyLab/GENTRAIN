@@ -80,7 +80,7 @@ jobs:
             touch frontend/.env
             echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> frontend/.env
             echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> frontend/.env
-            echo -e "VITE_API_BASE_URL=${{vars.API_BASE_URL}}" >> frontend/.env
+            echo -e "VITE_API_HOST=${{vars.API_HOST}}" >> frontend/.env
             touch backend/.env
             echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
             echo -e "FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE=${{vars.FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE}}" >> backend/.env

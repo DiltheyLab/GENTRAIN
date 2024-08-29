@@ -60,7 +60,6 @@ export const FileUpload = ({
             // reset sample status component data
             reset();
             const fileReaderResult = await fileReadingStrategy.execute(e.target.files);
-            console.log(fileReaderResult);
             if (!fileReaderResult) return;
             // format the file content into an array
             const fileAsStringArray = formatInArray(fileReaderResult);
