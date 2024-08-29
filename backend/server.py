@@ -22,7 +22,11 @@ socketio = SocketIO(
     app,
     message_queue="redis://redis:6379",
     max_http_buffer_size=MAX_BUFFER_SIZE,
-    cors_allowed_origins=["http://localhost:3000", "http://localhost:4173"],
+    cors_allowed_origins=[
+        "http://localhost:3000",
+        "http://localhost:4173",
+        "https://gentrain.bi.denbi.de",
+    ],
 )
 
 if os.environ.get("FLASK_ENV") == "development":
