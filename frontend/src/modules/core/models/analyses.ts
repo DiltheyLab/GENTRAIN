@@ -16,8 +16,7 @@ export const getAllAnalyses = () => {
 };
 
 export const getAnalysesForPathogenId = async (pathogenId: number) => {
-    const analyses = await db.analyses.where({ pathogen_id: pathogenId }).toArray();
-    return analyses;
+    return await db.analyses.where({ pathogen_id: pathogenId }).toArray();
 };
 
 export const createAnalysis = async (
