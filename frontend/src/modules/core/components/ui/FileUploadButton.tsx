@@ -1,7 +1,7 @@
 import { Label } from "./Label";
 import { Input } from "./Input";
 import { useTranslation } from "react-i18next";
-import { FileUploadTypes } from "@/modules/data_management/components/upload_section/DataUploadFactory";
+import { FileUploadTypes } from "@/modules/data_management/components/upload_section/FileUpload";
 
 type FileUploadButtonProps = {
     type: FileUploadTypes;

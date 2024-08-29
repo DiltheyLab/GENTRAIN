@@ -1,5 +1,3 @@
-import { FileReaderResult } from "@/modules/data_management/components/upload_section/DataUploadFactory";
-
 export const downloadFile = (blob: Blob, name: string) => {
     const jsonURL = window.URL.createObjectURL(blob);
     const tempLink = document.createElement("a");
@@ -47,17 +45,23 @@ const collectFastaIdsAndContent = (fastaSequences: Array<string>) => {
             }
         }
 
-        fastaSequencesArray.push({ fastaId: fastaId, sequence: genom });
+        if (fastaId) {
+            fastaSequencesArray.push({ fastaId: fastaId, sequence: genom });
+        }
     }
     return fastaSequencesArray;
 };
 
-export const formatInArray = (fileReaderResult: FileReaderResult | FileReaderResult[]) => {
+export const formatInArray = (
+    fileReaderResult:
+        | ({ filename: string; content: string; mimetype: string } | undefined)[]
+        | { [filename: string]: string; mimetype: string }
+) => {
     if (fileReaderResult instanceof Array) {
         // if the fileReaderResult is an array, we assume that it contains multiple files
         let fastaSequencesArray = [];
         for (const file of fileReaderResult) {
-            if (file.mimetype === "fasta") {
+            if (file?.mimetype === "fasta") {
                 // for bacterial uploads:
                 // fasta file name contains fasta id
                 // content contains assembly

@@ -1,4 +1,3 @@
-import { Cookies } from "react-cookie";
 import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { DataManagementState, useDataManagementStore } from "../../stores/dataManagement";
 import { socket } from "@/modules/core/helpers/socket";

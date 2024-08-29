@@ -6,8 +6,8 @@ export const LoadingSpinner = ({
     height = 24,
 }: {
     className?: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
 }) => {
     return (
         <svg
