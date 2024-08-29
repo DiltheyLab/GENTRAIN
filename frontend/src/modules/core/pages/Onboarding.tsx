@@ -1,6 +1,5 @@
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
-import { Label } from "@/modules/core/components/ui/Label";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Share2 } from "lucide-react";
 
