@@ -15,7 +15,6 @@ import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/Outb
 import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
-import { Cookies } from "react-cookie";
 import { socket } from "@/modules/core/helpers/socket";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
@@ -61,6 +60,8 @@ const App = () => {
         return <Onboarding />;
     }
 
+    socket.emit("join", session.id);
+
     const router = createBrowserRouter([
         {
             path: "/",
@@ -82,13 +83,6 @@ const App = () => {
 
     return <RouterProvider router={router} />;
 };
-
-const cookies = new Cookies();
-const roomIdentifier = cookies.get("gentrain_room") ?? Math.random().toString(16).slice(2);
-socket.emit("join", roomIdentifier);
-socket.on("room_created", (roomIdentifier) => {
-    cookies.set("gentrain_room", roomIdentifier);
-});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>

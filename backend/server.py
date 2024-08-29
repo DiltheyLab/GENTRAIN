@@ -38,24 +38,24 @@ app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 
 
 @socketio.event
-def join(room_identifier):
-    join_room(room_identifier)
-    emit("room_created", room_identifier, to=room_identifier)
+def join(session_id):
+    join_room(session_id)
+    emit("room_created", session_id, to=session_id)
 
 
 @socketio.event
-def leave(room_identifier):
-    leave_room(room_identifier)
+def leave(session_id):
+    leave_room(session_id)
 
 
 @socketio.event
-def sample_analysis(room_identifier, pathogen_name, fasta_id, sequence):
+def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
     strategy = PathogenStrategyManager.get_sample_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,
         sequence=sequence,
     )
-    queue.enqueue(strategy.execute, room_identifier)
+    queue.enqueue(strategy.execute, session_id)
 
 
 if __name__ == "__main__":
