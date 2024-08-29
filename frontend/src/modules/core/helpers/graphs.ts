@@ -36,10 +36,6 @@ export const moveNoOutbreakAssignedToEnd = (clusterNames: string[]) => {
     return clusterNamesCopy;
 };
 
-export class ColorMapGenerator {
-    public generateColorMap = () => {};
-}
-
 export const createColorMapForNodes = (
     selectedOutbreak?: OutbreakSchema,
     cases?: CaseWithRelationships[],
