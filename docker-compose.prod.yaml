@@ -61,7 +61,7 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
-    command: rq worker --url redis://gentrain-redis:6379 --path /home
+    command: [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf" ]
     links:
       - redis
     networks:
