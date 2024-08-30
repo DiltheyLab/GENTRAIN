@@ -6,7 +6,6 @@ from redis import Redis
 from rq import Queue
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
-from backend.server import app
 
 app = Flask(__name__)
 queue = Queue(
