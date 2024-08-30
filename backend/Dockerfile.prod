@@ -20,6 +20,7 @@ RUN mkdir /home/backend/logs
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
 ENV PATH /opt/conda/envs/gentrain/bin:$PATH
+ENV PYTHONPATH="$PYTHONPATH:/home"
 
 RUN nextclade dataset get --name 'sars-cov-2' --output-dir '/home/backend/datasets/nextclade_covid/'
 

@@ -51,5 +51,4 @@ class SampleAnalysisStrategy(ABC):
         return result
 
     def enqueue_job(self, session_id, queue):
-        print("strategy.enqueue_job", session_id, queue)
         queue.enqueue(self.execute, session_id)
