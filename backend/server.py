@@ -8,12 +8,6 @@ from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
 app = Flask(__name__)
-queue = Queue(
-    connection=Redis(
-        host="redis",
-        port=6379,
-    )
-)
 
 app.config["SECRET_KEY"] = os.environ.get("RQ_SECRET")
 
@@ -24,7 +18,6 @@ if os.environ.get("FLASK_ENV") == "development":
     CORS(app)
     socketio = SocketIO(
         app,
-        message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins="http://localhost:3000",
     )
@@ -32,7 +25,6 @@ else:
     CORS(app)
     socketio = SocketIO(
         app,
-        message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins=[],
     )
@@ -59,7 +51,7 @@ def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
         fasta_id=fasta_id,
         sequence=sequence,
     )
-    queue.enqueue(strategy.execute, session_id)
+    strategy.execute(session_id)
 
 
 if __name__ == "__main__":
