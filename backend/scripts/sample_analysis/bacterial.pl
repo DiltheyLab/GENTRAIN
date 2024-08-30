@@ -22,7 +22,7 @@ unless($input){die "\nERROR:\nPlease specify the assembly folder using --input.\
 unless($scheme){die "\nERROR:\nPlease specify the scheme folder using --scheme.\n\n"}
 unless($output){die "\nERROR:\nPlease specify the output folder using --output.\n\n"}
 
-system("chewBBACA.py AlleleCall --hash-profiles md5 -i $input -g $scheme -o $output --cpu 4") and die;
+system("chewBBACA.py AlleleCall --hash-profiles md5 -i $input -g $scheme -o $output --cpu 1") and die;
 
 $md5=`cat $scheme/* $scheme/*/* | md5sum`;																		# running md5sum
 $chewBBACA_version=`chewBBACA.py --version`;																	# save chewBBACA version
