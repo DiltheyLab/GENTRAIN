@@ -31,11 +31,12 @@ if os.environ.get("FLASK_ENV") == "development":
         ],
     )
 else:
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "*"}})
     socketio = SocketIO(
         app,
         message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
+        cors_allowed_origins="*",
     )
 
 app.register_blueprint(api, url_prefix="/api")
