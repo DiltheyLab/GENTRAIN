@@ -3,15 +3,16 @@ import {
     COLOR_FOR_CASES_WITHOUT_CLUSTERS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_NODES,
-} from "../../helpers/colors";
-import { createColor } from "../../helpers/graphs";
-import { OutbreakSchema } from "../../models/outbreaks";
-import { ColorMap } from "../../types/graph";
+} from "@/modules/core/helpers/colors";
+import { createColor } from "@/modules/core/helpers/graphs";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { ColorMap } from "@/modules/core/types/graph";
 
 export abstract class ColorMapGenerator {
     protected colorMap: ColorMap = {};
     protected clusters: string[] = [];
     protected selectedOutbreak: OutbreakSchema | undefined;
+
     protected abstract getUniqueClusters(): void;
 
     constructor(selectedOutbreak?: OutbreakSchema) {
