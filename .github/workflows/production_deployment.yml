@@ -98,7 +98,8 @@ jobs:
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d --build --no-deps
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
