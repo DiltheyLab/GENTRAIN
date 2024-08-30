@@ -43,6 +43,8 @@ services:
     container_name: gentrain-backend
     image: gentrain-backend
     restart: unless-stopped
+    depends_on:
+      - redis
     build:
       context: ./backend
       dockerfile: Dockerfile.prod

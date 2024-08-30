@@ -16,6 +16,8 @@ services:
       - "4000:4000"
     volumes:
       - ./backend:/backend
+    depends_on:
+      - redis
     env_file: "./backend/.env"
 
   worker:
