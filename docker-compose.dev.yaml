@@ -25,6 +25,6 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
-    command: python worker.py default
+    command: rq worker --url redis://gentrain-redis:6379 --path /
     links:
       - redis
