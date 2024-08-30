@@ -34,7 +34,7 @@ else:
         app,
         message_queue="redis://gentrain-redis:6379/0",
         max_http_buffer_size=MAX_BUFFER_SIZE,
-        cors_allowed_origins="https://gentrain.bi.denbi.de",
+        cors_allowed_origins=[],
     )
 
 app.register_blueprint(api, url_prefix="/api")
