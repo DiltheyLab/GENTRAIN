@@ -21,14 +21,13 @@ MAX_BUFFER_SIZE = 5 * 1000 * 1000
 
 
 if os.environ.get("FLASK_ENV") == "development":
-    CORS(app, origins=["http://localhost:3000", "http://localhost:4173"])
+    CORS(app)
     socketio = SocketIO(
         app,
         message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins=[
             "http://localhost:3000",
-            "http://localhost:4173",
         ],
     )
 else:
@@ -37,7 +36,9 @@ else:
         app,
         message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
-        cors_allowed_origins="*",
+        cors_allowed_origins=[
+            "https://gentrain.bi.denbi.de",
+        ],
     )
 
 app.register_blueprint(api, url_prefix="/api")
