@@ -3,10 +3,7 @@ import { Settings, X } from "lucide-react";
 import { Label } from "@/modules/core/components/ui/Label";
 import { Slider } from "@/modules/core/components/ui/Slider";
 import { Switch } from "@/modules/core/components/ui/Switch";
-import {
-    GraphSettings as GraphSettingsType,
-    useOutbreakAnalysisStore,
-} from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { GraphSettings as GraphSettingsType } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 type GraphSettingsProps = {
     showGraphSettings: boolean;
