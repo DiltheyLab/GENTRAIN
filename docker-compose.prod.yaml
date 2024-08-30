@@ -34,7 +34,7 @@ services:
         condition: service_started
 
   redis:
-    container_name: gentrain_redis
+    container_name: gentrain-redis
     image: "redis:alpine"
     ports:
       - 6379:6379
