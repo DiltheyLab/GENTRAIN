@@ -1,3 +1,7 @@
+from gevent import monkey
+
+monkey.patch_all()
+
 import os
 from flask import Flask
 from flask_cors import CORS
@@ -6,6 +10,7 @@ from redis import Redis
 from rq import Queue
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
+
 
 app = Flask(__name__)
 queue = Queue(
