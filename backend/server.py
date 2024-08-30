@@ -6,6 +6,7 @@ from redis import Redis
 from rq import Queue
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
+from backend.server import app
 
 app = Flask(__name__)
 queue = Queue(
@@ -31,11 +32,9 @@ if os.environ.get("FLASK_ENV") == "development":
         ],
     )
 else:
-
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app)
     socketio = SocketIO(
         app,
-        message_queue="redis://redis:6379/0",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins="https://gentrain.bi.denbi.de",
     )
