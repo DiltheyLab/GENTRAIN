@@ -1,11 +1,12 @@
 services:
   redis:
+    container_name: gentrain-redis
     image: "redis:alpine"
     ports:
       - 6379:6379
 
   backend:
-    container_name: gentrain_backend
+    container_name: gentrain-backend
     image: gentrain-backend
     restart: unless-stopped
     build:
@@ -18,6 +19,7 @@ services:
     env_file: "./backend/.env"
 
   worker:
+    container_name: gentrain-worker
     image: gentrain-backend:latest
     depends_on:
       - redis
