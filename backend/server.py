@@ -26,14 +26,14 @@ if os.environ.get("FLASK_ENV") == "development":
         app,
         message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
-        cors_allowed_origins=[
-            "http://localhost:3000",
-        ],
+        cors_allowed_origins="http://localhost:3000",
     )
 else:
+
     CORS(app)
     socketio = SocketIO(
         app,
+        message_queue="redis://redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins="https://gentrain.bi.denbi.de",
     )
