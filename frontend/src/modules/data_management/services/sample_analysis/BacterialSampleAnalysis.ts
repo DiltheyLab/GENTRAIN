@@ -34,21 +34,23 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
         }
         const finishedFastaIds = [];
 
-        socket.on(`sample_analysis_response`, async (data: any) => {
-            finishedFastaIds.push(data.fasta_id);
-            this.createSample(data.fasta_id, data.sequence_length, data.result);
-            this.dataManagementState.changeUpload(data.fasta_id, "finished");
+        if (socket) {
+            socket.on(`sample_analysis_response`, async (data: any) => {
+                finishedFastaIds.push(data.fasta_id);
+                this.createSample(data.fasta_id, data.sequence_length, data.result);
+                this.dataManagementState.changeUpload(data.fasta_id, "finished");
 
-            if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
-                // recalculate all sample distances to enable assembling a fresh distance matrix
-                const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
-                if (!distanceCalculationStrategy) {
-                    return;
+                if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+                    // recalculate all sample distances to enable assembling a fresh distance matrix
+                    const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
+                    if (!distanceCalculationStrategy) {
+                        return;
+                    }
+                    await distanceCalculationStrategy.execute();
+                    useDataManagementStore.getState().setIsUploading(false);
                 }
-                await distanceCalculationStrategy.execute();
-                useDataManagementStore.getState().setIsUploading(false);
-            }
-        });
+            });
+        }
 
         await Promise.all(variantRequestPromises);
     };
