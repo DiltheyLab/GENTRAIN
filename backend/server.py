@@ -1,22 +1,33 @@
+from gevent import monkey
+
+monkey.patch_all()
+
 import os
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room
+import rq_dashboard
 from redis import Redis
 from rq import Queue
-import rq_dashboard
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
 
 app = Flask(__name__)
-queue = Queue(
+queue_viral = Queue(
+    name="viral",
     connection=Redis(
         host="gentrain-redis",
         port=6379,
-    )
+    ),
 )
-
+queue_bacterial = Queue(
+    name="bacterial",
+    connection=Redis(
+        host="gentrain-redis",
+        port=6379,
+    ),
+)
 app.config["SECRET_KEY"] = os.environ.get("RQ_SECRET")
 app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://gentrain-redis:6379"
 
@@ -60,13 +71,15 @@ def leave(session_id):
 
 @socketio.event
 def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
-    print(session_id)
     strategy = PathogenStrategyManager.get_sample_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,
         sequence=sequence,
     )
-    queue.enqueue(strategy.execute, session_id)
+    strategy.enqueue_job(
+        session_id=session_id,
+        queue=queue_viral if strategy.queue == "viral" else queue_bacterial,
+    )
 
 
 if __name__ == "__main__":
