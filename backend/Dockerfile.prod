@@ -15,6 +15,8 @@ RUN useradd -m uwsgi
 RUN chown uwsgi:uwsgi -R /home/backend
 USER uwsgi
 
+RUN mkdir /home/backend/logs
+
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
 ENV PATH /opt/conda/envs/gentrain/bin:$PATH
