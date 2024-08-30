@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from flask_socketio import SocketIO
 
-socket = SocketIO(message_queue="redis://gentrain-redis:6379")
+socket = SocketIO(message_queue="redis://redis:6379")
 
 
 class SampleAnalysisStrategy(ABC):
