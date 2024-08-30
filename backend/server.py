@@ -33,7 +33,7 @@ else:
     CORS(app)
     socketio = SocketIO(
         app,
-        message_queue="redis://gentrain-redis:6379/0",
+        message_queue="redis://gentrain-redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
         cors_allowed_origins="https://gentrain.bi.denbi.de",
     )
