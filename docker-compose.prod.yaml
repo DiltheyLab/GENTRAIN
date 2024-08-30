@@ -61,7 +61,7 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
-    command: [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf" ]
+    command: [ "supervisord", "-c", "/home/backend/supervisor.conf" ]
     links:
       - redis
     networks:

@@ -23,7 +23,6 @@ RUN nextclade dataset get --name 'sars-cov-2' --output-dir '/home/backend/datase
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=uwsgi . .
-COPY --chown=uwsgi /home/backend/supervisor /etc/supervisor/conf.d/
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
