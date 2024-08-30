@@ -11,10 +11,12 @@ import { ColorMap } from "../../types/graph";
 export abstract class ColorMapGenerator {
     protected colorMap: ColorMap = {};
     protected clusters: string[] = [];
-
+    protected selectedOutbreak: OutbreakSchema | undefined;
     protected abstract getUniqueClusters(): void;
 
-    constructor(protected selectedOutbreak?: OutbreakSchema) {}
+    constructor(selectedOutbreak?: OutbreakSchema) {
+        this.selectedOutbreak = selectedOutbreak;
+    }
 
     public createColorMapForClusters = (): ColorMap => {
         this.getUniqueClusters();
