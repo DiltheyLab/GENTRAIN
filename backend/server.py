@@ -76,6 +76,11 @@ def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
         fasta_id=fasta_id,
         sequence=sequence,
     )
+    print(
+        "sample_analysis",
+        session_id,
+        queue_viral if strategy.queue == "viral" else queue_bacterial,
+    )
     strategy.enqueue_job(
         session_id=session_id,
         queue=queue_viral if strategy.queue == "viral" else queue_bacterial,
