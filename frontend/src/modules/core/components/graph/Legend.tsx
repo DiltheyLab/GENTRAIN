@@ -97,7 +97,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
                     </div>
                 )}
                 {contactTracingLinks.length > 0 && (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col mt-2">
                         <Label className="-ml-1 px-1 text-xs font-medium">Kontaktkanten</Label>
                         {renderLinkItems(contactTracingLinks)}
                     </div>
