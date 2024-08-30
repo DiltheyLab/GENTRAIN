@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from flask_socketio import SocketIO
 
+socket = SocketIO(message_queue="redis://gentrain-redis:6379")
+
 
 class SampleAnalysisStrategy(ABC):
     """Sample Analisys Strategy Class."""
@@ -37,5 +39,13 @@ class SampleAnalysisStrategy(ABC):
         self.create_input_and_output_files()
         result = self.run_analysis()
         response = self.get_response(result)
-
+        socket.emit(
+            "sample_analysis_response",
+            {
+                "result": response,
+                "fasta_id": self.fasta_id,
+                "sequence_length": len(self.sequence),
+            },
+            room=session_id,
+        )
         return result
