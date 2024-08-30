@@ -28,4 +28,4 @@ COPY --chown=uwsgi . .
 EXPOSE 8080
 
 # Run app.py when the container launches using uWSGI
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
+CMD ["uwsgi", "--ini", "uwsgi.ini", "--http-websockets"]
