@@ -60,7 +60,9 @@ const App = () => {
         return <Onboarding />;
     }
 
-    socket.emit("join", session.id);
+    if (socket) {
+        socket.emit("join", session.id);
+    }
 
     const router = createBrowserRouter([
         {

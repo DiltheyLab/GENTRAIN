@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from redis import Redis
 from rq import Queue
+import rq_dashboard
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
@@ -17,6 +18,7 @@ queue = Queue(
 )
 
 app.config["SECRET_KEY"] = os.environ.get("RQ_SECRET")
+app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://gentrain-redis:6379"
 
 MAX_BUFFER_SIZE = 5 * 1000 * 1000
 
@@ -39,6 +41,10 @@ else:
     )
 
 app.register_blueprint(api, url_prefix="/api")
+
+app.config.from_object(rq_dashboard.default_settings)
+rq_dashboard.web.setup_rq_connection(app)
+app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 
 
 @socketio.event
