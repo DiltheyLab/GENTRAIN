@@ -5,7 +5,7 @@ from backend.exceptions.genomic_error_exception import GenomicErrorException
 socket = SocketIO(message_queue="redis://gentrain-redis:6379")
 
 
-class SampleAnalysisStrategy(ABC):
+class SequenceAnalysisStrategy(ABC):
     """Sample Analisys Strategy Class."""
 
     def __init__(self, pathogen_name, fasta_id, sequence):
@@ -40,7 +40,7 @@ class SampleAnalysisStrategy(ABC):
         result = self.run_analysis()
         response = self.get_response(result)
         socket.emit(
-            "sample_analysis_response",
+            "sequence_analysis_response",
             {
                 "result": response,
                 "fasta_id": self.fasta_id,

@@ -1,6 +1,8 @@
-from backend.strategies.sample_analysis.viral_sample_analysis import ViralSampleAnalysis
-from backend.strategies.sample_analysis.bacterial_sample_analysis import (
-    BacterialSampleAnalysis,
+from backend.strategies.sequence_analysis.bacterial_sequence_analysis import (
+    BacterialSequenceAnalysis,
+)
+from backend.strategies.sequence_analysis.viral_sequence_analysis import (
+    ViralSequenceAnalysis,
 )
 
 
@@ -23,17 +25,19 @@ class PathogenStrategyManager:
         return
 
     @staticmethod
-    def get_sample_analysis_strategy(pathogen_name: str, fasta_id: str, sequence: str):
+    def get_sequence_analysis_strategy(
+        pathogen_name: str, fasta_id: str, sequence: str
+    ):
         """Initialize and return a strategy based on pathogen type."""
         if (
             PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
             == "viral"
         ):
-            return ViralSampleAnalysis(pathogen_name, fasta_id, sequence)
+            return ViralSequenceAnalysis(pathogen_name, fasta_id, sequence)
         if (
             PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
             == "bacterial"
         ):
-            return BacterialSampleAnalysis(pathogen_name, fasta_id, sequence)
+            return BacterialSequenceAnalysis(pathogen_name, fasta_id, sequence)
 
         return

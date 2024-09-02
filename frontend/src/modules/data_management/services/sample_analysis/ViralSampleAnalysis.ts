@@ -5,20 +5,20 @@ import { PathogenStrategyManager } from "@/modules/data_management/services/path
 import { SampleAnalysisStrategy } from "@/modules/data_management/services/sample_analysis/SampleAnalysisStrategy";
 
 export class ViralSampleAnalysis extends SampleAnalysisStrategy {
-    createSampleAndSequenceAnalysis = async (fastaId: string, sequenceLength: number, variantsResult: any) => {
+    createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any, sequenceLength: number) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: "nextclade",
             result: {
                 sequence_length: sequenceLength,
-                lineage: variantsResult["lineage"],
-                n_count: variantsResult["n_count"],
+                lineage: sequenceAnalysisResult["lineage"],
+                n_count: sequenceAnalysisResult["n_count"],
                 mutations: {
-                    substitutions: variantsResult["substitutions"],
-                    deletions: variantsResult["deletions"],
-                    insertions: variantsResult["insertions"],
-                    missing: variantsResult["missing"],
-                    nonACGTNs: variantsResult["nonACGTNs"],
-                    alignmentRange: variantsResult["alignmentRange"],
+                    substitutions: sequenceAnalysisResult["substitutions"],
+                    deletions: sequenceAnalysisResult["deletions"],
+                    insertions: sequenceAnalysisResult["insertions"],
+                    missing: sequenceAnalysisResult["missing"],
+                    nonACGTNs: sequenceAnalysisResult["nonACGTNs"],
+                    alignmentRange: sequenceAnalysisResult["alignmentRange"],
                 },
             },
         });
@@ -49,8 +49,8 @@ export class ViralSampleAnalysis extends SampleAnalysisStrategy {
         const finishedFastaIds = [];
 
         if (socket) {
-            socket.on(`sample_analysis_response`, async (data: any) => {
-                this.createSampleAndSequenceAnalysis(data.fasta_id, data.sequence_length, data.result);
+            socket.on(`sequence_analysis_response`, async (data: any) => {
+                this.createSampleAndSequenceAnalysis(data.fasta_id, data.result, data.sequence_length);
                 this.dataManagementState.changeUpload(data.fasta_id, "finished");
                 finishedFastaIds.push(data.fasta_id);
                 if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {

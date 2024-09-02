@@ -11,6 +11,7 @@ from backend.config import get_project_path
 from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
+from backend.models.sequence_analysis import BacterialSequenceAnalysisResponseModel
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
@@ -95,4 +96,4 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
-        return result
+        return BacterialSequenceAnalysisResponseModel(alleles=result).model_dump()

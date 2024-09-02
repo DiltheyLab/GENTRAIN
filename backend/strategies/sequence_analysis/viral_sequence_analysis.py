@@ -8,10 +8,10 @@ from backend.exceptions.sequence_analysis_failed_exception import (
 )
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from backend.config import get_project_path
+from backend.models.sequence_analysis import ViralSequenceAnalysisResponseModel
 from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
-from backend.models.sequence_analysis import ViralSequenceAnalysisResponseModel
 
 
 class ViralSequenceAnalysis(SequenceAnalysisStrategy):

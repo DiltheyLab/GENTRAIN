@@ -1,4 +1,5 @@
 interface BacterialAnalysisResult {
+    sequence_length: number;
     alleles: { [gen_id: string]: string };
 }
 

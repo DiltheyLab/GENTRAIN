@@ -12,7 +12,6 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     protected calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
         const viralDistanceExtractor = new ViralDistanceExtractor(sample1, sample2);
         const alignment = await this.alignSamples(sample1, sample2);
-        console.log(alignment);
         viralDistanceExtractor.calculateDistance(alignment[0], alignment[1]);
         return viralDistanceExtractor.getDistance();
     };
