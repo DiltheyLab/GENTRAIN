@@ -8,16 +8,20 @@ import json
 import pathlib
 import re
 import subprocess
+import tempfile
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from backend.config import get_project_path
-import tempfile
 
 
 class ViralSampleAnalysis(SampleAnalysisStrategy):
     """Concrete analysis strategy for viral samples."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queue = "viral"
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""

@@ -43,22 +43,25 @@ export class ViralSampleAnalysis extends SampleAnalysisStrategy {
         }
         const finishedFastaIds = [];
 
-        socket.on(`sample_analysis_response`, async (data: any) => {
-            this.createSample(data.fasta_id, data.sequence_length, data.result);
-            this.dataManagementState.changeUpload(data.fasta_id, "finished");
-            finishedFastaIds.push(data.fasta_id);
-            if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
-                const activePathogenType = await getPathogenTypeForActivePathogen();
-                if (!activePathogenType) {
-                    return;
+        if (socket) {
+            socket.on(`sample_analysis_response`, async (data: any) => {
+                this.createSample(data.fasta_id, data.sequence_length, data.result);
+                this.dataManagementState.changeUpload(data.fasta_id, "finished");
+                finishedFastaIds.push(data.fasta_id);
+                if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+                    const activePathogenType = await getPathogenTypeForActivePathogen();
+                    if (!activePathogenType) {
+                        return;
+                    }
+                    // recalculate all sample distances to enable assembling a fresh distance matrix
+                    const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
+                    if (!distanceCalculationStrategy) return;
+                    await distanceCalculationStrategy.execute();
+                    this.dataManagementState.setIsUploading(false);
                 }
-                // recalculate all sample distances to enable assembling a fresh distance matrix
-                const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
-                if (!distanceCalculationStrategy) return;
-                await distanceCalculationStrategy.execute();
-                this.dataManagementState.setIsUploading(false);
-            }
-        });
+            });
+        }
+
         await Promise.all(variantRequestPromises);
     };
 }

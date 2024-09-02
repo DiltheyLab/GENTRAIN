@@ -53,12 +53,14 @@ export abstract class SampleAnalysisStrategy {
     delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
     getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        socket.emit(
-            "sample_analysis",
-            this.coreState.session?.id,
-            this.string_to_slug(this.pathogen.name),
-            fastaId,
-            sequence
-        );
+        if (socket) {
+            socket.emit(
+                "sample_analysis",
+                this.coreState.session?.id,
+                this.string_to_slug(this.pathogen.name),
+                fastaId,
+                sequence
+            );
+        }
     };
 }

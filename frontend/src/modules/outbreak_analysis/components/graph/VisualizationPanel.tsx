@@ -51,7 +51,7 @@ export const VisualizationPanel = () => {
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
+            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2 graph-visualization-panel"
         >
             {outbreakAnalysisStore.settings.selectedOutbreak ? (
                 <>

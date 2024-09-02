@@ -1,5 +1,6 @@
 services:
-  reverse-proxy:
+  caddy:
+    container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
     image: caddy:latest
     # Restart policy: restart the container unless explicitly stopped
@@ -33,31 +34,41 @@ services:
         condition: service_started
 
   redis:
+    container_name: gentrain-redis
     image: "redis:alpine"
     ports:
       - 6379:6379
+    networks:
+      - caddy
 
   backend:
+    container_name: gentrain-backend
     image: gentrain-backend
     restart: unless-stopped
+    depends_on:
+      - redis
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
-    env_file: "./backend/backend/.env"
+    env_file: "./backend/.env"
     networks:
       - caddy
 
   worker:
+    container_name: gentrain-worker
     image: gentrain-backend:latest
     depends_on:
       - redis
-    command: rq worker --url redis://redis:6379 --path /home
+    command: [ "supervisord", "-c", "/home/backend/supervisor.conf" ]
     links:
       - redis
+    networks:
+      - caddy
 
   frontend:
+    container_name: gentrain-frontend
     image: gentrain-frontend
     build:
       context: ./frontend
