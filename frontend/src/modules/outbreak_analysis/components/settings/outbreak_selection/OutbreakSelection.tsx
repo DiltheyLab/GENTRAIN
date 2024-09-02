@@ -1,4 +1,3 @@
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import {
     Select,
     SelectContent,
@@ -13,11 +12,14 @@ import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { CaseColorMapGenerator } from "@/modules/core/services/graph/CasesColorMapGenerator";
+import { Skeleton } from "@/modules/core/components/ui/Skeleton";
+import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const OutbreakSelection = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const outbreaks = useGetOutbreaksForActivePathogen();
-    const casesWithRelationships = useGetAllCasesForActivePathogenWithRelationships();
+    const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
         const casesInOutbreak = casesWithRelationships?.filter((caseWithRelationships) => {
@@ -63,8 +65,7 @@ export const OutbreakSelection = () => {
         setDateRange(selectedOutbreak);
 
         // create color map for nodes after changing the outbreak
-        if (!casesWithRelationships) return;
-        createColorMap(casesWithRelationships, selectedOutbreak);
+        createColorMap(casesWithRelationships!, selectedOutbreak);
     };
 
     const createColorMap = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
@@ -98,6 +99,14 @@ export const OutbreakSelection = () => {
             </SelectGroup>
         );
     };
+
+    if (!casesWithRelationships)
+        return (
+            <Skeleton className="flex justify-center items-center h-10 w-full rounded-lg">
+                <LoadingSpinner />
+            </Skeleton>
+        );
+
     return (
         <div className="flex flex-col gap-4 p-0">
             <Select
