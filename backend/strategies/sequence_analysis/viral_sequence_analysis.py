@@ -15,7 +15,7 @@ from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
 
 
 class ViralSequenceAnalysis(SequenceAnalysisStrategy):
-    """Concrete analysis strategy for viral samples."""
+    """Concrete analysis strategy for viral sequences."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

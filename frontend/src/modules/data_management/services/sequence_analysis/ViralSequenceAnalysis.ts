@@ -2,9 +2,9 @@ import { socket } from "@/modules/core/helpers/socket";
 import { db } from "@/modules/core/infrastructure/database";
 import { getPathogenTypeForActivePathogen } from "@/modules/core/models/pathogen_types";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
-import { SampleAnalysisStrategy } from "@/modules/data_management/services/sample_analysis/SampleAnalysisStrategy";
+import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
-export class ViralSampleAnalysis extends SampleAnalysisStrategy {
+export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
     createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any, sequenceLength: number) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: "nextclade",

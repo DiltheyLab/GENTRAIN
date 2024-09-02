@@ -1,9 +1,9 @@
 import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
-import { DataManagementState, useDataManagementStore } from "../../stores/dataManagement";
+import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { socket } from "@/modules/core/helpers/socket";
 import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 
-export abstract class SampleAnalysisStrategy {
+export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;

@@ -14,7 +14,7 @@ from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
-    """Concrete analysis strategy for bacterial samples."""
+    """Concrete analysis strategy for bacterial sequences."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

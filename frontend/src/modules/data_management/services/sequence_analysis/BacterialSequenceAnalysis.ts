@@ -1,10 +1,10 @@
 import { socket } from "@/modules/core/helpers/socket";
 import { db } from "@/modules/core/infrastructure/database";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
-import { SampleAnalysisStrategy } from "@/modules/data_management/services/sample_analysis/SampleAnalysisStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
-export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
+export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
     createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any, sequenceLength: number) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: "chewBBACA",

@@ -6,7 +6,7 @@ socket = SocketIO(message_queue="redis://gentrain-redis:6379")
 
 
 class SequenceAnalysisStrategy(ABC):
-    """Sample Analisys Strategy Class."""
+    """Sequence Analysis Strategy Class."""
 
     def __init__(self, pathogen_name, fasta_id, sequence):
         self.fasta_id = fasta_id

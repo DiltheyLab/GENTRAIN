@@ -15,7 +15,7 @@ from backend.models.sequence_analysis import BacterialSequenceAnalysisResponseMo
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
-    """Concrete analysis strategy for bacterial samples."""
+    """Concrete analysis strategy for bacterial sequences."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
