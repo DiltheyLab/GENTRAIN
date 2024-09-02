@@ -71,7 +71,6 @@ export const OutbreakSelection = () => {
         const colorMapGenerator = new CaseColorMapGenerator(cases, selectedOutbreak);
         // create the initial color map for all nodes if the selected outbreak is changed
         const colorMap = colorMapGenerator.createColorMapForClusters();
-        console.log("inCreateColorMap", colorMap);
         // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
         const currentColorMap = { ...outbreakAnalysisStore.graphSettings.colorMap };
         outbreakAnalysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
