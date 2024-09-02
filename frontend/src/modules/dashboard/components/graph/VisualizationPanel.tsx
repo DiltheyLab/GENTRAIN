@@ -1,6 +1,5 @@
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
