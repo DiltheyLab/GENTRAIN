@@ -15,7 +15,6 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
-import { CaseColorMapGenerator } from "@/modules/core/services/graph/CasesColorMapGenerator";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
 
 export const DashboardVisualizationPanel = () => {
