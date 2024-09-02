@@ -5,22 +5,27 @@ import { PathogenStrategyManager } from "@/modules/data_management/services/path
 import { SampleAnalysisStrategy } from "@/modules/data_management/services/sample_analysis/SampleAnalysisStrategy";
 
 export class ViralSampleAnalysis extends SampleAnalysisStrategy {
-    createSample = async (fastaId: string, sequenceLength: number, variantsResult: any) => {
-        const sampleId = await db.samples.add({
-            fasta_id: fastaId,
-            sequence_length: sequenceLength,
-            lineage: variantsResult["lineage"],
-            n_count: variantsResult["n_count"],
-            variants: {
-                substitutions: variantsResult["substitutions"],
-                deletions: variantsResult["deletions"],
-                insertions: variantsResult["insertions"],
-                missing: variantsResult["missing"],
-                nonACGTNs: variantsResult["nonACGTNs"],
-                alignmentRange: variantsResult["alignmentRange"],
+    createSampleAndSequenceAnalysis = async (fastaId: string, sequenceLength: number, variantsResult: any) => {
+        const sequenceAnalysisId = await db.sequence_analyses.add({
+            schema: "nextclade",
+            result: {
+                sequence_length: sequenceLength,
+                lineage: variantsResult["lineage"],
+                n_count: variantsResult["n_count"],
+                mutations: {
+                    substitutions: variantsResult["substitutions"],
+                    deletions: variantsResult["deletions"],
+                    insertions: variantsResult["insertions"],
+                    missing: variantsResult["missing"],
+                    nonACGTNs: variantsResult["nonACGTNs"],
+                    alignmentRange: variantsResult["alignmentRange"],
+                },
             },
         });
-        return sampleId;
+        await db.samples.add({
+            fasta_id: fastaId,
+            sequence_analysis_id: sequenceAnalysisId,
+        });
     };
     getAndPersistVariantsForSamples = async () => {
         if (!this.sampleData) {
@@ -45,7 +50,7 @@ export class ViralSampleAnalysis extends SampleAnalysisStrategy {
 
         if (socket) {
             socket.on(`sample_analysis_response`, async (data: any) => {
-                this.createSample(data.fasta_id, data.sequence_length, data.result);
+                this.createSampleAndSequenceAnalysis(data.fasta_id, data.sequence_length, data.result);
                 this.dataManagementState.changeUpload(data.fasta_id, "finished");
                 finishedFastaIds.push(data.fasta_id);
                 if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {

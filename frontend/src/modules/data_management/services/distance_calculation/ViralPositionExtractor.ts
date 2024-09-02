@@ -1,5 +1,5 @@
 import { referenceString } from "@/data/referenceString";
-import { SampleSchema } from "@/modules/core/models/samples";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 export interface MutationsSchema {
     [type: string]: string;
@@ -9,11 +9,11 @@ export interface PositionsSchema {
 }
 
 export class ViralPositionExtractor {
-    protected sample: SampleSchema;
+    protected sequenceAnalysisResult: ViralAnalysisResult;
     protected positions: PositionsSchema;
 
-    constructor(sample: SampleSchema) {
-        this.sample = sample;
+    constructor(sequenceAnalysisResult: ViralAnalysisResult) {
+        this.sequenceAnalysisResult = sequenceAnalysisResult;
         this.positions = {};
     }
 
@@ -29,29 +29,29 @@ export class ViralPositionExtractor {
     };
 
     private addInsertionMutations = () => {
-        if (!this.sample.variants) {
+        if (!this.sequenceAnalysisResult.mutations) {
             return;
         }
-        for (const mutation of this.sample.variants["insertions"]) {
+        for (const mutation of this.sequenceAnalysisResult.mutations["insertions"]) {
             this.addInsertionToPositions(mutation["ins"], mutation["pos"]);
         }
     };
 
     private addSubstitutionMutations = () => {
-        if (!this.sample.variants) {
+        if (!this.sequenceAnalysisResult.mutations) {
             return;
         }
-        for (const mutation of this.sample.variants["substitutions"]) {
+        for (const mutation of this.sequenceAnalysisResult.mutations["substitutions"]) {
             this.addSubstitutionToPositions(mutation["qryNuc"], mutation["pos"]);
         }
     };
 
     private addAmbiguousMutations = () => {
-        if (!this.sample.variants) {
+        if (!this.sequenceAnalysisResult.mutations) {
             return;
         }
         // Ns
-        for (const mutation of this.sample.variants["missing"]) {
+        for (const mutation of this.sequenceAnalysisResult.mutations["missing"]) {
             // { begin: 28881, end: 28883, character: "N" }
             let start = mutation["range"]["begin"];
             let end = mutation["range"]["end"];
@@ -64,7 +64,7 @@ export class ViralPositionExtractor {
         }
 
         // other ambious characters
-        for (const mutation of this.sample.variants["nonACGTNs"]) {
+        for (const mutation of this.sequenceAnalysisResult.mutations["nonACGTNs"]) {
             // { begin: 60, end: 61, character: "Y" }
             let start = mutation["range"]["begin"];
             let end = mutation["range"]["end"];
@@ -78,11 +78,11 @@ export class ViralPositionExtractor {
     };
 
     private addDeletionMutations = () => {
-        if (!this.sample.variants) {
+        if (!this.sequenceAnalysisResult.mutations) {
             return;
         }
         // Deletions
-        for (const mutation of this.sample.variants["deletions"]) {
+        for (const mutation of this.sequenceAnalysisResult.mutations["deletions"]) {
             let start = mutation["range"]["begin"];
             let end = mutation["range"]["end"];
 
@@ -93,12 +93,12 @@ export class ViralPositionExtractor {
         }
 
         // Start of alignment
-        for (let i = 0; i < this.sample.variants["alignmentRange"]["begin"]; i++) {
+        for (let i = 0; i < this.sequenceAnalysisResult.mutations["alignmentRange"]["begin"]; i++) {
             this.addDeletionToPositions(i);
         }
 
         // End of alignment
-        for (let i = this.sample.variants["alignmentRange"]["end"]; i < referenceString.length; i++) {
+        for (let i = this.sequenceAnalysisResult.mutations["alignmentRange"]["end"]; i < referenceString.length; i++) {
             this.addDeletionToPositions(i);
         }
     };

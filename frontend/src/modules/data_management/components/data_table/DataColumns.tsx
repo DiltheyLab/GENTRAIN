@@ -14,7 +14,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
 
 export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     {
@@ -206,7 +206,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const deleteCase = async () => {
                 try {
-                    await deleteCasebyIdAndRecalculateDistances(row.original.id);
+                    await deleteCaseByIdAndRecalculateDistances(row.original.id);
                 } catch (error) {
                     toast({
                         title: "Fall konnte nicht gelöscht werden.",

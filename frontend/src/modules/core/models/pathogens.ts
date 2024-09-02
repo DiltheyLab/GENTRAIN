@@ -44,6 +44,7 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
         [
             db.cases,
             db.samples,
+            db.sequence_analyses,
             db.contacts,
             db.cases,
             db.distances,

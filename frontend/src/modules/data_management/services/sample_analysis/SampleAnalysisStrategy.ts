@@ -10,7 +10,7 @@ export abstract class SampleAnalysisStrategy {
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
     protected fastaIdsToAnalyse: string[] = [];
 
-    abstract createSample(fastaId: string, sequenceLength: number, variantsResult: object): void;
+    abstract createSampleAndSequenceAnalysis(fastaId: string, sequenceLength: number, variantsResult: object): void;
     abstract getAndPersistVariantsForSamples(): void;
 
     constructor(pathogen: PathogenWithRelationships) {

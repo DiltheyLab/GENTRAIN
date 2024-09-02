@@ -5,13 +5,17 @@ import { SampleAnalysisStrategy } from "@/modules/data_management/services/sampl
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
-    createSample = async (fastaId: string, sequenceLength: number, variantsResult: any) => {
-        const sampleId = await db.samples.add({
-            fasta_id: fastaId,
-            sequence_length: sequenceLength,
-            variants: variantsResult,
+    createSampleAndSequenceAnalysis = async (fastaId: string, sequenceLength: number, variantsResult: any) => {
+        const sequenceAnalysisId = await db.sequence_analyses.add({
+            schema: "chewBBACA",
+            result: {
+                alleles: variantsResult,
+            },
         });
-        return sampleId;
+        await db.samples.add({
+            fasta_id: fastaId,
+            sequence_analysis_id: sequenceAnalysisId,
+        });
     };
     getAndPersistVariantsForSamples = async () => {
         if (!this.sampleData) {
@@ -37,7 +41,7 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
         if (socket) {
             socket.on(`sample_analysis_response`, async (data: any) => {
                 finishedFastaIds.push(data.fasta_id);
-                this.createSample(data.fasta_id, data.sequence_length, data.result);
+                this.createSampleAndSequenceAnalysis(data.fasta_id, data.sequence_length, data.result);
                 this.dataManagementState.changeUpload(data.fasta_id, "finished");
 
                 if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {

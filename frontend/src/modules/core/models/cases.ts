@@ -56,6 +56,9 @@ export const getAllCasesWithRelationships = async () => {
             const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
             if (sample) {
                 casesWithRelationships[key].sample = sample;
+                casesWithRelationships[key].sample.sequence_analysis = await db.sequence_analyses.get(
+                    sample.sequence_analysis_id
+                );
             }
         }
         // retrieve outbreak schema object
@@ -134,6 +137,11 @@ export const getCasesForPathogenWithSample = async (pathogen_id: number) => {
         let caseWithRelationships: CaseWithRelationships = pathogenCase;
         if (pathogenCase.fasta_id) {
             caseWithRelationships.sample = await db.samples.where({ fasta_id: pathogenCase.fasta_id }).first();
+            if (caseWithRelationships.sample) {
+                caseWithRelationships.sample.sequence_analysis = await db.sequence_analyses.get(
+                    caseWithRelationships.sample.sequence_analysis_id
+                );
+            }
             casesWithRelationships.push(caseWithRelationships);
         }
     }
@@ -144,29 +152,10 @@ export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
 };
 
-export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
-    const activePathogen = useCoreStore.getState().activePathogen;
-    if (activePathogen) {
-        await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
-            const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
-            const caseWithSample = await getCaseWithSampleById(id);
-            if (caseWithSample && distanceMatrixId) {
-                await deleteCaseById(id);
-            }
-            if (caseWithSample?.sample) {
-                await deleteSampleById(caseWithSample?.sample.id);
-            }
-            if (caseWithSample?.sample) {
-                await deleteDistancesBySampleId(caseWithSample?.sample.id);
-            }
-        });
-    }
-};
-
 export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
     const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
-        await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
+        await db.transaction("rw", [db.cases, db.samples, db.distances, db.distance_matrices], async () => {
             const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
             const caseWithSample = await getCaseWithSampleById(id);
             if (caseWithSample && distanceMatrixId) {

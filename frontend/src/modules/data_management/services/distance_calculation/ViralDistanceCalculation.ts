@@ -1,5 +1,6 @@
 import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/modules/core/models/samples";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
 import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
 import {
@@ -11,6 +12,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
     protected calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
         const viralDistanceExtractor = new ViralDistanceExtractor(sample1, sample2);
         const alignment = await this.alignSamples(sample1, sample2);
+        console.log(alignment);
         viralDistanceExtractor.calculateDistance(alignment[0], alignment[1]);
         return viralDistanceExtractor.getDistance();
     };
@@ -66,7 +68,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
      * @returns
      */
     private getMutationPositions(sample: SampleSchema) {
-        const viralPositionService = new ViralPositionExtractor(sample);
+        const sequenceAnalysis = sample.sequence_analysis?.result as ViralAnalysisResult;
+        const viralPositionService = new ViralPositionExtractor(sequenceAnalysis);
         viralPositionService.collectPositions();
         return viralPositionService.getPositions();
     }

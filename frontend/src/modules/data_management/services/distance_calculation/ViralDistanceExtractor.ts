@@ -1,4 +1,5 @@
 import { SampleSchema } from "@/modules/core/models/samples";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 const ambiguousChars: { [base: string]: string[] } = {
     A: ["A"],
@@ -38,8 +39,12 @@ export class ViralDistanceExtractor {
         this.sample1 = sample1;
         this.sample2 = sample2;
         this.properThreshold = properThreshold;
-        this.properCharAmount1 = (this.sample1.sequence_length ?? 0) - (this.sample1.n_count ?? 0);
-        this.properCharAmount2 = (this.sample2.sequence_length ?? 0) - (this.sample2.n_count ?? 0);
+        const sequenceAnalysisResult1 = this.sample1.sequence_analysis?.result as ViralAnalysisResult;
+        const sequenceAnalysisResult2 = this.sample2.sequence_analysis?.result as ViralAnalysisResult;
+        this.properCharAmount1 =
+            (sequenceAnalysisResult1.sequence_length ?? 0) - (sequenceAnalysisResult1.n_count ?? 0);
+        this.properCharAmount2 =
+            (sequenceAnalysisResult2.sequence_length ?? 0) - (sequenceAnalysisResult2.n_count ?? 0);
     }
 
     public getDistance = () => {
