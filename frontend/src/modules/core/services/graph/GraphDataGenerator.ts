@@ -1,13 +1,13 @@
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { ContactLinksColorMap, CustomLink, CustomNode, Link } from "@/modules/core/types/graph";
+import { CustomLink, CustomNode, Link } from "@/modules/core/types/graph";
 import { GraphCaseCollector } from "./GraphCaseCollector";
 import { Kruskal } from "./Kruskal";
 import i18next from "i18next";
-import { createColor } from "@/modules/core/helpers/graphs";
-import { COLOR_FOR_GENETIC_DISTANCE_LINKS, COLOR_PALETTE_LINKS } from "@/modules/core/helpers/colors";
+import { COLOR_FOR_GENETIC_DISTANCE_LINKS } from "@/modules/core/helpers/colors";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
+import { LinkColorMapGenerator } from "./LinkColorMapGenerator";
 
 export class GraphDataGenerator {
     private nodes: CustomNode[] = [];
@@ -78,7 +78,8 @@ export class GraphDataGenerator {
         const graphCasesIds = graphCases.map((caseData) => caseData.id);
 
         // create a color map for the contact types
-        const contactLinksColorMap = this.createColorMapForContactLinks(contacts);
+        const colorMapGenerator = new LinkColorMapGenerator(contacts);
+        const contactLinksColorMap = colorMapGenerator.createColorMapForContactLinks();
 
         const contactTracingLinks: CustomLink[] = [];
         // create link objects for contacts
@@ -103,18 +104,6 @@ export class GraphDataGenerator {
 
         // calculate curvatures for the links because now we have more than one link between two nodes
         this.createLinkCurvatures();
-    };
-
-    private createColorMapForContactLinks = (contacts: ContactSchema[]) => {
-        const contactTypes = contacts.map((contact) => contact.type);
-        const uniqueContactTypes = [...new Set(contactTypes)];
-
-        const contactLinksColorMap: ContactLinksColorMap = {};
-        uniqueContactTypes.forEach((contactType, index) => {
-            contactLinksColorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColor(index);
-        });
-
-        return contactLinksColorMap;
     };
 
     private createLinkCurvatures = () => {

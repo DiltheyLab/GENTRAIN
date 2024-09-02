@@ -41,6 +41,7 @@ export class BacterialSampleAnalysis extends SampleAnalysisStrategy {
                 this.dataManagementState.changeUpload(data.fasta_id, "finished");
 
                 if (finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+                    this.coreState.updateCasesWithRelationships();
                     // recalculate all sample distances to enable assembling a fresh distance matrix
                     const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
                     if (!distanceCalculationStrategy) {
