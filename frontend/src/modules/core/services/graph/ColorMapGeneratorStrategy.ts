@@ -8,7 +8,7 @@ import { createColor } from "@/modules/core/helpers/graphs";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { ColorMap } from "@/modules/core/types/graph";
 
-export abstract class ColorMapGenerator {
+export abstract class ColorMapGeneratorStrategy {
     protected colorMap: ColorMap = {};
     protected clusters: string[] = [];
     protected selectedOutbreak: OutbreakSchema | undefined;
