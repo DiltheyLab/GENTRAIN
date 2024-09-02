@@ -10,8 +10,8 @@ export abstract class SampleAnalysisStrategy {
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
     protected fastaIdsToAnalyse: string[] = [];
 
-    abstract createSample(fastaId: string, sequenceLength: number, variantsResult: object): void;
-    abstract getAndPersistVariantsForSamples(): void;
+    abstract createSample(fastaId: string, sequenceLength: number, variantsResult: object): Promise<number>;
+    abstract getAndPersistVariantsForSamples(): Promise<void>;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();

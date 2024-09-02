@@ -1,6 +1,5 @@
 import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
 import { Separator } from "@/modules/core/components/ui/Separator";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useState } from "react";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
@@ -11,14 +10,15 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
 
 export function DataManagement() {
-    const { activePathogen } = useCoreStore();
+    const { activePathogen, updateCasesWithRelationships } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);
-    const casesData = useGetAllCasesForActivePathogenWithRelationships();
+    const casesData = useCoreStore((state) => state.casesWithRelationships);
 
     const deleteData = async () => {
         if (activePathogen) {
             setIsDeleting(true);
             await deleteDataForPathogen(activePathogen.id);
+            await updateCasesWithRelationships();
             setIsDeleting(false);
         }
     };
@@ -58,8 +58,11 @@ export function DataManagement() {
                                 dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
                                 triggerComponent={
                                     <Button variant="destructive">
-                                        {isDeleting && <LoadingSpinner></LoadingSpinner>}
-                                        {!isDeleting && <>Ausbruchsdaten zu {activePathogen.name} löschen</>}
+                                        {isDeleting ? (
+                                            <LoadingSpinner />
+                                        ) : (
+                                            <>Ausbruchsdaten zu {activePathogen.name} löschen</>
+                                        )}
                                     </Button>
                                 }
                             />

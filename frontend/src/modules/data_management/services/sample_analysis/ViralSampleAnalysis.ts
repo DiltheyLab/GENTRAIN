@@ -53,6 +53,7 @@ export class ViralSampleAnalysis extends SampleAnalysisStrategy {
                     if (!activePathogenType) {
                         return;
                     }
+                    this.coreState.updateCasesWithRelationships();
                     // recalculate all sample distances to enable assembling a fresh distance matrix
                     const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
                     if (!distanceCalculationStrategy) return;
