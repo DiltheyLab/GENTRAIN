@@ -78,12 +78,14 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
+
+    // retrieve pathogen schema object
+    const pathogen = await db.pathogens.where({ id: pathogen_id }).first();
+
     for (const currentCase of cases) {
         let caseWithRelationships: CaseWithRelationships = currentCase;
-
-        // retrieve pathogen schema object
-        const pathogen = await db.pathogens.where({ id: currentCase.pathogen_id }).first();
         caseWithRelationships.pathogen = pathogen;
+
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
@@ -145,25 +147,6 @@ export const deleteCaseById = async (id: number) => {
 };
 
 export const deleteCasebyIdAndRecalculateDistances = async (id: number) => {
-    const activePathogen = useCoreStore.getState().activePathogen;
-    if (activePathogen) {
-        await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
-            const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
-            const caseWithSample = await getCaseWithSampleById(id);
-            if (caseWithSample && distanceMatrixId) {
-                await deleteCaseById(id);
-            }
-            if (caseWithSample?.sample) {
-                await deleteSampleById(caseWithSample?.sample.id);
-            }
-            if (caseWithSample?.sample) {
-                await deleteDistancesBySampleId(caseWithSample?.sample.id);
-            }
-        });
-    }
-};
-
-export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
     const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction("rw", db.cases, db.samples, db.distances, db.distance_matrices, async () => {
