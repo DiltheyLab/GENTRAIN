@@ -45,3 +45,8 @@ export const COLOR_PALETTE_LINKS = [
 ];
 
 export const COLOR_FOR_GENETIC_DISTANCE_LINKS = "#CCCCCC";
+
+export const createColorByGoldenAngleApproximation = (value: number) => {
+    const hue = value * 137.508; // use golden angle approximation
+    return `hsl(${hue},50%,75%)`;
+};

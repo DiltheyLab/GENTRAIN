@@ -3,8 +3,8 @@ import {
     COLOR_FOR_CASES_WITHOUT_CLUSTERS,
     COLOR_FOR_SELECTED_OUTBREAK,
     COLOR_PALETTE_NODES,
+    createColorByGoldenAngleApproximation,
 } from "@/modules/core/helpers/colors";
-import { createColor } from "@/modules/core/helpers/graphs";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { ColorMap } from "@/modules/core/types/graph";
 
@@ -58,7 +58,10 @@ export abstract class ColorMapGeneratorStrategy {
 
     private assignClusterColors = () => {
         for (let i = 0; i < this.clusters.length; i++) {
-            this.colorMap[this.clusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColor(i), isActive: true };
+            this.colorMap[this.clusters[i]] = {
+                color: COLOR_PALETTE_NODES[i] || createColorByGoldenAngleApproximation(i),
+                isActive: true,
+            };
         }
     };
 }

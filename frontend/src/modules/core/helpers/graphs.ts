@@ -73,8 +73,3 @@ export const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     });
     return [...new Set(cluster)].sort();
 };
-
-export const createColor = (value: number) => {
-    const hue = value * 137.508; // use golden angle approximation
-    return `hsl(${hue},50%,75%)`;
-};
