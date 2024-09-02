@@ -14,7 +14,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
-import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
+import { CaseColorMapGenerator } from "@/modules/core/services/graph/CasesColorMapGenerator";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -53,7 +53,7 @@ export const DashboardVisualizationPanel = () => {
             }
 
             dashboardStore.updateGraphData(graphData);
-            const colorMapGenerator = new NodeColorMapGenerator(graphData.nodes);
+            const colorMapGenerator = new CaseColorMapGenerator(cases);
             const colorMap = colorMapGenerator.createColorMapForClusters();
             dashboardStore.updateGraphSettings({ colorMap });
         };

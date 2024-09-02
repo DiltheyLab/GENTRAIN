@@ -71,7 +71,7 @@ export const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     const cluster = cases.map((caseData) => {
         return caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned");
     });
-    return [...new Set(cluster)];
+    return [...new Set(cluster)].sort();
 };
 
 export const createColor = (value: number) => {
