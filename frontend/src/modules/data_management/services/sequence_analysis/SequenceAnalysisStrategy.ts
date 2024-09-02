@@ -2,6 +2,9 @@ import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { socket } from "@/modules/core/helpers/socket";
 import { CoreState, useCoreStore } from "@/modules/core/stores/core";
+import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
+import { db } from "@/modules/core/infrastructure/database";
+import { toSlug } from "@/modules/core/helpers/strings";
 
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
@@ -9,13 +12,13 @@ export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
     protected fastaIdsToAnalyse: string[] = [];
+    protected finishedFastaIds: string[] = [];
 
-    abstract createSampleAndSequenceAnalysis(
+    protected abstract createSampleAndSequenceAnalysis(
         fastaId: string,
         sequenceAnalysisResult: object,
         sequenceLength: number
     ): void;
-    abstract getAndPersistVariantsForSamples(): void;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();
@@ -23,48 +26,69 @@ export abstract class SequenceAnalysisStrategy {
         this.pathogen = pathogen;
     }
 
-    setSampleData = (sampleData: { fastaId: string; sequence: string }[]) => {
+    public setSampleData = (sampleData: { fastaId: string; sequence: string }[]) => {
         this.sampleData = sampleData;
     };
 
-    execute = async () => {
+    public execute = async () => {
         if (!this.sampleData) {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
-        await this.getAndPersistVariantsForSamples();
+        await this.runAnalysis();
+        this.handleCompletedAnalyses();
     };
 
-    string_to_slug(str: string) {
-        str = str.replace(/^\s+|\s+$/g, ""); // trim
-        str = str.toLowerCase();
-
-        // remove accents, swap ñ for n, etc
-        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-        var to = "aaaaeeeeiiiioooouuuunc------";
-        for (var i = 0, l = from.length; i < l; i++) {
-            str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+    private runAnalysis = async () => {
+        if (!this.sampleData) {
+            return;
         }
+        for (const sample of this.sampleData) {
+            // skip sample if it was excluded from uploads
+            if (!Object.keys(this.dataManagementState.uploads).includes(sample.fastaId)) {
+                continue;
+            }
+            // found case (only import if case exists)
+            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
+            // we currently only add samples if a case for the fasta id exists already
+            // otherwise we would maximize the necessary amount of variant calculations
+            if (sampleCase) {
+                this.emitSequenceAnalysisMessage(sample);
+                this.fastaIdsToAnalyse.push(sample.fastaId);
+            }
+        }
+    };
 
-        str = str
-            .replace(/[^a-z0-9 -]/g, "") // remove invalid chars
-            .replace(/\s+/g, "-") // collapse whitespace and replace by -
-            .replace(/-+/g, "-"); // collapse dashes
+    private handleCompletedAnalyses = () => {
+        if (socket) {
+            socket.on(`sequence_analysis_response`, async (data: any) => {
+                this.handleSingleAnalysisResult(data);
+                this.continueIfAllAnalysesAreDone();
+            });
+        }
+    };
 
-        return str;
+    private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
+        if (socket) {
+            socket.emit("sequence_analysis", this.coreState.session?.id, toSlug(this.pathogen.name), fastaId, sequence);
+        }
+    };
+
+    private handleSingleAnalysisResult(data: { fasta_id: string; result: any; sequence_length: number }) {
+        this.createSampleAndSequenceAnalysis(data.fasta_id, data.result, data.sequence_length);
+        this.dataManagementState.changeUpload(data.fasta_id, "finished");
+        this.finishedFastaIds.push(data.fasta_id);
     }
 
-    delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-    getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        if (socket) {
-            socket.emit(
-                "sequence_analysis",
-                this.coreState.session?.id,
-                this.string_to_slug(this.pathogen.name),
-                fastaId,
-                sequence
-            );
+    private continueIfAllAnalysesAreDone() {
+        if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+            this.initDistanceCalculation();
         }
+    }
+
+    private initDistanceCalculation = async () => {
+        const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy();
+        if (!distanceCalculationStrategy) return;
+        await distanceCalculationStrategy.execute();
     };
 }

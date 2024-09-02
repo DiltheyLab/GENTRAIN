@@ -14,6 +14,6 @@ export class SamplesPersistence extends PersistenceStrategy {
         const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
         if (!sequenceAnalysisStrategy) return;
         sequenceAnalysisStrategy.setSampleData(data);
-        await sequenceAnalysisStrategy.execute();
+        sequenceAnalysisStrategy.execute();
     };
 }

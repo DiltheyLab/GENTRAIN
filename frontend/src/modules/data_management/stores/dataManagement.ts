@@ -5,6 +5,8 @@ export interface DataManagementState {
     distanceCalculationCount: number;
     distanceCalculationSum: number;
     uploads: { [fastaId: string]: string };
+    showSampleUploadStatus: boolean;
+    setShowSampleUploadStatus: (value: boolean) => void;
     removeUpload: (key: string) => void;
     changeUpload: (key: string, value: string) => void;
     setIsUploading: (value: boolean) => void;
@@ -15,13 +17,14 @@ export interface DataManagementState {
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
     isUploading: false,
-    pendingUploads: [],
-    failedUploads: [],
-    finishedUploads: [],
     distanceCalculationCount: 0,
     distanceCalculationSum: 0,
     removedSamples: [],
     uploads: {},
+    showSampleUploadStatus: false,
+    setShowSampleUploadStatus: (value: boolean) => {
+        set({ showSampleUploadStatus: value });
+    },
     removeUpload: (fastaId: string) => {
         const updatedUploads = get().uploads;
         delete updatedUploads[fastaId];

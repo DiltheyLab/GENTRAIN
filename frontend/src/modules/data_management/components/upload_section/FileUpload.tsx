@@ -105,12 +105,6 @@ export const FileUpload = ({
             // persist the data
             await persistenceStrategy.execute(fileData);
             resetUpload();
-            // show a success toast notification
-            toast({
-                title: "Datei wurde erfolgreich hochgeladen",
-                duration: 5000,
-                variant: "success",
-            });
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({

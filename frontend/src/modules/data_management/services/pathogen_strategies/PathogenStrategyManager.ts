@@ -10,7 +10,7 @@ import { BacterialSequenceAnalysis } from "@/modules/data_management/services/se
 import { useCoreStore } from "@/modules/core/stores/core";
 
 export class PathogenStrategyManager {
-    static getDistanceCalculationStrategy = async (): Promise<
+    public static getDistanceCalculationStrategy = async (): Promise<
         BacterialDistanceCalculation | ViralDistanceCalculation | undefined
     > => {
         const pathogenType = await this.getPathogenTypeName();
@@ -25,7 +25,7 @@ export class PathogenStrategyManager {
         }
     };
 
-    static getSequenceAnalysisStrategy = async (): Promise<
+    public static getSequenceAnalysisStrategy = async (): Promise<
         BacterialSequenceAnalysis | ViralSequenceAnalysis | undefined
     > => {
         const pathogenType = await this.getPathogenTypeName();
@@ -40,7 +40,7 @@ export class PathogenStrategyManager {
         }
     };
 
-    static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
+    public static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
         const pathogenType = await this.getPathogenTypeName();
         if (!pathogenType) {
             return;
@@ -53,7 +53,7 @@ export class PathogenStrategyManager {
         }
     };
 
-    static getPathogen = () => {
+    public static getPathogen = () => {
         const activePathogen = useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
@@ -61,7 +61,7 @@ export class PathogenStrategyManager {
         return activePathogen;
     };
 
-    static getPathogenTypeName = async () => {
+    public static getPathogenTypeName = async () => {
         const activePathogenType = await getPathogenTypeForActivePathogen();
         if (!activePathogenType) {
             return;

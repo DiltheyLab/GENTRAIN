@@ -3,10 +3,10 @@ import { db } from "@/modules/core/infrastructure/database";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { ValidationStrategy } from "./ValidationStrategy";
 export class SamplesValidation extends ValidationStrategy {
-    protected sampleUploadState: DataManagementState;
+    protected dataManagementStore: DataManagementState;
     constructor() {
         super();
-        this.sampleUploadState = useDataManagementStore.getState();
+        this.dataManagementStore = useDataManagementStore.getState();
     }
     protected validate = async (data: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
@@ -33,6 +33,9 @@ export class SamplesValidation extends ValidationStrategy {
             return !samplesWithoutCase.includes(sample.fastaId);
         });
 
+        if (data.length > 0) {
+            this.dataManagementStore.setShowSampleUploadStatus(true);
+        }
         return {
             data: data,
             warnings:
