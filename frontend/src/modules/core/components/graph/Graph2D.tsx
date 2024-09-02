@@ -56,7 +56,7 @@ export const Graph2D = ({
 
     if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
-    } else if (data.nodes.length === 0 && cases && cases.length === 0) {
+    } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
         return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
     }
 

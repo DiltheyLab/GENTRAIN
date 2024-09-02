@@ -21,11 +21,10 @@ export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const dashboardStore = useDashboardStore();
-
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
-    const cases = useGetAllCasesForActivePathogenWithRelationships();
+    const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardStore.graphSettings;
     useCreateColorMapForTimeSpan(
