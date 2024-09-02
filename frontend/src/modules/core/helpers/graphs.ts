@@ -71,10 +71,5 @@ export const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     const cluster = cases.map((caseData) => {
         return caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned");
     });
-    return [...new Set(cluster)];
-};
-
-export const createColor = (value: number) => {
-    const hue = value * 137.508; // use golden angle approximation
-    return `hsl(${hue},50%,75%)`;
+    return [...new Set(cluster)].sort();
 };

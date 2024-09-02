@@ -1,7 +1,6 @@
-import { COLOR_PALETTE_LINKS } from "../../helpers/colors";
-import { createColor } from "../../helpers/graphs";
-import { ContactSchema } from "../../models/contacts";
-import { ContactLinksColorMap } from "../../types/graph";
+import { COLOR_PALETTE_LINKS, createColorByGoldenAngleApproximation } from "@/modules/core/helpers/colors";
+import { ContactSchema } from "@/modules/core/models/contacts";
+import { ContactLinksColorMap } from "@/modules/core/types/graph";
 
 export class LinkColorMapGenerator {
     private contacts: ContactSchema[];
@@ -16,7 +15,7 @@ export class LinkColorMapGenerator {
         const uniqueContactTypes = [...new Set(contactTypes)];
 
         uniqueContactTypes.forEach((contactType, index) => {
-            this.colorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColor(index);
+            this.colorMap[contactType] = COLOR_PALETTE_LINKS[index] || createColorByGoldenAngleApproximation(index);
         });
 
         return this.colorMap;
