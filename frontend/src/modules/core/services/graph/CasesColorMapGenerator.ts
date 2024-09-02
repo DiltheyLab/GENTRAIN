@@ -1,9 +1,9 @@
 import { getUniqueClusterOfCases } from "../../helpers/graphs";
 import { CaseWithRelationships } from "../../models/cases";
 import { OutbreakSchema } from "../../models/outbreaks";
-import { ColorMapGenerator } from "./ColorMapGenerator";
+import { ColorMapGeneratorStrategy } from "./ColorMapGeneratorStrategy";
 
-export class CaseColorMapGenerator extends ColorMapGenerator {
+export class CaseColorMapGenerator extends ColorMapGeneratorStrategy {
     private cases: CaseWithRelationships[];
     constructor(cases: CaseWithRelationships[], selectedOutbreak?: OutbreakSchema) {
         super(selectedOutbreak);

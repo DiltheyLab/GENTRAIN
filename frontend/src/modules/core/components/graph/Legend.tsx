@@ -75,7 +75,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderBackgroundLegend = () => {
-        if (selectedOutbreak.length === 0 || selectedBackground.length === 0) return null;
+        if (selectedBackground.length === 0) return null;
 
         return (
             <div className="flex flex-col">
@@ -107,12 +107,14 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderOutbreakLegend = () => {
-        if (selectedOutbreak.length === 0) return null;
-
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Ausbruch</Label>
-                {renderClusterItems(selectedOutbreak)}
+                {selectedOutbreak.length === 0 ? (
+                    <p className="text-xs text-red-600">Nicht im Graphen enthalten!</p>
+                ) : (
+                    renderClusterItems(selectedOutbreak)
+                )}
             </div>
         );
     };
@@ -137,8 +139,8 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     if (!nodes || nodes.length === 0) return null;
 
     return (
-        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
-            <legend className="-ml-1 px-1 text-xs font-bold -mb-2">Legende</legend>
+        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none pdf-canvas graph-legend">
+            <legend className="-ml-1 px-1 text-xs font-bold -mb-2 pdf-hide">Legende</legend>
             {renderNodeLegend()}
             {renderLinkLegend()}
         </fieldset>

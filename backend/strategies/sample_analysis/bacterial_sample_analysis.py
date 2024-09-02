@@ -4,17 +4,21 @@ from backend.strategies.sample_analysis.sample_analysis_strategy import (
 import shutil
 import time
 import pathlib
+import tempfile
+import sys
+from subprocess import Popen
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.config import get_project_path
-import tempfile
-import sys
-from subprocess import Popen
 
 
 class BacterialSampleAnalysis(SampleAnalysisStrategy):
     """Concrete analysis strategy for bacterial samples."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queue = "bacterial"
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""

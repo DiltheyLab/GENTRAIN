@@ -21,7 +21,7 @@ export const GraphSettings = ({
     if (!showGraphSettings) {
         return (
             <Button
-                className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700"
+                className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700 pdf-hide"
                 type="button"
                 variant="ghost"
                 onClick={() => updateShowGraphSettings(true)}
@@ -33,7 +33,7 @@ export const GraphSettings = ({
     }
 
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none ">
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none">
             <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"

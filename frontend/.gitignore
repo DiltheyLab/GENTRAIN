@@ -25,6 +25,3 @@ dist-ssr
 
 # env files
 .env*
-
-# Allow env.development file for development purposes
-!.env.development 

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { GraphSettings } from "../../../core/components/graph/GraphSettings";
@@ -23,7 +22,7 @@ export const VisualizationPanel = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
-    const cases = useGetAllCasesForActivePathogenWithRelationships();
+    const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
     const pathname = decodeURI(useLocation().pathname.split("/")[2]);
@@ -52,7 +51,7 @@ export const VisualizationPanel = () => {
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
+            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2 graph-visualization-panel"
         >
             {outbreakAnalysisStore.settings.selectedOutbreak ? (
                 <>

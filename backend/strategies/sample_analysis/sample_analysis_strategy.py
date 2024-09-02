@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from backend.exceptions.genomic_error_exception import GenomicErrorException
 from flask_socketio import SocketIO
+from backend.exceptions.genomic_error_exception import GenomicErrorException
 
-socket = SocketIO(message_queue="redis://redis:6379")
+socket = SocketIO(message_queue="redis://gentrain-redis:6379")
 
 
 class SampleAnalysisStrategy(ABC):
@@ -49,3 +49,6 @@ class SampleAnalysisStrategy(ABC):
             room=session_id,
         )
         return result
+
+    def enqueue_job(self, session_id, queue):
+        queue.enqueue(self.execute, session_id)

@@ -10,8 +10,8 @@ export abstract class SampleAnalysisStrategy {
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
     protected fastaIdsToAnalyse: string[] = [];
 
-    abstract createSample(fastaId: string, sequenceLength: number, variantsResult: object): void;
-    abstract getAndPersistVariantsForSamples(): void;
+    abstract createSample(fastaId: string, sequenceLength: number, variantsResult: object): Promise<number>;
+    abstract getAndPersistVariantsForSamples(): Promise<void>;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();
@@ -53,12 +53,14 @@ export abstract class SampleAnalysisStrategy {
     delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
     getAndPersistVariantsForSample = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        socket.emit(
-            "sample_analysis",
-            this.coreState.session?.id,
-            this.string_to_slug(this.pathogen.name),
-            fastaId,
-            sequence
-        );
+        if (socket) {
+            socket.emit(
+                "sample_analysis",
+                this.coreState.session?.id,
+                this.string_to_slug(this.pathogen.name),
+                fastaId,
+                sequence
+            );
+        }
     };
 }

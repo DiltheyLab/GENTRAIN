@@ -15,6 +15,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/co
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/modules/core/models/cases";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     {
@@ -207,6 +208,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
             const deleteCase = async () => {
                 try {
                     await deleteCasebyIdAndRecalculateDistances(row.original.id);
+                    await useCoreStore.getState().updateCasesWithRelationships();
                 } catch (error) {
                     toast({
                         title: "Fall konnte nicht gelöscht werden.",

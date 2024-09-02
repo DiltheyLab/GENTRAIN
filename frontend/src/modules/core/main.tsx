@@ -17,8 +17,7 @@ import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { socket } from "@/modules/core/helpers/socket";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
-import { LoadingSpinner } from "./components/ui/LoadingSpinner";
-import { Share2 } from "lucide-react";
+import { RefreshLoader } from "./components/ui/RefreshLoader";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -46,21 +45,16 @@ const App = () => {
     }, []);
 
     if (session === undefined) {
-        return (
-            <div className="w-screen h-screen flex flex-col items-center justify-center">
-                <LoadingSpinner width={50} height={50} />
-                <div className="flex items-center text-primary mt-8">
-                    <Share2 className="w-14 h-14 mr-2" /> <span className="text-[50px]">Gentrain</span>
-                </div>
-            </div>
-        );
+        return <RefreshLoader />;
     }
 
     if (session === null) {
         return <Onboarding />;
     }
 
-    socket.emit("join", session.id);
+    if (socket) {
+        socket.emit("join", session.id);
+    }
 
     const router = createBrowserRouter([
         {
