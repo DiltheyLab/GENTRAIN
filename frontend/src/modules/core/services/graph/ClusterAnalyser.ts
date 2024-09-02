@@ -18,7 +18,7 @@ export class ClusterAnalyser {
         return { nodes, links: graphData.links };
     };
 
-    private findClusters = (graphData: GraphData) => {
+    public findClusters = (graphData: GraphData) => {
         this.buildAdjacencyList(graphData);
 
         //all connected nodes build a component

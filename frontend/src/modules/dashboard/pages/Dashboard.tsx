@@ -7,10 +7,12 @@ import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 import { useEffect } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
+import { ClusterInformationTable } from "../components/information_table/ClusterInformationTable";
 
 export function Dashboard() {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const updateSettings = useDashboardStore((state) => state.updateSettings);
+    const coloringMode = useDashboardStore((state) => state.graphSettings.coloringMode);
 
     useEffect(() => {
         if (!activePathogen) return;
@@ -33,13 +35,21 @@ export function Dashboard() {
                 </div>
                 <div>
                     <Accordion type="multiple" className="mt-4">
-                        <AccordionItem value="item-1">
+                        {coloringMode === "clusters" && (
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger>Informationen über die gefundenen Cluster</AccordionTrigger>
+                                <AccordionContent>
+                                    <ClusterInformationTable />
+                                </AccordionContent>
+                            </AccordionItem>
+                        )}
+                        <AccordionItem value="item-2">
                             <AccordionTrigger>Informationen zu den im Datensatz enthaltenen Fällen</AccordionTrigger>
                             <AccordionContent>
                                 <SampleInformationTable />
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-3">
                             <AccordionTrigger>Genetische Distanzen der im Datensatz enthaltenen Fälle</AccordionTrigger>
                             <AccordionContent>
                                 <DistanceMatrixTable />

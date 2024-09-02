@@ -1,9 +1,17 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
+import { useDashboardStore } from "../../stores/dashboard";
+import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
 import { useCoreStore } from "@/modules/core/stores/core";
 
-export function SampleInformationTable() {
-    const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
-    const casesWithSamples = casesWithRelationships.filter((caseData) => caseData.sample);
+export const ClusterInformationTable = () => {
+    const graphData = useDashboardStore((state) => state.graphData);
+    const clusteringThreshold = useDashboardStore((state) => state.settings.clusteringThreshold);
+    const clusterAnalyser = new ClusterAnalyser(clusteringThreshold);
+    const clusters = clusterAnalyser.findClusters(graphData);
+    console.log(clusters);
+
+    const cases = useCoreStore((state) => state.casesWithRelationships);
+    const casesWithSamples = cases.filter((caseData) => caseData.sample);
 
     const renderHeadRow = () => {
         return (
@@ -48,4 +56,4 @@ export function SampleInformationTable() {
             )}
         </>
     );
-}
+};
