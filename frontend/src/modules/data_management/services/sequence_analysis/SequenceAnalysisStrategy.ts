@@ -18,7 +18,7 @@ export abstract class SequenceAnalysisStrategy {
         fastaId: string,
         sequenceAnalysisResult: object,
         sequenceLength?: number
-    ): void;
+    ): Promise<void>;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();
@@ -82,6 +82,7 @@ export abstract class SequenceAnalysisStrategy {
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+            this.coreState.updateCasesWithRelationships();
             this.initDistanceCalculation();
             if (socket) {
                 socket.off("sequence_analysis_response");
