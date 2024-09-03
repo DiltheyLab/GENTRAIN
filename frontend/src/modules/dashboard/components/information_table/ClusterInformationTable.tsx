@@ -2,9 +2,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useDashboardStore } from "../../stores/dashboard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import { CustomNode } from "@/modules/core/types/graph";
+import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
+    const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
+    console.log(colorMap);
 
     const renderHeadRow = () => {
         return (
@@ -44,8 +47,13 @@ export const ClusterInformationTable = () => {
         <Accordion type="multiple" className="px-0 rounded-lg">
             {clusters?.map((cluster, index) => {
                 return (
-                    <AccordionItem key={index} value={`cluster-${index}`} className="">
-                        <AccordionTrigger className=" font-semibold py-1">Cluster {index + 1}</AccordionTrigger>
+                    <AccordionItem key={index} value={`${index}`} className="">
+                        <AccordionTrigger className=" font-semibold py-1">
+                            <div className="flex items-center gap-2">
+                                <ColorCircle colorMap={colorMap} cluster={`Cluster ${index + 1}`} />
+                                <p>Cluster {index + 1}</p>
+                            </div>
+                        </AccordionTrigger>
                         <AccordionContent>
                             <small>
                                 Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.

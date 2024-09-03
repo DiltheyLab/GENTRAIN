@@ -9,7 +9,7 @@ import {
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
+import { ColorCircle } from "./ColorCircle";
 
 type LegendProps = {
     nodes: CustomNode[];
@@ -31,14 +31,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const renderClusterItems = (clusters: string[]) => {
         return clusters.map((cluster) => (
             <div className="flex items-center gap-2" key={cluster}>
-                <span
-                    style={{
-                        backgroundColor: `${
-                            colorMap[cluster]?.isActive ? colorMap[cluster].color : COLOR_FOR_CASES_WITHOUT_CLUSTERS
-                        }`,
-                    }}
-                    className={"rounded-full h-3 w-3"}
-                />
+                <ColorCircle cluster={cluster} colorMap={colorMap} />
                 <p className="text-xs">{cluster}</p>
             </div>
         ));
