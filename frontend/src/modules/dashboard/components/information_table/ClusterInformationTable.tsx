@@ -45,9 +45,7 @@ export const ClusterInformationTable = () => {
             {clusters?.map((cluster, index) => {
                 return (
                     <AccordionItem key={index} value={`cluster-${index}`} className="">
-                        <AccordionTrigger className="text-base font-semibold py-1">
-                            Cluster {index + 1}
-                        </AccordionTrigger>
+                        <AccordionTrigger className=" font-semibold py-1">Cluster {index + 1}</AccordionTrigger>
                         <AccordionContent>
                             <small>
                                 Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.

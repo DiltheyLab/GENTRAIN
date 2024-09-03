@@ -11,7 +11,7 @@ import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/out
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { CaseColorMapGenerator } from "@/modules/core/services/graph/CasesColorMapGenerator";
+import { CaseColorMapGenerator } from "@/modules/core/services/graph/CaseColorMapGenerator";
 import { Skeleton } from "@/modules/core/components/ui/Skeleton";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { useCoreStore } from "@/modules/core/stores/core";
