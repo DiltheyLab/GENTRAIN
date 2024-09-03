@@ -2,15 +2,11 @@ import { db } from "@/modules/core/infrastructure/database";
 import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
 export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
-    protected createSampleAndSequenceAnalysis = async (
-        fastaId: string,
-        sequenceAnalysisResult: any,
-        sequenceLength: number
-    ) => {
+    protected createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: sequenceAnalysisResult["analysis_schema"],
+            version: sequenceAnalysisResult["chewBACCA_version"],
             result: {
-                sequence_length: sequenceLength,
                 alleles: sequenceAnalysisResult["alleles"],
             },
         });

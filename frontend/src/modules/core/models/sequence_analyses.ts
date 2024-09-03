@@ -1,12 +1,8 @@
 interface BacterialAnalysisResult {
-    sequence_length: number;
     alleles: { [gen_id: string]: string };
 }
 
 interface ViralAnalysisResult {
-    sequence_length: number;
-    lineage: string;
-    n_count: number;
     mutations: {
         substitutions: [];
         deletions: [];
@@ -20,7 +16,8 @@ interface ViralAnalysisResult {
 interface SequenceAnalysisSchema {
     id: number;
     result: ViralAnalysisResult | BacterialAnalysisResult;
-    schema: string;
+    schema?: string;
+    version: string;
     created_at?: Date;
     updated_at?: Date;
 }

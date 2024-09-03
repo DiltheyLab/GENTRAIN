@@ -8,11 +8,8 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         sequenceLength: number
     ) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
-            schema: "nextclade",
+            version: sequenceAnalysisResult["nextclade_version"],
             result: {
-                sequence_length: sequenceLength,
-                lineage: sequenceAnalysisResult["lineage"],
-                n_count: sequenceAnalysisResult["n_count"],
                 mutations: {
                     substitutions: sequenceAnalysisResult["substitutions"],
                     deletions: sequenceAnalysisResult["deletions"],
@@ -25,6 +22,9 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         });
         await db.samples.add({
             fasta_id: fastaId,
+            sequence_length: sequenceLength,
+            lineage: sequenceAnalysisResult["lineage"],
+            n_count: sequenceAnalysisResult["n_count"],
             sequence_analysis_id: sequenceAnalysisId,
         });
     };

@@ -17,7 +17,7 @@ export abstract class SequenceAnalysisStrategy {
     protected abstract createSampleAndSequenceAnalysis(
         fastaId: string,
         sequenceAnalysisResult: object,
-        sequenceLength: number
+        sequenceLength?: number
     ): void;
 
     constructor(pathogen: PathogenWithRelationships) {
@@ -62,7 +62,6 @@ export abstract class SequenceAnalysisStrategy {
     private handleCompletedAnalyses = () => {
         if (socket) {
             socket.on(`sequence_analysis_response`, async (data: any) => {
-                console.log(data);
                 this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
             });

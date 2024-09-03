@@ -97,7 +97,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
         return BacterialSequenceAnalysisResponseModel(
-            chewBACCA_version="1.1.2",
+            chewBACCA_version="3.3.9",
             analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
             alleles=result,
         ).model_dump()

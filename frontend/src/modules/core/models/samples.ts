@@ -6,7 +6,6 @@ interface SampleSchema {
     fasta_id: string;
     sequence_analysis_id: number;
     sequence_analysis?: SequenceAnalysisSchema;
-    ims_id?: string;
     n_count?: number;
     sequence_length?: number;
     lineage?: string;
