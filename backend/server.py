@@ -12,7 +12,6 @@ from rq import Queue
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
-
 app = Flask(__name__)
 queue_viral = Queue(
     name="viral",

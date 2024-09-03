@@ -7,6 +7,7 @@ class SequenceAnalysisRequestBodyModel(BaseModel):
 
 
 class ViralSequenceAnalysisResponseModel(BaseModel):
+    nextclade_version: str
     lineage: str
     n_count: int
     substitutions: list[object]
@@ -18,4 +19,6 @@ class ViralSequenceAnalysisResponseModel(BaseModel):
 
 
 class BacterialSequenceAnalysisResponseModel(BaseModel):
+    chewBACCA_version: str
+    anaylsis_schema: str
     alleles: dict

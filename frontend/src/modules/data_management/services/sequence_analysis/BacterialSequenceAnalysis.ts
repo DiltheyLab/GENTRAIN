@@ -8,7 +8,7 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
         sequenceLength: number
     ) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
-            schema: "chewBBACA",
+            schema: sequenceAnalysisResult["analysis_schema"],
             result: {
                 sequence_length: sequenceLength,
                 alleles: sequenceAnalysisResult["alleles"],

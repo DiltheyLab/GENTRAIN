@@ -1,4 +1,4 @@
 #!/bin/bash
-
+mkdir -p /backend/logs
 nextclade dataset get --name 'sars-cov-2' --output-dir '/backend/datasets/nextclade_covid/'
-flask run --debug --host=0.0.0.0 -p 4000 
+supervisord -c /backend/supervisor_dev.conf

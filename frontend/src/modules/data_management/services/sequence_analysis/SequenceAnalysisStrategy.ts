@@ -62,6 +62,7 @@ export abstract class SequenceAnalysisStrategy {
     private handleCompletedAnalyses = () => {
         if (socket) {
             socket.on(`sequence_analysis_response`, async (data: any) => {
+                console.log(data);
                 this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
             });
