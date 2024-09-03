@@ -52,8 +52,10 @@ export const DashboardVisualizationPanel = () => {
             let graphData = await graphDataGenerator.execute();
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
-                const clusterAnalyser = new ClusterAnalyser(settings.clusteringThreshold);
-                graphData = clusterAnalyser.getClusteredGraphData(graphData);
+                const clusterAnalyser = new ClusterAnalyser(graphData, settings.clusteringThreshold);
+                graphData = clusterAnalyser.getClusteredGraphData(); //overwrite graphData with new assigned clusters
+                const clusters = clusterAnalyser.getClusters();
+                dashboardStore.updateClusters(clusters);
             }
 
             dashboardStore.updateGraphData(graphData);
