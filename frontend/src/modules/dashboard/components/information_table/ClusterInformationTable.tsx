@@ -1,12 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
 import { useDashboardStore } from "../../stores/dashboard";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { useTranslation } from "react-i18next";
+import { CustomNode } from "@/modules/core/types/graph";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
-    const { t } = useTranslation();
 
     const renderHeadRow = () => {
         return (
@@ -21,23 +19,21 @@ export const ClusterInformationTable = () => {
         );
     };
 
-    const renderRows = (cases: (CaseWithRelationships | undefined)[]) => {
-        return cases.map((caseData) => {
-            if (!caseData) return null;
+    const renderRows = (nodes: (CustomNode | undefined)[]) => {
+        return nodes.map((node) => {
+            if (!node) return null;
 
             return (
-                <TableRow key={caseData.id} className="border-muted">
-                    <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">{caseData.sample?.fasta_id}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">{caseData.sample?.n_count}</TableCell>
+                <TableRow key={node.id} className="border-muted">
+                    <TableCell className="p-2 text-xs font-medium">{node.caseData.case_id}</TableCell>
+                    <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.fasta_id}</TableCell>
+                    <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.n_count}</TableCell>
+                    <TableCell className="p-2 text-xs font-medium">{node.cluster}</TableCell>
                     <TableCell className="p-2 text-xs font-medium">
-                        {caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}
+                        {node.caseData.registered_at.toLocaleDateString()}
                     </TableCell>
                     <TableCell className="p-2 text-xs font-medium">
-                        {caseData.registered_at.toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
-                        {caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
+                        {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
                     </TableCell>
                 </TableRow>
             );

@@ -1,4 +1,4 @@
-import { GraphData } from "@/modules/core/types/graph";
+import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import { create } from "zustand";
 import { addWeeks } from "date-fns";
 import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
@@ -38,8 +38,8 @@ export interface DashboardStore {
     graphData: GraphData;
     settings: AnalysisSettings;
     graphSettings: GraphSettings;
-    clusters: (CaseWithRelationships | undefined)[][] | undefined;
-    updateClusters: (clusters: (CaseWithRelationships | undefined)[][]) => void;
+    clusters: (CustomNode | undefined)[][] | undefined;
+    updateClusters: (clusters: (CustomNode | undefined)[][]) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
