@@ -20,5 +20,5 @@ class ViralSequenceAnalysisResponseModel(BaseModel):
 
 class BacterialSequenceAnalysisResponseModel(BaseModel):
     chewBACCA_version: str
-    anaylsis_schema: str
+    analysis_schema: str
     alleles: dict
