@@ -28,4 +28,5 @@ interface SequenceAnalysisSchema {
 export const deleteSequenceAnalysisById = async (id: number) => {
     await db.sequence_analyses.delete(id);
 };
+
 export type { SequenceAnalysisSchema, ViralAnalysisResult, BacterialAnalysisResult };

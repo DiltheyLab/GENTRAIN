@@ -3,21 +3,25 @@ import { useDashboardStore } from "../../stores/dashboard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import { CustomNode } from "@/modules/core/types/graph";
 import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
 
-    const renderHeadRow = (nodes: (CustomNode | undefined)[]) => {
+    const renderHeadRow = () => {
         return (
             <TableRow className="font-medium bg-muted">
                 <TableHead className="font-medium p-2 text-xs text-black">Fall ID</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Sequenz ID</TableHead>
-                {nodes?.[0]?.caseData.sample?.n_count !== undefined && (
-                    <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
-                )}
-                {nodes?.[0]?.caseData.sample?.lineage && (
-                    <TableHead className="font-medium p-2 text-xs text-black">Lineage</TableHead>
+                {activePathogen?.pathogen_type?.name === PathogenTypeName.virus && (
+                    <>
+                        <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
+                        <TableHead className="font-medium p-2 text-xs text-black">Abstammung</TableHead>
+                        <TableHead className="font-medium p-2 text-xs text-black">Sequenzlänge</TableHead>
+                    </>
                 )}
                 <TableHead className="font-medium p-2 text-xs text-black">Ausbruch</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
@@ -34,11 +38,14 @@ export const ClusterInformationTable = () => {
                 <TableRow key={node.id} className="border-muted">
                     <TableCell className="p-2 text-xs font-medium">{node.caseData.case_id}</TableCell>
                     <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.fasta_id}</TableCell>
-                    {node.caseData.sample?.n_count !== undefined && (
-                        <TableCell className="p-2 text-xs font-medium">{node.caseData.sample.n_count}</TableCell>
-                    )}
-                    {node.caseData.sample?.lineage && (
-                        <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.lineage}</TableCell>
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.virus && (
+                        <>
+                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.n_count}</TableCell>
+                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.lineage}</TableCell>
+                            <TableCell className="p-2 text-xs font-medium">
+                                {node.caseData.sample?.sequence_length}
+                            </TableCell>
+                        </>
                     )}
                     <TableCell className="p-2 text-xs font-medium">{node.cluster}</TableCell>
                     <TableCell className="p-2 text-xs font-medium">
@@ -69,7 +76,7 @@ export const ClusterInformationTable = () => {
                             </small>
                             <div className="border-[1px] border-muted rounded-xl overflow-hidden">
                                 <Table className="rounded-xl overflow-hidden">
-                                    <TableHeader>{renderHeadRow(cluster)}</TableHeader>
+                                    <TableHeader>{renderHeadRow()}</TableHeader>
                                     <TableBody>{renderRows(cluster)}</TableBody>
                                 </Table>
                             </div>

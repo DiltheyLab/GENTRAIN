@@ -4,7 +4,7 @@ import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "../models/cases";
 
 export interface CoreState {
-    activePathogen: PathogenSchema | null;
+    activePathogen: PathogenWithRelationships | null;
     session: SessionsSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
     updateCasesWithRelationships: () => Promise<void>;

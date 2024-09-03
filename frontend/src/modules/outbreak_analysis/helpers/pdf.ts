@@ -3,15 +3,28 @@ import html2canvas from "html2canvas";
 import autoTable from "jspdf-autotable";
 import { CustomNode } from "@/modules/core/types/graph";
 import { useOutbreakAnalysisStore } from "../stores/outbreakAnalysis";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 
 const addIntro = async (doc: jsPDF) => {
     const width = doc.internal.pageSize.getWidth();
-    doc.text(
-        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-        10,
-        30,
-        { maxWidth: width - 20 }
-    );
+    const nodes = useOutbreakAnalysisStore.getState().graphData.nodes;
+    const exampleNode = nodes[0];
+    if (exampleNode.caseData.sample?.sequence_analysis?.nextclade_version) {
+        doc.text(`Nextclade Version: ${exampleNode.caseData.sample.sequence_analysis.nextclade_version}`, 10, 35, {
+            maxWidth: width - 20,
+        });
+    }
+    if (exampleNode.caseData.sample?.sequence_analysis?.chewbbaca_version) {
+        doc.text(`chewBACCA Version: ${exampleNode.caseData.sample.sequence_analysis.chewbbaca_version}`, 10, 35, {
+            maxWidth: width - 20,
+        });
+    }
+    if (exampleNode.caseData.sample?.sequence_analysis?.schema) {
+        doc.text(`Schema: ${exampleNode.caseData.sample.sequence_analysis.schema}`, 10, 42, {
+            maxWidth: width - 20,
+        });
+    }
 };
 
 const addHeadline = async (doc: jsPDF, name: string = "GenTrain - Ausbruchsanalysebericht") => {
@@ -66,15 +79,22 @@ const addGraphAsJpeg = async (doc: jsPDF) => {
 
 const addInformationTable = async (doc: jsPDF) => {
     const nodes = useOutbreakAnalysisStore.getState().graphData.nodes;
-    const tableHead = ["Fall Id", "Sequenz Id", "Lineage", "Ambiguous Characters", "Letztes Änderungsdatum"];
+    const pathogenTypeName = useCoreStore.getState().activePathogen?.pathogen_type?.name;
+    const tableHead =
+        pathogenTypeName === PathogenTypeName.virus
+            ? ["Fall ID", "Sequenz ID", "Abstammung", "N's", "Sequenzlänge", "Registrierungsdatum"]
+            : ["Fall ID", "Sequenz ID", "Registrierungsdatum"];
     const tableRows = nodes.map((node: CustomNode) => {
-        return [
-            node.caseData.case_id,
-            node.caseData.sample ? node.caseData.sample.fasta_id : "",
-            node.caseData.sample ? node.caseData.sample.lineage ?? "" : "",
-            node.caseData.sample ? node.caseData.sample.n_count ?? "" : "",
-            node.caseData.updated_at ? node.caseData.updated_at.toDateString() : "",
-        ];
+        return pathogenTypeName === PathogenTypeName.virus
+            ? [
+                  node.caseData.case_id,
+                  node.caseData.sample?.fasta_id ?? "",
+                  node.caseData.sample?.lineage ?? "",
+                  node.caseData.sample?.n_count ?? "",
+                  node.caseData.sample?.sequence_length ?? "",
+                  node.caseData.registered_at.toDateString(),
+              ]
+            : [node.caseData.case_id, node.caseData.sample?.fasta_id ?? "", node.caseData.registered_at.toDateString()];
     });
     autoTable(doc, {
         head: [tableHead],
@@ -82,7 +102,7 @@ const addInformationTable = async (doc: jsPDF) => {
         rowPageBreak: "avoid",
         headStyles: { fillColor: [249, 115, 22] },
         bodyStyles: {
-            cellWidth: 36.5,
+            cellWidth: pathogenTypeName === PathogenTypeName.virus ? 30 : 50,
         },
     });
 };
