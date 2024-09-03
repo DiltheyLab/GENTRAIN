@@ -1,24 +1,35 @@
 import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import i18next from "i18next";
+import { createCasesMap } from "../../helpers/cases";
+import { useCoreStore } from "../../stores/core";
 
 export class ClusterAnalyser {
     private clusteringThreshold: number;
     private minClusterSize: number;
     private adjacencyList: { [key: number]: number[] };
+    private clusters: number[][];
 
     constructor(clusteringThreshold: number, minClusterSize = 2) {
         this.clusteringThreshold = clusteringThreshold;
         this.minClusterSize = minClusterSize;
         this.adjacencyList = {};
+        this.clusters = [];
     }
 
     public getClusteredGraphData = (graphData: GraphData): GraphData => {
-        const clusters = this.findClusters(graphData);
-        const nodes = this.assignClusterNamesToNodes(graphData, clusters);
+        this.clusters = this.findClusters(graphData);
+        const nodes = this.assignClusterNamesToNodes(graphData, this.clusters);
         return { nodes, links: graphData.links };
     };
 
-    public findClusters = (graphData: GraphData) => {
+    public getCasesOfClusters = () => {
+        const cases = useCoreStore.getState().casesWithRelationships;
+        const casesWithSamples = cases.filter((caseData) => caseData.sample);
+        const casesMap = createCasesMap(casesWithSamples);
+        return this.clusters.map((cluster) => cluster.map((id) => casesMap.get(id)));
+    };
+
+    private findClusters = (graphData: GraphData) => {
         this.buildAdjacencyList(graphData);
 
         //all connected nodes build a component
@@ -46,10 +57,13 @@ export class ClusterAnalyser {
     };
 
     private buildAdjacencyList = (graphData: GraphData): void => {
-        const linksBelowThreshold = graphData.links.filter((link) => +link.value <= this.clusteringThreshold);
+        const linksBelowThreshold = graphData.links.filter(
+            (link) => link.value !== "" && +link.value <= this.clusteringThreshold
+        );
         graphData.nodes.forEach((node) => {
             this.addNodeToAdjacencyList(node.id);
         });
+
         linksBelowThreshold.forEach((link) => this.addLinkToAdjacencyList(link.source, link.target));
     };
 
@@ -90,6 +104,8 @@ export class ClusterAnalyser {
     };
 
     private addLinkToAdjacencyList = (node1: number, node2: number): void => {
+        console.log(this.adjacencyList);
+
         this.adjacencyList[node1].push(node2);
         this.adjacencyList[node2].push(node1);
     };
