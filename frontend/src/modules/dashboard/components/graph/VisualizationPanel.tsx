@@ -14,18 +14,22 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
+import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const dashboardStore = useDashboardStore();
+    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
+        dashboardStore.graphSettings;
+    const [showGraphSettings, setShowGraphSettings] = useState(false);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
-    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardStore.graphSettings;
+
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
         dashboardStore.graphSettings,
@@ -71,19 +75,25 @@ export const DashboardVisualizationPanel = () => {
             <Legend
                 nodes={dashboardStore.graphData.nodes}
                 links={dashboardStore.graphData.links}
-                colorMap={dashboardStore.graphSettings.colorMap}
-                variant={dashboardStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
+                colorMap={colorMap}
+                variant={coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
             <CaseInfo
                 selectedCase={selectedCase}
                 updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
             />
+            <GraphSettings
+                showGraphSettings={showGraphSettings}
+                updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
+                graphSettings={dashboardStore.graphSettings}
+                updateGraphSettings={dashboardStore.updateGraphSettings}
+            />
             <Graph2D
                 data={dashboardStore.graphData}
                 width={width - 8}
                 height={height - 8}
-                colorMap={dashboardStore.graphSettings.colorMap}
-                coloringMode={dashboardStore.graphSettings.coloringMode}
+                colorMap={colorMap}
+                coloringMode={coloringMode}
                 cases={cases}
                 charge={charge}
                 linkDistance={linkDistance}

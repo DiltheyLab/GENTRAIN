@@ -1,9 +1,9 @@
 import { getRegisteredAtTimestamps, getUniqueClusters } from "../../helpers/graphs";
 import { OutbreakSchema } from "../../models/outbreaks";
 import { CustomNode } from "../../types/graph";
-import { ColorMapGenerator } from "./ColorMapGenerator";
+import { ColorMapGeneratorStrategy } from "./ColorMapGeneratorStrategy";
 
-export class NodeColorMapGenerator extends ColorMapGenerator {
+export class NodeColorMapGenerator extends ColorMapGeneratorStrategy {
     private nodes: CustomNode[];
     constructor(nodes: CustomNode[], selectedOutbreak?: OutbreakSchema) {
         super(selectedOutbreak);

@@ -38,9 +38,9 @@ export type GraphSettings = {
     linkDistance: number;
     colorMap: ColorMap;
     coloringMode: ColoringMode;
-    nodeSize?: number;
-    linkWidth?: number;
-    charge?: number;
+    nodeSize: number;
+    linkWidth: number;
+    charge: number;
 };
 
 export interface OutbreakAnalysisStore {
@@ -61,6 +61,9 @@ export const defaultGraphSettings: GraphSettings = {
     linkDistance: 70,
     colorMap: {},
     coloringMode: "outbreaks",
+    nodeSize: 6,
+    linkWidth: 2.5,
+    charge: -80,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
