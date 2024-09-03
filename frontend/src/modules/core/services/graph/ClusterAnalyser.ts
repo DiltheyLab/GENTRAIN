@@ -99,8 +99,6 @@ export class ClusterAnalyser {
     };
 
     private addLinkToAdjacencyList = (node1: number, node2: number): void => {
-        console.log(this.adjacencyList);
-
         this.adjacencyList[node1].push(node2);
         this.adjacencyList[node2].push(node1);
     };
