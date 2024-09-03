@@ -9,7 +9,7 @@ import {
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
+import { ColorCircle } from "./ColorCircle";
 
 type LegendProps = {
     nodes: CustomNode[];
@@ -31,14 +31,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const renderClusterItems = (clusters: string[]) => {
         return clusters.map((cluster) => (
             <div className="flex items-center gap-2" key={cluster}>
-                <span
-                    style={{
-                        backgroundColor: `${
-                            colorMap[cluster]?.isActive ? colorMap[cluster].color : COLOR_FOR_CASES_WITHOUT_CLUSTERS
-                        }`,
-                    }}
-                    className={"rounded-full h-3 w-3"}
-                />
+                <ColorCircle cluster={cluster} colorMap={colorMap} />
                 <p className="text-xs">{cluster}</p>
             </div>
         ));
@@ -75,7 +68,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderBackgroundLegend = () => {
-        if (selectedOutbreak.length === 0 || selectedBackground.length === 0) return null;
+        if (selectedBackground.length === 0) return null;
 
         return (
             <div className="flex flex-col">
@@ -97,7 +90,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
                     </div>
                 )}
                 {contactTracingLinks.length > 0 && (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col mt-2">
                         <Label className="-ml-1 px-1 text-xs font-medium">Kontaktkanten</Label>
                         {renderLinkItems(contactTracingLinks)}
                     </div>
@@ -107,12 +100,14 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     };
 
     const renderOutbreakLegend = () => {
-        if (selectedOutbreak.length === 0) return null;
-
         return (
             <div className="flex flex-col">
                 <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Ausbruch</Label>
-                {renderClusterItems(selectedOutbreak)}
+                {selectedOutbreak.length === 0 ? (
+                    <p className="text-xs text-red-600">Nicht im Graphen enthalten!</p>
+                ) : (
+                    renderClusterItems(selectedOutbreak)
+                )}
             </div>
         );
     };

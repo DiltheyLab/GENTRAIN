@@ -1,4 +1,3 @@
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import {
     Select,
     SelectContent,
@@ -10,14 +9,17 @@ import {
 } from "@/modules/core/components/ui/Select";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { createColorMapForNodes } from "@/modules/core/helpers/graphs";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { CaseColorMapGenerator } from "@/modules/core/services/graph/CaseColorMapGenerator";
+import { Skeleton } from "@/modules/core/components/ui/Skeleton";
+import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const OutbreakSelection = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const outbreaks = useGetOutbreaksForActivePathogen();
-    const casesWithRelationships = useGetAllCasesForActivePathogenWithRelationships();
+    const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
 
     const setDateRange = (selectedOutbreak: OutbreakSchema) => {
         const casesInOutbreak = casesWithRelationships?.filter((caseWithRelationships) => {
@@ -48,14 +50,6 @@ export const OutbreakSelection = () => {
         });
     };
 
-    const createColorMap = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
-        // create the initial color map for all nodes if the selected outbreak is changed
-        const colorMap = createColorMapForNodes(selectedOutbreak, cases);
-        // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
-        const currentColorMap = { ...outbreakAnalysisStore.graphSettings.colorMap };
-        outbreakAnalysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
-    };
-
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
@@ -71,8 +65,16 @@ export const OutbreakSelection = () => {
         setDateRange(selectedOutbreak);
 
         // create color map for nodes after changing the outbreak
-        if (!casesWithRelationships) return;
-        createColorMap(casesWithRelationships, selectedOutbreak);
+        createColorMap(casesWithRelationships!, selectedOutbreak);
+    };
+
+    const createColorMap = (cases: CaseWithRelationships[], selectedOutbreak: OutbreakSchema) => {
+        const colorMapGenerator = new CaseColorMapGenerator(cases, selectedOutbreak);
+        // create the initial color map for all nodes if the selected outbreak is changed
+        const colorMap = colorMapGenerator.createColorMapForClusters();
+        // merge the new color map with the current color map in case there are already colors set (e.g. for time span)
+        const currentColorMap = { ...outbreakAnalysisStore.graphSettings.colorMap };
+        outbreakAnalysisStore.updateGraphSettings({ colorMap: { ...currentColorMap, ...colorMap } });
     };
 
     const getOutbreakGroups = () => {
@@ -96,6 +98,14 @@ export const OutbreakSelection = () => {
             </SelectGroup>
         );
     };
+
+    if (!casesWithRelationships)
+        return (
+            <Skeleton className="flex justify-center items-center h-10 w-full rounded-lg">
+                <LoadingSpinner />
+            </Skeleton>
+        );
+
     return (
         <div className="flex flex-col gap-4 p-0">
             <Select

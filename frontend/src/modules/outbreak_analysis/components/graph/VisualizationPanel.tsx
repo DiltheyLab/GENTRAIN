@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
-import { GraphSettings } from "./GraphSettings";
+import { GraphSettings } from "../../../core/components/graph/GraphSettings";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { useGetAllContacts } from "@/modules/core/hooks/database/contacts/useGetAllContacts";
 import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
@@ -18,14 +17,15 @@ export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
+        outbreakAnalysisStore.graphSettings;
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
-    const cases = useGetAllCasesForActivePathogenWithRelationships();
+    const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
     const pathname = decodeURI(useLocation().pathname.split("/")[2]);
-
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
         outbreakAnalysisStore.graphData.nodes,
@@ -71,6 +71,8 @@ export const VisualizationPanel = () => {
                     <GraphSettings
                         showGraphSettings={showGraphSettings}
                         updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
+                        graphSettings={outbreakAnalysisStore.graphSettings}
+                        updateGraphSettings={outbreakAnalysisStore.updateGraphSettings}
                     />
                     <CaseInfo
                         selectedCase={selectedCase}
@@ -80,11 +82,14 @@ export const VisualizationPanel = () => {
                         data={outbreakAnalysisStore.graphData}
                         width={width - 8}
                         height={height - 8}
-                        colorMap={outbreakAnalysisStore.graphSettings.colorMap}
-                        coloringMode={outbreakAnalysisStore.graphSettings.coloringMode}
+                        colorMap={colorMap}
+                        coloringMode={coloringMode}
                         cases={cases}
-                        showNodeLabel={outbreakAnalysisStore.graphSettings.showNodeLabel}
-                        linkDistance={outbreakAnalysisStore.graphSettings.linkDistance}
+                        charge={charge}
+                        linkDistance={linkDistance}
+                        nodeSize={nodeSize}
+                        showNodeLabel={showNodeLabel}
+                        linkWidth={linkWidth}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
                     />

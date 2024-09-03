@@ -82,12 +82,14 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
+
+    // retrieve pathogen schema object
+    const pathogen = await db.pathogens.where({ id: pathogen_id }).first();
+
     for (const currentCase of cases) {
         let caseWithRelationships: CaseWithRelationships = currentCase;
-
-        // retrieve pathogen schema object
-        const pathogen = await db.pathogens.where({ id: currentCase.pathogen_id }).first();
         caseWithRelationships.pathogen = pathogen;
+
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();

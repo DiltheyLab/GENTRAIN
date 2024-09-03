@@ -1,12 +1,15 @@
 import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
 import { create } from "zustand";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
+import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "../models/cases";
 
 export interface CoreState {
     activePathogen: PathogenSchema | null;
-    session: SessionsSchema | undefined | null; //SessionSchema
-    fetchSession: () => void;
-    initSession: () => void;
+    session: SessionsSchema | undefined | null;
+    casesWithRelationships: CaseWithRelationships[];
+    updateCasesWithRelationships: () => Promise<void>;
+    fetchSession: () => Promise<void>;
+    initSession: () => Promise<void>;
     updateActivePathogen: (pathogen: PathogenSchema) => void;
 }
 
@@ -14,6 +17,13 @@ export const useCoreStore = create<CoreState>((set, get) => {
     return {
         activePathogen: null,
         session: undefined,
+        casesWithRelationships: [],
+        updateCasesWithRelationships: async () => {
+            const activePathogenId = get().activePathogen?.id;
+            if (!activePathogenId) return;
+            const casesWithRelationships = await getAllCasesForPathogenWithRelationships(activePathogenId);
+            set({ casesWithRelationships });
+        },
         fetchSession: async () => {
             const session = (await db.sessions.toCollection().first()) ?? null;
             set({ session });
@@ -22,7 +32,7 @@ export const useCoreStore = create<CoreState>((set, get) => {
             const sessionId = await db.sessions.add({});
             set({ session: { id: sessionId } });
         },
-        updateActivePathogen: async (pathogen: PathogenWithRelationships) => {
+        updateActivePathogen: (pathogen: PathogenWithRelationships) => {
             const activePathogen = get().activePathogen;
             if (activePathogen && activePathogen?.id !== pathogen.id) {
                 db.pathogens.update(activePathogen.id, { activated_at: null });
@@ -31,6 +41,7 @@ export const useCoreStore = create<CoreState>((set, get) => {
                 db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
             }
             set({ activePathogen: pathogen });
+            get().updateCasesWithRelationships();
         },
     };
 });

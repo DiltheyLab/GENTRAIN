@@ -1,55 +1,64 @@
 import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import i18next from "i18next";
+import { createNodeMap } from "../../helpers/cases";
 
 export class ClusterAnalyser {
     private clusteringThreshold: number;
     private minClusterSize: number;
     private adjacencyList: { [key: number]: number[] };
+    private clusters: number[][];
+    private graphData: GraphData;
 
-    constructor(clusteringThreshold: number, minClusterSize = 2) {
+    constructor(graphData: GraphData, clusteringThreshold: number, minClusterSize = 2) {
+        this.graphData = graphData;
         this.clusteringThreshold = clusteringThreshold;
         this.minClusterSize = minClusterSize;
         this.adjacencyList = {};
+        this.clusters = this.findClusters();
     }
 
-    public getClusteredGraphData = (graphData: GraphData): GraphData => {
-        const clusters = this.findClusters(graphData);
-        const nodes = this.assignClusterNamesToNodes(graphData, clusters);
-        return { nodes, links: graphData.links };
+    public getClusteredGraphData = (): GraphData => {
+        const nodes = this.assignClusterNamesToNodes();
+        return { nodes, links: this.graphData.links };
     };
 
-    private findClusters = (graphData: GraphData) => {
-        this.buildAdjacencyList(graphData);
+    public getClusters = () => {
+        const nodeMap = createNodeMap(this.graphData);
+        return this.clusters.map((cluster) => cluster.map((id) => nodeMap.get(id)));
+    };
 
+    private findClusters = () => {
+        this.buildAdjacencyList();
         //all connected nodes build a component
         const components = this.getConnectedComponents();
-
         //all components above the clusteringThreshold build a cluster
-        const cluster = this.filterClustersBySize(components);
-
-        return cluster;
+        const clusters = this.filterClustersBySize(components);
+        return clusters;
     };
 
-    private assignClusterNamesToNodes = (graphData: GraphData, clusters: number[][]): CustomNode[] => {
+    private assignClusterNamesToNodes = (): CustomNode[] => {
         //create the components map where the key is the case id and the value is the cluster name
         const componentsMap = new Map<number, string>();
-        for (let i = 0; i < clusters.length; i++) {
-            for (let j = 0; j < clusters[i].length; j++) {
-                componentsMap.set(clusters[i][j], `Cluster ${i + 1}`);
+        for (let i = 0; i < this.clusters.length; i++) {
+            for (let j = 0; j < this.clusters[i].length; j++) {
+                componentsMap.set(this.clusters[i][j], `Cluster ${i + 1}`);
             }
         }
 
         //overwrite the clusters name. If there is no key for the case id in the components map, the node belongs not to a cluster
-        return graphData.nodes.map((node) => {
+        return this.graphData.nodes.map((node) => {
             return { ...node, cluster: componentsMap.get(node.id) ?? i18next.t("clusterTypes.noClusterAssigned") };
         });
     };
 
-    private buildAdjacencyList = (graphData: GraphData): void => {
-        const linksBelowThreshold = graphData.links.filter((link) => +link.value <= this.clusteringThreshold);
-        graphData.nodes.forEach((node) => {
+    private buildAdjacencyList = (): void => {
+        const linksBelowThreshold = this.graphData.links.filter(
+            (link) => link.value !== "" && +link.value <= this.clusteringThreshold
+        );
+        this.graphData.nodes.forEach((node) => {
             this.addNodeToAdjacencyList(node.id);
         });
+
         linksBelowThreshold.forEach((link) => this.addLinkToAdjacencyList(link.source, link.target));
     };
 

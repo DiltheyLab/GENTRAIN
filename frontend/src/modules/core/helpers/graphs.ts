@@ -1,14 +1,8 @@
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { CustomNode, CustomLink, ColorMap } from "@/modules/core/types/graph";
+import { CustomNode, CustomLink } from "@/modules/core/types/graph";
 import { parseGermanDateFormat } from "./dates";
 import i18next from "i18next";
-import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
-import {
-    COLOR_FOR_SELECTED_OUTBREAK,
-    COLOR_FOR_CASES_WITHOUT_CLUSTERS,
-    COLOR_PALETTE_NODES,
-} from "@/modules/core/helpers/colors";
 
 export const getSelectedClusters = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore.getState();
@@ -36,61 +30,6 @@ export const moveNoOutbreakAssignedToEnd = (clusterNames: string[]) => {
     return clusterNamesCopy;
 };
 
-export const createColorMapForNodes = (
-    selectedOutbreak?: OutbreakSchema,
-    cases?: CaseWithRelationships[],
-    nodes?: CustomNode[]
-) => {
-    let clusters: string[] = [];
-    if (cases) {
-        clusters = getUniqueClusterOfCases(cases); // get unique clusters of cases, used by the outbreak analysis
-    } else if (nodes) {
-        clusters = getUniqueClusters(nodes); // get unique clusters of nodes, used by the dashboard
-    }
-
-    const colorMap = {} as ColorMap;
-
-    const noAssignedCluster = clusters.find(
-        (cluster) =>
-            cluster === i18next.t("clusterTypes.noOutbreakAssigned") ||
-            cluster === i18next.t("clusterTypes.noClusterAssigned")
-    );
-
-    // if there is an outbreak selected give this cluster a specific color
-    const selectedOutbreakCluster = clusters.find((cluster) => cluster === selectedOutbreak?.name);
-    if (selectedOutbreak && selectedOutbreakCluster) {
-        colorMap[selectedOutbreakCluster] = { color: COLOR_FOR_SELECTED_OUTBREAK, isActive: true };
-        clusters.splice(clusters.indexOf(selectedOutbreakCluster), 1);
-    }
-
-    // if there are clusters like noOutbreakAssigned or noClusterAssigned give this cluster a specific color
-    if (noAssignedCluster) {
-        colorMap[noAssignedCluster] = {
-            color: COLOR_FOR_CASES_WITHOUT_CLUSTERS,
-            isActive: true,
-        };
-        clusters.splice(clusters.indexOf(noAssignedCluster), 1);
-    }
-
-    // create colors for every cluster. If there are more clusters then colors create a color dynamically
-    for (let i = 0; i < clusters.length; i++) {
-        colorMap[clusters[i]] = { color: COLOR_PALETTE_NODES[i] || createColor(i), isActive: true };
-    }
-
-    return colorMap;
-};
-
-export const createColorMapForTimeSpan = (nodes: CustomNode[]) => {
-    const registeredAtTimestamps = getRegisteredAtTimestamps(nodes);
-    const colorMap = {} as ColorMap;
-
-    for (let i = 0; i < registeredAtTimestamps.length; i++) {
-        const normalizedIndex = i / registeredAtTimestamps.length;
-        colorMap[registeredAtTimestamps[i]] = { color: createColorGradient(normalizedIndex) };
-    }
-    return colorMap;
-};
-
 export const getUniqueClustersOfNodes = (nodes: CustomNode[]) => {
     const uniqueClustersOfNodes = nodes
         .filter((cluster, index, self) => {
@@ -114,18 +53,6 @@ export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
         .sort((a, b) => a.type.localeCompare(b.type));
 };
 
-export const createColor = (value: number) => {
-    const hue = value * 137.508; // use golden angle approximation
-    return `hsl(${hue},50%,75%)`;
-};
-
-const createColorGradient = (normalizedIndex: number): string => {
-    // Interpolate hue from 70 (yellow-green) to 0 (red)
-    const hue = 70 - normalizedIndex * 70;
-    // Use fixed saturation and lightness values
-    return `hsl(${hue}, 100%, 50%)`;
-};
-
 export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
     const times = nodes.map((node) => node.registeredAt);
     const uniqueTimes = [...new Set(times)];
@@ -139,10 +66,10 @@ export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {
     return sortedTimes;
 };
 
-const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
+export const getUniqueClusterOfCases = (cases: CaseWithRelationships[]) => {
     // Extract unique cluster
     const cluster = cases.map((caseData) => {
         return caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned");
     });
-    return [...new Set(cluster)];
+    return [...new Set(cluster)].sort();
 };

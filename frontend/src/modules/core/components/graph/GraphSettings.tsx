@@ -3,16 +3,21 @@ import { Settings, X } from "lucide-react";
 import { Label } from "@/modules/core/components/ui/Label";
 import { Slider } from "@/modules/core/components/ui/Slider";
 import { Switch } from "@/modules/core/components/ui/Switch";
-import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { GraphSettings as GraphSettingsType } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 type GraphSettingsProps = {
     showGraphSettings: boolean;
     updateShowGraphSettings: (showGraphSettings: boolean) => void;
+    graphSettings: GraphSettingsType;
+    updateGraphSettings: (newSettings: Partial<GraphSettingsType>) => void;
 };
 
-export const GraphSettings = ({ showGraphSettings, updateShowGraphSettings }: GraphSettingsProps) => {
-    const analyseStore = useOutbreakAnalysisStore();
-
+export const GraphSettings = ({
+    showGraphSettings,
+    updateShowGraphSettings,
+    graphSettings,
+    updateGraphSettings,
+}: GraphSettingsProps) => {
     if (!showGraphSettings) {
         return (
             <Button
@@ -47,8 +52,8 @@ export const GraphSettings = ({ showGraphSettings, updateShowGraphSettings }: Gr
                     <Switch
                         id="nodeLabel"
                         isSmall={true}
-                        checked={analyseStore.graphSettings.showNodeLabel}
-                        onCheckedChange={(value) => analyseStore.updateGraphSettings({ showNodeLabel: value })}
+                        checked={graphSettings.showNodeLabel}
+                        onCheckedChange={(value) => updateGraphSettings({ showNodeLabel: value })}
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
@@ -59,11 +64,41 @@ export const GraphSettings = ({ showGraphSettings, updateShowGraphSettings }: Gr
                         id="forceLinkDistance"
                         sliderColorIsGrey={true}
                         className="w-1/2"
-                        defaultValue={[analyseStore.graphSettings.linkDistance]}
+                        defaultValue={[graphSettings.linkDistance]}
                         max={130}
                         min={10}
                         step={10}
-                        onValueChange={(value) => analyseStore.updateGraphSettings({ linkDistance: value[0] })}
+                        onValueChange={(value) => updateGraphSettings({ linkDistance: value[0] })}
+                    />
+                </div>
+                <div className="flex space-x-3 items-baseline">
+                    <Label htmlFor="nodeSize" className="text-sm font-normal leading-none">
+                        Knotengröße
+                    </Label>
+                    <Slider
+                        id="nodeSize"
+                        sliderColorIsGrey={true}
+                        className="w-1/2"
+                        defaultValue={[graphSettings.nodeSize]}
+                        max={15}
+                        min={1}
+                        step={1}
+                        onValueChange={(value) => updateGraphSettings({ nodeSize: value[0] })}
+                    />
+                </div>
+                <div className="flex space-x-3 items-baseline">
+                    <Label htmlFor="linkWith" className="text-sm font-normal leading-none">
+                        Kantenbreite
+                    </Label>
+                    <Slider
+                        id="linkWith"
+                        sliderColorIsGrey={true}
+                        className="w-1/2"
+                        defaultValue={[graphSettings.linkWidth]}
+                        max={15}
+                        min={1}
+                        step={1}
+                        onValueChange={(value) => updateGraphSettings({ linkWidth: value[0] })}
                     />
                 </div>
             </div>

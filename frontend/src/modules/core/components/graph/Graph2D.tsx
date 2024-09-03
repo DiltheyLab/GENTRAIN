@@ -56,7 +56,7 @@ export const Graph2D = ({
 
     if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
-    } else if (data.nodes.length === 0 && cases && cases.length === 0) {
+    } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
         return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
     }
 
@@ -135,7 +135,7 @@ export const Graph2D = ({
         return (
             <div className="flex flex-col p-4 text-center">
                 <h4 className="text-lg font-semibold">Der ausgewählte Ausbruch besteht nur aus einem Datenpunkt.</h4>
-                <p> Bitte füge weitere Daten (Background) hinzu, um den Graph zu erstellen.</p>
+                <p> Bitte fügen Sie weitere Daten (Background) hinzu, um den Graph zu erstellen.</p>
             </div>
         );
     }

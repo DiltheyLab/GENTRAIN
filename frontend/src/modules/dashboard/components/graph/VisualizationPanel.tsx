@@ -1,14 +1,12 @@
-import { createColorMapForNodes } from "@/modules/core/helpers/graphs";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { Legend } from "../../../core/components/graph/Legend";
-import { Graph2D } from "../../../core/components/graph/Graph2D";
+import { Legend } from "@/modules/core/components/graph/Legend";
+import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 import { useGetAllContacts } from "@/modules/core/hooks/database/contacts/useGetAllContacts";
 import { useEffect, useRef, useState } from "react";
-import { CaseInfo } from "../../../core/components/graph/CaseInfo";
+import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
@@ -16,18 +14,22 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
+import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
+import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, height] = useResizeContainer(containerRef.current);
     const dashboardStore = useDashboardStore();
-
+    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
+        dashboardStore.graphSettings;
+    const [showGraphSettings, setShowGraphSettings] = useState(false);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
-    const cases = useGetAllCasesForActivePathogenWithRelationships();
+    const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
-    const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize } = dashboardStore.graphSettings;
+
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
         dashboardStore.graphSettings,
@@ -50,12 +52,15 @@ export const DashboardVisualizationPanel = () => {
             let graphData = await graphDataGenerator.execute();
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
-                const clusterAnalyser = new ClusterAnalyser(settings.clusteringThreshold);
-                graphData = clusterAnalyser.getClusteredGraphData(graphData);
+                const clusterAnalyser = new ClusterAnalyser(graphData, settings.clusteringThreshold);
+                graphData = clusterAnalyser.getClusteredGraphData(); //overwrite graphData with new assigned clusters
+                const clusters = clusterAnalyser.getClusters();
+                dashboardStore.updateClusters(clusters);
             }
 
             dashboardStore.updateGraphData(graphData);
-            const colorMap = createColorMapForNodes(undefined, undefined, graphData.nodes);
+            const colorMapGenerator = new NodeColorMapGenerator(graphData.nodes);
+            const colorMap = colorMapGenerator.createColorMapForClusters();
             dashboardStore.updateGraphSettings({ colorMap });
         };
 
@@ -70,19 +75,25 @@ export const DashboardVisualizationPanel = () => {
             <Legend
                 nodes={dashboardStore.graphData.nodes}
                 links={dashboardStore.graphData.links}
-                colorMap={dashboardStore.graphSettings.colorMap}
-                variant={dashboardStore.graphSettings.coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
+                colorMap={colorMap}
+                variant={coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
             <CaseInfo
                 selectedCase={selectedCase}
                 updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
             />
+            <GraphSettings
+                showGraphSettings={showGraphSettings}
+                updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
+                graphSettings={dashboardStore.graphSettings}
+                updateGraphSettings={dashboardStore.updateGraphSettings}
+            />
             <Graph2D
                 data={dashboardStore.graphData}
                 width={width - 8}
                 height={height - 8}
-                colorMap={dashboardStore.graphSettings.colorMap}
-                coloringMode={dashboardStore.graphSettings.coloringMode}
+                colorMap={colorMap}
+                coloringMode={coloringMode}
                 cases={cases}
                 charge={charge}
                 linkDistance={linkDistance}
