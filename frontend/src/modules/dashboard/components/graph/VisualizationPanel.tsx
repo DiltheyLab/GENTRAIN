@@ -49,7 +49,9 @@ export const DashboardVisualizationPanel = () => {
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
                 const clusterAnalyser = new ClusterAnalyser(settings.clusteringThreshold);
-                graphData = clusterAnalyser.getClusteredGraphData(graphData);
+                graphData = clusterAnalyser.getClusteredGraphData(graphData); //overwrite graphData with new assigned clusters
+                const clusters = clusterAnalyser.getCasesOfClusters();
+                dashboardStore.updateClusters(clusters);
             }
 
             dashboardStore.updateGraphData(graphData);

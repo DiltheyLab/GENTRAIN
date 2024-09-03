@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { addWeeks } from "date-fns";
 import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
@@ -37,6 +38,8 @@ export interface DashboardStore {
     graphData: GraphData;
     settings: AnalysisSettings;
     graphSettings: GraphSettings;
+    clusters: (CaseWithRelationships | undefined)[][] | undefined;
+    updateClusters: (clusters: (CaseWithRelationships | undefined)[][]) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
@@ -49,6 +52,8 @@ export const useDashboardStore = create<DashboardStore>((set) => {
         graphData: { nodes: [], links: [] },
         settings: initializedSettings,
         graphSettings: defaultGraphSettings,
+        clusters: undefined,
+        updateClusters: (clusters) => set({ clusters }),
         updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
         updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
         updateGraphSettings: (newGraphSettings) =>
