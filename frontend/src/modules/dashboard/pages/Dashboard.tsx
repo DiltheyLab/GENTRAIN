@@ -35,22 +35,29 @@ export function Dashboard() {
                 </div>
                 <div>
                     <Accordion type="multiple" className="mt-4">
-                        {coloringMode === "clusters" && (
+                        {coloringMode === "clusters" ? (
                             <AccordionItem value="item-1">
-                                <AccordionTrigger>Informationen über die gefundenen Cluster</AccordionTrigger>
+                                <AccordionTrigger className="py-2">
+                                    Informationen über die gefundenen Cluster
+                                </AccordionTrigger>
                                 <AccordionContent>
                                     <ClusterInformationTable />
                                 </AccordionContent>
                             </AccordionItem>
+                        ) : (
+                            <AccordionItem value="item-2">
+                                <AccordionTrigger className="py-2">
+                                    Informationen zu den im Datensatz enthaltenen Fällen
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <SampleInformationTable />
+                                </AccordionContent>
+                            </AccordionItem>
                         )}
-                        <AccordionItem value="item-2">
-                            <AccordionTrigger>Informationen zu den im Datensatz enthaltenen Fällen</AccordionTrigger>
-                            <AccordionContent>
-                                <SampleInformationTable />
-                            </AccordionContent>
-                        </AccordionItem>
                         <AccordionItem value="item-3">
-                            <AccordionTrigger>Genetische Distanzen der im Datensatz enthaltenen Fälle</AccordionTrigger>
+                            <AccordionTrigger className="py-2">
+                                Genetische Distanzen der im Datensatz enthaltenen Fälle
+                            </AccordionTrigger>
                             <AccordionContent>
                                 <DistanceMatrixTable />
                             </AccordionContent>
