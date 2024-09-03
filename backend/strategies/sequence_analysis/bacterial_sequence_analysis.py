@@ -1,6 +1,3 @@
-from backend.strategies.sample_analysis.sample_analysis_strategy import (
-    SampleAnalysisStrategy,
-)
 import shutil
 import time
 import pathlib
@@ -11,10 +8,14 @@ from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 from backend.config import get_project_path
+from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
+    SequenceAnalysisStrategy,
+)
+from backend.models.sequence_analysis import BacterialSequenceAnalysisResponseModel
 
 
-class BacterialSampleAnalysis(SampleAnalysisStrategy):
-    """Concrete analysis strategy for bacterial samples."""
+class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
+    """Concrete analysis strategy for bacterial sequences."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,7 +28,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        self.input = f"{get_project_path()}/temp_data/sample_analysis/{self.fasta_id}_{round(time.time() * 1000)}/"
+        self.input = f"{get_project_path()}/temp_data/sequence_analysis/{self.fasta_id}_{round(time.time() * 1000)}/"
         pathlib.Path(self.input).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
@@ -37,7 +38,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         ).name
         with open(file=input_file, mode="w", encoding="utf-8") as input_file:
             input_file.write(self.sequence)
-        self.output = f"{get_project_path()}/temp_data/sample_analysis/outputs/{self.fasta_id}_{round(time.time() * 1000)}"
+        self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.fasta_id}_{round(time.time() * 1000)}"
 
     def tsv2json(self, file):
         arr = []
@@ -68,7 +69,7 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
         process = Popen(
             [
                 "perl",
-                f"{get_project_path()}/scripts/sample_analysis/bacterial.pl",
+                f"{get_project_path()}/scripts/sequence_analysis/bacterial.pl",
                 "-input",
                 self.input,
                 "-scheme",
@@ -95,4 +96,8 @@ class BacterialSampleAnalysis(SampleAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
-        return result
+        return BacterialSequenceAnalysisResponseModel(
+            chewBACCA_version="3.3.9",
+            analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
+            alleles=result,
+        ).model_dump()

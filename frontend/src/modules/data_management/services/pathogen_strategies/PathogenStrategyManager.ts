@@ -5,12 +5,12 @@ import { MultiFileReading } from "../data_upload/file_reading/MultiFileReading";
 import { SingleFileReading } from "../data_upload/file_reading/SingleFileReading";
 import { BacterialDistanceCalculation } from "../distance_calculation/BacterialDistanceCalculation";
 import { ViralDistanceCalculation } from "../distance_calculation/ViralDistanceCalculation";
-import { BacterialSampleAnalysis } from "../sample_analysis/BacterialSampleAnalysis";
-import { ViralSampleAnalysis } from "../sample_analysis/ViralSampleAnalysis";
+import { ViralSequenceAnalysis } from "@/modules/data_management/services/sequence_analysis/ViralSequenceAnalysis";
+import { BacterialSequenceAnalysis } from "@/modules/data_management/services/sequence_analysis/BacterialSequenceAnalysis";
 import { useCoreStore } from "@/modules/core/stores/core";
 
 export class PathogenStrategyManager {
-    static getDistanceCalculationStrategy = async (): Promise<
+    public static getDistanceCalculationStrategy = async (): Promise<
         BacterialDistanceCalculation | ViralDistanceCalculation | undefined
     > => {
         const pathogenType = await this.getPathogenTypeName();
@@ -25,20 +25,22 @@ export class PathogenStrategyManager {
         }
     };
 
-    static getSampleAnalysisStrategy = async (): Promise<BacterialSampleAnalysis | ViralSampleAnalysis | undefined> => {
+    public static getSequenceAnalysisStrategy = async (): Promise<
+        BacterialSequenceAnalysis | ViralSequenceAnalysis | undefined
+    > => {
         const pathogenType = await this.getPathogenTypeName();
         if (!pathogenType) {
             return;
         }
         switch (pathogenType) {
             case PathogenTypeName[PathogenTypeName.bacteria]:
-                return new BacterialSampleAnalysis(this.getPathogen());
+                return new BacterialSequenceAnalysis(this.getPathogen());
             default:
-                return new ViralSampleAnalysis(this.getPathogen());
+                return new ViralSequenceAnalysis(this.getPathogen());
         }
     };
 
-    static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
+    public static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
         const pathogenType = await this.getPathogenTypeName();
         if (!pathogenType) {
             return;
@@ -51,7 +53,7 @@ export class PathogenStrategyManager {
         }
     };
 
-    static getPathogen = () => {
+    public static getPathogen = () => {
         const activePathogen = useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
@@ -59,7 +61,7 @@ export class PathogenStrategyManager {
         return activePathogen;
     };
 
-    static getPathogenTypeName = async () => {
+    public static getPathogenTypeName = async () => {
         const activePathogenType = await getPathogenTypeForActivePathogen();
         if (!activePathogenType) {
             return;

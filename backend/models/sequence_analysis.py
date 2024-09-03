@@ -2,11 +2,12 @@ from pydantic import BaseModel
 
 
 # sequence variants action models
-class SequenceVariantsRequestBodyModel(BaseModel):
+class SequenceAnalysisRequestBodyModel(BaseModel):
     sequence: str
 
 
-class ViralSequenceVariantsResponseModel(BaseModel):
+class ViralSequenceAnalysisResponseModel(BaseModel):
+    nextclade_version: str
     lineage: str
     n_count: int
     substitutions: list[object]
@@ -17,5 +18,7 @@ class ViralSequenceVariantsResponseModel(BaseModel):
     alignmentRange: object
 
 
-class BacterialSequenceVariantsResponseModel(BaseModel):
-    alleles: list[object]
+class BacterialSequenceAnalysisResponseModel(BaseModel):
+    chewBACCA_version: str
+    analysis_schema: str
+    alleles: dict

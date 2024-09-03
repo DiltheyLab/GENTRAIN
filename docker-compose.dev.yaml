@@ -19,12 +19,3 @@ services:
     depends_on:
       - redis
     env_file: "./backend/.env"
-
-  worker:
-    container_name: gentrain-worker
-    image: gentrain-backend:latest
-    depends_on:
-      - redis
-    command: [ "supervisord", "-c", "/backend/supervisor_dev.conf" ]
-    links:
-      - redis

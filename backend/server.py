@@ -12,7 +12,6 @@ from rq import Queue
 from backend.routes import api
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
-
 app = Flask(__name__)
 queue_viral = Queue(
     name="viral",
@@ -40,7 +39,7 @@ if os.environ.get("FLASK_ENV") == "development":
         app,
         message_queue="redis://gentrain-redis:6379",
         max_http_buffer_size=MAX_BUFFER_SIZE,
-        cors_allowed_origins="http://localhost:3000",
+        cors_allowed_origins=["http://localhost:3000", "http://localhost:4173"],
     )
 else:
     CORS(app)
@@ -70,8 +69,8 @@ def leave(session_id):
 
 
 @socketio.event
-def sample_analysis(session_id, pathogen_name, fasta_id, sequence):
-    strategy = PathogenStrategyManager.get_sample_analysis_strategy(
+def sequence_analysis(session_id, pathogen_name, fasta_id, sequence):
+    strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,
         sequence=sequence,

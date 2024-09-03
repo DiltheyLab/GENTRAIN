@@ -11,9 +11,9 @@ export class SamplesPersistence extends PersistenceStrategy {
     protected persist = async (data: { fastaId: string; sequence: string }[]) => {
         this.sampleUploadState.setIsUploading(true);
         // analyse sample depending on pathogen type to receive variants for distance calculations
-        const sampleAnalysisStrategy = await PathogenStrategyManager.getSampleAnalysisStrategy();
-        if (!sampleAnalysisStrategy) return;
-        sampleAnalysisStrategy.setSampleData(data);
-        await sampleAnalysisStrategy.execute();
+        const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
+        if (!sequenceAnalysisStrategy) return;
+        sequenceAnalysisStrategy.setSampleData(data);
+        sequenceAnalysisStrategy.execute();
     };
 }

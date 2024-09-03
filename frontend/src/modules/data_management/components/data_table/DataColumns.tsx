@@ -14,7 +14,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCasebyIdAndRecalculateDistances } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 
 export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
@@ -77,12 +77,31 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                                 <b>{sample.fasta_id}</b>
                             </small>
                         </div>
-                        <div>
-                            <small>{sample.lineage}</small>
-                        </div>
-                        <div>
-                            <small>{sample.n_count} Ambigious Characters</small>
-                        </div>
+                        {sample.sequence_analysis?.schema && (
+                            <div>
+                                <small>Schema: {sample.sequence_analysis?.schema}</small>
+                            </div>
+                        )}
+                        {sample.sequence_analysis?.chewbbaca_version && (
+                            <div>
+                                <small>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</small>
+                            </div>
+                        )}
+                        {sample.sequence_analysis?.nextclade_version && (
+                            <div>
+                                <small>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</small>
+                            </div>
+                        )}
+                        {sample.lineage && (
+                            <div>
+                                <small>Abstammung: {sample.lineage}</small>
+                            </div>
+                        )}
+                        {sample.n_count && (
+                            <div>
+                                <small>Ambigious Characters: {sample.n_count}</small>
+                            </div>
+                        )}
                     </>
                 );
             }
@@ -207,7 +226,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const deleteCase = async () => {
                 try {
-                    await deleteCasebyIdAndRecalculateDistances(row.original.id);
+                    await deleteCaseByIdAndRecalculateDistances(row.original.id);
                     await useCoreStore.getState().updateCasesWithRelationships();
                 } catch (error) {
                     toast({

@@ -8,7 +8,6 @@ import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 
 export const Pathogens = {
     "Covid-19": { type: PathogenTypeName.virus, geneticDistanceThreshold: 2 },
-    MRSA: { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 20 },
     "Enterococcus Faecium": { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 10 },
 };
 
@@ -44,6 +43,7 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
         [
             db.cases,
             db.samples,
+            db.sequence_analyses,
             db.contacts,
             db.cases,
             db.distances,

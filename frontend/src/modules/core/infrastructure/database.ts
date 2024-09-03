@@ -11,6 +11,7 @@ import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/path
 import { PathogenSchema, Pathogens } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { v4 as uuidv4 } from "uuid";
+import { SequenceAnalysisSchema } from "../models/sequence_analyses";
 
 export interface SessionsSchema {
     id: string;
@@ -20,6 +21,7 @@ export interface SessionsSchema {
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
+    sequence_analyses: EntityTable<SequenceAnalysisSchema, "id">;
     distance_matrices: EntityTable<DistanceMatricesSchema, "id">;
     distances: EntityTable<DistancesSchema, "id">;
     cases: EntityTable<CaseSchema, "id">;
@@ -39,7 +41,8 @@ const db = new Dexie("gentrain") as Dexie & {
 // *column_name = MultiEntry
 db.version(1).stores({
     samples:
-        "++id, fasta_id, case_id, ims_id, group, n_count, sequence_length, location_sending_lab, location_sequencing_lab, lineage, variants, metadata, sampled_at, created_at, updated_at",
+        "++id, fasta_id, case_id, lineage, n_count, sequence_length, sequence_analysis_id, sampled_at, created_at, updated_at",
+    sequence_analyses: "++id, result, schema, version, created_at, updated_at",
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",

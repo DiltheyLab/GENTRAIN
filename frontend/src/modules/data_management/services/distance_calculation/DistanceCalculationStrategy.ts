@@ -7,9 +7,10 @@ import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { extractSamplesFromCases } from "@/modules/data_management/helpers/samples";
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { toast } from "@/modules/core/components/ui/UseToast";
 
 export abstract class DistanceCalculationStrategy {
-    protected sampleUploadState: DataManagementState;
+    protected dataManagementStore: DataManagementState;
     protected pathogen: PathogenSchema;
     protected cli: any;
     protected distanceMatrixId: number | undefined;
@@ -18,7 +19,7 @@ export abstract class DistanceCalculationStrategy {
     protected abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
-        this.sampleUploadState = useDataManagementStore.getState();
+        this.dataManagementStore = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.samples = [];
     }
@@ -53,7 +54,7 @@ export abstract class DistanceCalculationStrategy {
 
     private initProgress = () => {
         const sampleAmount = Object.keys(this.samples).length;
-        this.sampleUploadState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
+        this.dataManagementStore.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
 
     private calculateSampleDistances = async () => {
@@ -74,7 +75,19 @@ export abstract class DistanceCalculationStrategy {
                     distance_matrix_id: this.distanceMatrixId,
                 });
             }
-            useDataManagementStore.getState().incrementDistanceCalculationCount();
+            this.dataManagementStore.incrementDistanceCalculationCount();
         }
+        this.handleCompletedCalculation();
+    };
+
+    private handleCompletedCalculation = () => {
+        toast({
+            title: "Datei wurde erfolgreich hochgeladen",
+            duration: 5000,
+            variant: "success",
+        });
+        setTimeout(() => {
+            this.dataManagementStore.setShowSampleUploadStatus(false);
+        }, 2000);
     };
 }

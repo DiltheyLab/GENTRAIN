@@ -1,9 +1,3 @@
-from backend.strategies.sample_analysis.sample_analysis_strategy import (
-    SampleAnalysisStrategy,
-)
-from backend.controllers.models.sequence_variants import (
-    ViralSequenceVariantsResponseModel,
-)
 import json
 import pathlib
 import re
@@ -14,10 +8,14 @@ from backend.exceptions.sequence_analysis_failed_exception import (
 )
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from backend.config import get_project_path
+from backend.models.sequence_analysis import ViralSequenceAnalysisResponseModel
+from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
+    SequenceAnalysisStrategy,
+)
 
 
-class ViralSampleAnalysis(SampleAnalysisStrategy):
-    """Concrete analysis strategy for viral samples."""
+class ViralSequenceAnalysis(SequenceAnalysisStrategy):
+    """Concrete analysis strategy for viral sequences."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,7 +29,7 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        temp_dir = f"{get_project_path()}/temp_data/sample_analysis/"
+        temp_dir = f"{get_project_path()}/temp_data/sequence_analysis/"
         pathlib.Path(temp_dir).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
@@ -47,7 +45,7 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"{get_project_path()}/scripts/sample_analysis/viral.sh",
+                f"{get_project_path()}/scripts/sequence_analysis/viral.sh",
                 self.input,
                 self.output,
                 f"{get_project_path()}/datasets/nextclade_covid",
@@ -73,7 +71,8 @@ class ViralSampleAnalysis(SampleAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
-        return ViralSequenceVariantsResponseModel(
+        return ViralSequenceAnalysisResponseModel(
+            nextclade_version="3.8.2",
             lineage=f"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}",
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],

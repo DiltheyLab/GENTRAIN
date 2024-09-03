@@ -1,9 +1,11 @@
 import { db } from "@/modules/core/infrastructure/database";
+import { SequenceAnalysisSchema } from "./sequence_analyses";
 
 interface SampleSchema {
     id: number;
     fasta_id: string;
-    ims_id?: string;
+    sequence_analysis_id: number;
+    sequence_analysis?: SequenceAnalysisSchema;
     n_count?: number;
     sequence_length?: number;
     lineage?: string;
@@ -12,10 +14,6 @@ interface SampleSchema {
     created_at?: Date;
     updated_at?: Date;
 }
-
-export const getAllSamples = (): Promise<SampleSchema[] | undefined> => {
-    return db.samples.toArray();
-};
 
 export const deleteSampleById = async (id: number) => {
     await db.samples.delete(id);

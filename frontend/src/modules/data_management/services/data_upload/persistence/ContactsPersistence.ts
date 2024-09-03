@@ -1,3 +1,4 @@
+import { toast } from "@/modules/core/components/ui/UseToast";
 import { db } from "@/modules/core/infrastructure/database";
 import { CaseSchema } from "@/modules/core/models/cases";
 import { ContactSchema, contactRules } from "@/modules/core/models/contacts";
@@ -43,5 +44,10 @@ export class ContactsPersistence extends PersistenceStrategy {
         }
         // Bulk add the data to the database
         await db.contacts.bulkAdd(bulkData);
+        toast({
+            title: "Datei wurde erfolgreich hochgeladen",
+            duration: 5000,
+            variant: "success",
+        });
     };
 }

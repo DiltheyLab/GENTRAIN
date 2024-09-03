@@ -1,3 +1,4 @@
+import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { getFlexibleCategoryNames } from "@/modules/core/helpers/categories";
 import { parseGermanDateFormat } from "@/modules/core/helpers/dates";
@@ -34,6 +35,11 @@ export class CasesPersistence extends PersistenceStrategy {
                 const dto = caseRules.parse(data) as CaseSchema;
                 db.cases.add(dto);
             }
+        });
+        toast({
+            title: "Datei wurde erfolgreich hochgeladen",
+            duration: 5000,
+            variant: "success",
         });
     };
 }
