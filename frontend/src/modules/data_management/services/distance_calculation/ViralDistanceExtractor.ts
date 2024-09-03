@@ -1,5 +1,4 @@
 import { SampleSchema } from "@/modules/core/models/samples";
-import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 const ambiguousChars: { [base: string]: string[] } = {
     A: ["A"],

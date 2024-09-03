@@ -5,7 +5,7 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
     protected createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: sequenceAnalysisResult["analysis_schema"],
-            version: sequenceAnalysisResult["chewBACCA_version"],
+            chewbbaca_version: sequenceAnalysisResult["chewBACCA_version"],
             result: {
                 alleles: sequenceAnalysisResult["alleles"],
             },

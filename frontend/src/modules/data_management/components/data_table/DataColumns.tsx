@@ -76,12 +76,31 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                                 <b>{sample.fasta_id}</b>
                             </small>
                         </div>
-                        <div>
-                            <small>{sample.lineage}</small>
-                        </div>
-                        <div>
-                            <small>{sample.n_count} Ambigious Characters</small>
-                        </div>
+                        {sample.sequence_analysis?.schema && (
+                            <div>
+                                <small>Schema: {sample.sequence_analysis?.schema}</small>
+                            </div>
+                        )}
+                        {sample.sequence_analysis?.chewbbaca_version && (
+                            <div>
+                                <small>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</small>
+                            </div>
+                        )}
+                        {sample.sequence_analysis?.nextclade_version && (
+                            <div>
+                                <small>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</small>
+                            </div>
+                        )}
+                        {sample.lineage && (
+                            <div>
+                                <small>Abstammung: {sample.lineage}</small>
+                            </div>
+                        )}
+                        {sample.n_count && (
+                            <div>
+                                <small>Ambigious Characters: {sample.n_count}</small>
+                            </div>
+                        )}
                     </>
                 );
             }

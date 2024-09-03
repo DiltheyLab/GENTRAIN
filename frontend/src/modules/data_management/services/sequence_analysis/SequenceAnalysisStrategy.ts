@@ -61,7 +61,7 @@ export abstract class SequenceAnalysisStrategy {
 
     private handleCompletedAnalyses = () => {
         if (socket) {
-            socket.on(`sequence_analysis_response`, async (data: any) => {
+            socket.on("sequence_analysis_response", async (data: any) => {
                 this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
             });
@@ -83,6 +83,9 @@ export abstract class SequenceAnalysisStrategy {
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
             this.initDistanceCalculation();
+            if (socket) {
+                socket.off("sequence_analysis_response");
+            }
         }
     }
 
