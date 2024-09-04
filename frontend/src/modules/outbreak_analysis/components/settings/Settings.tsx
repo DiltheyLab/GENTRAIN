@@ -7,7 +7,6 @@ import { handleError } from "@/modules/core/helpers/errors";
 import { BackgroundSelection } from "./background_selection/BackgroundSelection";
 import { BackgroundFilter } from "./background_filter/BackgroundFilter";
 import { ContactTracing } from "./contact_tracing/ContactTracing";
-import { exportGraphAndInformationAsPdf } from "@/modules/outbreak_analysis/helpers/pdf";
 import { SectionHeader } from "./SectionHeader";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import {
@@ -19,10 +18,12 @@ import {
 } from "./Tooltips";
 import { ColorSelection } from "./color_selection/ColorSelection";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
+import { lazy, Suspense } from "react";
+
+const PdfExportButton = lazy(() => import("./PdfExportButton"));
 
 export const Settings = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
-
     const safeAnalysis = async () => {
         try {
             if (!outbreakAnalysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
@@ -137,14 +138,15 @@ export const Settings = () => {
                             </>
                         )}
                     </Accordion>
-                    <Button
-                        className="mt-2"
-                        variant="outline"
-                        type="button"
-                        onClick={() => exportGraphAndInformationAsPdf(outbreakAnalysisStore.name)}
+                    <Suspense
+                        fallback={
+                            <Button disabled className="mt-2" variant="outline" type="button">
+                                Analysebericht exportieren
+                            </Button>
+                        }
                     >
-                        Analysebericht exportieren
-                    </Button>
+                        <PdfExportButton />
+                    </Suspense>
                     <Button type="button" onClick={() => safeAnalysis()}>
                         Analyse speichern
                     </Button>
