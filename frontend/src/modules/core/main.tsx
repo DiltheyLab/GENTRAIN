@@ -54,6 +54,9 @@ const App = () => {
 
     if (socket) {
         socket.emit("join", session.id);
+        socket.on("room_created", (data: any) => {
+            console.log(data);
+        });
     }
 
     const router = createBrowserRouter([
