@@ -15,6 +15,7 @@ RUN useradd -m uwsgi
 RUN chown uwsgi:uwsgi -R /home/backend
 USER uwsgi
 
+RUN rm -rf /home/backend/logs
 RUN mkdir /home/backend/logs
 
 # Ensure the Conda environment is activated
