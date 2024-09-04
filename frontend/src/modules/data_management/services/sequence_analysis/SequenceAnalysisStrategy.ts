@@ -82,6 +82,7 @@ export abstract class SequenceAnalysisStrategy {
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+            console.log("continueIfAllAnalysesAreDone", this.finishedFastaIds.length, this.fastaIdsToAnalyse.length);
             this.coreState.updateCasesWithRelationships();
             this.initDistanceCalculation();
             if (socket) {
