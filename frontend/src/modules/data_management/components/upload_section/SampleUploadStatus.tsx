@@ -78,7 +78,7 @@ export function SampleUploadStatus() {
                                 <div className="w-1/6 p-1">
                                     <div
                                         key={fastaId}
-                                        className={`cursor-default flex items-center justify-between h-[25px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
+                                        className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
                                             uploads[fastaId]
                                         )}`}
                                     >
@@ -95,7 +95,7 @@ export function SampleUploadStatus() {
                     </div>
                     {isUploading && (
                         <>
-                            <Separator className="my-3" />
+                            <Separator className="my-3" />^{" "}
                             <div className="mb-2 flex items-center text-sm">
                                 <StepIndicator>2</StepIndicator>
                                 Genetische Distanzen werden berechnet
