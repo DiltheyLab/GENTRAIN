@@ -132,11 +132,14 @@ dependencies:
       - bidict==0.23.1
       - blinker==1.8.2
       - click==8.1.7
+      - eventlet==0.36.1
       - flask==3.0.3
       - flask-cors==4.0.1
       - flask-pydantic==0.12.0
       - flask-socketio==5.3.6
       - gevent==24.2.1
+      - greenlet==3.0.3
+      - gunicorn==23.0.0
       - h11==0.14.0
       - itsdangerous==2.2.0
       - jinja2==3.1.4
@@ -155,4 +158,6 @@ dependencies:
       - typing-extensions==4.12.2
       - werkzeug==3.0.3
       - wsproto==1.2.0
+      - zope-event==5.0
+      - zope-interface==7.0.3
 prefix: /opt/conda/envs/gentrain

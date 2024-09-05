@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from flask_socketio import SocketIO
+import socketio
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 
-socket = SocketIO(message_queue="redis://gentrain-redis:6379")
+mgr = socketio.RedisManager("redis://gentrain-redis:6379")
+sio = socketio.Server(client_manager=mgr)
 
 
 class SequenceAnalysisStrategy(ABC):
@@ -31,7 +32,7 @@ class SequenceAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
-    def execute(self, session_id):
+    def execute(self, room_name):
         """Run strategy actions."""
         genomic_errors = self.find_genomic_validation_errors()
         if genomic_errors and len(genomic_errors) > 0:
@@ -39,16 +40,16 @@ class SequenceAnalysisStrategy(ABC):
         self.create_input_and_output_files()
         result = self.run_analysis()
         response = self.get_response(result)
-        socket.emit(
+        sio.emit(
             "sequence_analysis_response",
             {
                 "result": response,
                 "fasta_id": self.fasta_id,
                 "sequence_length": len(self.sequence),
             },
-            room=session_id,
+            room=room_name,
         )
         return result
 
-    def enqueue_job(self, session_id, queue):
-        queue.enqueue(self.execute, session_id)
+    def enqueue_job(self, room_name, queue):
+        queue.enqueue(self.execute, room_name)

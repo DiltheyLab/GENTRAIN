@@ -16,7 +16,7 @@ export const ClusterInformationTable = () => {
             <TableRow className="font-medium bg-muted">
                 <TableHead className="font-medium p-2 text-xs text-black">Fall ID</TableHead>
                 <TableHead className="font-medium p-2 text-xs text-black">Sequenz ID</TableHead>
-                {activePathogen?.pathogen_type?.name === PathogenTypeName.virus && (
+                {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
                         <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
                         <TableHead className="font-medium p-2 text-xs text-black">Abstammung</TableHead>
@@ -38,7 +38,7 @@ export const ClusterInformationTable = () => {
                 <TableRow key={node.id} className="border-muted">
                     <TableCell className="p-2 text-xs font-medium">{node.caseData.case_id}</TableCell>
                     <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.fasta_id}</TableCell>
-                    {activePathogen?.pathogen_type?.name === PathogenTypeName.virus && (
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
                             <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.n_count}</TableCell>
                             <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.lineage}</TableCell>

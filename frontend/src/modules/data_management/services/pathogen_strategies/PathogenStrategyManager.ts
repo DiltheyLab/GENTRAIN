@@ -18,7 +18,7 @@ export class PathogenStrategyManager {
             return;
         }
         switch (pathogenType) {
-            case PathogenTypeName[PathogenTypeName.bacteria]:
+            case PathogenTypeName[PathogenTypeName.bacterial]:
                 return new BacterialDistanceCalculation(this.getPathogen());
             default:
                 return new ViralDistanceCalculation(this.getPathogen());
@@ -33,7 +33,7 @@ export class PathogenStrategyManager {
             return;
         }
         switch (pathogenType) {
-            case PathogenTypeName[PathogenTypeName.bacteria]:
+            case PathogenTypeName[PathogenTypeName.bacterial]:
                 return new BacterialSequenceAnalysis(this.getPathogen());
             default:
                 return new ViralSequenceAnalysis(this.getPathogen());
@@ -46,7 +46,7 @@ export class PathogenStrategyManager {
             return;
         }
         switch (pathogenType) {
-            case PathogenTypeName[PathogenTypeName.bacteria]:
+            case PathogenTypeName[PathogenTypeName.bacterial]:
                 return new MultiFileReading();
             default:
                 return new SingleFileReading();

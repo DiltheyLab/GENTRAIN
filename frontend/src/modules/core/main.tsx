@@ -15,7 +15,6 @@ import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/Outb
 import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
-import { socket } from "@/modules/core/helpers/socket";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 
@@ -50,10 +49,6 @@ const App = () => {
 
     if (session === null) {
         return <Onboarding />;
-    }
-
-    if (socket) {
-        socket.emit("join", session.id);
     }
 
     const router = createBrowserRouter([

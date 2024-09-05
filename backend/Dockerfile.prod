@@ -15,6 +15,7 @@ RUN useradd -m uwsgi
 RUN chown uwsgi:uwsgi -R /home/backend
 USER uwsgi
 
+RUN rm -rf /home/backend/logs
 RUN mkdir /home/backend/logs
 
 # Ensure the Conda environment is activated
@@ -31,4 +32,4 @@ COPY --chown=uwsgi . .
 EXPOSE 8080
 
 # Run app.py when the container launches using uWSGI
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
+CMD ["gunicorn", "--chdir", "/home", "--workers", "1", "--threads", "100", "--bind", ":8080", "backend.server:app"]

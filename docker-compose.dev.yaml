@@ -15,7 +15,22 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./backend:/backend
+      - type: bind
+        source: ./backend
+        target: /backend
     depends_on:
       - redis
     env_file: "./backend/.env"
+
+  worker:
+    container_name: gentrain-worker
+    image: gentrain-backend:latest
+    depends_on:
+      - redis
+    entrypoint: /backend/entrypoint-worker.sh
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /backend
+    links:
+      - redis
