@@ -5,16 +5,19 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 
 export const Layout = ({ children }: any) => {
     const showSampleUploadStatus = useDataManagementStore((state) => state.showSampleUploadStatus);
+    const isUploading = useDataManagementStore((state) => state.isUploading);
 
     return (
         <div>
             <Header></Header>
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
-            <div className="relative z-50">
-                <div className="fixed bottom-0 right-0 w-3/12 lg:w-4/12 mb-8 mr-8">
-                    {showSampleUploadStatus && <SampleUploadStatus />}
+            {showSampleUploadStatus && isUploading && (
+                <div className="relative z-50">
+                    <div className="fixed bottom-0 right-0 w-full md:w-8/12 lg:w-1/2 p-8">
+                        <SampleUploadStatus />
+                    </div>
                 </div>
-            </div>
+            )}
             <Footer></Footer>
         </div>
     );

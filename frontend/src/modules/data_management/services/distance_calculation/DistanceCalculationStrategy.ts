@@ -86,8 +86,6 @@ export abstract class DistanceCalculationStrategy {
             duration: 5000,
             variant: "success",
         });
-        setTimeout(() => {
-            this.dataManagementStore.setShowSampleUploadStatus(false);
-        }, 2000);
+        this.dataManagementStore.setShowSampleUploadStatus(false);
     };
 }

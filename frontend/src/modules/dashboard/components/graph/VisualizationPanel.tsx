@@ -16,6 +16,7 @@ import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -29,6 +30,7 @@ export const DashboardVisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const showSampleUploadStatus = useDataManagementStore((state) => state.showSampleUploadStatus);
 
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
@@ -37,7 +39,7 @@ export const DashboardVisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) {
+        if (!distanceMatrixAssembly || !cases || !contacts || showSampleUploadStatus) {
             dashboardStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
@@ -65,7 +67,14 @@ export const DashboardVisualizationPanel = () => {
         };
 
         getGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
-    }, [cases, distanceMatrixAssembly, contacts, dashboardStore.settings, dashboardStore.graphSettings.coloringMode]);
+    }, [
+        cases,
+        distanceMatrixAssembly,
+        contacts,
+        showSampleUploadStatus,
+        dashboardStore.settings,
+        dashboardStore.graphSettings.coloringMode,
+    ]);
 
     return (
         <div

@@ -5,6 +5,7 @@ import { Check, CircleAlert, X, ChevronsDown, ChevronsUp } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { SampleInfoCard } from "@/modules/data_management/components/upload_section/SampleInfoCard";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
+import { Button } from "@/modules/core/components/ui/Button";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
@@ -22,27 +23,24 @@ export function SampleUploadStatus() {
         useDataManagementStore();
     if (Object.keys(uploads).length === 0) return null;
     return (
-        <div className="bg-white p-6 rounded-md border">
-            <div className="flex justify-between">
-                {!isUploading && <h2 className="font-bold">Folgende Sequenzdaten werden hinzugefügt</h2>}
-                {isUploading && <h2 className="font-bold">Sequenzdaten werden hinzugefügt ...</h2>}
-                {isUploading && (
-                    <>
-                        {hideSampleUploadContent && (
-                            <ChevronsUp className="cursor-pointer" onClick={() => setHideSampleUploadContent(false)} />
-                        )}
-                        {!hideSampleUploadContent && (
-                            <ChevronsDown className="cursor-pointer" onClick={() => setHideSampleUploadContent(true)} />
-                        )}
-                    </>
-                )}
-            </div>
+        <div className={`bg-white ${isUploading ? "border p-6 rounded-md" : "w-1/2"}`}>
+            {isUploading && (
+                <div className="flex justify-between">
+                    {<h2 className="font-bold">Sequenzdaten werden hinzugefügt ...</h2>}
+                    {hideSampleUploadContent && (
+                        <ChevronsUp className="cursor-pointer" onClick={() => setHideSampleUploadContent(false)} />
+                    )}
+                    {!hideSampleUploadContent && (
+                        <ChevronsDown className="cursor-pointer" onClick={() => setHideSampleUploadContent(true)} />
+                    )}
+                </div>
+            )}
             {!hideSampleUploadContent && (
-                <div className="mt-4">
+                <>
                     {isUploading && (
-                        <div className="mb-2 flex items-center text-sm">
+                        <div className="mb-2 mt-4 flex items-center text-sm">
                             <StepIndicator>1</StepIndicator>
-                            Sequenzanalyse
+                            Sequenzen werden auf Mutationen untersucht
                         </div>
                     )}
                     <div className="w-full flex flex-wrap gap-2">
@@ -105,12 +103,12 @@ export function SampleUploadStatus() {
                         <>
                             <div className="mt-6 mb-2 flex items-center text-sm">
                                 <StepIndicator>2</StepIndicator>
-                                Distanzberechnung
+                                Genetische Distanzen werden berechnet
                             </div>
                             <DistanceCalculationProgress />
                         </>
                     )}
-                </div>
+                </>
             )}
         </div>
     );
