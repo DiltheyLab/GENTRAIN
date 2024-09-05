@@ -5,7 +5,6 @@ import { Check, CircleAlert, X, ChevronsDown, ChevronsUp } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { SampleInfoCard } from "@/modules/data_management/components/upload_section/SampleInfoCard";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
-import { Button } from "@/modules/core/components/ui/Button";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
