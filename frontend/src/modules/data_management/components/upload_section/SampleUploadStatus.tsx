@@ -63,12 +63,14 @@ export function SampleUploadStatus() {
             )}
             {!hideSampleUploadContent && (
                 <>
-                    <Separator className="my-3"></Separator>
                     {isUploading && (
-                        <div className="mb-2 mt-4 flex items-center text-sm">
-                            <StepIndicator>1</StepIndicator>
-                            Sequenzen werden auf Mutationen untersucht
-                        </div>
+                        <>
+                            <Separator className="my-3" />
+                            <div className="mb-2 mt-4 flex items-center text-sm">
+                                <StepIndicator>1</StepIndicator>
+                                Sequenzen werden auf Mutationen untersucht
+                            </div>
+                        </>
                     )}
                     <div className="w-full flex flex-wrap max-h-[300px] overflow-y-scroll">
                         {isUploading &&
@@ -93,7 +95,7 @@ export function SampleUploadStatus() {
                     </div>
                     {isUploading && (
                         <>
-                            <Separator className="my-3"></Separator>
+                            <Separator className="my-3" />
                             <div className="mb-2 flex items-center text-sm">
                                 <StepIndicator>2</StepIndicator>
                                 Genetische Distanzen werden berechnet
