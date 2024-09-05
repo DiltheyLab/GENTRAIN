@@ -13,7 +13,7 @@ export const Layout = ({ children }: any) => {
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             {showSampleUploadStatus && isUploading && (
                 <div className="relative z-50">
-                    <div className="fixed bottom-0 right-0 w-full md:w-8/12 lg:w-1/2 p-8">
+                    <div className="fixed bottom-0 right-0 w-full lg:w-2/3 p-8">
                         <SampleUploadStatus />
                     </div>
                 </div>
