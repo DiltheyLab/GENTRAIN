@@ -59,7 +59,13 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
             const deletions = [];
             for (const caseData of cases) {
                 if (caseData.fasta_id) {
-                    deletions.push(db.samples.where({ fasta_id: caseData.fasta_id }).delete());
+                    const sampleCollection = db.samples.where({ fasta_id: caseData.fasta_id });
+                    sampleCollection.each((sample) => {
+                        if (sample.sequence_analysis_id) {
+                            deletions.push(db.sequence_analyses.where({ id: sample.sequence_analysis_id }).delete());
+                        }
+                    });
+                    deletions.push(sampleCollection.delete());
                 }
                 deletions.push(
                     db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete()
