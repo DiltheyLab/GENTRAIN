@@ -10,9 +10,9 @@ import { Separator } from "@/modules/core/components/ui/Separator";
 const getColorClassNames = (status: string) => {
     switch (status) {
         case "finished":
-            return "text-green-600 border-green-600 hover:border-white";
+            return "text-green-600 border-green-600";
         case "failed":
-            return "text-red-600 border-red-600 hover:border-white";
+            return "text-red-600 border-red-600";
         default:
             return "";
     }
