@@ -76,7 +76,7 @@ export function SampleUploadStatus() {
                                 <div className="w-1/6 p-1">
                                     <div
                                         key={fastaId}
-                                        className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
+                                        className={`cursor-default flex items-center justify-between h-[25px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
                                             uploads[fastaId]
                                         )}`}
                                     >
