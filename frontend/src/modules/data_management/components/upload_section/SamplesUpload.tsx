@@ -1,12 +1,9 @@
 import { SamplesPersistence } from "@/modules/data_management/services/data_upload/persistence/SamplesPersistence";
 import { SamplesValidation } from "@/modules/data_management/services/data_upload/validation/SamplesValidation";
 import { FileUpload } from "@/modules/data_management/components/upload_section/FileUpload";
-import { SampleUploadStatus } from "./SampleUploadStatus";
 import { useGetFileReadingStrategy } from "@/modules/data_management/hooks/useGetFileReadingStrategy";
-import { useDataManagementStore } from "../../stores/dataManagement";
 
 export const SamplesUpload = () => {
-    const showSampleUploadStatus = useDataManagementStore((state) => state.showSampleUploadStatus);
     const fileReadingStrategy = useGetFileReadingStrategy();
     if (!fileReadingStrategy) return;
     return (
@@ -17,7 +14,6 @@ export const SamplesUpload = () => {
                 validationStrategy={new SamplesValidation()}
                 persistenceStrategy={new SamplesPersistence()}
             />
-            {showSampleUploadStatus && <SampleUploadStatus />}
         </>
     );
 };

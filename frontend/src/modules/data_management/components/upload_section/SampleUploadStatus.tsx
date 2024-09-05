@@ -22,12 +22,16 @@ export function SampleUploadStatus() {
 
     if (Object.keys(uploads).length === 0) return null;
     return (
-        <div className="bg-muted p-6">
-            <div className="mb-2 flex items-center text-sm">
-                <StepIndicator>1</StepIndicator>
-                Sequenzanalyse
-            </div>
-            <div className="mb-6 w-full flex flex-wrap gap-2">
+        <div className="bg-white p-6 rounded-md border">
+            {!isUploading && <h2 className="mb-4 font-bold">Folgende Sequenzdaten werden hinzugefügt</h2>}
+            {isUploading && <h2 className="mb-4 font-bold">Sequenzdaten werden importiert ...</h2>}
+            {isUploading && (
+                <div className="mb-2 flex items-center text-sm">
+                    <StepIndicator>1</StepIndicator>
+                    Sequenzanalyse
+                </div>
+            )}
+            <div className="w-full flex flex-wrap gap-2">
                 {isUploading &&
                     Object.keys(uploads).map((fastaId) => (
                         <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
@@ -83,11 +87,15 @@ export function SampleUploadStatus() {
                         </HoverCard>
                     ))}
             </div>
-            <div className="mb-2 flex items-center text-sm">
-                <StepIndicator>2</StepIndicator>
-                Distanzberechnung
-            </div>
-            <DistanceCalculationProgress />
+            {isUploading && (
+                <>
+                    <div className="mt-6 mb-2 flex items-center text-sm">
+                        <StepIndicator>2</StepIndicator>
+                        Distanzberechnung
+                    </div>
+                    <DistanceCalculationProgress />
+                </>
+            )}
         </div>
     );
 }

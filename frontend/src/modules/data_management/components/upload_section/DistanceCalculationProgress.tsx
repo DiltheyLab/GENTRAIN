@@ -4,5 +4,5 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 export function DistanceCalculationProgress() {
     const { distanceCalculationCount, distanceCalculationSum } = useDataManagementStore();
     const totalCalculationsDone = (distanceCalculationCount * (distanceCalculationCount + 1)) / 2;
-    return <Progress value={(totalCalculationsDone / distanceCalculationSum) * 100} className="w-full" />;
+    return <Progress value={(totalCalculationsDone / distanceCalculationSum) * 100} className="w-full border" />;
 }
