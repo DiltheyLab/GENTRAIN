@@ -61,7 +61,7 @@ db.on("populate", async () => {
     for (const [pathogenName, pathogenData] of Object.entries(Pathogens)) {
         // retrieve pathogen type name from enum
         const pathogenTypeName = PathogenTypeName[pathogenData.type];
-        // check if the type of the pathogen (bacteria or virus) already exists in pathogen_types-table
+        // check if the type of the pathogen (bacterial or viral) already exists in pathogen_types-table
         // otherwise persist pathogen_type
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({

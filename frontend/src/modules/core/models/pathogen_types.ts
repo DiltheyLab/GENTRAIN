@@ -1,10 +1,10 @@
 import { db } from "@/modules/core/infrastructure/database";
-import { PathogenSchema } from "@/modules/core/models/pathogens";
+import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { useCoreStore } from "@/modules/core/stores/core";
 
 export enum PathogenTypeName {
-    bacteria = "bacteria",
-    virus = "virus",
+    bacterial = "bacterial",
+    viral = "viral",
 }
 export interface PathogenTypeSchema {
     id: number;
@@ -22,9 +22,15 @@ export const getAllPathogenTypesWithRelationships = async () => {
     let pathogenTypesWithRelationships: PathogenTypeWithRelationships[] = [];
     for (const key in pathogenTypes) {
         pathogenTypesWithRelationships[key] = pathogenTypes[key];
-        // retrieve pathogen schema object
         const pathogens = await db.pathogens.where({ pathogen_type_id: pathogenTypes[key].id }).toArray();
-        pathogenTypesWithRelationships[key].pathogens = pathogens;
+        let pathogensWithRelationships: PathogenWithRelationships[] = [];
+        for (const key in pathogens) {
+            pathogensWithRelationships[key] = pathogens[key];
+            // retrieve pathogen schema object
+            const pathogenType = await db.pathogen_types.where({ id: pathogens[key].pathogen_type_id }).first();
+            pathogensWithRelationships[key].pathogen_type = pathogenType;
+        }
+        pathogenTypesWithRelationships[key].pathogens = pathogensWithRelationships;
     }
     return pathogenTypesWithRelationships;
 };

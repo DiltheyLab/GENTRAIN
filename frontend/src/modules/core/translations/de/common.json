@@ -1,7 +1,7 @@
 {
     "pathogen_type": {
-        "virus": "Viren",
-        "bacteria": "Bakterien"
+        "viral": "Viren",
+        "bacterial": "Bakterien"
     },
     "upload": {
         "label": {

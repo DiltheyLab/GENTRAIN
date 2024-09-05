@@ -81,11 +81,11 @@ const addInformationTable = async (doc: jsPDF) => {
     const nodes = useOutbreakAnalysisStore.getState().graphData.nodes;
     const pathogenTypeName = useCoreStore.getState().activePathogen?.pathogen_type?.name;
     const tableHead =
-        pathogenTypeName === PathogenTypeName.virus
+        pathogenTypeName === PathogenTypeName.viral
             ? ["Fall ID", "Sequenz ID", "Abstammung", "N's", "Sequenzlänge", "Registrierungsdatum"]
             : ["Fall ID", "Sequenz ID", "Registrierungsdatum"];
     const tableRows = nodes.map((node: CustomNode) => {
-        return pathogenTypeName === PathogenTypeName.virus
+        return pathogenTypeName === PathogenTypeName.viral
             ? [
                   node.caseData.case_id,
                   node.caseData.sample?.fasta_id ?? "",
@@ -102,7 +102,7 @@ const addInformationTable = async (doc: jsPDF) => {
         rowPageBreak: "avoid",
         headStyles: { fillColor: [249, 115, 22] },
         bodyStyles: {
-            cellWidth: pathogenTypeName === PathogenTypeName.virus ? 30 : 50,
+            cellWidth: pathogenTypeName === PathogenTypeName.viral ? 30 : 50,
         },
     });
 };

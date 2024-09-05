@@ -13,6 +13,7 @@ export abstract class SequenceAnalysisStrategy {
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
     protected fastaIdsToAnalyse: string[] = [];
     protected finishedFastaIds: string[] = [];
+    protected roomName: string = "";
 
     protected abstract createSampleAndSequenceAnalysis(
         fastaId: string,
@@ -35,8 +36,19 @@ export abstract class SequenceAnalysisStrategy {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
-        await this.runAnalysis();
+        this.joinRoomAndRunAnalysis();
         this.handleCompletedAnalyses();
+    };
+
+    private joinRoomAndRunAnalysis = () => {
+        if (socket) {
+            socket.emit(`join_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
+            socket.on(`${this.pathogen.pathogen_type?.name}_room_created`, async (roomName: string) => {
+                this.roomName = roomName;
+                console.log(`Room ${this.roomName} was joined.`);
+                await this.runAnalysis();
+            });
+        }
     };
 
     private runAnalysis = async () => {
@@ -70,7 +82,7 @@ export abstract class SequenceAnalysisStrategy {
 
     private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
         if (socket) {
-            socket.emit("sequence_analysis", this.coreState.session?.id, toSlug(this.pathogen.name), fastaId, sequence);
+            socket.emit("sequence_analysis_request", this.roomName, toSlug(this.pathogen.name), fastaId, sequence);
         }
     };
 
@@ -82,10 +94,11 @@ export abstract class SequenceAnalysisStrategy {
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
-            console.log("continueIfAllAnalysesAreDone", this.finishedFastaIds.length, this.fastaIdsToAnalyse.length);
             this.coreState.updateCasesWithRelationships();
             this.initDistanceCalculation();
             if (socket) {
+                console.log(`Room ${this.roomName} was left.`);
+                socket.emit(`leave_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
                 socket.off("sequence_analysis_response");
             }
         }

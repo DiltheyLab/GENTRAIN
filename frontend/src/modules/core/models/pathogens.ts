@@ -7,8 +7,8 @@ import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 
 export const Pathogens = {
-    "Covid-19": { type: PathogenTypeName.virus, geneticDistanceThreshold: 2 },
-    "Enterococcus Faecium": { type: PathogenTypeName.bacteria, geneticDistanceThreshold: 10 },
+    "Covid-19": { type: PathogenTypeName.viral, geneticDistanceThreshold: 2 },
+    "Enterococcus Faecium": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 10 },
 };
 
 export interface PathogenSchema {
@@ -26,12 +26,12 @@ export interface PathogenWithRelationships extends PathogenSchema {
 }
 
 export const getAllPathogensWithRelationships = async () => {
-    const cases = await db.pathogens.toArray();
+    const pathogens = await db.pathogens.toArray();
     let pathogensWithRelationships: PathogenWithRelationships[] = [];
-    for (const key in cases) {
-        pathogensWithRelationships[key] = cases[key];
+    for (const key in pathogens) {
+        pathogensWithRelationships[key] = pathogens[key];
         // retrieve pathogen schema object
-        const pathogenType = await db.pathogen_types.where({ id: cases[key].pathogen_type_id }).first();
+        const pathogenType = await db.pathogen_types.where({ id: pathogens[key].pathogen_type_id }).first();
         pathogensWithRelationships[key].pathogen_type = pathogenType;
     }
     return pathogensWithRelationships;
