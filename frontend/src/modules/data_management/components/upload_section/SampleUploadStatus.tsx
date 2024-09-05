@@ -95,7 +95,7 @@ export function SampleUploadStatus() {
                     </div>
                     {isUploading && (
                         <>
-                            <Separator className="my-3" />^{" "}
+                            <Separator className="my-3" />
                             <div className="mb-2 flex items-center text-sm">
                                 <StepIndicator>2</StepIndicator>
                                 Genetische Distanzen werden berechnet
