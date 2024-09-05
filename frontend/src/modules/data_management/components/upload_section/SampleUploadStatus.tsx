@@ -23,7 +23,11 @@ export function SampleUploadStatus() {
         useDataManagementStore();
     if (Object.keys(uploads).length === 0) return null;
     return (
-        <div className={`bg-white/80 ${isUploading ? "border p-6 rounded-md" : "w-full lg:w-8/12"}`}>
+        <div
+            className={`${hideSampleUploadContent ? "bg-white" : "bg-white/90"} ${
+                isUploading ? "border p-6 rounded-md" : "w-full lg:w-8/12"
+            }`}
+        >
             {isUploading && (
                 <div className="flex justify-between">
                     {<h2 className="font-bold">Sequenzdaten werden hinzugefügt ...</h2>}
