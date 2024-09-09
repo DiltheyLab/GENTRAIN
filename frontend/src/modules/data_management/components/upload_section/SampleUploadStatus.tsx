@@ -81,7 +81,7 @@ export function SampleUploadStatus() {
                             </div>
                         </>
                     )}
-                    <div className="w-full flex flex-wrap max-h-[300px] overflow-y-scroll">
+                    <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto">
                         {isUploading &&
                             Object.keys(uploads).map((fastaId) => (
                                 <div className="w-1/6 p-1">
