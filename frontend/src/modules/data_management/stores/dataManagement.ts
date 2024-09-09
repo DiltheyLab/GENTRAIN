@@ -46,6 +46,7 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
             distanceCalculationCount: 0,
             distanceCalculationSum: 0,
             isUploading: false,
+            showSampleUploadStatus: false,
             uploads: {},
         });
     },
