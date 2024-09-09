@@ -53,14 +53,15 @@ def join_bacterial(sid, gentrain_session_id):
 
 
 @sio.event
-def leave_viral(_, gentrain_session_id):
-    sio.leave_room(gentrain_session_id, f"viral_{gentrain_session_id}")
+def leave_viral(sid, gentrain_session_id):
+    sio.leave_room(sid, f"viral_{gentrain_session_id}")
     print(f"viral_{gentrain_session_id} closed")
 
 
 @sio.event
-def leave_bacterial(_, gentrain_session_id):
-    sio.leave_room(gentrain_session_id, f"bacterial_{gentrain_session_id}")
+def leave_bacterial(sid, gentrain_session_id):
+    sio.leave_room(sid, f"bacterial_{gentrain_session_id}")
+    print(f"bacterial_{gentrain_session_id} closed")
 
 
 @sio.event

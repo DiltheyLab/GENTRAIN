@@ -11,9 +11,9 @@ export abstract class SequenceAnalysisStrategy {
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
     protected sampleData: { fastaId: string; sequence: string }[] | undefined;
-    protected fastaIdsToAnalyse: string[] = [];
-    protected finishedFastaIds: string[] = [];
-    protected roomName: string = "";
+    protected fastaIdsToAnalyse: string[];
+    protected finishedFastaIds: string[];
+    protected roomName: string;
 
     protected abstract createSampleAndSequenceAnalysis(
         fastaId: string,
@@ -25,6 +25,9 @@ export abstract class SequenceAnalysisStrategy {
         this.coreState = useCoreStore.getState();
         this.dataManagementState = useDataManagementStore.getState();
         this.pathogen = pathogen;
+        this.fastaIdsToAnalyse = [];
+        this.finishedFastaIds = [];
+        this.roomName = "";
     }
 
     public setSampleData = (sampleData: { fastaId: string; sequence: string }[]) => {
@@ -100,6 +103,7 @@ export abstract class SequenceAnalysisStrategy {
                 console.log(`Room ${this.roomName} was left.`);
                 socket.emit(`leave_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
                 socket.off("sequence_analysis_response");
+                socket.off(`${this.pathogen.pathogen_type?.name}_room_created`);
             }
         }
     }
