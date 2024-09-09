@@ -8,6 +8,7 @@ redis_connection = Redis(host="gentrain-redis", port=6379)
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)
 
+# TODO: examine chunking
 MAX_BUFFER_SIZE = 5 * 1000 * 1000
 
 redis_manager = socketio.RedisManager("redis://gentrain-redis:6379")

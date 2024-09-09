@@ -26,11 +26,16 @@ export function SampleUploadStatus() {
         <div
             className={`${hideSampleUploadContent ? "bg-white" : "bg-white/90"} ${
                 isUploading ? "border p-6 rounded-md" : "w-full lg:w-8/12"
-            }`}
+            } `}
         >
             {isUploading && (
                 <div className="flex justify-between">
-                    {<h2 className="font-bold">Sequenzdaten werden hinzugefügt ...</h2>}
+                    {hideSampleUploadContent && (
+                        <>
+                            <LoadingSpinner className="w-[18px] mr-4" />
+                        </>
+                    )}
+                    {<h2 className="font-bold mr-4">Sequenzdaten werden hinzugefügt</h2>}
                     {hideSampleUploadContent && (
                         <ChevronsUp className="cursor-pointer" onClick={() => setHideSampleUploadContent(false)} />
                     )}

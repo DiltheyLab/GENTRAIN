@@ -14,6 +14,7 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
+    entrypoint: /backend/entrypoint-backend.sh
     volumes:
       - type: bind
         source: ./backend
