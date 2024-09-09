@@ -96,6 +96,8 @@ export abstract class SequenceAnalysisStrategy {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
             this.coreState.updateCasesWithRelationships();
             this.initDistanceCalculation();
+            this.dataManagementState.resetSampleUpload();
+
             if (socket) {
                 console.log(`Room ${this.roomName} was left.`);
                 socket.emit(`leave_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);

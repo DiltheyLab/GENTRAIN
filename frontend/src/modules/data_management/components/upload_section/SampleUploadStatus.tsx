@@ -83,8 +83,8 @@ export function SampleUploadStatus() {
                     )}
                     <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto">
                         {isUploading &&
-                            Object.keys(uploads).map((fastaId) => (
-                                <div className="w-1/6 p-1">
+                            Object.keys(uploads).map((fastaId, key) => (
+                                <div key={key} className="w-1/6 p-1">
                                     <div
                                         key={fastaId}
                                         className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
