@@ -26,11 +26,16 @@ export function SampleUploadStatus() {
         <div
             className={`${hideSampleUploadContent ? "bg-white" : "bg-white/90"} ${
                 isUploading ? "border p-6 rounded-md" : "w-full lg:w-8/12"
-            }`}
+            } `}
         >
             {isUploading && (
                 <div className="flex justify-between">
-                    {<h2 className="font-bold">Sequenzdaten werden hinzugefügt ...</h2>}
+                    {hideSampleUploadContent && (
+                        <>
+                            <LoadingSpinner className="w-[18px] mr-4" />
+                        </>
+                    )}
+                    {<h2 className="font-bold mr-4">Sequenzdaten werden hinzugefügt</h2>}
                     {hideSampleUploadContent && (
                         <ChevronsUp className="cursor-pointer" onClick={() => setHideSampleUploadContent(false)} />
                     )}
@@ -76,10 +81,10 @@ export function SampleUploadStatus() {
                             </div>
                         </>
                     )}
-                    <div className="w-full flex flex-wrap max-h-[300px] overflow-y-scroll">
+                    <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto">
                         {isUploading &&
-                            Object.keys(uploads).map((fastaId) => (
-                                <div className="w-1/6 p-1">
+                            Object.keys(uploads).map((fastaId, key) => (
+                                <div key={key} className="w-1/6 p-1">
                                     <div
                                         key={fastaId}
                                         className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(

@@ -8,6 +8,7 @@ redis_connection = Redis(host="gentrain-redis", port=6379)
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)
 
+# TODO: examine chunking
 MAX_BUFFER_SIZE = 5 * 1000 * 1000
 
 redis_manager = socketio.RedisManager("redis://gentrain-redis:6379")
@@ -52,14 +53,15 @@ def join_bacterial(sid, gentrain_session_id):
 
 
 @sio.event
-def leave_viral(_, gentrain_session_id):
-    sio.leave_room(gentrain_session_id, f"viral_{gentrain_session_id}")
+def leave_viral(sid, gentrain_session_id):
+    sio.leave_room(sid, f"viral_{gentrain_session_id}")
     print(f"viral_{gentrain_session_id} closed")
 
 
 @sio.event
-def leave_bacterial(_, gentrain_session_id):
-    sio.leave_room(gentrain_session_id, f"bacterial_{gentrain_session_id}")
+def leave_bacterial(sid, gentrain_session_id):
+    sio.leave_room(sid, f"bacterial_{gentrain_session_id}")
+    print(f"bacterial_{gentrain_session_id} closed")
 
 
 @sio.event

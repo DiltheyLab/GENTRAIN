@@ -9,7 +9,6 @@ import { ZodError } from "zod";
 import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
 import { PersistenceStrategy } from "@/modules/data_management/services/data_upload/persistence/PersistenceStrategy";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
@@ -35,7 +34,6 @@ export const FileUpload = ({
     >();
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const { reset } = useDataManagementStore();
     const resetUpload = () => {
         // refresh file input
         const inputElement: HTMLInputElement | null | undefined = containerRef.current?.querySelector(`input#${type}`);
@@ -57,8 +55,6 @@ export const FileUpload = ({
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
-            // reset sample status component data
-            reset();
             const fileReaderResult = await fileReadingStrategy.execute(e.target.files);
             if (!fileReaderResult) return;
             // format the file content into an array

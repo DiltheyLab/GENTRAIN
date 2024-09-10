@@ -10,7 +10,7 @@ import { DataManagementState, useDataManagementStore } from "@/modules/data_mana
 import { toast } from "@/modules/core/components/ui/UseToast";
 
 export abstract class DistanceCalculationStrategy {
-    protected dataManagementStore: DataManagementState;
+    protected dataManagementState: DataManagementState;
     protected pathogen: PathogenSchema;
     protected cli: any;
     protected distanceMatrixId: number | undefined;
@@ -19,7 +19,7 @@ export abstract class DistanceCalculationStrategy {
     protected abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
-        this.dataManagementStore = useDataManagementStore.getState();
+        this.dataManagementState = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.samples = [];
     }
@@ -54,7 +54,7 @@ export abstract class DistanceCalculationStrategy {
 
     private initProgress = () => {
         const sampleAmount = Object.keys(this.samples).length;
-        this.dataManagementStore.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
+        this.dataManagementState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
 
     private calculateSampleDistances = async () => {
@@ -75,7 +75,7 @@ export abstract class DistanceCalculationStrategy {
                     distance_matrix_id: this.distanceMatrixId,
                 });
             }
-            this.dataManagementStore.incrementDistanceCalculationCount();
+            this.dataManagementState.incrementDistanceCalculationCount();
         }
         this.handleCompletedCalculation();
     };
@@ -86,6 +86,6 @@ export abstract class DistanceCalculationStrategy {
             duration: 5000,
             variant: "success",
         });
-        this.dataManagementStore.setShowSampleUploadStatus(false);
+        this.dataManagementState.resetSampleUpload();
     };
 }

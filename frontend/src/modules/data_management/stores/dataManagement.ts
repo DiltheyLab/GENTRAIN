@@ -14,7 +14,7 @@ export interface DataManagementState {
     setIsUploading: (value: boolean) => void;
     incrementDistanceCalculationCount: () => void;
     setDistanceCalculationSum: (sum: number) => void;
-    reset: () => void;
+    resetSampleUpload: () => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
@@ -41,11 +41,12 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         updatedUploads[fastaId] = status;
         set({ uploads: updatedUploads });
     },
-    reset: () => {
+    resetSampleUpload: () => {
         set({
             distanceCalculationCount: 0,
             distanceCalculationSum: 0,
             isUploading: false,
+            showSampleUploadStatus: false,
             uploads: {},
         });
     },
