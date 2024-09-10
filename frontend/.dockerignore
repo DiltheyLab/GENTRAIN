@@ -6,3 +6,6 @@ README.md
 
 # Ignore all env files in the image for security reasons
 .env*
+
+#Ignore all test files in the image
+coverage
