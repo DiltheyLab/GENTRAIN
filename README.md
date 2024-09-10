@@ -28,8 +28,8 @@ _About the Project_
 
 ![Bacterial Sample Analysis](doc/images/bacterial_sequence_analysis.png)
 
-_Made with :orange_heart: in Düsseldorf by Dilthey Lab_
-
 ### Distance Calculation
 
 ### Distance Matrix Assembling
+
+_Made with :orange_heart: in Düsseldorf by Dilthey Lab_
