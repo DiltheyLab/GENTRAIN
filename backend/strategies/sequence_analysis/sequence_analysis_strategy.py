@@ -54,4 +54,4 @@ class SequenceAnalysisStrategy(ABC):
         return result
 
     def enqueue_job(self, room_name, queue):
-        queue.enqueue(self.execute, room_name, result_ttl=0)
+        queue.enqueue(self.execute, room_name, result_ttl=0, failure_ttl=0)
