@@ -5,6 +5,7 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { Loader2 } from "lucide-react";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
 import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
+import { CONTACTLINKVALUE } from "../../services/graph/GraphDataGenerator";
 
 type Graph2DProps = {
     data: GraphData;
@@ -128,7 +129,7 @@ export const Graph2D = ({
         ctx.fillStyle = "black"; // Text color
         const fontSize = 12;
         ctx.font = `${fontSize}px Sans-Serif`;
-        ctx.fillText(link.value.toString(), midX, midY);
+        ctx.fillText(link.value === CONTACTLINKVALUE ? "" : link.value.toString(), midX, midY);
     };
 
     if (data.links.length === 0 && data.nodes.length === 1) {
