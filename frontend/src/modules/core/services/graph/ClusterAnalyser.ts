@@ -1,7 +1,7 @@
 import { CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import i18next from "i18next";
 import { createNodeMap } from "../../helpers/cases";
-import { CONTACTLINKVALUE } from "./GraphDataGenerator";
+import { CONTACT_LINK_VALUE } from "./GraphDataGenerator";
 
 export class ClusterAnalyser {
     private clusteringThreshold: number;
@@ -51,7 +51,7 @@ export class ClusterAnalyser {
 
     private buildAdjacencyList = (): void => {
         const linksBelowThreshold = this.links.filter(
-            (link) => link.value !== CONTACTLINKVALUE && link.value <= this.clusteringThreshold
+            (link) => link.value !== CONTACT_LINK_VALUE && link.value <= this.clusteringThreshold
         );
         this.nodes.forEach((node) => {
             this.addNodeToAdjacencyList(node.id);

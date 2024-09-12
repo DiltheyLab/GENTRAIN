@@ -9,7 +9,7 @@ import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { LinkColorMapGenerator } from "./LinkColorMapGenerator";
 
-export const CONTACTLINKVALUE = -1;
+export const CONTACT_LINK_VALUE = -1;
 
 export class GraphDataGenerator {
     private nodes: CustomNode[] = [];
@@ -106,7 +106,7 @@ export class GraphDataGenerator {
                 const link = {
                     source: contact.case_id_1,
                     target: contact.case_id_2,
-                    value: CONTACTLINKVALUE,
+                    value: CONTACT_LINK_VALUE,
                     color: contactLinksColorMap[contact.type],
                     type: contact.type,
                     context: contact.context,
