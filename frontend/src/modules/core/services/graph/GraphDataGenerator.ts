@@ -31,7 +31,6 @@ export class GraphDataGenerator {
         this.settings = settings;
         this.contacts = contacts;
         this.graphCaseCollector = new GraphCaseCollector(cases, settings);
-        console.log(cases);
     }
 
     public getAllLinks = () => this.allLinks;
