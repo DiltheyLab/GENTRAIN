@@ -35,3 +35,9 @@ services:
         target: /backend
     links:
       - redis
+
+  redis-insight:
+    container_name: gentrain-redis-insight
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"

@@ -12,7 +12,6 @@ export class SamplesPersistence extends PersistenceStrategy {
         this.sampleUploadState.setIsUploading(true);
         // analyse sample depending on pathogen type to receive variants for distance calculations
         const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
-        console.log(sequenceAnalysisStrategy);
         if (!sequenceAnalysisStrategy) return;
         sequenceAnalysisStrategy.setSampleData(data);
         sequenceAnalysisStrategy.execute();
