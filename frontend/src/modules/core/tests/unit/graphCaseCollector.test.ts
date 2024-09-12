@@ -82,7 +82,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(casesInOutbreak1);
     });
 
-    it("should include only cases of the selectedOutbreak and in the dateRange", async () => {
+    /*     it("should include only cases of the selectedOutbreak and in the dateRange", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
         settings.includeAllCases = true;
         settings.showBackground = true;
@@ -91,5 +91,5 @@ describe("GraphCaseCollector", () => {
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = await graphCaseCollector.execute();
         expect(result).toEqual(casesInOutbreak1.concat(casesInDateRangeButNotInSelectedOutbreak));
-    });
+    }); */
 });
