@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { CaseWithRelationships } from "../../models/cases";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { mockCases } from "@/modules/core/tests/unit/mockCases";
-import { GraphCaseCollector } from "./GraphCaseCollector";
+import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 
 describe("GraphCaseCollector", () => {
     let cases: CaseWithRelationships[];
