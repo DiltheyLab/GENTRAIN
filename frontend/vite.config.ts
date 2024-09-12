@@ -16,8 +16,6 @@ export default defineConfig({
     },
     test: {
         coverage: {
-            provider: "v8",
-            extension: [".tsx"],
             reporter: ["text", "html", "json-summary", "json"],
         },
     },
