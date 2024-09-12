@@ -44,41 +44,6 @@ export const getAllCases = async () => {
     return cases;
 };
 
-export const getAllCasesWithRelationships = async () => {
-    const cases = await db.cases.toArray();
-    let casesWithRelationships: CaseWithRelationships[] = [];
-    for (const key in cases) {
-        casesWithRelationships[key] = cases[key];
-        // retrieve pathogen schema object
-        const pathogen = await db.pathogens.where({ id: cases[key].pathogen_id }).first();
-        casesWithRelationships[key].pathogen = pathogen;
-        // retrieve sample schema object
-        if (cases[key].fasta_id) {
-            const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
-            if (sample) {
-                casesWithRelationships[key].sample = sample;
-                const sequenceAnalysis = await db.sequence_analyses.get(sample.sequence_analysis_id);
-                if (!sequenceAnalysis) return;
-                sequenceAnalysis.result = {} as ViralAnalysisResult;
-                casesWithRelationships[key].sample.sequence_analysis = sequenceAnalysis;
-            }
-        }
-        // retrieve outbreak schema object
-        if (cases[key].outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: cases[key].outbreak_id }).first();
-            if (outbreak) {
-                casesWithRelationships[key].outbreak = outbreak;
-            }
-        }
-        // retrieve group schema objects
-        if (cases[key].group_ids.length > 0) {
-            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(cases[key].group_ids);
-            casesWithRelationships[key].groups = groups;
-        }
-    }
-    return casesWithRelationships;
-};
-
 export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
