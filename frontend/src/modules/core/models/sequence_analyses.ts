@@ -6,11 +6,11 @@ interface BacterialAnalysisResult {
 
 interface ViralAnalysisResult {
     mutations: {
-        substitutions: [];
-        deletions: [];
-        insertions: [];
-        missing: [];
-        nonACGTNs: [];
+        substitutions: any[];
+        deletions: any[];
+        insertions: any[];
+        missing: any[];
+        nonACGTNs: any[];
         alignmentRange: { begin: number; end: number };
     };
 }
