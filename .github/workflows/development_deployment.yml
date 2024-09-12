@@ -16,11 +16,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "latest"
-      - name: Build frontend
+      - name: Install dependencies
         run: |
           cd frontend
           npm ci
-          npm run build
+      - name: Run Unit tests
+        run: npm run test
+      - name: Build
+        run: npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
