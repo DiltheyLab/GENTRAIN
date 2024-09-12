@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 import socketio
+from redis import Redis
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 
+redis_connection = Redis(host="gentrain-redis", port=6379)
 mgr = socketio.RedisManager("redis://gentrain-redis:6379")
 sio = socketio.Server(client_manager=mgr)
 
@@ -52,4 +54,4 @@ class SequenceAnalysisStrategy(ABC):
         return result
 
     def enqueue_job(self, room_name, queue):
-        queue.enqueue(self.execute, room_name)
+        queue.enqueue(self.execute, room_name, result_ttl=0)
