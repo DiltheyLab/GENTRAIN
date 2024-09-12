@@ -1,4 +1,4 @@
-import { CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
+import { CustomLink, CustomNode } from "@/modules/core/types/graph";
 import i18next from "i18next";
 import { createNodeMap } from "../../helpers/cases";
 import { CONTACT_LINK_VALUE } from "./GraphDataGenerator";
