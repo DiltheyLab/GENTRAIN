@@ -1,76 +1,58 @@
-import { type Link } from "@/modules/core/types/graph";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
-
+import { CustomLink, CustomNode } from "@/modules/core/types/graph";
 export class Kruskal {
-    private numberOfNodes: number;
-    private links: Link[];
-    private graphCases: CaseWithRelationships[];
-    private matrixDataAssembly: DistanceMatrixAssembly;
+    nodes: CustomNode[];
+    links: CustomLink[];
+    numberOfNodes: number;
 
-    constructor(graphCases: CaseWithRelationships[], matrixDataAssembly: DistanceMatrixAssembly) {
-        this.graphCases = graphCases;
-        this.matrixDataAssembly = matrixDataAssembly;
-        this.numberOfNodes = graphCases.length;
-        this.links = [];
+    constructor(nodes: CustomNode[], links: CustomLink[]) {
+        this.nodes = nodes;
+        this.links = links;
+        this.numberOfNodes = nodes.length;
     }
 
-    public getMSTLinks = () => {
-        this.collectLinks();
-        return this.filterLinks();
-    };
+    getMSTLinks(): CustomLink[] {
+        const result: CustomLink[] = [];
+        const parent = new Map<number, number>();
+        const rank = new Map<number, number>();
 
-    // calculate links that are in the mst by using kruskal's algorithm
-    private filterLinks = () => {
-        this.links.sort((a, b) => a.weight - b.weight); // Sort links by weight
-
-        const parent = Array(this.numberOfNodes)
-            .fill(0)
-            .map((_, i) => i); // Disjoint-set 'parent' array
-
-        // Find the root of the set to which element i belongs
-        const find = (i: number) => {
-            while (i !== parent[i]) {
-                i = parent[i];
-            }
-            return i;
-        };
-
-        // Union of two sets
-        const union = (i: number, j: number) => {
-            const rootI = find(i);
-            const rootJ = find(j);
-            parent[rootI] = rootJ;
-        };
-
-        const mst: Link[] = []; // Array to store the links of the minimum spanning tree
-        this.links.forEach((link) => {
-            if (find(link.source) !== find(link.target)) {
-                // If adding this link doesn't form a cycle
-                union(link.source, link.target);
-                mst.push(link);
-            }
+        this.nodes.forEach((node) => {
+            parent.set(node.id, node.id);
+            rank.set(node.id, 0);
         });
 
-        return mst;
-    };
+        this.links.sort((a, b) => a.value - b.value);
 
-    private collectLinks = () => {
-        // the column loop starts with rowIndex + 1 to prevent looping over cases which are already treated
-        // because of that rowIndex is stopping with graphCases.length - 1
-        for (let rowIndex = 0; rowIndex < this.graphCases.length - 1; rowIndex++) {
-            const rowCase = this.graphCases[rowIndex];
+        for (const link of this.links) {
+            const x = this.find(parent, link.source);
+            const y = this.find(parent, link.target);
 
-            for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
-                const columnCase = this.graphCases[columnIndex];
-
-                if (!rowCase.sample || !columnCase.sample) continue;
-                this.links.push({
-                    source: rowIndex,
-                    target: columnIndex,
-                    weight: this.matrixDataAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id],
-                } satisfies Link);
+            if (x !== y) {
+                result.push(link);
+                this.union(parent, rank, x, y);
             }
         }
-    };
+
+        return result;
+    }
+
+    private find(parent: Map<number, number>, i: number): number {
+        if (parent.get(i) !== i) {
+            parent.set(i, this.find(parent, parent.get(i)!));
+        }
+        return parent.get(i)!;
+    }
+
+    private union(parent: Map<number, number>, rank: Map<number, number>, x: number, y: number): void {
+        const rootX = this.find(parent, x);
+        const rootY = this.find(parent, y);
+
+        if (rank.get(rootX)! < rank.get(rootY)!) {
+            parent.set(rootX, rootY);
+        } else if (rank.get(rootX)! > rank.get(rootY)!) {
+            parent.set(rootY, rootX);
+        } else {
+            parent.set(rootY, rootX);
+            rank.set(rootX, rank.get(rootX)! + 1);
+        }
+    }
 }
