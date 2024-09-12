@@ -8,7 +8,7 @@ import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSequenceAnalysisById } from "./sequence_analyses";
+import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
 
 export interface CaseSchema {
     id: number;
@@ -57,9 +57,10 @@ export const getAllCasesWithRelationships = async () => {
             const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
             if (sample) {
                 casesWithRelationships[key].sample = sample;
-                casesWithRelationships[key].sample.sequence_analysis = await db.sequence_analyses.get(
-                    sample.sequence_analysis_id
-                );
+                const sequenceAnalysis = await db.sequence_analyses.get(sample.sequence_analysis_id);
+                if (!sequenceAnalysis) return;
+                sequenceAnalysis.result = {} as ViralAnalysisResult;
+                casesWithRelationships[key].sample.sequence_analysis = sequenceAnalysis;
             }
         }
         // retrieve outbreak schema object
@@ -96,9 +97,13 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
             if (sample) {
                 caseWithRelationships.sample = sample;
                 if (caseWithRelationships.sample) {
-                    caseWithRelationships.sample.sequence_analysis = await db.sequence_analyses.get(
+                    const sequenceAnalysis = await db.sequence_analyses.get(
                         caseWithRelationships.sample.sequence_analysis_id
                     );
+                    if (sequenceAnalysis) {
+                        sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        caseWithRelationships.sample.sequence_analysis = sequenceAnalysis;
+                    }
                 }
             }
         }
