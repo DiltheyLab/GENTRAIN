@@ -27,10 +27,13 @@ export class GraphDataGenerator {
         this.settings = settings;
         this.contacts = contacts;
         this.graphCaseCollector = new GraphCaseCollector(cases, settings);
+        console.log(cases);
     }
 
     execute = async () => {
         const graphCases = await this.graphCaseCollector.execute();
+        console.log(graphCases);
+
         const kruskal = new Kruskal(graphCases, this.distanceMatrixAssembly);
         const mstLinks = kruskal.getMSTLinks();
 

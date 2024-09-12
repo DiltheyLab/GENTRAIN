@@ -48,6 +48,8 @@ export const DashboardVisualizationPanel = () => {
             settings: AnalysisSettings,
             contacts: ContactSchema[]
         ) => {
+            console.log(cases);
+
             const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
             let graphData = await graphDataGenerator.execute();
 
