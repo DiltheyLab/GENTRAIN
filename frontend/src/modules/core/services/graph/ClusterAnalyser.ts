@@ -20,9 +20,19 @@ export class ClusterAnalyser {
         this.clusters = this.findClusters();
     }
 
-    public getClusteredGraphData = (): GraphData => {
-        const nodes = this.assignClusterNamesToNodes();
-        return { nodes, links: this.links };
+    public assignClusterNamesToNodes = (): CustomNode[] => {
+        //create the components map where the key is the case id and the value is the cluster name
+        const componentsMap = new Map<number, string>();
+        for (let i = 0; i < this.clusters.length; i++) {
+            for (let j = 0; j < this.clusters[i].length; j++) {
+                componentsMap.set(this.clusters[i][j], `Cluster ${i + 1}`);
+            }
+        }
+
+        //overwrite the clusters name. If there is no key for the case id in the components map, the node belongs not to a cluster
+        return this.nodes.map((node) => {
+            return { ...node, cluster: componentsMap.get(node.id) ?? i18next.t("clusterTypes.noClusterAssigned") };
+        });
     };
 
     public getClusters = () => {
@@ -37,21 +47,6 @@ export class ClusterAnalyser {
         //all components above the clusteringThreshold build a cluster
         const clusters = this.filterClustersBySize(components);
         return clusters;
-    };
-
-    private assignClusterNamesToNodes = (): CustomNode[] => {
-        //create the components map where the key is the case id and the value is the cluster name
-        const componentsMap = new Map<number, string>();
-        for (let i = 0; i < this.clusters.length; i++) {
-            for (let j = 0; j < this.clusters[i].length; j++) {
-                componentsMap.set(this.clusters[i][j], `Cluster ${i + 1}`);
-            }
-        }
-
-        //overwrite the clusters name. If there is no key for the case id in the components map, the node belongs not to a cluster
-        return this.nodes.map((node) => {
-            return { ...node, cluster: componentsMap.get(node.id) ?? i18next.t("clusterTypes.noClusterAssigned") };
-        });
     };
 
     private buildAdjacencyList = (): void => {

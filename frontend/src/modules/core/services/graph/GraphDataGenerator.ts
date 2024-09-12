@@ -14,6 +14,7 @@ export const CONTACTLINKVALUE = -1;
 export class GraphDataGenerator {
     private nodes: CustomNode[] = [];
     private links: CustomLink[] = [];
+    private allLinks: CustomLink[] = [];
     private distanceMatrixAssembly: DistanceMatrixAssembly;
     private settings: AnalysisSettings;
     private contacts: ContactSchema[];
@@ -32,21 +33,22 @@ export class GraphDataGenerator {
         this.graphCaseCollector = new GraphCaseCollector(cases, settings);
     }
 
-    execute = async () => {
+    public getAllLinks = () => this.allLinks;
+
+    public execute = async () => {
         this.graphCases = await this.graphCaseCollector.execute();
 
-        // create link objects for sequenced cases
-        this.generateAllLinks(); // -> Funktion zu Verfügung stellen um auf alle Links zuzugreifen zu können
+        // create all links for the genetic distance
+        this.generateAllLinks();
 
-        // create node objects for forced directed graph
+        // create nodes for the minimum spanning tree
         this.generateCustomNodes();
 
-        const kruskal = new Kruskal(this.nodes, this.links);
-
-        // overwrite links with MST links to show only the MST
+        // create links for the minimum spanning tree
+        const kruskal = new Kruskal(this.nodes, this.allLinks);
         this.links = kruskal.getMSTLinks();
 
-        // create links for contacts
+        // create links for the contact tracing
         if (this.settings.showContactTracingLinks && this.contacts) {
             this.generateContactLinks();
         }
@@ -54,7 +56,7 @@ export class GraphDataGenerator {
         return { nodes: this.nodes, links: this.links };
     };
 
-    private generateAllLinks = () => {
+    public generateAllLinks = () => {
         // the column loop starts with rowIndex + 1 to prevent looping over cases which are already treated
         // because of that rowIndex is stopping with graphCases.length - 1
         for (let rowIndex = 0; rowIndex < this.graphCases.length - 1; rowIndex++) {
@@ -64,7 +66,7 @@ export class GraphDataGenerator {
                 const columnCase = this.graphCases[columnIndex];
 
                 if (!rowCase.sample || !columnCase.sample) continue;
-                this.links.push({
+                this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,
                     value: this.distanceMatrixAssembly[rowCase.sample.fasta_id][columnCase.sample.fasta_id],

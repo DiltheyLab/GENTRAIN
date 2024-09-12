@@ -52,14 +52,11 @@ export const DashboardVisualizationPanel = () => {
             let graphData = await graphDataGenerator.execute();
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
-                const clusterAnalyser = new ClusterAnalyser(
-                    graphData.nodes,
-                    graphData.links,
-                    settings.clusteringThreshold
-                );
-                graphData = clusterAnalyser.getClusteredGraphData(); //overwrite graphData with new assigned clusters
-                const clusters = clusterAnalyser.getClusters();
-                dashboardStore.updateClusters(clusters);
+                const allLinks = graphDataGenerator.getAllLinks();
+                // create clusters and assign them to the nodes based on all links (not only the MSTLinks) below the clustering threshold
+                const clusterAnalyser = new ClusterAnalyser(graphData.nodes, allLinks, settings.clusteringThreshold);
+                graphData.nodes = clusterAnalyser.assignClusterNamesToNodes();
+                dashboardStore.updateClusters(clusterAnalyser.getClusters());
             }
 
             dashboardStore.updateGraphData(graphData);
