@@ -86,8 +86,12 @@ export function SampleUploadStatus() {
                                 <StepIndicator>1</StepIndicator>
                                 Sequenzen werden auf Mutationen untersucht
                             </div>
+                            <small>
+                                Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
+                            </small>
                         </>
                     )}
+
                     <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto">
                         {isUploading &&
                             Object.keys(uploads).map((fastaId, key) => (
@@ -116,6 +120,10 @@ export function SampleUploadStatus() {
                                 <StepIndicator>2</StepIndicator>
                                 Genetische Distanzen werden berechnet
                             </div>
+                            <small>
+                                Auf Basis der Mutationen aller Samples werden die genetische Distanzen zwischen den
+                                Samples berechnet.
+                            </small>
                             <DistanceCalculationProgress />
                         </>
                     )}
