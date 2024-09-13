@@ -1,5 +1,5 @@
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
@@ -24,8 +24,7 @@ export const DashboardVisualizationPanel = () => {
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         dashboardStore.graphSettings;
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+    const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
@@ -41,15 +40,12 @@ export const DashboardVisualizationPanel = () => {
             dashboardStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
-
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
             settings: AnalysisSettings,
             contacts: ContactSchema[]
         ) => {
-            console.log(cases);
-
             const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
             let graphData = await graphDataGenerator.execute();
 
