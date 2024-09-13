@@ -39,6 +39,7 @@ export abstract class SequenceAnalysisStrategy {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
+        this.dataManagementState.setSequenceAnalysisRunning(true);
         this.joinRoomAndRunAnalysis();
         this.handleCompletedAnalyses();
     };
@@ -104,8 +105,8 @@ export abstract class SequenceAnalysisStrategy {
     }
 
     private continueIfAllAnalysesAreDone() {
-        console.log(this.finishedFastaIds, this.fastaIdsToAnalyse);
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
+            this.dataManagementState.setSequenceAnalysisRunning(false);
             this.coreState.updateCasesWithRelationships();
             this.initDistanceCalculation();
             if (socket) {

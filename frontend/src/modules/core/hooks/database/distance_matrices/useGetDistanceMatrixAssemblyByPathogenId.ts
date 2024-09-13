@@ -5,10 +5,10 @@ import { useLiveQuery } from "dexie-react-hooks";
 export const useGetDistanceMatrixAssemblyByPathogenId = (
     pathogen_id: number | undefined
 ): DistanceMatrixAssembly | undefined | null => {
-    const showSampleUploadStatus = useDataManagementStore((state) => state.showSampleUploadStatus);
+    const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     return useLiveQuery(async () => {
-        if (!pathogen_id || showSampleUploadStatus) return;
+        if (!pathogen_id || distanceCalculationRunning) return;
         const assembly = await assembleDistanceMatrixByPathogenId(pathogen_id);
         return assembly;
-    }, [pathogen_id, showSampleUploadStatus]);
+    }, [pathogen_id, distanceCalculationRunning]);
 };

@@ -33,7 +33,7 @@ const App = () => {
     //vll nur die slices laden, die benötigt werden anstatt den ganzen store zu obverven
     const { session, fetchSession, activePathogen, updateActivePathogen, updateCasesWithRelationships } =
         useCoreStore();
-    const { isUploading, setIsUploading, setShowSampleUploadStatus } = useDataManagementStore();
+    const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
 
     useEffect(() => {
         fetchSession();
@@ -49,12 +49,10 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        if (socket && session && activePathogen?.pathogen_type && !isUploading) {
+        if (socket && session && activePathogen?.pathogen_type && !distanceCalculationRunning) {
             socket.emit("gentrain_session_results_request", session.id, activePathogen.pathogen_type.name);
             socket.once(`results_${session.id}`, async (results) => {
                 const strategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
-                setShowSampleUploadStatus(true);
-                setIsUploading(true);
                 if (strategy) {
                     for (const result of results) {
                         await strategy.createSampleAndSequenceAnalysis(

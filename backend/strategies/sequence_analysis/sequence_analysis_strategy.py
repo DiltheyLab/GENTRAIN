@@ -37,6 +37,23 @@ class SequenceAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
+    def persist_result(self, response):
+        gentrain_session_id = redis_connection.get(
+            f"client:gentrain_session:{self.socket_id}"
+        )
+        redis_connection.hmset(
+            f"client:results:{gentrain_session_id}:{self.type}:{self.fasta_id}",
+            {
+                "result": json.dumps(response),
+                "fasta_id": self.fasta_id,
+                "sequence_length": len(self.sequence),
+            },
+        )
+        redis_connection.expire(
+            name=f"client:results:{gentrain_session_id}:{self.type}:{self.fasta_id}",
+            time=1800,
+        )
+
     def execute(self):
         """Run strategy actions."""
         genomic_errors = self.find_genomic_validation_errors()
@@ -54,17 +71,7 @@ class SequenceAnalysisStrategy(ABC):
             },
             room=f"{self.type}_{self.socket_id}",
         )
-        gentrain_session_id = redis_connection.get(
-            f"client:gentrain_session:{self.socket_id}"
-        )
-        redis_connection.hmset(
-            f"client:results:{gentrain_session_id}:{self.type}:{self.fasta_id}",
-            {
-                "result": json.dumps(response),
-                "fasta_id": self.fasta_id,
-                "sequence_length": len(self.sequence),
-            },
-        )
+        self.persist_result(response)
         return result
 
     def enqueue_analysis(self, queue):
