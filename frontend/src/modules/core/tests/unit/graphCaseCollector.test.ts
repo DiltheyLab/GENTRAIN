@@ -1,10 +1,12 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, fn } from "vitest";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import {
     casesInOutbreak1,
     allMockCases,
     casesWithNoOutbreakAssigned,
     casesInDateRangeButNotInSelectedOutbreak,
+    casesBelowGeneticThreshold,
+    mockDistancesBelowThreshold,
 } from "@/modules/core/tests/unit/mockCases";
 import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { CaseWithRelationships } from "../../models/cases";
@@ -32,6 +34,11 @@ describe("GraphCaseCollector", () => {
             clusteringThreshold: 2, // not relevant for this test
         };
         allCases = allMockCases;
+
+        // Mock die Funktion, die auf die IndexedDB zugreift
+        vi.mock("@/modules/core/models/distances", () => ({
+            getDistancesFromSampleIdsBelowThreshold: vi.fn().mockImplementation(() => mockDistancesBelowThreshold),
+        }));
     });
 
     it("should collect all cases but only sequenced cases", async () => {
@@ -48,7 +55,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(allCases);
     });
 
-    it("should include only cases of the selectedOutbreak", async () => {
+    it("should only include cases of the selectedOutbreak", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
         settings.includeAllCases = false;
         settings.excludeCasesWithoutSequence = false;
@@ -57,7 +64,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(casesInOutbreak1);
     });
 
-    it("should include only cases of the selectedOutbreak and cases which are not assigned to an outbreak", async () => {
+    it("should only include cases of the selectedOutbreak and cases which are not assigned to an outbreak", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
         settings.includeAllCases = false;
         settings.showBackground = true;
@@ -72,7 +79,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(casesInOutbreak1.concat(casesWithNoOutbreakAssigned));
     });
 
-    it("should include only cases of the selectedOutbreak and no background", async () => {
+    it("should only include cases of the selectedOutbreak and no background", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
         settings.includeAllCases = false;
         settings.showBackground = false;
@@ -82,7 +89,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(casesInOutbreak1);
     });
 
-    it("should include only cases of the selectedOutbreak and in the dateRange", async () => {
+    it("should only include cases of the selectedOutbreak and cases in the dateRange", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
         settings.includeAllCases = true;
         settings.showBackground = true;
@@ -91,5 +98,15 @@ describe("GraphCaseCollector", () => {
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = await graphCaseCollector.execute();
         expect(result).toEqual(casesInOutbreak1.concat(casesInDateRangeButNotInSelectedOutbreak));
+    });
+
+    it("should only include cases of the selectedOutbreak and cases below the genetic distance threshold", async () => {
+        settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
+        settings.excludeCasesWithoutSequence = false;
+        settings.geneticDistanceThreshold = 301;
+        settings.excludeCasesAboveGeneticDistanceThreshold = true;
+        const graphCaseCollector = new GraphCaseCollector(allCases, settings);
+        const result = await graphCaseCollector.execute();
+        expect(result).toEqual(casesInOutbreak1.concat(casesBelowGeneticThreshold));
     });
 });
