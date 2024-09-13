@@ -1,7 +1,7 @@
-import { CustomNode, GraphData } from "../types/graph";
+import { CustomNode } from "../types/graph";
 
-export const createNodeMap = (graphData: GraphData) => {
-    const nodesWithSamples = graphData.nodes.filter((node) => node.caseData.sample);
+export const createNodeMap = (nodes: CustomNode[]) => {
+    const nodesWithSamples = nodes.filter((node) => node.caseData.sample);
 
     const nodeMap = new Map<number, CustomNode>();
     for (const node of nodesWithSamples) {

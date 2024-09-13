@@ -1,14 +1,14 @@
 import { Table, TableBody, TableCell, TableRow } from "@/modules/core/components/ui/Table";
 import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetDistanceMatrixByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
+import { useGetDistanceMatrix as useGetDistanceMatrix } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useState } from "react";
 
 export function DistanceMatrixTable() {
-    const activePathogen = useCoreStore((state) => state.activePathogen);
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
-    const distanceMatrix = useGetDistanceMatrixByPathogenId(activePathogen?.id);
+    const distanceMatrix = useGetDistanceMatrix();
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
 
     const renderRow = (rowKey: string, rowIndex: number) => {
