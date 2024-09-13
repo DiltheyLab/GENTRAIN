@@ -21,7 +21,6 @@ const getColorClassNames = (status: string) => {
 export function SampleUploadStatus() {
     const { uploads, isUploading, removeUpload, hideSampleUploadContent, setHideSampleUploadContent } =
         useDataManagementStore();
-    if (Object.keys(uploads).length === 0) return null;
     return (
         <div
             className={`${hideSampleUploadContent ? "bg-white" : "bg-white/90"} ${

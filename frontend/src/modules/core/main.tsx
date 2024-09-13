@@ -17,6 +17,9 @@ import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
+import { socket } from "./helpers/socket";
+import { useDataManagementStore } from "../data_management/stores/dataManagement";
+import { PathogenStrategyManager } from "../data_management/services/pathogen_strategies/PathogenStrategyManager";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -28,7 +31,9 @@ i18next.init({
 
 const App = () => {
     //vll nur die slices laden, die benötigt werden anstatt den ganzen store zu obverven
-    const { session, fetchSession, updateActivePathogen } = useCoreStore();
+    const { session, fetchSession, activePathogen, updateActivePathogen, updateCasesWithRelationships } =
+        useCoreStore();
+    const { isUploading, setIsUploading, setShowSampleUploadStatus } = useDataManagementStore();
 
     useEffect(() => {
         fetchSession();
@@ -42,6 +47,28 @@ const App = () => {
             }
         });
     }, []);
+
+    useEffect(() => {
+        if (socket && session && activePathogen?.pathogen_type && !isUploading) {
+            socket.emit("gentrain_session_results_request", session.id, activePathogen.pathogen_type.name);
+            socket.once(`results_${session.id}`, async (results) => {
+                const strategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
+                setShowSampleUploadStatus(true);
+                setIsUploading(true);
+                if (strategy) {
+                    for (const result of results) {
+                        await strategy.createSampleAndSequenceAnalysis(
+                            result["fasta_id"],
+                            result["result"],
+                            result["sequence_length"]
+                        );
+                    }
+                    updateCasesWithRelationships();
+                    strategy.initDistanceCalculation();
+                }
+            });
+        }
+    }, [socket, session, activePathogen]);
 
     if (session === undefined) {
         return <RefreshLoader />;
@@ -74,10 +101,8 @@ const App = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <I18nextProvider i18n={i18next}>
-            <Toaster />
-            <App />
-        </I18nextProvider>
-    </React.StrictMode>
+    <I18nextProvider i18n={i18next}>
+        <Toaster />
+        <App />
+    </I18nextProvider>
 );

@@ -1,7 +1,8 @@
-import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
 import { create } from "zustand";
+import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
-import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "../models/cases";
+import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
+import { socket } from "@/modules/core/helpers/socket";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
@@ -31,6 +32,9 @@ export const useCoreStore = create<CoreState>((set, get) => {
         initSession: async () => {
             const sessionId = await db.sessions.add({});
             set({ session: { id: sessionId } });
+            if (socket) {
+                socket.emit("init_gentrain_session", sessionId);
+            }
         },
         updateActivePathogen: (pathogen: PathogenWithRelationships) => {
             const activePathogen = get().activePathogen;
