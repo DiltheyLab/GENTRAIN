@@ -11,6 +11,7 @@ export const Analysis = () => {
     const prevActivePathogenRef = useRef(activePathogen);
 
     useEffect(() => {
+        // If the active pathogen changes, navigate to the outbreak analysis page
         if (prevActivePathogenRef.current && prevActivePathogenRef.current.id !== activePathogen?.id) {
             navigate("/outbreak-analysis");
         }
