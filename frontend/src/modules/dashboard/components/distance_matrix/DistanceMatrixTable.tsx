@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableRow } from "@/modules/core/components/ui/Table";
-import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
-import { useGetDistanceMatrix as useGetDistanceMatrix } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixByPathogenId";
+import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
+import { useGetDistanceMatrix } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrix";
 import { useState } from "react";
 
 export function DistanceMatrixTable() {
