@@ -32,7 +32,7 @@ export function SampleUploadStatus() {
                 <div>
                     {
                         <h2 className={`font-bold mr-4 ${hideSampleUploadContent ? "text-sm" : "text-lg"}`}>
-                            Samples werden hinzugefügt
+                            Sequenzdaten werden hinzugefügt
                         </h2>
                     }
                     {hideSampleUploadContent && sequenceAnalysisRunning && (

@@ -62,6 +62,7 @@ class SequenceAnalysisStrategy(ABC):
         self.create_input_and_output_files()
         result = self.run_analysis()
         response = self.get_response(result)
+        self.persist_result(response)
         sio.emit(
             "sequence_analysis_response",
             {
@@ -71,7 +72,6 @@ class SequenceAnalysisStrategy(ABC):
             },
             room=f"{self.type}_{self.socket_id}",
         )
-        self.persist_result(response)
         return result
 
     def enqueue_analysis(self, queue):

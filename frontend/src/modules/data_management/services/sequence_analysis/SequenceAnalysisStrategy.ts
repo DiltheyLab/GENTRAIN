@@ -45,7 +45,6 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     public handlePersistedResults = async () => {
-        console.log("HI");
         if (socket) {
             socket.emit(
                 "gentrain_session_results_request",
@@ -120,15 +119,19 @@ export abstract class SequenceAnalysisStrategy {
         this.finishedFastaIds.push(data.fasta_id);
         await this.createSampleAndSequenceAnalysis(data.fasta_id, data.result, data.sequence_length);
         this.dataManagementState.changeUpload(data.fasta_id, "finished");
+        this.removePersistedResultFromRedis(data.fasta_id);
+    }
+
+    private removePersistedResultFromRedis = (fastaId: string) => {
         if (socket) {
             socket.emit(
                 `gentrain_session_results_remove_request`,
                 this.coreState.session?.id,
                 this.pathogen.pathogen_type?.name,
-                data.fasta_id
+                fastaId
             );
         }
-    }
+    };
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === this.fastaIdsToAnalyse.length) {
