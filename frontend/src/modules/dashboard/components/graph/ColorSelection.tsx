@@ -24,10 +24,6 @@ export const ColorSelection = () => {
         }
     };
 
-    const changeClusteringThreshold = (value: number) => {
-        updateSettings({ clusteringThreshold: value });
-    };
-
     return (
         <div>
             <RadioGroup
@@ -60,7 +56,7 @@ export const ColorSelection = () => {
                             min={0}
                             id="clusteringThreshold"
                             value={clusteringThreshold}
-                            onChange={(e) => changeClusteringThreshold(+e.target.value)}
+                            onChange={(e) => updateSettings({ clusteringThreshold: +e.target.value })}
                         />
                     </div>
                 </>
