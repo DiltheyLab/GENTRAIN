@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, fn } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import {
     casesInOutbreak1,
