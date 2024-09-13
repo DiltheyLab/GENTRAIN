@@ -32,7 +32,8 @@ def gentrain_session_results_remove_request(
 
 
 @sio.event
-def gentrain_session_results_request(_, gentrain_session_id, pathogen_type):
+def gentrain_session_results_request(socket_id, gentrain_session_id, pathogen_type):
+    sio.enter_room(socket_id, f"{pathogen_type}_{socket_id}")
     results = []
     for key in redis_connection.scan_iter(
         f"client:results:{gentrain_session_id}:{pathogen_type}:*"
@@ -45,4 +46,9 @@ def gentrain_session_results_request(_, gentrain_session_id, pathogen_type):
         results.append(result)
     # emit websocket messsage only in case results were found
     if len(results) > 0:
-        sio.emit(f"results_{gentrain_session_id}", results)
+        sio.emit(
+            event=f"results_{gentrain_session_id}",
+            data=results,
+            room=f"{pathogen_type}_{socket_id}",
+        )
+    sio.leave_room(socket_id, f"{pathogen_type}_{socket_id}")

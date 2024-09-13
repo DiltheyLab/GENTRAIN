@@ -36,7 +36,7 @@ export const useCoreStore = create<CoreState>((set, get) => {
                 socket.emit("init_gentrain_session", sessionId);
             }
         },
-        updateActivePathogen: (pathogen: PathogenWithRelationships) => {
+        updateActivePathogen: async (pathogen: PathogenWithRelationships) => {
             const activePathogen = get().activePathogen;
             if (activePathogen && activePathogen?.id !== pathogen.id) {
                 db.pathogens.update(activePathogen.id, { activated_at: null });

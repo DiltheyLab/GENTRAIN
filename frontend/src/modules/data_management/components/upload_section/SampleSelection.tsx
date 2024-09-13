@@ -21,7 +21,7 @@ export function SampleSelection() {
     return (
         <>
             <div className="w-full flex flex-wrap gap-2">
-                <small>
+                <small className="mb-2">
                     Folgende Samples wurden in der Fastadatei gefunden und werden dem Datenbestand hinzugefügt. Durch
                     Hovern über eine Fasta ID können Sie sich weitere Informationen anzeigen lassen und durch Klick auf
                     das Kreuz die jeweilige Sequenz vom Upload ausschließen.

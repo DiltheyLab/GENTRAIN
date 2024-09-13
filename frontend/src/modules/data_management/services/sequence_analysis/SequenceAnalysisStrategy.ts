@@ -44,6 +44,32 @@ export abstract class SequenceAnalysisStrategy {
         this.handleCompletedAnalyses();
     };
 
+    public handlePersistedResults = async () => {
+        console.log("HI");
+        if (socket) {
+            socket.emit(
+                "gentrain_session_results_request",
+                this.coreState.session?.id,
+                this.pathogen.pathogen_type?.name
+            );
+            socket.once(`results_${this.coreState.session?.id}`, async (results) => {
+                const strategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
+                if (strategy) {
+                    for (const result of results) {
+                        if ((await db.samples.where({ fasta_id: result["fasta_id"] }).count()) > 0) continue;
+                        await strategy.createSampleAndSequenceAnalysis(
+                            result["fasta_id"],
+                            result["result"],
+                            result["sequence_length"]
+                        );
+                    }
+                    this.coreState.updateCasesWithRelationships();
+                    this.initDistanceCalculation();
+                }
+            });
+        }
+    };
+
     private joinRoomAndRunAnalysis = () => {
         if (socket) {
             socket.emit(`join_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);

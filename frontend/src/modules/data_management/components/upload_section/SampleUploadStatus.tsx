@@ -63,7 +63,7 @@ export function SampleUploadStatus() {
                                 Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
                             </small>
 
-                            <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto">
+                            <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto mt-2">
                                 {Object.keys(uploads).map((fastaId, key) => (
                                     <div key={key} className="w-1/6 p-1">
                                         <div
@@ -95,7 +95,9 @@ export function SampleUploadStatus() {
                                 Auf Basis der Mutationen aller Samples werden die genetische Distanzen zwischen den
                                 Samples berechnet.
                             </small>
-                            <DistanceCalculationProgress />
+                            <div className="mt-2">
+                                <DistanceCalculationProgress />
+                            </div>
                         </>
                     )}
                 </>
