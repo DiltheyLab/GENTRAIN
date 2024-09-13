@@ -27,8 +27,9 @@ i18next.init({
 });
 
 const App = () => {
-    //vll nur die slices laden, die benötigt werden anstatt den ganzen store zu obverven
-    const { session, fetchSession, updateActivePathogen } = useCoreStore();
+    const session = useCoreStore((state) => state.session);
+    const fetchSession = useCoreStore((state) => state.fetchSession);
+    const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
 
     useEffect(() => {
         fetchSession();
