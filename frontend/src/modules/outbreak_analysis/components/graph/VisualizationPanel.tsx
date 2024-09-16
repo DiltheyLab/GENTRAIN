@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { GraphSettings } from "../../../core/components/graph/GraphSettings";
