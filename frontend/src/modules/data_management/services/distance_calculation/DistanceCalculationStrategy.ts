@@ -25,6 +25,7 @@ export abstract class DistanceCalculationStrategy {
     }
 
     public execute = async () => {
+        this.dataManagementState.setdistanceCalculationRunning(true);
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
@@ -86,6 +87,7 @@ export abstract class DistanceCalculationStrategy {
             duration: 5000,
             variant: "success",
         });
+        this.dataManagementState.setdistanceCalculationRunning(false);
         this.dataManagementState.resetSampleUpload();
     };
 }

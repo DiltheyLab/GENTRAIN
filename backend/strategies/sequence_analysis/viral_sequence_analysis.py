@@ -19,7 +19,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.queue = "viral"
+        self.type = "viral"
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""

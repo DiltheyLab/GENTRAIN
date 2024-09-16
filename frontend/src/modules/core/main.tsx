@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "@/modules/dashboard/pages/Dashboard.tsx";
@@ -17,6 +17,7 @@ import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
+import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -30,6 +31,8 @@ const App = () => {
     const session = useCoreStore((state) => state.session);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
+
+    useHandlePersistedSessionResults();
 
     useEffect(() => {
         fetchSession();

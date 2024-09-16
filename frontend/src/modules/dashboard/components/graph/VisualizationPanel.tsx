@@ -1,5 +1,5 @@
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
@@ -24,7 +24,8 @@ export const DashboardVisualizationPanel = () => {
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         dashboardStore.graphSettings;
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-    const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);

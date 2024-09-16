@@ -19,7 +19,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.queue = "bacterial"
+        self.type = "bacterial"
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""

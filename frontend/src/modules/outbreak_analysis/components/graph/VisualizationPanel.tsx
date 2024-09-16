@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
+import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { GraphSettings } from "../../../core/components/graph/GraphSettings";
@@ -19,7 +19,8 @@ export const VisualizationPanel = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         outbreakAnalysisStore.graphSettings;
-    const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
