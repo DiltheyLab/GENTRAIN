@@ -4,8 +4,8 @@ import { SequenceAnalysisSchema } from "./sequence_analyses";
 interface SampleSchema {
     id: number;
     fasta_id: string;
-    sequence_analysis_id?: number;
-    sequence_analysis?: SequenceAnalysisSchema;
+    sequence_analysis_id: number;
+    sequence_analysis?: SequenceAnalysisSchema | null;
     n_count?: number;
     sequence_length?: number;
     lineage?: string;

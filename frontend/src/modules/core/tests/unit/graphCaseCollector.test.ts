@@ -10,6 +10,8 @@ import {
 } from "@/modules/core/tests/unit/mockCases";
 import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { CaseWithRelationships } from "../../models/cases";
+import { createCase } from "../entities/cases";
+import { createSample } from "../entities/samples";
 
 describe("GraphCaseCollector", () => {
     let settings: AnalysisSettings;
@@ -42,10 +44,17 @@ describe("GraphCaseCollector", () => {
     });
 
     it("should collect all cases but only sequenced cases", async () => {
-        const graphCaseCollector = new GraphCaseCollector(allCases, settings);
+        const caseWithoutSample1 = createCase({});
+        const caseWithoutSample2 = createCase({});
+        // define id since duplicates are dropped
+        const caseWithSample1 = createCase({ id: 1, sample: createSample({}) });
+        const caseWithSample2 = createCase({ id: 2, sample: createSample({}) });
+        const cases = [caseWithoutSample1, caseWithoutSample2, caseWithSample1, caseWithSample2];
+        settings.excludeCasesWithoutSequence = true;
+
+        const graphCaseCollector = new GraphCaseCollector(cases, settings);
         const result = await graphCaseCollector.execute();
-        const sequencedCases = allCases.filter((mockCase) => mockCase.sample);
-        expect(result).toEqual(sequencedCases);
+        expect(result).toEqual([caseWithSample1, caseWithSample2]);
     });
 
     it("should collect all cases", async () => {
