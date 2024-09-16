@@ -1,4 +1,8 @@
 import { CaseWithRelationships } from "../../models/cases";
+import { GroupedContacts } from "../../models/contacts";
+import { GroupWithRelationships } from "../../models/groups";
+import { OutbreakSchema } from "../../models/outbreaks";
+import { PathogenSchema } from "../../models/pathogens";
 import { TestSample } from "./samples";
 
 type TestCase = {
@@ -12,10 +16,10 @@ type TestCase = {
     created_at?: Date;
     updated_at?: Date;
     sample?: TestSample | null;
-    pathogen?: null;
-    outbreak?: null;
-    groups?: null;
-    contacts?: null;
+    pathogen?: PathogenSchema | null;
+    outbreak?: OutbreakSchema | null;
+    groups?: GroupWithRelationships[] | null;
+    contacts?: GroupedContacts | null;
 };
 
 export const createCase = ({
