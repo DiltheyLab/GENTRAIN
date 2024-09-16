@@ -4,6 +4,7 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { Check, CircleAlert, ChevronsDown, ChevronsUp } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
+import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
@@ -62,25 +63,28 @@ export function SampleUploadStatus() {
                             <small>
                                 Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
                             </small>
+                            <ScrollArea>
+                                <div className="w-full flex flex-wrap max-h-[300px] mt-2">
+                                    {Object.keys(uploads).map((fastaId, key) => (
+                                        <div key={key} className="w-1/6 p-1">
+                                            <div
+                                                key={fastaId}
+                                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
+                                                    uploads[fastaId]
+                                                )}`}
+                                            >
+                                                <div className="mr-2 text-xs">{fastaId}</div>
 
-                            <div className="w-full flex flex-wrap max-h-[300px] overflow-y-auto mt-2">
-                                {Object.keys(uploads).map((fastaId, key) => (
-                                    <div key={key} className="w-1/6 p-1">
-                                        <div
-                                            key={fastaId}
-                                            className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
-                                                uploads[fastaId]
-                                            )}`}
-                                        >
-                                            <div className="mr-2 text-xs">{fastaId}</div>
-
-                                            {uploads[fastaId] === "pending" && <LoadingSpinner className="w-[18px]" />}
-                                            {uploads[fastaId] === "finished" && <Check width={18} />}
-                                            {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                                {uploads[fastaId] === "pending" && (
+                                                    <LoadingSpinner className="w-[18px]" />
+                                                )}
+                                                {uploads[fastaId] === "finished" && <Check width={18} />}
+                                                {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            </ScrollArea>
                         </>
                     )}
                     {distanceCalculationRunning && (
