@@ -6,6 +6,7 @@ import { useGetAllPathogenTypes } from "@/modules/core/hooks/database/pathogen_t
 import { useTranslation } from "react-i18next";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeWithRelationships } from "@/modules/core/models/pathogen_types";
+import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 
 export function PathogenSwitch() {
     const [open, setOpen] = useState(false);
@@ -13,7 +14,7 @@ export function PathogenSwitch() {
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const { t } = useTranslation();
-
+    const updateSettings = useDashboardStore((state) => state.updateSettings);
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
         return (
             <div key={pathogenType.name}>
@@ -29,6 +30,10 @@ export function PathogenSwitch() {
                             onClick={() => {
                                 setOpen(false);
                                 updateActivePathogen(pathogen);
+                                updateSettings({
+                                    clusteringThreshold: pathogen.genetic_distance_threshold,
+                                    geneticDistanceThreshold: pathogen.genetic_distance_threshold,
+                                });
                             }}
                         >
                             {pathogen.name}

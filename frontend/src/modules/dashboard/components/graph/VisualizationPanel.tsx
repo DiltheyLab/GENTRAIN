@@ -1,5 +1,4 @@
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
@@ -16,6 +15,7 @@ import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
+import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +40,7 @@ export const DashboardVisualizationPanel = () => {
             dashboardStore.updateGraphData({ nodes: [], links: [] });
             return;
         }
+
         const getGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
