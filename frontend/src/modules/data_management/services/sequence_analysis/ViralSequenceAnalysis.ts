@@ -2,7 +2,7 @@ import { db } from "@/modules/core/infrastructure/database";
 import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
 export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
-    protected createSampleAndSequenceAnalysis = async (
+    public createSampleAndSequenceAnalysis = async (
         fastaId: string,
         sequenceAnalysisResult: any,
         sequenceLength: number
