@@ -2,21 +2,6 @@ from backend.server import sio, redis_connection
 
 
 @sio.event
-def connect(socket_id, environ, auth):
-    redis_connection.set(f"client:connected:{socket_id}", 1)
-
-
-@sio.event
-def reconnect(socket_id, environ, auth):
-    redis_connection.set(f"client:connected:{socket_id}", 1)
-
-
-@sio.event
-def disconnect(socket_id):
-    redis_connection.delete(f"client:connected:{socket_id}")
-
-
-@sio.event
 def join_viral(socket_id, gentrain_session_id):
     redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
     sio.enter_room(socket_id, f"viral_{socket_id}")
