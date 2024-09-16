@@ -4,7 +4,21 @@ from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
 
 @sio.event
-def sequence_analysis_request(socket_id, pathogen_name, fasta_id, sequence):
+def sequence_analysis_request(
+    socket_id, pathogen_name, fasta_id, sequence_chunk, chunk_information
+):
+    redis_connection.set(
+        f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        sequence_chunk,
+    )
+    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
+    chunk_keys.sort()
+    if chunk_information["total"] > len(chunk_keys):
+        return
+    sequence = ""
+    for key in chunk_keys:
+        sequence += redis_connection.get(key)
+        redis_connection.delete(key)
     strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,

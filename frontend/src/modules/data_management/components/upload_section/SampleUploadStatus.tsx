@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { Check, CircleAlert, ChevronsDown, ChevronsUp } from "lucide-react";
+import { Check, CircleAlert, ChevronsDown, ChevronsUp, Hourglass, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
@@ -74,8 +74,8 @@ export function SampleUploadStatus() {
                                                 )}`}
                                             >
                                                 <div className="mr-2 text-xs">{fastaId}</div>
-
-                                                {uploads[fastaId] === "pending" && (
+                                                {uploads[fastaId] === "pending" && <CircleDashed width={18} />}
+                                                {uploads[fastaId] === "started" && (
                                                     <LoadingSpinner className="w-[18px]" />
                                                 )}
                                                 {uploads[fastaId] === "finished" && <Check width={18} />}

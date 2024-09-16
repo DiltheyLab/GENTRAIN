@@ -15,7 +15,7 @@ export const Layout = ({ children }: any) => {
                 <div className="relative z-50">
                     <div
                         className={`fixed bottom-0 right-0 p-8 ${
-                            hideSampleUploadContent ? "w-auto" : "w-full lg:w-2/3"
+                            hideSampleUploadContent ? "w-auto" : "w-full lg:w-1/2"
                         }`}
                     >
                         <SampleUploadStatus />

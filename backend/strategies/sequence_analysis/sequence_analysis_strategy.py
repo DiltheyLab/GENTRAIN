@@ -56,6 +56,11 @@ class SequenceAnalysisStrategy(ABC):
 
     def execute(self):
         """Run strategy actions."""
+        sio.emit(
+            "sequence_analysis_started",
+            self.fasta_id,
+            room=f"{self.type}_{self.socket_id}",
+        )
         genomic_errors = self.find_genomic_validation_errors()
         if genomic_errors and len(genomic_errors) > 0:
             raise GenomicErrorException
