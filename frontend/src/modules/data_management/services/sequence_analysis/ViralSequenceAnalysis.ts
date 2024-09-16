@@ -7,29 +7,25 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         sequenceAnalysisResult: any,
         sequenceLength: number
     ) => {
-        const sampleId = await db.samples.add({
+        const sequenceAnalysisId = await db.sequence_analyses.add({
+            nextclade_version: sequenceAnalysisResult["nextclade_version"],
+            result: {
+                mutations: {
+                    substitutions: sequenceAnalysisResult["substitutions"],
+                    deletions: sequenceAnalysisResult["deletions"],
+                    insertions: sequenceAnalysisResult["insertions"],
+                    missing: sequenceAnalysisResult["missing"],
+                    nonACGTNs: sequenceAnalysisResult["nonACGTNs"],
+                    alignmentRange: sequenceAnalysisResult["alignmentRange"],
+                },
+            },
+        });
+        await db.samples.add({
             fasta_id: fastaId,
             sequence_length: sequenceLength,
             lineage: sequenceAnalysisResult["lineage"],
             n_count: sequenceAnalysisResult["n_count"],
+            sequence_analysis_id: sequenceAnalysisId,
         });
-        if (sampleId) {
-            const sequenceAnalysisId = await db.sequence_analyses.add({
-                nextclade_version: sequenceAnalysisResult["nextclade_version"],
-                result: {
-                    mutations: {
-                        substitutions: sequenceAnalysisResult["substitutions"],
-                        deletions: sequenceAnalysisResult["deletions"],
-                        insertions: sequenceAnalysisResult["insertions"],
-                        missing: sequenceAnalysisResult["missing"],
-                        nonACGTNs: sequenceAnalysisResult["nonACGTNs"],
-                        alignmentRange: sequenceAnalysisResult["alignmentRange"],
-                    },
-                },
-            });
-            await db.samples.update(sampleId, {
-                sequence_analysis_id: sequenceAnalysisId,
-            });
-        }
     };
 }

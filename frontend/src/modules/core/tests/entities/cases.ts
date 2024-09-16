@@ -1,4 +1,4 @@
-import { CaseSchema, CaseWithRelationships } from "../../models/cases";
+import { CaseWithRelationships } from "../../models/cases";
 import { TestSample } from "./samples";
 
 type TestCase = {

@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { Check, CircleAlert, X, ChevronsDown, ChevronsUp } from "lucide-react";
+import { Check, CircleAlert, ChevronsDown, ChevronsUp } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
 
