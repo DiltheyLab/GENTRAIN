@@ -28,6 +28,7 @@ export const DashboardVisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const activePathogenId = useCoreStore((state) => state.activePathogen?.id);
 
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
@@ -41,7 +42,12 @@ export const DashboardVisualizationPanel = () => {
             return;
         }
 
-        const getGraphData = async (
+        // if the pathogen changes, the graph will be updated by the useEffect because the useGetDistanceMatrixAssembly and the cases changed
+        // this leads to the scenario that the graph is being updated twice
+        // to prevent this, we check if the pathogen_id of the first case is the same as the activePathogenId
+        if (cases?.[0]?.pathogen_id !== activePathogenId) return;
+
+        const createGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
             settings: AnalysisSettings,
@@ -64,8 +70,13 @@ export const DashboardVisualizationPanel = () => {
             dashboardStore.updateGraphSettings({ colorMap });
         };
 
-        getGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
-    }, [cases, distanceMatrixAssembly, contacts, dashboardStore.settings, dashboardStore.graphSettings.coloringMode]);
+        createGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
+    }, [
+        cases,
+        distanceMatrixAssembly,
+        dashboardStore.graphSettings.coloringMode,
+        dashboardStore.settings.clusteringThreshold,
+    ]); //contacts, settings.["setting1"]...
 
     return (
         <div
