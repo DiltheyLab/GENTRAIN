@@ -10,7 +10,7 @@ type ChartData = {
     [cluster: string]: number | string;
 };
 
-export const CasesPerDayChart = () => {
+const CasesPerDayChart = () => {
     const nodes = useDashboardStore((state) => state.graphData.nodes);
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
     const clusters = useMemo(() => {
@@ -104,3 +104,5 @@ export const CasesPerDayChart = () => {
         </Card>
     );
 };
+
+export default CasesPerDayChart;

@@ -10,7 +10,7 @@ type ChartData = {
     fill: string;
 };
 
-export const CasesPerClusterChart = () => {
+const CasesPerClusterChart = () => {
     const nodes = useDashboardStore((state) => state.graphData.nodes);
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
 
@@ -20,7 +20,6 @@ export const CasesPerClusterChart = () => {
         const clusterMap = new Map<string, number>();
         for (const node of nodesWithoutSamples) {
             const key = node.cluster;
-            // if there is no date key in the dateMap we create a key with every cluster
             if (!clusterMap.has(key)) {
                 clusterMap.set(key, 1);
             } else {
@@ -93,3 +92,5 @@ export const CasesPerClusterChart = () => {
         </Card>
     );
 };
+
+export default CasesPerClusterChart;
