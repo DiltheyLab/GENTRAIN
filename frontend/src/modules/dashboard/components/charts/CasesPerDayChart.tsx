@@ -80,10 +80,12 @@ export const CasesPerDayChart = () => {
                         />
                         <YAxis tickLine={false} axisLine={false} tickMargin={5} />
                         <ChartTooltip
+                            wrapperStyle={{ width: "180px" }}
+                            active={true}
                             cursor={false}
                             content={<ChartTooltipContent indicator="dot" />}
                             allowEscapeViewBox={{ x: true, y: true }}
-                            offset={15}
+                            offset={18}
                         />
                         {clusters.map((cluster) => {
                             return (
@@ -94,7 +96,6 @@ export const CasesPerDayChart = () => {
                                     fill={colorMap[cluster].color}
                                     fillOpacity={0.4}
                                     stroke={colorMap[cluster].color}
-                                    stackId={cluster}
                                 />
                             );
                         })}
