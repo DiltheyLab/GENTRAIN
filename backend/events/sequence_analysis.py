@@ -7,16 +7,8 @@ from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 def sequence_analysis_request(
     socket_id, pathogen_name, fasta_id, sequence_chunk, chunk_information
 ):
-    redis_connection.set(
-        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
-        value=sequence_chunk,
-    )
-    redis_connection.expire(
-        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
-        time=300,
-    )
-    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
-    chunk_keys.sort()
+    persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id)
+    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, fasta_id)
     if chunk_information["total"] > len(chunk_keys):
         return
     sequence = ""
@@ -32,6 +24,23 @@ def sequence_analysis_request(
     strategy.enqueue_analysis(
         queue_viral if strategy.type == "viral" else queue_bacterial
     )
+
+
+def persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id):
+    redis_connection.set(
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        value=sequence_chunk,
+    )
+    redis_connection.expire(
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        time=300,
+    )
+
+
+def get_persisted_sequence_chunk_keys(socket_id, fasta_id):
+    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
+    chunk_keys.sort()
+    return chunk_keys
 
 
 @sio.event
