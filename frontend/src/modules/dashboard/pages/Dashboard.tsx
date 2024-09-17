@@ -2,21 +2,10 @@ import { DashboardSettings } from "@/modules/dashboard/components/graph/Settings
 import { DashboardVisualizationPanel } from "@/modules/dashboard/components/graph/VisualizationPanel";
 import { Layout } from "@/modules/core/components/layout/Layout";
 import { InformationTables } from "../components/information_table/InformationTables";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { useEffect } from "react";
-import { useDashboardStore } from "../stores/dashboard";
+import { useUpdateClusterAndGeneticDistanceThresholds } from "../hooks/useUpdateClusterAndGeneticDistanceThresholds";
 
 export function Dashboard() {
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const updateSettings = useDashboardStore((state) => state.updateSettings);
-
-    useEffect(() => {
-        if (!activePathogen) return;
-        updateSettings({
-            clusteringThreshold: activePathogen?.genetic_distance_threshold ?? 0,
-            geneticDistanceThreshold: activePathogen?.genetic_distance_threshold ?? 0,
-        });
-    }, [activePathogen]);
+    useUpdateClusterAndGeneticDistanceThresholds();
 
     return (
         <Layout>
