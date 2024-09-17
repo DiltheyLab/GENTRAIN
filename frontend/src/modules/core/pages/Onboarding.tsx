@@ -6,7 +6,7 @@ import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
 
 export function Onboarding() {
     const initSession = useCoreStore((state) => state.initSession);
-
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const handleClick = () => {
         initSession();
     };
@@ -35,7 +35,7 @@ export function Onboarding() {
 
                 <div className="flex justify-center">
                     <PathogenSwitch />
-                    <Button onClick={() => handleClick()} className="ml-2">
+                    <Button disabled={!activePathogen} onClick={() => handleClick()} className="ml-2">
                         Zum Dashboard
                     </Button>
                 </div>
