@@ -77,6 +77,9 @@ export abstract class SequenceAnalysisStrategy {
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
             });
+            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
+                this.dataManagementState.changeUpload(fastaId, "enqueued");
+            });
             socket.on("sequence_analysis_started", (fastaId: string) => {
                 this.dataManagementState.changeUpload(fastaId, "started");
             });

@@ -1,13 +1,19 @@
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { Check, CircleAlert, ChevronsDown, ChevronsUp, Hourglass, CircleDashed } from "lucide-react";
+import { Check, CircleAlert, ChevronsDown, ChevronsUp, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 
 const getColorClassNames = (status: string) => {
     switch (status) {
+        case "sent":
+            return "text-slate-200 border-slate-200";
+        case "enqueued":
+            return "text-slate-700 border-slate-700";
+        case "started":
+            return "text-yellow-600 border-yellow-600";
         case "finished":
             return "text-green-600 border-green-600";
         case "failed":
@@ -37,12 +43,21 @@ export function SampleUploadStatus() {
                         </h2>
                     }
                     {hideSampleUploadContent && sequenceAnalysisRunning && (
-                        <small>Sequenzen werden auf Mutationen untersucht</small>
+                        <small className="mr-6">
+                            Sequenzen werden auf Mutationen untersucht{" "}
+                            <span>
+                                ({Object.keys(uploads).filter((key: string) => uploads[key] === "finished").length} von{" "}
+                                {Object.keys(uploads).length} abgeschlossen)
+                            </span>
+                        </small>
                     )}
                     {hideSampleUploadContent && distanceCalculationRunning && (
-                        <small>Genetische Distanzen werden berechnet</small>
+                        <>
+                            <small>Genetische Distanzen werden berechnet</small>
+                        </>
                     )}
                 </div>
+
                 {hideSampleUploadContent && (
                     <ChevronsUp className="cursor-pointer ml-8" onClick={() => setHideSampleUploadContent(false)} />
                 )}
@@ -65,24 +80,31 @@ export function SampleUploadStatus() {
                             </small>
                             <ScrollArea>
                                 <div className="w-full flex flex-wrap max-h-[300px] mt-2">
-                                    {Object.keys(uploads).map((fastaId, key) => (
-                                        <div key={key} className="w-1/6 p-1">
-                                            <div
-                                                key={fastaId}
-                                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
-                                                    uploads[fastaId]
-                                                )}`}
-                                            >
-                                                <div className="mr-2 text-xs">{fastaId}</div>
-                                                {uploads[fastaId] === "pending" && <CircleDashed width={18} />}
-                                                {uploads[fastaId] === "started" && (
-                                                    <LoadingSpinner className="w-[18px]" />
-                                                )}
-                                                {uploads[fastaId] === "finished" && <Check width={18} />}
-                                                {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                    {Object.keys(uploads).map((fastaId, key) => {
+                                        return (
+                                            <div key={key} className="w-full sm:w-1/3 md:w-1/4 xl:w-1/6 p-1">
+                                                <div
+                                                    key={fastaId}
+                                                    className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
+                                                        uploads[fastaId]
+                                                    )}`}
+                                                >
+                                                    <div className="mr-2 text-xs">{fastaId}</div>
+                                                    {uploads[fastaId] === "sent" && (
+                                                        <CircleDashed className="mr-[1px]" width={15} />
+                                                    )}
+                                                    {uploads[fastaId] === "enqueued" && (
+                                                        <CircleDashed className="mr-[1px]" width={15} />
+                                                    )}
+                                                    {uploads[fastaId] === "started" && (
+                                                        <LoadingSpinner className="w-[17px]" strokeWidth={1.5} />
+                                                    )}
+                                                    {uploads[fastaId] === "finished" && <Check width={18} />}
+                                                    {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </ScrollArea>
                         </>

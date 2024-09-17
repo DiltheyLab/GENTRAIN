@@ -81,3 +81,8 @@ class SequenceAnalysisStrategy(ABC):
 
     def enqueue_analysis(self, queue):
         queue.enqueue(self.execute, result_ttl=0)
+        sio.emit(
+            "sequence_analysis_enqueued",
+            self.fasta_id,
+            room=f"{self.type}_{self.socket_id}",
+        )

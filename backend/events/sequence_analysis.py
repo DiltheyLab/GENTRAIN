@@ -8,8 +8,12 @@ def sequence_analysis_request(
     socket_id, pathogen_name, fasta_id, sequence_chunk, chunk_information
 ):
     redis_connection.set(
-        f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
-        sequence_chunk,
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        value=sequence_chunk,
+    )
+    redis_connection.expire(
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        time=300,
     )
     chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
     chunk_keys.sort()
