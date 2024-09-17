@@ -81,7 +81,6 @@ export const CasesPerDayChart = () => {
                         <YAxis tickLine={false} axisLine={false} tickMargin={5} />
                         <ChartTooltip
                             wrapperStyle={{ width: "180px" }}
-                            active={true}
                             cursor={false}
                             content={<ChartTooltipContent indicator="dot" />}
                             allowEscapeViewBox={{ x: true, y: true }}
