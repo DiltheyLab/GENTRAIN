@@ -81,7 +81,7 @@ export const DashboardVisualizationPanel = () => {
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
+            className="relative flex flex-col justify-center items-center h-[88vh] rounded-xl bg-muted lg:col-span-2"
         >
             <Legend
                 nodes={dashboardStore.graphData.nodes}

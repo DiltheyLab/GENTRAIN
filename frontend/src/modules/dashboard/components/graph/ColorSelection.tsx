@@ -27,26 +27,27 @@ export const ColorSelection = () => {
     return (
         <div>
             <RadioGroup
+                className="-space-y-1"
                 defaultValue={coloringMode}
                 onValueChange={(value: ColoringMode) => handleColoringChange(value)}
             >
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="outbreaks" id="outbreaks" />
                     <Label htmlFor="outbreaks" className="font-normal text-md">
-                        Nach Ausbrüchen einfärben
+                        Ausbrüche
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="timeSpan" id="timeSpan" />
                     <Label htmlFor="timeSpan" className="font-normal text-md">
-                        Nach Zeitspanne einfärben
+                        Zeitspanne
                     </Label>
                 </div>
                 <>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem value="clusters" id="clusters" />
                         <Label htmlFor="clusters" className="font-normal text-md">
-                            Nach Clustern einfärben
+                            Cluster
                         </Label>
                     </div>
                     <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
