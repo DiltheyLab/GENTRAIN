@@ -1,4 +1,5 @@
 import json
+import re
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
@@ -9,7 +10,6 @@ def sequence_analysis_request(
 ):
     # validate sequence before persisting
     # genomic_errors = self.find_genomic_validation_errors()
-
     persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id)
     chunk_keys = get_persisted_sequence_chunk_keys(socket_id, fasta_id)
     if chunk_information["total"] > len(chunk_keys):
