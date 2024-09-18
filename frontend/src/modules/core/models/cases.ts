@@ -44,7 +44,10 @@ export const getAllCases = async () => {
     return cases;
 };
 
-export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
+export const getAllCasesForPathogenWithRelationships = async (
+    pathogen_id: number,
+    includeSequenceAnalysisResult: boolean
+) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
@@ -66,7 +69,9 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
                         caseWithRelationships.sample.sequence_analysis_id
                     );
                     if (sequenceAnalysis) {
-                        sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        if (!includeSequenceAnalysisResult) {
+                            sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        }
                         caseWithRelationships.sample.sequence_analysis = sequenceAnalysis;
                     }
                 }
