@@ -77,6 +77,12 @@ export abstract class SequenceAnalysisStrategy {
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
             });
+            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
+                this.dataManagementState.changeUpload(fastaId, "enqueued");
+            });
+            socket.on("sequence_analysis_started", (fastaId: string) => {
+                this.dataManagementState.changeUpload(fastaId, "started");
+            });
         }
     };
 
@@ -110,8 +116,14 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
-        if (socket) {
-            socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequence);
+        const sequenceChunks = sequence.match(/(.|[\r\n]){1,500000}/g);
+        for (const index in sequenceChunks!) {
+            if (socket) {
+                socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequenceChunks[index], {
+                    total: sequenceChunks.length,
+                    index: index,
+                });
+            }
         }
     };
 

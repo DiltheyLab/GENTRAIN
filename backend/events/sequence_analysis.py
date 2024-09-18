@@ -4,7 +4,20 @@ from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
 
 @sio.event
-def sequence_analysis_request(socket_id, pathogen_name, fasta_id, sequence):
+def sequence_analysis_request(
+    socket_id, pathogen_name, fasta_id, sequence_chunk, chunk_information
+):
+    # validate sequence before persisting
+    # genomic_errors = self.find_genomic_validation_errors()
+
+    persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id)
+    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, fasta_id)
+    if chunk_information["total"] > len(chunk_keys):
+        return
+    sequence = ""
+    for key in chunk_keys:
+        sequence += redis_connection.get(key)
+        redis_connection.delete(key)
     strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
         pathogen_name=pathogen_name,
         fasta_id=fasta_id,
@@ -14,6 +27,23 @@ def sequence_analysis_request(socket_id, pathogen_name, fasta_id, sequence):
     strategy.enqueue_analysis(
         queue_viral if strategy.type == "viral" else queue_bacterial
     )
+
+
+def persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id):
+    redis_connection.set(
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        value=sequence_chunk,
+    )
+    redis_connection.expire(
+        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        time=60,
+    )
+
+
+def get_persisted_sequence_chunk_keys(socket_id, fasta_id):
+    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
+    chunk_keys.sort()
+    return chunk_keys
 
 
 @sio.event
