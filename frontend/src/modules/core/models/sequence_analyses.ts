@@ -1,7 +1,8 @@
 import { db } from "../infrastructure/database";
 
 interface BacterialAnalysisResult {
-    alleles: { [gen_id: string]: string };
+    allele_ids: { [gen_id: string]: string };
+    allele_hashes: { [gen_id: string]: string };
 }
 
 interface ViralAnalysisResult {

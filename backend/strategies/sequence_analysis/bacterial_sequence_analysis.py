@@ -85,19 +85,28 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             shutil.rmtree(self.output)
             raise SequenceAnalysisFailedException
         else:
+            results = {}
             with open(
                 file=f"{self.output}/results_alleles_hashed.tsv",
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                shutil.rmtree(self.input)
-                shutil.rmtree(self.output)
-                return self.tsv2json(tsv_file)
+                results["allele_hashes"] = self.tsv2json(tsv_file)
+            with open(
+                file=f"{self.output}/results_alleles.tsv",
+                mode="r",
+                encoding="utf-8",
+            ) as tsv_file:
+                results["allele_ids"] = self.tsv2json(tsv_file)
+            shutil.rmtree(self.input)
+            shutil.rmtree(self.output)
+            return results
 
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
         return BacterialSequenceAnalysisResponseModel(
             chewBACCA_version="3.3.9",
             analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
-            alleles=result,
+            allele_ids=result["allele_ids"],
+            allele_hashes=result["allele_hashes"],
         ).model_dump()

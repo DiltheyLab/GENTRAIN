@@ -7,7 +7,8 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
             schema: sequenceAnalysisResult["analysis_schema"],
             chewbbaca_version: sequenceAnalysisResult["chewBACCA_version"],
             result: {
-                alleles: sequenceAnalysisResult["alleles"],
+                allele_ids: sequenceAnalysisResult["allele_ids"],
+                allele_hashes: sequenceAnalysisResult["allele_hashes"],
             },
         });
         await db.samples.add({

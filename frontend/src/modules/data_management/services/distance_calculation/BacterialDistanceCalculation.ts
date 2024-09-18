@@ -9,9 +9,9 @@ export class BacterialDistanceCalculation extends DistanceCalculationStrategy {
         if (!sequenceAnalysisResult1 || !sequenceAnalysisResult2) return 0;
         let distance = 0;
 
-        for (const gen of Object.keys(sequenceAnalysisResult1.alleles)) {
-            const allele1 = sequenceAnalysisResult1.alleles[gen];
-            const allele2 = sequenceAnalysisResult2.alleles[gen];
+        for (const gen of Object.keys(sequenceAnalysisResult1.allele_hashes)) {
+            const allele1 = sequenceAnalysisResult1.allele_hashes[gen];
+            const allele2 = sequenceAnalysisResult2.allele_hashes[gen];
             if (allele1 === "-" || allele2 === "-") {
                 continue;
             }

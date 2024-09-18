@@ -1,21 +1,25 @@
 Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;Ort;Institution;Geschlecht
-CVD2021-24928;BC_01;01.02.2022;Schule A;Köln;Schule;weiblich
-CVD2021-24923;BC_02;01.03.2022;Schule A;Köln;;weiblich
-CVD2021-25156;BC_03;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25157;BC_04;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25158;BC_05;05.03.2022;;Düsseldorf;Krankenhaus;männlich
-CVD2021-25159;BC_06;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25161;BC_07;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25160;BC_08;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25162;BC_09;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
-CVD2021-25163;BC_10;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
-CVD2021-24929;BC_11;01.02.2022;Schule A;Köln;Schule;weiblich
-CVD2021-24930;BC_12;01.03.2022;Schule A;Köln;;weiblich
-CVD2021-25187;BC_13;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25189;BC_14;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25188;BC_15;05.03.2022;;Düsseldorf;Krankenhaus;männlich
-CVD2021-25181;BC_16;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2021-25182;BC_17;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2021-25183;BC_18;05.03.2022;Schule A;Köln;Volkshochschule;weiblich
-CVD2021-25184;BC_19;05.03.2022;Schule C;Köln;Volkshochschule;männlich
-CVD2021-25185;BC_20;05.03.2022;Schule C;Köln;Volkshochschule;weiblich
+CVD2021-24928;VRE_Hybrid_BC_01;01.02.2022;Schule A;Köln;Schule;weiblich
+CVD2021-24923;VRE_Hybrid_BC_02;01.03.2022;Schule A;Köln;;weiblich
+CVD2021-25156;VRE_Hybrid_BC_03;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25157;VRE_Hybrid_BC_04;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25158;VRE_Hybrid_BC_05;05.03.2022;;Düsseldorf;Krankenhaus;männlich
+CVD2021-25159;VRE_Hybrid_BC_06;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
+CVD2021-25161;VRE_Hybrid_BC_07;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25160;VRE_Hybrid_BC_08;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
+CVD2021-25162;VRE_Hybrid_BC_09;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
+CVD2021-25163;VRE_Hybrid_BC_10;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
+CVD2021-24929;VRE_Hybrid_BC_11;01.02.2022;Schule A;Köln;Schule;weiblich
+CVD2021-24930;VRE_Hybrid_BC_12;01.03.2022;Schule A;Köln;;weiblich
+CVD2021-25187;VRE_Hybrid_BC_13;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25189;VRE_Hybrid_BC_14;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25188;VRE_Hybrid_BC_15;05.03.2022;;Düsseldorf;Krankenhaus;männlich
+CVD2021-25181;VRE_Hybrid_BC_16;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
+CVD2021-25182;VRE_Hybrid_BC_17;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25183;VRE_Hybrid_BC_18;05.03.2022;Schule A;Köln;Volkshochschule;weiblich
+CVD2021-25184;VRE_Hybrid_BC_19;05.03.2022;Schule C;Köln;Volkshochschule;männlich
+CVD2021-25185;VRE_Hybrid_BC_20;05.03.2022;Schule C;Köln;Volkshochschule;weiblich
+CVD2021-25234;VRE_Hybrid_BC_21;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2021-25435;VRE_Hybrid_BC_22;05.03.2022;Schule A;Köln;Volkshochschule;weiblich
+CVD2021-25166;VRE_Hybrid_BC_23;05.03.2022;Schule C;Köln;Volkshochschule;männlich
+CVD2021-25654;VRE_Hybrid_BC_24;05.03.2022;Schule C;Köln;Volkshochschule;weiblich
