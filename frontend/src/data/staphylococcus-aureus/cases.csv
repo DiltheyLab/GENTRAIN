@@ -1,21 +1,25 @@
 Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;Ort;Institution;Geschlecht
 CVD2024-34928;MRSA_Hybrid_BC_01;01.02.2022;Schule A;Köln;Schule;weiblich
 CVD2024-34923;MRSA_Hybrid_BC_02;01.03.2022;Schule A;Köln;;weiblich
-CVD2024-35156;;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
 CVD2024-35157;MRSA_Hybrid_BC_03;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
 CVD2024-35158;MRSA_Hybrid_BC_04;05.03.2022;;Düsseldorf;Krankenhaus;männlich
 CVD2024-35159;MRSA_Hybrid_BC_05;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2024-35161;;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2024-35160;;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
-CVD2024-35162;;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
 CVD2024-35163;MRSA_Hybrid_BC_06;05.03.2022;Schule C;Düsseldorf;Krankenhaus;männlich
 CVD2024-34929;MRSA_Hybrid_BC_07;01.02.2022;Schule A;Köln;Schule;weiblich
 CVD2024-34930;MRSA_Hybrid_BC_08;01.03.2022;Schule A;Köln;;weiblich
 CVD2024-35187;MRSA_Hybrid_BC_09;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2024-35189;;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
 CVD2024-35188;MRSA_Hybrid_BC_10;05.03.2022;;Düsseldorf;Krankenhaus;männlich
 CVD2024-35181;MRSA_Hybrid_BC_11;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
 CVD2024-35182;MRSA_Hybrid_BC_12;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
-CVD2024-35183;;05.03.2022;Schule A;Köln;Volkshochschule;weiblich
 CVD2024-35184;MRSA_Hybrid_BC_13;05.03.2022;Schule C;Köln;Volkshochschule;männlich
-CVD2024-35185;;05.03.2022;Schule C;Köln;Volkshochschule;weiblich
+CVD2024-34432;MRSA_Hybrid_BC_14;01.02.2022;Schule A;Köln;Schule;weiblich
+CVD2024-34653;MRSA_Hybrid_BC_15;01.03.2022;Schule A;Köln;;weiblich
+CVD2024-35876;MRSA_Hybrid_BC_16;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2024-31324;MRSA_Hybrid_BC_17;05.03.2022;;Düsseldorf;Krankenhaus;männlich
+CVD2024-35764;MRSA_Hybrid_BC_18;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
+CVD2024-35767;MRSA_Hybrid_BC_19;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2024-31344;MRSA_Hybrid_BC_20;05.03.2022;Schule C;Köln;Volkshochschule;männlich
+CVD2024-31532;MRSA_Hybrid_BC_21;05.03.2022;;Düsseldorf;Krankenhaus;männlich
+CVD2024-35556;MRSA_Hybrid_BC_22;05.03.2022;Schule A;Düsseldorf;Krankenhaus;männlich
+CVD2024-35776;MRSA_Hybrid_BC_23;05.03.2022;Schule B;Düsseldorf;Krankenhaus;männlich
+CVD2024-31387;MRSA_Hybrid_BC_24;05.03.2022;Schule C;Köln;Volkshochschule;männlich
