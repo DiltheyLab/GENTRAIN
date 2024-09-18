@@ -46,7 +46,7 @@ export const getAllCases = async () => {
 
 export const getAllCasesForPathogenWithRelationships = async (
     pathogen_id: number,
-    includeSequenceAnalysisResult: boolean
+    includeSequenceAnalysisResult: boolean = false
 ) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
