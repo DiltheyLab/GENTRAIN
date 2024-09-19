@@ -1,5 +1,4 @@
 import json
-import re
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
 
