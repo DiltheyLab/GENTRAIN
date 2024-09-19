@@ -132,8 +132,8 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     if (!nodes || nodes.length === 0) return null;
 
     return (
-        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none pdf-canvas graph-legend">
-            <legend className="-ml-1 px-1 text-xs font-bold -mb-2 pdf-hide">Legende</legend>
+        <fieldset className="absolute z-10 left-2 top-2 rounded-lg w-fit border p-3 bg-muted/80 pointer-events-none">
+            <legend className="-ml-1 px-1 text-xs font-bold -mb-2">Legende</legend>
             {renderNodeLegend()}
             {renderLinkLegend()}
         </fieldset>
