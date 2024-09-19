@@ -1,16 +1,17 @@
 import { db } from "../infrastructure/database";
 
 interface BacterialAnalysisResult {
-    alleles: { [gen_id: string]: string };
+    allele_ids: { [gen_id: string]: string };
+    allele_hashes: { [gen_id: string]: string };
 }
 
 interface ViralAnalysisResult {
     mutations: {
-        substitutions: [];
-        deletions: [];
-        insertions: [];
-        missing: [];
-        nonACGTNs: [];
+        substitutions: any[];
+        deletions: any[];
+        insertions: any[];
+        missing: any[];
+        nonACGTNs: any[];
         alignmentRange: { begin: number; end: number };
     };
 }

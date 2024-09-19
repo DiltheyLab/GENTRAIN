@@ -3,11 +3,19 @@ import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Share2 } from "lucide-react";
 import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
+import ExampleImport from "@/data/gentrain_example.json";
+import { importDataFromJson } from "@/modules/core/helpers/database";
 
 export function Onboarding() {
     const initSession = useCoreStore((state) => state.initSession);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
 
     const handleClick = () => {
+        initSession();
+    };
+
+    const initExampleImport = () => {
+        importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
         initSession();
     };
 
@@ -33,10 +41,16 @@ export function Onboarding() {
                     </p>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-16">
                     <PathogenSwitch />
-                    <Button onClick={() => handleClick()} className="ml-2">
+                    <Button disabled={!activePathogen} onClick={() => handleClick()} className="ml-2">
                         Zum Dashboard
+                    </Button>
+                </div>
+
+                <div className="flex justify-center">
+                    <Button onClick={() => initExampleImport()} variant="secondary" className="ml-2">
+                        Beispielszenario starten
                     </Button>
                 </div>
             </div>

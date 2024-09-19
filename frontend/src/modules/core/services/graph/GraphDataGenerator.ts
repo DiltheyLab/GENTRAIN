@@ -1,5 +1,5 @@
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { CustomLink, CustomNode, Link } from "@/modules/core/types/graph";
+import { CustomLink, CustomNode } from "@/modules/core/types/graph";
 import { GraphCaseCollector } from "./GraphCaseCollector";
 import { Kruskal } from "./Kruskal";
 import i18next from "i18next";
@@ -9,13 +9,17 @@ import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { LinkColorMapGenerator } from "./LinkColorMapGenerator";
 
+export const CONTACT_LINK_VALUE = -1;
+
 export class GraphDataGenerator {
     private nodes: CustomNode[] = [];
     private links: CustomLink[] = [];
+    private allLinks: CustomLink[] = [];
     private distanceMatrixAssembly: DistanceMatrixAssembly;
     private settings: AnalysisSettings;
     private contacts: ContactSchema[];
     private graphCaseCollector: GraphCaseCollector;
+    private graphCases: CaseWithRelationships[] = [];
 
     constructor(
         cases: CaseWithRelationships[],
@@ -29,41 +33,54 @@ export class GraphDataGenerator {
         this.graphCaseCollector = new GraphCaseCollector(cases, settings);
     }
 
-    execute = async () => {
-        const graphCases = await this.graphCaseCollector.execute();
-        const kruskal = new Kruskal(graphCases, this.distanceMatrixAssembly);
-        const mstLinks = kruskal.getMSTLinks();
+    public getAllLinks = () => this.allLinks;
 
-        // create node objects for forced directed graph
-        this.generateCustomNodes(graphCases);
+    public execute = async () => {
+        this.graphCases = await this.graphCaseCollector.execute();
 
-        // create link objects for sequenced cases (MST)
-        this.generateCustomLinks(mstLinks, graphCases);
+        // create all links for the genetic distance
+        this.generateAllLinks();
 
-        // create link objects for contacts
+        // create nodes for the minimum spanning tree
+        this.generateCustomNodes();
+
+        // create links for the minimum spanning tree
+        const kruskal = new Kruskal(this.nodes, this.allLinks);
+        this.links = kruskal.getMSTLinks();
+
+        // create links for the contact tracing
         if (this.settings.showContactTracingLinks && this.contacts) {
-            this.generateContactLinks(graphCases, this.contacts);
+            this.generateContactLinks();
         }
 
         return { nodes: this.nodes, links: this.links };
     };
 
-    private generateCustomLinks = (mstLinks: Link[], graphCases: CaseWithRelationships[]) => {
-        this.links = mstLinks.map((link) => {
-            return {
-                source: graphCases[link.source].id,
-                target: graphCases[link.target].id,
-                value: link.weight.toString(),
-                color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
-                curvature: 0,
-                type: i18next.t("linkTypes.geneticDistance"),
-                context: "",
-            };
-        }) satisfies CustomLink[];
+    public generateAllLinks = () => {
+        // the column loop starts with rowIndex + 1 to prevent looping over cases which are already treated
+        // because of that rowIndex is stopping with graphCases.length - 1
+        for (let rowIndex = 0; rowIndex < this.graphCases.length - 1; rowIndex++) {
+            const rowCase = this.graphCases[rowIndex];
+
+            for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
+                const columnCase = this.graphCases[columnIndex];
+
+                if (!rowCase.sample || !columnCase.sample) continue;
+                this.allLinks.push({
+                    source: this.graphCases[rowIndex].id,
+                    target: this.graphCases[columnIndex].id,
+                    value: this.distanceMatrixAssembly?.[rowCase.sample.fasta_id]?.[columnCase.sample.fasta_id],
+                    color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
+                    curvature: 0,
+                    type: i18next.t("linkTypes.geneticDistance"),
+                    context: "",
+                });
+            }
+        }
     };
 
-    private generateCustomNodes = (graphCases: CaseWithRelationships[]) => {
-        this.nodes = graphCases.map((caseData) => {
+    private generateCustomNodes = () => {
+        this.nodes = this.graphCases.map((caseData) => {
             return {
                 id: caseData.id,
                 caseData: caseData,
@@ -73,23 +90,23 @@ export class GraphDataGenerator {
         });
     };
 
-    private generateContactLinks = (graphCases: CaseWithRelationships[], contacts: ContactSchema[]) => {
+    private generateContactLinks = () => {
         // create a array with the ids of the cases which are in the already filtered graphCases array
-        const graphCasesIds = graphCases.map((caseData) => caseData.id);
+        const graphCasesIds = this.graphCases.map((caseData) => caseData.id);
 
         // create a color map for the contact types
-        const colorMapGenerator = new LinkColorMapGenerator(contacts);
+        const colorMapGenerator = new LinkColorMapGenerator(this.contacts);
         const contactLinksColorMap = colorMapGenerator.createColorMapForContactLinks();
 
         const contactTracingLinks: CustomLink[] = [];
         // create link objects for contacts
-        for (const contact of contacts) {
+        for (const contact of this.contacts) {
             // only add contact links if both contact cases are in the already filtered graphCases array
             if (graphCasesIds.includes(contact.case_id_1) && graphCasesIds.includes(contact.case_id_2)) {
                 const link = {
                     source: contact.case_id_1,
                     target: contact.case_id_2,
-                    value: "",
+                    value: CONTACT_LINK_VALUE,
                     color: contactLinksColorMap[contact.type],
                     type: contact.type,
                     context: contact.context,

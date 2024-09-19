@@ -11,7 +11,7 @@ export type CustomNode = {
 export type CustomLink = {
     source: number;
     target: number;
-    value: string;
+    value: number;
     color: string;
     curvature: number;
     type: string;
@@ -37,9 +37,3 @@ export type ContactLinksColorMap = {
 };
 
 export type ColoringMode = "clusters" | "outbreaks" | "timeSpan";
-
-export type Link = {
-    source: number;
-    target: number;
-    weight: number;
-};

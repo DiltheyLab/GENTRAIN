@@ -8,7 +8,7 @@ from backend.strategies.sequence_analysis.viral_sequence_analysis import (
 
 pathogen_type_mappings = {
     "viral": ["covid-19"],
-    "bacterial": ["enterococcus-faecium"],
+    "bacterial": ["enterococcus-faecium", "staphylococcus-aureus"],
 }
 
 
@@ -26,18 +26,23 @@ class PathogenStrategyManager:
 
     @staticmethod
     def get_sequence_analysis_strategy(
-        pathogen_name: str, fasta_id: str, sequence: str
+        pathogen_name: str,
+        fasta_id: str,
+        sequence: str,
+        socket_id: str,
     ):
         """Initialize and return a strategy based on pathogen type."""
         if (
             PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
             == "viral"
         ):
-            return ViralSequenceAnalysis(pathogen_name, fasta_id, sequence)
+            return ViralSequenceAnalysis(pathogen_name, fasta_id, sequence, socket_id)
         if (
             PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
             == "bacterial"
         ):
-            return BacterialSequenceAnalysis(pathogen_name, fasta_id, sequence)
+            return BacterialSequenceAnalysis(
+                pathogen_name, fasta_id, sequence, socket_id
+            )
 
         return

@@ -7,6 +7,12 @@ export interface DataManagementState {
     uploads: { [fastaId: string]: string };
     showSampleUploadStatus: boolean;
     hideSampleUploadContent: boolean;
+    sampleSelectionActive: boolean;
+    sequenceAnalysisRunning: boolean;
+    distanceCalculationRunning: boolean;
+    setSampleSelectionActive: (value: boolean) => void;
+    setSequenceAnalysisRunning: (value: boolean) => void;
+    setdistanceCalculationRunning: (value: boolean) => void;
     setShowSampleUploadStatus: (value: boolean) => void;
     setHideSampleUploadContent: (value: boolean) => void;
     removeUpload: (key: string) => void;
@@ -25,6 +31,18 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     uploads: {},
     showSampleUploadStatus: false,
     hideSampleUploadContent: false,
+    sequenceAnalysisRunning: false,
+    distanceCalculationRunning: false,
+    sampleSelectionActive: false,
+    setSampleSelectionActive: (value: boolean) => {
+        set({ sampleSelectionActive: value });
+    },
+    setSequenceAnalysisRunning: (value: boolean) => {
+        set({ sequenceAnalysisRunning: value });
+    },
+    setdistanceCalculationRunning: (value: boolean) => {
+        set({ distanceCalculationRunning: value });
+    },
     setHideSampleUploadContent: (value: boolean) => {
         set({ hideSampleUploadContent: value });
     },

@@ -1,8 +1,23 @@
 import { Layout } from "@/modules/core/components/layout/Layout";
 import { Settings } from "../components/settings/Settings";
 import { VisualizationPanel } from "../components/graph/VisualizationPanel";
+import { useEffect, useRef } from "react";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { useNavigate } from "react-router-dom";
 
 export const Analysis = () => {
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const navigate = useNavigate();
+    const prevActivePathogenRef = useRef(activePathogen);
+
+    useEffect(() => {
+        // If the active pathogen changes, navigate to the outbreak analysis page
+        if (prevActivePathogenRef.current && prevActivePathogenRef.current.id !== activePathogen?.id) {
+            navigate("/outbreak-analysis");
+        }
+        prevActivePathogenRef.current = activePathogen;
+    }, [activePathogen]);
+
     return (
         <Layout>
             <div className="relative mx-auto p-4">

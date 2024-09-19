@@ -8,7 +8,7 @@ import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
 import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSequenceAnalysisById } from "./sequence_analyses";
+import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
 
 export interface CaseSchema {
     id: number;
@@ -44,41 +44,10 @@ export const getAllCases = async () => {
     return cases;
 };
 
-export const getAllCasesWithRelationships = async () => {
-    const cases = await db.cases.toArray();
-    let casesWithRelationships: CaseWithRelationships[] = [];
-    for (const key in cases) {
-        casesWithRelationships[key] = cases[key];
-        // retrieve pathogen schema object
-        const pathogen = await db.pathogens.where({ id: cases[key].pathogen_id }).first();
-        casesWithRelationships[key].pathogen = pathogen;
-        // retrieve sample schema object
-        if (cases[key].fasta_id) {
-            const sample = await db.samples.where({ fasta_id: cases[key].fasta_id }).first();
-            if (sample) {
-                casesWithRelationships[key].sample = sample;
-                casesWithRelationships[key].sample.sequence_analysis = await db.sequence_analyses.get(
-                    sample.sequence_analysis_id
-                );
-            }
-        }
-        // retrieve outbreak schema object
-        if (cases[key].outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: cases[key].outbreak_id }).first();
-            if (outbreak) {
-                casesWithRelationships[key].outbreak = outbreak;
-            }
-        }
-        // retrieve group schema objects
-        if (cases[key].group_ids.length > 0) {
-            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(cases[key].group_ids);
-            casesWithRelationships[key].groups = groups;
-        }
-    }
-    return casesWithRelationships;
-};
-
-export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
+export const getAllCasesForPathogenWithRelationships = async (
+    pathogen_id: number,
+    includeSequenceAnalysisResult: boolean = false
+) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
@@ -96,9 +65,15 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
             if (sample) {
                 caseWithRelationships.sample = sample;
                 if (caseWithRelationships.sample) {
-                    caseWithRelationships.sample.sequence_analysis = await db.sequence_analyses.get(
+                    const sequenceAnalysis = await db.sequence_analyses.get(
                         caseWithRelationships.sample.sequence_analysis_id
                     );
+                    if (sequenceAnalysis) {
+                        if (!includeSequenceAnalysisResult) {
+                            sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        }
+                        caseWithRelationships.sample.sequence_analysis = sequenceAnalysis;
+                    }
                 }
             }
         }

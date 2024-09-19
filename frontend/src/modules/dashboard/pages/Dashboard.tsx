@@ -1,69 +1,26 @@
 import { DashboardSettings } from "@/modules/dashboard/components/graph/Settings";
 import { DashboardVisualizationPanel } from "@/modules/dashboard/components/graph/VisualizationPanel";
-import { DistanceMatrixTable } from "@/modules/dashboard/components/distance_matrix/DistanceMatrixTable";
-import { SampleInformationTable } from "@/modules/dashboard/components/information_table/SampleInformationTable";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
-import { useEffect } from "react";
-import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
-import { ClusterInformationTable } from "../components/information_table/ClusterInformationTable";
+import { InformationTables } from "../components/information_table/InformationTables";
+import { useUpdateClusterAndGeneticDistanceThresholds } from "../hooks/useUpdateClusterAndGeneticDistanceThresholds";
+import { Charts } from "../components/charts/Charts";
 
 export function Dashboard() {
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const updateSettings = useDashboardStore((state) => state.updateSettings);
-    const coloringMode = useDashboardStore((state) => state.graphSettings.coloringMode);
-
-    useEffect(() => {
-        if (!activePathogen) return;
-        updateSettings({
-            clusteringThreshold: activePathogen?.genetic_distance_threshold ?? 0,
-            geneticDistanceThreshold: activePathogen?.genetic_distance_threshold ?? 0,
-        });
-    }, [activePathogen]);
+    useUpdateClusterAndGeneticDistanceThresholds();
 
     return (
         <Layout>
             <div className="relative mx-auto p-4">
                 <div className="flex flex-col-reverse gap-4 md:flex-row">
-                    <div className="w-full md:w-1/3 lg:w-1/4">
+                    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-4 ">
                         <DashboardSettings />
+                        <Charts />
                     </div>
                     <div className="w-full md:w-2/3 lg:w-3/4">
                         <DashboardVisualizationPanel />
                     </div>
                 </div>
-                <div>
-                    <Accordion type="multiple" className="mt-4">
-                        {coloringMode === "clusters" ? (
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger className="py-2">
-                                    Informationen über die gefundenen Cluster
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    <ClusterInformationTable />
-                                </AccordionContent>
-                            </AccordionItem>
-                        ) : (
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger className="py-2 font-bold">
-                                    Informationen zu den im Datensatz enthaltenen Fällen
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    <SampleInformationTable />
-                                </AccordionContent>
-                            </AccordionItem>
-                        )}
-                        <AccordionItem value="item-3">
-                            <AccordionTrigger className="py-2 font-bold">
-                                Genetische Distanzen der im Datensatz enthaltenen Fälle
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                <DistanceMatrixTable />
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
+                <InformationTables />
             </div>
         </Layout>
     );

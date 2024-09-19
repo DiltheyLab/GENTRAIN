@@ -1,5 +1,4 @@
 import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-import { useGetDistanceMatrixAssemblyByPathogenId } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssemblyByPathogenId";
 import { Legend } from "@/modules/core/components/graph/Legend";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
@@ -16,6 +15,7 @@ import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
+import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,11 +24,11 @@ export const DashboardVisualizationPanel = () => {
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         dashboardStore.graphSettings;
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const distanceMatrixAssembly = useGetDistanceMatrixAssemblyByPathogenId(activePathogen?.id);
+    const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const activePathogenId = useCoreStore((state) => state.activePathogen?.id);
 
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
@@ -42,7 +42,12 @@ export const DashboardVisualizationPanel = () => {
             return;
         }
 
-        const getGraphData = async (
+        // if the pathogen changes, the graph will be updated by the useEffect because the useGetDistanceMatrixAssembly and the cases changed
+        // this leads to the scenario that the graph is being updated twice
+        // to prevent this, we check if the pathogen_id of the first case is the same as the activePathogenId
+        if (cases?.[0]?.pathogen_id !== activePathogenId) return;
+
+        const createGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
             cases: CaseWithRelationships[],
             settings: AnalysisSettings,
@@ -52,10 +57,11 @@ export const DashboardVisualizationPanel = () => {
             let graphData = await graphDataGenerator.execute();
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
-                const clusterAnalyser = new ClusterAnalyser(graphData, settings.clusteringThreshold);
-                graphData = clusterAnalyser.getClusteredGraphData(); //overwrite graphData with new assigned clusters
-                const clusters = clusterAnalyser.getClusters();
-                dashboardStore.updateClusters(clusters);
+                const allLinks = graphDataGenerator.getAllLinks();
+                // create clusters and assign them to the nodes based on all links (not only the MSTLinks) below the clustering threshold
+                const clusterAnalyser = new ClusterAnalyser(graphData.nodes, allLinks, settings.clusteringThreshold);
+                graphData.nodes = clusterAnalyser.assignClusterNamesToNodes();
+                dashboardStore.updateClusters(clusterAnalyser.getClusters());
             }
 
             dashboardStore.updateGraphData(graphData);
@@ -64,13 +70,18 @@ export const DashboardVisualizationPanel = () => {
             dashboardStore.updateGraphSettings({ colorMap });
         };
 
-        getGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
-    }, [cases, distanceMatrixAssembly, contacts, dashboardStore.settings, dashboardStore.graphSettings.coloringMode]);
+        createGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
+    }, [
+        cases,
+        distanceMatrixAssembly,
+        dashboardStore.graphSettings.coloringMode,
+        dashboardStore.settings.clusteringThreshold,
+    ]); //contacts, settings.["setting1"]...
 
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col justify-center items-center h-[85vh] rounded-xl bg-muted lg:col-span-2"
+            className="relative flex flex-col justify-center items-center h-[88vh] rounded-xl bg-muted lg:col-span-2"
         >
             <Legend
                 nodes={dashboardStore.graphData.nodes}

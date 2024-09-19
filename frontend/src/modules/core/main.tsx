@@ -17,6 +17,7 @@ import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
+import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -27,8 +28,11 @@ i18next.init({
 });
 
 const App = () => {
-    //vll nur die slices laden, die benötigt werden anstatt den ganzen store zu obverven
-    const { session, fetchSession, updateActivePathogen } = useCoreStore();
+    const session = useCoreStore((state) => state.session);
+    const fetchSession = useCoreStore((state) => state.fetchSession);
+    const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
+
+    useHandlePersistedSessionResults();
 
     useEffect(() => {
         fetchSession();

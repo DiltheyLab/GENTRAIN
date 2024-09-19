@@ -24,33 +24,30 @@ export const ColorSelection = () => {
         }
     };
 
-    const changeClusteringThreshold = (value: number) => {
-        updateSettings({ clusteringThreshold: value });
-    };
-
     return (
         <div>
             <RadioGroup
+                className="-space-y-1"
                 defaultValue={coloringMode}
                 onValueChange={(value: ColoringMode) => handleColoringChange(value)}
             >
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="outbreaks" id="outbreaks" />
                     <Label htmlFor="outbreaks" className="text-md">
-                        Nach Ausbrüchen einfärben
+                        Ausbrüche
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="timeSpan" id="timeSpan" />
                     <Label htmlFor="timeSpan" className="text-md">
-                        Nach Zeitspanne einfärben
+                        Zeitspanne
                     </Label>
                 </div>
                 <>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem value="clusters" id="clusters" />
                         <Label htmlFor="clusters" className="text-md">
-                            Nach Clustern einfärben
+                            Cluster
                         </Label>
                     </div>
                     <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
@@ -60,7 +57,7 @@ export const ColorSelection = () => {
                             min={0}
                             id="clusteringThreshold"
                             value={clusteringThreshold}
-                            onChange={(e) => changeClusteringThreshold(+e.target.value)}
+                            onChange={(e) => updateSettings({ clusteringThreshold: +e.target.value })}
                         />
                     </div>
                 </>

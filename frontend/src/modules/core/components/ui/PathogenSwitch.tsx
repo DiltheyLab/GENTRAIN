@@ -13,7 +13,6 @@ export function PathogenSwitch() {
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const { t } = useTranslation();
-
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
         return (
             <div key={pathogenType.name}>

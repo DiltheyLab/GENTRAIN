@@ -16,10 +16,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "latest"
-      - name: Build frontend
+      - name: Install dependencies
         run: |
           cd frontend
           npm ci
+      - name: Run Unit tests
+        run: |
+          cd frontend
+          npx vitest --coverage.enabled true
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: frontend
+      - name: Build
+        run: |
+          cd frontend
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0

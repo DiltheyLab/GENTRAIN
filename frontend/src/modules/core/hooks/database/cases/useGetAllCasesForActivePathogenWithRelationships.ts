@@ -2,12 +2,14 @@ import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const useGetAllCasesForActivePathogenWithRelationships = (): CaseWithRelationships[] | undefined => {
+export const useGetAllCasesForActivePathogenWithRelationships = (
+    includeSequenceAnalysisResult = false
+): CaseWithRelationships[] | undefined => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     return useLiveQuery(() => {
         if (!activePathogen) {
             return;
         }
-        return getAllCasesForPathogenWithRelationships(activePathogen.id);
+        return getAllCasesForPathogenWithRelationships(activePathogen.id, includeSequenceAnalysisResult);
     }, [activePathogen]);
 };
