@@ -57,7 +57,6 @@ export function SampleUploadStatus() {
                         </>
                     )}
                 </div>
-
                 {hideSampleUploadContent && (
                     <ChevronsUp className="cursor-pointer ml-8" onClick={() => setHideSampleUploadContent(false)} />
                 )}

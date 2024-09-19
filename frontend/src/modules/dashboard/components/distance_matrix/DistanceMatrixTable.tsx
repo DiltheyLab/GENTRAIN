@@ -15,7 +15,7 @@ export function DistanceMatrixTable() {
                 <TableRow key={rowKey}>
                     <TableCell
                         key={rowKey}
-                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs w-[100px] ${
+                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-light text-center text-xs w-[100px] ${
                             hoveredRow === rowIndex ? "bg-muted font-bold" : "bg-muted/50"
                         }`}
                     >
@@ -27,7 +27,7 @@ export function DistanceMatrixTable() {
                             return (
                                 <TableCell
                                     key={colKey}
-                                    className={`[&:not(:last-child)]:border-r-[1px] border-muted font-medium p-2 text-center text-xs hover:font-bold ${
+                                    className={`[&:not(:last-child)]:border-r-[1px] border-muted font-light p-2 text-center text-xs hover:font-bold ${
                                         hoveredRow === rowIndex || hoveredColumn === colIndex
                                             ? "bg-muted"
                                             : "bg-muted/20"
@@ -41,7 +41,7 @@ export function DistanceMatrixTable() {
                                         setHoveredRow(undefined);
                                     }}
                                 >
-                                    {distanceMatrixAssembly[rowKey][colKey] ?? "-"}
+                                    <p>{distanceMatrixAssembly[rowKey][colKey] ?? "-"}</p>
                                 </TableCell>
                             );
                         })}
@@ -54,19 +54,19 @@ export function DistanceMatrixTable() {
         <>
             {distanceMatrix && distanceMatrixAssembly && (
                 <>
-                    <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
+                    <p>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</p>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
                         <Table>
                             <TableBody>
                                 <TableRow className="bg-muted/30 border-muted p-2">
-                                    <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
+                                    <TableCell className="border-r-[1px] border-muted font-light"></TableCell>
                                     {Object.keys(distanceMatrixAssembly)
                                         .sort()
                                         .map((key, index) => (
                                             <TableCell
                                                 key={key}
                                                 style={{ writingMode: "vertical-rl" }}
-                                                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 h-[100px] ${
+                                                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-light text-center text-xs rotate-180 h-[100px] ${
                                                     hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/50"
                                                 }`}
                                             >

@@ -25,6 +25,7 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
             sequence_length: sequenceLength,
             lineage: sequenceAnalysisResult["lineage"],
             n_count: sequenceAnalysisResult["n_count"],
+            ambiguity_character_count: sequenceAnalysisResult["ambiguity_character_count"],
             sequence_analysis_id: sequenceAnalysisId,
         });
     };

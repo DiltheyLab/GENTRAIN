@@ -13,19 +13,19 @@ export const ClusterInformationTable = () => {
 
     const renderHeadRow = () => {
         return (
-            <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Fall ID</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sequenz ID</TableHead>
+            <TableRow className="font-light bg-muted">
+                <TableHead className="font-light p-2 text-xs text-black">Fall ID</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Sequenz ID</TableHead>
                 {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
-                        <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Abstammung</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Sequenzlänge</TableHead>
+                        <TableHead className="font-light p-2 text-xs text-black">N's</TableHead>
+                        <TableHead className="font-light p-2 text-xs text-black">Abstammung</TableHead>
+                        <TableHead className="font-light p-2 text-xs text-black">Sequenzlänge</TableHead>
                     </>
                 )}
-                <TableHead className="font-medium p-2 text-xs text-black">Ausbruch</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Gruppen</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Ausbruch</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Registrierungsdatum</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Gruppen</TableHead>
             </TableRow>
         );
     };
@@ -36,22 +36,22 @@ export const ClusterInformationTable = () => {
 
             return (
                 <TableRow key={node.id} className="border-muted">
-                    <TableCell className="p-2 text-xs font-medium">{node.caseData.case_id}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.fasta_id}</TableCell>
+                    <TableCell className="p-2 text-xs font-light">{node.caseData.case_id}</TableCell>
+                    <TableCell className="p-2 text-xs font-light">{node.caseData.sample?.fasta_id}</TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
-                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.n_count}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.lineage}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">
+                            <TableCell className="p-2 text-xs font-light">{node.caseData.sample?.n_count}</TableCell>
+                            <TableCell className="p-2 text-xs font-light">{node.caseData.sample?.lineage}</TableCell>
+                            <TableCell className="p-2 text-xs font-light">
                                 {node.caseData.sample?.sequence_length}
                             </TableCell>
                         </>
                     )}
-                    <TableCell className="p-2 text-xs font-medium">{node.cluster}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
+                    <TableCell className="p-2 text-xs font-light">{node.cluster}</TableCell>
+                    <TableCell className="p-2 text-xs font-light">
                         {node.caseData.registered_at.toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
+                    <TableCell className="p-2 text-xs font-light">
                         {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
                     </TableCell>
                 </TableRow>
@@ -71,9 +71,9 @@ export const ClusterInformationTable = () => {
                             </div>
                         </AccordionTrigger>
                         <AccordionContent>
-                            <small>
+                            <p>
                                 Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.
-                            </small>
+                            </p>
                             <div className="border-[1px] border-muted rounded-xl overflow-hidden">
                                 <Table className="rounded-xl overflow-hidden">
                                     <TableHeader>{renderHeadRow()}</TableHeader>

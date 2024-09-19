@@ -71,6 +71,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
+        print(result)
         return ViralSequenceAnalysisResponseModel(
             nextclade_version="3.8.2",
             lineage=f"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}",
@@ -80,5 +81,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
             insertions=result["insertions"],
             missing=result["missing"],
             nonACGTNs=result["nonACGTNs"],
+            ambiguity_character_count=result["totalNonACGTNs"],
             alignmentRange=result["alignmentRange"],
         ).model_dump()

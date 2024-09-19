@@ -33,20 +33,20 @@ export const ColorSelection = () => {
             >
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="outbreaks" id="outbreaks" />
-                    <Label htmlFor="outbreaks" className="font-normal text-md">
+                    <Label htmlFor="outbreaks" className="text-md">
                         Ausbrüche
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="timeSpan" id="timeSpan" />
-                    <Label htmlFor="timeSpan" className="font-normal text-md">
+                    <Label htmlFor="timeSpan" className="text-md">
                         Zeitspanne
                     </Label>
                 </div>
                 <>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem value="clusters" id="clusters" />
-                        <Label htmlFor="clusters" className="font-normal text-md">
+                        <Label htmlFor="clusters" className="text-md">
                             Cluster
                         </Label>
                     </div>

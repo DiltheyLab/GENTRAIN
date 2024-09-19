@@ -95,7 +95,7 @@ export function DataTable({ data }: { data: CaseWithRelationships[] }) {
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
+                <div className="flex-1 text-sm">
                     {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
                     Spalte(n) ausgewählt.
                 </div>

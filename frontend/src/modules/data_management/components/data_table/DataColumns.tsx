@@ -51,7 +51,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="capitalize">{row.original.case_id}</div>,
+        cell: ({ row }) => <p className="font-bold capitalize">{row.original.case_id}</p>,
     },
     {
         accessorKey: "sequence",
@@ -72,36 +72,17 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
             if (sample) {
                 return (
                     <>
-                        <div>
-                            <small>
-                                <b>{sample.fasta_id}</b>
-                            </small>
-                        </div>
-                        {sample.sequence_analysis?.schema && (
-                            <div>
-                                <small>Schema: {sample.sequence_analysis?.schema}</small>
-                            </div>
-                        )}
+                        <p className="font-bold">{sample.fasta_id}</p>
+                        {sample.sequence_analysis?.schema && <p>Schema: {sample.sequence_analysis?.schema}</p>}
                         {sample.sequence_analysis?.chewbbaca_version && (
-                            <div>
-                                <small>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</small>
-                            </div>
+                            <p>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</p>
                         )}
                         {sample.sequence_analysis?.nextclade_version && (
-                            <div>
-                                <small>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</small>
-                            </div>
+                            <p>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</p>
                         )}
-                        {sample.lineage && (
-                            <div>
-                                <small>Abstammung: {sample.lineage}</small>
-                            </div>
-                        )}
-                        {sample.n_count && (
-                            <div>
-                                <small>Ambigious Characters: {sample.n_count}</small>
-                            </div>
-                        )}
+                        <p>Abstammung: {sample.lineage}</p>
+                        <p>N's: {sample.n_count}</p>
+                        <p>IUPAC Ambiguity Characters: {sample.ambiguity_character_count}</p>
                     </>
                 );
             }
@@ -127,11 +108,9 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
             const outbreak = row.original.outbreak;
             if (!outbreak) return;
             return (
-                <div>
-                    <small className="cursor-default bg-slate-900 text-white py-1 px-2 rounded-xl font-bold">
-                        {outbreak ? outbreak.name : ""}
-                    </small>
-                </div>
+                <p className="inline-block cursor-default bg-slate-900 text-white py-1 px-2 rounded-xl">
+                    {outbreak ? outbreak.name : ""}
+                </p>
             );
         },
     },
@@ -159,18 +138,16 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                         <HoverCard key={case_id} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>
                                 <div className="mb-1">
-                                    <small className="cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl font-bold">
+                                    <div className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
                                         {case_id}
-                                    </small>
+                                    </div>
                                 </div>
                             </HoverCardTrigger>
                             <HoverCardContent className="text-center py-0 px-2 w-auto">
                                 {contacts[case_id].map((contact, index) => {
                                     return (
                                         <div key={index}>
-                                            <div>
-                                                <small key={index}>{contact.type}</small>
-                                            </div>
+                                            <p>{contact.type}</p>
                                             {index < contacts[case_id].length - 1 && <Separator />}
                                         </div>
                                     );
@@ -184,19 +161,17 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "groups",
-        header: () => <div>Gruppen</div>,
+        header: () => <p className="font-bold">Gruppen</p>,
         cell: ({ row }) => {
             const groups = row.original.groups;
             return (
                 <div>
                     {groups &&
                         groups.map((group) => (
-                            <div key={group.name}>
-                                <small>
-                                    <b>{group.category?.name}: </b>
-                                    {group.name}
-                                </small>
-                            </div>
+                            <p key={group.name}>
+                                <span className="font-bold">{group.category?.name}: </span>
+                                {group.name}
+                            </p>
                         ))}
                 </div>
             );
@@ -217,7 +192,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
             );
         },
         cell: ({ row }) => {
-            return <div className="capitalize">{formatDate(row.original.registered_at)}</div>;
+            return <p className="capitalize">{formatDate(row.original.registered_at)}</p>;
         },
     },
     {

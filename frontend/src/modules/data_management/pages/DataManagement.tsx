@@ -30,7 +30,7 @@ export function DataManagement() {
                     <div className="flex items-center justify-between space-y-2">
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight">Ausbruchsdaten importieren:</h2>
-                            <p className="text-muted-foreground">
+                            <p>
                                 Laden Sie hier ihre Ausbruchsdaten für {activePathogen?.name} hoch. Zu jedem
                                 hochgeladenen Fall können Sequenz- sowie Kontaktdaten hinterlegt werden.
                             </p>

@@ -132,10 +132,7 @@ export const FileUpload = ({
                 </div>
             </div>
             {i18n.exists(`upload.help.${type}`) && (
-                <small
-                    className="text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
-                ></small>
+                <small dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}></small>
             )}
         </>
     );

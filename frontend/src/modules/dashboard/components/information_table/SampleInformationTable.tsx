@@ -9,19 +9,19 @@ export function SampleInformationTable() {
 
     const renderHeadRow = () => {
         return (
-            <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Fall ID</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sequenz ID</TableHead>
+            <TableRow className="bg-muted">
+                <TableHead className="p-2 text-xs text-black">Fall ID</TableHead>
+                <TableHead className="p-2 text-xs text-black">Sequenz ID</TableHead>
                 {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
-                        <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Abstammung</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Sequenzlänge</TableHead>
+                        <TableHead className="p-2 text-xs text-black">N's</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Abstammung</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Sequenzlänge</TableHead>
                     </>
                 )}
-                <TableHead className="font-medium p-2 text-xs text-black">Ausbruch</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Gruppen</TableHead>
+                <TableHead className="p-2 text-xs text-black">Ausbruch</TableHead>
+                <TableHead className="p-2 text-xs text-black">Registrierungsdatum</TableHead>
+                <TableHead className="p-2 text-xs text-black">Gruppen</TableHead>
             </TableRow>
         );
     };
@@ -30,25 +30,33 @@ export function SampleInformationTable() {
         return casesWithSamples.map((caseData) => {
             return (
                 <TableRow key={caseData.id} className="border-muted">
-                    <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">{caseData.sample?.fasta_id}</TableCell>
+                    <TableCell className="p-2 text-xs">
+                        <p>{caseData.case_id}</p>
+                    </TableCell>
+                    <TableCell className="p-2 text-xs">
+                        <p>{caseData.sample?.fasta_id}</p>
+                    </TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
-                            <TableCell className="p-2 text-xs font-medium">{caseData.sample?.n_count}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">{caseData.sample?.lineage}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">
-                                {caseData.sample?.sequence_length}
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.n_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.lineage}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.sequence_length}</p>
                             </TableCell>
                         </>
                     )}
-                    <TableCell className="p-2 text-xs font-medium">
-                        {caseData.outbreak?.name ?? "Keinem Ausbruch zugewiesen"}
+                    <TableCell className="p-2 text-xs">
+                        <p>{caseData.outbreak?.name ?? "Keinem Ausbruch zugewiesen"}</p>
                     </TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
-                        {caseData.registered_at.toLocaleDateString()}
+                    <TableCell className="p-2 text-xs">
+                        <p>{caseData.registered_at.toLocaleDateString()}</p>
                     </TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
-                        {caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
+                    <TableCell className="p-2 text-xs">
+                        <p>{caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}</p>
                     </TableCell>
                 </TableRow>
             );
@@ -59,7 +67,7 @@ export function SampleInformationTable() {
         <>
             {casesWithSamples.length > 0 && (
                 <>
-                    <small>Es sind {casesWithSamples.length} sequenzierte Fälle im Datensatz.</small>
+                    <p>Es sind {casesWithSamples.length} sequenzierte Fälle im Datensatz.</p>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
                         <Table className="rounded-xl overflow-hidden" id="sample-information-table">
                             <TableHeader>{renderHeadRow()}</TableHeader>

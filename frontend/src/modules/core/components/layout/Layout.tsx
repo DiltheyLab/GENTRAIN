@@ -8,7 +8,7 @@ export const Layout = ({ children }: any) => {
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     return (
-        <div>
+        <div className="font-Merriweather font-light">
             <Header></Header>
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             {(sequenceAnalysisRunning || distanceCalculationRunning) && (

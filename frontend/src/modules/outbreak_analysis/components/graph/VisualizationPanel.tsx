@@ -54,7 +54,7 @@ export const VisualizationPanel = () => {
         >
             {outbreakAnalysisStore.settings.selectedOutbreak ? (
                 <>
-                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm font-medium bg-muted/80 pointer-events-none">
+                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm bg-muted/80 pointer-events-none">
                         Analyse: {pathname}
                     </fieldset>
                     <Legend
