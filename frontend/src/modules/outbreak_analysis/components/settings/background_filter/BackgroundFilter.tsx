@@ -31,7 +31,7 @@ export const BackgroundFilter = () => {
                     checked={outbreakAnalysisStore.settings.excludeCasesWithoutSequence}
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
                 />
-                <Label htmlFor="excludeCasesWithoutSequence" className="font-normal text-md leading-5">
+                <Label htmlFor="excludeCasesWithoutSequence" className="text-md leading-5">
                     Nicht sequenzierte Fälle ausschließen
                 </Label>
             </div>
@@ -41,7 +41,7 @@ export const BackgroundFilter = () => {
                     checked={outbreakAnalysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
                 />
-                <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="font-normal text-md leading-5">
+                <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="text-md leading-5">
                     Sequenzierte Fälle mit genetischer Distanz &gt;{" "}
                     {outbreakAnalysisStore.settings.geneticDistanceThreshold} ausschließen
                 </Label>
@@ -65,7 +65,7 @@ export const BackgroundFilter = () => {
                     checked={outbreakAnalysisStore.settings.showBackground}
                     onCheckedChange={(value) => handleShowBackground(value)}
                 />
-                <Label htmlFor="showBackground" className="font-normal text-md">
+                <Label htmlFor="showBackground" className="text-md">
                     Background anzeigen
                 </Label>
             </div>

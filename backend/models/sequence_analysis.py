@@ -15,6 +15,7 @@ class ViralSequenceAnalysisResponseModel(BaseModel):
     insertions: list[object]
     missing: list[object]
     nonACGTNs: list[object]
+    ambiguity_character_count: int
     alignmentRange: object
 
 

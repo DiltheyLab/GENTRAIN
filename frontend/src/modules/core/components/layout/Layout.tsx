@@ -8,7 +8,7 @@ export const Layout = ({ children }: any) => {
     const isUploading = useDataManagementStore((state) => state.isUploading);
     const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     return (
-        <div>
+        <div className="font-Merriweather font-light">
             <Header></Header>
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             {showSampleUploadStatus && isUploading && (

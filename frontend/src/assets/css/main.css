@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../font/Merriweather_Sans/MerriweatherSans-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+    src: url("../font/Merriweather_Sans/MerriweatherSans.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("../font/Merriweather_Sans/MerriweatherSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../font/Merriweather_Sans/MerriweatherSans-Bold.ttf") format("truetype");
+}
+
+html {
+    font-size: 12px;
+}

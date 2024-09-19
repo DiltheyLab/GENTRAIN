@@ -35,7 +35,7 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
                         id="date"
                         disabled={!outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange}
                         variant="outline"
-                        className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
+                        className={cn("justify-start text-left", !date && "text-muted-foreground")}
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {date?.from ? (

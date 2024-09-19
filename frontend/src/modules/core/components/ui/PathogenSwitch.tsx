@@ -25,7 +25,7 @@ export function PathogenSwitch() {
                     return (
                         <div
                             key={pathogen.name}
-                            className="text-sm font-medium px-4 py-2 cursor-pointer hover:bg-muted"
+                            className="text-sm font-light px-4 py-2 cursor-pointer hover:bg-muted"
                             onClick={() => {
                                 setOpen(false);
                                 updateActivePathogen(pathogen);

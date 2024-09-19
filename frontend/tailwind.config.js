@@ -12,6 +12,9 @@ module.exports = {
             },
         },
         extend: {
+            fontFamily: {
+                Merriweather: ["Merriweather", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
             colors: {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",

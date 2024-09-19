@@ -7,11 +7,11 @@ export function CaseInformationTable() {
 
     const renderHeadRow = () => {
         return (
-            <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Outbreak</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sample</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Letztes Änderungsdatum</TableHead>
+            <TableRow className="font-light bg-muted">
+                <TableHead className="font-light p-2 text-xs text-black">Outbreak</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Sample</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Registrierungsdatum</TableHead>
+                <TableHead className="font-light p-2 text-xs text-black">Letztes Änderungsdatum</TableHead>
             </TableRow>
         );
     };
@@ -21,8 +21,8 @@ export function CaseInformationTable() {
             return caseData.map((row: CaseWithRelationships, rowIndex) => {
                 return (
                     <TableRow key={rowIndex} className="border-muted">
-                        <TableCell className="p-2 text-xs font-medium">{row.case_id}</TableCell>
-                        <TableCell className="p-2 text-xs font-medium">
+                        <TableCell className="p-2 text-xs font-light">{row.case_id}</TableCell>
+                        <TableCell className="p-2 text-xs font-light">
                             {row.outbreak ? row.outbreak.name : "Background"}
                         </TableCell>
                         <TableCell className="p-2 text-xs">
@@ -32,10 +32,10 @@ export function CaseInformationTable() {
                                         <p>{row.sample.fasta_id}</p>
                                     </div>
                                     <div>
-                                        <small>{row.sample.lineage ? row.sample.lineage : ""}</small>
+                                        <p>{row.sample.lineage ? row.sample.lineage : ""}</p>
                                     </div>
                                     <div>
-                                        <small>{row.sample.n_count ? row.sample.n_count : ""}</small>
+                                        <p>{row.sample.n_count ? row.sample.n_count : ""}</p>
                                     </div>
                                 </>
                             )}
@@ -56,7 +56,7 @@ export function CaseInformationTable() {
         <>
             {caseData && (
                 <>
-                    <small>Es sind {caseData.length} Fälle im Datensatz.</small>
+                    <p>Es sind {caseData.length} Fälle im Datensatz.</p>
                     <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
                         <Table className="rounded-xl overflow-hidden" id="sample-information-table">
                             <TableHeader>{renderHeadRow()}</TableHeader>

@@ -43,7 +43,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
 
         return (
             <>
-                <Label className="-ml-1 px-1 text-xs font-medium">Zeitraum</Label>
+                <Label className="-ml-1 px-1 text-xs font-light">Zeitraum</Label>
                 <div
                     style={{
                         backgroundImage: `linear-gradient(to right, ${colorMap[startDate]?.color}, ${colorMap[endDate]?.color})`,
@@ -72,7 +72,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
 
         return (
             <div className="flex flex-col">
-                <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Background</Label>
+                <Label className="-ml-1 px-1 text-xs font-light">Ausgewählter Background</Label>
                 {renderClusterItems(selectedBackground)}
             </div>
         );
@@ -85,13 +85,13 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
             <div className="flex flex-col mt-2">
                 {geneticDistanceLinks.length > 0 && (
                     <div className="flex flex-col">
-                        <Label className="-ml-1 px-1 text-xs font-medium">Genetische Kanten</Label>
+                        <Label className="-ml-1 px-1 text-xs font-light">Genetische Kanten</Label>
                         {renderLinkItems(geneticDistanceLinks)}
                     </div>
                 )}
                 {contactTracingLinks.length > 0 && (
                     <div className="flex flex-col mt-2">
-                        <Label className="-ml-1 px-1 text-xs font-medium">Kontaktkanten</Label>
+                        <Label className="-ml-1 px-1 text-xs font-light">Kontaktkanten</Label>
                         {renderLinkItems(contactTracingLinks)}
                     </div>
                 )}
@@ -102,7 +102,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const renderOutbreakLegend = () => {
         return (
             <div className="flex flex-col">
-                <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Ausbruch</Label>
+                <Label className="-ml-1 px-1 text-xs font-light">Ausgewählter Ausbruch</Label>
                 {selectedOutbreak.length === 0 ? (
                     <p className="text-xs text-red-600">Nicht im Graphen enthalten!</p>
                 ) : (

@@ -56,11 +56,7 @@ export function SampleUploadStatus() {
                                     )}`}
                                 >
                                     <div className="mr-2 text-xs">{fastaId}</div>
-                                    <X
-                                        width={18}
-                                        className="cursor-pointer font-normal"
-                                        onClick={() => removeUpload(fastaId)}
-                                    />
+                                    <X width={18} className="cursor-pointer" onClick={() => removeUpload(fastaId)} />
                                 </div>
                             </HoverCardTrigger>
                             <HoverCardContent>

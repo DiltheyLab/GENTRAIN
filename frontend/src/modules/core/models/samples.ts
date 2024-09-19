@@ -7,6 +7,7 @@ interface SampleSchema {
     sequence_analysis_id: number;
     sequence_analysis?: SequenceAnalysisSchema;
     n_count?: number;
+    ambiguity_character_count?: number;
     sequence_length?: number;
     lineage?: string;
     variants?: any;

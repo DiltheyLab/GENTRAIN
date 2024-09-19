@@ -15,7 +15,7 @@ export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) =>
 
     return (
         <fieldset className="absolute z-10 right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/80 pointer-events-none">
-            <legend className="-ml-1 px-1 text-sm font-medium">Informationen</legend>
+            <legend className="-ml-1 px-1 text-sm font-light">Informationen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
                 type="button"

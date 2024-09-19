@@ -84,7 +84,7 @@ export const GraphPdf = ({
         }
 
         // Draw the label above the circle
-        let label = node.index;
+        let label = `${node.index}`;
         const fontSize = 12;
         ctx.font = `bold ${fontSize}px Sans-Serif`;
         // Draw the text

@@ -3,7 +3,7 @@ import { saveAs } from "file-saver";
 import { Font, pdf, Text } from "@react-pdf/renderer";
 import html2canvas from "html2canvas";
 import { Document, Page, View, StyleSheet, Image } from "@react-pdf/renderer";
-import "@/assets/css/pdf.css";
+import "@/assets/css/main.css";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
 import { ColorMap } from "@/modules/core/types/graph";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
@@ -11,9 +11,7 @@ import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSan
 import MerriweatherLight from "@/assets/font/Merriweather_Sans/MerriweatherSans-Light.ttf";
 import MerriweatherSemiBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf";
 import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf";
-import { Graph2D } from "@/modules/core/components/graph/Graph2D";
-import { useEffect, useRef, useState } from "react";
-import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
+import { useEffect, useState } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
 
@@ -38,6 +36,7 @@ Font.register({
         },
     ],
 });
+Font.registerHyphenationCallback((word) => [word]);
 
 const styles = StyleSheet.create({
     page: {
@@ -50,8 +49,56 @@ const styles = StyleSheet.create({
         color: "#0F172A",
         backgroundColor: "#FFFFFF",
         padding: 50,
+        position: "relative",
     },
 });
+
+const getTable = () => {
+    const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
+    const nodes = outbreakAnalysisState.graphData.nodes;
+    return (
+        <>
+            <Headline level={2}>Analysierte Sequenzdaten</Headline>
+            <View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        textAlign: "center",
+                        alignItems: "center",
+                        fontWeight: 600,
+                        borderBottom: "1px solid #0F172A",
+                    }}
+                >
+                    <Text style={{ width: "20%", padding: 5 }}>Isolat-Nummer im MST</Text>
+                    <Text style={{ width: "20%", padding: 5 }}>Sequenz-ID</Text>
+                    <Text style={{ width: "20%", padding: 5 }}>Vermuteter Ausbruch</Text>
+                    <Text style={{ width: "20%", padding: 5 }}>N's</Text>
+                    <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
+                    <Text style={{ width: "20%", padding: 5 }}>Lineage</Text>
+                </View>
+                {nodes.map((node) => (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            textAlign: "center",
+                            alignItems: "center",
+                            fontWeight: 300,
+                        }}
+                    >
+                        <Text style={{ width: "20%", padding: 5 }}>{node.index}</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.fasta_id ?? "-"}</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.outbreak?.name ?? "-"}</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.n_count ?? "-"}</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>
+                            {node.caseData.sample?.ambiguity_character_count ?? "-"}
+                        </Text>
+                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.lineage ?? "-"}</Text>
+                    </View>
+                ))}
+            </View>
+        </>
+    );
+};
 
 const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
     return (
@@ -137,33 +184,46 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <Headline level={1}>Ausbruchsanalyse-Report "{outbreakAnalysisName}"</Headline>
-                <Headline level={2}>
-                    Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
-                </Headline>
-                <Paragraph>
-                    Der analysierte Datensatz umfasst 9 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2-Isolat aus Halle,
-                    2 SARS-CoV-2-Isolate aus Marienfeld, 1 SARS-CoV-2-Isolat aus Rietberg, 1 SARS-CoV-2- Isolat aus
-                    Steinhagen sowie 1 SARS-CoV-2-Isolat aus Versmold als potentielle Ausbruchsproben; 1
-                    SARS-CoV-2-Isolat aus Borgholzhausen, 12 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2- Isolat aus
-                    Halle, 2 SARS-CoV-2-Isolate aus Halle (Westf.), 2 SARS-CoV-2-Isolate aus Harsewinkel, 1
-                    SARS-CoV-2-Isolat aus Herzebrock-Clarholz, 1 SARS-CoV-2-Isolat aus Leopoldshöhe, 1 SARS-
-                    CoV-2-Isolat aus Rheda-Wiedenbrueck, 3 SARS-CoV-2-Isolate aus Rheda-Wiedenbrück, 3 SARS-
-                    CoV-2-Isolate aus Rietberg, 2 SARS-CoV-2-Isolate aus Schloß Holte-Stukenbrock, 2 SARS-CoV-2- Isolate
-                    aus Verl, 1 SARS-CoV-2-Isolat aus Versmold, 1 SARS-CoV-2-Isolat mit unbekanntem Herkunftsort als
-                    Umgebungsproben; sowie das Wuhan-SARS-CoV-2-Referenzgenom (Genbank-ID: MN908947.3).
-                </Paragraph>
-                <Headline level={2}>Grafische Darstellung der genetischen Struktur der analysierten Proben</Headline>
-                <View
-                    style={{
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Image source={graphImage} style={{ marginBottom: 15 }} />
-                    {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                <View style={{ height: "100%" }}>
+                    <Headline level={1}>Ausbruchsanalyse-Report "{outbreakAnalysisName}"</Headline>
+                    <Headline level={2}>
+                        Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
+                    </Headline>
+                    <Paragraph>
+                        Der analysierte Datensatz umfasst 9 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2-Isolat aus
+                        Halle, 2 SARS-CoV-2-Isolate aus Marienfeld, 1 SARS-CoV-2-Isolat aus Rietberg, 1 SARS-CoV-2-
+                        Isolat aus Steinhagen sowie 1 SARS-CoV-2-Isolat aus Versmold als potentielle Ausbruchsproben; 1
+                        SARS-CoV-2-Isolat aus Borgholzhausen, 12 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2- Isolat
+                        aus Halle, 2 SARS-CoV-2-Isolate aus Halle (Westf.), 2 SARS-CoV-2-Isolate aus Harsewinkel, 1
+                        SARS-CoV-2-Isolat aus Herzebrock-Clarholz, 1 SARS-CoV-2-Isolat aus Leopoldshöhe, 1 SARS-
+                        CoV-2-Isolat aus Rheda-Wiedenbrueck, 3 SARS-CoV-2-Isolate aus Rheda-Wiedenbrück, 3 SARS-
+                        CoV-2-Isolate aus Rietberg, 2 SARS-CoV-2-Isolate aus Schloß Holte-Stukenbrock, 2 SARS-CoV-2-
+                        Isolate aus Verl, 1 SARS-CoV-2-Isolat aus Versmold, 1 SARS-CoV-2-Isolat mit unbekanntem
+                        Herkunftsort als Umgebungsproben; sowie das Wuhan-SARS-CoV-2-Referenzgenom (Genbank-ID:
+                        MN908947.3).
+                    </Paragraph>
+                    <Headline level={2}>
+                        Grafische Darstellung der genetischen Struktur der analysierten Proben
+                    </Headline>
+                    <View
+                        style={{
+                            width: "100%",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Image source={graphImage} style={{ marginBottom: 15 }} />
+                        {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                    </View>
                 </View>
+
+                <View>{getTable()}</View>
+
+                <Text
+                    style={{ position: "absolute", bottom: 30, right: 30, fontSize: 8 }}
+                    render={({ pageNumber }) => `${pageNumber}`}
+                    fixed
+                />
             </Page>
         </Document>
     );
@@ -190,7 +250,6 @@ const PdfExportButton = () => {
             type: "image/jpeg",
             encoderOptions: 1.0,
         });
-        console.log(graphImageDataURL);
         const fileName = "test.pdf";
         const blob = await pdf(<AnalysisReport graphImage={graphImageDataURL} />).toBlob();
         saveAs(blob, fileName);

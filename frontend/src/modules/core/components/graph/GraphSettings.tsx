@@ -21,7 +21,7 @@ export const GraphSettings = ({
     if (!showGraphSettings) {
         return (
             <Button
-                className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700 pdf-hide"
+                className="absolute z-10 right-2 top-0 hover:bg-inherit hover:text-primary rounded-full px-1 text-slate-700"
                 type="button"
                 variant="ghost"
                 onClick={() => updateShowGraphSettings(true)}
@@ -33,8 +33,8 @@ export const GraphSettings = ({
     }
 
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none pdf-hide">
-            <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none">
+            <legend className="-ml-1 px-1 text-sm font-light">Grapheinstellungen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
                 type="button"
@@ -46,7 +46,7 @@ export const GraphSettings = ({
             </Button>
             <div className="flex flex-col gap-3 pointer-events-auto">
                 <div className="flex items-center space-x-3">
-                    <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
+                    <label htmlFor="nodeLabel" className="text-sm leading-none">
                         Knotenbeschreibung
                     </label>
                     <Switch
@@ -57,7 +57,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="forceLinkDistance" className="text-sm font-normal leading-none">
+                    <Label htmlFor="forceLinkDistance" className="text-sm leading-none">
                         Kantenabstand
                     </Label>
                     <Slider
@@ -72,7 +72,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="nodeSize" className="text-sm font-normal leading-none">
+                    <Label htmlFor="nodeSize" className="text-sm leading-none">
                         Knotengröße
                     </Label>
                     <Slider
@@ -87,7 +87,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="linkWith" className="text-sm font-normal leading-none">
+                    <Label htmlFor="linkWith" className="text-sm leading-none">
                         Kantenbreite
                     </Label>
                     <Slider
