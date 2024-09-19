@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install the required packages
-RUN npm i
+RUN npm ci
 RUN npm i -g vite
 
 # Copy the current directory contents into the container at the working directory
