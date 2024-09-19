@@ -33,7 +33,7 @@ export const GraphSettings = ({
     }
 
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none">
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none pdf-hide">
             <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"

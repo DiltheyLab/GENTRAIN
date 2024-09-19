@@ -1,9 +1,0 @@
-body.capturing-pdf {
-    line-height: 0.5 !important;
-}
-body.capturing-pdf .pdf-hide {
-    display: none !important;
-}
-body.capturing-pdf .pdf-canvas {
-    line-height: normal;
-}
