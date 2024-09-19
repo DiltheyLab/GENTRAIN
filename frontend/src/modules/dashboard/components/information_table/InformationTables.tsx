@@ -10,14 +10,16 @@ export const InformationTables = () => {
         <Accordion type="multiple" className="mt-4">
             {coloringMode === "clusters" ? (
                 <AccordionItem value="item-1">
-                    <AccordionTrigger className="py-2">Informationen über die gefundenen Cluster</AccordionTrigger>
+                    <AccordionTrigger className="py-2 font-bold">
+                        Informationen über die gefundenen Cluster
+                    </AccordionTrigger>
                     <AccordionContent>
                         <ClusterInformationTable />
                     </AccordionContent>
                 </AccordionItem>
             ) : (
                 <AccordionItem value="item-2">
-                    <AccordionTrigger className="py-2">
+                    <AccordionTrigger className="py-2 font-bold">
                         Informationen zu den im Datensatz enthaltenen Fällen
                     </AccordionTrigger>
                     <AccordionContent>
@@ -26,7 +28,7 @@ export const InformationTables = () => {
                 </AccordionItem>
             )}
             <AccordionItem value="item-3">
-                <AccordionTrigger className="py-2">
+                <AccordionTrigger className="py-2 font-bold">
                     Genetische Distanzen der im Datensatz enthaltenen Fälle
                 </AccordionTrigger>
                 <AccordionContent>
