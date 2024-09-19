@@ -44,7 +44,3 @@
 html {
     font-size: 12px;
 }
-
-a {
-    color: hsl(var(--primary));
-}

@@ -11,15 +11,18 @@ export const Header = () => {
     const pathName = useLocation().pathname.split("/")[1];
 
     const isSelected = (url: string) => {
-        return pathName === url ? "text-foreground" : "text-muted-foreground";
+        return pathName === url ? "font-bold" : "font-light";
     };
 
     return (
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[49] px-4 md:px-6">
             <nav className="hidden flex-col gap-6 text-lg font-light md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-                <Link to="/" className="flex items-center gap-2 text-md font-semibold md:text-base gentrain-logo">
-                    <Share2 className="h-6 w-6 text-primary" />
-                    <div className="not-sr-only text-primary text-xl">Gentrain</div>
+                <Link
+                    to="/"
+                    className="flex items-center gap-2 text-md font-semibold md:text-base gentrain-logo text-primary"
+                >
+                    <Share2 className="h-6 w-6" />
+                    <div className="not-sr-only text-xl">Gentrain</div>
                 </Link>
                 <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground`}>
                     Dashboard

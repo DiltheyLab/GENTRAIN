@@ -4,7 +4,7 @@ export type CustomNode = {
     id: number;
     caseData: CaseWithRelationships;
     cluster: string;
-    index: number;
+    index?: number;
     registeredAt: string;
 };
 

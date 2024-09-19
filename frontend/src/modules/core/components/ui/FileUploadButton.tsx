@@ -1,5 +1,4 @@
-import { Label } from "./Label";
-import { Input } from "./Input";
+import { Input } from "@/modules/core/components/ui/Input";
 import { useTranslation } from "react-i18next";
 import { FileUploadTypes } from "@/modules/data_management/components/upload_section/FileUpload";
 
@@ -14,9 +13,7 @@ export const FileUploadButton = ({ type, accept, multiple, onUpload }: FileUploa
 
     return (
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <p className="font-bold" htmlFor={type}>
-                {t(`upload.label.${type}`)}
-            </p>
+            <p className="font-bold">{t(`upload.label.${type}`)}</p>
             {i18n.exists(`upload.info.${type}`) && (
                 <small dangerouslySetInnerHTML={{ __html: t(`upload.info.${type}`) }}></small>
             )}
