@@ -161,7 +161,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "groups",
-        header: () => <div>Gruppen</div>,
+        header: () => <p className="font-bold">Gruppen</p>,
         cell: ({ row }) => {
             const groups = row.original.groups;
             return (
