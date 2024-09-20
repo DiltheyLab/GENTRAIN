@@ -5,10 +5,12 @@ import html2canvas from "html2canvas";
 import { Document, Page, View, StyleSheet, Image } from "@react-pdf/renderer";
 import "@/assets/css/pdf.css";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { ColorMap } from "@/modules/core/types/graph";
+import { ColorMap, CustomNode } from "@/modules/core/types/graph";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
 import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf";
+import MerriweatherItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-Italic.ttf";
 import MerriweatherLight from "@/assets/font/Merriweather_Sans/MerriweatherSans-Light.ttf";
+import MerriweatherLightItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-LightItalic.ttf";
 import MerriweatherSemiBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf";
 import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf";
 import { Graph2D } from "@/modules/core/components/graph/Graph2D";
@@ -25,7 +27,17 @@ Font.register({
             fontWeight: 400,
         },
         {
+            src: MerriweatherItalic,
+            fontStyle: "italic",
+            fontWeight: 400,
+        },
+        {
             src: MerriweatherLight,
+            fontWeight: 300,
+        },
+        {
+            src: MerriweatherLightItalic,
+            fontStyle: "italic",
             fontWeight: 300,
         },
         {
@@ -51,45 +63,82 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         padding: 50,
     },
+    inline: {
+        display: "flex",
+        flexDirection: "row",
+    },
 });
 
-const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
-    return (
-        <View
-            style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                flexWrap: "wrap",
-            }}
-        >
-            <View style={{ flexDirection: "row", margin: 5 }}>
-                <div
-                    style={{
-                        marginRight: 5,
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        backgroundColor: colorMap[outbreakName].color,
-                    }}
-                ></div>
-                <Text
-                    style={{
-                        color: "#000000",
-                        fontSize: 10,
-                    }}
-                >
-                    {outbreakName}
-                </Text>
-            </View>
-            {backgroundNames.map((name: string, key: number) => (
-                <View key={key} style={{ flexDirection: "row", margin: 5 }}>
+const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
+    const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
+    const selectedClusters = getSelectedClusters();
+    const outbreakAnalysisName = outbreakAnalysisState.name;
+    const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
+    const selectedBackgroundNames = selectedClusters.selectedBackground;
+    const nodes = outbreakAnalysisState.graphData.nodes;
+
+    const getTable = () => {
+        return (
+            <>
+                <Headline level={2}>Analysierte Sequenzdaten</Headline>
+                <View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            textAlign: "center",
+                            alignItems: "center",
+                            fontWeight: 600,
+                            borderBottom: "1px solid #0F172A",
+                        }}
+                    >
+                        <Text style={{ width: "20%", padding: 5 }}>Isolat-Nummer im MST</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Sequenz-ID</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Vermuteter Ausbruch</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>N's</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Lineage</Text>
+                    </View>
+                    {nodes.map((node) => (
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                textAlign: "center",
+                                alignItems: "center",
+                                fontWeight: 300,
+                            }}
+                        >
+                            <Text style={{ width: "20%", padding: 5 }}>{node.index}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.fasta_id ?? "-"}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.outbreak?.name ?? "-"}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.n_count ?? "-"}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>
+                                {node.caseData.sample?.ambiguity_character_count ?? "-"}
+                            </Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.lineage ?? "-"}</Text>
+                        </View>
+                    ))}
+                </View>
+            </>
+        );
+    };
+
+    const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
+        return (
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                }}
+            >
+                <View style={{ flexDirection: "row", margin: 5 }}>
                     <div
                         style={{
                             marginRight: 5,
                             width: 10,
                             height: 10,
                             borderRadius: "50%",
-                            backgroundColor: colorMap[name].color,
+                            backgroundColor: colorMap[outbreakName].color,
                         }}
                     ></div>
                     <Text
@@ -98,38 +147,79 @@ const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: st
                             fontSize: 10,
                         }}
                     >
-                        {name}
+                        {outbreakName}
                     </Text>
                 </View>
-            ))}
-        </View>
-    );
-};
+                {backgroundNames.map((name: string, key: number) => (
+                    <View key={key} style={{ flexDirection: "row", margin: 5 }}>
+                        <div
+                            style={{
+                                marginRight: 5,
+                                width: 10,
+                                height: 10,
+                                borderRadius: "50%",
+                                backgroundColor: colorMap[name].color,
+                            }}
+                        ></div>
+                        <Text
+                            style={{
+                                color: "#000000",
+                                fontSize: 10,
+                            }}
+                        >
+                            {name}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+        );
+    };
 
-const Headline = ({ level, children }: { level: number; children: any }) => {
-    switch (level) {
-        case 1:
-            return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
-        case 2:
-            return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 5 }}>{children}</Text>;
-        default:
-            return <Text style={{ fontSize: 12, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
-    }
-};
+    const getSummary = () => {
+        const outbreakAnalysisName = outbreakAnalysisState.name;
+        const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
+        const selectedBackgroundNames = selectedClusters.selectedBackground;
+        nodes.map((node: CustomNode) => console.log(node));
+        return (
+            <View>
+                <Paragraph>
+                    Der analysierte Datensatz umfasst{" "}
+                    {nodes.filter((node) => node.cluster === selectedOutbreakName).length} Fälle des untersuchten
+                    potenziellen Ausbruchs {selectedOutbreakName},{" "}
+                </Paragraph>
+                {selectedBackgroundNames.map((clusterName: string) => {
+                    const caseCountInCluster = nodes.filter((node) => node.cluster === clusterName).length;
+                    return (
+                        <>
+                            <Text>
+                                {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des potenziellen
+                                Ausbruchs{" "}
+                            </Text>
+                            <Text style={{ fontStyle: "italic" }}>{clusterName}, </Text>
+                        </>
+                    );
+                })}
+            </View>
+        );
+    };
 
-const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
-    const defaults = { marginBottom: 5 };
-    let mergedStyles = { ...defaults, ...styles };
+    const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
+        const defaults = { marginBottom: 5 };
+        let mergedStyles = { ...defaults, ...styles };
 
-    return <Text style={mergedStyles}>{children}</Text>;
-};
+        return <Text style={mergedStyles}>{children}</Text>;
+    };
 
-const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
-    const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
-    const selectedClusters = getSelectedClusters();
-    const outbreakAnalysisName = outbreakAnalysisState.name;
-    const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
-    const selectedBackgroundNames = selectedClusters.selectedBackground;
+    const Headline = ({ level, children }: { level: number; children: any }) => {
+        switch (level) {
+            case 1:
+                return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+            case 2:
+                return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 5 }}>{children}</Text>;
+            default:
+                return <Text style={{ fontSize: 12, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+        }
+    };
 
     const colorMap = outbreakAnalysisState.graphSettings.colorMap;
 
@@ -137,32 +227,25 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <Headline level={1}>Ausbruchsanalyse-Report "{outbreakAnalysisName}"</Headline>
-                <Headline level={2}>
-                    Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
-                </Headline>
-                <Paragraph>
-                    Der analysierte Datensatz umfasst 9 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2-Isolat aus Halle,
-                    2 SARS-CoV-2-Isolate aus Marienfeld, 1 SARS-CoV-2-Isolat aus Rietberg, 1 SARS-CoV-2- Isolat aus
-                    Steinhagen sowie 1 SARS-CoV-2-Isolat aus Versmold als potentielle Ausbruchsproben; 1
-                    SARS-CoV-2-Isolat aus Borgholzhausen, 12 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2- Isolat aus
-                    Halle, 2 SARS-CoV-2-Isolate aus Halle (Westf.), 2 SARS-CoV-2-Isolate aus Harsewinkel, 1
-                    SARS-CoV-2-Isolat aus Herzebrock-Clarholz, 1 SARS-CoV-2-Isolat aus Leopoldshöhe, 1 SARS-
-                    CoV-2-Isolat aus Rheda-Wiedenbrueck, 3 SARS-CoV-2-Isolate aus Rheda-Wiedenbrück, 3 SARS-
-                    CoV-2-Isolate aus Rietberg, 2 SARS-CoV-2-Isolate aus Schloß Holte-Stukenbrock, 2 SARS-CoV-2- Isolate
-                    aus Verl, 1 SARS-CoV-2-Isolat aus Versmold, 1 SARS-CoV-2-Isolat mit unbekanntem Herkunftsort als
-                    Umgebungsproben; sowie das Wuhan-SARS-CoV-2-Referenzgenom (Genbank-ID: MN908947.3).
-                </Paragraph>
-                <Headline level={2}>Grafische Darstellung der genetischen Struktur der analysierten Proben</Headline>
-                <View
-                    style={{
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Image source={graphImage} style={{ marginBottom: 15 }} />
-                    {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                <View style={{ height: "100%" }}>
+                    <Headline level={1}>Ausbruchsanalyse-Report "{outbreakAnalysisName}"</Headline>
+                    <Headline level={2}>
+                        Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
+                    </Headline>
+                    {getSummary()}
+                    <Headline level={2}>
+                        Grafische Darstellung der genetischen Struktur der analysierten Proben
+                    </Headline>
+                    <View
+                        style={{
+                            width: "100%",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Image source={graphImage} style={{ marginBottom: 15 }} />
+                        {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                    </View>
                 </View>
             </Page>
         </Document>

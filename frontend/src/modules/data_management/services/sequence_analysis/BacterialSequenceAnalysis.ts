@@ -14,6 +14,9 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
         await db.samples.add({
             fasta_id: fastaId,
             sequence_analysis_id: sequenceAnalysisId,
+            undeterminable_gen_count: sequenceAnalysisResult["undeterminable_gen_count"],
+            contig_count: sequenceAnalysisResult["contig_count"],
+            first_contig_length: sequenceAnalysisResult["first_contig_length"],
         });
     };
 }
