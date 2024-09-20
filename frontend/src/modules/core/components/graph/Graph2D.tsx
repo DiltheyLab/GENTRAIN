@@ -95,8 +95,9 @@ export const Graph2D = ({
         if (!showNodeLabel) {
             label = "";
         }
-        const fontSize = 12;
-        ctx.font = `bold ${fontSize}px Sans-Serif`;
+        const fontSize = 10;
+        ctx.font = `${fontSize}px Merriweather`;
+
         const textWidth = ctx.measureText(label).width;
         const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
 
@@ -127,8 +128,8 @@ export const Graph2D = ({
 
         // Draw text at midpoint
         ctx.fillStyle = "black"; // Text color
-        const fontSize = 12;
-        ctx.font = `${fontSize}px Sans-Serif`;
+        const fontSize = 10;
+        ctx.font = `${fontSize}px Merriweather`;
         ctx.fillText(link.value === CONTACT_LINK_VALUE ? "" : link.value?.toString(), midX, midY);
     };
 

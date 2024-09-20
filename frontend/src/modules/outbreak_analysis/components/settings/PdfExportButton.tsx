@@ -5,7 +5,7 @@ import html2canvas from "html2canvas";
 import { Document, Page, View, StyleSheet, Image } from "@react-pdf/renderer";
 import "@/assets/css/main.css";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { ColorMap, CustomNode } from "@/modules/core/types/graph";
+import { ColorMap } from "@/modules/core/types/graph";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
 import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf";
 import MerriweatherItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-Italic.ttf";
@@ -16,6 +16,7 @@ import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-B
 import { useEffect, useState } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 
 Font.register({
     family: "Merriweather",
@@ -70,18 +71,19 @@ const styles = StyleSheet.create({
 });
 
 const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
+    const coreState = useCoreStore.getState();
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
     const selectedClusters = getSelectedClusters();
     const outbreakAnalysisName = outbreakAnalysisState.name;
     const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
     const selectedBackgroundNames = selectedClusters.selectedBackground;
+    const activePathogen = coreState.activePathogen;
     const nodes = outbreakAnalysisState.graphData.nodes;
-
     const getTable = () => {
         return (
             <>
                 <Headline level={2}>Analysierte Sequenzdaten</Headline>
-                <View>
+                <View style={{ fontSize: 8 }}>
                     <View
                         style={{
                             flexDirection: "row",
@@ -91,15 +93,27 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                             borderBottom: "1px solid #0F172A",
                         }}
                     >
-                        <Text style={{ width: "20%", padding: 5 }}>Isolat-Nummer im MST</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Fall-Nummer im MST</Text>
                         <Text style={{ width: "20%", padding: 5 }}>Sequenz-ID</Text>
                         <Text style={{ width: "20%", padding: 5 }}>Vermuteter Ausbruch</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>N's</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>Lineage</Text>
+                        {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
+                            <>
+                                <Text style={{ width: "20%", padding: 5 }}>Ns</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Abstammung</Text>
+                            </>
+                        )}
+                        {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                            <>
+                                <Text style={{ width: "20%", padding: 5 }}>Contigs</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Länge erster Contig</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Unbestimmbare Gene</Text>
+                            </>
+                        )}
                     </View>
-                    {nodes.map((node) => (
+                    {nodes.map((node, key) => (
                         <View
+                            key={key}
                             style={{
                                 flexDirection: "row",
                                 textAlign: "center",
@@ -110,11 +124,32 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                             <Text style={{ width: "20%", padding: 5 }}>{node.index}</Text>
                             <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.fasta_id ?? "-"}</Text>
                             <Text style={{ width: "20%", padding: 5 }}>{node.caseData.outbreak?.name ?? "-"}</Text>
-                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.n_count ?? "-"}</Text>
-                            <Text style={{ width: "20%", padding: 5 }}>
-                                {node.caseData.sample?.ambiguity_character_count ?? "-"}
-                            </Text>
-                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.lineage ?? "-"}</Text>
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
+                                <>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.n_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.ambiguity_character_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.lineage ?? "-"}
+                                    </Text>
+                                </>
+                            )}
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                                <>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.contig_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.first_contig_length ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.undeterminable_gen_count ?? "-"}
+                                    </Text>
+                                </>
+                            )}
                         </View>
                     ))}
                 </View>
@@ -176,29 +211,45 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
     };
 
     const getSummary = () => {
-        const outbreakAnalysisName = outbreakAnalysisState.name;
         const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
         const selectedBackgroundNames = selectedClusters.selectedBackground;
-        nodes.map((node: CustomNode) => console.log(node));
+        const caseCountWithoutOutbreak = nodes.filter((node) => !node.caseData.outbreak).length;
+        const caseCountInSelectedOutbreak = nodes.filter(
+            (node) => node.caseData.outbreak?.name === selectedOutbreakName
+        ).length;
         return (
             <View>
                 <Paragraph>
-                    Der analysierte Datensatz umfasst{" "}
-                    {nodes.filter((node) => node.cluster === selectedOutbreakName).length} Fälle des untersuchten
-                    potenziellen Ausbruchs {selectedOutbreakName},{" "}
-                </Paragraph>
-                {selectedBackgroundNames.map((clusterName: string) => {
-                    const caseCountInCluster = nodes.filter((node) => node.cluster === clusterName).length;
-                    return (
-                        <>
-                            <Text>
-                                {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des potenziellen
-                                Ausbruchs{" "}
+                    Der analysierte Datensatz umfasst {caseCountInSelectedOutbreak}{" "}
+                    {caseCountInSelectedOutbreak > 1 ? "Fälle" : "Fall"} des zu untersuchenden vermuteten Ausbruchs "
+                    {selectedOutbreakName}"
+                    {selectedBackgroundNames.map((clusterName: string, index: number) => {
+                        const caseCountInCluster = nodes.filter(
+                            (node) => node.caseData.outbreak?.name === clusterName
+                        ).length;
+                        if (caseCountInCluster === 0) {
+                            return;
+                        }
+                        return (
+                            <Text key={index}>
+                                {index === selectedBackgroundNames.length - 1 && caseCountWithoutOutbreak === 0
+                                    ? " sowie "
+                                    : ", "}
+                                {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des vermuteten
+                                Ausbruchs <Text style={{ fontStyle: "italic" }}>"{clusterName}"</Text>
                             </Text>
-                            <Text style={{ fontStyle: "italic" }}>{clusterName}, </Text>
-                        </>
-                    );
-                })}
+                        );
+                    })}
+                    {caseCountWithoutOutbreak > 0 ? (
+                        <Text>
+                            {" "}
+                            sowie {caseCountWithoutOutbreak} {caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"} aus der
+                            Umgebung ohne eine Ausbruchszuweisung.
+                        </Text>
+                    ) : (
+                        <Text>.</Text>
+                    )}
+                </Paragraph>
             </View>
         );
     };
@@ -233,9 +284,7 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                         Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
                     </Headline>
                     {getSummary()}
-                    <Headline level={2}>
-                        Grafische Darstellung der genetischen Struktur der analysierten Proben
-                    </Headline>
+                    <Headline level={2}>Grafische Darstellung der Struktur der analysierten Fälle</Headline>
                     <View
                         style={{
                             width: "100%",

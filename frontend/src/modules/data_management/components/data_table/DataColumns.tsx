@@ -80,15 +80,15 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                         {sample.sequence_analysis?.nextclade_version && (
                             <p>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</p>
                         )}
-                        {sample.lineage && <p>Abstammung: {sample.lineage}</p>}
-                        {sample.n_count && <p>Ns: {sample.n_count}</p>}
-                        {sample.ambiguity_character_count && (
+                        {sample.lineage != null && <p>Abstammung: {sample.lineage}</p>}
+                        {sample.n_count != null && <p>Ns: {sample.n_count}</p>}
+                        {sample.ambiguity_character_count != null && (
                             <p>IUPAC Ambiguity Characters: {sample.ambiguity_character_count}</p>
                         )}
-                        {sample.contig_count && <p>Contigs: {sample.contig_count}</p>}
-                        {sample.first_contig_length && <p>Länge erster Contig: {sample.first_contig_length}</p>}
-                        {sample.undeterminable_gen_count && (
-                            <p>Ubestimmbarer Gene: {sample.undeterminable_gen_count}</p>
+                        {sample.contig_count != null && <p>Contigs: {sample.contig_count}</p>}
+                        {sample.first_contig_length != null && <p>Länge erster Contig: {sample.first_contig_length}</p>}
+                        {sample.undeterminable_gen_count != null && (
+                            <p>Unbestimmbarer Gene: {sample.undeterminable_gen_count}</p>
                         )}
                     </>
                 );
