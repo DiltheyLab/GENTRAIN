@@ -102,6 +102,16 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                                 <small>Ambigious Characters: {sample.n_count}</small>
                             </div>
                         )}
+                        {sample.lineage && <p>Abstammung: {sample.lineage}</p>}
+                        {sample.n_count && <p>Ns: {sample.n_count}</p>}
+                        {sample.ambiguity_character_count && (
+                            <p>IUPAC Ambiguity Characters: {sample.ambiguity_character_count}</p>
+                        )}
+                        {sample.contig_count && <p>Contigs: {sample.contig_count}</p>}
+                        {sample.first_contig_length && <p>Länge erster Contig: {sample.first_contig_length}</p>}
+                        {sample.undeterminable_gen_count && (
+                            <p>Unbestimmbare Gene: {sample.undeterminable_gen_count}</p>
+                        )}
                     </>
                 );
             }
