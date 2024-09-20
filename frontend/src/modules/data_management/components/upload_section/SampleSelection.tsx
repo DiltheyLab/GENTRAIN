@@ -20,34 +20,36 @@ export function SampleSelection() {
 
     return (
         <>
-            <div className="w-full flex flex-wrap gap-2">
+            <div className="w-full flex flex-wrap">
                 <small className="mb-2">
                     Folgende Samples wurden in der Fastadatei gefunden und werden dem Datenbestand hinzugefügt. Durch
                     Hovern über eine Fasta ID können Sie sich weitere Informationen anzeigen lassen und durch Klick auf
                     das Kreuz die jeweilige Sequenz vom Upload ausschließen.
                 </small>
-                {Object.keys(uploads).map((fastaId) => (
-                    <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
-                        <HoverCardTrigger asChild>
-                            <div
-                                key={fastaId}
-                                className={`hover:bg-slate-900 hover:text-white cursor-default bg-white flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md ${getColorClassNames(
-                                    uploads[fastaId]
-                                )}`}
-                            >
-                                <div className="mr-2 text-xs">{fastaId}</div>
-                                <X
-                                    width={18}
-                                    className="cursor-pointer font-normal"
-                                    onClick={() => removeUpload(fastaId)}
-                                />
-                            </div>
-                        </HoverCardTrigger>
-                        <HoverCardContent>
-                            <SampleInfoCard fastaId={fastaId} />
-                        </HoverCardContent>
-                    </HoverCard>
-                ))}
+                <div className="flex flex-wrap gap-2">
+                    {Object.keys(uploads).map((fastaId) => (
+                        <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
+                            <HoverCardTrigger asChild>
+                                <div
+                                    key={fastaId}
+                                    className={`hover:bg-slate-900 hover:text-white cursor-default bg-white flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md ${getColorClassNames(
+                                        uploads[fastaId]
+                                    )}`}
+                                >
+                                    <div className="mr-2 text-xs">{fastaId}</div>
+                                    <X
+                                        width={18}
+                                        className="cursor-pointer font-normal"
+                                        onClick={() => removeUpload(fastaId)}
+                                    />
+                                </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                                <SampleInfoCard fastaId={fastaId} />
+                            </HoverCardContent>
+                        </HoverCard>
+                    ))}
+                </div>
             </div>
         </>
     );

@@ -80,6 +80,9 @@ export abstract class SequenceAnalysisStrategy {
             socket.on("sequence_analysis_enqueued", (fastaId: string) => {
                 this.dataManagementState.changeUpload(fastaId, "enqueued");
             });
+            socket.on("sequence_analysis_failed", (fastaId: string) => {
+                this.dataManagementState.changeUpload(fastaId, "failed");
+            });
             socket.on("sequence_analysis_started", (fastaId: string) => {
                 this.dataManagementState.changeUpload(fastaId, "started");
             });

@@ -8,6 +8,9 @@ interface SampleSchema {
     sequence_analysis?: SequenceAnalysisSchema | null;
     n_count?: number;
     ambiguity_character_count?: number;
+    undeterminable_gen_count?: number;
+    contig_count?: number;
+    first_contig_length?: number;
     sequence_length?: number;
     lineage?: string;
     variants?: any;
