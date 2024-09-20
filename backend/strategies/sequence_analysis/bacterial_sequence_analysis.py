@@ -1,3 +1,4 @@
+import re
 import shutil
 import time
 import pathlib
@@ -36,9 +37,21 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         input_file = tempfile.NamedTemporaryFile(
             dir=self.input, suffix=".fa", delete=False
         ).name
+        self.index_sequences()
         with open(file=input_file, mode="w", encoding="utf-8") as input_file:
             input_file.write(self.sequence)
         self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.fasta_id}_{round(time.time() * 1000)}"
+
+    def index_sequences(self):
+        count = 0
+        result = ""
+        for char in self.sequence:
+            if char == ">":
+                result += f">{count}"
+                count += 1
+            else:
+                result += char
+        self.sequence = result
 
     def tsv2json(self, file):
         arr = []
@@ -81,7 +94,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         )
         process.wait()
         if process.returncode != 0:
-            shutil.rmtree(self.input)
+            # shutil.rmtree(self.input)
             shutil.rmtree(self.output)
             raise SequenceAnalysisFailedException
         else:
@@ -98,9 +111,26 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 encoding="utf-8",
             ) as tsv_file:
                 results["allele_ids"] = self.tsv2json(tsv_file)
+
+            # collect parameters for quality classification of the assembley
+            results["undeterminable_gen_count"] = sum(
+                results["allele_hashes"][gen] == "-" for gen in results["allele_hashes"]
+            )
+            results["contig_count"] = self.sequence.count(">")
+            results["first_contig_length"] = self.get_first_contig_length()
             shutil.rmtree(self.input)
             shutil.rmtree(self.output)
             return results
+
+    def get_first_contig_length(self):
+        """Return the length of the assembleys first contig, which indicates the quality of the assembly.
+        The signiticance of this parameter depends on the sequencing method (hybrid, illumina or nanopore).
+        """
+        sequence_without_newlines_and_contig_id = self.sequence.replace(
+            "\n", ""
+        ).replace("0", "")
+        first_contig = sequence_without_newlines_and_contig_id.split(">", 2)[1]
+        return len(first_contig)
 
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
@@ -109,4 +139,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
             allele_ids=result["allele_ids"],
             allele_hashes=result["allele_hashes"],
+            undeterminable_gen_count=result["undeterminable_gen_count"],
+            contig_count=result["contig_count"],
+            first_contig_length=result["first_contig_length"],
         ).model_dump()

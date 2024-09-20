@@ -34,7 +34,6 @@ export const GraphPdf = ({
     cases,
     coloringMode,
     updateSelectedCase,
-    selectedCase,
     linkDistance = 70,
     charge = -80,
     nodeSize = 6,
@@ -77,16 +76,11 @@ export const GraphPdf = ({
                 : COLOR_FOR_CASES_WITHOUT_CLUSTERS;
         }
         ctx.fill();
-        if (selectedCase && selectedCase.case_id === node.caseData.case_id) {
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
 
         // Draw the label above the circle
         let label = `${node.index}`;
         const fontSize = 12;
-        ctx.font = `bold ${fontSize}px Sans-Serif`;
+        ctx.font = `${fontSize}px Merriweather`;
         // Draw the text
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -112,7 +106,7 @@ export const GraphPdf = ({
         // Draw text at midpoint
         ctx.fillStyle = "black"; // Text color
         const fontSize = 12;
-        ctx.font = `${fontSize}px Sans-Serif`;
+        ctx.font = `light ${fontSize}px Merriweather`;
         ctx.fillText(link.value.toString(), midX, midY);
     };
 

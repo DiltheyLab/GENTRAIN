@@ -8,12 +8,15 @@ import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
 import { ColorMap } from "@/modules/core/types/graph";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
 import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf";
+import MerriweatherItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-Italic.ttf";
 import MerriweatherLight from "@/assets/font/Merriweather_Sans/MerriweatherSans-Light.ttf";
+import MerriweatherLightItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-LightItalic.ttf";
 import MerriweatherSemiBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf";
 import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf";
 import { useEffect, useState } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 
 Font.register({
     family: "Merriweather",
@@ -23,7 +26,17 @@ Font.register({
             fontWeight: 400,
         },
         {
+            src: MerriweatherItalic,
+            fontStyle: "italic",
+            fontWeight: 400,
+        },
+        {
             src: MerriweatherLight,
+            fontWeight: 300,
+        },
+        {
+            src: MerriweatherLightItalic,
+            fontStyle: "italic",
             fontWeight: 300,
         },
         {
@@ -51,92 +64,116 @@ const styles = StyleSheet.create({
         padding: 50,
         position: "relative",
     },
+    inline: {
+        display: "flex",
+        flexDirection: "row",
+    },
 });
 
-const getTable = () => {
+const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
+    const coreState = useCoreStore.getState();
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
+    const selectedClusters = getSelectedClusters();
+    const outbreakAnalysisName = outbreakAnalysisState.name;
+    const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
+    const selectedBackgroundNames = selectedClusters.selectedBackground;
+    const activePathogen = coreState.activePathogen;
     const nodes = outbreakAnalysisState.graphData.nodes;
-    return (
-        <>
-            <Headline level={2}>Analysierte Sequenzdaten</Headline>
-            <View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        textAlign: "center",
-                        alignItems: "center",
-                        fontWeight: 600,
-                        borderBottom: "1px solid #0F172A",
-                    }}
-                >
-                    <Text style={{ width: "20%", padding: 5 }}>Isolat-Nummer im MST</Text>
-                    <Text style={{ width: "20%", padding: 5 }}>Sequenz-ID</Text>
-                    <Text style={{ width: "20%", padding: 5 }}>Vermuteter Ausbruch</Text>
-                    <Text style={{ width: "20%", padding: 5 }}>N's</Text>
-                    <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
-                    <Text style={{ width: "20%", padding: 5 }}>Lineage</Text>
-                </View>
-                {nodes.map((node) => (
+    const getTable = () => {
+        return (
+            <>
+                <Headline level={2}>Analysierte Sequenzdaten</Headline>
+                <View style={{ fontSize: 8 }}>
                     <View
                         style={{
                             flexDirection: "row",
                             textAlign: "center",
                             alignItems: "center",
-                            fontWeight: 300,
+                            fontWeight: 600,
+                            borderBottom: "1px solid #0F172A",
                         }}
                     >
-                        <Text style={{ width: "20%", padding: 5 }}>{node.index}</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.fasta_id ?? "-"}</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.outbreak?.name ?? "-"}</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.n_count ?? "-"}</Text>
-                        <Text style={{ width: "20%", padding: 5 }}>
-                            {node.caseData.sample?.ambiguity_character_count ?? "-"}
-                        </Text>
-                        <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.lineage ?? "-"}</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Fall-Nummer im MST</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Sequenz-ID</Text>
+                        <Text style={{ width: "20%", padding: 5 }}>Vermuteter Ausbruch</Text>
+                        {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
+                            <>
+                                <Text style={{ width: "20%", padding: 5 }}>Ns</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>IUPAC Ambiguity Characters</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Abstammung</Text>
+                            </>
+                        )}
+                        {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                            <>
+                                <Text style={{ width: "20%", padding: 5 }}>Contigs</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Länge erster Contig</Text>
+                                <Text style={{ width: "20%", padding: 5 }}>Unbestimmbare Gene</Text>
+                            </>
+                        )}
                     </View>
-                ))}
-            </View>
-        </>
-    );
-};
+                    {nodes.map((node, key) => (
+                        <View
+                            key={key}
+                            style={{
+                                flexDirection: "row",
+                                textAlign: "center",
+                                alignItems: "center",
+                                fontWeight: 300,
+                            }}
+                        >
+                            <Text style={{ width: "20%", padding: 5 }}>{node.index}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.sample?.fasta_id ?? "-"}</Text>
+                            <Text style={{ width: "20%", padding: 5 }}>{node.caseData.outbreak?.name ?? "-"}</Text>
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
+                                <>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.n_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.ambiguity_character_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.lineage ?? "-"}
+                                    </Text>
+                                </>
+                            )}
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                                <>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.contig_count ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.first_contig_length ?? "-"}
+                                    </Text>
+                                    <Text style={{ width: "20%", padding: 5 }}>
+                                        {node.caseData.sample?.undeterminable_gen_count ?? "-"}
+                                    </Text>
+                                </>
+                            )}
+                        </View>
+                    ))}
+                </View>
+            </>
+        );
+    };
 
-const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
-    return (
-        <View
-            style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                flexWrap: "wrap",
-            }}
-        >
-            <View style={{ flexDirection: "row", margin: 5 }}>
-                <div
-                    style={{
-                        marginRight: 5,
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        backgroundColor: colorMap[outbreakName].color,
-                    }}
-                ></div>
-                <Text
-                    style={{
-                        color: "#000000",
-                        fontSize: 10,
-                    }}
-                >
-                    {outbreakName}
-                </Text>
-            </View>
-            {backgroundNames.map((name: string, key: number) => (
-                <View key={key} style={{ flexDirection: "row", margin: 5 }}>
+    const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
+        return (
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                }}
+            >
+                <View style={{ flexDirection: "row", margin: 5 }}>
                     <div
                         style={{
                             marginRight: 5,
                             width: 10,
                             height: 10,
                             borderRadius: "50%",
-                            backgroundColor: colorMap[name].color,
+                            backgroundColor: colorMap[outbreakName].color,
                         }}
                     ></div>
                     <Text
@@ -145,38 +182,95 @@ const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: st
                             fontSize: 10,
                         }}
                     >
-                        {name}
+                        {outbreakName}
                     </Text>
                 </View>
-            ))}
-        </View>
-    );
-};
+                {backgroundNames.map((name: string, key: number) => (
+                    <View key={key} style={{ flexDirection: "row", margin: 5 }}>
+                        <div
+                            style={{
+                                marginRight: 5,
+                                width: 10,
+                                height: 10,
+                                borderRadius: "50%",
+                                backgroundColor: colorMap[name].color,
+                            }}
+                        ></div>
+                        <Text
+                            style={{
+                                color: "#000000",
+                                fontSize: 10,
+                            }}
+                        >
+                            {name}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+        );
+    };
 
-const Headline = ({ level, children }: { level: number; children: any }) => {
-    switch (level) {
-        case 1:
-            return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
-        case 2:
-            return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 5 }}>{children}</Text>;
-        default:
-            return <Text style={{ fontSize: 12, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
-    }
-};
+    const getSummary = () => {
+        const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
+        const selectedBackgroundNames = selectedClusters.selectedBackground;
+        const caseCountWithoutOutbreak = nodes.filter((node) => !node.caseData.outbreak).length;
+        const caseCountInSelectedOutbreak = nodes.filter(
+            (node) => node.caseData.outbreak?.name === selectedOutbreakName
+        ).length;
+        return (
+            <View>
+                <Paragraph>
+                    Der analysierte Datensatz umfasst {caseCountInSelectedOutbreak}{" "}
+                    {caseCountInSelectedOutbreak > 1 ? "Fälle" : "Fall"} des zu untersuchenden vermuteten Ausbruchs "
+                    {selectedOutbreakName}"
+                    {selectedBackgroundNames.map((clusterName: string, index: number) => {
+                        const caseCountInCluster = nodes.filter(
+                            (node) => node.caseData.outbreak?.name === clusterName
+                        ).length;
+                        if (caseCountInCluster === 0) {
+                            return;
+                        }
+                        return (
+                            <Text key={index}>
+                                {index === selectedBackgroundNames.length - 1 && caseCountWithoutOutbreak === 0
+                                    ? " sowie "
+                                    : ", "}
+                                {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des vermuteten
+                                Ausbruchs <Text style={{ fontStyle: "italic" }}>"{clusterName}"</Text>
+                            </Text>
+                        );
+                    })}
+                    {caseCountWithoutOutbreak > 0 ? (
+                        <Text>
+                            {" "}
+                            sowie {caseCountWithoutOutbreak} {caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"} aus der
+                            Umgebung ohne eine Ausbruchszuweisung.
+                        </Text>
+                    ) : (
+                        <Text>.</Text>
+                    )}
+                </Paragraph>
+            </View>
+        );
+    };
 
-const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
-    const defaults = { marginBottom: 5 };
-    let mergedStyles = { ...defaults, ...styles };
+    const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
+        const defaults = { marginBottom: 5 };
+        let mergedStyles = { ...defaults, ...styles };
 
-    return <Text style={mergedStyles}>{children}</Text>;
-};
+        return <Text style={mergedStyles}>{children}</Text>;
+    };
 
-const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
-    const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
-    const selectedClusters = getSelectedClusters();
-    const outbreakAnalysisName = outbreakAnalysisState.name;
-    const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
-    const selectedBackgroundNames = selectedClusters.selectedBackground;
+    const Headline = ({ level, children }: { level: number; children: any }) => {
+        switch (level) {
+            case 1:
+                return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+            case 2:
+                return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 5 }}>{children}</Text>;
+            default:
+                return <Text style={{ fontSize: 12, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+        }
+    };
 
     const colorMap = outbreakAnalysisState.graphSettings.colorMap;
 
@@ -189,22 +283,8 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                     <Headline level={2}>
                         Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
                     </Headline>
-                    <Paragraph>
-                        Der analysierte Datensatz umfasst 9 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2-Isolat aus
-                        Halle, 2 SARS-CoV-2-Isolate aus Marienfeld, 1 SARS-CoV-2-Isolat aus Rietberg, 1 SARS-CoV-2-
-                        Isolat aus Steinhagen sowie 1 SARS-CoV-2-Isolat aus Versmold als potentielle Ausbruchsproben; 1
-                        SARS-CoV-2-Isolat aus Borgholzhausen, 12 SARS-CoV-2-Isolate aus Gütersloh, 1 SARS-CoV-2- Isolat
-                        aus Halle, 2 SARS-CoV-2-Isolate aus Halle (Westf.), 2 SARS-CoV-2-Isolate aus Harsewinkel, 1
-                        SARS-CoV-2-Isolat aus Herzebrock-Clarholz, 1 SARS-CoV-2-Isolat aus Leopoldshöhe, 1 SARS-
-                        CoV-2-Isolat aus Rheda-Wiedenbrueck, 3 SARS-CoV-2-Isolate aus Rheda-Wiedenbrück, 3 SARS-
-                        CoV-2-Isolate aus Rietberg, 2 SARS-CoV-2-Isolate aus Schloß Holte-Stukenbrock, 2 SARS-CoV-2-
-                        Isolate aus Verl, 1 SARS-CoV-2-Isolat aus Versmold, 1 SARS-CoV-2-Isolat mit unbekanntem
-                        Herkunftsort als Umgebungsproben; sowie das Wuhan-SARS-CoV-2-Referenzgenom (Genbank-ID:
-                        MN908947.3).
-                    </Paragraph>
-                    <Headline level={2}>
-                        Grafische Darstellung der genetischen Struktur der analysierten Proben
-                    </Headline>
+                    {getSummary()}
+                    <Headline level={2}>Grafische Darstellung der Struktur der analysierten Fälle</Headline>
                     <View
                         style={{
                             width: "100%",
