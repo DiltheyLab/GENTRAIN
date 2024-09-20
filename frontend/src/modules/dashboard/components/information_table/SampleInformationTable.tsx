@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
+import { formatDate } from "@/modules/core/helpers/dates";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
 
@@ -15,7 +15,8 @@ export function SampleInformationTable() {
                 <TableHead className="p-2 text-xs text-black">Sequenz ID</TableHead>
                 {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
-                        <TableHead className="p-2 text-xs text-black">N's</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Ns</TableHead>
+                        <TableHead className="p-2 text-xs text-black">IUPAC Ambiguity Characters</TableHead>
                         <TableHead className="p-2 text-xs text-black">Abstammung</TableHead>
                         <TableHead className="p-2 text-xs text-black">Sequenzlänge</TableHead>
                     </>
@@ -28,8 +29,8 @@ export function SampleInformationTable() {
                     </>
                 )}
                 <TableHead className="p-2 text-xs text-black">Ausbruch</TableHead>
-                <TableHead className="p-2 text-xs text-black">Registrierungsdatum</TableHead>
                 <TableHead className="p-2 text-xs text-black">Gruppen</TableHead>
+                <TableHead className="p-2 text-xs text-black">Registrierungsdatum</TableHead>
             </TableRow>
         );
     };
@@ -42,9 +43,18 @@ export function SampleInformationTable() {
                     <TableCell className="p-2 text-xs">{caseData.sample?.fasta_id}</TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
-                            <TableCell className="p-2 text-xs">{caseData.sample?.n_count}</TableCell>
-                            <TableCell className="p-2 text-xs">{caseData.sample?.lineage}</TableCell>
-                            <TableCell className="p-2 text-xs">{caseData.sample?.sequence_length}</TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.n_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.ambiguity_character_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.lineage}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{caseData.sample?.sequence_length}</p>
+                            </TableCell>
                         </>
                     )}
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
@@ -64,10 +74,10 @@ export function SampleInformationTable() {
                         <p>{caseData.outbreak?.name ?? "Keinem Ausbruch zugewiesen"}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
-                        <p>{formatDate(caseData.registered_at)}</p>
+                        <p>{caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
-                        {caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
+                        <p>{formatDate(caseData.registered_at)}</p>
                     </TableCell>
                 </TableRow>
             );
