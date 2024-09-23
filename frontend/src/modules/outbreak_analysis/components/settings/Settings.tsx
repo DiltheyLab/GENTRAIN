@@ -19,7 +19,7 @@ import {
 import { ColorSelection } from "./color_selection/ColorSelection";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 import { lazy, Suspense, useState } from "react";
-import { Dialog, DialogContent } from "@/modules/core/components/ui/Dialog";
+import { Dialog } from "@/modules/core/components/ui/Dialog";
 
 const PdfExport = lazy(() => import("./PdfExport"));
 
