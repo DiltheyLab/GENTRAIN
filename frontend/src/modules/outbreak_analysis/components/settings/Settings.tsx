@@ -18,11 +18,13 @@ import {
 } from "./Tooltips";
 import { ColorSelection } from "./color_selection/ColorSelection";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
+import { Dialog, DialogContent } from "@/modules/core/components/ui/Dialog";
 
-const PdfExportButton = lazy(() => import("./PdfExportButton"));
+const PdfExport = lazy(() => import("./PdfExport"));
 
 export const Settings = () => {
+    const [showPdfExportDialog, setShowPdfExportDialog] = useState(false);
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const safeAnalysis = async () => {
         try {
@@ -145,7 +147,17 @@ export const Settings = () => {
                             </Button>
                         }
                     >
-                        <PdfExportButton />
+                        <Button
+                            className="mt-2"
+                            variant="outline"
+                            type="button"
+                            onClick={() => setShowPdfExportDialog(true)}
+                        >
+                            Ausbruchsanalyse-Report exportieren
+                        </Button>
+                        <Dialog open={showPdfExportDialog}>
+                            <PdfExport onPdfExport={() => setShowPdfExportDialog(false)} />
+                        </Dialog>
                     </Suspense>
                     <Button type="button" onClick={() => safeAnalysis()}>
                         Analyse speichern
