@@ -75,7 +75,7 @@ export function SampleInformationTable() {
                         </>
                     )}
                     <TableCell className="p-2 text-xs">
-                        <p>{caseData.outbreak?.name ?? "Keinem Ausbruch zugewiesen"}</p>
+                        <p>{caseData.outbreak?.name ?? "Umgebung"}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
                         <p>{caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}</p>

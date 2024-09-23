@@ -90,7 +90,7 @@ export const GraphPdf = ({
     };
 
     const createCustomLinkCanvas = (link: LinkObject & CustomLink, ctx: CanvasRenderingContext2D) => {
-        if (!link.source || !link.target) return;
+        if (!link.source || !link.target || link.value < 0) return;
 
         // Get the source and target nodes
         const source = link.source as NodeObject;
