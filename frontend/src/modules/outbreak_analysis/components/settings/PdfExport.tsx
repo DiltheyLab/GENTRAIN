@@ -21,7 +21,6 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Textarea } from "@/modules/core/components/ui/Textarea";
-import { Label } from "recharts";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 Font.register({
@@ -509,7 +508,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                                 Bewertung generieren.
                             </small>
                         </div>
-                        {/*<div className="flex items-center mb-2">
+                        <div className="flex items-center mb-2">
                             <Checkbox
                                 className="mr-2"
                                 id="generateConclusionCheckbox"
@@ -517,7 +516,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                                 onCheckedChange={() => setGenerateConclusion(!generateConclusion)}
                             />
                             <label htmlFor="generateConclusionCheckbox">Bewertung automatisch generieren lassen</label>
-                        </div>*/}
+                        </div>
                         <Textarea
                             disabled={generateConclusion}
                             className="min-h-[200px]"
