@@ -1,4 +1,3 @@
-import { Button } from "@/modules/core/components/ui/Button";
 import { saveAs } from "file-saver";
 import { Font, pdf, Text } from "@react-pdf/renderer";
 import html2canvas from "html2canvas";
@@ -13,17 +12,17 @@ import MerriweatherLight from "@/assets/font/Merriweather_Sans/MerriweatherSans-
 import MerriweatherLightItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-LightItalic.ttf";
 import MerriweatherSemiBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf";
 import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf";
-<<<<<<< HEAD
-import { Graph2D } from "@/modules/core/components/graph/Graph2D";
-import { useEffect, useRef, useState } from "react";
-import { useResizeContainer } from "@/modules/core/hooks/useResizeContainer";
-=======
 import { useEffect, useMemo, useState } from "react";
->>>>>>> 6388381 (chore: adjust legent and introduction)
 import { useCoreStore } from "@/modules/core/stores/core";
 import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { t } from "i18next";
+import { Button } from "@/modules/core/components/ui/Button";
+import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
+import { Textarea } from "@/modules/core/components/ui/Textarea";
+import { Label } from "recharts";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 Font.register({
     family: "Merriweather",
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
         fontFamily: "Merriweather",
         fontWeight: 300,
         fontSize: 10,
-        lineHeight: 1.7,
+        lineHeight: 1.8,
         textAlign: "justify",
         flexDirection: "column",
         color: "#0F172A",
@@ -73,9 +72,12 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
     },
+    renderHtml: {
+        fontSize: 10,
+    },
 });
 
-const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
+const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null; graphImage: string }) => {
     const coreState = useCoreStore.getState();
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
     const selectedClusters = getSelectedClusters();
@@ -86,6 +88,11 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
     const nodes = outbreakAnalysisState.graphData.nodes;
     const links = outbreakAnalysisState.graphData.links;
     const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
+    const samples = nodes.filter((node) => node.caseData.sample);
+    const samplesWithLowAmountOfNs = samples.filter(
+        (node) => node.caseData.sample?.n_count && node.caseData.sample?.n_count < 1500
+    );
+
     const geneticDistanceLinks = uniqueTypesOfLinks.filter((link) => link.type === t(`linkTypes.geneticDistance`));
     const uniqueContactTracingLinks = uniqueTypesOfLinks.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
     const allContactTracingLinks = links.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
@@ -182,6 +189,7 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
         return (
             <View
                 style={{
+                    marginLeft: 5,
                     flexDirection: "column",
                     justifyContent: "center",
                     flexWrap: "wrap",
@@ -284,10 +292,10 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                     Der analysierte Datensatz umfasst Falldaten des{" "}
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"}{" "}
                     Pathogens "{activePathogen?.name}".
-                </Paragraph>
-                <Paragraph>
-                    Es existieren {caseCountInSelectedOutbreak} {caseCountInSelectedOutbreak > 1 ? "Fälle" : "Fall"} des
-                    zu untersuchenden vermuteten Ausbruchs "{selectedOutbreakName}"
+                    <br />
+                    <br /> Es existieren {caseCountInSelectedOutbreak}{" "}
+                    {caseCountInSelectedOutbreak > 1 ? "Fälle" : "Fall"} des zu untersuchenden vermuteten Ausbruchs "
+                    {selectedOutbreakName}"
                     {selectedBackgroundNames.map((clusterName: string, index: number) => {
                         const caseCountInCluster = nodes.filter(
                             (node) => node.caseData.outbreak?.name === clusterName
@@ -314,12 +322,17 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                     ) : (
                         <Text>.</Text>
                     )}
-                </Paragraph>
-                <Paragraph>
-                    Für {nodes.length - caseCountWithoutOutbreak} von {nodes.length} Fällen liegen genetische
-                    Sequenzdaten vor.
-                    {allContactTracingLinks.length > 0 &&
-                        ` Es sind außerdem ${allContactTracingLinks.length} Kontaktangaben enthalten.`}
+                    {"\n\n"}
+                    Für {samples.length} von {nodes.length} Fällen liegen genetische Sequenzdaten vor
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral &&
+                        `, wobei ${samplesWithLowAmountOfNs.length} von ${samples.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`}
+                    .{" "}
+                    {allContactTracingLinks.length > 0 && (
+                        <Text>
+                            Es sind {allContactTracingLinks.length} Kontaktangaben aus der Kontaktnachverfolgung
+                            enthalten.
+                        </Text>
+                    )}
                 </Paragraph>
             </View>
         );
@@ -335,11 +348,11 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
     const Headline = ({ level, children }: { level: number; children: any }) => {
         switch (level) {
             case 1:
-                return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+                return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{children}</Text>;
             case 2:
-                return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 5 }}>{children}</Text>;
+                return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 10 }}>{children}</Text>;
             default:
-                return <Text style={{ fontSize: 12, fontWeight: 400, marginBottom: 5 }}>{children}</Text>;
+                return <Text style={{ fontSize: 12, fontWeight: 400, marginVertical: 10 }}>{children}</Text>;
         }
     };
 
@@ -365,7 +378,7 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                             marginTop: 10,
                         }}
                     >
-                        <Image source={graphImage} style={{ marginBottom: 15 }} />
+                        <Image source={graphImage} style={{ marginBottom: 15, paddingRight: 5 }} />
                         {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
                     </View>
                     <Text style={{ fontSize: 8, fontStyle: "italic", marginTop: 10 }}>
@@ -381,19 +394,29 @@ const AnalysisReport = ({ graphImage }: { graphImage: string }) => {
                         Zahlen in den Knoten beziehen sich auf die Spalte "Fall-Nummer im MST" in Tabelle 1.
                     </Text>
                 </View>
+                <Headline level={2}>Bewertung</Headline>
+                {conclusion && <Text style={{ marginBottom: 10 }}>{conclusion}</Text>}
+                <View style={{ marginBottom: 5 }}>{getTable()}</View>
+                <Text
+                    style={{ position: "absolute", bottom: 30, right: 30, fontSize: 8 }}
+                    render={({ pageNumber }) => `${pageNumber}`}
+                    fixed
+                />
             </Page>
         </Document>
     );
 };
 
-const PdfExportButton = () => {
+const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
     const coreState = useCoreStore.getState();
     const { charge, showNodeLabel, colorMap, coloringMode } = outbreakAnalysisState.graphSettings;
     const cases = coreState.casesWithRelationships;
-    const [renderPdfGraph, setRenderPdfGraph] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const [graphReadyForExport, setGraphReadyForExport] = useState(false);
-
+    const [conclusion, setConclusion] = useState<string | null>(null);
+    const [generateSummary, setGenerateSummary] = useState(true);
+    const [generateConclusion, setGenerateConclusion] = useState(false);
     useEffect(() => {
         if (graphReadyForExport) {
             exportPdf();
@@ -409,45 +432,109 @@ const PdfExportButton = () => {
         });
         console.log(graphImageDataURL);
         const fileName = "test.pdf";
-        const blob = await pdf(<AnalysisReport graphImage={graphImageDataURL} />).toBlob();
+        const blob = await pdf(<AnalysisReport conclusion={conclusion} graphImage={graphImageDataURL} />).toBlob();
         saveAs(blob, fileName);
-        setRenderPdfGraph(false);
+        setIsExporting(false);
         setGraphReadyForExport(false);
+        onPdfExport();
     };
 
     const downloadPdf = async () => {
-        setRenderPdfGraph(true);
+        setIsExporting(true);
     };
+
     return (
         <>
-            <Button className="mt-2" variant="outline" type="button" onClick={() => downloadPdf()}>
-                Analysebericht exportieren
-            </Button>
-            {renderPdfGraph && (
-                <div className="z-[-1]">
-                    <div className="absolute top-0 left-0 pdf-graph">
-                        <GraphPdf
-                            data={outbreakAnalysisState.graphData}
-                            width={1200}
-                            height={900}
-                            colorMap={colorMap}
-                            coloringMode={coloringMode}
-                            cases={cases}
-                            charge={charge}
-                            linkDistance={50}
-                            nodeSize={10}
-                            showNodeLabel={showNodeLabel}
-                            linkWidth={2}
-                            updateSelectedCase={() => {}}
-                            selectedCase={null}
-                            exportPdfOnEngineStop={() => setGraphReadyForExport(true)}
+            <DialogContent className="max-w-[1000px] w-screen">
+                <div>
+                    <DialogHeader>
+                        <DialogTitle className="mb-5">
+                            Ausbruchsanalyse-Report zu "{outbreakAnalysisState.name}"
+                        </DialogTitle>
+                    </DialogHeader>
+                    {isExporting && (
+                        <div className="z-[-1] overflow-hidden relative">
+                            <div className="absolute top-0 left-0 pdf-graph">
+                                <GraphPdf
+                                    data={outbreakAnalysisState.graphData}
+                                    width={1200}
+                                    height={900}
+                                    colorMap={colorMap}
+                                    coloringMode={coloringMode}
+                                    cases={cases}
+                                    charge={charge}
+                                    linkDistance={50}
+                                    nodeSize={10}
+                                    showNodeLabel={showNodeLabel}
+                                    linkWidth={2}
+                                    updateSelectedCase={() => {}}
+                                    selectedCase={null}
+                                    exportPdfOnEngineStop={() => setGraphReadyForExport(true)}
+                                />
+                            </div>
+                            <div className="absolute w-full h-full top-0 left-0 bg-white"></div>
+                        </div>
+                    )}
+                    <div className="mb-5">
+                        <div className="mb-2">
+                            <p className="font-bold">Zusammenfassung des Datensatzes</p>
+                            <small>
+                                Verfassen Sie eine Zusammenfassung des Datensatzes für die Ausbruchsanalyse oder lassen
+                                Sie sich eine Zusammenfassung generieren.
+                            </small>
+                        </div>
+                        <div className="flex items-center mb-2">
+                            <Checkbox
+                                className="mr-2"
+                                id="generateSummaryCheckbox"
+                                checked={generateSummary}
+                                onCheckedChange={() => setGenerateSummary(!generateSummary)}
+                            />
+                            <label htmlFor="generateSummaryCheckbox">
+                                Zusammenfassung automatisch generieren lassen
+                            </label>
+                        </div>
+                        <Textarea
+                            disabled={generateSummary}
+                            className="min-h-[200px]"
+                            onChange={(evt) => setConclusion(evt.target.value)}
                         />
                     </div>
-                    <div className="absolute w-full h-full top-0 left-0 bg-white"></div>
+                    <div className="mb-5">
+                        <div className="mb-2">
+                            <p className="font-bold">Bewertung</p>
+                            <small>
+                                Verfassen Sie eine Bewertung für die Ausbruchsanalyse oder lassen Sie sich eine
+                                Bewertung generieren.
+                            </small>
+                        </div>
+                        {/*<div className="flex items-center mb-2">
+                            <Checkbox
+                                className="mr-2"
+                                id="generateConclusionCheckbox"
+                                checked={generateConclusion}
+                                onCheckedChange={() => setGenerateConclusion(!generateConclusion)}
+                            />
+                            <label htmlFor="generateConclusionCheckbox">Bewertung automatisch generieren lassen</label>
+                        </div>*/}
+                        <Textarea
+                            disabled={generateConclusion}
+                            className="min-h-[200px]"
+                            onChange={(evt) => setConclusion(evt.target.value)}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <div className="flex justify-end">
+                            <Button onClick={() => downloadPdf()}>
+                                <div className={`${isExporting ? "opacity-0" : "opacity-100"}`}>Exportieren</div>
+                                {isExporting && <LoadingSpinner className="absolute" />}
+                            </Button>
+                        </div>
+                    </DialogFooter>
                 </div>
-            )}
+            </DialogContent>
         </>
     );
 };
 
-export default PdfExportButton;
+export default PdfExport;
