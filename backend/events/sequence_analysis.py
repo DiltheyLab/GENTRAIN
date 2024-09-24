@@ -9,9 +9,9 @@ def sequence_analysis_request(
     socket_id, pathogen_name, fasta_id, sequence_chunk, chunk_information
 ):
     # validate sequence before persisting
+    sequence_chunk = sequence_chunk.replace("\r", "")
     sequence_chunk = re.sub(r"\>(.*?)\n", ">\n", sequence_chunk)
     genetic_errors = get_genetic_errors(sequence_chunk)
-
     if len(genetic_errors) > 0:
         sio.emit(
             event="sequence_analysis_failed",
