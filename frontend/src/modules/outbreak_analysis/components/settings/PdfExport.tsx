@@ -22,6 +22,9 @@ import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Textarea } from "@/modules/core/components/ui/Textarea";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { GraphCaseCollector } from "@/modules/core/services/graph/GraphCaseCollector";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 
 Font.register({
     family: "Merriweather",
@@ -78,7 +81,33 @@ const styles = StyleSheet.create({
     },
 });
 
-const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null; graphImage: string }) => {
+const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
+    const defaults = { marginBottom: 5 };
+    let mergedStyles = { ...defaults, ...styles };
+
+    return <Text style={mergedStyles}>{children}</Text>;
+};
+
+const Headline = ({ level, children }: { level: number; children: any }) => {
+    switch (level) {
+        case 1:
+            return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{children}</Text>;
+        case 2:
+            return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 10 }}>{children}</Text>;
+        default:
+            return <Text style={{ fontSize: 12, fontWeight: 400, marginVertical: 10 }}>{children}</Text>;
+    }
+};
+
+const AnalysisReport = ({
+    conclusion,
+    summary,
+    graphImage,
+}: {
+    conclusion: JSX.Element | null;
+    summary: string | null;
+    graphImage: string;
+}) => {
     const coreState = useCoreStore.getState();
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
     const selectedClusters = getSelectedClusters();
@@ -99,9 +128,8 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
     const allContactTracingLinks = links.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
 
     const caseCountWithoutOutbreak = nodes.filter((node) => !node.caseData.outbreak).length;
-    const caseCountInSelectedOutbreak = nodes.filter(
-        (node) => node.caseData.outbreak?.name === selectedOutbreakName
-    ).length;
+    const casesInSelectedOutbreak = nodes.filter((node) => node.caseData.outbreak?.name === selectedOutbreakName);
+
     const getTable = () => {
         return (
             <>
@@ -190,10 +218,8 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
         return (
             <View
                 style={{
-                    marginLeft: 5,
                     flexDirection: "column",
                     justifyContent: "center",
-                    flexWrap: "wrap",
                 }}
             >
                 <Text style={{ fontSize: 6, fontWeight: 600, marginTop: 5 }}>Untersuchter Ausbruch</Text>
@@ -212,6 +238,7 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
                         style={{
                             color: "#000000",
                             fontSize: 6,
+                            textAlign: "left",
                         }}
                     >
                         {outbreakName}
@@ -237,6 +264,7 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
                                 style={{
                                     color: "#000000",
                                     fontSize: 6,
+                                    textAlign: "left",
                                 }}
                             >
                                 {name}
@@ -259,7 +287,7 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
                                     marginRight: 5,
                                 }}
                             ></div>
-                            <Text style={{ fontSize: 6 }}>{link.type}</Text>
+                            <Text style={{ fontSize: 6, textAlign: "left" }}>{link.type}</Text>
                         </View>
                     );
                 })}
@@ -288,73 +316,65 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
 
     const getSummary = () => {
         return (
-            <View>
-                <Paragraph>
-                    Der analysierte Datensatz umfasst Falldaten des{" "}
-                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"}{" "}
-                    Pathogens "{activePathogen?.name}".
-                    <br />
-                    <br /> Es existieren {caseCountInSelectedOutbreak}{" "}
-                    {caseCountInSelectedOutbreak > 1 ? "Fälle" : "Fall"} des zu untersuchenden vermuteten Ausbruchs "
-                    {selectedOutbreakName}"
-                    {selectedBackgroundNames.map((clusterName: string, index: number) => {
-                        const caseCountInCluster = nodes.filter(
-                            (node) => node.caseData.outbreak?.name === clusterName
-                        ).length;
-                        if (caseCountInCluster === 0) {
-                            return;
-                        }
-                        return (
-                            <Text key={index}>
-                                {index === selectedBackgroundNames.length - 1 && caseCountWithoutOutbreak === 0
-                                    ? " sowie "
-                                    : ", "}
-                                {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des vermuteten
-                                Ausbruchs <Text style={{ fontStyle: "italic" }}>"{clusterName}"</Text>
-                            </Text>
-                        );
-                    })}
-                    {caseCountWithoutOutbreak > 0 ? (
-                        <Text>
-                            {" "}
-                            sowie {caseCountWithoutOutbreak} {caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"} aus der
-                            Umgebung ohne Ausbruchszuweisung.
-                        </Text>
-                    ) : (
-                        <Text>.</Text>
-                    )}
-                    {"\n\n"}
-                    Für {samples.length} von {nodes.length} Fällen liegen genetische Sequenzdaten vor
-                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral &&
-                        `, wobei ${samplesWithLowAmountOfNs.length} von ${samples.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`}
-                    .{" "}
-                    {allContactTracingLinks.length > 0 && (
-                        <Text>
-                            Es sind {allContactTracingLinks.length} Kontaktangaben aus der Kontaktnachverfolgung
-                            enthalten.
-                        </Text>
-                    )}
-                </Paragraph>
-            </View>
+            <>
+                {summary ? (
+                    <View>
+                        <Paragraph>{summary}</Paragraph>
+                    </View>
+                ) : (
+                    <View>
+                        <Paragraph>
+                            Der analysierte Datensatz umfasst Falldaten des{" "}
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.viral
+                                ? "viralen"
+                                : "bakteriellen"}{" "}
+                            Pathogens "{activePathogen?.name}".
+                            <br />
+                            <br /> Es existieren {casesInSelectedOutbreak.length}{" "}
+                            {casesInSelectedOutbreak.length > 1 ? "Fälle" : "Fall"} des zu untersuchenden vermuteten
+                            Ausbruchs "{selectedOutbreakName}"
+                            {selectedBackgroundNames.map((clusterName: string, index: number) => {
+                                const caseCountInCluster = nodes.filter(
+                                    (node) => node.caseData.outbreak?.name === clusterName
+                                ).length;
+                                if (caseCountInCluster === 0) {
+                                    return;
+                                }
+                                return (
+                                    <Text key={index}>
+                                        {index === selectedBackgroundNames.length - 1 && caseCountWithoutOutbreak === 0
+                                            ? " sowie "
+                                            : ", "}
+                                        {caseCountInCluster} {caseCountInCluster > 1 ? "Fälle" : "Fall"} des vermuteten
+                                        Ausbruchs <Text style={{ fontStyle: "italic" }}>"{clusterName}"</Text>
+                                    </Text>
+                                );
+                            })}
+                            {caseCountWithoutOutbreak > 0 ? (
+                                <Text>
+                                    {" "}
+                                    sowie {caseCountWithoutOutbreak} {caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"}{" "}
+                                    aus der Umgebung ohne Ausbruchszuweisung.
+                                </Text>
+                            ) : (
+                                <Text>.</Text>
+                            )}
+                            {"\n\n"}
+                            Für {samples.length} von {nodes.length} Fällen liegen genetische Sequenzdaten vor
+                            {activePathogen?.pathogen_type?.name === PathogenTypeName.viral &&
+                                `, wobei ${samplesWithLowAmountOfNs.length} von ${samples.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`}
+                            .{" "}
+                            {allContactTracingLinks.length > 0 && (
+                                <Text>
+                                    Es sind {allContactTracingLinks.length} Kontaktangaben aus der Kontaktnachverfolgung
+                                    enthalten.
+                                </Text>
+                            )}
+                        </Paragraph>
+                    </View>
+                )}
+            </>
         );
-    };
-
-    const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
-        const defaults = { marginBottom: 5 };
-        let mergedStyles = { ...defaults, ...styles };
-
-        return <Text style={mergedStyles}>{children}</Text>;
-    };
-
-    const Headline = ({ level, children }: { level: number; children: any }) => {
-        switch (level) {
-            case 1:
-                return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{children}</Text>;
-            case 2:
-                return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 10 }}>{children}</Text>;
-            default:
-                return <Text style={{ fontSize: 12, fontWeight: 400, marginVertical: 10 }}>{children}</Text>;
-        }
     };
 
     const colorMap = outbreakAnalysisState.graphSettings.colorMap;
@@ -375,12 +395,16 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
                             width: "100%",
                             flexDirection: "row",
                             alignItems: "flex-start",
-                            justifyContent: "center",
+                            justifyContent: "space-between",
                             marginTop: 10,
                         }}
                     >
-                        <Image source={graphImage} style={{ marginBottom: 15, paddingRight: 5 }} />
-                        {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                        <View style={{ width: "83%" }}>
+                            <Image source={graphImage} style={{ marginBottom: 15, paddingRight: 5 }} />
+                        </View>
+                        <View style={{ width: "15%" }}>
+                            {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                        </View>
                     </View>
                     <Text style={{ fontSize: 8, fontStyle: "italic", marginTop: 10 }}>
                         Abbildung 1: Minimum Spanning Tree (MST) der analysierten Fälle. Jeder Knoten im MST
@@ -396,7 +420,9 @@ const AnalysisReport = ({ conclusion, graphImage }: { conclusion: string | null;
                     </Text>
                 </View>
                 <Headline level={2}>Bewertung</Headline>
-                {conclusion && <Text style={{ marginBottom: 10 }}>{conclusion}</Text>}
+
+                <View style={{ marginBottom: 5 }}>{conclusion}</View>
+
                 <View style={{ marginBottom: 5 }}>{getTable()}</View>
                 <Text
                     style={{ position: "absolute", bottom: 30, right: 30, fontSize: 8 }}
@@ -416,8 +442,11 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const [isExporting, setIsExporting] = useState(false);
     const [graphReadyForExport, setGraphReadyForExport] = useState(false);
     const [conclusion, setConclusion] = useState<string | null>(null);
+    const [summary, setSummary] = useState<string | null>(null);
     const [generateSummary, setGenerateSummary] = useState(true);
     const [generateConclusion, setGenerateConclusion] = useState(false);
+    const outbreaks = useGetOutbreaksForActivePathogen();
+
     useEffect(() => {
         if (graphReadyForExport) {
             exportPdf();
@@ -427,12 +456,36 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const exportPdf = async () => {
         const graphElement = document.querySelector(".pdf-graph") as HTMLDivElement;
         const graphCanvasElement = await html2canvas(graphElement);
+        const graphCaseCollector = new GraphCaseCollector(coreState.casesWithRelationships, {
+            includeAllCases: true,
+            selectedOutbreak: outbreakAnalysisState.settings.selectedOutbreak,
+            datesOfCasesInSelectedOutbreak: [],
+            selectedBackground: null,
+            showBackground: true,
+            excludeCasesAboveGeneticDistanceThreshold: true,
+            excludeCasesOutsideOfDateRange: false,
+            excludeCasesWithoutSequence: true,
+            dateRange: { from: new Date(), to: new Date() },
+            geneticDistanceThreshold: coreState.activePathogen?.genetic_distance_threshold ?? 0,
+            showContactTracingLinks: false,
+            clusteringThreshold: 0,
+        });
+
+        const casesUnderThreshold = await graphCaseCollector.execute();
+
+        getConclusion(casesUnderThreshold);
         const graphImageDataURL = graphCanvasElement.toDataURL("#ffffff", {
             type: "image/jpeg",
             encoderOptions: 1.0,
         });
         const fileName = "test.pdf";
-        const blob = await pdf(<AnalysisReport conclusion={conclusion} graphImage={graphImageDataURL} />).toBlob();
+        const blob = await pdf(
+            <AnalysisReport
+                conclusion={getConclusion(casesUnderThreshold)}
+                summary={!generateSummary ? summary : null}
+                graphImage={graphImageDataURL}
+            />
+        ).toBlob();
         saveAs(blob, fileName);
         setIsExporting(false);
         setGraphReadyForExport(false);
@@ -441,6 +494,85 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
 
     const downloadPdf = async () => {
         setIsExporting(true);
+    };
+
+    const getConclusion = (casesUnderThreshold: CaseWithRelationships[]) => {
+        const allCases = coreState.casesWithRelationships;
+        const outbreakCasesUnderThreshold = casesUnderThreshold.filter(
+            (currentCase) => currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id
+        );
+        const outbreakCases = coreState.casesWithRelationships.filter(
+            (currentCase) =>
+                currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id && currentCase.sample
+        );
+
+        const otherOutbreaks = outbreakAnalysisState.settings.selectedBackground?.outbreaks;
+        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.settings.includeAllCases
+            ? outbreaks
+                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
+                  .map((outbreak) => {
+                      const outbreakCasesWithSampleCount = allCases.filter(
+                          (currentCase) => currentCase.outbreak_id === outbreak.id
+                      );
+
+                      return {
+                          outbreakName: outbreak.name,
+                          outbreakCases: outbreakCasesWithSampleCount,
+                          casesUnderThreshold: casesUnderThreshold.filter(
+                              (currentCase) => currentCase.outbreak_id === outbreak.id && currentCase.sample
+                          ),
+                      };
+                  })
+            : otherOutbreaks
+                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
+                  .map((outbreak) => {
+                      const outbreakCasesWithSampleCount = allCases.filter(
+                          (currentCase) => currentCase.outbreak_id === outbreak.id && currentCase.sample
+                      );
+
+                      return {
+                          outbreakName: outbreak.name,
+                          outbreakCases: outbreakCasesWithSampleCount,
+                          casesUnderThreshold: casesUnderThreshold.filter(
+                              (currentCase) => currentCase.outbreak_id === outbreak.id
+                          ),
+                      };
+                  });
+
+        return (
+            <>
+                {conclusion ? (
+                    <View>
+                        <Paragraph>{conclusion}</Paragraph>
+                    </View>
+                ) : (
+                    <View>
+                        <Paragraph>
+                            {outbreakCasesUnderThreshold.length} der {outbreakCases.length} analysierten potentiellen
+                            Ausbruchsproben sind genetisch identisch bzw. haben einen sehr geringen genetischen Abstand
+                            (minimaler paarweiser genetischer Abstand von{" "}
+                            {`< ${coreState.activePathogen?.genetic_distance_threshold}`}, siehe Abbildung 1)
+                        </Paragraph>
+                        <Paragraph>
+                            {casesUnderThresholdPerOutbreak?.map((entry) => {
+                                if (entry.casesUnderThreshold.length === 0) {
+                                    return;
+                                }
+                                return (
+                                    <Text>
+                                        {entry.casesUnderThreshold.length} der {entry.outbreakCases.length} Proben des
+                                        vermuteten Ausbruchs {entry.outbreakName} sind genetisch identisch bzw. haben
+                                        einen sehr geringen genetischen Abstand (minimaler paarweiser genetischer
+                                        Abstand von {`< ${coreState.activePathogen?.genetic_distance_threshold}`}, siehe
+                                        Abbildung 1)
+                                    </Text>
+                                );
+                            })}
+                        </Paragraph>
+                    </View>
+                )}
+            </>
+        );
     };
 
     return (
@@ -497,7 +629,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                         <Textarea
                             disabled={generateSummary}
                             className="min-h-[200px]"
-                            onChange={(evt) => setConclusion(evt.target.value)}
+                            onChange={(evt) => setSummary(evt.target.value)}
                         />
                     </div>
                     <div className="mb-5">
