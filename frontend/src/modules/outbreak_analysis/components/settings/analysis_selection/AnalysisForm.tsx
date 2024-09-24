@@ -65,7 +65,9 @@ export const AnalysisForm = () => {
 
     return (
         <div className="flex flex-col w-1/2 gap-2">
-            <Label htmlFor="name">Neue Analyse anlegen:</Label>
+            <Label htmlFor="name" className="font-normal">
+                Neue Analyse anlegen:
+            </Label>
             <Input
                 id="name"
                 className="w-full"
