@@ -1,8 +1,7 @@
 import { saveAs } from "file-saver";
-import { Font, pdf, Text } from "@react-pdf/renderer";
 import html2canvas from "html2canvas";
-import { Document, Page, View, StyleSheet, Image } from "@react-pdf/renderer";
-import "@/assets/css/pdf.css";
+import { Document, Page, View, StyleSheet, Image, Font, pdf, Text } from "@react-pdf/renderer";
+import "@/assets/css/main.css";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
 import { ColorMap } from "@/modules/core/types/graph";
 import { getSelectedClusters, getUniqueTypesOfLinks } from "@/modules/core/helpers/graphs";
