@@ -20,7 +20,9 @@ export const DateRangePicker = ({ className }: React.HTMLAttributes<HTMLDivEleme
     return (
         <div className={cn("grid gap-2 mt-2", className)}>
             <div className="flex gap-3">
-                <Label htmlFor="excludeCasesOutsideOfDateRange">Zeitspanne auswählen</Label>
+                <Label htmlFor="excludeCasesOutsideOfDateRange" className="font-normal">
+                    Zeitspanne auswählen
+                </Label>
                 <Checkbox
                     id="excludeCasesOutsideOfDateRange"
                     checked={outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange}

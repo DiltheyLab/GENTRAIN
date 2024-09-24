@@ -17,7 +17,7 @@ export const ContactTracing = () => {
                     checked={outbreakAnalysisStore.settings.showContactTracingLinks}
                     onCheckedChange={(value) => handleShowContactTracingLinks(value)}
                 />
-                <Label htmlFor="showContactTracingLinks" className="font-normal text-md">
+                <Label htmlFor="showContactTracingLinks" className="text-md">
                     Kontaktkanten anzeigen
                 </Label>
             </div>
