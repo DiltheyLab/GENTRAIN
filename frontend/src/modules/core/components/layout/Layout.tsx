@@ -9,7 +9,7 @@ export const Layout = ({ children }: any) => {
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     return (
         <div>
-            <Header></Header>
+            <Header />
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             {(sequenceAnalysisRunning || distanceCalculationRunning) && (
                 <div className="relative z-50">
@@ -22,7 +22,7 @@ export const Layout = ({ children }: any) => {
                     </div>
                 </div>
             )}
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 };

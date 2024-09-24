@@ -50,10 +50,57 @@
     }
 }
 
-.force-graph-container {
-    height: 100%;
+html {
+    font-size: 14px;
 }
 
 a {
     @apply text-primary;
+}
+
+.force-graph-container {
+    height: 100%;
+}
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Light.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 100;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Thin.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Medium.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf") format("truetype");
 }

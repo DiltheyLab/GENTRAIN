@@ -4,7 +4,7 @@ export const StepIndicator = ({ className, children }: { className?: string; chi
     return (
         <span
             className={cn(
-                "flex justify-center bg-slate-900 w-[22px] h-[22px] rounded-full mr-2 font-bold text-white text-sm",
+                "flex justify-center bg-slate-900 w-[22px] h-[22px] rounded-full mr-2 font-bold text-white text-sm leading-[22px]",
                 className
             )}
         >

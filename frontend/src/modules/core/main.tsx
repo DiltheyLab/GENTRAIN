@@ -5,7 +5,6 @@ import { Dashboard } from "@/modules/dashboard/pages/Dashboard.tsx";
 import "@/modules/core/index.css";
 import { Error } from "@/modules/core/pages/Error.tsx";
 import { DataManagement } from "@/modules/data_management/pages/DataManagement.tsx";
-import "@/assets/css/main.css";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
 import translation_de from "@/modules/core/translations/de/common.json";

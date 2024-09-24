@@ -64,7 +64,7 @@ const CasesPerDayChart = () => {
     return (
         <Card className="z-10">
             <CardHeader className="p-4">
-                <CardTitle className="text-xl font-semibold leading-none tracking-tight">Fälle pro Tag</CardTitle>
+                <CardTitle className="text-xl font-semibold leading-none">Fälle pro Tag</CardTitle>
                 <CardDescription>Zeigt die Fälle die an den Tagen aufgetreten sind.</CardDescription>
             </CardHeader>
             <CardContent className="px-4 pb-2">

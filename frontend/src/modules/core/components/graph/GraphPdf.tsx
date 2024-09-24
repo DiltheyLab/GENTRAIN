@@ -78,7 +78,7 @@ export const GraphPdf = ({
         ctx.fill();
 
         // Draw the label above the circle
-        let label = node.index;
+        let label = `${node.index}`;
         const fontSize = 12;
         ctx.font = `${fontSize}px Merriweather`;
         // Draw the text

@@ -54,6 +54,7 @@ Font.register({
         },
     ],
 });
+Font.registerHyphenationCallback((word) => [word]);
 
 const styles = StyleSheet.create({
     page: {
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
         color: "#0F172A",
         backgroundColor: "#FFFFFF",
         padding: 50,
+        position: "relative",
     },
     inline: {
         display: "flex",
@@ -429,7 +431,6 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
             type: "image/jpeg",
             encoderOptions: 1.0,
         });
-        console.log(graphImageDataURL);
         const fileName = "test.pdf";
         const blob = await pdf(<AnalysisReport conclusion={conclusion} graphImage={graphImageDataURL} />).toBlob();
         saveAs(blob, fileName);

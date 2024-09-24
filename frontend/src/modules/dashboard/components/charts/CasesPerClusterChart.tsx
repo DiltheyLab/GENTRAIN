@@ -42,9 +42,7 @@ const CasesPerClusterChart = () => {
     return (
         <Card>
             <CardHeader className="px-4 pt-4 pb-0">
-                <CardTitle className="text-xl font-semibold leading-none tracking-tight">
-                    Fälle pro Ausbruch/Cluster
-                </CardTitle>
+                <CardTitle className="text-xl font-semibold leading-none">Fälle pro Ausbruch/Cluster</CardTitle>
                 <CardDescription>Zeigt die Gesamtanzahl der Fälle verteilt auf die Ausbrüche/Cluster.</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
