@@ -10,9 +10,11 @@ type CaseInfoItemProps = {
 export const CaseInfoItem = ({ label, description, copyToClipboard = false }: CaseInfoItemProps) => {
     return (
         <div className="flex space-x-1 pointer-events-auto items-baseline">
-            <Label htmlFor="nodeLabel">{label}:</Label>
+            <Label htmlFor="nodeLabel" className="font-normal">
+                {label}:
+            </Label>
             <div className="flex items-center space-x-1">
-                <p className="font-normal text-sm">{description}</p>
+                <p className="text-sm">{description}</p>
                 {copyToClipboard && <CopyToClipboardButton description={description} />}
             </div>
         </div>

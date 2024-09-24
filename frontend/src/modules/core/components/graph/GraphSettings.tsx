@@ -46,9 +46,9 @@ export const GraphSettings = ({
             </Button>
             <div className="flex flex-col gap-3 pointer-events-auto">
                 <div className="flex items-center space-x-3">
-                    <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
+                    <Label htmlFor="nodeLabel" className="text-sm leading-none">
                         Knotenbeschreibung
-                    </label>
+                    </Label>
                     <Switch
                         id="nodeLabel"
                         isSmall={true}
@@ -57,7 +57,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="forceLinkDistance" className="text-sm font-normal leading-none">
+                    <Label htmlFor="forceLinkDistance" className="text-sm leading-none">
                         Kantenabstand
                     </Label>
                     <Slider
@@ -72,7 +72,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="nodeSize" className="text-sm font-normal leading-none">
+                    <Label htmlFor="nodeSize" className="text-sm leading-none">
                         Knotengröße
                     </Label>
                     <Slider
@@ -87,7 +87,7 @@ export const GraphSettings = ({
                     />
                 </div>
                 <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="linkWith" className="text-sm font-normal leading-none">
+                    <Label htmlFor="linkWith" className="text-sm leading-none">
                         Kantenbreite
                     </Label>
                     <Slider

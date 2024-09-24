@@ -51,7 +51,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <p className="font-bold capitalize">{row.original.case_id}</p>,
+        cell: ({ row }) => <p className="capitalize font-medium">{row.original.case_id}</p>,
     },
     {
         accessorKey: "sequence",
@@ -72,7 +72,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
             if (sample) {
                 return (
                     <>
-                        <p className="font-bold">{sample.fasta_id}</p>
+                        <p className="font-medium">{sample.fasta_id}</p>
                         {sample.sequence_analysis?.schema && <p>Schema: {sample.sequence_analysis?.schema}</p>}
                         {sample.sequence_analysis?.chewbbaca_version && (
                             <p>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</p>
@@ -168,7 +168,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "groups",
-        header: () => <p className="font-bold">Gruppen</p>,
+        header: () => <p className="font-medium">Gruppen</p>,
         cell: ({ row }) => {
             const groups = row.original.groups;
             return (
@@ -176,7 +176,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
                     {groups &&
                         groups.map((group) => (
                             <p key={group.name}>
-                                <span className="font-bold">{group.category?.name}: </span>
+                                <span className="font-medium">{group.category?.name}: </span>
                                 {group.name}
                             </p>
                         ))}
