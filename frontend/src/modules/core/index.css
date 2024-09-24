@@ -80,13 +80,6 @@ a {
 @font-face {
     font-family: "Merriweather";
     font-style: normal;
-    font-weight: 100;
-    font-display: swap;
-    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Thin.ttf") format("truetype");
-}
-@font-face {
-    font-family: "Merriweather";
-    font-style: normal;
     font-weight: 500;
     font-display: swap;
     src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Medium.ttf") format("truetype");
