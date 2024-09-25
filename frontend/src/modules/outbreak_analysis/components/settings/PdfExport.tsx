@@ -2,7 +2,7 @@ import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import { Document, Page, View, StyleSheet, Image, Font, pdf, Text } from "@react-pdf/renderer";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { ColorMap } from "@/modules/core/types/graph";
+import { ColorMap, CustomNode } from "@/modules/core/types/graph";
 import { getSelectedClusters, getUniqueTypesOfLinks } from "@/modules/core/helpers/graphs";
 import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf";
 import MerriweatherItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-Italic.ttf";
@@ -20,9 +20,8 @@ import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Textarea } from "@/modules/core/components/ui/Textarea";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { GraphCaseCollector } from "@/modules/core/services/graph/GraphCaseCollector";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
+import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
 
 Font.register({
     family: "Merriweather",
@@ -102,7 +101,7 @@ const AnalysisReport = ({
     summary,
     graphImage,
 }: {
-    conclusion: JSX.Element | null;
+    conclusion: string | JSX.Element | null;
     summary: string | null;
     graphImage: string;
 }) => {
@@ -383,6 +382,10 @@ const AnalysisReport = ({
             <Page size="A4" style={styles.page}>
                 <View style={{ height: "100%" }}>
                     <Headline level={1}>Ausbruchsanalyse-Report "{outbreakAnalysisName}"</Headline>
+                    <Paragraph styles={{ fontStyle: "italic" }}>
+                        Dieser Report wurde automatisch durch das Gentrain Dashboard generiert. Die enthaltenen Inhalte
+                        sind zu prüfen und es wird keinerlei Haftung übernommen.
+                    </Paragraph>
                     <Headline level={2}>
                         Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
                     </Headline>
@@ -439,11 +442,10 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const cases = coreState.casesWithRelationships;
     const [isExporting, setIsExporting] = useState(false);
     const [graphReadyForExport, setGraphReadyForExport] = useState(false);
-    const [conclusion, setConclusion] = useState<string | null>(null);
+    const [conclusion, setConclusion] = useState<JSX.Element | null>(null);
     const [summary, setSummary] = useState<string | null>(null);
     const [generateSummary, setGenerateSummary] = useState(true);
-    const [generateConclusion, setGenerateConclusion] = useState(false);
-    const outbreaks = useGetOutbreaksForActivePathogen();
+    const [generateConclusion, setGenerateConclusion] = useState(true);
 
     useEffect(() => {
         if (graphReadyForExport) {
@@ -452,35 +454,29 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     }, [graphReadyForExport]);
 
     const exportPdf = async () => {
+        if (!outbreakAnalysisState.graphData || !coreState.activePathogen || !outbreakAnalysisState.name) return;
         const graphElement = document.querySelector(".pdf-graph") as HTMLDivElement;
         const graphCanvasElement = await html2canvas(graphElement);
-        const graphCaseCollector = new GraphCaseCollector(coreState.casesWithRelationships, {
-            includeAllCases: true,
-            selectedOutbreak: outbreakAnalysisState.settings.selectedOutbreak,
-            datesOfCasesInSelectedOutbreak: [],
-            selectedBackground: null,
-            showBackground: true,
-            excludeCasesAboveGeneticDistanceThreshold: true,
-            excludeCasesOutsideOfDateRange: false,
-            excludeCasesWithoutSequence: true,
-            dateRange: { from: new Date(), to: new Date() },
-            geneticDistanceThreshold: coreState.activePathogen?.genetic_distance_threshold ?? 0,
-            showContactTracingLinks: false,
-            clusteringThreshold: 0,
-        });
+        const clusterAnalyses = new ClusterAnalyser(
+            outbreakAnalysisState.graphData.nodes,
+            outbreakAnalysisState.graphData.links.map((link: any) => {
+                link.target = link.target.id;
+                link.source = link.source.id;
+                return link;
+            }),
+            coreState.activePathogen.genetic_distance_threshold
+        );
+        const clusters = clusterAnalyses.getClusters();
 
-        const casesUnderThreshold = await graphCaseCollector.execute();
-
-        getConclusion(casesUnderThreshold);
         const graphImageDataURL = graphCanvasElement.toDataURL("#ffffff", {
             type: "image/jpeg",
             encoderOptions: 1.0,
         });
-        const fileName = "test.pdf";
+        const fileName = `${outbreakAnalysisState.name}_report.pdf`;
         const blob = await pdf(
             <AnalysisReport
-                conclusion={getConclusion(casesUnderThreshold)}
-                summary={!generateSummary ? summary : null}
+                conclusion={generateConclusion ? getConclusion(clusters) : conclusion}
+                summary={generateSummary ? null : summary}
                 graphImage={graphImageDataURL}
             />
         ).toBlob();
@@ -488,55 +484,18 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
         setIsExporting(false);
         setGraphReadyForExport(false);
         onPdfExport();
+        setSummary(null);
+        setConclusion(null);
+        setGenerateSummary(true);
+        setGenerateConclusion(true);
     };
 
     const downloadPdf = async () => {
         setIsExporting(true);
     };
 
-    const getConclusion = (casesUnderThreshold: CaseWithRelationships[]) => {
-        const allCases = coreState.casesWithRelationships;
-        const outbreakCasesUnderThreshold = casesUnderThreshold.filter(
-            (currentCase) => currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id
-        );
-        const outbreakCases = coreState.casesWithRelationships.filter(
-            (currentCase) =>
-                currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id && currentCase.sample
-        );
-
-        const otherOutbreaks = outbreakAnalysisState.settings.selectedBackground?.outbreaks;
-        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.settings.includeAllCases
-            ? outbreaks
-                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
-                  .map((outbreak) => {
-                      const outbreakCasesWithSampleCount = allCases.filter(
-                          (currentCase) => currentCase.outbreak_id === outbreak.id
-                      );
-
-                      return {
-                          outbreakName: outbreak.name,
-                          outbreakCases: outbreakCasesWithSampleCount,
-                          casesUnderThreshold: casesUnderThreshold.filter(
-                              (currentCase) => currentCase.outbreak_id === outbreak.id && currentCase.sample
-                          ),
-                      };
-                  })
-            : otherOutbreaks
-                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
-                  .map((outbreak) => {
-                      const outbreakCasesWithSampleCount = allCases.filter(
-                          (currentCase) => currentCase.outbreak_id === outbreak.id && currentCase.sample
-                      );
-
-                      return {
-                          outbreakName: outbreak.name,
-                          outbreakCases: outbreakCasesWithSampleCount,
-                          casesUnderThreshold: casesUnderThreshold.filter(
-                              (currentCase) => currentCase.outbreak_id === outbreak.id
-                          ),
-                      };
-                  });
-
+    const getConclusion = (clusters: (CustomNode | undefined)[][]) => {
+        const singleNodes: CustomNode[] = [];
         return (
             <>
                 {conclusion ? (
@@ -545,27 +504,105 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                     </View>
                 ) : (
                     <View>
+                        {clusters.map((cluster, index) => {
+                            const selectedOutbreakCasesInCluster = cluster.filter(
+                                (node) =>
+                                    node?.caseData.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id
+                            );
+                            const otherOutbreakCasesInCluster = cluster.filter(
+                                (node) =>
+                                    node?.caseData.outbreak_id &&
+                                    node?.caseData.outbreak_id !== outbreakAnalysisState.settings.selectedOutbreak?.id
+                            );
+                            const groupedOtherOutbreakCasesInCluster: { [outbreakName: string]: CustomNode[] } =
+                                otherOutbreakCasesInCluster.reduce((r: any, node: any) => {
+                                    r[node.cluster] = r[node.cluster] || [];
+                                    r[node.cluster].push(node);
+                                    return r;
+                                }, Object.create(null));
+                            const otherCasesInCluster = cluster.filter((node) => !node?.caseData.outbreak_id);
+
+                            if (selectedOutbreakCasesInCluster.length === 0) return;
+                            if (selectedOutbreakCasesInCluster.length === 1 && selectedOutbreakCasesInCluster[0]) {
+                                singleNodes.push(selectedOutbreakCasesInCluster[0]);
+                                return;
+                            }
+                            return (
+                                <>
+                                    <Paragraph>
+                                        Die {selectedOutbreakCasesInCluster.length} Proben{" "}
+                                        {selectedOutbreakCasesInCluster
+                                            .map(
+                                                (node, index) =>
+                                                    `${node?.caseData.fasta_id} (${
+                                                        index === 0 ? `Fall-Nummer ${node?.index} im MST` : node?.index
+                                                    })`
+                                            )
+                                            .join(", ")
+                                            .replace(/,([^,]*)$/, " und$1")}{" "}
+                                        des untersuchten vermuteten Ausbruchs bilden ein Cluster und sind untereinander
+                                        genetisch identisch bzw nah verwandt
+                                        {index === 0 && <> &#42;</>}.
+                                    </Paragraph>
+                                    {"\n\n"}
+                                    <Paragraph>
+                                        Es gibt zudem eine Untergruppe von{" "}
+                                        {otherOutbreakCasesInCluster.length + otherCasesInCluster.length} weiteren
+                                        Proben die genetisch nah verwandt zu den untersuchten Ausbruchsproben dieses
+                                        Clusters sind. Darunter sind{" "}
+                                        {Object.keys(groupedOtherOutbreakCasesInCluster).map((key, index) => {
+                                            return ` mit ${groupedOtherOutbreakCasesInCluster[key]
+                                                .map((node) => `${node.caseData.fasta_id} (${node.index})`)
+                                                .join(", ")
+                                                .replace(/,([^,]*)$/, " und$1")} ${
+                                                groupedOtherOutbreakCasesInCluster[key].length
+                                            } Probe${
+                                                groupedOtherOutbreakCasesInCluster[key].length > 1 ? "n" : ""
+                                            } des vermuteten Ausbruchs "${key}" ${
+                                                index === Object.keys(groupedOtherOutbreakCasesInCluster).length - 1
+                                                    ? ""
+                                                    : "und"
+                                            }`;
+                                        })}
+                                        {otherCasesInCluster.length === 0 ? (
+                                            "."
+                                        ) : (
+                                            <>
+                                                und mit{" "}
+                                                {otherCasesInCluster
+                                                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                                                    .join(", ")
+                                                    .replace(/,([^,]*)$/, " und$1")}{" "}
+                                                {otherCasesInCluster.length} Proben ohne Ausbruchszuweisung.
+                                            </>
+                                        )}
+                                    </Paragraph>
+                                </>
+                            );
+                        })}
+                        {singleNodes.length > 0 && (
+                            <Paragraph>
+                                Die Probe{singleNodes.length > 1 ? "n" : ""}{" "}
+                                {singleNodes
+                                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                                    .join(", ")
+                                    .replace(/,([^,]*)$/, " und$1")}{" "}
+                                des untersuchten vermuteten Ausbruchs{" "}
+                                {singleNodes.length > 1 ? "weisen jeweils" : "weist"} eine genetische Distanz von{" "}
+                                {`> ${coreState.activePathogen?.genetic_distance_threshold}`} zu allen anderen
+                                untersuchten Ausbruchsproben auf, weshalb sie nicht genetisch nah verwandt mit diesen{" "}
+                                {singleNodes.length > 1 ? "sind" : "ist"}.
+                            </Paragraph>
+                        )}
                         <Paragraph>
-                            {outbreakCasesUnderThreshold.length} der {outbreakCases.length} analysierten potentiellen
-                            Ausbruchsproben sind genetisch identisch bzw. haben einen sehr geringen genetischen Abstand
-                            (minimaler paarweiser genetischer Abstand von{" "}
-                            {`< ${coreState.activePathogen?.genetic_distance_threshold}`}, siehe Abbildung 1)
+                            Damit sind die analysierten genetischen Daten konsistent mit einem Ausbruchs- bzw. klonalen
+                            Übertragungsereignis zwischen den genetisch nah verwandten untersuchten Ausbruchsproben der
+                            identifizierten Cluster, unter einer möglichen Beteiligung mit den genetisch nah verwandten
+                            Umgebungsproben innerhalb der Cluster.
                         </Paragraph>
-                        <Paragraph>
-                            {casesUnderThresholdPerOutbreak?.map((entry) => {
-                                if (entry.casesUnderThreshold.length === 0) {
-                                    return;
-                                }
-                                return (
-                                    <Text>
-                                        {entry.casesUnderThreshold.length} der {entry.outbreakCases.length} Proben des
-                                        vermuteten Ausbruchs {entry.outbreakName} sind genetisch identisch bzw. haben
-                                        einen sehr geringen genetischen Abstand (minimaler paarweiser genetischer
-                                        Abstand von {`< ${coreState.activePathogen?.genetic_distance_threshold}`}, siehe
-                                        Abbildung 1)
-                                    </Text>
-                                );
-                            })}
+                        <Paragraph styles={{ fontSize: 8, marginTop: 5 }}>
+                            &#42;minimaler paarweiser genetischer Abstand von{" "}
+                            {`< ${coreState.activePathogen?.genetic_distance_threshold}`}
                         </Paragraph>
                     </View>
                 )}
@@ -624,11 +661,13 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                                 Zusammenfassung automatisch generieren lassen
                             </label>
                         </div>
-                        <Textarea
-                            disabled={generateSummary}
-                            className="min-h-[200px]"
-                            onChange={(evt) => setSummary(evt.target.value)}
-                        />
+                        {!generateSummary && (
+                            <Textarea
+                                disabled={generateSummary}
+                                className="min-h-[200px]"
+                                onChange={(evt) => setSummary(evt.target.value)}
+                            />
+                        )}
                     </div>
                     <div className="mb-5">
                         <div className="mb-2">
@@ -647,11 +686,13 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                             />
                             <label htmlFor="generateConclusionCheckbox">Bewertung automatisch generieren lassen</label>
                         </div>
-                        <Textarea
-                            disabled={generateConclusion}
-                            className="min-h-[200px]"
-                            onChange={(evt) => setConclusion(evt.target.value)}
-                        />
+                        {!generateConclusion && (
+                            <Textarea
+                                disabled={generateConclusion}
+                                className="min-h-[200px]"
+                                onChange={(evt) => setConclusion(<Text>{evt.target.value}</Text>)}
+                            />
+                        )}
                     </div>
                     <DialogFooter>
                         <div className="flex justify-end">

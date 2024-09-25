@@ -3,19 +3,15 @@ import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Share2 } from "lucide-react";
 import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
-import ExampleImport from "@/data/gentrain_example.json";
-import { importDataFromJson } from "@/modules/core/helpers/database";
+import {} from "../components/ui/InitExampleButton";
+import { lazy, Suspense } from "react";
+const InitExampleButton = lazy(() => import("@/modules/core/components/ui/InitExampleButton"));
 
 export function Onboarding() {
     const initSession = useCoreStore((state) => state.initSession);
     const activePathogen = useCoreStore((state) => state.activePathogen);
 
     const handleClick = () => {
-        initSession();
-    };
-
-    const initExampleImport = () => {
-        importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
         initSession();
     };
 
@@ -49,9 +45,15 @@ export function Onboarding() {
                 </div>
 
                 <div className="flex justify-center">
-                    <Button onClick={() => initExampleImport()} variant="secondary" className="ml-2">
-                        Beispielszenario starten
-                    </Button>
+                    <Suspense
+                        fallback={
+                            <Button variant="secondary" className="ml-2" disabled>
+                                Beispielszenario starten
+                            </Button>
+                        }
+                    >
+                        <InitExampleButton />
+                    </Suspense>
                 </div>
             </div>
             <div className="mt-20">
