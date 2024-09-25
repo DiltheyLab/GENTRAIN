@@ -455,11 +455,10 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
         const graphElement = document.querySelector(".pdf-graph") as HTMLDivElement;
         const graphCanvasElement = await html2canvas(graphElement);
         const graphCaseCollector = new GraphCaseCollector(coreState.casesWithRelationships, {
-            includeAllCases: true,
+            backgroundType: "all",
             selectedOutbreak: outbreakAnalysisState.settings.selectedOutbreak,
             datesOfCasesInSelectedOutbreak: [],
             selectedBackground: null,
-            showBackground: true,
             excludeCasesAboveGeneticDistanceThreshold: true,
             excludeCasesOutsideOfDateRange: false,
             excludeCasesWithoutSequence: true,
@@ -505,7 +504,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
         );
 
         const otherOutbreaks = outbreakAnalysisState.settings.selectedBackground?.outbreaks;
-        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.settings.includeAllCases
+        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.settings.backgroundType
             ? outbreaks
                   ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
                   .map((outbreak) => {

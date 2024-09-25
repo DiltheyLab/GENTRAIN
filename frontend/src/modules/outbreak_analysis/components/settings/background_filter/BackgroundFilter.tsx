@@ -7,10 +7,6 @@ import { Input } from "@/modules/core/components/ui/Input";
 export const BackgroundFilter = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
-    const handleShowBackground = (value: boolean) => {
-        outbreakAnalysisStore.updateSettings({ showBackground: value });
-    };
-
     const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
         outbreakAnalysisStore.updateSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
     };
@@ -59,16 +55,6 @@ export const BackgroundFilter = () => {
                 </>
             )}
             <DateRangePicker />
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="showBackground"
-                    checked={outbreakAnalysisStore.settings.showBackground}
-                    onCheckedChange={(value) => handleShowBackground(value)}
-                />
-                <Label htmlFor="showBackground" className="text-md">
-                    Background anzeigen
-                </Label>
-            </div>
         </div>
     );
 };

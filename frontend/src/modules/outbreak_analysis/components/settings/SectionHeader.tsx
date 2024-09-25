@@ -19,7 +19,7 @@ export const SectionHeader = ({ step, title, tooltipContent, className }: Sectio
                 {title}
             </Label>
 
-            <CustomTooltip trigger={<Info className="h-5 w-5 cursor-pointer" />} content={tooltipContent} />
+            <CustomTooltip trigger={<Info className="h-5 w-5 cursor-pointer mb-1" />} content={tooltipContent} />
         </div>
     );
 };

@@ -19,11 +19,10 @@ describe("GraphCaseCollector", () => {
 
     beforeEach(() => {
         settings = {
-            includeAllCases: true,
+            backgroundType: "all",
             selectedOutbreak: null,
             datesOfCasesInSelectedOutbreak: [], // not relevant for this test
             selectedBackground: null,
-            showBackground: true,
             excludeCasesAboveGeneticDistanceThreshold: false,
             excludeCasesOutsideOfDateRange: false,
             excludeCasesWithoutSequence: true,
@@ -66,7 +65,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases of the selectedOutbreak", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
-        settings.includeAllCases = false;
+        settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = false;
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = await graphCaseCollector.execute();
@@ -75,8 +74,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases of the selectedOutbreak and cases which are not assigned to an outbreak", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
-        settings.includeAllCases = false;
-        settings.showBackground = true;
+        settings.backgroundType = "specific";
         settings.selectedBackground = {
             outbreaks: [],
             groupsWithCategories: [],
@@ -88,20 +86,9 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(casesInOutbreak1.concat(casesWithNoOutbreakAssigned));
     });
 
-    it("should only include cases of the selectedOutbreak and no background", async () => {
-        settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
-        settings.includeAllCases = false;
-        settings.showBackground = false;
-        settings.excludeCasesWithoutSequence = false;
-        const graphCaseCollector = new GraphCaseCollector(allCases, settings);
-        const result = await graphCaseCollector.execute();
-        expect(result).toEqual(casesInOutbreak1);
-    });
-
     it("should only include cases of the selectedOutbreak and cases in the dateRange", async () => {
         settings.selectedOutbreak = { name: "Schule A", pathogen_id: 2, id: 1 };
-        settings.includeAllCases = true;
-        settings.showBackground = true;
+        settings.backgroundType = "all";
         settings.excludeCasesWithoutSequence = false;
         settings.excludeCasesOutsideOfDateRange = true;
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);

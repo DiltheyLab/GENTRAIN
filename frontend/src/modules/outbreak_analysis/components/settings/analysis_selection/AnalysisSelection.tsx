@@ -101,7 +101,9 @@ export const AnalysisSelection = () => {
 
     return (
         <div className="flex flex-col w-1/2 gap-2" id="analysis-selection">
-            <Label htmlFor="name">Vorhandene Analyse auswählen:</Label>
+            <Label htmlFor="name" className="font-normal">
+                Vorhandene Analyse auswählen:
+            </Label>
             <Select
                 onValueChange={(value) => changeSelectedAnalysis(value)}
                 value={selectedAnalysis?.id.toString() ?? ""}

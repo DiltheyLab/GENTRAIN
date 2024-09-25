@@ -1,6 +1,10 @@
 import { Label } from "@/modules/core/components/ui/Label";
 import MultipleSelector, { Option } from "@/modules/core/components/ui/MultiSelect";
-import { SelectedBackground, useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import {
+    BackgroundType,
+    SelectedBackground,
+    useOutbreakAnalysisStore,
+} from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { RadioGroup, RadioGroupItem } from "@/modules/core/components/ui/RadioGroup";
 import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
 import { useTranslation } from "react-i18next";
@@ -80,38 +84,37 @@ export const BackgroundSelection = () => {
         outbreakAnalysisStore.updateSettings({ selectedBackground: selectedBackground });
     };
 
-    const handleBackgroundDataChange = (value: "specificBackgroundData" | "allBackgroundData") => {
-        if (value === "allBackgroundData") {
-            outbreakAnalysisStore.updateSettings({ includeAllCases: true });
-        } else {
-            outbreakAnalysisStore.updateSettings({ includeAllCases: false });
-        }
+    const handleBackgroundDataChange = (value: BackgroundType) => {
+        outbreakAnalysisStore.updateSettings({ backgroundType: value });
     };
 
     return (
         <div className="flex flex-col gap-4">
             <RadioGroup
-                defaultValue={
-                    outbreakAnalysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"
-                }
-                onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
-                    handleBackgroundDataChange(value)
-                }
+                defaultValue={outbreakAnalysisStore.settings.backgroundType}
+                onValueChange={(value: BackgroundType) => handleBackgroundDataChange(value)}
             >
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
-                    <Label htmlFor="allBackgroundData" className="text-md">
+                    <RadioGroupItem value="none" id="none" />
+                    <Label htmlFor="none" className="text-md">
+                        Keine Falldaten verwenden
+                    </Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="all" id="all" />
+                    <Label htmlFor="all" className="text-md">
                         Alle Falldaten verwenden
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
-                    <Label htmlFor="specificBackgroundData" className="text-md">
+                    <RadioGroupItem value="specific" id="specific" />
+                    <Label htmlFor="specific" className="text-md">
                         Falldaten auswählen
                     </Label>
                 </div>
             </RadioGroup>
-            {!outbreakAnalysisStore.settings.includeAllCases && (
+            {outbreakAnalysisStore.settings.backgroundType === "specific" && (
                 <MultipleSelector
                     options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
                     value={createOptions(outbreakAnalysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
