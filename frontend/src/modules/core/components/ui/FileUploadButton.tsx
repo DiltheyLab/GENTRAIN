@@ -14,7 +14,9 @@ export const FileUploadButton = ({ type, accept, multiple, onUpload }: FileUploa
 
     return (
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor={type}>{t(`upload.label.${type}`)}</Label>
+            <Label htmlFor={type} className="font-medium">
+                {t(`upload.label.${type}`)}
+            </Label>
             {i18n.exists(`upload.info.${type}`) && (
                 <small
                     className="text-muted-foreground"
