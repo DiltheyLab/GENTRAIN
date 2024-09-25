@@ -6,6 +6,8 @@ import { ColoringMode, ColorMap, GraphData } from "@/modules/core/types/graph";
 import { GroupSchema, GroupWithCategory } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
+export type BackgroundType = "all" | "specific" | "none";
+
 export type GroupColoration = {
     group: GroupSchema;
     color: string;
@@ -19,11 +21,10 @@ export type SelectedBackground = {
 };
 
 export type AnalysisSettings = {
-    includeAllCases: boolean;
+    backgroundType: BackgroundType;
     selectedOutbreak: OutbreakSchema | null;
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
-    showBackground: boolean;
     excludeCasesAboveGeneticDistanceThreshold: boolean;
     excludeCasesOutsideOfDateRange: boolean;
     excludeCasesWithoutSequence: boolean;
@@ -70,11 +71,10 @@ export const getDefaultSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
 
     return {
-        includeAllCases: true,
+        backgroundType: "none",
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        showBackground: true,
         excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
         excludeCasesWithoutSequence: true,

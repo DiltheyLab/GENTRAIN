@@ -63,7 +63,7 @@ export const Graph2D = ({
     } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
         return (
             <div className="flex justify-center items-center h-full w-full">
-                <p>Es sind noch keine Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
+                <p>Es sind keine sequenzierten Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
                 <Button
                     variant="link"
                     className="underline px-0 font-normal text-base"
