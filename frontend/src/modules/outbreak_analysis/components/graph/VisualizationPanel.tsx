@@ -8,7 +8,6 @@ import { Legend } from "@/modules/core/components/graph/Legend";
 import { useGetAllContacts } from "@/modules/core/hooks/database/contacts/useGetAllContacts";
 import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
-import { useLocation } from "react-router-dom";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
@@ -24,7 +23,7 @@ export const VisualizationPanel = () => {
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
-    const pathname = decodeURI(useLocation().pathname.split("/")[2]);
+
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
         outbreakAnalysisStore.graphData.nodes,
@@ -55,7 +54,7 @@ export const VisualizationPanel = () => {
             {outbreakAnalysisStore.settings.selectedOutbreak ? (
                 <>
                     <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm font-medium bg-muted/80 pointer-events-none">
-                        Analyse: {pathname}
+                        Analyse: {outbreakAnalysisStore?.name}
                     </fieldset>
                     <Legend
                         nodes={outbreakAnalysisStore.graphData.nodes}
