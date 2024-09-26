@@ -1,18 +1,16 @@
 import { Document, Page, View, StyleSheet, Image, Font, Text } from "@react-pdf/renderer";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { ColorMap } from "@/modules/core/types/graph";
-import { getSelectedClusters, getUniqueTypesOfLinks } from "@/modules/core/helpers/graphs";
+import { getSelectedClusters } from "@/modules/core/helpers/graphs";
 import MerriweatherRegular from "@/assets/font/Merriweather_Sans/MerriweatherSans-Regular.ttf";
 import MerriweatherItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-Italic.ttf";
 import MerriweatherLight from "@/assets/font/Merriweather_Sans/MerriweatherSans-Light.ttf";
 import MerriweatherLightItalic from "@/assets/font/Merriweather_Sans/MerriweatherSans-LightItalic.ttf";
 import MerriweatherSemiBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf";
 import MerriweatherBold from "@/assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf";
-import { useMemo } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { t } from "i18next";
 import { PdfDataGenerator } from "../../services/pdf_export/PdfDataGenerator";
+import PdfGraphLegend from "./PdfGraphLegend";
 
 Font.register({
     family: "Merriweather",
@@ -70,13 +68,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const Paragraph = ({ styles, children }: { styles?: object; children: any }) => {
-    const defaults = { marginBottom: 5 };
-    let mergedStyles = { ...defaults, ...styles };
-
-    return <Text style={mergedStyles}>{children}</Text>;
-};
-
 const Headline = ({ level, children }: { level: number; children: any }) => {
     switch (level) {
         case 1:
@@ -88,7 +79,7 @@ const Headline = ({ level, children }: { level: number; children: any }) => {
     }
 };
 
-const OutbreakAnalysisReportDocument = ({
+const OutbreakAnalysisReportPdf = ({
     pdfDataGenerator,
     graphImageUrl,
 }: {
@@ -102,10 +93,6 @@ const OutbreakAnalysisReportDocument = ({
     const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
     const selectedBackgroundNames = selectedClusters.selectedBackground;
     const activePathogen = coreState.activePathogen;
-    const links = outbreakAnalysisState.graphData.links;
-    const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
-    const geneticDistanceLinks = uniqueTypesOfLinks.filter((link) => link.type === t(`linkTypes.geneticDistance`));
-    const uniqueContactTracingLinks = uniqueTypesOfLinks.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
     const colorMap = outbreakAnalysisState.graphSettings.colorMap;
 
     if (!selectedOutbreakName) return;
@@ -157,106 +144,6 @@ const OutbreakAnalysisReportDocument = ({
         );
     };
 
-    const getLegend = (colorMap: ColorMap, outbreakName: string, backgroundNames: string[]) => {
-        return (
-            <View
-                style={{
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Text style={{ fontSize: 6, fontWeight: 600, marginTop: 5 }}>Untersuchter Ausbruch</Text>
-                <View style={{ flexDirection: "row", marginTop: 5 }}>
-                    <div
-                        style={{
-                            marginTop: 1,
-                            marginRight: 5,
-                            width: 5,
-                            height: 5,
-                            borderRadius: "50%",
-                            backgroundColor: colorMap[outbreakName].color,
-                        }}
-                    ></div>
-                    <Text
-                        style={{
-                            color: "#000000",
-                            fontSize: 6,
-                            textAlign: "left",
-                        }}
-                    >
-                        {outbreakName}
-                    </Text>
-                </View>
-                {backgroundNames.length > 0 && (
-                    <Text style={{ fontSize: 6, fontWeight: 600, marginTop: 5 }}>Weitere Fälle</Text>
-                )}
-                {backgroundNames.map((name: string, key: number) => {
-                    return (
-                        <View key={key} style={{ flexDirection: "row", marginTop: 5 }}>
-                            <div
-                                style={{
-                                    marginTop: 1,
-                                    marginRight: 5,
-                                    width: 5,
-                                    height: 5,
-                                    borderRadius: "50%",
-                                    backgroundColor: colorMap[name].color,
-                                }}
-                            ></div>
-                            <Text
-                                style={{
-                                    color: "#000000",
-                                    fontSize: 6,
-                                    textAlign: "left",
-                                }}
-                            >
-                                {name}
-                            </Text>
-                        </View>
-                    );
-                })}
-                {geneticDistanceLinks.length > 0 && (
-                    <Text style={{ fontSize: 6, fontWeight: 600, marginTop: 5 }}>Genetische Kanten</Text>
-                )}
-                {geneticDistanceLinks.map((link, key) => {
-                    return (
-                        <View key={key} style={{ flexDirection: "row", marginTop: 5 }}>
-                            <div
-                                style={{
-                                    backgroundColor: `${link.color}`,
-                                    height: 1,
-                                    width: 5,
-                                    marginTop: 3,
-                                    marginRight: 5,
-                                }}
-                            ></div>
-                            <Text style={{ fontSize: 6, textAlign: "left" }}>{link.type}</Text>
-                        </View>
-                    );
-                })}
-                {uniqueContactTracingLinks.length > 0 && (
-                    <Text style={{ fontSize: 6, fontWeight: 600, marginTop: 5 }}>Kontaktkanten</Text>
-                )}
-                {uniqueContactTracingLinks.map((link, key) => {
-                    return (
-                        <View key={key} style={{ flexDirection: "row", marginTop: 5 }}>
-                            <div
-                                style={{
-                                    backgroundColor: `${link.color}`,
-                                    height: 1,
-                                    width: 5,
-                                    marginTop: 3,
-                                    marginRight: 5,
-                                }}
-                            ></div>
-                            <Text style={{ fontSize: 6 }}>{link.type}</Text>
-                        </View>
-                    );
-                })}
-            </View>
-        );
-    };
-
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -283,7 +170,7 @@ const OutbreakAnalysisReportDocument = ({
                             <Image source={graphImageUrl} style={{ marginBottom: 15, paddingRight: 5 }} />
                         </View>
                         <View style={{ width: "15%" }}>
-                            {getLegend(colorMap, selectedOutbreakName, selectedBackgroundNames)}
+                            <PdfGraphLegend />
                         </View>
                     </View>
                     <Text style={{ fontSize: 8, fontStyle: "italic", marginTop: 10 }}>
@@ -307,4 +194,4 @@ const OutbreakAnalysisReportDocument = ({
     );
 };
 
-export default OutbreakAnalysisReportDocument;
+export default OutbreakAnalysisReportPdf;

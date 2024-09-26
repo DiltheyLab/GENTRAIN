@@ -9,7 +9,8 @@ import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Textarea } from "@/modules/core/components/ui/Textarea";
 import { PdfDataGenerator } from "../../services/pdf_export/PdfDataGenerator";
-import OutbreakAnalysisReportDocument from "./OutbreakAnalysisReportDocument";
+import OutbreakAnalysisReportPdf from "./OutbreakAnalysisReportPdf";
+import PdfGraphLegend from "./PdfGraphLegend";
 
 const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
@@ -40,7 +41,7 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
             return;
 
         const fileName = `${outbreakAnalysisState.name}_report.pdf`;
-        pdf(<OutbreakAnalysisReportDocument pdfDataGenerator={pdfDataGenerator} graphImageUrl={graphImageUrl} />)
+        pdf(<OutbreakAnalysisReportPdf pdfDataGenerator={pdfDataGenerator} graphImageUrl={graphImageUrl} />)
             .toBlob()
             .then((blob) => {
                 saveAs(blob, fileName);
@@ -108,9 +109,19 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                         <p className="font-bold">Grafische Darstellung der Struktur der analysierten Fälle</p>
                         {graphImageUrl && (
                             <>
-                                <img src={graphImageUrl} className="w-full md:w-1/2 mx-auto my-5" />
+                                <div className="flex w-full md:p-10">
+                                    <img src={graphImageUrl} className="w-full md:w-2/3 mx-auto my-5" />
+                                    <div className="hidden md:block">
+                                        <PdfGraphLegend preview />
+                                    </div>
+                                </div>
                                 <small className="italic">{pdfDataGenerator.getGraphImageDescription()}</small>
                             </>
+                        )}
+                        {!graphImageUrl && (
+                            <div className="flex justify-center my-10">
+                                <LoadingSpinner />
+                            </div>
                         )}
                     </div>
                     <div className="mb-5">
