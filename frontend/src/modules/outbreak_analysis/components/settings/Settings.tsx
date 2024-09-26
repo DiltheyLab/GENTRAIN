@@ -50,8 +50,8 @@ export const Settings = () => {
 
     return (
         <div className="relative flex flex-col items-center gap-8 overflow-y-hidden">
-            <form className="w-full items-start border rounded-xl px-1">
-                <fieldset className="flex flex-col gap-3 px-3 pb-4 pt-1 overflow-y-auto h-[85vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
+            <form className="w-full px-1 h-[85vh] flex flex-col justify-between">
+                <fieldset className="flex border rounded-xl flex-col h-[83%] gap-3 px-3 pb-4 pt-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
                     <Accordion type="multiple" className="w-full flex flex-col gap-2" defaultValue={["item-1"]}>
                         <AccordionItem value="item-1">
                             <AccordionTrigger className="flex w-full justify-between items-center">
@@ -124,19 +124,16 @@ export const Settings = () => {
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
+                </fieldset>
+                <fieldset className="flex flex-col gap-3 p-3 border rounded-xl ">
                     <Suspense
                         fallback={
-                            <Button disabled className="mt-2" variant="outline" type="button">
+                            <Button disabled variant="outline" type="button">
                                 Analysebericht exportieren
                             </Button>
                         }
                     >
-                        <Button
-                            className="mt-2"
-                            variant="outline"
-                            type="button"
-                            onClick={() => setShowPdfExportDialog(true)}
-                        >
+                        <Button variant="outline" type="button" onClick={() => setShowPdfExportDialog(true)}>
                             Ausbruchsanalyse-Report exportieren
                         </Button>
                         <Dialog open={showPdfExportDialog}>
