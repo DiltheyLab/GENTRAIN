@@ -1,18 +1,22 @@
-import { Button } from "@/modules/core/components/ui/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/core/components/ui/Tooltip";
+import { Info } from "lucide-react";
 
 type CustomTooltipProps = {
     content: React.ReactNode;
-    trigger: React.ReactNode;
+    disabled: boolean;
 };
 
-const defaultTrigger = <Button variant="outline">Hover</Button>;
+export const CustomTooltip = ({ content, disabled }: CustomTooltipProps) => {
+    if (disabled) {
+        return <Info aria-disabled className="h-5 w-5 mb-1 text-slate-900/50" />;
+    }
 
-export const CustomTooltip = ({ content, trigger = defaultTrigger }: CustomTooltipProps) => {
     return (
-        <TooltipProvider delayDuration={200}>
+        <TooltipProvider delayDuration={100}>
             <Tooltip>
-                <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+                <TooltipTrigger asChild>
+                    <Info className="h-5 w-5 cursor-pointer mb-1" />
+                </TooltipTrigger>
                 <TooltipContent className="w-72">{content}</TooltipContent>
             </Tooltip>
         </TooltipProvider>

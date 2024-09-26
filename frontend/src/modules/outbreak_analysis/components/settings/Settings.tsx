@@ -54,87 +54,75 @@ export const Settings = () => {
                 <fieldset className="flex flex-col gap-3 px-3 pb-4 pt-1 overflow-y-auto h-[85vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
                     <Accordion type="multiple" className="w-full flex flex-col gap-2" defaultValue={["item-1"]}>
                         <AccordionItem value="item-1">
-                            <div className="flex w-full justify-between items-center">
+                            <AccordionTrigger className="flex w-full justify-between items-center">
                                 <SectionHeader
                                     step={1}
                                     title="Ausbruch auswählen"
                                     tooltipContent={tooltipOutbreakSelection}
                                 />
-                                <AccordionTrigger>
-                                    <span />
-                                </AccordionTrigger>
-                            </div>
+                            </AccordionTrigger>
                             <AccordionContent>
                                 <OutbreakSelection />
                             </AccordionContent>
                         </AccordionItem>
-                        {outbreakAnalysisStore.settings.selectedOutbreak && (
-                            <>
-                                <AccordionItem value="item-2">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={2}
-                                            title="Background auswählen"
-                                            tooltipContent={tooltipBackgroundSelection}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <BackgroundSelection />
-                                    </AccordionContent>
-                                </AccordionItem>
+                        <AccordionItem value="item-2" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                            <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                                <SectionHeader
+                                    step={2}
+                                    title="Background auswählen"
+                                    tooltipContent={tooltipBackgroundSelection}
+                                    disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                                />
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <BackgroundSelection />
+                            </AccordionContent>
+                        </AccordionItem>
 
-                                <AccordionItem value="item-3">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={3}
-                                            title="Background filtern"
-                                            tooltipContent={tooltipBackgroundFilter}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <BackgroundFilter />
-                                    </AccordionContent>
-                                </AccordionItem>
+                        <AccordionItem value="item-3" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                            <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                                <SectionHeader
+                                    step={3}
+                                    title="Background filtern"
+                                    tooltipContent={tooltipBackgroundFilter}
+                                    disabled={
+                                        !outbreakAnalysisStore.settings.selectedOutbreak ||
+                                        outbreakAnalysisStore.settings.backgroundType === "none"
+                                    }
+                                />
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <BackgroundFilter disabled={outbreakAnalysisStore.settings.backgroundType === "none"} />
+                            </AccordionContent>
+                        </AccordionItem>
 
-                                <AccordionItem value="item-4">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={4}
-                                            title="Kontaktnachverfolgung"
-                                            tooltipContent={tooltipContactTracing}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <ContactTracing />
-                                    </AccordionContent>
-                                </AccordionItem>
+                        <AccordionItem value="item-4" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                            <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                                <SectionHeader
+                                    step={4}
+                                    title="Kontaktnachverfolgung"
+                                    tooltipContent={tooltipContactTracing}
+                                    disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                                />
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <ContactTracing />
+                            </AccordionContent>
+                        </AccordionItem>
 
-                                <AccordionItem value="item-5">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={5}
-                                            title="Einfärbung"
-                                            tooltipContent={tooltipColorSelection}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <ColorSelection />
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </>
-                        )}
+                        <AccordionItem value="item-5" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                            <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                                <SectionHeader
+                                    step={5}
+                                    title="Einfärbung"
+                                    tooltipContent={tooltipColorSelection}
+                                    disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                                />
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <ColorSelection />
+                            </AccordionContent>
+                        </AccordionItem>
                     </Accordion>
                     <Suspense
                         fallback={
