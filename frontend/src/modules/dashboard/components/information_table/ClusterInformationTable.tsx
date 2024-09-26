@@ -5,6 +5,7 @@ import { CustomNode } from "@/modules/core/types/graph";
 import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { formatDate } from "@/modules/core/helpers/dates";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
@@ -13,19 +14,27 @@ export const ClusterInformationTable = () => {
 
     const renderHeadRow = () => {
         return (
-            <TableRow className="font-medium bg-muted">
-                <TableHead className="font-medium p-2 text-xs text-black">Fall ID</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Sequenz ID</TableHead>
+            <TableRow className="bg-muted font-medium">
+                <TableHead className="p-2 text-xs text-black">Fall ID</TableHead>
+                <TableHead className="p-2 text-xs text-black">Sequenz ID</TableHead>
                 {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
-                        <TableHead className="font-medium p-2 text-xs text-black">N's</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Abstammung</TableHead>
-                        <TableHead className="font-medium p-2 text-xs text-black">Sequenzlänge</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Ns</TableHead>
+                        <TableHead className="p-2 text-xs text-black">IUPAC Ambiguity Characters</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Abstammung</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Sequenzlänge</TableHead>
                     </>
                 )}
-                <TableHead className="font-medium p-2 text-xs text-black">Ausbruch</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Registrierungsdatum</TableHead>
-                <TableHead className="font-medium p-2 text-xs text-black">Gruppen</TableHead>
+                {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                    <>
+                        <TableHead className="p-2 text-xs text-black">Contigs</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Länge erster Contig</TableHead>
+                        <TableHead className="p-2 text-xs text-black">Unbestimmbare Gene</TableHead>
+                    </>
+                )}
+                <TableHead className="p-2 text-xs text-black">Ausbruch</TableHead>
+                <TableHead className="p-2 text-xs text-black">Gruppen</TableHead>
+                <TableHead className="p-2 text-xs text-black">Registrierungsdatum</TableHead>
             </TableRow>
         );
     };
@@ -35,24 +44,48 @@ export const ClusterInformationTable = () => {
             if (!node) return null;
 
             return (
-                <TableRow key={node.id} className="border-muted">
-                    <TableCell className="p-2 text-xs font-medium">{node.caseData.case_id}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.fasta_id}</TableCell>
+                <TableRow key={node.caseData.id} className="border-muted font-medium">
+                    <TableCell className="p-2 text-xs ">{node.caseData.case_id}</TableCell>
+                    <TableCell className="p-2 text-xs">{node.caseData.sample?.fasta_id}</TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
-                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.n_count}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">{node.caseData.sample?.lineage}</TableCell>
-                            <TableCell className="p-2 text-xs font-medium">
-                                {node.caseData.sample?.sequence_length}
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.n_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.ambiguity_character_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.lineage}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.sequence_length}</p>
                             </TableCell>
                         </>
                     )}
-                    <TableCell className="p-2 text-xs font-medium">{node.cluster}</TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
-                        {node.caseData.registered_at.toLocaleDateString()}
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
+                        <>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.contig_count}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.first_contig_length}</p>
+                            </TableCell>
+                            <TableCell className="p-2 text-xs">
+                                <p>{node.caseData.sample?.undeterminable_gen_count}</p>
+                            </TableCell>
+                        </>
+                    )}
+                    <TableCell className="p-2 text-xs">
+                        <p>{node.caseData.outbreak?.name ?? "Umgebung"}</p>
                     </TableCell>
-                    <TableCell className="p-2 text-xs font-medium">
-                        {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
+                    <TableCell className="p-2 text-xs">
+                        <p>
+                            {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
+                        </p>
+                    </TableCell>
+                    <TableCell className="p-2 text-xs">
+                        <p>{formatDate(node.caseData.registered_at)}</p>
                     </TableCell>
                 </TableRow>
             );
