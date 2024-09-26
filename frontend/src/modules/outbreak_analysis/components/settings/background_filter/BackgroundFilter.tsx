@@ -4,7 +4,11 @@ import { DateRangePicker } from "./DateRangePicker";
 import { Switch } from "@/modules/core/components/ui/Switch";
 import { Input } from "@/modules/core/components/ui/Input";
 
-export const BackgroundFilter = () => {
+type BackgroundFilterProps = {
+    disabled: boolean;
+};
+
+export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
@@ -26,6 +30,7 @@ export const BackgroundFilter = () => {
                     id="excludeCasesWithoutSequence"
                     checked={outbreakAnalysisStore.settings.excludeCasesWithoutSequence}
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
+                    disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesWithoutSequence" className="text-md leading-5">
                     Nicht sequenzierte Fälle ausschließen
@@ -36,6 +41,7 @@ export const BackgroundFilter = () => {
                     id="excludeCasesAboveGeneticDistanceThreshold"
                     checked={outbreakAnalysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
+                    disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="text-md leading-5">
                     Sequenzierte Fälle mit genetischer Distanz &gt;{" "}
@@ -54,7 +60,7 @@ export const BackgroundFilter = () => {
                     />
                 </>
             )}
-            <DateRangePicker />
+            <DateRangePicker disabled={disabled} />
         </div>
     );
 };

@@ -95,16 +95,15 @@ export const BackgroundSelection = () => {
                 onValueChange={(value: BackgroundType) => handleBackgroundDataChange(value)}
             >
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="none" id="none" />
-                    <Label htmlFor="none" className="text-md">
-                        Keine Falldaten verwenden
-                    </Label>
-                </div>
-
-                <div className="flex items-center space-x-2">
                     <RadioGroupItem value="all" id="all" />
                     <Label htmlFor="all" className="text-md">
                         Alle Falldaten verwenden
+                    </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="none" id="none" />
+                    <Label htmlFor="none" className="text-md">
+                        Keine Falldaten verwenden
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">

@@ -71,7 +71,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
 
     return {
-        backgroundType: "none",
+        backgroundType: "all",
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
