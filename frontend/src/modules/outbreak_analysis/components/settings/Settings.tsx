@@ -21,7 +21,7 @@ import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 import { lazy, Suspense, useState } from "react";
 import { Dialog } from "@/modules/core/components/ui/Dialog";
 
-const PdfExport = lazy(() => import("./PdfExport"));
+const PdfExportConfiguration = lazy(() => import("../pdf_export/PdfExportConfiguration"));
 
 export const Settings = () => {
     const [showPdfExportDialog, setShowPdfExportDialog] = useState(false);
@@ -156,7 +156,7 @@ export const Settings = () => {
                             Ausbruchsanalyse-Report exportieren
                         </Button>
                         <Dialog open={showPdfExportDialog}>
-                            <PdfExport onPdfExport={() => setShowPdfExportDialog(false)} />
+                            <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
                         </Dialog>
                     </Suspense>
                     <Button type="button" onClick={() => safeAnalysis()}>
