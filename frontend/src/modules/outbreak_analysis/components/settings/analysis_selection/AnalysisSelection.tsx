@@ -17,12 +17,14 @@ import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
 import { useNavigate } from "react-router-dom";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
+import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 export const AnalysisSelection = () => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
     const analyses = useGetAnalysesForActivePathogen();
     const { toast } = useToast();
     const navigate = useNavigate();
+    const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
 
     // reset selected analysis if the analyses change which happens if the pathogen changes
     useEffect(() => {
@@ -37,6 +39,8 @@ export const AnalysisSelection = () => {
 
     const handleSubmit = () => {
         if (!selectedAnalysis) return;
+        const { id, name, settings, graphSettings } = selectedAnalysis;
+        updateWholeAnalysis(id, name, settings, graphSettings);
         navigate(`${selectedAnalysis.id}`);
     };
 

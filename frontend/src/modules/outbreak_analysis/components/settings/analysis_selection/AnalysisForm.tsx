@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Button } from "@/modules/core/components/ui/Button";
-import { defaultGraphSettings, getDefaultSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import {
+    defaultGraphSettings,
+    getDefaultSettings,
+    useOutbreakAnalysisStore,
+} from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { useNavigate } from "react-router-dom";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
@@ -15,6 +19,7 @@ export const AnalysisForm = () => {
     const { activePathogen } = useCoreStore();
     const { toast } = useToast();
     const navigate = useNavigate();
+    const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
 
     const isUniqueName = () => {
         return analyses?.find((analysis) => analysis.name === analysisName) === undefined;
@@ -42,6 +47,7 @@ export const AnalysisForm = () => {
         try {
             const defaultSettings = getDefaultSettings();
             const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
+            updateWholeAnalysis(id, analysisName, defaultSettings, defaultGraphSettings);
             navigate(`${id}`);
         } catch (error) {
             toast({
