@@ -32,7 +32,7 @@ export type AnalysisSettings = {
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
     clusteringThreshold: number;
-    openAccordionItems: string[];
+    openAccordionItems?: string[];
 };
 
 export type GraphSettings = {
