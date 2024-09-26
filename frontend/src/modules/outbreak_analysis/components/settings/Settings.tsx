@@ -29,12 +29,13 @@ export const Settings = () => {
     const safeAnalysis = async () => {
         try {
             if (!outbreakAnalysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
-            const success = await updateAnalysisSettings(
+            const analysisSettingsId = await updateAnalysisSettings(
                 outbreakAnalysisStore.id,
                 outbreakAnalysisStore.settings,
                 outbreakAnalysisStore.graphSettings
             );
-            if (success) {
+
+            if (analysisSettingsId) {
                 toast({
                     title: "Analyse gespeichert",
                     description: "Die Analyse wurde erfolgreich gespeichert.",
@@ -49,121 +50,107 @@ export const Settings = () => {
     };
 
     return (
-        <div className="relative flex flex-col items-center gap-8 overflow-y-hidden">
-            <form className="w-full items-start border rounded-xl px-1">
-                <fieldset className="flex flex-col gap-3 px-3 pb-4 pt-1 overflow-y-auto h-[85vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
-                    <Accordion
-                        type="multiple"
-                        className="w-full flex flex-col gap-2"
-                        defaultValue={["item-1", "item-2", "item-3", "item-4", "item-5"]}
-                    >
-                        <AccordionItem value="item-1">
-                            <div className="flex w-full justify-between items-center">
-                                <SectionHeader
-                                    step={1}
-                                    title="Ausbruch auswählen"
-                                    tooltipContent={tooltipOutbreakSelection}
-                                />
-                                <AccordionTrigger>
-                                    <span />
-                                </AccordionTrigger>
-                            </div>
-                            <AccordionContent>
-                                <OutbreakSelection />
-                            </AccordionContent>
-                        </AccordionItem>
-                        {outbreakAnalysisStore.settings.selectedOutbreak && (
-                            <>
-                                <AccordionItem value="item-2">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={2}
-                                            title="Background auswählen"
-                                            tooltipContent={tooltipBackgroundSelection}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <BackgroundSelection />
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-3">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={3}
-                                            title="Background filtern"
-                                            tooltipContent={tooltipBackgroundFilter}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <BackgroundFilter />
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-4">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={4}
-                                            title="Kontaktnachverfolgung"
-                                            tooltipContent={tooltipContactTracing}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <ContactTracing />
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-5">
-                                    <div className="flex w-full justify-between items-center">
-                                        <SectionHeader
-                                            step={5}
-                                            title="Einfärbung"
-                                            tooltipContent={tooltipColorSelection}
-                                        />
-                                        <AccordionTrigger>
-                                            <span />
-                                        </AccordionTrigger>
-                                    </div>
-                                    <AccordionContent>
-                                        <ColorSelection />
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </>
-                        )}
-                    </Accordion>
-                    <Suspense
-                        fallback={
-                            <Button disabled className="mt-2" variant="outline" type="button">
-                                Analysebericht exportieren
-                            </Button>
-                        }
-                    >
-                        <Button
-                            className="mt-2"
-                            variant="outline"
-                            type="button"
-                            onClick={() => setShowPdfExportDialog(true)}
-                        >
+        <form className="w-full px-1 flex flex-col justify-between overflow-y-hidden h-full">
+            <fieldset className="flex border rounded-lg flex-col h-[calc(100%-102px)] mb-4 gap-3 px-3 pb-4 pt-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
+                <Accordion
+                    type="multiple"
+                    className="w-full flex flex-col gap-2"
+                    defaultValue={outbreakAnalysisStore.settings.openAccordionItems}
+                    onValueChange={(value) => outbreakAnalysisStore.updateSettings({ openAccordionItems: value })}
+                >
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger className="flex w-full justify-between items-center">
+                            <SectionHeader
+                                step={1}
+                                title="Ausbruch auswählen"
+                                tooltipContent={tooltipOutbreakSelection}
+                            />
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <OutbreakSelection />
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                        <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                            <SectionHeader
+                                step={2}
+                                title="Background auswählen"
+                                tooltipContent={tooltipBackgroundSelection}
+                                disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                            />
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <BackgroundSelection />
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                        <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                            <SectionHeader
+                                step={3}
+                                title="Background filtern"
+                                tooltipContent={tooltipBackgroundFilter}
+                                disabled={
+                                    !outbreakAnalysisStore.settings.selectedOutbreak ||
+                                    outbreakAnalysisStore.settings.backgroundType === "none"
+                                }
+                            />
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <BackgroundFilter disabled={outbreakAnalysisStore.settings.backgroundType === "none"} />
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-4" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                        <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                            <SectionHeader
+                                step={4}
+                                title="Kontaktnachverfolgung"
+                                tooltipContent={tooltipContactTracing}
+                                disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                            />
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <ContactTracing />
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-5" disabled={!outbreakAnalysisStore.settings.selectedOutbreak}>
+                        <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
+                            <SectionHeader
+                                step={5}
+                                title="Einfärbung"
+                                tooltipContent={tooltipColorSelection}
+                                disabled={!outbreakAnalysisStore.settings.selectedOutbreak}
+                            />
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <ColorSelection />
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </fieldset>
+            <fieldset className="flex flex-col justify-evenly gap-3 p-3 border rounded-lg h-[102px]">
+                <Suspense
+                    fallback={
+                        <Button disabled variant="outline" type="button">
                             Ausbruchsanalyse-Report exportieren
                         </Button>
-                        <Dialog open={showPdfExportDialog}>
-                            <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
-                        </Dialog>
-                    </Suspense>
-                    <Button type="button" onClick={() => safeAnalysis()}>
-                        Analyse speichern
+                    }
+                >
+                    <Button
+                        className="text-wrap"
+                        variant="outline"
+                        type="button"
+                        onClick={() => setShowPdfExportDialog(true)}
+                    >
+                        Ausbruchsanalyse-Report exportieren
                     </Button>
-                </fieldset>
-            </form>
-        </div>
+                    <Dialog open={showPdfExportDialog}>
+                        <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
+                    </Dialog>
+                </Suspense>
+                <Button type="button" onClick={() => safeAnalysis()}>
+                    Analyse speichern
+                </Button>
+            </fieldset>
+        </form>
     );
 };

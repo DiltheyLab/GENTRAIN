@@ -20,12 +20,11 @@ export class GraphCaseCollector {
     execute = async () => {
         const {
             selectedOutbreak,
-            showBackground,
             selectedBackground,
             geneticDistanceThreshold,
             excludeCasesAboveGeneticDistanceThreshold,
             excludeCasesWithoutSequence,
-            includeAllCases,
+            backgroundType,
             excludeCasesOutsideOfDateRange,
             dateRange,
         } = this.settings;
@@ -40,12 +39,12 @@ export class GraphCaseCollector {
         // *************************** SELECT BACKGROUND ********************************
 
         // use all cases without any filtering for the graph
-        if (includeAllCases) {
+        if (backgroundType === "all") {
             this.addAllCases();
         }
 
         // use cases which are selected in the multiselect field
-        if (selectedBackground && !includeAllCases) {
+        if (selectedBackground && backgroundType === "specific") {
             this.addCasesFromBackground(selectedBackground);
         }
 
@@ -65,11 +64,6 @@ export class GraphCaseCollector {
         // filter out cases which are not in the selected time range
         if (excludeCasesOutsideOfDateRange && dateRange) {
             this.removeCasesOutsideOfDateRange(dateRange);
-        }
-
-        // disable background cases by filtering outbreak cases
-        if (!showBackground && selectedOutbreak) {
-            this.removeBackgroundCases();
         }
 
         // the casesInGraph array contains duplicated cases. Example: A case is in a selected
@@ -137,10 +131,6 @@ export class GraphCaseCollector {
         this.casesInGraph = this.casesInGraph.filter((caseData, index, self) => {
             return index === self.findIndex((t) => t.id === caseData.id);
         });
-    }
-
-    private removeBackgroundCases() {
-        this.casesInGraph = [...this.casesInOutbreak];
     }
 
     private removeCasesOutsideOfDateRange(dateRange: DateRange) {

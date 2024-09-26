@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
 import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
+import { Button } from "../ui/Button";
+import { useNavigate } from "react-router-dom";
 
 type Graph2DProps = {
     data: GraphData;
@@ -46,6 +48,7 @@ export const Graph2D = ({
 }: Graph2DProps) => {
     const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
+    const navigate = useNavigate();
     useCanvasClick(updateSelectedCase);
 
     // custom d3 force setup
@@ -58,7 +61,19 @@ export const Graph2D = ({
     if (data.nodes.length === 0 && !cases) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
     } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
-        return <div className="flex justify-center items-center h-full w-full">Keine Daten vorhanden</div>;
+        return (
+            <div className="flex justify-center items-center h-full w-full">
+                <p>Es sind keine sequenzierten Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
+                <Button
+                    variant="link"
+                    className="underline px-0 font-normal text-base"
+                    onClick={() => navigate("/data-management")}
+                >
+                    Datenverwaltung
+                </Button>
+                <p>&nbsp; hoch.</p>
+            </div>
+        );
     }
 
     const handleEngineStop = () => {

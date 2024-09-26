@@ -6,6 +6,8 @@ import { ColoringMode, ColorMap, GraphData } from "@/modules/core/types/graph";
 import { GroupSchema, GroupWithCategory } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
+export type BackgroundType = "all" | "specific" | "none";
+
 export type GroupColoration = {
     group: GroupSchema;
     color: string;
@@ -19,11 +21,10 @@ export type SelectedBackground = {
 };
 
 export type AnalysisSettings = {
-    includeAllCases: boolean;
+    backgroundType: BackgroundType;
     selectedOutbreak: OutbreakSchema | null;
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
-    showBackground: boolean;
     excludeCasesAboveGeneticDistanceThreshold: boolean;
     excludeCasesOutsideOfDateRange: boolean;
     excludeCasesWithoutSequence: boolean;
@@ -31,6 +32,7 @@ export type AnalysisSettings = {
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
     clusteringThreshold: number;
+    openAccordionItems?: string[];
 };
 
 export type GraphSettings = {
@@ -58,6 +60,12 @@ export interface OutbreakAnalysisStore {
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
+    updateWholeAnalysis: (
+        newId: number,
+        newName: string,
+        newSettings: AnalysisSettings,
+        newGraphSettings: GraphSettings
+    ) => void;
 }
 
 export const defaultGraphSettings: GraphSettings = {
@@ -74,11 +82,10 @@ export const getDefaultSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
 
     return {
-        includeAllCases: true,
+        backgroundType: "all",
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        showBackground: true,
         excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
         excludeCasesWithoutSequence: true,
@@ -86,6 +93,7 @@ export const getDefaultSettings = (): AnalysisSettings => {
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
         showContactTracingLinks: false,
         clusteringThreshold: geneticDistanceThreshold ?? 0,
+        openAccordionItems: ["item-1"],
     };
 };
 
@@ -109,5 +117,12 @@ export const useOutbreakAnalysisStore = create<OutbreakAnalysisStore>((set) => {
         updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
         updateGraphSettings: (newGraphSettings) =>
             set((state) => ({ graphSettings: { ...state.graphSettings, ...newGraphSettings } })),
+        updateWholeAnalysis: (newId, newName, newSettings, newGraphSettings) =>
+            set({
+                id: newId,
+                name: newName,
+                settings: newSettings,
+                graphSettings: newGraphSettings,
+            }),
     };
 });

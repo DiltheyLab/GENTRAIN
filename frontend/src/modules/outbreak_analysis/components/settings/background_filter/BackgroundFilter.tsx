@@ -4,12 +4,12 @@ import { DateRangePicker } from "./DateRangePicker";
 import { Switch } from "@/modules/core/components/ui/Switch";
 import { Input } from "@/modules/core/components/ui/Input";
 
-export const BackgroundFilter = () => {
-    const outbreakAnalysisStore = useOutbreakAnalysisStore();
+type BackgroundFilterProps = {
+    disabled: boolean;
+};
 
-    const handleShowBackground = (value: boolean) => {
-        outbreakAnalysisStore.updateSettings({ showBackground: value });
-    };
+export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
+    const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
         outbreakAnalysisStore.updateSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
@@ -30,6 +30,7 @@ export const BackgroundFilter = () => {
                     id="excludeCasesWithoutSequence"
                     checked={outbreakAnalysisStore.settings.excludeCasesWithoutSequence}
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
+                    disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesWithoutSequence" className="text-md leading-5">
                     Nicht sequenzierte Fälle ausschließen
@@ -40,6 +41,7 @@ export const BackgroundFilter = () => {
                     id="excludeCasesAboveGeneticDistanceThreshold"
                     checked={outbreakAnalysisStore.settings.excludeCasesAboveGeneticDistanceThreshold}
                     onCheckedChange={(value) => handleExcludeCasesAboveGeneticDistanceThreshold(value)}
+                    disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="text-md leading-5">
                     Sequenzierte Fälle mit genetischer Distanz &gt;{" "}
@@ -58,17 +60,7 @@ export const BackgroundFilter = () => {
                     />
                 </>
             )}
-            <DateRangePicker />
-            <div className="flex flex-row items-center gap-3">
-                <Switch
-                    id="showBackground"
-                    checked={outbreakAnalysisStore.settings.showBackground}
-                    onCheckedChange={(value) => handleShowBackground(value)}
-                />
-                <Label htmlFor="showBackground" className="text-md">
-                    Background anzeigen
-                </Label>
-            </div>
+            <DateRangePicker disabled={disabled} />
         </div>
     );
 };

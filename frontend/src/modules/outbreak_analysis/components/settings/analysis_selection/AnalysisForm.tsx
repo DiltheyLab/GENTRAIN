@@ -2,11 +2,7 @@ import { useState } from "react";
 import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Button } from "@/modules/core/components/ui/Button";
-import {
-    defaultGraphSettings,
-    getDefaultSettings,
-    useOutbreakAnalysisStore,
-} from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { defaultGraphSettings, getDefaultSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { useNavigate } from "react-router-dom";
 import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
@@ -15,7 +11,6 @@ import { createAnalysis } from "@/modules/core/models/analyses";
 
 export const AnalysisForm = () => {
     const [analysisName, setAnalysisName] = useState("");
-    const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const analyses = useGetAnalysesForActivePathogen();
     const { activePathogen } = useCoreStore();
     const { toast } = useToast();
@@ -46,13 +41,8 @@ export const AnalysisForm = () => {
         }
         try {
             const defaultSettings = getDefaultSettings();
-            //create a new analysis in db and update the name in the store
             const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
-            outbreakAnalysisStore.updateName(analysisName);
-            outbreakAnalysisStore.updateId(id);
-            outbreakAnalysisStore.updateSettings(defaultSettings);
-            outbreakAnalysisStore.updateGraphSettings(defaultGraphSettings);
-            navigate(`${analysisName}`);
+            navigate(`${id}`);
         } catch (error) {
             toast({
                 title: "Fehler beim Speichern der Analyse",
@@ -65,7 +55,9 @@ export const AnalysisForm = () => {
 
     return (
         <div className="flex flex-col w-1/2 gap-2">
-            <Label htmlFor="name">Neue Analyse anlegen:</Label>
+            <Label htmlFor="name" className="font-normal">
+                Neue Analyse anlegen:
+            </Label>
             <Input
                 id="name"
                 className="w-full"
