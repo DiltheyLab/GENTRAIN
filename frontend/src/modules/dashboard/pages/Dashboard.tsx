@@ -11,8 +11,8 @@ export function Dashboard() {
     return (
         <Layout>
             <div className="relative mx-auto p-4">
-                <div className="flex flex-col-reverse gap-4 md:flex-row">
-                    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-4 ">
+                <div className="flex flex-col-reverse gap-4 md:flex-row min-h-[85vh]">
+                    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-4">
                         <DashboardSettings />
                         <Charts />
                     </div>
