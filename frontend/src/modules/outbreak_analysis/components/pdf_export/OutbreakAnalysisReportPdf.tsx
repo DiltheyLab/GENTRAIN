@@ -11,6 +11,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { PdfDataGenerator } from "../../services/pdf_export/PdfDataGenerator";
 import PdfGraphLegend from "./PdfGraphLegend";
+import { Headline } from "./PdfHeadline";
 
 Font.register({
     family: "Merriweather",
@@ -68,17 +69,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const Headline = ({ level, children }: { level: number; children: any }) => {
-    switch (level) {
-        case 1:
-            return <Text style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{children}</Text>;
-        case 2:
-            return <Text style={{ fontSize: 14, fontWeight: 300, marginVertical: 10 }}>{children}</Text>;
-        default:
-            return <Text style={{ fontSize: 12, fontWeight: 400, marginVertical: 10 }}>{children}</Text>;
-    }
-};
-
 const OutbreakAnalysisReportPdf = ({
     pdfDataGenerator,
     graphImageUrl,
@@ -91,9 +81,7 @@ const OutbreakAnalysisReportPdf = ({
     const selectedClusters = getSelectedClusters();
     const outbreakAnalysisName = outbreakAnalysisState.name;
     const selectedOutbreakName = selectedClusters.selectedOutbreak[0];
-    const selectedBackgroundNames = selectedClusters.selectedBackground;
     const activePathogen = coreState.activePathogen;
-    const colorMap = outbreakAnalysisState.graphSettings.colorMap;
 
     if (!selectedOutbreakName) return;
 

@@ -119,16 +119,16 @@ export class PdfDataGenerator {
             ];
             if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
                 cells.push(
-                    node.caseData.sample?.n_count ?? "-",
-                    node.caseData.sample?.ambiguity_character_count ?? "-",
+                    node.caseData.sample?.n_count ?? 0,
+                    node.caseData.sample?.ambiguity_character_count ?? 0,
                     node.caseData.sample?.lineage ?? "-"
                 );
             }
             if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
                 cells.push(
-                    node.caseData.sample?.contig_count ?? "-",
-                    node.caseData.sample?.first_contig_length ?? "-",
-                    node.caseData.sample?.undeterminable_gen_count ?? "-"
+                    node.caseData.sample?.contig_count ?? 0,
+                    node.caseData.sample?.first_contig_length ?? 0,
+                    node.caseData.sample?.undeterminable_gen_count ?? 0
                 );
             }
             rows.push(cells);
