@@ -135,18 +135,15 @@ export const Settings = () => {
                         </Button>
                     }
                 >
-                    <Dialog>
-                        <DialogTrigger>
-                            <Button
-                                className="text-wrap w-full"
-                                variant="outline"
-                                type="button"
-                                onClick={() => setShowPdfExportDialog(true)}
-                            >
+                    <Dialog open={showPdfExportDialog} onOpenChange={(value) => setShowPdfExportDialog(value)}>
+                        <DialogTrigger asChild>
+                            <Button className="text-wrap w-full" variant="outline" type="button">
                                 Ausbruchsanalyse-Report exportieren
                             </Button>
                         </DialogTrigger>
-                        <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
+                        {showPdfExportDialog && (
+                            <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
+                        )}
                     </Dialog>
                 </Suspense>
                 <Button type="button" onClick={() => safeAnalysis()}>

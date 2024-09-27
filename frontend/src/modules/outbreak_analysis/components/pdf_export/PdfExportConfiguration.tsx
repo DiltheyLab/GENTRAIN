@@ -7,8 +7,8 @@ import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
 import { Button } from "@/modules/core/components/ui/Button";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import {
-    DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -29,9 +29,11 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
     const [graphImageUrl, setGraphImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
-        pdfDataGenerator.generateGraphImage().then((graphImageUrl: string) => {
-            setGraphImageUrl(graphImageUrl);
-        });
+        if (graphReadyForExport) {
+            pdfDataGenerator.generateGraphImage().then((graphImageUrl: string) => {
+                setGraphImageUrl(graphImageUrl);
+            });
+        }
     }, [graphReadyForExport]);
 
     const downloadPdf = () => {
@@ -64,6 +66,10 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                     <DialogTitle className="mb-5">
                         Ausbruchsanalyse-Report zu "{outbreakAnalysisState.name}"
                     </DialogTitle>
+                    <DialogDescription>
+                        Exportieren Sie einen Ausbruchsanalyse-Report aus Basis der unten aufgeführten Inhalte. Die
+                        generierten Inhalte können über die Textfelder verändert werden.
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="overflow-scroll max-h-[70vh] px-6">
                     <div className="z-[-1] overflow-hidden relative">
@@ -73,15 +79,11 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                                 width={1200}
                                 height={900}
                                 colorMap={colorMap}
-                                coloringMode={coloringMode}
                                 cases={cases}
                                 charge={charge}
                                 linkDistance={50}
                                 nodeSize={10}
-                                showNodeLabel={showNodeLabel}
                                 linkWidth={2}
-                                updateSelectedCase={() => {}}
-                                selectedCase={null}
                                 exportPdfOnEngineStop={() => setGraphReadyForExport(true)}
                             />
                         </div>
