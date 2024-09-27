@@ -51,8 +51,12 @@ export interface OutbreakAnalysisStore {
     graphData: GraphData;
     settings: AnalysisSettings;
     graphSettings: GraphSettings;
+    summary: string | null;
+    conclusion: string | null;
     updateId: (newId: number) => void;
     updateName: (newName: string) => void;
+    updateSummary: (newSummary: string) => void;
+    updateConclusion: (newConclusion: string) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
@@ -100,11 +104,15 @@ export const useOutbreakAnalysisStore = create<OutbreakAnalysisStore>((set) => {
     return {
         id: null,
         name: null,
+        summary: null,
+        conclusion: null,
         graphData: { nodes: [], links: [] },
         settings: initializedSettings,
         graphSettings: defaultGraphSettings,
         updateId: (newId) => set({ id: newId }),
         updateName: (newName) => set({ name: newName }),
+        updateSummary: (newSummary) => set({ summary: newSummary }),
+        updateConclusion: (newConclusion) => set({ conclusion: newConclusion }),
         updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
         updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
         updateGraphSettings: (newGraphSettings) =>

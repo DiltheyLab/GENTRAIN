@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate } from "@/modules/core/helpers/dates";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { t } from "i18next";
 
 export function SampleInformationTable() {
     const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
@@ -71,7 +72,7 @@ export function SampleInformationTable() {
                         </>
                     )}
                     <TableCell className="p-2 text-xs">
-                        <p>{caseData.outbreak?.name ?? "Umgebung"}</p>
+                        <p>{caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
                         <p>{caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}</p>

@@ -57,7 +57,12 @@ export class ClusterAnalyser {
             this.addNodeToAdjacencyList(node.id);
         });
 
-        linksBelowThreshold.forEach((link) => this.addLinkToAdjacencyList(link.source, link.target));
+        linksBelowThreshold.forEach((link) =>
+            this.addLinkToAdjacencyList(
+                typeof link.source === "object" ? link.source.id : link.source,
+                typeof link.target === "object" ? link.target.id : link.target
+            )
+        );
     };
 
     private getConnectedComponents = (): number[][] => {

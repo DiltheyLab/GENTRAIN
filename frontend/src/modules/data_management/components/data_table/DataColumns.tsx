@@ -54,7 +54,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => <p className="capitalize font-medium">{row.original.case_id}</p>,
     },
     {
-        accessorKey: "sequence",
+        accessorKey: "fasta_id",
         header: ({ column }) => {
             return (
                 <Button
