@@ -94,8 +94,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         )
         process.wait()
         if process.returncode != 0:
-            # shutil.rmtree(self.input)
-            shutil.rmtree(self.output)
+            shutil.rmtree(self.input)
             raise SequenceAnalysisFailedException
         else:
             results = {}
