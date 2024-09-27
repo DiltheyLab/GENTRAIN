@@ -141,7 +141,7 @@ const OutbreakAnalysisReportPdf = ({
                         Zusammenfassung des analysierten Datensatzes und Ergebnisse der Qualitätskontrolle
                     </Headline>
                     <View style={{ marginBottom: 5 }}>
-                        <Text>{outbreakAnalysisState.summary}</Text>
+                        <Text>{outbreakAnalysisState.analysisReport.summary}</Text>
                     </View>
 
                     <Headline level={2}>Grafische Darstellung der Struktur der analysierten Fälle</Headline>
@@ -168,7 +168,7 @@ const OutbreakAnalysisReportPdf = ({
                 <Headline level={2}>Bewertung</Headline>
 
                 <View style={{ marginBottom: 5 }}>
-                    <Text>{outbreakAnalysisState.conclusion}</Text>
+                    <Text>{outbreakAnalysisState.analysisReport.conclusion}</Text>
                 </View>
 
                 <View style={{ marginBottom: 5 }}>{getCaseDataTable()}</View>

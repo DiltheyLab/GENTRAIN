@@ -80,7 +80,7 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                 <Entry type="node" color={colorMap[selectedOutbreakName].color}>
                     {selectedOutbreakName}
                 </Entry>
-                <SectionHeadline>Weitere Fälle</SectionHeadline>
+                {selectedBackgroundNames.length > 0 && <SectionHeadline>Weitere Fälle</SectionHeadline>}
                 {selectedBackgroundNames.map((name: string, key: number) => (
                     <Entry key={key} type="node" color={colorMap[name].color}>
                         {name}
@@ -92,7 +92,7 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                         {link.type}
                     </Entry>
                 ))}
-                <SectionHeadline>Kontaktkanten</SectionHeadline>
+                {uniqueContactTracingLinks.length > 0 && <SectionHeadline>Kontaktkanten</SectionHeadline>}
                 {uniqueContactTracingLinks.map((link, key) => (
                     <>
                         <Entry key={key} type="link" color={link.color}>

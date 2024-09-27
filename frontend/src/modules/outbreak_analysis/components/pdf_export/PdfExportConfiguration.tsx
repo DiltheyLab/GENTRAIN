@@ -19,10 +19,14 @@ import OutbreakAnalysisReportPdf from "./OutbreakAnalysisReportPdf";
 import PdfGraphLegend from "./PdfGraphLegend";
 
 const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) => {
-    const outbreakAnalysisState = useOutbreakAnalysisStore.getState();
-    const coreState = useCoreStore.getState();
-    const { charge, showNodeLabel, colorMap, coloringMode } = outbreakAnalysisState.graphSettings;
-    const cases = coreState.casesWithRelationships;
+    const activePathogen = useCoreStore((state) => state.casesWithRelationships);
+    const cases = useCoreStore((state) => state.casesWithRelationships);
+    const analysisName = useOutbreakAnalysisStore((state) => state.name);
+    const analysisReport = useOutbreakAnalysisStore((state) => state.analysisReport);
+    const updateAnalysisReport = useOutbreakAnalysisStore((state) => state.updateAnalysisReport);
+    const graphData = useOutbreakAnalysisStore((state) => state.graphData);
+    const { charge, colorMap } = useOutbreakAnalysisStore((state) => state.graphSettings);
+
     const [isExporting, setIsExporting] = useState(false);
     const [graphReadyForExport, setGraphReadyForExport] = useState(false);
     const pdfDataGenerator = new PdfDataGenerator();
@@ -39,16 +43,16 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
     const downloadPdf = () => {
         setIsExporting(true);
         if (
-            !outbreakAnalysisState.graphData ||
-            !coreState.activePathogen ||
-            !outbreakAnalysisState.name ||
+            !graphData ||
+            !activePathogen ||
+            !analysisName ||
             !graphImageUrl ||
-            !outbreakAnalysisState.summary ||
-            !outbreakAnalysisState.conclusion
+            !analysisReport.summary ||
+            !analysisReport.conclusion
         )
             return;
 
-        const fileName = `${outbreakAnalysisState.name}_report.pdf`;
+        const fileName = `${analysisName}_report.pdf`;
         pdf(<OutbreakAnalysisReportPdf pdfDataGenerator={pdfDataGenerator} graphImageUrl={graphImageUrl} />)
             .toBlob()
             .then((blob) => {
@@ -63,9 +67,7 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
         <>
             <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)] px-0">
                 <DialogHeader className="px-6 text-left">
-                    <DialogTitle className="mb-5">
-                        Ausbruchsanalyse-Report zu "{outbreakAnalysisState.name}"
-                    </DialogTitle>
+                    <DialogTitle className="mb-5">Ausbruchsanalyse-Report zu "{analysisName}"</DialogTitle>
                     <DialogDescription>
                         Exportieren Sie einen Ausbruchsanalyse-Report aus Basis der unten aufgeführten Inhalte. Die
                         generierten Inhalte können über die Textfelder verändert werden.
@@ -75,7 +77,7 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                     <div className="z-[-1] overflow-hidden relative">
                         <div className="absolute top-0 left-0 pdf-graph">
                             <GraphPdf
-                                data={structuredClone(outbreakAnalysisState.graphData)}
+                                data={structuredClone(graphData)}
                                 width={1200}
                                 height={900}
                                 colorMap={colorMap}
@@ -104,12 +106,12 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                             onFocus={(evt) => {
                                 evt.currentTarget.style.height = "";
                                 evt.currentTarget.style.height = evt.currentTarget.scrollHeight + "px";
-                                outbreakAnalysisState.updateSummary(evt.target.value);
+                                updateAnalysisReport({ summary: evt.target.value });
                             }}
                             onChange={(evt) => {
                                 evt.currentTarget.style.height = "";
                                 evt.currentTarget.style.height = evt.currentTarget.scrollHeight + "px";
-                                outbreakAnalysisState.updateSummary(evt.target.value);
+                                updateAnalysisReport({ summary: evt.target.value });
                             }}
                         />
                     </div>
@@ -147,12 +149,12 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                             onFocus={(evt) => {
                                 evt.currentTarget.style.height = "";
                                 evt.currentTarget.style.height = evt.currentTarget.scrollHeight + "px";
-                                outbreakAnalysisState.updateConclusion(evt.target.value);
+                                updateAnalysisReport({ conclusion: evt.target.value });
                             }}
                             onChange={(evt) => {
                                 evt.currentTarget.style.height = "";
                                 evt.currentTarget.style.height = evt.currentTarget.scrollHeight + "px";
-                                outbreakAnalysisState.updateConclusion(evt.target.value);
+                                updateAnalysisReport({ conclusion: evt.target.value });
                             }}
                         />
                     </div>
