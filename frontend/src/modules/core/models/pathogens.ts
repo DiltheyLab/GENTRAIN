@@ -10,6 +10,7 @@ export const Pathogens = {
     "Covid-19": { type: PathogenTypeName.viral, geneticDistanceThreshold: 2 },
     "Enterococcus Faecium": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 10 },
     "Staphylococcus Aureus": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 12 },
+    "Bordetella Pertussis": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 5 },
 };
 
 export interface PathogenSchema {
