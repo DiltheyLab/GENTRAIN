@@ -1,6 +1,6 @@
-export const groupBy = function (xs: object, key) {
-    return xs.reduce(function (rv, x) {
-        (rv[x[key]] = rv[x[key]] || []).push(x);
-        return rv;
+export const groupBy = function (objectToBeGrouped: any, key: string) {
+    return objectToBeGrouped.reduce(function (groupedObject: any, x: any) {
+        (groupedObject[x[key]] = groupedObject[x[key]] || []).push(x);
+        return groupedObject;
     }, {});
 };
