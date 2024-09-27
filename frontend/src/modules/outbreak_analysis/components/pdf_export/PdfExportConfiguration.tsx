@@ -6,7 +6,13 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { GraphPdf } from "@/modules/core/components/graph/GraphPdf";
 import { Button } from "@/modules/core/components/ui/Button";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
-import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/modules/core/components/ui/Dialog";
+import {
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/modules/core/components/ui/Dialog";
 import { Textarea } from "@/modules/core/components/ui/Textarea";
 import { PdfDataGenerator } from "../../services/pdf_export/PdfDataGenerator";
 import OutbreakAnalysisReportPdf from "./OutbreakAnalysisReportPdf";

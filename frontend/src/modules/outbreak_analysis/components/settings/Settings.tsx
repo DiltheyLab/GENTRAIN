@@ -19,7 +19,7 @@ import {
 import { ColorSelection } from "./color_selection/ColorSelection";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 import { lazy, Suspense, useState } from "react";
-import { Dialog } from "@/modules/core/components/ui/Dialog";
+import { Dialog, DialogTrigger } from "@/modules/core/components/ui/Dialog";
 
 const PdfExportConfiguration = lazy(() => import("../pdf_export/PdfExportConfiguration"));
 
@@ -135,15 +135,17 @@ export const Settings = () => {
                         </Button>
                     }
                 >
-                    <Button
-                        className="text-wrap"
-                        variant="outline"
-                        type="button"
-                        onClick={() => setShowPdfExportDialog(true)}
-                    >
-                        Ausbruchsanalyse-Report exportieren
-                    </Button>
-                    <Dialog open={showPdfExportDialog}>
+                    <Dialog>
+                        <DialogTrigger>
+                            <Button
+                                className="text-wrap w-full"
+                                variant="outline"
+                                type="button"
+                                onClick={() => setShowPdfExportDialog(true)}
+                            >
+                                Ausbruchsanalyse-Report exportieren
+                            </Button>
+                        </DialogTrigger>
                         <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
                     </Dialog>
                 </Suspense>
