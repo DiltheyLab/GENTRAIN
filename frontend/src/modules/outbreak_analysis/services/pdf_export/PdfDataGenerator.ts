@@ -2,7 +2,7 @@ import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { OutbreakAnalysisStore, useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
-import { CustomNode } from "@/modules/core/types/graph";
+import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import html2canvas from "html2canvas";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
@@ -11,6 +11,8 @@ import { t } from "i18next";
 export class PdfDataGenerator {
     protected coreState: CoreState;
     protected outbreakAnalysisState: OutbreakAnalysisStore;
+    protected graphData: GraphData;
+
     protected allCases: CaseWithRelationships[];
     protected clusters: (CustomNode | undefined)[][];
     protected distantCasesOfSelectedOutbreak: (CustomNode | undefined)[];
@@ -20,19 +22,15 @@ export class PdfDataGenerator {
     constructor() {
         this.coreState = useCoreStore.getState();
         this.outbreakAnalysisState = useOutbreakAnalysisStore.getState();
+        this.graphData = this.collectGraphData();
         this.allCases = [];
         this.clusters = this.getClusters();
         this.distantCasesOfSelectedOutbreak = [];
         this.clustersContainingCasesOfSelectedOutbreak = 0;
     }
 
-    private getClusters = () => {
-        const clusterAnalyses = new ClusterAnalyser(
-            this.outbreakAnalysisState.graphData.nodes,
-            this.outbreakAnalysisState.graphData.links,
-            this.coreState.activePathogen?.genetic_distance_threshold!
-        );
-        return clusterAnalyses.getClusters();
+    public getGraphData = () => {
+        return this.graphData;
     };
 
     public generateSummary = () => {
@@ -134,6 +132,25 @@ export class PdfDataGenerator {
             rows.push(cells);
         });
         return rows;
+    };
+
+    private collectGraphData() {
+        const graphDataClone = structuredClone(this.outbreakAnalysisState.graphData);
+        graphDataClone.links = graphDataClone.links.map((link) => {
+            link.source = (link.source as unknown as CustomNode).id;
+            link.target = (link.target as unknown as CustomNode).id;
+            return link;
+        });
+        return graphDataClone;
+    }
+
+    private getClusters = () => {
+        const clusterAnalyses = new ClusterAnalyser(
+            this.graphData.nodes,
+            this.graphData.links,
+            this.coreState.activePathogen?.genetic_distance_threshold!
+        );
+        return clusterAnalyses.getClusters();
     };
 
     private getSummaryPhraseForSelectedOutbreakCases = () => {

@@ -81,24 +81,22 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                     {selectedOutbreakName}
                 </Entry>
                 {selectedBackgroundNames.length > 0 && <SectionHeadline>Weitere Fälle</SectionHeadline>}
-                {selectedBackgroundNames.map((name: string, key: number) => (
-                    <Entry key={key} type="node" color={colorMap[name].color}>
+                {selectedBackgroundNames.map((name) => (
+                    <Entry key={name} type="node" color={colorMap[name].color}>
                         {name}
                     </Entry>
                 ))}
                 <SectionHeadline>Genetische Kanten</SectionHeadline>
-                {geneticDistanceLinks.map((link, key) => (
-                    <Entry key={key} type="link" color={link.color}>
+                {geneticDistanceLinks.map((link, index) => (
+                    <Entry key={index} type="link" color={link.color}>
                         {link.type}
                     </Entry>
                 ))}
                 {uniqueContactTracingLinks.length > 0 && <SectionHeadline>Kontaktkanten</SectionHeadline>}
-                {uniqueContactTracingLinks.map((link, key) => (
-                    <>
-                        <Entry key={key} type="link" color={link.color}>
-                            {link.type}
-                        </Entry>
-                    </>
+                {uniqueContactTracingLinks.map((link, index) => (
+                    <Entry key={index} type="link" color={link.color}>
+                        {link.type}
+                    </Entry>
                 ))}
             </>
         );

@@ -9,8 +9,8 @@ export type CustomNode = {
 };
 
 export type CustomLink = {
-    source: number | CustomNode;
-    target: number | CustomNode;
+    source: number;
+    target: number;
     value: number;
     color: string;
     curvature: number;

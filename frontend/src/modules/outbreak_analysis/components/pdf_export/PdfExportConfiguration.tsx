@@ -77,7 +77,7 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                     <div className="z-[-1] overflow-hidden relative">
                         <div className="absolute top-0 left-0 pdf-graph">
                             <GraphPdf
-                                data={structuredClone(graphData)}
+                                data={pdfDataGenerator.getGraphData()}
                                 width={1200}
                                 height={900}
                                 colorMap={colorMap}
