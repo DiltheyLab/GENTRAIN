@@ -15,10 +15,10 @@ type DateRangePickerProps = {
 
 export const DateRangePicker = ({ disabled = false }: DateRangePickerProps) => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
-    const date = outbreakAnalysisStore.settings.dateRange;
+    const date = outbreakAnalysisStore.analysisSettings.dateRange;
 
     const handleDateChange = (start: Date | undefined, end: Date | undefined) => {
-        outbreakAnalysisStore.updateSettings({ dateRange: { from: start, to: end } });
+        outbreakAnalysisStore.updateAnalysisSettings({ dateRange: { from: start, to: end } });
     };
 
     return (
@@ -26,9 +26,9 @@ export const DateRangePicker = ({ disabled = false }: DateRangePickerProps) => {
             <div className="flex gap-3 items-center">
                 <Checkbox
                     id="excludeCasesOutsideOfDateRange"
-                    checked={outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange}
+                    checked={outbreakAnalysisStore.analysisSettings.excludeCasesOutsideOfDateRange}
                     onCheckedChange={(value) =>
-                        outbreakAnalysisStore.updateSettings({ excludeCasesOutsideOfDateRange: Boolean(value) })
+                        outbreakAnalysisStore.updateAnalysisSettings({ excludeCasesOutsideOfDateRange: Boolean(value) })
                     }
                     disabled={disabled}
                 />
@@ -40,7 +40,7 @@ export const DateRangePicker = ({ disabled = false }: DateRangePickerProps) => {
                 <PopoverTrigger asChild>
                     <Button
                         id="date"
-                        disabled={!outbreakAnalysisStore.settings.excludeCasesOutsideOfDateRange || disabled}
+                        disabled={!outbreakAnalysisStore.analysisSettings.excludeCasesOutsideOfDateRange || disabled}
                         variant="outline"
                         className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
                     >
@@ -65,7 +65,7 @@ export const DateRangePicker = ({ disabled = false }: DateRangePickerProps) => {
                         mode="range"
                         defaultMonth={date.from}
                         modifiers={{
-                            outbreakRange: outbreakAnalysisStore.settings.datesOfCasesInSelectedOutbreak,
+                            outbreakRange: outbreakAnalysisStore.analysisSettings.datesOfCasesInSelectedOutbreak,
                         }}
                         modifiersClassNames={{
                             outbreakRange:

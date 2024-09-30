@@ -12,7 +12,7 @@ import error_de from "@/modules/core/translations/de/error.json";
 import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
 import { useCoreStore } from "@/modules/core/stores/core.ts";
-import { Analysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
+import { OutbreakAnalysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
 import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
@@ -65,7 +65,7 @@ const App = () => {
             errorElement: <Error />,
             element: <OutbreakAnalysisOverview />,
         },
-        { path: "/outbreak-analysis/:name", element: <Analysis />, errorElement: <Error /> },
+        { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis />, errorElement: <Error /> },
         {
             path: "/data-management",
             errorElement: <Error />,

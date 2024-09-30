@@ -51,7 +51,7 @@ export const BackgroundSelection = () => {
     const createFilteredOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         const options = createOptions(groupsAndOutbreaks);
         const filteredOptions = options?.filter(
-            (option) => option.value !== outbreakAnalysisStore.settings.selectedOutbreak?.name
+            (option) => option.value !== outbreakAnalysisStore.analysisSettings.selectedOutbreak?.name
         );
         return filteredOptions;
     };
@@ -81,17 +81,17 @@ export const BackgroundSelection = () => {
                 selectedBackground.groupsWithCategories.push(group);
             }
         }
-        outbreakAnalysisStore.updateSettings({ selectedBackground: selectedBackground });
+        outbreakAnalysisStore.updateAnalysisSettings({ selectedBackground: selectedBackground });
     };
 
     const handleBackgroundDataChange = (value: BackgroundType) => {
-        outbreakAnalysisStore.updateSettings({ backgroundType: value });
+        outbreakAnalysisStore.updateAnalysisSettings({ backgroundType: value });
     };
 
     return (
         <div className="flex flex-col gap-4">
             <RadioGroup
-                defaultValue={outbreakAnalysisStore.settings.backgroundType}
+                defaultValue={outbreakAnalysisStore.analysisSettings.backgroundType}
                 onValueChange={(value: BackgroundType) => handleBackgroundDataChange(value)}
             >
                 <div className="flex items-center space-x-2">
@@ -113,10 +113,10 @@ export const BackgroundSelection = () => {
                     </Label>
                 </div>
             </RadioGroup>
-            {outbreakAnalysisStore.settings.backgroundType === "specific" && (
+            {outbreakAnalysisStore.analysisSettings.backgroundType === "specific" && (
                 <MultipleSelector
                     options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                    value={createOptions(outbreakAnalysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                    value={createOptions(outbreakAnalysisStore.analysisSettings.selectedBackground || undefined)} //if options are set in store use them as preselected options
                     onChange={(value) => handleMultipleSelectChange(value)}
                     placeholder="Bitte auswählen"
                     emptyIndicator={

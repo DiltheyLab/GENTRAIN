@@ -11,6 +11,8 @@ import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCrea
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { Label } from "@/modules/core/components/ui/Label";
+import { Switch } from "@/modules/core/components/ui/Switch";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -41,20 +43,33 @@ export const VisualizationPanel = () => {
             cases,
             distanceMatrixAssembly,
             contacts,
-            outbreakAnalysisStore.settings
+            outbreakAnalysisStore.analysisSettings
         );
         graphDataGenerator.execute().then((graphData) => outbreakAnalysisStore.updateGraphData(graphData));
-    }, [cases, distanceMatrixAssembly, outbreakAnalysisStore.settings, contacts]);
+    }, [cases, distanceMatrixAssembly, outbreakAnalysisStore.analysisSettings, contacts]);
 
     return (
         <div
             ref={containerRef}
             className="relative flex flex-col justify-center items-center rounded-lg bg-muted lg:col-span-2 graph-visualization-panel h-full"
         >
-            {outbreakAnalysisStore.settings.selectedOutbreak ? (
+            {outbreakAnalysisStore.analysisSettings.selectedOutbreak ? (
                 <>
-                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 text-sm font-medium bg-muted/80 pointer-events-none">
-                        Analyse: {outbreakAnalysisStore?.name}
+                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 bg-muted/80">
+                        <div className="flex flex-col">
+                            <small className=" text-sm font-medium">Analyse: {outbreakAnalysisStore?.name}</small>
+                            <div className="flex items-center gap-2">
+                                <Label htmlFor="autoSave">Autom. Speichern</Label>
+                                <Switch
+                                    id="autoSave"
+                                    isSmall={true}
+                                    checked={outbreakAnalysisStore.generalSettings.autoSave}
+                                    onCheckedChange={(value) =>
+                                        outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })
+                                    }
+                                />
+                            </div>
+                        </div>
                     </fieldset>
                     <Legend
                         nodes={outbreakAnalysisStore.graphData.nodes}

@@ -61,7 +61,7 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
     const renderLinkItems = (links: CustomLink[]) => {
         return links.map((link) => (
             <div className="flex items-center gap-2" key={link.type}>
-                <span style={{ backgroundColor: `${link.color}` }} className={"h-[3px] w-5 mt-[3px]"} />
+                <span style={{ backgroundColor: `${link.color}` }} className={"h-[3px] w-5"} />
                 <p className="text-xs">{link.type}</p>
             </div>
         ));

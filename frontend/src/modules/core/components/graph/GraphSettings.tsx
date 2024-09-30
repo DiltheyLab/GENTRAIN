@@ -56,7 +56,7 @@ export const GraphSettings = ({
                         onCheckedChange={(value) => updateGraphSettings({ showNodeLabel: value })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
+                <div className="flex space-x-3">
                     <Label htmlFor="forceLinkDistance" className="text-sm leading-none">
                         Kantenabstand
                     </Label>
@@ -71,7 +71,7 @@ export const GraphSettings = ({
                         onValueChange={(value) => updateGraphSettings({ linkDistance: value[0] })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
+                <div className="flex space-x-3">
                     <Label htmlFor="nodeSize" className="text-sm leading-none">
                         Knotengröße
                     </Label>
@@ -86,7 +86,7 @@ export const GraphSettings = ({
                         onValueChange={(value) => updateGraphSettings({ nodeSize: value[0] })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
+                <div className="flex space-x-3">
                     <Label htmlFor="linkWith" className="text-sm leading-none">
                         Kantenbreite
                     </Label>

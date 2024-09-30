@@ -456,7 +456,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
         const graphCanvasElement = await html2canvas(graphElement);
         const graphCaseCollector = new GraphCaseCollector(coreState.casesWithRelationships, {
             backgroundType: "all",
-            selectedOutbreak: outbreakAnalysisState.settings.selectedOutbreak,
+            selectedOutbreak: outbreakAnalysisState.analysisSettings.selectedOutbreak,
             datesOfCasesInSelectedOutbreak: [],
             selectedBackground: null,
             excludeCasesAboveGeneticDistanceThreshold: true,
@@ -496,17 +496,18 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
     const getConclusion = (casesUnderThreshold: CaseWithRelationships[]) => {
         const allCases = coreState.casesWithRelationships;
         const outbreakCasesUnderThreshold = casesUnderThreshold.filter(
-            (currentCase) => currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id
+            (currentCase) => currentCase.outbreak_id === outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
         );
         const outbreakCases = coreState.casesWithRelationships.filter(
             (currentCase) =>
-                currentCase.outbreak_id === outbreakAnalysisState.settings.selectedOutbreak?.id && currentCase.sample
+                currentCase.outbreak_id === outbreakAnalysisState.analysisSettings.selectedOutbreak?.id &&
+                currentCase.sample
         );
 
-        const otherOutbreaks = outbreakAnalysisState.settings.selectedBackground?.outbreaks;
-        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.settings.backgroundType
+        const otherOutbreaks = outbreakAnalysisState.analysisSettings.selectedBackground?.outbreaks;
+        const casesUnderThresholdPerOutbreak = outbreakAnalysisState.analysisSettings.backgroundType
             ? outbreaks
-                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
+                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.analysisSettings.selectedOutbreak?.id)
                   .map((outbreak) => {
                       const outbreakCasesWithSampleCount = allCases.filter(
                           (currentCase) => currentCase.outbreak_id === outbreak.id
@@ -521,7 +522,7 @@ const PdfExport = ({ onPdfExport }: { onPdfExport: () => void }) => {
                       };
                   })
             : otherOutbreaks
-                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.settings.selectedOutbreak?.id)
+                  ?.filter((outbreak) => outbreak.id !== outbreakAnalysisState.analysisSettings.selectedOutbreak?.id)
                   .map((outbreak) => {
                       const outbreakCasesWithSampleCount = allCases.filter(
                           (currentCase) => currentCase.outbreak_id === outbreak.id && currentCase.sample

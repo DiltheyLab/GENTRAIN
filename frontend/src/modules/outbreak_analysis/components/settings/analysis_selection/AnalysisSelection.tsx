@@ -14,14 +14,14 @@ import { X } from "lucide-react";
 import { db } from "@/modules/core/infrastructure/database";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
-import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
+import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { useNavigate } from "react-router-dom";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 export const AnalysisSelection = () => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
-    const analyses = useGetAnalysesForActivePathogen();
+    const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { toast } = useToast();
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
@@ -39,8 +39,8 @@ export const AnalysisSelection = () => {
 
     const handleSubmit = () => {
         if (!selectedAnalysis) return;
-        const { id, name, settings, graphSettings } = selectedAnalysis;
-        updateWholeAnalysis(id, name, settings, graphSettings);
+        const { id, name, analysisSettings, graphSettings, generalSettings } = selectedAnalysis;
+        updateWholeAnalysis(id, name, analysisSettings, graphSettings, generalSettings);
         navigate(`${selectedAnalysis.id}`);
     };
 

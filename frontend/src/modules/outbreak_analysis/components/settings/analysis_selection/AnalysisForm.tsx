@@ -3,19 +3,20 @@ import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Button } from "@/modules/core/components/ui/Button";
 import {
+    defaultGeneralSettings,
     defaultGraphSettings,
-    getDefaultSettings,
+    getDefaultAnalysisSettings,
     useOutbreakAnalysisStore,
 } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { useNavigate } from "react-router-dom";
-import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
+import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { createAnalysis } from "@/modules/core/models/analyses";
 
 export const AnalysisForm = () => {
     const [analysisName, setAnalysisName] = useState("");
-    const analyses = useGetAnalysesForActivePathogen();
+    const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { activePathogen } = useCoreStore();
     const { toast } = useToast();
     const navigate = useNavigate();
@@ -45,9 +46,21 @@ export const AnalysisForm = () => {
             return;
         }
         try {
-            const defaultSettings = getDefaultSettings();
-            const id = await createAnalysis(analysisName, activePathogen.id, defaultSettings, defaultGraphSettings);
-            updateWholeAnalysis(id, analysisName, defaultSettings, defaultGraphSettings);
+            const defaultAnalysisSettings = getDefaultAnalysisSettings();
+            const id = await createAnalysis(
+                analysisName,
+                activePathogen.id,
+                defaultAnalysisSettings,
+                defaultGraphSettings,
+                defaultGeneralSettings
+            );
+            updateWholeAnalysis(
+                id,
+                analysisName,
+                defaultAnalysisSettings,
+                defaultGraphSettings,
+                defaultGeneralSettings
+            );
             navigate(`${id}`);
         } catch (error) {
             toast({

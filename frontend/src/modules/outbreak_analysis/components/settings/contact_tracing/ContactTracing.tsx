@@ -6,7 +6,7 @@ export const ContactTracing = () => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
 
     const handleShowContactTracingLinks = (value: boolean) => {
-        outbreakAnalysisStore.updateSettings({ showContactTracingLinks: value });
+        outbreakAnalysisStore.updateAnalysisSettings({ showContactTracingLinks: value });
     };
 
     return (
@@ -14,7 +14,7 @@ export const ContactTracing = () => {
             <div className="flex flex-row items-center gap-3">
                 <Switch
                     id="showContactTracingLinks"
-                    checked={outbreakAnalysisStore.settings.showContactTracingLinks}
+                    checked={outbreakAnalysisStore.analysisSettings.showContactTracingLinks}
                     onCheckedChange={(value) => handleShowContactTracingLinks(value)}
                 />
                 <Label htmlFor="showContactTracingLinks" className="text-md">
