@@ -77,7 +77,8 @@ export class PdfDataGenerator {
         for (const index in this.clusters) {
             const cluster = this.clusters[index];
             const selectedOutbreakCasesInCluster = cluster.filter(
-                (node) => node?.caseData.outbreak_id === this.outbreakAnalysisState.settings.selectedOutbreak?.id
+                (node) =>
+                    node?.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
             );
             if (selectedOutbreakCasesInCluster.length === 0) {
                 continue;
@@ -155,11 +156,13 @@ export class PdfDataGenerator {
 
     private getSummaryPhraseForSelectedOutbreakCases = () => {
         const casesInSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter(
-            (node) => node.caseData.outbreak_id === this.outbreakAnalysisState.settings.selectedOutbreak?.id
+            (node) => node.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
         );
         return `Es existieren ${casesInSelectedOutbreak.length} ${
             casesInSelectedOutbreak.length > 1 ? "Fälle" : "Fall"
-        } des zu untersuchenden vermuteten Ausbruchs "${this.outbreakAnalysisState.settings.selectedOutbreak?.name}"`;
+        } des zu untersuchenden vermuteten Ausbruchs "${
+            this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.name
+        }"`;
     };
 
     private getSummaryPhraseForOtherOutbreakCases = (
@@ -241,7 +244,7 @@ export class PdfDataGenerator {
         const otherOutbreakCasesInCluster = cluster.filter(
             (node) =>
                 node?.caseData.outbreak_id &&
-                node?.caseData.outbreak_id !== this.outbreakAnalysisState.settings.selectedOutbreak?.id
+                node?.caseData.outbreak_id !== this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
         );
         const unassignedCasesInCluster = cluster.filter((node) => !node?.caseData.outbreak_id);
         if (otherOutbreakCasesInCluster.length + unassignedCasesInCluster.length === 1) {
