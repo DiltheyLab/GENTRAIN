@@ -4,27 +4,28 @@ import { VisualizationPanel } from "../components/graph/VisualizationPanel";
 import { useEffect, useRef } from "react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useNavigate } from "react-router-dom";
-import { useOutbreakAnalysisStore } from "../stores/outbreakAnalysis";
-import { safeAnalysis } from "../helpers/safeAnalysis";
+/* import { useOutbreakAnalysisStore } from "../stores/outbreakAnalysis";
+import { safeAnalysis } from "../helpers/safeAnalysis"; */
 import { useSyncOutbreakAnalysisStoreWithDB } from "../hooks/useSyncOutbreakAnalysisStoreWithDB";
 
 export const OutbreakAnalysis = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const navigate = useNavigate();
     const prevActivePathogenRef = useRef(activePathogen);
-    const outbreakAnalysisStore = useOutbreakAnalysisStore();
-
+    /*     const outbreakAnalysisStore = useOutbreakAnalysisStore();
+     */
     useSyncOutbreakAnalysisStoreWithDB();
 
-    useEffect(() => {
+    /*     useEffect(() => {
         if (!outbreakAnalysisStore.generalSettings.autoSave || !outbreakAnalysisStore.id) return;
+        console.log("re");
 
         safeAnalysis(outbreakAnalysisStore, false);
     }, [
         outbreakAnalysisStore.analysisSettings,
         outbreakAnalysisStore.graphSettings,
         outbreakAnalysisStore.generalSettings,
-    ]);
+    ]); */
 
     useEffect(() => {
         // If the active pathogen changes, navigate to the outbreak analysis page
