@@ -98,3 +98,11 @@ a {
     font-display: swap;
     src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-Bold.ttf") format("truetype");
 }
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-ExtraBold.ttf") format("truetype");
+}

@@ -15,11 +15,11 @@ import {
 } from "./Tooltips";
 import { ColorSelection } from "./color_selection/ColorSelection";
 import { lazy, Suspense, useState } from "react";
-import { Dialog } from "@/modules/core/components/ui/Dialog";
 import { safeAnalysis } from "../../helpers/safeAnalysis";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogTrigger } from "@/modules/core/components/ui/Dialog";
 
-const PdfExport = lazy(() => import("./PdfExport"));
+const PdfExportConfiguration = lazy(() => import("../pdf_export/PdfExportConfiguration"));
 
 export const Settings = () => {
     const [showPdfExportDialog, setShowPdfExportDialog] = useState(false);
@@ -115,16 +115,15 @@ export const Settings = () => {
                         </Button>
                     }
                 >
-                    <Button
-                        className="text-wrap"
-                        variant="outline"
-                        type="button"
-                        onClick={() => setShowPdfExportDialog(true)}
-                    >
-                        Ausbruchsanalyse-Report exportieren
-                    </Button>
-                    <Dialog open={showPdfExportDialog}>
-                        <PdfExport onPdfExport={() => setShowPdfExportDialog(false)} />
+                    <Dialog open={showPdfExportDialog} onOpenChange={(value) => setShowPdfExportDialog(value)}>
+                        <DialogTrigger asChild>
+                            <Button className="text-wrap w-full" variant="outline" type="button">
+                                Ausbruchsanalyse-Report exportieren
+                            </Button>
+                        </DialogTrigger>
+                        {showPdfExportDialog && (
+                            <PdfExportConfiguration onPdfExport={() => setShowPdfExportDialog(false)} />
+                        )}
                     </Dialog>
                 </Suspense>
                 <Button

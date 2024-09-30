@@ -49,6 +49,11 @@ export type GraphSettings = {
     charge: number;
 };
 
+export type AnalysisReport = {
+    summary: string | null;
+    conclusion: string | null;
+};
+
 export interface OutbreakAnalysisStore {
     id: number | null;
     name: string | null;
@@ -56,8 +61,10 @@ export interface OutbreakAnalysisStore {
     analysisSettings: AnalysisSettings;
     graphSettings: GraphSettings;
     generalSettings: GeneralSettings;
+    analysisReport: AnalysisReport;
     updateId: (newId: number) => void;
     updateName: (newName: string) => void;
+    updateAnalysisReport: (newAnalysisReport: Partial<AnalysisReport>) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateAnalysisSettings: (newAnalysisSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newGraphSettings: Partial<GraphSettings>) => void;
@@ -110,12 +117,15 @@ export const useOutbreakAnalysisStore = create<OutbreakAnalysisStore>((set) => {
     return {
         id: null,
         name: null,
+        analysisReport: { summary: null, conclusion: null },
         graphData: { nodes: [], links: [] },
         analysisSettings: initializedAnalysisSettings,
         graphSettings: defaultGraphSettings,
         generalSettings: defaultGeneralSettings,
         updateId: (newId) => set({ id: newId }),
         updateName: (newName) => set({ name: newName }),
+        updateAnalysisReport: (newAnalysisReport) =>
+            set((state) => ({ analysisReport: { ...state.analysisReport, ...newAnalysisReport } })),
         updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
         updateAnalysisSettings: (newAnalysisSettings) =>
             set((state) => ({ analysisSettings: { ...state.analysisSettings, ...newAnalysisSettings } })),

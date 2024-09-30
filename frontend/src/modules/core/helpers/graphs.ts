@@ -19,7 +19,7 @@ export const getSelectedClusters = () => {
 
 export const moveNoOutbreakAssignedToEnd = (clusterNames: string[]) => {
     const clusterNamesCopy = [...clusterNames];
-    //find the index of the cluster "Umgebung" and put it at the end of the array
+    //find the index of the cluster "Keinem Ausbruch zugewiesen" and put it at the end of the array
     const index = clusterNamesCopy.findIndex(
         (clusterName) => clusterName === i18next.t("clusterTypes.noOutbreakAssigned")
     );

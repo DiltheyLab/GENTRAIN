@@ -1,8 +1,6 @@
 datasets/RKI/*
 datasets/nextclade_covid/*
 datasets/chewBBACA_schemes/*
-!datasets/chewBBACA_schemes/enterococcus-faecium.zip
-!datasets/chewBBACA_schemes/staphylococcus-aureus.zip
 datasets/example_files/example_sequence_edit_error.tsv
 datasets/example_files/example_sequence_edit_error.fa
 temp_data
