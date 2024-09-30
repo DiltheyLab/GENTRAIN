@@ -168,13 +168,11 @@ describe("GraphCaseCollector", () => {
         ]);
     });
 
-    it("should only include cases of the selectedOutbreak and cases in the dateRange", async () => {
-        caseInOutbreak1WithSample.registered_at = new Date("2022-02-04T23:00:00.000Z"); // not inside date rangebut should be included because of the outbreak
-        caseInOutbreak1WithoutSample.registered_at = new Date("2022-02-05T23:00:00.000Z"); // inside date range
-        caseInOutbreak2WithoutSample.registered_at = new Date("2022-02-01T23:00:00.000Z"); // not inside date range
-        caseInOutbreak3WithoutSample.registered_at = new Date("2022-03-05T23:00:00.000Z"); // not inside date range
-        caseWithoutOutbreakAndWithoutSample.registered_at = new Date("2022-03-04T22:59:00.000Z"); // inside date range
-        caseWithoutOutbreakWithSample.registered_at = new Date("2022-02-01T23:00:00.000Z"); // not inside date range
+    it("should only include cases in the dateRange", async () => {
+        const caseInDateRange1 = createCase({ id: 1, registered_at: new Date("2022-02-06T23:00:00.000Z") });
+        const caseInDateRange2 = createCase({ id: 2, registered_at: new Date("2022-02-08T23:00:00.000Z") });
+        const caseNotInDateRange3 = createCase({ id: 3, registered_at: new Date("2022-02-03T23:00:00.000Z") });
+        const caseNotInDateRange4 = createCase({ id: 4, registered_at: new Date("2022-03-05T23:00:00.000Z") });
 
         settings.dateRange = {
             from: new Date("2022-02-05T23:00:00.000Z"),
@@ -185,14 +183,12 @@ describe("GraphCaseCollector", () => {
         settings.excludeCasesOutsideOfDateRange = true;
         settings.excludeCasesWithoutSequence = false;
 
-        const graphCaseCollector = new GraphCaseCollector(allCases, settings);
-        const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithoutSample.id,
-            caseInOutbreak1WithSample.id,
-            caseInOutbreak1WithSample2.id,
-            caseWithoutOutbreakAndWithoutSample.id,
-        ]);
+        const graphCaseCollector = new GraphCaseCollector(
+            [caseInDateRange1, caseInDateRange2, caseNotInDateRange3, caseNotInDateRange4],
+            settings
+        );
+        const result = await graphCaseCollector.execute();
+        expect(result).toEqual([caseInDateRange1, caseInDateRange2]);
     });
 
     it("should only include cases of the selectedOutbreak and cases below the genetic distance threshold", async () => {
