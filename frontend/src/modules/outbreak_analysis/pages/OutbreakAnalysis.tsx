@@ -1,38 +1,14 @@
 import { Layout } from "@/modules/core/components/layout/Layout";
 import { Settings } from "../components/settings/Settings";
 import { VisualizationPanel } from "../components/graph/VisualizationPanel";
-import { useEffect, useRef } from "react";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { useNavigate } from "react-router-dom";
-import { useOutbreakAnalysisStore } from "../stores/outbreakAnalysis";
-import { safeAnalysis } from "../helpers/safeAnalysis";
 import { useSyncOutbreakAnalysisStoreWithDB } from "../hooks/useSyncOutbreakAnalysisStoreWithDB";
+import { useAutoSave } from "../hooks/useAutoSave";
+import { useNavigateOnPathogenChange } from "../hooks/useNavigateOnPathogenChange";
 
 export const OutbreakAnalysis = () => {
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const navigate = useNavigate();
-    const prevActivePathogenRef = useRef(activePathogen);
-    const outbreakAnalysisStore = useOutbreakAnalysisStore();
-
     useSyncOutbreakAnalysisStoreWithDB();
-
-    useEffect(() => {
-        if (!outbreakAnalysisStore.generalSettings.autoSave || !outbreakAnalysisStore.id) return;
-
-        safeAnalysis(outbreakAnalysisStore, false);
-    }, [
-        outbreakAnalysisStore.analysisSettings,
-        outbreakAnalysisStore.graphSettings,
-        outbreakAnalysisStore.generalSettings,
-    ]);
-
-    useEffect(() => {
-        // If the active pathogen changes, navigate to the outbreak analysis page
-        if (prevActivePathogenRef.current && prevActivePathogenRef.current.id !== activePathogen?.id) {
-            navigate("/outbreak-analysis");
-        }
-        prevActivePathogenRef.current = activePathogen;
-    }, [activePathogen]);
+    useAutoSave();
+    useNavigateOnPathogenChange();
 
     return (
         <Layout>
