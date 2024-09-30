@@ -73,11 +73,10 @@ describe("GraphCaseCollector", () => {
 
         // set default settings
         settings = {
-            includeAllCases: true,
+            backgroundType: "all",
             selectedOutbreak: null,
             datesOfCasesInSelectedOutbreak: [], // not relevant for this test
             selectedBackground: null,
-            showBackground: true,
             excludeCasesAboveGeneticDistanceThreshold: false,
             excludeCasesOutsideOfDateRange: false,
             excludeCasesWithoutSequence: true,
@@ -115,7 +114,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases of the selectedOutbreak (with sample and without sample)", async () => {
         settings.selectedOutbreak = outbreak1;
-        settings.includeAllCases = false;
+        settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = false;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
@@ -129,7 +128,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases with sample of the selectedOutbreak", async () => {
         settings.selectedOutbreak = outbreak1;
-        settings.includeAllCases = false;
+        settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = true;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
@@ -139,8 +138,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases of the selectedOutbreak and cases which are not assigned to an outbreak", async () => {
         settings.selectedOutbreak = outbreak1;
-        settings.includeAllCases = false;
-        settings.showBackground = true;
+        settings.backgroundType = "specific";
         settings.selectedBackground = {
             outbreaks: [],
             groupsWithCategories: [],
@@ -159,8 +157,7 @@ describe("GraphCaseCollector", () => {
 
     it("should only include cases of the selectedOutbreak and no background", async () => {
         settings.selectedOutbreak = outbreak1;
-        settings.includeAllCases = false;
-        settings.showBackground = false;
+        settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = false;
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);

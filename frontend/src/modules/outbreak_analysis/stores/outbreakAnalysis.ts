@@ -6,6 +6,8 @@ import { ColoringMode, ColorMap, GraphData } from "@/modules/core/types/graph";
 import { GroupSchema, GroupWithCategory } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
+export type BackgroundType = "all" | "specific" | "none";
+
 export type GroupColoration = {
     group: GroupSchema;
     color: string;
@@ -19,11 +21,10 @@ export type SelectedBackground = {
 };
 
 export type AnalysisSettings = {
-    includeAllCases: boolean;
+    backgroundType: BackgroundType;
     selectedOutbreak: OutbreakSchema | null;
     datesOfCasesInSelectedOutbreak: Date[];
     selectedBackground: SelectedBackground | null;
-    showBackground: boolean;
     excludeCasesAboveGeneticDistanceThreshold: boolean;
     excludeCasesOutsideOfDateRange: boolean;
     excludeCasesWithoutSequence: boolean;
@@ -31,6 +32,11 @@ export type AnalysisSettings = {
     geneticDistanceThreshold: number;
     showContactTracingLinks: boolean;
     clusteringThreshold: number;
+};
+
+export type GeneralSettings = {
+    openAccordionItems: string[];
+    autoSave: boolean;
 };
 
 export type GraphSettings = {
@@ -43,17 +49,33 @@ export type GraphSettings = {
     charge: number;
 };
 
+export type AnalysisReport = {
+    summary: string | null;
+    conclusion: string | null;
+};
+
 export interface OutbreakAnalysisStore {
     id: number | null;
     name: string | null;
     graphData: GraphData;
-    settings: AnalysisSettings;
+    analysisSettings: AnalysisSettings;
     graphSettings: GraphSettings;
+    generalSettings: GeneralSettings;
+    analysisReport: AnalysisReport;
     updateId: (newId: number) => void;
     updateName: (newName: string) => void;
+    updateAnalysisReport: (newAnalysisReport: Partial<AnalysisReport>) => void;
     updateGraphData: (newGraphData: GraphData) => void;
-    updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
-    updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
+    updateAnalysisSettings: (newAnalysisSettings: Partial<AnalysisSettings>) => void;
+    updateGraphSettings: (newGraphSettings: Partial<GraphSettings>) => void;
+    updateGeneralSettings: (newGeneralSettings: Partial<GeneralSettings>) => void;
+    updateWholeAnalysis: (
+        newId: number,
+        newName: string,
+        newAnalysisSettings: AnalysisSettings,
+        newGraphSettings: GraphSettings,
+        newGeneralSettings: GeneralSettings
+    ) => void;
 }
 
 export const defaultGraphSettings: GraphSettings = {
@@ -65,16 +87,19 @@ export const defaultGraphSettings: GraphSettings = {
     linkWidth: 2.5,
     charge: -80,
 };
+export const defaultGeneralSettings: GeneralSettings = {
+    autoSave: true,
+    openAccordionItems: ["item-1"],
+};
 
-export const getDefaultSettings = (): AnalysisSettings => {
+export const getDefaultAnalysisSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
 
     return {
-        includeAllCases: true,
+        backgroundType: "all",
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
-        showBackground: true,
         excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
         excludeCasesWithoutSequence: true,
@@ -87,19 +112,34 @@ export const getDefaultSettings = (): AnalysisSettings => {
 
 export const useOutbreakAnalysisStore = create<OutbreakAnalysisStore>((set) => {
     // Initialize the settings with the default settings and variables from add store
-    const initializedSettings = getDefaultSettings();
+    const initializedAnalysisSettings = getDefaultAnalysisSettings();
 
     return {
         id: null,
         name: null,
+        analysisReport: { summary: null, conclusion: null },
         graphData: { nodes: [], links: [] },
-        settings: initializedSettings,
+        analysisSettings: initializedAnalysisSettings,
         graphSettings: defaultGraphSettings,
+        generalSettings: defaultGeneralSettings,
         updateId: (newId) => set({ id: newId }),
         updateName: (newName) => set({ name: newName }),
+        updateAnalysisReport: (newAnalysisReport) =>
+            set((state) => ({ analysisReport: { ...state.analysisReport, ...newAnalysisReport } })),
         updateGraphData: (newGraphData) => set((state) => ({ graphData: { ...state.graphData, ...newGraphData } })),
-        updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
+        updateAnalysisSettings: (newAnalysisSettings) =>
+            set((state) => ({ analysisSettings: { ...state.analysisSettings, ...newAnalysisSettings } })),
         updateGraphSettings: (newGraphSettings) =>
             set((state) => ({ graphSettings: { ...state.graphSettings, ...newGraphSettings } })),
+        updateGeneralSettings: (newGeneralSettings) =>
+            set((state) => ({ generalSettings: { ...state.generalSettings, ...newGeneralSettings } })),
+        updateWholeAnalysis: (newId, newName, newAnalysisSettings, newGraphSettings, newGeneralSettings) =>
+            set({
+                id: newId,
+                name: newName,
+                analysisSettings: newAnalysisSettings,
+                graphSettings: newGraphSettings,
+                generalSettings: newGeneralSettings,
+            }),
     };
 });

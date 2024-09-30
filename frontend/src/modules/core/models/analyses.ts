@@ -1,11 +1,12 @@
-import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { AnalysisSettings, GeneralSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { db } from "@/modules/core/infrastructure/database";
 
 export interface AnalysisSchema {
     id: number;
     name: string;
-    settings: AnalysisSettings;
+    analysisSettings: AnalysisSettings;
     graphSettings: GraphSettings;
+    generalSettings: GeneralSettings;
     pathogen_id: number;
     created_at?: Date;
     updated_at?: Date;
@@ -22,13 +23,15 @@ export const getAnalysesForPathogenId = async (pathogenId: number) => {
 export const createAnalysis = async (
     name: string,
     pathogen_id: number,
-    settings: AnalysisSettings,
-    graphSettings: GraphSettings
+    analysisSettings: AnalysisSettings,
+    graphSettings: GraphSettings,
+    generalSettings: GeneralSettings
 ) => {
     const analysis = {
         name: name,
-        settings: settings,
+        analysisSettings: analysisSettings,
         graphSettings: graphSettings,
+        generalSettings: generalSettings,
         pathogen_id: pathogen_id,
     };
     return await db.analyses.add(analysis);
@@ -38,8 +41,17 @@ export const getAnalysisByID = (id: number) => {
     return db.analyses.get(id);
 };
 
-export const updateAnalysisSettings = async (id: number, settings: AnalysisSettings, graphSettings: GraphSettings) => {
-    return await db.analyses.update(id, { settings: settings, graphSettings: graphSettings });
+export const updateAnalysisSettings = async (
+    id: number,
+    analysisSettings: AnalysisSettings,
+    graphSettings: GraphSettings,
+    generalSettings: GeneralSettings
+) => {
+    return await db.analyses.update(id, {
+        analysisSettings: analysisSettings,
+        graphSettings: graphSettings,
+        generalSettings: generalSettings,
+    });
 };
 
 export const deleteAnalysesByPathogenId = async (pathogen_id: number) => {

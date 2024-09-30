@@ -24,7 +24,7 @@ export class SamplesValidation extends ValidationStrategy {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                useDataManagementStore.getState().changeUpload(sample.fastaId, "pending");
+                useDataManagementStore.getState().changeUpload(sample.fastaId, "sent");
             }
         }
 

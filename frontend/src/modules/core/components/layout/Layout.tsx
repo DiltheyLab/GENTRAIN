@@ -9,20 +9,20 @@ export const Layout = ({ children }: any) => {
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     return (
         <div>
-            <Header></Header>
+            <Header />
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
             {(sequenceAnalysisRunning || distanceCalculationRunning) && (
                 <div className="relative z-50">
                     <div
                         className={`fixed bottom-0 right-0 p-8 ${
-                            hideSampleUploadContent ? "w-auto" : "w-full lg:w-2/3"
+                            hideSampleUploadContent ? "w-auto" : "w-full md:w-2/3 lg:w-1/2"
                         }`}
                     >
                         <SampleUploadStatus />
                     </div>
                 </div>
             )}
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 };

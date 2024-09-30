@@ -16,27 +16,27 @@ export const Header = () => {
 
     return (
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[49] px-4 md:px-6">
-            <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-                <Link to="/" className="flex items-center gap-2 text-md font-semibold md:text-base gentrain-logo">
+            <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+                <Link to="/" className="flex items-center gap-2 text-md md:text-base gentrain-logo">
                     <Share2 className="h-6 w-6 text-primary" />
-                    <div className="not-sr-only text-primary text-xl pdf-canvas">Gentrain</div>
+                    <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">Gentrain</div>
                 </Link>
-                <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground`}>
+                <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground text-md`}>
                     Dashboard
                 </Link>
                 <Link
                     to="/outbreak-analysis"
-                    className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground`}
+                    className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground text-md`}
                 >
                     Ausbruchsanalyse
                 </Link>
                 <Link
                     to="/data-management"
-                    className={`${isSelected("data-management")} transition-colors hover:text-foreground`}
+                    className={`${isSelected("data-management")} transition-colors hover:text-foreground text-md`}
                 >
                     Datenverwaltung
                 </Link>
-                <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground`}>
+                <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground text-md`}>
                     Hilfe/FAQ
                 </Link>
             </nav>

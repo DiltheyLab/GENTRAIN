@@ -9,10 +9,10 @@ export const getSelectedClusters = () => {
     let clusterNames = getUniqueClusters(outbreakAnalysisStore.graphData.nodes);
     clusterNames = moveNoOutbreakAssignedToEnd(clusterNames);
     const selectedOutbreak = clusterNames.filter(
-        (clusterName) => clusterName === outbreakAnalysisStore.settings.selectedOutbreak?.name
+        (clusterName) => clusterName === outbreakAnalysisStore.analysisSettings.selectedOutbreak?.name
     );
     const selectedBackground = clusterNames.filter(
-        (clusterName) => clusterName !== outbreakAnalysisStore.settings.selectedOutbreak?.name
+        (clusterName) => clusterName !== outbreakAnalysisStore.analysisSettings.selectedOutbreak?.name
     );
     return { selectedOutbreak, selectedBackground };
 };

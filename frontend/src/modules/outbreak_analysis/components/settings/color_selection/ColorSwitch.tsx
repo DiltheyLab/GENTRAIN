@@ -29,7 +29,7 @@ export const ColorSwitch = ({ cluster }: ColorSwitchProps) => {
                 onCheckedChange={(isChecked) => handleColorSwitchChanged(isChecked, cluster)}
             />
             <div className="flex justify-between w-full">
-                <Label htmlFor={cluster} className="font-normal text-md">
+                <Label htmlFor={cluster} className="text-md">
                     {cluster}
                 </Label>
                 <ColorPicker

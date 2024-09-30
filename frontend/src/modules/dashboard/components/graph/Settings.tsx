@@ -1,20 +1,19 @@
-import { SectionHeader } from "@/modules/outbreak_analysis/components/settings/SectionHeader";
 import { ColorSelection } from "./ColorSelection";
 
 export const DashboardSettings = () => {
     return (
-        <div className="relative flex-col items-center flex min-h-[80vh]">
-            <form className="w-full">
-                <fieldset className="flex flex-col gap-4 rounded-lg border p-4">
-                    <div>
-                        <SectionHeader
-                            title="Einfärbung"
-                            tooltipContent={<p>Färben sie die Knoten nach verschiedenen Kriterien ein</p>}
-                        />
-                        <ColorSelection />
+        <form className="flex flex-col items-center w-full">
+            <fieldset className="flex flex-col gap-4 rounded-lg border p-4">
+                <div>
+                    <div className="flex flex-col">
+                        <h1 className="text-xl font-semibold leading-none">Einfärbung</h1>
+                        <p className="text-sm text-muted-foreground mb-2 mt-1">
+                            Färben Sie den Graphen nach verschiedenen Kriterien ein.
+                        </p>
                     </div>
-                </fieldset>
-            </form>
-        </div>
+                    <ColorSelection />
+                </div>
+            </fieldset>
+        </form>
     );
 };

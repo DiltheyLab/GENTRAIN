@@ -10,7 +10,7 @@ export const ColorSection = ({ clusters, label }: ColorSectionProps) => {
 
     return (
         <>
-            <Label>{label}</Label>
+            <Label className="font-normal">{label}</Label>
             {clusters.map((cluster) => (
                 <ColorSwitch key={cluster} cluster={cluster} />
             ))}

@@ -33,7 +33,7 @@ export const GraphSettings = ({
     }
 
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none">
+        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none pdf-hide">
             <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
@@ -46,9 +46,9 @@ export const GraphSettings = ({
             </Button>
             <div className="flex flex-col gap-3 pointer-events-auto">
                 <div className="flex items-center space-x-3">
-                    <label htmlFor="nodeLabel" className="text-sm font-normal leading-none">
+                    <Label htmlFor="nodeLabel" className="text-sm leading-none">
                         Knotenbeschreibung
-                    </label>
+                    </Label>
                     <Switch
                         id="nodeLabel"
                         isSmall={true}
@@ -56,8 +56,8 @@ export const GraphSettings = ({
                         onCheckedChange={(value) => updateGraphSettings({ showNodeLabel: value })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="forceLinkDistance" className="text-sm font-normal leading-none">
+                <div className="flex space-x-3">
+                    <Label htmlFor="forceLinkDistance" className="text-sm leading-none">
                         Kantenabstand
                     </Label>
                     <Slider
@@ -71,8 +71,8 @@ export const GraphSettings = ({
                         onValueChange={(value) => updateGraphSettings({ linkDistance: value[0] })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="nodeSize" className="text-sm font-normal leading-none">
+                <div className="flex space-x-3">
+                    <Label htmlFor="nodeSize" className="text-sm leading-none">
                         Knotengröße
                     </Label>
                     <Slider
@@ -86,8 +86,8 @@ export const GraphSettings = ({
                         onValueChange={(value) => updateGraphSettings({ nodeSize: value[0] })}
                     />
                 </div>
-                <div className="flex space-x-3 items-baseline">
-                    <Label htmlFor="linkWith" className="text-sm font-normal leading-none">
+                <div className="flex space-x-3">
+                    <Label htmlFor="linkWith" className="text-sm leading-none">
                         Kantenbreite
                     </Label>
                     <Slider

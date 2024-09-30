@@ -2,6 +2,7 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export type CustomNode = {
     id: number;
+    index?: number;
     caseData: CaseWithRelationships;
     cluster: string;
     registeredAt: string;

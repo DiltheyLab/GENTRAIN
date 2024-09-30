@@ -1,6 +1,10 @@
 import { Label } from "@/modules/core/components/ui/Label";
 import MultipleSelector, { Option } from "@/modules/core/components/ui/MultiSelect";
-import { SelectedBackground, useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import {
+    BackgroundType,
+    SelectedBackground,
+    useOutbreakAnalysisStore,
+} from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { RadioGroup, RadioGroupItem } from "@/modules/core/components/ui/RadioGroup";
 import { useGetAllGroupsAndOutbreaksForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsAndOutbreaksByActivePathogen";
 import { useTranslation } from "react-i18next";
@@ -47,7 +51,7 @@ export const BackgroundSelection = () => {
     const createFilteredOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         const options = createOptions(groupsAndOutbreaks);
         const filteredOptions = options?.filter(
-            (option) => option.value !== outbreakAnalysisStore.settings.selectedOutbreak?.name
+            (option) => option.value !== outbreakAnalysisStore.analysisSettings.selectedOutbreak?.name
         );
         return filteredOptions;
     };
@@ -77,44 +81,42 @@ export const BackgroundSelection = () => {
                 selectedBackground.groupsWithCategories.push(group);
             }
         }
-        outbreakAnalysisStore.updateSettings({ selectedBackground: selectedBackground });
+        outbreakAnalysisStore.updateAnalysisSettings({ selectedBackground: selectedBackground });
     };
 
-    const handleBackgroundDataChange = (value: "specificBackgroundData" | "allBackgroundData") => {
-        if (value === "allBackgroundData") {
-            outbreakAnalysisStore.updateSettings({ includeAllCases: true });
-        } else {
-            outbreakAnalysisStore.updateSettings({ includeAllCases: false });
-        }
+    const handleBackgroundDataChange = (value: BackgroundType) => {
+        outbreakAnalysisStore.updateAnalysisSettings({ backgroundType: value });
     };
 
     return (
         <div className="flex flex-col gap-4">
             <RadioGroup
-                defaultValue={
-                    outbreakAnalysisStore.settings.includeAllCases ? "allBackgroundData" : "specificBackgroundData"
-                }
-                onValueChange={(value: "specificBackgroundData" | "allBackgroundData") =>
-                    handleBackgroundDataChange(value)
-                }
+                defaultValue={outbreakAnalysisStore.analysisSettings.backgroundType}
+                onValueChange={(value: BackgroundType) => handleBackgroundDataChange(value)}
             >
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="allBackgroundData" id="allBackgroundData" />
-                    <Label htmlFor="allBackgroundData" className="font-normal text-md">
+                    <RadioGroupItem value="all" id="all" />
+                    <Label htmlFor="all" className="text-md">
                         Alle Falldaten verwenden
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="specificBackgroundData" id="specificBackgroundData" />
-                    <Label htmlFor="specificBackgroundData" className="font-normal text-md">
+                    <RadioGroupItem value="none" id="none" />
+                    <Label htmlFor="none" className="text-md">
+                        Keine Falldaten verwenden
+                    </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="specific" id="specific" />
+                    <Label htmlFor="specific" className="text-md">
                         Falldaten auswählen
                     </Label>
                 </div>
             </RadioGroup>
-            {!outbreakAnalysisStore.settings.includeAllCases && (
+            {outbreakAnalysisStore.analysisSettings.backgroundType === "specific" && (
                 <MultipleSelector
                     options={createFilteredOptions(groupsAndOutbreaks)} //initially get options from database so user can choose one of them
-                    value={createOptions(outbreakAnalysisStore.settings.selectedBackground || undefined)} //if options are set in store use them as preselected options
+                    value={createOptions(outbreakAnalysisStore.analysisSettings.selectedBackground || undefined)} //if options are set in store use them as preselected options
                     onChange={(value) => handleMultipleSelectChange(value)}
                     placeholder="Bitte auswählen"
                     emptyIndicator={

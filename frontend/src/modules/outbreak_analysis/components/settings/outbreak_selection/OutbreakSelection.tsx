@@ -40,12 +40,12 @@ export const OutbreakSelection = () => {
         };
 
         // set the initial date range for the date range filter
-        outbreakAnalysisStore.updateSettings({
+        outbreakAnalysisStore.updateAnalysisSettings({
             dateRange: modifiedDateRange,
         });
 
         // set the date range for the outbreak to color it in the date picker
-        outbreakAnalysisStore.updateSettings({
+        outbreakAnalysisStore.updateAnalysisSettings({
             datesOfCasesInSelectedOutbreak: dateRange,
         });
     };
@@ -53,7 +53,7 @@ export const OutbreakSelection = () => {
     const changeSelectedOutbreak = (id: string) => {
         const selectedOutbreak = outbreaks?.find((outbreak) => outbreak.id === +id);
         if (!selectedOutbreak) return;
-        outbreakAnalysisStore.updateSettings({
+        outbreakAnalysisStore.updateAnalysisSettings({
             selectedOutbreak: {
                 name: selectedOutbreak.name,
                 pathogen_id: selectedOutbreak.pathogen_id,
@@ -109,7 +109,7 @@ export const OutbreakSelection = () => {
     return (
         <div className="flex flex-col gap-4 p-0">
             <Select
-                value={outbreakAnalysisStore.settings.selectedOutbreak?.id?.toString()}
+                value={outbreakAnalysisStore.analysisSettings.selectedOutbreak?.id?.toString()}
                 onValueChange={(value) => changeSelectedOutbreak(value)}
             >
                 <SelectTrigger>

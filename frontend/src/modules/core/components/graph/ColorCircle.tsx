@@ -14,7 +14,7 @@ export const ColorCircle = ({ colorMap, cluster }: ColorCirlceProps) => {
                     colorMap[cluster]?.isActive ? colorMap[cluster].color : COLOR_FOR_CASES_WITHOUT_CLUSTERS
                 }`,
             }}
-            className={"rounded-full h-3 w-3"}
+            className={"rounded-full h-3 w-3 -mt-[1px]"}
         />
     );
 };

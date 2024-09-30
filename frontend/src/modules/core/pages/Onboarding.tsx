@@ -3,9 +3,13 @@ import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Share2 } from "lucide-react";
 import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
+import {} from "../components/ui/InitExampleButton";
+import { lazy, Suspense } from "react";
+const InitExampleButton = lazy(() => import("@/modules/core/components/ui/InitExampleButton"));
 
 export function Onboarding() {
     const initSession = useCoreStore((state) => state.initSession);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
 
     const handleClick = () => {
         initSession();
@@ -33,11 +37,23 @@ export function Onboarding() {
                     </p>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-16">
                     <PathogenSwitch />
-                    <Button onClick={() => handleClick()} className="ml-2">
+                    <Button disabled={!activePathogen} onClick={() => handleClick()} className="ml-2">
                         Zum Dashboard
                     </Button>
+                </div>
+
+                <div className="flex justify-center">
+                    <Suspense
+                        fallback={
+                            <Button variant="secondary" className="ml-2" disabled>
+                                Beispielszenario starten
+                            </Button>
+                        }
+                    >
+                        <InitExampleButton />
+                    </Suspense>
                 </div>
             </div>
             <div className="mt-20">

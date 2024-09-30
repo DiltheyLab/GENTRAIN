@@ -7,12 +7,16 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
             schema: sequenceAnalysisResult["analysis_schema"],
             chewbbaca_version: sequenceAnalysisResult["chewBACCA_version"],
             result: {
-                alleles: sequenceAnalysisResult["alleles"],
+                allele_ids: sequenceAnalysisResult["allele_ids"],
+                allele_hashes: sequenceAnalysisResult["allele_hashes"],
             },
         });
         await db.samples.add({
             fasta_id: fastaId,
             sequence_analysis_id: sequenceAnalysisId,
+            undeterminable_gen_count: sequenceAnalysisResult["undeterminable_gen_count"],
+            contig_count: sequenceAnalysisResult["contig_count"],
+            first_contig_length: sequenceAnalysisResult["first_contig_length"],
         });
     };
 }

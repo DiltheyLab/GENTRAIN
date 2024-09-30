@@ -4,10 +4,12 @@ export const LoadingSpinner = ({
     className,
     width = 24,
     height = 24,
+    strokeWidth = 2,
 }: {
     className?: string;
     width?: number;
     height?: number;
+    strokeWidth?: number;
 }) => {
     return (
         <svg
@@ -17,7 +19,7 @@ export const LoadingSpinner = ({
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
             className={cn("animate-spin", className)}

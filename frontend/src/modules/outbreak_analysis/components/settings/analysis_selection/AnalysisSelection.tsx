@@ -10,21 +10,21 @@ import {
     SelectValue,
 } from "@/modules/core/components/ui/Select";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { X } from "lucide-react";
 import { db } from "@/modules/core/infrastructure/database";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
-import { useGetAnalysesForActivePathogen } from "@/modules/core/hooks/database/analyses/useGetAnalysesForActivePathogen";
+import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { useNavigate } from "react-router-dom";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
+import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 export const AnalysisSelection = () => {
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisSchema | undefined>();
-    const analyses = useGetAnalysesForActivePathogen();
-    const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { toast } = useToast();
     const navigate = useNavigate();
+    const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
 
     // reset selected analysis if the analyses change which happens if the pathogen changes
     useEffect(() => {
@@ -39,12 +39,9 @@ export const AnalysisSelection = () => {
 
     const handleSubmit = () => {
         if (!selectedAnalysis) return;
-        // update the analysis in the store with the analysis from the database
-        outbreakAnalysisStore.updateName(selectedAnalysis.name);
-        outbreakAnalysisStore.updateId(selectedAnalysis.id);
-        outbreakAnalysisStore.updateSettings(selectedAnalysis.settings);
-        outbreakAnalysisStore.updateGraphSettings(selectedAnalysis.graphSettings);
-        navigate(`${selectedAnalysis.name}`);
+        const { id, name, analysisSettings, graphSettings, generalSettings } = selectedAnalysis;
+        updateWholeAnalysis(id, name, analysisSettings, graphSettings, generalSettings);
+        navigate(`${selectedAnalysis.id}`);
     };
 
     const deleteAnalysis = async (id: number) => {
@@ -101,7 +98,9 @@ export const AnalysisSelection = () => {
 
     return (
         <div className="flex flex-col w-1/2 gap-2" id="analysis-selection">
-            <Label htmlFor="name">Vorhandene Analyse auswählen:</Label>
+            <Label htmlFor="name" className="font-normal">
+                Vorhandene Analyse auswählen:
+            </Label>
             <Select
                 onValueChange={(value) => changeSelectedAnalysis(value)}
                 value={selectedAnalysis?.id.toString() ?? ""}

@@ -11,6 +11,9 @@ module.exports = {
                 "2xl": "1400px",
             },
         },
+        fontFamily: {
+            sans: ["Merriweather", "ui-sans-serif", "system-ui", "sans-serif"],
+        },
         extend: {
             colors: {
                 background: "hsl(var(--background))",
