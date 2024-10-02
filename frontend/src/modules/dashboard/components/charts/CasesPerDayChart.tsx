@@ -69,36 +69,42 @@ const CasesPerDayChart = () => {
             </CardHeader>
             <CardContent className="px-4 pb-2">
                 <ChartContainer config={{}} className="min-h-24 w-full h-32">
-                    <AreaChart accessibilityLayer data={chartData} margin={{ left: -28, right: 10 }}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="day"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={5}
-                            tickFormatter={(value) => formatDate(value)}
-                        />
-                        <YAxis tickLine={false} axisLine={false} tickMargin={5} />
-                        <ChartTooltip
-                            wrapperStyle={{ width: "180px" }}
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="dot" />}
-                            allowEscapeViewBox={{ x: true, y: true }}
-                            offset={18}
-                        />
-                        {clusters.map((cluster) => {
-                            return (
-                                <Area
-                                    key={cluster}
-                                    dataKey={cluster}
-                                    type="monotone"
-                                    fill={colorMap[cluster].color}
-                                    fillOpacity={0.4}
-                                    stroke={colorMap[cluster].color}
-                                />
-                            );
-                        })}
-                    </AreaChart>
+                    {nodes.length !== 0 ? (
+                        <AreaChart accessibilityLayer data={chartData} margin={{ left: -28, right: 10 }}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="day"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={5}
+                                tickFormatter={(value) => formatDate(value)}
+                            />
+                            <YAxis tickLine={false} axisLine={false} tickMargin={5} />
+                            <ChartTooltip
+                                wrapperStyle={{ width: "180px" }}
+                                cursor={false}
+                                content={<ChartTooltipContent indicator="dot" />}
+                                allowEscapeViewBox={{ x: true, y: true }}
+                                offset={18}
+                            />
+                            {clusters.map((cluster) => {
+                                return (
+                                    <Area
+                                        key={cluster}
+                                        dataKey={cluster}
+                                        type="monotone"
+                                        fill={colorMap[cluster].color}
+                                        fillOpacity={0.4}
+                                        stroke={colorMap[cluster].color}
+                                    />
+                                );
+                            })}
+                        </AreaChart>
+                    ) : (
+                        <small className="w-full h-full flex justify-center items-center font-light text-base">
+                            Keine Daten
+                        </small>
+                    )}
                 </ChartContainer>
             </CardContent>
         </Card>
