@@ -105,6 +105,7 @@ export const VisualizationPanel = () => {
                         linkWidth={linkWidth}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
+                        isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                     />
                 </>
             ) : (

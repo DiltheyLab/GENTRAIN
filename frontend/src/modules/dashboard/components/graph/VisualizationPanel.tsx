@@ -114,6 +114,7 @@ export const DashboardVisualizationPanel = () => {
                 initialCenter={true}
                 updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                 selectedCase={selectedCase}
+                isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
             />
         </div>
     );

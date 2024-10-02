@@ -26,6 +26,7 @@ type Graph2DProps = {
     initialCenter?: boolean;
     updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void;
     selectedCase: CaseWithRelationships | null;
+    isLoading?: boolean;
 };
 
 export const Graph2D = ({
@@ -37,6 +38,7 @@ export const Graph2D = ({
     coloringMode,
     updateSelectedCase,
     selectedCase,
+    isLoading = false,
     linkDistance = 70,
     charge = -80,
     nodeSize = 6,
@@ -58,7 +60,7 @@ export const Graph2D = ({
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
 
-    if (data.nodes.length === 0 && !cases) {
+    if (isLoading) {
         return <Loader2 className="h-24 w-h-24 animate-spin" />;
     } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
         return (
