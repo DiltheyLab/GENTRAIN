@@ -1,56 +1,69 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { X } from "lucide-react";
-import { SampleInfoCard } from "@/modules/data_management/components/upload_section/SampleInfoCard";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
-
-const getColorClassNames = (status: string) => {
-    switch (status) {
-        case "finished":
-            return "text-green-600 border-green-600";
-        case "failed":
-            return "text-red-600 border-red-600";
-        default:
-            return "";
-    }
-};
+import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { Button } from "@/modules/core/components/ui/Button";
+import { DataTable } from "../data_table/DataTable";
+import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
+import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";
+import {
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/modules/core/components/ui/Dialog";
 
 export function SampleSelection() {
-    const uploads = useDataManagementStore((state) => state.uploads);
-    const removeUpload = useDataManagementStore((state) => state.removeUpload);
+    const sampleTableData = useGetSampleTableData();
+    const sampleUploads = useDataManagementStore((state) => state.sampleUploads);
+    const removeSampleUpload = useDataManagementStore((state) => state.removeSampleUpload);
+    const changeSampleUpload = useDataManagementStore((state) => state.changeSampleUpload);
+
+    const columns: ColumnDef<SampleUpload>[] = [
+        {
+            id: "select",
+            cell: ({ row }) => {
+                if (sampleUploads[row.original.fasta_id!].status === "sent") {
+                    row.toggleSelected(true);
+                }
+                return (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={() => {
+                            if (row.getIsSelected()) {
+                                changeSampleUpload(row.original.fasta_id!, { status: "removed" });
+                                row.toggleSelected(false);
+                            } else {
+                                changeSampleUpload(row.original.fasta_id!, { status: "sent" });
+                                row.toggleSelected(true);
+                            }
+                        }}
+                        aria-label="Select row"
+                    />
+                );
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            accessorKey: "fasta_id",
+            header: "Sequenz",
+            cell: ({ row }) => <>{row.getValue("fasta_id")}</>,
+        },
+        {
+            accessorKey: "case_id",
+            header: "Fall",
+            cell: ({ row }) => <>{row.getValue("case_id")}</>,
+        },
+    ];
 
     return (
         <>
-            <div className="w-full flex flex-wrap">
-                <small className="mb-2">
-                    Folgende Samples wurden in der Fastadatei gefunden und werden dem Datenbestand hinzugefügt. Durch
-                    Hovern über eine Fasta ID können Sie sich weitere Informationen anzeigen lassen und durch Klick auf
-                    das Kreuz die jeweilige Sequenz vom Upload ausschließen.
-                </small>
-                <div className="flex flex-wrap gap-2">
-                    {Object.keys(uploads).map((fastaId) => (
-                        <HoverCard key={fastaId} openDelay={50} closeDelay={50}>
-                            <HoverCardTrigger asChild>
-                                <div
-                                    key={fastaId}
-                                    className={`hover:bg-slate-900 hover:text-white cursor-default bg-white flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md ${getColorClassNames(
-                                        uploads[fastaId]
-                                    )}`}
-                                >
-                                    <div className="mr-2 text-xs">{fastaId}</div>
-                                    <X
-                                        width={18}
-                                        className="cursor-pointer font-normal"
-                                        onClick={() => removeUpload(fastaId)}
-                                    />
-                                </div>
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                                <SampleInfoCard fastaId={fastaId} />
-                            </HoverCardContent>
-                        </HoverCard>
-                    ))}
-                </div>
-            </div>
+            <DialogTitle>Sequenzen hinzufügen</DialogTitle>
+            <DialogDescription>
+                Folgende Sequenzen wurden in der Fastadatei gefunden. Alle ausgewählte Sequenzen werden hinzugefügt.
+            </DialogDescription>
+            <DataTable data={sampleTableData} columns={columns} />
         </>
     );
 }

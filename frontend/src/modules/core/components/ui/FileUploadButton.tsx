@@ -23,7 +23,9 @@ export const FileUploadButton = ({ type, accept, multiple, onUpload }: FileUploa
                     dangerouslySetInnerHTML={{ __html: t(`upload.info.${type}`) }}
                 ></small>
             )}
-            <Input id={type} type="file" accept={accept} multiple={multiple} onChange={(e) => onUpload(e)} />
+            <div>
+                <Input id={type} type="file" accept={accept} multiple={multiple} onChange={(e) => onUpload(e)} />
+            </div>
         </div>
     );
 };

@@ -3,13 +3,18 @@ import { useToast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { getToastDescription } from "@/modules/core/helpers/errors";
 import { formatInArray } from "@/modules/core/helpers/files";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ZodError } from "zod";
 import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
 import { PersistenceStrategy } from "@/modules/data_management/services/data_upload/persistence/PersistenceStrategy";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
+import { CaseSelection } from "./CaseSelection";
+import { useDataManagementStore } from "../../stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
+import { SampleSelection } from "./SampleSelection";
+import { ContactSelection } from "./ContactSelection";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 
@@ -28,18 +33,17 @@ export const FileUpload = ({
 }: FileUploadComponentProps) => {
     const { toast } = useToast();
     const { t, i18n } = useTranslation();
-    const [fileDataIsValid, setFileDataIsValid] = useState(false);
-    const [fileData, setFileData] = useState<
-        Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]
-    >();
+    const setSampleSelectionActive = useDataManagementStore((state) => state.setSampleSelectionActive);
+    const setCaseSelectionActive = useDataManagementStore((state) => state.setCaseSelectionActive);
+    const setContactSelectionActive = useDataManagementStore((state) => state.setContactSelectionActive);
+    const contactSelectionActive = useDataManagementStore((state) => state.contactSelectionActive);
+    const sampleSelectionActive = useDataManagementStore((state) => state.sampleSelectionActive);
+    const caseSelectionActive = useDataManagementStore((state) => state.caseSelectionActive);
     const containerRef = useRef<HTMLDivElement>(null);
-
     const resetUpload = () => {
         // refresh file input
         const inputElement: HTMLInputElement | null | undefined = containerRef.current?.querySelector(`input#${type}`);
         if (inputElement) inputElement.value = "";
-        // reset upload button
-        setFileDataIsValid(false);
     };
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
@@ -47,7 +51,7 @@ export const FileUpload = ({
             toast({
                 title: warning.title,
                 description: warning.description,
-                duration: 30000,
+                duration: 10000,
                 variant: "default",
             });
         }
@@ -65,12 +69,11 @@ export const FileUpload = ({
             if (validationResult.warnings) {
                 showWarningToasts(validationResult.warnings);
             }
-            setFileDataIsValid(true);
             if (validationResult.data.length === 0) {
                 resetUpload();
                 return;
             }
-            setFileData(validationResult.data);
+            e.target.value = "";
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
@@ -96,10 +99,9 @@ export const FileUpload = ({
     };
 
     const handleSubmit = async () => {
-        if (!fileDataIsValid || !fileData) return;
         try {
             // persist the data
-            await persistenceStrategy.execute(fileData);
+            await persistenceStrategy.execute();
             resetUpload();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
@@ -126,9 +128,6 @@ export const FileUpload = ({
                         multiple={fileReadingStrategy.allowMultifile()}
                         onUpload={handleFileUpload}
                     />
-                    <Button onClick={handleSubmit} disabled={!fileDataIsValid}>
-                        Bestätigen
-                    </Button>
                 </div>
             </div>
             {i18n.exists(`upload.help.${type}`) && (
@@ -136,6 +135,51 @@ export const FileUpload = ({
                     className="text-muted-foreground"
                     dangerouslySetInnerHTML={{ __html: t(`upload.help.${type}`) }}
                 ></small>
+            )}
+            {type === "cases" && (
+                <Dialog
+                    onOpenChange={(value) => {
+                        setCaseSelectionActive(value);
+                    }}
+                    open={caseSelectionActive}
+                >
+                    <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
+                        {caseSelectionActive && <CaseSelection />}
+                        <DialogFooter>
+                            <Button onClick={handleSubmit}>Fälle hinzufügen</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            )}
+            {type === "samples" && (
+                <Dialog
+                    onOpenChange={(value) => {
+                        setSampleSelectionActive(value);
+                    }}
+                    open={sampleSelectionActive}
+                >
+                    <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
+                        {sampleSelectionActive && <SampleSelection />}
+                        <DialogFooter>
+                            <Button onClick={handleSubmit}>Sequenzen hinzufügen</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            )}
+            {type === "contacts" && (
+                <Dialog
+                    onOpenChange={(value) => {
+                        setContactSelectionActive(value);
+                    }}
+                    open={contactSelectionActive}
+                >
+                    <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
+                        {contactSelectionActive && <ContactSelection />}
+                        <DialogFooter>
+                            <Button onClick={handleSubmit}>Kontakte hinzufügen</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             )}
         </>
     );

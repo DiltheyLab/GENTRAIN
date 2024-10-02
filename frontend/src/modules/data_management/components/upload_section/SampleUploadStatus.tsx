@@ -24,7 +24,7 @@ const getColorClassNames = (status: string) => {
 };
 
 export function SampleUploadStatus() {
-    const { uploads, hideSampleUploadContent, setHideSampleUploadContent } = useDataManagementStore();
+    const { sampleUploads, hideSampleUploadContent, setHideSampleUploadContent } = useDataManagementStore();
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
 
@@ -46,8 +46,13 @@ export function SampleUploadStatus() {
                         <small className="mr-6">
                             Sequenzen werden auf Mutationen untersucht{" "}
                             <span>
-                                ({Object.keys(uploads).filter((key: string) => uploads[key] === "finished").length} von{" "}
-                                {Object.keys(uploads).length} abgeschlossen)
+                                (
+                                {
+                                    Object.keys(sampleUploads).filter(
+                                        (key: string) => sampleUploads[key].status === "finished"
+                                    ).length
+                                }{" "}
+                                von {Object.keys(sampleUploads).length} abgeschlossen)
                             </span>
                         </small>
                     )}
@@ -80,27 +85,31 @@ export function SampleUploadStatus() {
                             </small>
                             <ScrollArea>
                                 <div className="w-full flex flex-wrap max-h-[300px] mt-2">
-                                    {Object.keys(uploads).map((fastaId, key) => {
+                                    {Object.keys(sampleUploads).map((fastaId) => {
+                                        if (sampleUploads[fastaId].status === "removed") return;
                                         return (
-                                            <div key={key} className="w-full sm:w-1/3 p-1">
+                                            <div key={fastaId} className="w-full sm:w-1/3 p-1">
                                                 <div
-                                                    key={fastaId}
                                                     className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
-                                                        uploads[fastaId]
+                                                        sampleUploads[fastaId].status
                                                     )}`}
                                                 >
                                                     <div className="mr-2 text-xs">{fastaId}</div>
-                                                    {uploads[fastaId] === "sent" && (
+                                                    {sampleUploads[fastaId].status === "sent" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {uploads[fastaId] === "enqueued" && (
+                                                    {sampleUploads[fastaId].status === "enqueued" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {uploads[fastaId] === "started" && (
+                                                    {sampleUploads[fastaId].status === "started" && (
                                                         <LoadingSpinner className="w-[17px]" strokeWidth={1.5} />
                                                     )}
-                                                    {uploads[fastaId] === "finished" && <Check width={18} />}
-                                                    {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                                    {sampleUploads[fastaId].status === "finished" && (
+                                                        <Check width={18} />
+                                                    )}
+                                                    {sampleUploads[fastaId].status === "failed" && (
+                                                        <CircleAlert width={18} />
+                                                    )}
                                                 </div>
                                             </div>
                                         );

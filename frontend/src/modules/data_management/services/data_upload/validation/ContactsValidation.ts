@@ -5,6 +5,15 @@ import { ValidationStrategy } from "./ValidationStrategy";
 
 const CONTACT_COLUMN_NAMES = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
 
+export type ContactUpload = {
+    contact_id?: string;
+    case_id_1: string;
+    case_id_2: string;
+    type: string;
+    context: string;
+    status: string;
+};
+
 export class ContactsValidation extends ValidationStrategy {
     protected validate = async (data: string[][]) => {
         const activePathogen = this.coreState.activePathogen;
@@ -46,7 +55,18 @@ export class ContactsValidation extends ValidationStrategy {
         if (existingContacts.length > 0) {
             throw new GentrainException("ContactAlreadyExist", existingContacts);
         }
-
+        this.dataManagementState.setContactSelectionActive(true);
+        data = data.slice(1, data.length);
+        for (const index in data) {
+            const row = data[index];
+            this.dataManagementState.changeContactUpload(index, {
+                case_id_1: row[0],
+                case_id_2: row[1],
+                type: row[2],
+                context: row[3],
+                status: "selected",
+            } satisfies ContactUpload);
+        }
         return {
             data: data,
         };

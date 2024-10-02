@@ -8,12 +8,10 @@ export abstract class PersistenceStrategy {
         this.coreState = useCoreStore.getState();
     }
 
-    protected abstract persist(
-        data: Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]
-    ): Promise<void>;
+    protected abstract persist(): Promise<void>;
 
-    public async execute(data: Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]) {
-        await this.persist(data);
+    public async execute() {
+        await this.persist();
         await this.synchronizeWithStore();
     }
 

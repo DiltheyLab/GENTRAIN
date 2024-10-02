@@ -3,6 +3,14 @@ import { db } from "@/modules/core/infrastructure/database";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
 
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
+export type CaseUpload = {
+    case_id?: string;
+    fasta_id: string;
+    groups: { name: string; category: string }[];
+    outbreak: string;
+    registered_at: string;
+    status: string;
+};
 
 export class CasesValidation extends ValidationStrategy {
     protected validate = async (data: Array<Array<string>>) => {
@@ -20,9 +28,30 @@ export class CasesValidation extends ValidationStrategy {
         if (existingCases.length > 0) {
             throw new GentrainException("CasesAlreadyExist", existingCases);
         }
+        this.dataManagementState.setCaseSelectionActive(true);
+        data = data.slice(1, data.length);
+        for (const row of data) {
+            this.dataManagementState.changeCaseUpload(row[0], {
+                fasta_id: row[1],
+                groups: this.collectGroups(header, row),
+                outbreak: row[3],
+                registered_at: row[2],
+                status: "selected",
+            } satisfies CaseUpload);
+        }
         return {
             data: data,
         };
+    };
+
+    private collectGroups = (header: string[], row: string[]) => {
+        const groups: { name: string; category: string }[] = [];
+        for (let i = 4; i <= 6; i++) {
+            if (row[i] !== "") {
+                groups.push({ category: header[i], name: row[i] });
+            }
+        }
+        return groups;
     };
 
     private isCasesHeaderValid = (header: string[], columnNames: string[]) => {
