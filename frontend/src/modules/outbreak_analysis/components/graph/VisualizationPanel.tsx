@@ -10,9 +10,10 @@ import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { Label } from "@/modules/core/components/ui/Label";
 import { Switch } from "@/modules/core/components/ui/Switch";
+import { CustomNode } from "@/modules/core/types/graph";
+import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,11 @@ export const VisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-    const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
+    const [linksBelowGeneticDistanceThreshold, setAllLinks] = useLinksBelowGeneticDistanceThreshold(
+        outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold,
+        selectedNode
+    );
 
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
@@ -45,7 +50,10 @@ export const VisualizationPanel = () => {
             contacts,
             outbreakAnalysisStore.analysisSettings
         );
-        graphDataGenerator.execute().then((graphData) => outbreakAnalysisStore.updateGraphData(graphData));
+        graphDataGenerator.execute().then((graphData) => {
+            outbreakAnalysisStore.updateGraphData(graphData);
+            setAllLinks(graphDataGenerator.getAllLinks());
+        });
     }, [cases, distanceMatrixAssembly, outbreakAnalysisStore.analysisSettings, contacts]);
 
     return (
@@ -75,6 +83,8 @@ export const VisualizationPanel = () => {
                         nodes={outbreakAnalysisStore.graphData.nodes}
                         links={outbreakAnalysisStore.graphData.links}
                         colorMap={outbreakAnalysisStore.graphSettings.colorMap}
+                        linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                        geneticDistanceThreshold={outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold}
                         variant={
                             outbreakAnalysisStore.graphSettings.coloringMode === "timeSpan"
                                 ? "timeSpan"
@@ -88,8 +98,8 @@ export const VisualizationPanel = () => {
                         updateGraphSettings={outbreakAnalysisStore.updateGraphSettings}
                     />
                     <CaseInfo
-                        selectedCase={selectedCase}
-                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
+                        selectedNode={selectedNode}
+                        updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
                     />
                     <Graph2D
                         data={outbreakAnalysisStore.graphData}
@@ -103,9 +113,10 @@ export const VisualizationPanel = () => {
                         nodeSize={nodeSize}
                         showNodeLabel={showNodeLabel}
                         linkWidth={linkWidth}
-                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
-                        selectedCase={selectedCase}
+                        updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
+                        selectedNode={selectedNode}
                         isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
+                        linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
                     />
                 </>
             ) : (

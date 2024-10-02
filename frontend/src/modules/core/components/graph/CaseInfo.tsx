@@ -1,17 +1,17 @@
-type CaseInfoProps = {
-    selectedCase: CaseWithRelationships | null;
-    updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void;
-};
 import { Button } from "@/modules/core/components/ui/Button";
 import { X } from "lucide-react";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { useTranslation } from "react-i18next";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { CustomNode } from "../../types/graph";
 
-export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) => {
+type CaseInfoProps = {
+    selectedNode: CustomNode | null;
+    updateSelectedNode: (selectedNode: CustomNode | null) => void;
+};
+export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) => {
     const { t } = useTranslation();
 
-    if (!selectedCase) return null;
+    if (!selectedNode) return null;
 
     return (
         <fieldset className="absolute z-10 right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/80 pointer-events-none">
@@ -21,28 +21,29 @@ export const CaseInfo = ({ selectedCase, updateSelectedCase }: CaseInfoProps) =>
                 type="button"
                 size="sm"
                 variant={"ghost"}
-                onClick={() => updateSelectedCase(null)}
+                onClick={() => updateSelectedNode(null)}
             >
                 <X size={23} className="text-slate-700" />
             </Button>
             <div className="flex flex-col gap-1 -mt-1">
-                <CaseInfoItem label="Fall ID" description={selectedCase.case_id} copyToClipboard />
+                <CaseInfoItem label="Fall ID" description={selectedNode.caseData.case_id} copyToClipboard />
                 <CaseInfoItem
                     label="Sequenz ID"
-                    description={selectedCase.sample?.fasta_id ?? "keine Sequenz vorhanden"}
+                    description={selectedNode.caseData.sample?.fasta_id ?? "keine Sequenz vorhanden"}
                 />
                 <CaseInfoItem
                     label="Ausbruch"
-                    description={selectedCase.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}
+                    description={selectedNode.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}
                 />
                 <CaseInfoItem
                     label="Registrierungsdatum"
-                    description={selectedCase.registered_at.toLocaleDateString()}
+                    description={selectedNode.caseData.registered_at.toLocaleDateString()}
                 />
                 <CaseInfoItem
                     label="Gruppen"
                     description={
-                        selectedCase.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"
+                        selectedNode.caseData.groups?.map((group) => group.name).join(", ") ??
+                        "Keiner Gruppe zugewiesen"
                     }
                 />
             </div>

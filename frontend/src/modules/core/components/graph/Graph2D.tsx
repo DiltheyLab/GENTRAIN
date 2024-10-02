@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
@@ -24,9 +24,10 @@ type Graph2DProps = {
     labelTransparency?: number;
     coolDownTicks?: number;
     initialCenter?: boolean;
-    updateSelectedCase: (selectedCase: CaseWithRelationships | null) => void;
-    selectedCase: CaseWithRelationships | null;
+    updateSelectedNode: (selectedNode: (NodeObject & CustomNode) | null) => void;
+    selectedNode: (NodeObject & CustomNode) | null;
     isLoading?: boolean;
+    linksBelowGeneticDistanceThreshold?: CustomLink[];
 };
 
 export const Graph2D = ({
@@ -36,8 +37,9 @@ export const Graph2D = ({
     colorMap,
     cases,
     coloringMode,
-    updateSelectedCase,
-    selectedCase,
+    updateSelectedNode,
+    selectedNode,
+    linksBelowGeneticDistanceThreshold,
     isLoading = false,
     linkDistance = 70,
     charge = -80,
@@ -51,7 +53,7 @@ export const Graph2D = ({
     const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
     const navigate = useNavigate();
-    useCanvasClick(updateSelectedCase);
+    useCanvasClick([() => updateSelectedNode(null)]);
 
     // custom d3 force setup
     useEffect(() => {
@@ -60,23 +62,13 @@ export const Graph2D = ({
         forceRef?.current?.d3ReheatSimulation();
     }, [linkDistance, charge, data]);
 
-    if (isLoading) {
-        return <Loader2 className="h-24 w-h-24 animate-spin" />;
-    } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
-        return (
-            <div className="flex justify-center items-center h-full w-full">
-                <p>Es sind keine sequenzierten Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
-                <Button
-                    variant="link"
-                    className="underline px-0 font-normal text-base"
-                    onClick={() => navigate("/data-management")}
-                >
-                    Datenverwaltung
-                </Button>
-                <p>&nbsp; hoch.</p>
-            </div>
-        );
-    }
+    const nodeMap = useMemo(() => {
+        const map = new Map<number, CustomNode>();
+        data.nodes.forEach((node) => {
+            map.set(node.id, node);
+        });
+        return map;
+    }, [data.nodes]);
 
     const handleEngineStop = () => {
         if (zoomToFit === false) return;
@@ -98,7 +90,7 @@ export const Graph2D = ({
                 : COLOR_FOR_CASES_WITHOUT_CLUSTERS;
         }
         ctx.fill();
-        if (selectedCase && selectedCase.case_id === node.caseData.case_id) {
+        if (selectedNode && selectedNode.caseData.case_id === node.caseData.case_id) {
             ctx.strokeStyle = "black";
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -150,7 +142,48 @@ export const Graph2D = ({
         ctx.fillText(link.value === CONTACT_LINK_VALUE ? "" : link.value?.toString(), midX, midY);
     };
 
-    if (data.links.length === 0 && data.nodes.length === 1) {
+    const drawCustomLinksBelowGeneticDistanceThreshold = (ctx: CanvasRenderingContext2D) => {
+        if (!linksBelowGeneticDistanceThreshold) return;
+
+        linksBelowGeneticDistanceThreshold.forEach((link) => {
+            const sourceNode = nodeMap.get(link.source) as NodeObject & CustomNode;
+            const targetNode = nodeMap.get(link.target) as NodeObject & CustomNode;
+
+            if (!sourceNode?.x || !sourceNode?.y || !targetNode?.x || !targetNode?.y) return;
+
+            ctx.beginPath();
+            ctx.moveTo(sourceNode.x, sourceNode.y);
+            ctx.lineTo(targetNode.x, targetNode.y);
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Optionally, draw the link value
+            const midX = (sourceNode.x + targetNode.x) / 2;
+            const midY = (sourceNode.y + targetNode.y) / 2;
+            ctx.fillStyle = "red";
+            ctx.font = "12px Sans-Serif";
+            ctx.fillText(link.value?.toString() || "", midX, midY);
+        });
+    };
+
+    if (isLoading) {
+        return <Loader2 className="h-24 w-h-24 animate-spin" />;
+    } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
+        return (
+            <div className="flex justify-center items-center h-full w-full">
+                <p>Es sind keine sequenzierten Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
+                <Button
+                    variant="link"
+                    className="underline px-0 font-normal text-base"
+                    onClick={() => navigate("/data-management")}
+                >
+                    Datenverwaltung
+                </Button>
+                <p>&nbsp; hoch.</p>
+            </div>
+        );
+    } else if (data.links.length === 0 && data.nodes.length === 1) {
         return (
             <div className="flex flex-col p-4 text-center">
                 <h4 className="text-lg font-semibold">Der ausgewählte Ausbruch besteht nur aus einem Datenpunkt.</h4>
@@ -158,13 +191,6 @@ export const Graph2D = ({
             </div>
         );
     }
-
-    const handleNodeClick = (node: NodeObject & CustomNode) => {
-        // Center the graph on the selected node
-        // forceRef?.current?.centerAt(node.x, node.y, 1000);
-        // forceRef?.current?.zoom(2, 1000);
-        updateSelectedCase(node.caseData);
-    };
 
     return (
         <ForceGraph2D
@@ -175,7 +201,7 @@ export const Graph2D = ({
             width={width}
             height={height}
             cooldownTicks={coolDownTicks} //number of frames until simulation ends
-            backgroundColor="hsl(60, 4.8%, 95.9%)" // replace with theme color
+            backgroundColor="hsl(60, 4.8%, 95.9%)"
             d3VelocityDecay={0.2}
             onEngineStop={handleEngineStop}
             nodeCanvasObject={(node, ctx) => createCustomNodeCanvas(node as CustomNode, ctx)}
@@ -184,7 +210,7 @@ export const Graph2D = ({
             linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
-            onNodeClick={(node, _event) => handleNodeClick(node as CustomNode)}
+            onNodeClick={(node, _event) => updateSelectedNode(node as CustomNode & NodeObject)}
             onNodeDrag={(node) => {
                 node.fx = node.x;
                 node.fy = node.y;
@@ -192,6 +218,11 @@ export const Graph2D = ({
             onNodeDragEnd={(node) => {
                 node.fx = node.x;
                 node.fy = node.y;
+            }}
+            onRenderFramePost={(ctx, _globalScale) => {
+                if (selectedNode) {
+                    drawCustomLinksBelowGeneticDistanceThreshold(ctx);
+                }
             }}
         />
     );
