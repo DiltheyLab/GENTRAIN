@@ -154,15 +154,15 @@ export const Graph2D = ({
             ctx.beginPath();
             ctx.moveTo(sourceNode.x, sourceNode.y);
             ctx.lineTo(targetNode.x, targetNode.y);
-            ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.2)";
             ctx.lineWidth = 2;
             ctx.stroke();
 
             // Optionally, draw the link value
             const midX = (sourceNode.x + targetNode.x) / 2;
             const midY = (sourceNode.y + targetNode.y) / 2;
-            ctx.fillStyle = "red";
-            ctx.font = "12px Sans-Serif";
+            ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
+            ctx.font = "12px Merriweather";
             ctx.fillText(link.value?.toString() || "", midX, midY);
         });
     };
