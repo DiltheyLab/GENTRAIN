@@ -82,6 +82,7 @@ export const Graph2D = ({
         ctx.beginPath();
         ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
 
+        //switch node color for timespan and clustering/outbreaks
         if (coloringMode === "timeSpan") {
             ctx.fillStyle = colorMap[node.registeredAt].color;
         } else {
@@ -90,9 +91,12 @@ export const Graph2D = ({
                 : COLOR_FOR_CASES_WITHOUT_CLUSTERS;
         }
         ctx.fill();
+
+        // circle around selected node
         if (selectedNode && selectedNode.caseData.case_id === node.caseData.case_id) {
             ctx.strokeStyle = "black";
             ctx.lineWidth = 2;
+            ctx.setLineDash([]);
             ctx.stroke();
         }
 
@@ -117,18 +121,15 @@ export const Graph2D = ({
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = `rgb(0, 0, 0,${labelTransparency})`;
-        //font bold
         ctx.fillText(label, node.x, labelY + bckgDimensions[1] / 2);
     };
 
     const createCustomLinkCanvas = (link: LinkObject & CustomLink, ctx: CanvasRenderingContext2D) => {
         if (!link.source || !link.target) return;
 
-        // Get the source and target nodes
         const source = link.source as NodeObject;
         const target = link.target as NodeObject;
 
-        // Check if the source and target nodes have x and y values
         if (!source.x || !source.y || !target.x || !target.y) return;
 
         // Calculate midpoint for text
@@ -137,8 +138,7 @@ export const Graph2D = ({
 
         // Draw text at midpoint
         ctx.fillStyle = "black"; // Text color
-        const fontSize = 10;
-        ctx.font = `${fontSize}px Merriweather`;
+        ctx.font = `10px Merriweather`;
         ctx.fillText(link.value === CONTACT_LINK_VALUE ? "" : link.value?.toString(), midX, midY);
     };
 
@@ -146,23 +146,26 @@ export const Graph2D = ({
         if (!linksBelowGeneticDistanceThreshold) return;
 
         linksBelowGeneticDistanceThreshold.forEach((link) => {
+            // Get nodes as sources and targets instead of node ids
             const sourceNode = nodeMap.get(link.source) as NodeObject & CustomNode;
             const targetNode = nodeMap.get(link.target) as NodeObject & CustomNode;
 
             if (!sourceNode?.x || !sourceNode?.y || !targetNode?.x || !targetNode?.y) return;
 
+            // Draw line
             ctx.beginPath();
+            ctx.setLineDash([3, 2]);
             ctx.moveTo(sourceNode.x, sourceNode.y);
             ctx.lineTo(targetNode.x, targetNode.y);
-            ctx.strokeStyle = "rgba(255, 0, 0, 0.2)";
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.3)";
+            ctx.lineWidth = 1;
             ctx.stroke();
 
             // Optionally, draw the link value
             const midX = (sourceNode.x + targetNode.x) / 2;
             const midY = (sourceNode.y + targetNode.y) / 2;
             ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
-            ctx.font = "12px Merriweather";
+            ctx.font = "10px Merriweather";
             ctx.fillText(link.value?.toString() || "", midX, midY);
         });
     };
