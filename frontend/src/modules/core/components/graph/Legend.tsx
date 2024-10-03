@@ -100,8 +100,8 @@ export const Legend = ({
                 )}
                 {linksBelowGeneticDistanceThreshold && linksBelowGeneticDistanceThreshold.length > 0 && (
                     <div className="flex items-center gap-2">
-                        <span style={{ backgroundColor: `rgba(255,0,0,0.7)` }} className={"h-[3px] w-5"} />
-                        <p className="text-xs">Genetische Distanzen &le; {geneticDistanceThreshold} </p>
+                        <span className={"h-[3px] w-5 border-b-[3px] border-red-500 border-dashed"} />
+                        <p className="text-xs">Genetische Distanz &le; {geneticDistanceThreshold} </p>
                     </div>
                 )}
                 {contactTracingLinks.length > 0 && (
