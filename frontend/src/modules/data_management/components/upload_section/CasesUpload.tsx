@@ -137,8 +137,12 @@ export const CasesUpload = () => {
             ></small>
             {caseUploads && (caseUploads.create || caseUploads.update) && (
                 <Dialog
-                    onOpenChange={(value) => {
-                        setCaseSelectionActive(value);
+                    onOpenChange={(open) => {
+                        setCaseSelectionActive(open);
+                        if (!open) {
+                            useDataManagementStore.getState().clearCaseUploads();
+                            useDataManagementStore.getState().clearExistingCases();
+                        }
                     }}
                     open={caseSelectionActive}
                 >
