@@ -7,6 +7,7 @@ export type SampleUpload = {
     case_id: string;
     status: string;
     sequence: string;
+    upload: boolean;
 };
 export class SamplesValidation extends ValidationStrategy {
     protected validate = async (data: { fastaId: string; sequence: string }[]) => {
@@ -29,6 +30,7 @@ export class SamplesValidation extends ValidationStrategy {
                     case_id: sampleCase.case_id,
                     status: "sent",
                     sequence: sample.sequence,
+                    upload: true,
                 });
             }
         }

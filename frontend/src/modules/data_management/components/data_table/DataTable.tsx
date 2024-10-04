@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
     ColumnDef,
+    Row,
     SortingState,
     VisibilityState,
     flexRender,
@@ -20,11 +21,15 @@ export function DataTable({
     columns,
     enableFilter = true,
     pageSize = 10,
+    onRowClick = () => {},
+    preselectRows = false,
 }: {
     data: any[];
     columns: ColumnDef<any>[];
     enableFilter?: boolean;
     pageSize?: number;
+    onRowClick?: (row?: Row<any>) => void;
+    preselectRows?: boolean;
 }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -43,6 +48,7 @@ export function DataTable({
         onGlobalFilterChange: setGlobalFilter,
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
+        autoResetPageIndex: false,
         state: {
             sorting,
             columnVisibility,
@@ -55,6 +61,13 @@ export function DataTable({
             },
         },
     });
+
+    React.useEffect(() => {
+        if (preselectRows) {
+            table.toggleAllRowsSelected();
+        }
+    }, []);
+
     return (
         <div className="w-full">
             {enableFilter && (
@@ -90,7 +103,11 @@ export function DataTable({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => onRowClick(row)}
+                                >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

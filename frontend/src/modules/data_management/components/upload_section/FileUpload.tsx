@@ -15,6 +15,7 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 import { SampleSelection } from "./SampleSelection";
 import { ContactSelection } from "./ContactSelection";
+import { CaseUpdate } from "./CaseUpdate";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 
@@ -40,6 +41,8 @@ export const FileUpload = ({
     const sampleSelectionActive = useDataManagementStore((state) => state.sampleSelectionActive);
     const caseSelectionActive = useDataManagementStore((state) => state.caseSelectionActive);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [updateState, setUpdateState] = useState(true);
+
     const resetUpload = () => {
         // refresh file input
         const inputElement: HTMLInputElement | null | undefined = containerRef.current?.querySelector(`input#${type}`);
@@ -98,10 +101,28 @@ export const FileUpload = ({
         }
     };
 
+    const handleUpdate = async () => {
+        try {
+            setUpdateState(false);
+            await persistenceStrategy.executeUpdate();
+        } catch (error) {
+            if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
+                toast({
+                    title: t(`error:upload.title`),
+                    description: getToastDescription(error),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+                console.log(error, error.message);
+                return;
+            }
+            console.log(error);
+        }
+    };
+
     const handleSubmit = async () => {
         try {
-            // persist the data
-            await persistenceStrategy.execute();
+            await persistenceStrategy.executePersist();
             resetUpload();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
@@ -144,10 +165,22 @@ export const FileUpload = ({
                     open={caseSelectionActive}
                 >
                     <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
-                        {caseSelectionActive && <CaseSelection />}
-                        <DialogFooter>
-                            <Button onClick={handleSubmit}>Fälle hinzufügen</Button>
-                        </DialogFooter>
+                        {caseSelectionActive && !updateState && (
+                            <>
+                                <CaseSelection />
+                                <DialogFooter>
+                                    <Button onClick={() => handleSubmit()}>Fälle hinzufügen</Button>
+                                </DialogFooter>
+                            </>
+                        )}
+                        {caseSelectionActive && updateState && (
+                            <>
+                                <CaseUpdate />
+                                <DialogFooter>
+                                    <Button onClick={() => handleUpdate()}>Fälle aktualisieren</Button>
+                                </DialogFooter>
+                            </>
+                        )}
                     </DialogContent>
                 </Dialog>
             )}

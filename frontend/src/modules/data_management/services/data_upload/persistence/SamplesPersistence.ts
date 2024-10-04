@@ -17,4 +17,6 @@ export class SamplesPersistence extends PersistenceStrategy {
         sequenceAnalysisStrategy.setSampleData(samples);
         sequenceAnalysisStrategy.execute();
     };
+
+    protected update = async () => {};
 }

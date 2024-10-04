@@ -110,7 +110,7 @@ export function ContactSelection() {
             <DialogDescription>
                 Folgende Kontakte wurden in der CSV-Datei gefunden. Alle ausgewählte Kontakte werden hinzugefügt.
             </DialogDescription>
-            <DataTable data={contactTableData} columns={columns} />
+            <DataTable data={contactTableData} columns={columns} pageSize={5} />
         </>
     );
 }

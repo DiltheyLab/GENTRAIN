@@ -9,9 +9,15 @@ export abstract class PersistenceStrategy {
     }
 
     protected abstract persist(): Promise<void>;
+    protected abstract update(): Promise<void>;
 
-    public async execute() {
+    public async executePersist() {
         await this.persist();
+        await this.synchronizeWithStore();
+    }
+
+    public async executeUpdate() {
+        await this.update();
         await this.synchronizeWithStore();
     }
 

@@ -2,12 +2,13 @@ import { create } from "zustand";
 import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
 import { SampleUpload } from "../services/data_upload/validation/SamplesValidation";
 import { ContactUpload } from "../services/data_upload/validation/ContactsValidation";
+import { CaseSchema } from "@/modules/core/models/cases";
 
 export interface DataManagementState {
     isUploading: boolean;
     distanceCalculationCount: number;
     distanceCalculationSum: number;
-    alreadyExistingCases: { [caseId: string]: CaseUpload };
+    existingCases: { [caseId: string]: { existingCase: CaseSchema; caseUpload: CaseUpload } };
     caseUploads: { [caseId: string]: CaseUpload };
     sampleUploads: { [fastaId: string]: SampleUpload };
     contactUploads: { [contactId: string]: ContactUpload };
@@ -27,7 +28,10 @@ export interface DataManagementState {
     setHideSampleUploadContent: (value: boolean) => void;
     removeCaseUpload: (key: string) => void;
     changeCaseUpload: (key: string, value: any) => void;
-    addAlreadyExistingCases: (key: string, value: CaseUpload) => void;
+    changeExistingCase: (key: string, value: any) => void;
+    addExistingCase: (caseId: string, existingCase: CaseSchema, caseUpload: CaseUpload) => void;
+    clearExistingCases: () => void;
+    clearCaseUploads: () => void;
     removeSampleUpload: (key: string) => void;
     changeSampleUpload: (key: string, value: any) => void;
     removeContactUpload: (key: string) => void;
@@ -44,7 +48,7 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     distanceCalculationCount: 0,
     distanceCalculationSum: 0,
     removedSamples: [],
-    alreadyExistingCases: {},
+    existingCases: {},
     caseUploads: {},
     sampleUploads: {},
     contactUploads: {},
@@ -81,14 +85,26 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         delete updateCaseUploads[caseId];
         set({ caseUploads: updateCaseUploads });
     },
-    addAlreadyExistingCases: (caseId: string, caseUpload: CaseUpload) => {
-        const updateCaseUploads = get().caseUploads;
-        updateCaseUploads[caseId] = caseUpload;
-        set({ caseUploads: updateCaseUploads });
+    addExistingCase: (caseId: string, existingCase: CaseSchema, caseUpload: CaseUpload) => {
+        const updateExistingCases = structuredClone(get().existingCases);
+        updateExistingCases[caseId] = { existingCase: existingCase, caseUpload: caseUpload };
+        set({ existingCases: updateExistingCases });
+    },
+    clearExistingCases: () => {
+        set({ existingCases: {} });
+    },
+    clearCaseUploads: () => {
+        set({ caseUploads: {} });
+    },
+    changeExistingCase: (caseId: string, changes: any) => {
+        const updateExistingCases = structuredClone(get().existingCases);
+        const caseUpdate = { ...updateExistingCases[caseId], ...changes };
+        updateExistingCases[caseId] = caseUpdate;
+        set({ existingCases: updateExistingCases });
     },
     changeCaseUpload: (caseId: string, changes: any) => {
         const updateCaseUploads = structuredClone(get().caseUploads);
-        const caseUpload = { ...updateCaseUploads, ...changes };
+        const caseUpload = { ...updateCaseUploads[caseId], ...changes };
         updateCaseUploads[caseId] = caseUpload;
         set({ caseUploads: updateCaseUploads });
     },
@@ -99,7 +115,7 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     },
     changeSampleUpload: (fastaId: string, changes: any) => {
         const updatedSampleUploads = structuredClone(get().sampleUploads);
-        const sampleUpload = { ...updatedSampleUploads, ...changes };
+        const sampleUpload = { ...updatedSampleUploads[fastaId], ...changes };
         updatedSampleUploads[fastaId] = sampleUpload;
         set({ sampleUploads: updatedSampleUploads });
     },
@@ -110,7 +126,7 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     },
     changeContactUpload: (contactId: string, changes: any) => {
         const updatedContactUploads = structuredClone(get().contactUploads);
-        const contactUpload = { ...updatedContactUploads, ...changes };
+        const contactUpload = { ...updatedContactUploads[contactId], ...changes };
         updatedContactUploads[contactId] = contactUpload;
         set({ contactUploads: updatedContactUploads });
     },

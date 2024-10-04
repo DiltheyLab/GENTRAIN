@@ -54,4 +54,6 @@ export class ContactsPersistence extends PersistenceStrategy {
             variant: "success",
         });
     };
+
+    protected update = async () => {};
 }

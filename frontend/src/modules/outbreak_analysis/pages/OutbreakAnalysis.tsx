@@ -18,8 +18,6 @@ export const OutbreakAnalysis = () => {
 
     useEffect(() => {
         if (!outbreakAnalysisStore.generalSettings.autoSave || !outbreakAnalysisStore.id) return;
-        console.log("re");
-
         safeAnalysis(outbreakAnalysisStore, false);
     }, [
         outbreakAnalysisStore.analysisSettings,

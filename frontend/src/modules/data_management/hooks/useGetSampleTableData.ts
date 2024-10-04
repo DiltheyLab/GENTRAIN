@@ -13,6 +13,8 @@ export const useGetSampleTableData = () => {
                 fasta_id: fastaId,
                 case_id: sampleUploads[fastaId].case_id,
                 status: sampleUploads[fastaId].status,
+                upload: sampleUploads[fastaId].upload,
+                sequence: sampleUploads[fastaId].sequence,
             };
             cases.push(currentSample);
         }

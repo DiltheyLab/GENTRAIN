@@ -1,16 +1,19 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { useGetCaseTableData } from "../../hooks/useGetCaseTableData";
 import { DataTable } from "../data_table/DataTable";
 import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
+import { useGetAlreadyExistingCasesTableData } from "../../hooks/useGetAlreadyExistingCasesTableData";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown, CheckCheck } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
-export function CaseSelection() {
-    const caseTableData = useGetCaseTableData();
-    const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
-    const columns: ColumnDef<CaseUpload>[] = [
+
+export function CaseUpdate() {
+    const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
+    const existingCasesTableData = useGetAlreadyExistingCasesTableData();
+
+    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>[] = [
         {
             accessorKey: "case_id",
             header: ({ column }) => {
@@ -25,7 +28,11 @@ export function CaseSelection() {
                     </Button>
                 );
             },
-            cell: ({ row }) => <>{row.getValue("case_id")}</>,
+            cell: ({ row }) => (
+                <>
+                    <div>{row.original.existingCase.case_id}</div>
+                </>
+            ),
         },
         {
             accessorKey: "fasta_id",
@@ -41,7 +48,14 @@ export function CaseSelection() {
                     </Button>
                 );
             },
-            cell: ({ row }) => <>{row.getValue("fasta_id")}</>,
+            cell: ({ row }) => (
+                <>
+                    {row.original.existingCase.fasta_id !== row.original.caseUpload.fasta_id && (
+                        <div className="line-through">{row.original.existingCase.fasta_id}</div>
+                    )}
+                    <div>{row.original.caseUpload.fasta_id}</div>
+                </>
+            ),
         },
         {
             accessorKey: "outbreak",
@@ -57,7 +71,14 @@ export function CaseSelection() {
                     </Button>
                 );
             },
-            cell: ({ row }) => <>{row.getValue("outbreak")}</>,
+            cell: ({ row }) => (
+                <>
+                    {row.original.existingCase.fasta_id !== row.original.caseUpload.fasta_id && (
+                        <div className="line-through">{row.original.existingCase.outbreak?.name}</div>
+                    )}
+                    <div>{row.original.caseUpload.outbreak}</div>
+                </>
+            ),
         },
         {
             accessorKey: "groups",
@@ -81,14 +102,22 @@ export function CaseSelection() {
         {
             accessorKey: "registered_at",
             header: "Registrierungsdatum",
-            cell: ({ row }) => <>{formatDate(row.getValue("registered_at"))}</>,
+            cell: ({ row }) => (
+                <>
+                    {formatDate(row.original.existingCase.registered_at) !==
+                        formatDate(row.original.caseUpload.registered_at) && (
+                        <div className="line-through">{formatDate(row.original.existingCase.registered_at)}</div>
+                    )}
+                    <div>{formatDate(row.original.caseUpload.registered_at)}</div>
+                </>
+            ),
         },
         {
             id: "select",
             cell: ({ row }) => (
                 <CheckCheck
                     onClick={() => {}}
-                    className={`${row.original.upload ? "text-primary opacity-100" : "opacity-20"}`}
+                    className={`${row.original.caseUpload.upload ? "text-primary opacity-100" : "opacity-20"}`}
                 />
             ),
             enableSorting: false,
@@ -98,19 +127,23 @@ export function CaseSelection() {
 
     return (
         <>
-            <DialogTitle>Fälle hinzufügen</DialogTitle>
+            <DialogTitle>Fälle aktualisieren</DialogTitle>
             <DialogDescription>
                 Folgende Fälle wurden in der CSV-Datei und im bestehenden Datenbestand gefunden. Alle ausgewählte Fälle
                 werden aktualisiert.
             </DialogDescription>
-            {caseTableData && (
+            {existingCasesTableData && (
                 <DataTable
-                    data={caseTableData}
+                    data={existingCasesTableData}
                     columns={columns}
                     pageSize={5}
                     onRowClick={(row: any) => {
-                        if (!row.original.case_id) return;
-                        changeCaseUpload(row.original.case_id, { upload: !row.original.upload });
+                        if (!row.original.caseUpload.case_id) return;
+                        const updatedCase = row.original.caseUpload;
+                        updatedCase.upload = !updatedCase.upload;
+                        changeExistingCase(row.original.caseUpload.case_id, {
+                            caseUpload: updatedCase,
+                        });
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows

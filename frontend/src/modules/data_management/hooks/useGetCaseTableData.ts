@@ -8,7 +8,6 @@ export const useGetCaseTableData = () => {
 
     useEffect(() => {
         const cases: CaseUpload[] = [];
-
         for (const caseId of Object.keys(caseUploads)) {
             const currentCase = caseUploads[caseId];
             currentCase.case_id = caseId;
