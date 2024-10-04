@@ -96,7 +96,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         for (const fastaId of Object.keys(this.sampleData)) {
             const sample = this.sampleData[fastaId];
-            if (sample.status === "removed") {
+            if (!sample.upload) {
                 continue;
             }
             // skip sample if it was excluded from uploads

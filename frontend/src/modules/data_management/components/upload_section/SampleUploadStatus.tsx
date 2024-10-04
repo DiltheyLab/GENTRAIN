@@ -86,7 +86,7 @@ export function SampleUploadStatus() {
                             <ScrollArea>
                                 <div className="w-full flex flex-wrap max-h-[300px] mt-2">
                                     {Object.keys(sampleUploads).map((fastaId) => {
-                                        if (sampleUploads[fastaId].status === "removed") return;
+                                        if (!sampleUploads[fastaId].upload) return;
                                         return (
                                             <div key={fastaId} className="w-full sm:w-1/3 p-1">
                                                 <div
