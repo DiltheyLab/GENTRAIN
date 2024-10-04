@@ -10,10 +10,9 @@ import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { Label } from "@/modules/core/components/ui/Label";
-import { Switch } from "@/modules/core/components/ui/Switch";
 import { CustomNode } from "@/modules/core/types/graph";
 import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
+import { AnalysisInfo } from "./AnalysisInfo";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -63,22 +62,11 @@ export const VisualizationPanel = () => {
         >
             {outbreakAnalysisStore.analysisSettings.selectedOutbreak ? (
                 <>
-                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 bg-muted/80">
-                        <div className="flex flex-col">
-                            <small className=" text-sm font-medium">Analyse: {outbreakAnalysisStore?.name}</small>
-                            <div className="flex items-center gap-2">
-                                <Label htmlFor="autoSave">Autom. Speichern</Label>
-                                <Switch
-                                    id="autoSave"
-                                    isSmall={true}
-                                    checked={outbreakAnalysisStore.generalSettings.autoSave}
-                                    onCheckedChange={(value) =>
-                                        outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })
-                                    }
-                                />
-                            </div>
-                        </div>
-                    </fieldset>
+                    <AnalysisInfo
+                        name={outbreakAnalysisStore.name}
+                        autoSave={outbreakAnalysisStore.generalSettings.autoSave}
+                        onAutoSaveChange={(value) => outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })}
+                    />
                     <Legend
                         nodes={outbreakAnalysisStore.graphData.nodes}
                         links={outbreakAnalysisStore.graphData.links}
