@@ -1,19 +1,57 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
 import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
 import { Button } from "@/modules/core/components/ui/Button";
-import { ArrowUpDown, CheckCheck } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { useGetExistingCasesTableData } from "../../hooks/useGetExistingCasesTableData";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
     const existingCasesTableData = useGetExistingCasesTableData();
 
+    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>) => {
+        if (!row.original.caseUpload.case_id) return;
+        const updatedCase = row.original.caseUpload;
+        updatedCase.upload = !updatedCase.upload;
+        changeExistingCase(row.original.caseUpload.case_id, {
+            caseUpload: updatedCase,
+        });
+    };
     const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => {
+                        table.toggleAllPageRowsSelected(!!value);
+                        table.getRowModel().rows.forEach((row) => {
+                            changeUploadValueOfRow(row);
+                        });
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => {
+                return (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => {
+                            row.toggleSelected(!!value);
+                            changeUploadValueOfRow(row);
+                        }}
+                        aria-label="Select row"
+                    />
+                );
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "case_id",
             header: ({ column }) => {
@@ -112,18 +150,6 @@ export function CaseUpdate() {
                 </>
             ),
         },
-        {
-            id: "select",
-            header: "Zum Import ausgewählt",
-            cell: ({ row }) => (
-                <CheckCheck
-                    onClick={() => {}}
-                    className={`${row.original.caseUpload.upload ? "text-primary opacity-100" : "opacity-20"}`}
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
     ];
 
     return (
@@ -139,13 +165,9 @@ export function CaseUpdate() {
                     columns={columns}
                     pageSize={5}
                     onRowClick={(row: any) => {
-                        if (!row.original.caseUpload.case_id) return;
-                        const updatedCase = row.original.caseUpload;
-                        updatedCase.upload = !updatedCase.upload;
-                        changeExistingCase(row.original.caseUpload.case_id, {
-                            caseUpload: updatedCase,
-                        });
                         row.toggleSelected(!row.getIsSelected());
+                        if (!row.original.caseUpload.case_id) return;
+                        changeUploadValueOfRow(row);
                     }}
                     preselectRows
                 />
