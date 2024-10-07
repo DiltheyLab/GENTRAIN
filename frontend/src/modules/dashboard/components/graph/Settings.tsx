@@ -1,18 +1,20 @@
 import { ColorSelection } from "./ColorSelection";
+import { OptionSwitches } from "./OptionSwitches";
 
 export const DashboardSettings = () => {
     return (
-        <form className="flex flex-col items-center w-full">
-            <fieldset className="flex flex-col gap-4 rounded-lg border p-4">
-                <div>
-                    <div className="flex flex-col">
-                        <h1 className="text-xl font-semibold leading-none">Einfärbung</h1>
-                        <p className="text-sm text-muted-foreground mb-2 mt-1">
-                            Färben Sie den Graphen nach verschiedenen Kriterien ein.
-                        </p>
-                    </div>
-                    <ColorSelection />
-                </div>
+        <form className="flex flex-col items-center w-full gap-4">
+            <fieldset className="flex flex-col rounded-lg border p-4 w-full">
+                <h1 className="text-xl font-semibold leading-none">Einstellungen</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                    Optionen zur Visualisierung von Fällen und Verbindungen.
+                </p>
+                <OptionSwitches />
+            </fieldset>
+            <fieldset className="flex flex-col rounded-lg border p-4 w-full">
+                <h1 className="text-xl font-semibold leading-none">Einfärbung</h1>
+                <p className="text-sm text-muted-foreground mt-1">Färben Sie den Graphen nach versch. Kriterien ein.</p>
+                <ColorSelection />
             </fieldset>
         </form>
     );
