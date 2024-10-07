@@ -16,9 +16,18 @@ type LegendProps = {
     links: CustomLink[];
     colorMap: ColorMap;
     variant: "outbreakAnalysis" | "dashboard" | "timeSpan";
+    linksBelowGeneticDistanceThreshold?: CustomLink[];
+    geneticDistanceThreshold?: number;
 };
 
-export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
+export const Legend = ({
+    nodes,
+    links,
+    colorMap,
+    variant,
+    linksBelowGeneticDistanceThreshold,
+    geneticDistanceThreshold,
+}: LegendProps) => {
     const { selectedOutbreak, selectedBackground } = useMemo(() => getSelectedClusters(), [nodes]);
     const clusterNames = useMemo(() => {
         const uniqueClusterNames = getUniqueClusters(nodes);
@@ -87,6 +96,12 @@ export const Legend = ({ nodes, links, colorMap, variant }: LegendProps) => {
                     <div className="flex flex-col">
                         <Label className="-ml-1 px-1 text-xs font-medium">Genetische Kanten</Label>
                         {renderLinkItems(geneticDistanceLinks)}
+                    </div>
+                )}
+                {linksBelowGeneticDistanceThreshold && linksBelowGeneticDistanceThreshold.length > 0 && (
+                    <div className="flex items-center gap-2">
+                        <span className={"h-[3px] w-5 border-b-[3px] border-red-500 border-dashed"} />
+                        <p className="text-xs">Genetische Distanz &le; {geneticDistanceThreshold} </p>
                     </div>
                 )}
                 {contactTracingLinks.length > 0 && (
