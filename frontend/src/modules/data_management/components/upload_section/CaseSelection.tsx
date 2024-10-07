@@ -3,14 +3,44 @@ import { useGetCaseTableData } from "../../hooks/useGetCaseTableData";
 import { DataTable } from "../data_table/DataTable";
 import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
 import { Button } from "@/modules/core/components/ui/Button";
-import { ArrowUpDown, CheckCheck } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
     const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
     const columns: ColumnDef<CaseUpload>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => {
+                        table.toggleAllPageRowsSelected(!!value);
+                        table.getRowModel().rows.forEach((row) => {
+                            changeCaseUpload(row.original.case_id!, { upload: !!value });
+                        });
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => {
+                return (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => {
+                            row.toggleSelected(!!value);
+                            changeCaseUpload(row.original.case_id!, { upload: !!value });
+                        }}
+                        aria-label="Select row"
+                    />
+                );
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "case_id",
             header: ({ column }) => {
@@ -83,18 +113,6 @@ export function CaseSelection() {
             header: "Registrierungsdatum",
             cell: ({ row }) => <>{formatDate(row.getValue("registered_at"))}</>,
         },
-        {
-            id: "select",
-            header: "Zum Import ausgewählt",
-            cell: ({ row }) => (
-                <CheckCheck
-                    onClick={() => {}}
-                    className={`${row.original.upload ? "text-primary opacity-100" : "opacity-20"}`}
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
     ];
 
     return (
@@ -111,7 +129,7 @@ export function CaseSelection() {
                     pageSize={5}
                     onRowClick={(row: any) => {
                         if (!row.original.case_id) return;
-                        changeCaseUpload(row.original.case_id, { upload: !row.original.upload });
+                        changeCaseUpload(row.original.case_id!, { upload: !row.getIsSelected() });
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows
