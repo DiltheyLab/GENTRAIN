@@ -6,11 +6,41 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { useGetContactTableData } from "../../hooks/useGetContactTableData";
 import { ContactUpload } from "../../services/data_upload/validation/ContactsValidation";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export function ContactSelection() {
     const changeContactUpload = useDataManagementStore((state) => state.changeContactUpload);
     const contactTableData = useGetContactTableData();
     const columns: ColumnDef<ContactUpload>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => {
+                        table.toggleAllPageRowsSelected(!!value);
+                        table.getRowModel().rows.forEach((row) => {
+                            changeContactUpload(row.original.contact_id!, { upload: !!value });
+                        });
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => {
+                return (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => {
+                            row.toggleSelected(!!value);
+                            changeContactUpload(row.original.contact_id!, { upload: !!value });
+                        }}
+                        aria-label="Select row"
+                    />
+                );
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "case_id_1",
             header: ({ column }) => {
@@ -74,18 +104,6 @@ export function ContactSelection() {
                 );
             },
             cell: ({ row }) => <>{row.getValue("context")}</>,
-        },
-        {
-            id: "select",
-            header: "Zum Import ausgewählt",
-            cell: ({ row }) => (
-                <CheckCheck
-                    onClick={() => {}}
-                    className={`${row.original.upload ? "text-primary opacity-100" : "opacity-20"}`}
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
         },
     ];
 
