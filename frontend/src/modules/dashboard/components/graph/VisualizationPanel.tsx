@@ -16,6 +16,8 @@ import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices"
 import { GraphSettings } from "@/modules/core/components/graph/GraphSettings";
 import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMapGenerator";
 import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
+import { CustomNode } from "@/modules/core/types/graph";
+import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -27,8 +29,13 @@ export const DashboardVisualizationPanel = () => {
     const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
-    const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
     const activePathogenId = useCoreStore((state) => state.activePathogen?.id);
+    const geneticDistanceThreshold = useCoreStore((state) => state.activePathogen?.genetic_distance_threshold);
+    const [linksBelowGeneticDistanceThreshold, setAllLinks] = useLinksBelowGeneticDistanceThreshold(
+        geneticDistanceThreshold ?? 0,
+        selectedNode
+    );
 
     useCreateColorMapForTimeSpan(
         dashboardStore.graphData.nodes,
@@ -55,9 +62,10 @@ export const DashboardVisualizationPanel = () => {
         ) => {
             const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
             let graphData = await graphDataGenerator.execute();
+            const allLinks = graphDataGenerator.getAllLinks();
+            setAllLinks(allLinks);
 
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
-                const allLinks = graphDataGenerator.getAllLinks();
                 // create clusters and assign them to the nodes based on all links (not only the MSTLinks) below the clustering threshold
                 const clusterAnalyser = new ClusterAnalyser(graphData.nodes, allLinks, settings.clusteringThreshold);
                 graphData.nodes = clusterAnalyser.assignClusterNamesToNodes();
@@ -89,12 +97,14 @@ export const DashboardVisualizationPanel = () => {
             <Legend
                 nodes={dashboardStore.graphData.nodes}
                 links={dashboardStore.graphData.links}
+                linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                geneticDistanceThreshold={geneticDistanceThreshold}
                 colorMap={colorMap}
                 variant={coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
             <CaseInfo
-                selectedCase={selectedCase}
-                updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
+                selectedNode={selectedNode}
+                updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
             />
             <GraphSettings
                 showGraphSettings={showGraphSettings}
@@ -115,9 +125,10 @@ export const DashboardVisualizationPanel = () => {
                 showNodeLabel={showNodeLabel}
                 linkWidth={linkWidth}
                 initialCenter={true}
-                updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
-                selectedCase={selectedCase}
+                updateSelectedNode={(selectedCase) => setSelectedNode(selectedCase)}
+                selectedNode={selectedNode}
                 isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
+                linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
             />
         </div>
     );
