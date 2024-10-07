@@ -32,8 +32,8 @@ export class ContactsPersistence extends PersistenceStrategy {
             const case1 = casesMap.get(contact.case_id_1);
             const case2 = casesMap.get(contact.case_id_2);
 
-            if (!case1 || !case2) {
-                return;
+            if (!case1 || !case2 || !contact.upload) {
+                continue;
             }
 
             // Validate the data and throw an error if it is invalid
@@ -48,6 +48,7 @@ export class ContactsPersistence extends PersistenceStrategy {
         // Bulk add the data to the database
         await db.contacts.bulkAdd(bulkData);
         useDataManagementStore.getState().setContactSelectionActive(false);
+        useDataManagementStore.getState().clearContactUploads();
         toast({
             title: "Datei wurde erfolgreich hochgeladen",
             duration: 5000,

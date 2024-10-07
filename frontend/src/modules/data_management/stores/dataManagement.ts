@@ -3,6 +3,7 @@ import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
 import { SampleUpload } from "../services/data_upload/validation/SamplesValidation";
 import { ContactUpload } from "../services/data_upload/validation/ContactsValidation";
 import { CaseSchema } from "@/modules/core/models/cases";
+import { ContactSchema } from "@/modules/core/models/contacts";
 
 export interface DataManagementState {
     isUploading: boolean;
@@ -32,6 +33,8 @@ export interface DataManagementState {
     addExistingCase: (caseId: string, existingCase: CaseSchema, caseUpload: CaseUpload) => void;
     clearExistingCases: () => void;
     clearCaseUploads: () => void;
+    clearContactUploads: () => void;
+    changeContactUploads: (contactUploads: { [contactId: string]: ContactUpload }) => void;
     removeSampleUpload: (key: string) => void;
     changeSampleUpload: (key: string, value: any) => void;
     removeContactUpload: (key: string) => void;
@@ -80,6 +83,9 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     setShowSampleUploadStatus: (value: boolean) => {
         set({ showSampleUploadStatus: value });
     },
+    changeContactUploads: (contactUploads: { [contactId: string]: ContactUpload }) => {
+        set({ contactUploads: contactUploads });
+    },
     removeCaseUpload: (caseId: string) => {
         const updateCaseUploads = structuredClone(get().caseUploads);
         delete updateCaseUploads[caseId];
@@ -95,6 +101,9 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     },
     clearCaseUploads: () => {
         set({ caseUploads: {} });
+    },
+    clearContactUploads: () => {
+        set({ contactUploads: {} });
     },
     changeExistingCase: (caseId: string, changes: any) => {
         const updateExistingCases = structuredClone(get().existingCases);

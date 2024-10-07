@@ -3,7 +3,7 @@ import { useDataManagementStore } from "../stores/dataManagement";
 import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
 import { CaseSchema } from "@/modules/core/models/cases";
 
-export const useGetAlreadyExistingCasesTableData = () => {
+export const useGetExistingCasesTableData = () => {
     const existingCases = useDataManagementStore((state) => state.existingCases);
     const [tableData, setTableData] = useState<{ existingCase: CaseSchema; caseUpload: CaseUpload }[] | null>(null);
 

@@ -1,43 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
-import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { Button } from "@/modules/core/components/ui/Button";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, CheckCheck } from "lucide-react";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { useGetContactTableData } from "../../hooks/useGetContactTableData";
 import { ContactUpload } from "../../services/data_upload/validation/ContactsValidation";
 
 export function ContactSelection() {
-    const contactUploads = useDataManagementStore((state) => state.contactUploads);
     const changeContactUpload = useDataManagementStore((state) => state.changeContactUpload);
     const contactTableData = useGetContactTableData();
     const columns: ColumnDef<ContactUpload>[] = [
-        {
-            id: "select",
-            cell: ({ row }) => {
-                if (contactUploads[row.original.contact_id!].status === "selected") {
-                    row.toggleSelected(true);
-                }
-                return (
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={() => {
-                            if (row.getIsSelected()) {
-                                changeContactUpload(row.original.contact_id!, { status: "removed" });
-                                row.toggleSelected(false);
-                            } else {
-                                changeContactUpload(row.original.contact_id!, { status: "selected" });
-                                row.toggleSelected(true);
-                            }
-                        }}
-                        aria-label="Select row"
-                    />
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
         {
             accessorKey: "case_id_1",
             header: ({ column }) => {
@@ -63,7 +36,7 @@ export function ContactSelection() {
                         className="px-0"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Fall 1
+                        Fall 2
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 );
@@ -102,6 +75,18 @@ export function ContactSelection() {
             },
             cell: ({ row }) => <>{row.getValue("context")}</>,
         },
+        {
+            id: "select",
+            header: "Zum Import ausgewählt",
+            cell: ({ row }) => (
+                <CheckCheck
+                    onClick={() => {}}
+                    className={`${row.original.upload ? "text-primary opacity-100" : "opacity-20"}`}
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
     ];
 
     return (
@@ -110,7 +95,17 @@ export function ContactSelection() {
             <DialogDescription>
                 Folgende Kontakte wurden in der CSV-Datei gefunden. Alle ausgewählte Kontakte werden hinzugefügt.
             </DialogDescription>
-            <DataTable data={contactTableData} columns={columns} pageSize={5} />
+            <DataTable
+                data={contactTableData}
+                columns={columns}
+                pageSize={5}
+                onRowClick={(row: any) => {
+                    if (!row.original.contact_id) return;
+                    changeContactUpload(row.original.contact_id, { upload: !row.original.upload });
+                    row.toggleSelected(!row.getIsSelected());
+                }}
+                preselectRows
+            />
         </>
     );
 }

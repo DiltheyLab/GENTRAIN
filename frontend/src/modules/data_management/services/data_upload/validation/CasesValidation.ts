@@ -101,7 +101,6 @@ export class CasesValidation extends ValidationStrategy {
             }
             casesToUpload.push(row);
         }
-
         return casesToUpload;
     };
 

@@ -23,6 +23,7 @@ export function SampleSelection() {
         },
         {
             id: "select",
+            header: "Zum Import ausgewählt",
             cell: ({ row }) => (
                 <CheckCheck
                     onClick={() => {}}

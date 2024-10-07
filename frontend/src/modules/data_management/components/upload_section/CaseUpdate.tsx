@@ -1,17 +1,17 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
 import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
-import { useGetAlreadyExistingCasesTableData } from "../../hooks/useGetAlreadyExistingCasesTableData";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown, CheckCheck } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
+import { useGetExistingCasesTableData } from "../../hooks/useGetExistingCasesTableData";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
-    const existingCasesTableData = useGetAlreadyExistingCasesTableData();
+    const existingCasesTableData = useGetExistingCasesTableData();
 
     const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>[] = [
         {
@@ -73,7 +73,7 @@ export function CaseUpdate() {
             },
             cell: ({ row }) => (
                 <>
-                    {row.original.existingCase.fasta_id !== row.original.caseUpload.fasta_id && (
+                    {row.original.existingCase.outbreak?.name !== row.original.caseUpload.outbreak && (
                         <div className="line-through">{row.original.existingCase.outbreak?.name}</div>
                     )}
                     <div>{row.original.caseUpload.outbreak}</div>
@@ -114,6 +114,7 @@ export function CaseUpdate() {
         },
         {
             id: "select",
+            header: "Zum Import ausgewählt",
             cell: ({ row }) => (
                 <CheckCheck
                     onClick={() => {}}
@@ -127,7 +128,7 @@ export function CaseUpdate() {
 
     return (
         <>
-            <DialogTitle>Fälle aktualisieren</DialogTitle>
+            <DialogTitle>Es wurden bereits bestehende Fälle hochgeladen. Möchten Sie diese aktualisieren?</DialogTitle>
             <DialogDescription>
                 Folgende Fälle wurden in der CSV-Datei und im bestehenden Datenbestand gefunden. Alle ausgewählte Fälle
                 werden aktualisiert.

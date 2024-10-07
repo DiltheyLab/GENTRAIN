@@ -85,6 +85,7 @@ export function CaseSelection() {
         },
         {
             id: "select",
+            header: "Zum Import ausgewählt",
             cell: ({ row }) => (
                 <CheckCheck
                     onClick={() => {}}
@@ -98,7 +99,7 @@ export function CaseSelection() {
 
     return (
         <>
-            <DialogTitle>Fälle hinzufügen</DialogTitle>
+            <DialogTitle>Es wurden neue Fälle hochgeladen. Möchten Sie diese hinzufügen?</DialogTitle>
             <DialogDescription>
                 Folgende Fälle wurden in der CSV-Datei und im bestehenden Datenbestand gefunden. Alle ausgewählte Fälle
                 werden aktualisiert.
