@@ -104,7 +104,7 @@ export const DashboardVisualizationPanel = () => {
             />
             <Graph2D
                 data={dashboardStore.graphData}
-                width={width - 8}
+                width={width}
                 height={height}
                 colorMap={colorMap}
                 coloringMode={coloringMode}
