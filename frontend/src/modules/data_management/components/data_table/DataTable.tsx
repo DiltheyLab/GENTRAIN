@@ -3,6 +3,7 @@ import {
     ColumnDef,
     Row,
     SortingState,
+    Table as TanStackTable,
     VisibilityState,
     flexRender,
     getCoreRowModel,
@@ -23,6 +24,8 @@ export function DataTable({
     pageSize = 10,
     onRowClick = () => {},
     preselectRows = false,
+    onInit,
+    actions,
 }: {
     data: any[];
     columns: ColumnDef<any>[];
@@ -30,6 +33,8 @@ export function DataTable({
     pageSize?: number;
     onRowClick?: (row?: Row<any>) => void;
     preselectRows?: boolean;
+    onInit?: (table: TanStackTable<any>) => void;
+    actions?: (table: TanStackTable<any>) => JSX.Element;
 }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -66,20 +71,24 @@ export function DataTable({
         if (preselectRows) {
             table.toggleAllRowsSelected();
         }
+        if (table && onInit) {
+            onInit(table);
+        }
     }, []);
 
     return (
         <div className="w-full">
             {enableFilter && (
-                <div className="flex items-center pb-4">
+                <div className="pb-4">
                     <Input
                         placeholder="Daten filtern..."
                         value={(globalFilter as string) ?? ""}
                         onChange={(event) => {
                             setGlobalFilter(event.target.value);
                         }}
-                        className="max-w-sm"
+                        className="max-w-sm mb-4"
                     />
+                    <div className="flex justify-end">{actions !== undefined && actions(table)}</div>
                 </div>
             )}
 

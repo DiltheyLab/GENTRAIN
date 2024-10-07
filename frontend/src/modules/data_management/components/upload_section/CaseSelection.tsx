@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row, Table } from "@tanstack/react-table";
 import { useGetCaseTableData } from "../../hooks/useGetCaseTableData";
 import { DataTable } from "../data_table/DataTable";
 import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
@@ -8,9 +8,34 @@ import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dia
 import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { Label } from "@/modules/core/components/ui/Label";
+import { useEffect, useState } from "react";
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
     const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
+    const [table, setTable] = useState<Table<CaseUpload> | null>(null);
+    const [selectAll, setSelectAll] = useState(true);
+    const [selectCasesWithSequence, setSelectCasesWithSequence] = useState(false);
+    const [selectCasesWithOutbreak, setSelectCasesWithOutbreak] = useState(false);
+
+    useEffect(() => {
+        if (!table) return;
+        const allRows = Object.keys(table.getRowModel().rowsById).map((key) => table.getRowModel().rowsById[key]);
+        allRows.forEach((row: Row<CaseUpload>) => {
+            row.toggleSelected(
+                selectAll ||
+                    (selectCasesWithSequence && row.original.fasta_id !== null) ||
+                    (selectCasesWithOutbreak && row.original.outbreak !== null)
+            );
+            changeCaseUpload(row.original.case_id!, {
+                upload:
+                    selectAll ||
+                    (selectCasesWithSequence && row.original.fasta_id !== null) ||
+                    (selectCasesWithOutbreak && row.original.outbreak !== null),
+            });
+        });
+    }, [selectAll, selectCasesWithSequence, selectCasesWithOutbreak]);
+
     const columns: ColumnDef<CaseUpload>[] = [
         {
             id: "select",
@@ -124,6 +149,7 @@ export function CaseSelection() {
             </DialogDescription>
             {caseTableData && (
                 <DataTable
+                    onInit={(table) => setTable(table)}
                     data={caseTableData}
                     columns={columns}
                     pageSize={5}
@@ -133,6 +159,64 @@ export function CaseSelection() {
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows
+                    actions={() => {
+                        return (
+                            <div className="flex gap-3">
+                                <div className="flex items-center">
+                                    <Checkbox
+                                        id="selectAll"
+                                        className="mr-2"
+                                        checked={selectAll}
+                                        onCheckedChange={(value) => {
+                                            setSelectAll(value ? true : false);
+                                            if (value) {
+                                                setSelectCasesWithSequence(false);
+                                                setSelectCasesWithOutbreak(false);
+                                            }
+                                        }}
+                                        aria-label="Select all"
+                                    />
+                                    <Label htmlFor="selectAll" className="font-normal mt-[2px] ">
+                                        Alle Fälle auswählen
+                                    </Label>
+                                </div>
+                                <div className="flex items-center">
+                                    <Checkbox
+                                        id="selectWithSequence"
+                                        className="mr-2"
+                                        checked={selectCasesWithSequence}
+                                        onCheckedChange={(value) => {
+                                            setSelectCasesWithSequence(value ? true : false);
+                                            if (value) {
+                                                setSelectAll(false);
+                                            }
+                                        }}
+                                        aria-label="Select with sequence"
+                                    />
+                                    <Label htmlFor="selectWithSequence" className="font-normal mt-[2px] ">
+                                        Fälle mit Sequenz auswählen
+                                    </Label>
+                                </div>
+                                <div className="flex items-center">
+                                    <Checkbox
+                                        id="selectWithOutbreak"
+                                        className="mr-2"
+                                        checked={selectCasesWithOutbreak}
+                                        onCheckedChange={(value) => {
+                                            setSelectCasesWithOutbreak(value ? true : false);
+                                            if (value) {
+                                                setSelectAll(false);
+                                            }
+                                        }}
+                                        aria-label="Select with outbreak"
+                                    />
+                                    <Label htmlFor="selectWithOutbreak" className="font-normal mt-[2px] ">
+                                        Fälle mit Ausbruch auswählen
+                                    </Label>
+                                </div>
+                            </div>
+                        );
+                    }}
                 />
             )}
         </>

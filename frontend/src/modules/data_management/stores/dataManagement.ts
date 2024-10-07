@@ -34,6 +34,7 @@ export interface DataManagementState {
     clearExistingCases: () => void;
     clearCaseUploads: () => void;
     clearContactUploads: () => void;
+    changeCaseUploads: (caseUploads: { [caseId: string]: CaseUpload }) => void;
     changeContactUploads: (contactUploads: { [contactId: string]: ContactUpload }) => void;
     removeSampleUpload: (key: string) => void;
     changeSampleUpload: (key: string, value: any) => void;
@@ -82,6 +83,9 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     },
     setShowSampleUploadStatus: (value: boolean) => {
         set({ showSampleUploadStatus: value });
+    },
+    changeCaseUploads: (caseUploads: { [caseId: string]: CaseUpload }) => {
+        set({ caseUploads: caseUploads });
     },
     changeContactUploads: (contactUploads: { [contactId: string]: ContactUpload }) => {
         set({ contactUploads: contactUploads });

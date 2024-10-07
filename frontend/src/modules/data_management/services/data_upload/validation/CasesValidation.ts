@@ -10,9 +10,9 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 export type CaseUpload = {
     case_id?: string;
-    fasta_id: string;
+    fasta_id: string | null;
     groups: { name: string; category: string }[];
-    outbreak: string;
+    outbreak: string | null;
     registered_at: Date;
     upload: boolean;
 };
@@ -27,17 +27,9 @@ export class CasesValidation extends ValidationStrategy {
         // receive ids of cases already persisted in the db to throw an error containing case ids
         data = data.slice(1, data.length);
 
-        data = (await this.filterAlreadyExistingCases(header, data)) ?? [];
+        const uploadCases = await this.filterAlreadyExistingCases(header, data);
         useDataManagementStore.getState().setCaseSelectionActive(true);
-        for (const row of data) {
-            useDataManagementStore.getState().changeCaseUpload(row[0], {
-                fasta_id: row[1],
-                groups: this.collectGroups(header, row),
-                outbreak: row[3],
-                registered_at: parseGermanDateFormat(row[2]),
-                upload: true,
-            } satisfies CaseUpload);
-        }
+        useDataManagementStore.getState().changeCaseUploads(uploadCases);
         return {
             data: data,
         };
@@ -64,8 +56,9 @@ export class CasesValidation extends ValidationStrategy {
 
     private filterAlreadyExistingCases = async (header: string[], data: Array<Array<string>>) => {
         const activePathogen = useCoreStore.getState().activePathogen;
+
         if (!activePathogen) {
-            return;
+            return {};
         }
 
         const caseIds = data.map((row) => row[0]);
@@ -81,25 +74,25 @@ export class CasesValidation extends ValidationStrategy {
             outbreakMap.set(outbreak.id, outbreak);
         }
 
-        const casesToUpload = [];
+        const casesToUpload: { [caseId: string]: CaseUpload } = {};
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             const existingCase = caseMap.get(row[0]);
+            const caseUpload = {
+                fasta_id: row[1] !== "" ? row[1] : null,
+                groups: this.collectGroups(header, row),
+                outbreak: row[3] !== "" ? row[3] : null,
+                registered_at: parseGermanDateFormat(row[2]),
+                upload: true,
+            } satisfies CaseUpload;
             if (existingCase) {
                 existingCase.outbreak = existingCase.outbreak_id ? outbreakMap.get(existingCase.outbreak_id) : null;
-                const caseUpload = {
-                    fasta_id: row[1],
-                    groups: this.collectGroups(header, row),
-                    outbreak: row[3],
-                    registered_at: parseGermanDateFormat(row[2]),
-                    upload: true,
-                } satisfies CaseUpload;
                 if (!this.caseUploadEqualsExistingCase(caseUpload, existingCase)) {
                     useDataManagementStore.getState().addExistingCase(row[0], existingCase, caseUpload);
                 }
                 continue;
             }
-            casesToUpload.push(row);
+            casesToUpload[row[0]] = caseUpload;
         }
         return casesToUpload;
     };

@@ -111,17 +111,4 @@ export class ContactsValidation extends ValidationStrategy {
             throw new GentrainException(error);
         }
     };
-
-    private contactUploadEqualsExistingContact = (
-        contactUpload: ContactUpload,
-        existingContact: ContactSchema,
-        cases: Map<string, CaseSchema>
-    ) => {
-        return (
-            contactUpload.case_id_1 === cases.get(contactUpload.case_id_1)?.case_id &&
-            contactUpload.case_id_2 === cases.get(contactUpload.case_id_2)?.case_id &&
-            contactUpload.type === existingContact.type &&
-            contactUpload.context === existingContact.context
-        );
-    };
 }

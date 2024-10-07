@@ -15,10 +15,9 @@ export function CaseUpdate() {
     const existingCasesTableData = useGetExistingCasesTableData();
 
     const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>) => {
-        if (!row.original.caseUpload.case_id) return;
         const updatedCase = row.original.caseUpload;
         updatedCase.upload = !updatedCase.upload;
-        changeExistingCase(row.original.caseUpload.case_id, {
+        changeExistingCase(row.original.caseUpload.case_id!, {
             caseUpload: updatedCase,
         });
     };

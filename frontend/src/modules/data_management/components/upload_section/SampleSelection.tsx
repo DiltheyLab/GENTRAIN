@@ -1,5 +1,5 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
 import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
 import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";

@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
 import { Button } from "@/modules/core/components/ui/Button";
-import { ArrowUpDown, CheckCheck } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { useGetContactTableData } from "../../hooks/useGetContactTableData";

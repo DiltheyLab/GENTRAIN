@@ -24,12 +24,13 @@ export class CasesPersistence extends PersistenceStrategy {
                     continue;
                 }
                 // persist case from csv columns
-                const outbreakId = await getOrPersistOutbreak(currentCase.outbreak, pathogen.id);
                 const data = {
                     case_id: caseId,
                     fasta_id: currentCase.fasta_id !== "" ? currentCase.fasta_id : null,
                     pathogen_id: pathogen.id,
-                    outbreak_id: outbreakId ?? null,
+                    outbreak_id: currentCase.outbreak
+                        ? await getOrPersistOutbreak(currentCase.outbreak, pathogen.id)
+                        : null,
                     group_ids: await persistGroupsForCategories(currentCase, pathogen.id),
                     registered_at: currentCase.registered_at,
                 } as CaseSchema;
@@ -63,7 +64,6 @@ export class CasesPersistence extends PersistenceStrategy {
                 if (!currentCase.upload) {
                     continue;
                 }
-                const outbreakId = await getOrPersistOutbreak(currentCase.outbreak, pathogen.id);
                 // Validate the data and throw an error if it is invalid
                 const existingCase = await db.cases.where({ case_id: caseId }).first();
                 if (!existingCase) {
@@ -73,7 +73,9 @@ export class CasesPersistence extends PersistenceStrategy {
                     case_id: caseId,
                     fasta_id: currentCase.fasta_id !== "" ? currentCase.fasta_id : null,
                     pathogen_id: pathogen.id,
-                    outbreak_id: outbreakId ?? null,
+                    outbreak_id: currentCase.outbreak
+                        ? await getOrPersistOutbreak(currentCase.outbreak, pathogen.id)
+                        : null,
                     group_ids: await persistGroupsForCategories(currentCase, pathogen.id),
                     registered_at: currentCase.registered_at,
                 });
