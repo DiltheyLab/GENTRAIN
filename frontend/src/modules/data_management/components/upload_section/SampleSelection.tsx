@@ -5,12 +5,42 @@ import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
 import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { CheckCheck } from "lucide-react";
+import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export function SampleSelection() {
     const sampleTableData = useGetSampleTableData();
     const changeSampleUpload = useDataManagementStore((state) => state.changeSampleUpload);
 
     const columns: ColumnDef<SampleUpload>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => {
+                        table.toggleAllPageRowsSelected(!!value);
+                        table.getRowModel().rows.forEach((row) => {
+                            changeSampleUpload(row.original.fasta_id!, { upload: !!value });
+                        });
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => {
+                return (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => {
+                            row.toggleSelected(!!value);
+                            changeSampleUpload(row.original.fasta_id!, { upload: !!value });
+                        }}
+                        aria-label="Select row"
+                    />
+                );
+            },
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "fasta_id",
             header: "Sequenz",
