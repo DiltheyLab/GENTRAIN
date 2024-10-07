@@ -25,8 +25,9 @@ export const VisualizationPanel = () => {
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
     const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
+    const geneticDistanceThreshold = useCoreStore((state) => state.activePathogen?.genetic_distance_threshold);
     const [linksBelowGeneticDistanceThreshold, setAllLinks] = useLinksBelowGeneticDistanceThreshold(
-        outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold,
+        geneticDistanceThreshold ?? 0,
         selectedNode
     );
 
@@ -72,7 +73,7 @@ export const VisualizationPanel = () => {
                         links={outbreakAnalysisStore.graphData.links}
                         colorMap={outbreakAnalysisStore.graphSettings.colorMap}
                         linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
-                        geneticDistanceThreshold={outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold}
+                        geneticDistanceThreshold={geneticDistanceThreshold}
                         variant={
                             outbreakAnalysisStore.graphSettings.coloringMode === "timeSpan"
                                 ? "timeSpan"

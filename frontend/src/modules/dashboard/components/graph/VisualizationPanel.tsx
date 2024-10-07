@@ -31,8 +31,9 @@ export const DashboardVisualizationPanel = () => {
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
     const activePathogenId = useCoreStore((state) => state.activePathogen?.id);
+    const geneticDistanceThreshold = useCoreStore((state) => state.activePathogen?.genetic_distance_threshold);
     const [linksBelowGeneticDistanceThreshold, setAllLinks] = useLinksBelowGeneticDistanceThreshold(
-        dashboardStore.settings.geneticDistanceThreshold,
+        geneticDistanceThreshold ?? 0,
         selectedNode
     );
 
@@ -94,7 +95,7 @@ export const DashboardVisualizationPanel = () => {
                 nodes={dashboardStore.graphData.nodes}
                 links={dashboardStore.graphData.links}
                 linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
-                geneticDistanceThreshold={dashboardStore.settings.geneticDistanceThreshold}
+                geneticDistanceThreshold={geneticDistanceThreshold}
                 colorMap={colorMap}
                 variant={coloringMode === "timeSpan" ? "timeSpan" : "dashboard"}
             />
