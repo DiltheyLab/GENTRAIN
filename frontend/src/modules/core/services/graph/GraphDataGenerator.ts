@@ -56,7 +56,7 @@ export class GraphDataGenerator {
         return { nodes: this.nodes, links: this.links };
     };
 
-    public generateAllLinks = () => {
+    private generateAllLinks = () => {
         // the column loop starts with rowIndex + 1 to prevent looping over cases which are already treated
         // because of that rowIndex is stopping with graphCases.length - 1
         for (let rowIndex = 0; rowIndex < this.graphCases.length - 1; rowIndex++) {

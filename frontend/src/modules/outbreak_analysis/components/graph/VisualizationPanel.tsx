@@ -93,8 +93,8 @@ export const VisualizationPanel = () => {
                     />
                     <Graph2D
                         data={outbreakAnalysisStore.graphData}
-                        width={width - 8}
-                        height={height - 8}
+                        width={width}
+                        height={height}
                         colorMap={colorMap}
                         coloringMode={coloringMode}
                         cases={cases}
@@ -105,6 +105,7 @@ export const VisualizationPanel = () => {
                         linkWidth={linkWidth}
                         updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                         selectedCase={selectedCase}
+                        isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                     />
                 </>
             ) : (

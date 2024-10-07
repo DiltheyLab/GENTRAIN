@@ -40,7 +40,7 @@ export const deleteDistanceMatrixByPathogenId = async (pathogen_id: number) => {
 
 export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) => {
     const distanceMatrix = await db.distance_matrices.where({ pathogen_id: pathogen_id }).first();
-    if (!distanceMatrix) return;
+    if (!distanceMatrix) return null;
 
     const matrix = new DistanceMatrix(distanceMatrix.id);
     return matrix.assemble();

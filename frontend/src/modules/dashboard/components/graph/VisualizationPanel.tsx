@@ -76,7 +76,10 @@ export const DashboardVisualizationPanel = () => {
         distanceMatrixAssembly,
         dashboardStore.graphSettings.coloringMode,
         dashboardStore.settings.clusteringThreshold,
-    ]); //contacts, settings.["setting1"]...
+        dashboardStore.settings.excludeCasesWithoutSequence,
+        dashboardStore.settings.showContactTracingLinks,
+        contacts,
+    ]);
 
     return (
         <div
@@ -101,8 +104,8 @@ export const DashboardVisualizationPanel = () => {
             />
             <Graph2D
                 data={dashboardStore.graphData}
-                width={width - 8}
-                height={height - 8}
+                width={width}
+                height={height}
                 colorMap={colorMap}
                 coloringMode={coloringMode}
                 cases={cases}
@@ -114,6 +117,7 @@ export const DashboardVisualizationPanel = () => {
                 initialCenter={true}
                 updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
                 selectedCase={selectedCase}
+                isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
             />
         </div>
     );
