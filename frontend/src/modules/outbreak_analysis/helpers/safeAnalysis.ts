@@ -1,5 +1,5 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { handleError } from "@/modules/core/helpers/errors";
+import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 import { OutbreakAnalysisStore } from "../stores/outbreakAnalysis";
 import { toast } from "@/modules/core/components/ui/UseToast";
@@ -7,14 +7,14 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 export const safeAnalysis = async (outbreakAnalysisStore: OutbreakAnalysisStore, enableSuccessToast = true) => {
     try {
         if (!outbreakAnalysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
-        const analysisSettingsId = await updateAnalysisSettings(
+        const analysisId = await updateAnalysisSettings(
             outbreakAnalysisStore.id,
             outbreakAnalysisStore.analysisSettings,
             outbreakAnalysisStore.graphSettings,
             outbreakAnalysisStore.generalSettings
         );
 
-        if (!analysisSettingsId) {
+        if (!analysisId) {
             throw new GentrainException("AnalysisIdIsNotInDB");
         }
 
@@ -27,7 +27,7 @@ export const safeAnalysis = async (outbreakAnalysisStore: OutbreakAnalysisStore,
         }
         return true;
     } catch (error) {
-        handleError(error);
+        handleOutbreakAnalysisError(error);
         return false;
     }
 };

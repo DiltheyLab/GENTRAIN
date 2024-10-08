@@ -54,6 +54,12 @@ export const updateAnalysisSettings = async (
     });
 };
 
+export const updateAnalysisName = async (id: number, name: string) => {
+    return await db.analyses.update(id, {
+        name: name,
+    });
+};
+
 export const deleteAnalysesByPathogenId = async (pathogen_id: number) => {
     await db.analyses.where({ pathogen_id: pathogen_id }).delete();
 };
