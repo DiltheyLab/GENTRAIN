@@ -40,14 +40,29 @@ export class PathogenStrategyManager {
         }
     };
 
-    public static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
+    public static getValidationStrategy = async (): Promise<
+        BacterialSequenceAnalysis | ViralSequenceAnalysis | undefined
+    > => {
         const pathogenType = await this.getPathogenTypeName();
         if (!pathogenType) {
             return;
         }
         switch (pathogenType) {
             case PathogenTypeName[PathogenTypeName.bacterial]:
-                return new MultiFileReading();
+                return new BacterialSequenceAnalysis(this.getPathogen());
+            default:
+                return new ViralSequenceAnalysis(this.getPathogen());
+        }
+    };
+
+    public static getFileReadingStrategy = async (type: string): Promise<FileReadingStrategy | undefined> => {
+        const pathogenType = await this.getPathogenTypeName();
+        if (!pathogenType) {
+            return;
+        }
+        switch (pathogenType) {
+            case PathogenTypeName[PathogenTypeName.bacterial]:
+                return type === "samples" ? new MultiFileReading() : new SingleFileReading();
             default:
                 return new SingleFileReading();
         }

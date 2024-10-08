@@ -1,39 +1,103 @@
 import { Label } from "./Label";
 import { Input } from "./Input";
 import { useTranslation } from "react-i18next";
-import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
+import { GentrainException } from "../../exceptions/GentrainException";
+import { formatInArray } from "../../helpers/files";
+import { toast } from "./UseToast";
+import { useGetFileReadingStrategy } from "@/modules/data_management/hooks/useGetFileReadingStrategy";
+import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 
 type FileUploadButtonProps = {
     type: FileUploadTypes;
-    fileReadingStrategy: FileReadingStrategy;
-    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    validationStrategy: ValidationStrategy;
+    resetUpload: () => void;
 };
 
-export const FileUploadButton = ({ type, fileReadingStrategy, onUpload }: FileUploadButtonProps) => {
+export const FileUploadButton = ({ type, validationStrategy, resetUpload }: FileUploadButtonProps) => {
     const { t, i18n } = useTranslation();
+    const fileReadingStrategy = useGetFileReadingStrategy(type);
 
+    const showWarningToasts = (warnings: { title: string; description: string }[]) => {
+        for (const warning of warnings) {
+            toast({
+                title: warning.title,
+                description: warning.description,
+                duration: 10000,
+                variant: "default",
+            });
+        }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!fileReadingStrategy) {
+            return;
+        }
+        try {
+            const fileReaderResult = await fileReadingStrategy.execute(e.target.files);
+            if (!fileReaderResult) return;
+
+            // format the file content into an array
+            const fileAsStringArray = formatInArray(fileReaderResult);
+
+            // validate the data
+            const validationResult = await validationStrategy.execute(fileAsStringArray);
+            if (validationResult.warnings) {
+                showWarningToasts(validationResult.warnings);
+            }
+            if (validationResult.data.length === 0) {
+                resetUpload();
+                return;
+            }
+            e.target.value = "";
+        } catch (error) {
+            // if an error occurs, show a toast notification with the error message
+            if (error instanceof GentrainException) {
+                toast({
+                    title: t(`error:upload.title`),
+                    description: error.data
+                        ? t(`error:upload.${error.message}`, { data: error.data.join(", ") })
+                        : t(`error:upload.${error.message}`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+            } else {
+                toast({
+                    title: t(`error:upload.title`),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+            }
+            // reset the input field to allow the user to try again with the same file
+            e.target.value = "";
+            console.log(error);
+        }
+    };
     return (
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor={type} className="font-medium">
-                {t(`upload.label.${type}`)}
-            </Label>
-            {i18n.exists(`upload.info.${type}`) && (
-                <small
-                    className="text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: t(`upload.info.${type}`) }}
-                ></small>
+        <>
+            {fileReadingStrategy && (
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <Label htmlFor={type} className="font-medium">
+                        {t(`upload.label.${type}`)}
+                    </Label>
+                    {i18n.exists(`upload.info.${type}`) && (
+                        <small
+                            className="text-muted-foreground"
+                            dangerouslySetInnerHTML={{ __html: t(`upload.info.${type}`) }}
+                        ></small>
+                    )}
+                    <div>
+                        <Input
+                            id={type}
+                            type="file"
+                            accept={fileReadingStrategy.getAcceptedMimeType(type)}
+                            multiple={fileReadingStrategy.allowMultifile()}
+                            onChange={(e) => handleFileUpload(e)}
+                        />
+                    </div>
+                </div>
             )}
-            <div>
-                <Input
-                    id={type}
-                    type="file"
-                    accept={fileReadingStrategy.getAcceptedMimeType(type)}
-                    multiple={fileReadingStrategy.allowMultifile()}
-                    onChange={(e) => onUpload(e)}
-                />
-            </div>
-        </div>
+        </>
     );
 };

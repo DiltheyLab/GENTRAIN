@@ -21,7 +21,7 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
     };
 
     public getQualityParameters = (sequence: string) => {
-        console.log(sequence);
+        console.log(sequence.split(">"));
         return { contig_count: 0, first_contig_length: 0 };
     };
 }

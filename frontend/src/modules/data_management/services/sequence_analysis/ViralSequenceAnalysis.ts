@@ -30,7 +30,12 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
     };
 
     public getQualityParameters = (sequence: string) => {
-        console.log(sequence);
-        return { sequence_length: 0, n_count: 0, ambiguity_character_count: 0 };
+        const nCount = (sequence.match(/N/g) || []).length;
+        const ambiguityCharacterCount = (sequence.match(/BDHKMNRSUVWY/g) || []).length;
+        return {
+            sequence_length: sequence.length,
+            n_count: nCount,
+            ambiguity_character_count: ambiguityCharacterCount,
+        };
     };
 }

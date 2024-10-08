@@ -2,11 +2,14 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { db } from "@/modules/core/infrastructure/database";
 import { ValidationStrategy } from "./ValidationStrategy";
 import { SampleImport } from "@/modules/core/models/samples";
+import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
 
 export class SamplesValidation extends ValidationStrategy {
     protected validate = async (data: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
         const activePathogen = this.coreState.activePathogen;
+        const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
+
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
@@ -20,6 +23,7 @@ export class SamplesValidation extends ValidationStrategy {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
+                console.log(sequenceAnalysisStrategy?.getQualityParameters(sample.sequence));
                 this.dataManagementState.changeSampleImport(sample.fastaId, {
                     case_id: sampleCase.case_id,
                     status: "sent",

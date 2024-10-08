@@ -3,12 +3,12 @@ import { PathogenStrategyManager } from "@/modules/data_management/services/path
 import { useCoreStore } from "@/modules/core/stores/core";
 import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
 
-export const useGetFileReadingStrategy = () => {
+export const useGetFileReadingStrategy = (type: string) => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const [fileReadingStrategy, setFileReadingStrategy] = useState<FileReadingStrategy | undefined>();
 
     useEffect(() => {
-        PathogenStrategyManager.getFileReadingStrategy().then((fileReadingStrategy) =>
+        PathogenStrategyManager.getFileReadingStrategy(type).then((fileReadingStrategy) =>
             setFileReadingStrategy(fileReadingStrategy)
         );
     }, [activePathogen]);
