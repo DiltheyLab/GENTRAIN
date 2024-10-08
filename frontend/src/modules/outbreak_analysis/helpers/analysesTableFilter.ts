@@ -16,7 +16,7 @@ const createdAtContainsValue = (analysis: AnalysisSchema, value: string) => {
     return formatDate(analysis.created_at).toLowerCase().includes(value);
 };
 
-export const customFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+export const analysesTableFilter = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return (
         nameContainsValue(row.original, value) ||
