@@ -20,10 +20,11 @@ export function Onboarding() {
             <div className="w-10/12 md:w-2/3 lg:w-1/2">
                 <div className="flex flex-col items-center mb-4">
                     <div className="flex items-center text-primary">
-                        <Share2 className="w-16 h-16 mr-4" /> <span className="text-[80px]">Gentrain</span>
+                        <Share2 className="w-16 h-16 mr-4" />{" "}
+                        <span className="text-[80px] text-primary text-3xl font-extrabold uppercase">Gentrain</span>
                     </div>
                 </div>
-                <div className="text-center mb-4">
+                <div className="text-center mb-4 mt-10">
                     <p>
                         Das Gentrain Dashboard ermöglicht Ausbruchsanalysen auf Basis von Kontaktnachverfolgung und
                         genetischen Distanzen. Es können Ausbruchsanalysen für virale und bakterielle Pathogene

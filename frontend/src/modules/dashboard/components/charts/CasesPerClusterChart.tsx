@@ -47,44 +47,50 @@ const CasesPerClusterChart = () => {
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer config={{}} className="mx-auto min-h-[145px] mb-1 h-[145px] aspect-auto">
-                    <PieChart>
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
-                            wrapperStyle={{ width: "150px" }}
-                        />
-                        <Pie data={chartData} dataKey="cases" nameKey="cluster" innerRadius={40} outerRadius={65}>
-                            <Label
-                                content={({ viewBox }) => {
-                                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                                        return (
-                                            <text
-                                                x={viewBox.cx}
-                                                y={viewBox.cy}
-                                                textAnchor="middle"
-                                                dominantBaseline="middle"
-                                            >
-                                                <tspan
+                    {nodes.length !== 0 ? (
+                        <PieChart>
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent hideLabel />}
+                                wrapperStyle={{ width: "150px" }}
+                            />
+                            <Pie data={chartData} dataKey="cases" nameKey="cluster" innerRadius={40} outerRadius={65}>
+                                <Label
+                                    content={({ viewBox }) => {
+                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                            return (
+                                                <text
                                                     x={viewBox.cx}
                                                     y={viewBox.cy}
-                                                    className="fill-foreground text-2xl font-bold"
+                                                    textAnchor="middle"
+                                                    dominantBaseline="middle"
                                                 >
-                                                    {totalCases.toLocaleString()}
-                                                </tspan>
-                                                <tspan
-                                                    x={viewBox.cx}
-                                                    y={(viewBox.cy || 0) + 20}
-                                                    className="fill-muted-foreground"
-                                                >
-                                                    Fälle
-                                                </tspan>
-                                            </text>
-                                        );
-                                    }
-                                }}
-                            />
-                        </Pie>
-                    </PieChart>
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={viewBox.cy}
+                                                        className="fill-foreground text-2xl font-bold"
+                                                    >
+                                                        {totalCases.toLocaleString()}
+                                                    </tspan>
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={(viewBox.cy || 0) + 20}
+                                                        className="fill-muted-foreground"
+                                                    >
+                                                        Fälle
+                                                    </tspan>
+                                                </text>
+                                            );
+                                        }
+                                    }}
+                                />
+                            </Pie>
+                        </PieChart>
+                    ) : (
+                        <small className="w-full h-full flex justify-center items-center font-light text-base">
+                            Keine Daten
+                        </small>
+                    )}
                 </ChartContainer>
             </CardContent>
         </Card>

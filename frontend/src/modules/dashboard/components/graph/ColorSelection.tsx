@@ -25,43 +25,41 @@ export const ColorSelection = () => {
     };
 
     return (
-        <div>
-            <RadioGroup
-                className="-space-y-1"
-                defaultValue={coloringMode}
-                onValueChange={(value: ColoringMode) => handleColoringChange(value)}
-            >
+        <RadioGroup
+            className="-space-y-1 mt-3"
+            defaultValue={coloringMode}
+            onValueChange={(value: ColoringMode) => handleColoringChange(value)}
+        >
+            <div className="flex items-center space-x-2">
+                <RadioGroupItem value="outbreaks" id="outbreaks" />
+                <Label htmlFor="outbreaks" className="font-normal text-md">
+                    Ausbrüche
+                </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+                <RadioGroupItem value="timeSpan" id="timeSpan" />
+                <Label htmlFor="timeSpan" className="font-normal text-md">
+                    Zeitspanne
+                </Label>
+            </div>
+            <>
                 <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="outbreaks" id="outbreaks" />
-                    <Label htmlFor="outbreaks" className="font-normal text-md">
-                        Ausbrüche
+                    <RadioGroupItem value="clusters" id="clusters" />
+                    <Label htmlFor="clusters" className="font-normal text-md">
+                        Cluster
                     </Label>
                 </div>
-                <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="timeSpan" id="timeSpan" />
-                    <Label htmlFor="timeSpan" className="font-normal text-md">
-                        Zeitspanne
-                    </Label>
+                <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
+                    <Label htmlFor="geneticDistanceThreshold">Cluster Schwellenwert</Label>
+                    <Input
+                        type="number"
+                        min={0}
+                        id="clusteringThreshold"
+                        value={clusteringThreshold}
+                        onChange={(e) => updateSettings({ clusteringThreshold: +e.target.value })}
+                    />
                 </div>
-                <>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="clusters" id="clusters" />
-                        <Label htmlFor="clusters" className="font-normal text-md">
-                            Cluster
-                        </Label>
-                    </div>
-                    <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
-                        <Label htmlFor="geneticDistanceThreshold">Cluster Schwellenwert</Label>
-                        <Input
-                            type="number"
-                            min={0}
-                            id="clusteringThreshold"
-                            value={clusteringThreshold}
-                            onChange={(e) => updateSettings({ clusteringThreshold: +e.target.value })}
-                        />
-                    </div>
-                </>
-            </RadioGroup>
-        </div>
+            </>
+        </RadioGroup>
     );
 };

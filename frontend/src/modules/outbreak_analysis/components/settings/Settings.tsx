@@ -128,8 +128,8 @@ export const Settings = () => {
                 </Suspense>
                 <Button
                     type="button"
-                    onClick={() => {
-                        const isSaved = safeAnalysis(outbreakAnalysisStore);
+                    onClick={async () => {
+                        const isSaved = await safeAnalysis(outbreakAnalysisStore);
                         if (!isSaved) return;
                         navigate("/outbreak-analysis");
                     }}

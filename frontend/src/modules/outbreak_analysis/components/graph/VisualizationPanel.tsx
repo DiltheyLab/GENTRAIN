@@ -10,9 +10,9 @@ import { CaseInfo } from "@/modules/core/components/graph/CaseInfo";
 import { useCreateColorMapForTimeSpan } from "@/modules/core/hooks/graph/useCreateColorMapForTimeSpan";
 import { GraphDataGenerator } from "@/modules/core/services/graph/GraphDataGenerator";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { Label } from "@/modules/core/components/ui/Label";
-import { Switch } from "@/modules/core/components/ui/Switch";
+import { CustomNode } from "@/modules/core/types/graph";
+import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
+import { AnalysisInfo } from "./AnalysisInfo";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,12 @@ export const VisualizationPanel = () => {
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const [showGraphSettings, setShowGraphSettings] = useState(false);
-    const [selectedCase, setSelectedCase] = useState<CaseWithRelationships | null>(null);
+    const [selectedNode, setSelectedNode] = useState<CustomNode | null>(null);
+    const geneticDistanceThreshold = useCoreStore((state) => state.activePathogen?.genetic_distance_threshold);
+    const [linksBelowGeneticDistanceThreshold, setAllLinks] = useLinksBelowGeneticDistanceThreshold(
+        geneticDistanceThreshold ?? 0,
+        selectedNode
+    );
 
     // update color map for time span every time the cases (nodes) change
     useCreateColorMapForTimeSpan(
@@ -45,7 +50,10 @@ export const VisualizationPanel = () => {
             contacts,
             outbreakAnalysisStore.analysisSettings
         );
-        graphDataGenerator.execute().then((graphData) => outbreakAnalysisStore.updateGraphData(graphData));
+        graphDataGenerator.execute().then((graphData) => {
+            outbreakAnalysisStore.updateGraphData(graphData);
+            setAllLinks(graphDataGenerator.getAllLinks());
+        });
     }, [cases, distanceMatrixAssembly, outbreakAnalysisStore.analysisSettings, contacts]);
 
     return (
@@ -55,26 +63,17 @@ export const VisualizationPanel = () => {
         >
             {outbreakAnalysisStore.analysisSettings.selectedOutbreak ? (
                 <>
-                    <fieldset className="absolute z-10 left-2 bottom-2 rounded-lg w-fit border px-2 py-1 bg-muted/80">
-                        <div className="flex flex-col">
-                            <small className=" text-sm font-medium">Analyse: {outbreakAnalysisStore?.name}</small>
-                            <div className="flex items-center gap-2">
-                                <Label htmlFor="autoSave">Autom. Speichern</Label>
-                                <Switch
-                                    id="autoSave"
-                                    isSmall={true}
-                                    checked={outbreakAnalysisStore.generalSettings.autoSave}
-                                    onCheckedChange={(value) =>
-                                        outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })
-                                    }
-                                />
-                            </div>
-                        </div>
-                    </fieldset>
+                    <AnalysisInfo
+                        name={outbreakAnalysisStore.name}
+                        autoSave={outbreakAnalysisStore.generalSettings.autoSave}
+                        onAutoSaveChange={(value) => outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })}
+                    />
                     <Legend
                         nodes={outbreakAnalysisStore.graphData.nodes}
                         links={outbreakAnalysisStore.graphData.links}
                         colorMap={outbreakAnalysisStore.graphSettings.colorMap}
+                        linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                        geneticDistanceThreshold={geneticDistanceThreshold}
                         variant={
                             outbreakAnalysisStore.graphSettings.coloringMode === "timeSpan"
                                 ? "timeSpan"
@@ -88,13 +87,13 @@ export const VisualizationPanel = () => {
                         updateGraphSettings={outbreakAnalysisStore.updateGraphSettings}
                     />
                     <CaseInfo
-                        selectedCase={selectedCase}
-                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
+                        selectedNode={selectedNode}
+                        updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
                     />
                     <Graph2D
                         data={outbreakAnalysisStore.graphData}
-                        width={width - 8}
-                        height={height - 8}
+                        width={width}
+                        height={height}
                         colorMap={colorMap}
                         coloringMode={coloringMode}
                         cases={cases}
@@ -103,8 +102,10 @@ export const VisualizationPanel = () => {
                         nodeSize={nodeSize}
                         showNodeLabel={showNodeLabel}
                         linkWidth={linkWidth}
-                        updateSelectedCase={(selectedCase) => setSelectedCase(selectedCase)}
-                        selectedCase={selectedCase}
+                        updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
+                        selectedNode={selectedNode}
+                        isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
+                        linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
                     />
                 </>
             ) : (

@@ -57,6 +57,7 @@ export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
                         id="geneticDistanceThreshold"
                         value={outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold}
                         onChange={(e) => changeGeneticDistanceThreshold(+e.target.value)}
+                        disabled={disabled}
                     />
                 </>
             )}
