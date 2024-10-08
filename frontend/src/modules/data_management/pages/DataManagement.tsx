@@ -9,6 +9,7 @@ import { UploadSection } from "../components/upload_section/UploadSection";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
 import { DataColumns } from "../components/data_table/DataColumns";
+import { uploadedDataFilterFn } from "../helpers/dataTable";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
@@ -49,7 +50,7 @@ export function DataManagement() {
                             </h2>
                         </div>
                     </div>
-                    {casesData && <DataTable data={casesData} columns={DataColumns} />}
+                    {casesData && <DataTable data={casesData} columns={DataColumns} filterFn={uploadedDataFilterFn} />}
 
                     <div className="flex justify-end">
                         {casesData && activePathogen && (

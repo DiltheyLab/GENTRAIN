@@ -7,6 +7,7 @@ import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dia
 import { useGetContactTableData } from "../../hooks/useGetContactTableData";
 import { ContactUpload } from "../../services/data_upload/validation/ContactsValidation";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { contactUploadFilterFn } from "../../helpers/dataTable";
 
 export function ContactSelection() {
     const changeContactUpload = useDataManagementStore((state) => state.changeContactUpload);
@@ -117,6 +118,7 @@ export function ContactSelection() {
                 data={contactTableData}
                 columns={columns}
                 pageSize={5}
+                filterFn={contactUploadFilterFn}
                 onRowClick={(row: any) => {
                     if (!row.original.contact_id) return;
                     changeContactUpload(row.original.contact_id, { upload: !row.original.upload });

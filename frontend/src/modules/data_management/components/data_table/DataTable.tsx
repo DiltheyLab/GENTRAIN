@@ -15,13 +15,13 @@ import {
 import { Button } from "@/modules/core/components/ui/Button";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { customFilterFn } from "../../helpers/dataTable";
 
 export function DataTable({
     data,
     columns,
     enableFilter = true,
     pageSize = 10,
+    filterFn = undefined,
     onRowClick = () => {},
     preselectRows = false,
     onInit,
@@ -31,6 +31,7 @@ export function DataTable({
     columns: ColumnDef<any>[];
     enableFilter?: boolean;
     pageSize?: number;
+    filterFn?: ((row: any, _columnId: any, value: string, _addMeta: any) => boolean) | undefined;
     onRowClick?: (row?: Row<any>) => void;
     preselectRows?: boolean;
     onInit?: (table: TanStackTable<any>) => void;
@@ -49,7 +50,7 @@ export function DataTable({
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        globalFilterFn: customFilterFn,
+        globalFilterFn: filterFn,
         onGlobalFilterChange: setGlobalFilter,
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,

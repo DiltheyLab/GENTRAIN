@@ -10,6 +10,7 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { Label } from "@/modules/core/components/ui/Label";
 import { useEffect, useState } from "react";
+import { caseUploadFilterFn } from "../../helpers/dataTable";
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
     const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
@@ -153,6 +154,7 @@ export function CaseSelection() {
                     data={caseTableData}
                     columns={columns}
                     pageSize={5}
+                    filterFn={caseUploadFilterFn}
                     onRowClick={(row: any) => {
                         if (!row.original.case_id) return;
                         changeCaseUpload(row.original.case_id!, { upload: !row.getIsSelected() });

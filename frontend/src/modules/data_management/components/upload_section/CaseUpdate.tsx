@@ -9,6 +9,7 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { useGetExistingCasesTableData } from "../../hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { caseUploadFilterFn } from "../../helpers/dataTable";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
@@ -163,6 +164,7 @@ export function CaseUpdate() {
                     data={existingCasesTableData}
                     columns={columns}
                     pageSize={5}
+                    filterFn={caseUploadFilterFn}
                     onRowClick={(row: any) => {
                         row.toggleSelected(!row.getIsSelected());
                         if (!row.original.caseUpload.case_id) return;

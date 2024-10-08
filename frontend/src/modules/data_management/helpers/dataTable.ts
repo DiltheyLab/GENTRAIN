@@ -1,21 +1,77 @@
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
+import { ContactUpload } from "../services/data_upload/validation/ContactsValidation";
 
-const caseIdContainsValue = (caseData: CaseWithRelationships, value: string) => {
-    return caseData.case_id.toLowerCase().includes(value);
+export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return (
+        caseIdContainsValue(row.original, value) ||
+        fastaIdContainsValue(row.original, value) ||
+        lineageContainsValue(row.original, value) ||
+        outbreakNameContainsValue(row.original, value) ||
+        groupNameContainsValue(row.original, value) ||
+        categoryNameContainsValue(row.original, value)
+    );
 };
 
-const fastaIdContainsValue = (caseData: CaseWithRelationships, value: string) => {
-    return caseData.fasta_id?.toLowerCase().includes(value);
+export const caseUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return (
+        caseIdContainsValue(row.original, value) ||
+        fastaIdContainsValue(row.original, value) ||
+        outbreakNameContainsValue(row.original, value) ||
+        groupNameContainsValue(row.original, value) ||
+        categoryNameContainsValue(row.original, value)
+    );
 };
 
-const lineageContainsValue = (caseData: CaseWithRelationships, value: string) => {
-    return caseData.sample?.lineage?.toLowerCase().includes(value);
+export const sampleUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return caseIdContainsValue(row.original, value) || fastaIdContainsValue(row.original, value);
 };
 
-const categoryNameContainsValue = (caseData: CaseWithRelationships | CaseUpload, value: string) => {
-    if (caseData.groups) {
-        for (const group of caseData.groups) {
+export const contactUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return (
+        contactCaseIdsContainValue(row.original, value) ||
+        contactTypeContainsValue(row.original, value) ||
+        contactContextContainsValue(row.original, value)
+    );
+};
+
+const caseIdContainsValue = (data: CaseWithRelationships, value: string) => {
+    return data.case_id.toLowerCase().includes(value);
+};
+
+const contactCaseIdsContainValue = (data: ContactUpload, value: string) => {
+    return data.case_id_1.toLowerCase().includes(value) || data.case_id_2.toLowerCase().includes(value);
+};
+
+const contactTypeContainsValue = (data: ContactUpload, value: string) => {
+    return data.type.toLowerCase().includes(value);
+};
+
+const contactContextContainsValue = (data: ContactUpload, value: string) => {
+    return data.context.toLowerCase().includes(value);
+};
+
+const fastaIdContainsValue = (data: CaseWithRelationships, value: string) => {
+    if (!data.fasta_id) {
+        return false;
+    }
+    return data.fasta_id?.toLowerCase().includes(value);
+};
+
+const lineageContainsValue = (data: CaseWithRelationships, value: string) => {
+    if (!data.sample?.lineage) {
+        return false;
+    }
+    return data.sample?.lineage?.toLowerCase().includes(value);
+};
+
+const categoryNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+    if (data.groups) {
+        for (const group of data.groups) {
             if (group.category instanceof String && group.category.toLowerCase().includes(value)) {
                 return true;
             } else if (group.category instanceof Object && group.category?.name.toLowerCase().includes(value)) {
@@ -26,9 +82,9 @@ const categoryNameContainsValue = (caseData: CaseWithRelationships | CaseUpload,
     return false;
 };
 
-const groupNameContainsValue = (caseData: CaseWithRelationships | CaseUpload, value: string) => {
-    if (caseData.groups) {
-        for (const group of caseData.groups) {
+const groupNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+    if (data.groups) {
+        for (const group of data.groups) {
             if (group.name.toLowerCase().includes(value)) {
                 return true;
             }
@@ -37,28 +93,13 @@ const groupNameContainsValue = (caseData: CaseWithRelationships | CaseUpload, va
     return false;
 };
 
-const outbreakNameContainsValue = (caseData: CaseWithRelationships, value: string) => {
-    if (value === "background") {
-        return !caseData.outbreak;
-    }
-    if (caseData.outbreak) {
-        if (caseData.outbreak instanceof String && caseData.outbreak.toLowerCase().includes(value)) {
+const outbreakNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+    if (data.outbreak) {
+        if (data.outbreak instanceof Object && data.outbreak?.name.toLowerCase().includes(value)) {
             return true;
-        } else if (caseData.outbreak instanceof Object && caseData.outbreak?.name.toLowerCase().includes(value)) {
+        } else if (data.outbreak.toString().toLowerCase().includes(value)) {
             return true;
         }
-        return false;
     }
-};
-
-export const customFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
-    value = value.toLowerCase();
-    return (
-        caseIdContainsValue(row.original, value) ||
-        fastaIdContainsValue(row.original, value) ||
-        lineageContainsValue(row.original, value) ||
-        outbreakNameContainsValue(row.original, value) ||
-        groupNameContainsValue(row.original, value) ||
-        categoryNameContainsValue(row.original, value)
-    );
+    return false;
 };

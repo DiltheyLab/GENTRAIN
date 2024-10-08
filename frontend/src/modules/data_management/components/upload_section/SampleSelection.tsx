@@ -5,6 +5,7 @@ import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
 import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { sampleUploadFilterFn } from "../../helpers/dataTable";
 
 export function SampleSelection() {
     const sampleTableData = useGetSampleTableData();
@@ -62,6 +63,7 @@ export function SampleSelection() {
                 data={sampleTableData}
                 columns={columns}
                 pageSize={5}
+                filterFn={sampleUploadFilterFn}
                 onRowClick={(row: any) => {
                     changeSampleUpload(row.original.fasta_id, { upload: !row.original.upload });
                     row.toggleSelected(!row.getIsSelected());
