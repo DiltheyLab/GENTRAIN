@@ -85,7 +85,7 @@ export const DataTable = ({
     }, []);
 
     return (
-        <div className={cn("w-full overflow-x-auto", className)}>
+        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 pt-2 -mt-2", className)}>
             {enableFilter && (
                 <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
                     <Input
