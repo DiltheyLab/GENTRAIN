@@ -21,7 +21,12 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
     };
 
     public getQualityParameters = (sequence: string) => {
-        console.log(sequence.split(">"));
-        return { contig_count: 0, first_contig_length: 0 };
+        const contigs = sequence
+            .replace("\r", "")
+            .replace(/>(.*?)\n/g, ">\n")
+            .replace("\n", "")
+            .split(">");
+        contigs.shift();
+        return { contig_count: contigs.length, first_contig_length: contigs[0].length };
     };
 }

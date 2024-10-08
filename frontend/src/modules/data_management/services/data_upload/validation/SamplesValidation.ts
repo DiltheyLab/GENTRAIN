@@ -23,12 +23,14 @@ export class SamplesValidation extends ValidationStrategy {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                console.log(sequenceAnalysisStrategy?.getQualityParameters(sample.sequence));
                 this.dataManagementState.changeSampleImport(sample.fastaId, {
-                    case_id: sampleCase.case_id,
-                    status: "sent",
-                    sequence: sample.sequence,
-                    upload: true,
+                    ...{
+                        case_id: sampleCase.case_id,
+                        status: "sent",
+                        sequence: sample.sequence,
+                        upload: true,
+                    },
+                    ...sequenceAnalysisStrategy?.getQualityParameters(sample.sequence),
                 } satisfies SampleImport);
             }
         }

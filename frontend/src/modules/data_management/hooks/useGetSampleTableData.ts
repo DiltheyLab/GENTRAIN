@@ -15,6 +15,11 @@ export const useGetSampleTableData = () => {
                 status: sampleImports[fastaId].status,
                 upload: sampleImports[fastaId].upload,
                 sequence: sampleImports[fastaId].sequence,
+                sequence_length: sampleImports[fastaId].sequence_length,
+                n_count: sampleImports[fastaId].n_count,
+                ambiguity_character_count: sampleImports[fastaId].ambiguity_character_count,
+                contig_count: sampleImports[fastaId].contig_count,
+                first_contig_length: sampleImports[fastaId].first_contig_length,
             };
             cases.push(currentSample);
         }
