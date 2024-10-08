@@ -1,10 +1,13 @@
 import { CoreState, useCoreStore } from "@/modules/core/stores/core";
+import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export abstract class ValidationStrategy {
     protected coreState: CoreState;
+    protected dataManagementState: DataManagementState;
 
     constructor() {
         this.coreState = useCoreStore.getState();
+        this.dataManagementState = useDataManagementStore.getState();
     }
 
     protected abstract validate(

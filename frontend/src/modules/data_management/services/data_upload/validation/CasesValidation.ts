@@ -1,6 +1,11 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/infrastructure/database";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 
@@ -12,17 +17,24 @@ export class CasesValidation extends ValidationStrategy {
             throw new GentrainException("InvalidHeaderError");
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
-        const existingCases = await this.getAlreadyExistingCases(data.slice(1, data.length));
-        // existingCases is undefined if no pathogen is active
-        if (!existingCases) {
-            throw new GentrainException("InvalidPathogenSelection");
-        }
-        if (existingCases.length > 0) {
-            throw new GentrainException("CasesAlreadyExist", existingCases);
-        }
+        data = data.slice(1, data.length);
+
+        const caseImports = await this.filterAlreadyExistingCases(header, data);
+        useDataManagementStore.getState().setCaseSelectionActive(true);
+        useDataManagementStore.getState().changeCaseImports(caseImports);
         return {
             data: data,
         };
+    };
+
+    private collectGroups = (header: string[], row: string[]) => {
+        const groups: { name: string; category: string }[] = [];
+        for (let i = 4; i <= 6; i++) {
+            if (row[i] !== "") {
+                groups.push({ category: header[i], name: row[i] });
+            }
+        }
+        return groups;
     };
 
     private isCasesHeaderValid = (header: string[], columnNames: string[]) => {
@@ -34,18 +46,54 @@ export class CasesValidation extends ValidationStrategy {
         );
     };
 
-    private getAlreadyExistingCases = async (data: Array<Array<string>>) => {
-        let existingCases = [];
-        const activePathogen = this.coreState.activePathogen;
+    private filterAlreadyExistingCases = async (header: string[], data: Array<Array<string>>) => {
+        const activePathogen = useCoreStore.getState().activePathogen;
+
         if (!activePathogen) {
-            return;
+            return {};
         }
-        for (const row of data) {
-            const caseCount = await db.cases.where("[case_id+pathogen_id]").equals([row[0], activePathogen.id]).count();
-            if (caseCount > 0) {
-                existingCases.push(row[0]);
+
+        const caseIds = data.map((row) => row[0]);
+        const cases = await db.cases.where("case_id").anyOf(Array.from(caseIds)).toArray();
+        const caseMap = new Map<string, CaseWithRelationships>();
+        for (const caseData of cases) {
+            caseMap.set(caseData.case_id, caseData);
+        }
+
+        const outbreaks = await db.outbreaks.where("pathogen_id").equals(activePathogen.id).toArray();
+        const outbreakMap = new Map<number, OutbreakSchema>();
+        for (const outbreak of outbreaks) {
+            outbreakMap.set(outbreak.id, outbreak);
+        }
+
+        const casesToUpload: { [caseId: string]: CaseImport } = {};
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i];
+            const existingCase = caseMap.get(row[0]);
+            const caseImport = {
+                fasta_id: row[1] !== "" ? row[1] : null,
+                groups: this.collectGroups(header, row),
+                outbreak: row[3] !== "" ? row[3] : null,
+                registered_at: parseGermanDateFormat(row[2]),
+                upload: true,
+            } satisfies CaseImport;
+            if (existingCase) {
+                existingCase.outbreak = existingCase.outbreak_id ? outbreakMap.get(existingCase.outbreak_id) : null;
+                if (!this.caseImportEqualsExistingCase(caseImport, existingCase)) {
+                    useDataManagementStore.getState().addExistingCase(row[0], existingCase, caseImport);
+                }
+                continue;
             }
+            casesToUpload[row[0]] = caseImport;
         }
-        return existingCases;
+        return casesToUpload;
+    };
+
+    private caseImportEqualsExistingCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
+        return (
+            ((!caseImport.fasta_id && !caseImport.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
+            ((!caseImport.outbreak && !caseImport.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
+            formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
+        );
     };
 }

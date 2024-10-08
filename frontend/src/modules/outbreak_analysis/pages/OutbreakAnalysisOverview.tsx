@@ -1,6 +1,9 @@
 import { Layout } from "@/modules/core/components/layout/Layout";
-import { AnalysesTable } from "../components/analysis_selection/table/AnalysesTable";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
+import { DataTable } from "@/modules/core/components/tables/DataTable";
+import { customFilterFn } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
+import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
+import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
 
 export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();
@@ -12,7 +15,20 @@ export const OutbreakAnalysisOverview = () => {
                 <p className="text-muted-foreground">
                     Hier können Sie alle Ihre Ausbruchsanalyse einsehen und neue anlegen.
                 </p>
-                {analyses && <AnalysesTable data={analyses} />}
+                {analyses && (
+                    <DataTable
+                        data={analyses}
+                        columns={analysesTableColumns}
+                        pageSize={10}
+                        filterFn={customFilterFn}
+                        onRowClick={(row: any) => {
+                            row.toggleSelected(!row.getIsSelected());
+                        }}
+                        actions={() => {
+                            return <AnalysisCreation />;
+                        }}
+                    />
+                )}
             </div>
         </Layout>
     );

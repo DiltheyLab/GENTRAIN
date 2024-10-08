@@ -30,6 +30,15 @@ export interface CaseWithRelationships extends CaseSchema {
     contacts?: GroupedContacts | null;
 }
 
+export type CaseImport = {
+    case_id?: string;
+    fasta_id: string | null;
+    groups: { name: string; category: string }[];
+    outbreak: string | null;
+    registered_at: Date;
+    upload: boolean;
+};
+
 export const caseRules = z.object({
     case_id: z.string().min(1),
     fasta_id: z.string().min(1).or(z.null()),
@@ -42,6 +51,55 @@ export const caseRules = z.object({
 export const getAllCases = async () => {
     const cases = await db.cases.toArray();
     return cases;
+};
+
+export const getCasesByConditionWithRelationships = async (
+    where: string,
+    equals: any,
+    includeSequenceAnalysisResult = false
+) => {
+    const cases = await db.cases.where(where).equals(equals).toArray();
+
+    let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
+
+    for (const currentCase of cases) {
+        let caseWithRelationships: CaseWithRelationships = currentCase;
+        // retrieve sample schema object
+        if (currentCase.fasta_id) {
+            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
+            if (sample) {
+                caseWithRelationships.sample = sample;
+                if (caseWithRelationships.sample) {
+                    const sequenceAnalysis = await db.sequence_analyses.get(
+                        caseWithRelationships.sample.sequence_analysis_id
+                    );
+                    if (sequenceAnalysis) {
+                        if (!includeSequenceAnalysisResult) {
+                            sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        }
+                        caseWithRelationships.sample.sequence_analysis = sequenceAnalysis;
+                    }
+                }
+            }
+        }
+        // retrieve outbreak schema object
+        if (currentCase.outbreak_id) {
+            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
+            if (outbreak) {
+                caseWithRelationships.outbreak = outbreak;
+            }
+        }
+        // retrieve group schema objects
+        if (currentCase.group_ids.length > 0) {
+            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(currentCase.group_ids);
+            caseWithRelationships.groups = groups;
+        }
+        casesWithRelationships[currentCase.id] = caseWithRelationships;
+    }
+
+    casesWithRelationships = await collectContactsForCases(casesWithRelationships);
+
+    return Object.values(casesWithRelationships);
 };
 
 export const getAllCasesForPathogenWithRelationships = async (

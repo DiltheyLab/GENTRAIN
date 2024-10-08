@@ -1,7 +1,9 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { db } from "@/modules/core/infrastructure/database";
-import { getAllCasesForPathogenWithRelationships, CaseSchema } from "@/modules/core/models/cases";
+import { CaseSchema } from "@/modules/core/models/cases";
 import { ValidationStrategy } from "./ValidationStrategy";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { ContactImport } from "@/modules/core/models/contacts";
 
 const CONTACT_COLUMN_NAMES = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
 
@@ -11,74 +13,58 @@ export class ContactsValidation extends ValidationStrategy {
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        const allCases = await getAllCasesForPathogenWithRelationships(activePathogen.id);
         const header = data[0];
-        const existingContacts = [] as string[];
-        const missingCasesInDB = [] as string[];
+        data = data.slice(1, data.length);
 
         //check if header is exactly the same as columnNameRequirements
         if (!this.isHeaderValid(header, CONTACT_COLUMN_NAMES)) {
             throw new GentrainException("InvalidHeaderError");
         }
 
-        for (let i = 1; i < data.length; i++) {
-            const row = data[i];
-
-            //check if case_id_1 and case_id_2 are not empty
-            this.checkIfEmpty(row[0], "EmptyCaseId1");
-            this.checkIfEmpty(row[1], "EmptyCaseId2");
-
-            //check if case_id_1 and case_id_2 are in the system
-            const missingCaseInColumnCaseId1 = this.findMissingCasesInDB(row[0], allCases);
-            missingCaseInColumnCaseId1 && missingCasesInDB.push(missingCaseInColumnCaseId1);
-            const missingCaseInColumnCaseId2 = this.findMissingCasesInDB(row[1], allCases);
-            missingCaseInColumnCaseId2 && missingCasesInDB.push(missingCaseInColumnCaseId2);
-
-            // check if contact already exists in the database
-            const existingContact = await this.findExistingContactInDB(row, allCases);
-            // safe the index of the row with the existing contact
-            existingContact && existingContacts.push((i + 1).toString());
+        const cases = await db.cases.where({ pathogen_id: activePathogen.id }).toArray();
+        const caseMap = new Map<string, CaseSchema>();
+        for (const caseData of cases) {
+            caseMap.set(caseData.case_id, caseData);
         }
 
-        if (missingCasesInDB.length > 0) {
-            throw new GentrainException("CaseDoesNotExist", this.removeDuplicates(missingCasesInDB));
-        }
-        if (existingContacts.length > 0) {
-            throw new GentrainException("ContactAlreadyExist", existingContacts);
-        }
+        const contactImports = await this.filterAlreadyExistingContact(data, caseMap);
+        useDataManagementStore.getState().changeContactImports(contactImports);
+        this.dataManagementState.setContactSelectionActive(true);
 
         return {
             data: data,
         };
     };
 
-    private findMissingCasesInDB = (caseId: string, cases: CaseSchema[]) => {
-        if (!cases.some((c) => c["case_id"] === caseId)) {
-            return caseId;
+    private filterAlreadyExistingContact = async (data: string[][], cases: Map<string, CaseSchema>) => {
+        const contactImports: { [contactId: string]: ContactImport } = {};
+        for (const index in data) {
+            const row = data[index];
+            const case1 = cases.get(row[0]);
+            const case2 = cases.get(row[1]);
+
+            if (!case1 || !case2) {
+                continue;
+            }
+
+            const existingContact = await db.contacts
+                .where("[case_id_1+case_id_2+type+context]")
+                .equals([case1.id, case2.id, row[2], row[3]])
+                .first();
+
+            if (existingContact) {
+                continue;
+            }
+
+            contactImports[index] = {
+                contact_id: index,
+                case_id_1: case1.case_id,
+                case_id_2: case2.case_id,
+                type: row[2],
+                context: row[3],
+                upload: true,
+            } satisfies ContactImport;
         }
-    };
-    private findExistingContactInDB = async (row: string[], cases: CaseSchema[]) => {
-        const caseId1 = cases.find((c) => c["case_id"] === row[0])?.id;
-        const caseId2 = cases.find((c) => c["case_id"] === row[1])?.id;
-
-        if (!caseId1 || !caseId2) {
-            return;
-        }
-
-        const existingContact = await db.contacts
-            .where("[case_id_1+case_id_2+type+context]")
-            .equals([caseId1, caseId2, row[2], row[3]])
-            .first();
-        return existingContact;
-    };
-
-    private removeDuplicates = (array: string[]) => {
-        return [...new Set(array)];
-    };
-
-    private checkIfEmpty = (value: string, error: string) => {
-        if (!value) {
-            throw new GentrainException(error);
-        }
+        return contactImports;
     };
 }

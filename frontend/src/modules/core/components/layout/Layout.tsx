@@ -1,6 +1,6 @@
 import { Footer } from "@/modules/core/components/layout/Footer";
 import { Header } from "@/modules/core/components/layout/Header";
-import { SampleUploadStatus } from "@/modules/data_management/components/upload_section/SampleUploadStatus";
+import { SampleUploadStatus } from "@/modules/data_management/components/sample_upload_status/SampleUploadStatus";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export const Layout = ({ children }: any) => {

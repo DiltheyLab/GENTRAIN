@@ -11,4 +11,13 @@ export abstract class FileReadingStrategy {
         await this.readContent(files);
         return this.collectFileObject(files);
     };
+
+    public getAcceptedMimeType(uploadType: string) {
+        switch (uploadType) {
+            case "samples":
+                return ".fasta";
+            default:
+                return ".csv";
+        }
+    }
 }
