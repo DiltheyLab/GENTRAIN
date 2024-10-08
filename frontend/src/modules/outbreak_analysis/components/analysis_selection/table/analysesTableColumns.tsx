@@ -49,7 +49,7 @@ export const columns: ColumnDef<AnalysisSchema>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <p className="capitalize font-medium">{row.original.name}</p>,
+        cell: ({ row }) => <p className="font-medium">{row.original.name}</p>,
     },
     {
         accessorKey: "created_at",
@@ -69,7 +69,7 @@ export const columns: ColumnDef<AnalysisSchema>[] = [
         cell: ({ row }) => {
             const created_at = row.original.created_at;
             if (!created_at) return;
-            return <p className="capitalize font-medium">{formatDate(created_at)}</p>;
+            return <p className="font-medium">{formatDate(created_at)}</p>;
         },
     },
     {
@@ -88,7 +88,7 @@ export const columns: ColumnDef<AnalysisSchema>[] = [
         },
         cell: ({ row }) => {
             const selectedOutbreak = row.original.analysisSettings.selectedOutbreak;
-            return <p className="capitalize font-medium"> {selectedOutbreak ? selectedOutbreak.name : "-"}</p>;
+            return <p className="font-medium"> {selectedOutbreak ? selectedOutbreak.name : "-"}</p>;
         },
     },
     {

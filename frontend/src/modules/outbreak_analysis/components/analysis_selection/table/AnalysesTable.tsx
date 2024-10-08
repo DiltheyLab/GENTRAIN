@@ -15,7 +15,7 @@ import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { useState } from "react";
 import { columns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
 import { AnalysisCreation } from "../AnalysisCreation";
-import { customFilterFn } from "@/modules/outbreak_analysis/helpers/analysesTable";
+import { customFilterFn } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
 
 export function AnalysesTable({ data }: { data: AnalysisSchema[] }) {
     const [sorting, setSorting] = useState<SortingState>([]);
