@@ -25,6 +25,7 @@ export const OutbreakAnalysisOverview = () => {
                             return <AnalysisCreation />;
                         }}
                         className="mt-8"
+                        filterPlaceholder="Analyse suchen..."
                     />
                 )}
             </div>
