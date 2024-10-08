@@ -13,11 +13,13 @@ export const getToastDescription = (error: GentrainException | ZodError | Error,
     return description;
 };
 
-export const handleError = (error: any) => {
+export const handleOutbreakAnalysisError = (error: any) => {
     if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
         toast({
             title: t([`error:outbreakAnalysis.title`]),
-            description: getToastDescription(error, "outbreakAnalysis"),
+            description:
+                getToastDescription(error, "outbreakAnalysis") ??
+                "Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
             duration: 10000,
             variant: "destructive",
         });
