@@ -17,7 +17,7 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 
-export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
+export const uploadedDataColumns: ColumnDef<CaseWithRelationships>[] = [
     {
         id: "select",
         header: ({ table }) => (

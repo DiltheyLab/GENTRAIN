@@ -6,18 +6,25 @@ import { formatInArray } from "../../helpers/files";
 import { toast } from "./UseToast";
 import { useGetFileReadingStrategy } from "@/modules/data_management/hooks/useGetFileReadingStrategy";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { useRef } from "react";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 
 type FileUploadButtonProps = {
     type: FileUploadTypes;
     validationStrategy: ValidationStrategy;
-    resetUpload: () => void;
 };
 
-export const FileUploadButton = ({ type, validationStrategy, resetUpload }: FileUploadButtonProps) => {
+export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonProps) => {
     const { t, i18n } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const resetUpload = () => {
+        const inputElement: HTMLInputElement | null | undefined = inputRef.current;
+        if (inputElement) inputElement.value = "";
+    };
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -89,6 +96,7 @@ export const FileUploadButton = ({ type, validationStrategy, resetUpload }: File
                     )}
                     <div>
                         <Input
+                            ref={inputRef}
                             id={type}
                             type="file"
                             accept={fileReadingStrategy.getAcceptedMimeType(type)}

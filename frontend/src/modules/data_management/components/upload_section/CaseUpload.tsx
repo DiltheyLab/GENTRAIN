@@ -11,7 +11,7 @@ import { CaseSelection } from "@/modules/data_management/components/upload_secti
 import { CaseUpdate } from "@/modules/data_management/components/upload_section/tables/CaseUpdate";
 import { useGetCaseImports } from "@/modules/data_management/hooks/useGetCaseImports";
 
-export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const CaseUpload = () => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const caseImports = useGetCaseImports();
@@ -22,7 +22,6 @@ export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
         const persistenceStrategy = new CasesPersistence();
         try {
             await persistenceStrategy.executePersist();
-            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({

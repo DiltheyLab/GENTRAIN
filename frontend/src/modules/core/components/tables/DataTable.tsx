@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
     ColumnDef,
     Row,
@@ -15,6 +14,7 @@ import {
 import { Button } from "@/modules/core/components/ui/Button";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
+import { useEffect, useState } from "react";
 
 export function DataTable({
     data,
@@ -37,10 +37,10 @@ export function DataTable({
     onInit?: (table: TanStackTable<any>) => void;
     actions?: (table: TanStackTable<any>) => JSX.Element;
 }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
-    const [globalFilter, setGlobalFilter] = React.useState("");
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
+    const [globalFilter, setGlobalFilter] = useState("");
 
     const table = useReactTable({
         data,
@@ -68,7 +68,7 @@ export function DataTable({
         },
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (preselectRows) {
             table.toggleAllRowsSelected();
         }
@@ -78,23 +78,23 @@ export function DataTable({
     }, []);
 
     return (
-        <div className="w-full">
+        <div className="w-full overflow-x-scroll p-2">
             {enableFilter && (
-                <div className="pb-4">
+                <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
                     <Input
                         placeholder="Daten filtern..."
                         value={(globalFilter as string) ?? ""}
                         onChange={(event) => {
                             setGlobalFilter(event.target.value);
                         }}
-                        className="max-w-sm mb-4"
+                        className="max-w-sm"
                     />
-                    <div className="flex justify-end">{actions !== undefined && actions(table)}</div>
+                    <div className="flex flex-wrap">{actions !== undefined && actions(table)}</div>
                 </div>
             )}
 
             <div className="rounded-md border">
-                <Table>
+                <Table className="w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>

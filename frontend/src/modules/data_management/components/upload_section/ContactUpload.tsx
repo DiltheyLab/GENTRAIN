@@ -10,7 +10,7 @@ import { ContactsPersistence } from "@/modules/data_management/services/data_upl
 import { ContactSelection } from "@/modules/data_management/components/upload_section/tables/ContactSelection";
 import { useGetContactImports } from "@/modules/data_management/hooks/useGetContactImports";
 
-export const ContactUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const ContactUpload = () => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const contactImports = useGetContactImports();
@@ -21,7 +21,6 @@ export const ContactUpload = ({ onSubmit }: { onSubmit: () => void }) => {
         const persistenceStrategy = new ContactsPersistence();
         try {
             await persistenceStrategy.executePersist();
-            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({

@@ -10,7 +10,7 @@ import { SamplesPersistence } from "@/modules/data_management/services/data_uplo
 import { SampleSelection } from "@/modules/data_management/components/upload_section/tables/SampleSelection";
 import { useGetSampleImports } from "@/modules/data_management/hooks/useGetSampleImports";
 
-export const SampleUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const SampleUpload = () => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const sampleImports = useGetSampleImports();
@@ -22,7 +22,6 @@ export const SampleUpload = ({ onSubmit }: { onSubmit: () => void }) => {
         const persistenceStrategy = new SamplesPersistence();
         try {
             await persistenceStrategy.executePersist();
-            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({

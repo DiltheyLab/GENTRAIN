@@ -1,6 +1,6 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
+import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { useGetSampleTableData } from "@/modules/data_management/hooks/useGetSampleTableData";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
@@ -46,12 +46,12 @@ export function SampleSelection() {
         {
             accessorKey: "fasta_id",
             header: "Sequenz",
-            cell: ({ row }) => <>{row.getValue("fasta_id")}</>,
+            cell: ({ row }) => <>{row.original.fasta_id}</>,
         },
         {
             accessorKey: "case_id",
             header: "Fall",
-            cell: ({ row }) => <>{row.getValue("case_id")}</>,
+            cell: ({ row }) => <>{row.original.sequence_length}</>,
         },
     ];
 

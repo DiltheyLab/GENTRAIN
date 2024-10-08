@@ -1,6 +1,6 @@
 import { ColumnDef, Row, Table } from "@tanstack/react-table";
 import { useGetCaseTableData } from "@/modules/data_management/hooks/useGetCaseTableData";
-import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
+import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
