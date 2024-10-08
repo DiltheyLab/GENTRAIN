@@ -21,12 +21,10 @@ export const OutbreakAnalysisOverview = () => {
                         columns={analysesTableColumns}
                         pageSize={10}
                         filterFn={customFilterFn}
-                        onRowClick={(row: any) => {
-                            row.toggleSelected(!row.getIsSelected());
-                        }}
                         actions={() => {
                             return <AnalysisCreation />;
                         }}
+                        className="mt-8"
                     />
                 )}
             </div>
