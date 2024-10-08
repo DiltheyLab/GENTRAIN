@@ -24,6 +24,7 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { cn } from "@/modules/core/helpers/cn";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
+import { validateAnalysisName } from "../../helpers/analysisNameValidation";
 
 export const AnalysisCreation = () => {
     const [analysisName, setAnalysisName] = useState("");
@@ -32,18 +33,7 @@ export const AnalysisCreation = () => {
     const { activePathogen } = useCoreStore();
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
-
-    const isUniqueName = () => {
-        return analyses?.find((analysis) => analysis.name === analysisName) === undefined;
-    };
-
-    const nameLengthIsValid = () => {
-        return analysisName.length > 0 && analysisName.length < 100;
-    };
-
-    const analyseNameIsValid = () => {
-        return nameLengthIsValid() && isUniqueName();
-    };
+    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(analyses, analysisName);
 
     const createAndNavigateToNewAnalysis = async () => {
         try {
