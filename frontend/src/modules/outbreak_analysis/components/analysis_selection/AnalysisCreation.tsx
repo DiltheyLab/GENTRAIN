@@ -10,7 +10,6 @@ import {
 } from "@/modules/core/components/ui/Dialog";
 import { useState } from "react";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
-import { useToast } from "@/modules/core/components/ui/UseToast";
 import { createAnalysis } from "@/modules/core/models/analyses";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useNavigate } from "react-router-dom";
@@ -23,12 +22,14 @@ import {
 import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { cn } from "@/modules/core/helpers/cn";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
 
 export const AnalysisCreation = () => {
     const [analysisName, setAnalysisName] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { activePathogen } = useCoreStore();
-    const { toast } = useToast();
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
 
@@ -44,18 +45,12 @@ export const AnalysisCreation = () => {
         return nameLengthIsValid() && isUniqueName();
     };
 
-    const safeAnalysis = async () => {
-        if (!activePathogen) {
-            navigate("/");
-            toast({
-                title: "Fehler beim Speichern der Analyse",
-                description: "Die Analyse konnte nicht gespeichert werden. Bitte wählen Sie zunächst ein Pathogen aus.",
-                duration: 10000,
-            });
-            console.error("Error while saving analysis");
-            return;
-        }
+    const createAndNavigateToNewAnalysis = async () => {
         try {
+            if (!activePathogen) {
+                throw new GentrainException("PathogenNotSelected");
+            }
+
             const defaultAnalysisSettings = getDefaultAnalysisSettings();
             const id = await createAnalysis(
                 analysisName,
@@ -71,19 +66,16 @@ export const AnalysisCreation = () => {
                 defaultGraphSettings,
                 defaultGeneralSettings
             );
+
             navigate(`${id}`);
         } catch (error) {
-            toast({
-                title: "Fehler beim Speichern der Analyse",
-                description: "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut.",
-                duration: 10000,
-            });
-            console.error("Error while saving analysis", error);
+            setIsOpen(false);
+            handleOutbreakAnalysisError(error);
         }
     };
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="primary">Neue Analyse erstellen</Button>
             </DialogTrigger>
@@ -110,7 +102,11 @@ export const AnalysisCreation = () => {
                     </p>
                 )}
                 <DialogFooter>
-                    <Button type="button" disabled={!analyseNameIsValid()} onClick={() => safeAnalysis()}>
+                    <Button
+                        type="button"
+                        disabled={!analyseNameIsValid()}
+                        onClick={() => createAndNavigateToNewAnalysis()}
+                    >
                         Speichern und Analyse starten
                     </Button>
                 </DialogFooter>
