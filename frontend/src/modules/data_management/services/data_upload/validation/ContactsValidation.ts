@@ -15,7 +15,6 @@ export class ContactsValidation extends ValidationStrategy {
         }
         const header = data[0];
         data = data.slice(1, data.length);
-        const missingCasesInDB = [] as string[];
 
         //check if header is exactly the same as columnNameRequirements
         if (!this.isHeaderValid(header, CONTACT_COLUMN_NAMES)) {
@@ -28,26 +27,8 @@ export class ContactsValidation extends ValidationStrategy {
             caseMap.set(caseData.case_id, caseData);
         }
 
-        for (let i = 0; i < data.length; i++) {
-            const row = data[i];
-
-            //check if case_id_1 and case_id_2 are not empty
-            this.checkIfEmpty(row[0], "EmptyCaseId1");
-            this.checkIfEmpty(row[1], "EmptyCaseId2");
-
-            //check if case_id_1 and case_id_2 are in the system
-            const missingCaseInColumnCaseId1 = this.findMissingCasesInDB(row[0], cases);
-            missingCaseInColumnCaseId1 && missingCasesInDB.push(missingCaseInColumnCaseId1);
-            const missingCaseInColumnCaseId2 = this.findMissingCasesInDB(row[1], cases);
-            missingCaseInColumnCaseId2 && missingCasesInDB.push(missingCaseInColumnCaseId2);
-        }
-
-        if (missingCasesInDB.length > 0) {
-            throw new GentrainException("CaseDoesNotExist", this.removeDuplicates(missingCasesInDB));
-        }
-
-        const contactUploads = await this.filterAlreadyExistingContact(data, caseMap);
-        useDataManagementStore.getState().changeContactUploads(contactUploads);
+        const contactImports = await this.filterAlreadyExistingContact(data, caseMap);
+        useDataManagementStore.getState().changeContactImports(contactImports);
         this.dataManagementState.setContactSelectionActive(true);
 
         return {
@@ -55,14 +36,8 @@ export class ContactsValidation extends ValidationStrategy {
         };
     };
 
-    private findMissingCasesInDB = (caseId: string, cases: CaseSchema[]) => {
-        if (!cases.some((c) => c["case_id"] === caseId)) {
-            return caseId;
-        }
-    };
-
     private filterAlreadyExistingContact = async (data: string[][], cases: Map<string, CaseSchema>) => {
-        const contactUploads: { [contactId: string]: ContactImport } = {};
+        const contactImports: { [contactId: string]: ContactImport } = {};
         for (const index in data) {
             const row = data[index];
             const case1 = cases.get(row[0]);
@@ -81,7 +56,7 @@ export class ContactsValidation extends ValidationStrategy {
                 continue;
             }
 
-            contactUploads[index] = {
+            contactImports[index] = {
                 contact_id: index,
                 case_id_1: case1.case_id,
                 case_id_2: case2.case_id,
@@ -90,16 +65,6 @@ export class ContactsValidation extends ValidationStrategy {
                 upload: true,
             } satisfies ContactImport;
         }
-        return contactUploads;
-    };
-
-    private removeDuplicates = (array: string[]) => {
-        return [...new Set(array)];
-    };
-
-    private checkIfEmpty = (value: string, error: string) => {
-        if (!value) {
-            throw new GentrainException(error);
-        }
+        return contactImports;
     };
 }

@@ -8,20 +8,21 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { useGetExistingCasesTableData } from "@/modules/data_management/hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { caseUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { caseImportFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
     const existingCasesTableData = useGetExistingCasesTableData();
 
-    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseUpload: CaseImport }>) => {
-        const updatedCase = row.original.caseUpload;
+    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseImport: CaseImport }>) => {
+        const updatedCase = row.original.caseImport;
         updatedCase.upload = !updatedCase.upload;
-        changeExistingCase(row.original.caseUpload.case_id!, {
-            caseUpload: updatedCase,
+        changeExistingCase(row.original.caseImport.case_id!, {
+            caseImport: updatedCase,
         });
     };
-    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseImport }>[] = [
+
+    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseImport: CaseImport }>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -87,10 +88,10 @@ export function CaseUpdate() {
             },
             cell: ({ row }) => (
                 <>
-                    {row.original.existingCase.fasta_id !== row.original.caseUpload.fasta_id && (
+                    {row.original.existingCase.fasta_id !== row.original.caseImport.fasta_id && (
                         <div className="line-through">{row.original.existingCase.fasta_id}</div>
                     )}
-                    <div>{row.original.caseUpload.fasta_id}</div>
+                    <div>{row.original.caseImport.fasta_id}</div>
                 </>
             ),
         },
@@ -110,10 +111,10 @@ export function CaseUpdate() {
             },
             cell: ({ row }) => (
                 <>
-                    {row.original.existingCase.outbreak?.name !== row.original.caseUpload.outbreak && (
+                    {row.original.existingCase.outbreak?.name !== row.original.caseImport.outbreak && (
                         <div className="line-through">{row.original.existingCase.outbreak?.name}</div>
                     )}
-                    <div>{row.original.caseUpload.outbreak}</div>
+                    <div>{row.original.caseImport.outbreak}</div>
                 </>
             ),
         },
@@ -142,10 +143,10 @@ export function CaseUpdate() {
             cell: ({ row }) => (
                 <>
                     {formatDate(row.original.existingCase.registered_at) !==
-                        formatDate(row.original.caseUpload.registered_at) && (
+                        formatDate(row.original.caseImport.registered_at) && (
                         <div className="line-through">{formatDate(row.original.existingCase.registered_at)}</div>
                     )}
-                    <div>{formatDate(row.original.caseUpload.registered_at)}</div>
+                    <div>{formatDate(row.original.caseImport.registered_at)}</div>
                 </>
             ),
         },
@@ -163,10 +164,10 @@ export function CaseUpdate() {
                     data={existingCasesTableData}
                     columns={columns}
                     pageSize={5}
-                    filterFn={caseUploadFilterFn}
+                    filterFn={caseImportFilterFn}
                     onRowClick={(row: any) => {
                         row.toggleSelected(!row.getIsSelected());
-                        if (!row.original.caseUpload.case_id) return;
+                        if (!row.original.caseImport.case_id) return;
                         changeUploadValueOfRow(row);
                     }}
                     preselectRows

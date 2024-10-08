@@ -19,9 +19,9 @@ export class CasesValidation extends ValidationStrategy {
         // receive ids of cases already persisted in the db to throw an error containing case ids
         data = data.slice(1, data.length);
 
-        const uploadCases = await this.filterAlreadyExistingCases(header, data);
+        const caseImports = await this.filterAlreadyExistingCases(header, data);
         useDataManagementStore.getState().setCaseSelectionActive(true);
-        useDataManagementStore.getState().changeCaseUploads(uploadCases);
+        useDataManagementStore.getState().changeCaseImports(caseImports);
         return {
             data: data,
         };
@@ -70,7 +70,7 @@ export class CasesValidation extends ValidationStrategy {
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             const existingCase = caseMap.get(row[0]);
-            const caseUpload = {
+            const caseImport = {
                 fasta_id: row[1] !== "" ? row[1] : null,
                 groups: this.collectGroups(header, row),
                 outbreak: row[3] !== "" ? row[3] : null,
@@ -79,21 +79,21 @@ export class CasesValidation extends ValidationStrategy {
             } satisfies CaseImport;
             if (existingCase) {
                 existingCase.outbreak = existingCase.outbreak_id ? outbreakMap.get(existingCase.outbreak_id) : null;
-                if (!this.caseUploadEqualsExistingCase(caseUpload, existingCase)) {
-                    useDataManagementStore.getState().addExistingCase(row[0], existingCase, caseUpload);
+                if (!this.caseImportEqualsExistingCase(caseImport, existingCase)) {
+                    useDataManagementStore.getState().addExistingCase(row[0], existingCase, caseImport);
                 }
                 continue;
             }
-            casesToUpload[row[0]] = caseUpload;
+            casesToUpload[row[0]] = caseImport;
         }
         return casesToUpload;
     };
 
-    private caseUploadEqualsExistingCase = (caseUpload: CaseImport, existingCase: CaseWithRelationships) => {
+    private caseImportEqualsExistingCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
         return (
-            ((!caseUpload.fasta_id && !caseUpload.fasta_id) || caseUpload.fasta_id === existingCase.fasta_id) &&
-            ((!caseUpload.outbreak && !caseUpload.outbreak) || caseUpload.outbreak === existingCase.outbreak?.name) &&
-            formatDate(caseUpload.registered_at) === formatDate(existingCase.registered_at)
+            ((!caseImport.fasta_id && !caseImport.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
+            ((!caseImport.outbreak && !caseImport.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
+            formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
         );
     };
 }

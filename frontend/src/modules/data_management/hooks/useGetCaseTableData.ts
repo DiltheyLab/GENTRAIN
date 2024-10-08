@@ -3,18 +3,18 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { CaseImport } from "@/modules/core/models/cases";
 
 export const useGetCaseTableData = () => {
-    const caseUploads = useDataManagementStore((state) => state.caseUploads);
+    const caseImports = useDataManagementStore((state) => state.caseImports);
     const [tableData, setTableData] = useState<CaseImport[]>([]);
 
     useEffect(() => {
         const cases: CaseImport[] = [];
-        for (const caseId of Object.keys(caseUploads)) {
-            const currentCase = caseUploads[caseId];
+        for (const caseId of Object.keys(caseImports)) {
+            const currentCase = caseImports[caseId];
             currentCase.case_id = caseId;
             cases.push(currentCase);
         }
         setTableData(cases);
-    }, [caseUploads]);
+    }, [caseImports]);
 
     return tableData;
 };

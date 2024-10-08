@@ -5,23 +5,22 @@ import { ContactImport } from "@/modules/core/models/contacts";
 
 export interface DataManagementState {
     // case import
-    caseUploads: { [caseId: string]: CaseImport };
-    changeCaseUpload: (key: string, value: any) => void;
-    removeCaseUpload: (key: string) => void;
-    changeCaseUploads: (caseUploads: { [caseId: string]: CaseImport }) => void;
-    clearCaseUploads: () => void;
-    existingCases: { [caseId: string]: { existingCase: CaseSchema; caseUpload: CaseImport } };
-    addExistingCase: (caseId: string, existingCase: CaseSchema, caseUpload: CaseImport) => void;
+    caseImports: { [caseId: string]: CaseImport };
+    changeCaseImport: (key: string, value: any) => void;
+    removeCaseImport: (key: string) => void;
+    changeCaseImports: (caseImports: { [caseId: string]: CaseImport }) => void;
+    clearCaseImports: () => void;
+    existingCases: { [caseId: string]: { existingCase: CaseSchema; caseImport: CaseImport } };
+    addExistingCase: (caseId: string, existingCase: CaseSchema, caseImport: CaseImport) => void;
     changeExistingCase: (key: string, value: any) => void;
     clearExistingCases: () => void;
     caseSelectionActive: boolean;
     setCaseSelectionActive: (value: boolean) => void;
-
     // sample import
-    sampleUploads: { [fastaId: string]: SampleImport };
-    changeSampleUpload: (key: string, value: any) => void;
-    removeSampleUpload: (key: string) => void;
-    clearSampleUploads: () => void;
+    sampleImports: { [fastaId: string]: SampleImport };
+    changeSampleImport: (key: string, value: any) => void;
+    removeSampleImport: (key: string) => void;
+    clearSampleImports: () => void;
     sampleSelectionActive: boolean;
     setSampleSelectionActive: (value: boolean) => void;
     showSampleUploadStatus: boolean;
@@ -39,41 +38,40 @@ export interface DataManagementState {
     distanceCalculationSum: number;
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
-
     // contact import
-    contactUploads: { [contactId: string]: ContactImport };
-    changeContactUpload: (key: string, value: any) => void;
-    removeContactUpload: (key: string) => void;
-    changeContactUploads: (contactUploads: { [contactId: string]: ContactImport }) => void;
-    clearContactUploads: () => void;
+    contactImports: { [contactId: string]: ContactImport };
+    changeContactImport: (key: string, value: any) => void;
+    removeContactImport: (key: string) => void;
+    changeContactImports: (contactImports: { [contactId: string]: ContactImport }) => void;
+    clearContactImports: () => void;
     contactSelectionActive: boolean;
     setContactSelectionActive: (value: boolean) => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
     // case import
-    caseUploads: {},
-    changeCaseUpload: (caseId: string, changes: any) => {
-        const updateCaseUploads = structuredClone(get().caseUploads);
-        const caseUpload = { ...updateCaseUploads[caseId], ...changes };
-        updateCaseUploads[caseId] = caseUpload;
-        set({ caseUploads: updateCaseUploads });
+    caseImports: {},
+    changeCaseImport: (caseId: string, changes: any) => {
+        const updatedCaseImports = structuredClone(get().caseImports);
+        const caseImport = { ...updatedCaseImports[caseId], ...changes };
+        updatedCaseImports[caseId] = caseImport;
+        set({ caseImports: updatedCaseImports });
     },
-    removeCaseUpload: (caseId: string) => {
-        const updateCaseUploads = structuredClone(get().caseUploads);
-        delete updateCaseUploads[caseId];
-        set({ caseUploads: updateCaseUploads });
+    removeCaseImport: (caseId: string) => {
+        const updatedCaseImports = structuredClone(get().caseImports);
+        delete updatedCaseImports[caseId];
+        set({ caseImports: updatedCaseImports });
     },
-    changeCaseUploads: (caseUploads: { [caseId: string]: CaseImport }) => {
-        set({ caseUploads: caseUploads });
+    changeCaseImports: (caseImports: { [caseId: string]: CaseImport }) => {
+        set({ caseImports: caseImports });
     },
-    clearCaseUploads: () => {
-        set({ caseUploads: {} });
+    clearCaseImports: () => {
+        set({ caseImports: {} });
     },
     existingCases: {},
-    addExistingCase: (caseId: string, existingCase: CaseSchema, caseUpload: CaseImport) => {
+    addExistingCase: (caseId: string, existingCase: CaseSchema, caseImport: CaseImport) => {
         const updateExistingCases = structuredClone(get().existingCases);
-        updateExistingCases[caseId] = { existingCase: existingCase, caseUpload: caseUpload };
+        updateExistingCases[caseId] = { existingCase: existingCase, caseImport: caseImport };
         set({ existingCases: updateExistingCases });
     },
     changeExistingCase: (caseId: string, changes: any) => {
@@ -90,20 +88,20 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         set({ caseSelectionActive: value });
     },
     // sample import
-    sampleUploads: {},
-    changeSampleUpload: (fastaId: string, changes: any) => {
-        const updatedSampleUploads = structuredClone(get().sampleUploads);
-        const sampleUpload = { ...updatedSampleUploads[fastaId], ...changes };
-        updatedSampleUploads[fastaId] = sampleUpload;
-        set({ sampleUploads: updatedSampleUploads });
+    sampleImports: {},
+    changeSampleImport: (fastaId: string, changes: any) => {
+        const updatedSampleImports = structuredClone(get().sampleImports);
+        const sampleImport = { ...updatedSampleImports[fastaId], ...changes };
+        updatedSampleImports[fastaId] = sampleImport;
+        set({ sampleImports: updatedSampleImports });
     },
-    removeSampleUpload: (fastaId: string) => {
-        const updatedSampleUploads = structuredClone(get().sampleUploads);
-        delete updatedSampleUploads[fastaId];
-        set({ sampleUploads: updatedSampleUploads });
+    removeSampleImport: (fastaId: string) => {
+        const updatedSampleImports = structuredClone(get().sampleImports);
+        delete updatedSampleImports[fastaId];
+        set({ sampleImports: updatedSampleImports });
     },
-    clearSampleUploads: () => {
-        set({ sampleUploads: {} });
+    clearSampleImports: () => {
+        set({ sampleImports: {} });
     },
     sampleSelectionActive: false,
     setSampleSelectionActive: (value: boolean) => {
@@ -144,27 +142,27 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
             distanceCalculationSum: 0,
             isUploading: false,
             showSampleUploadStatus: false,
-            sampleUploads: {},
+            sampleImports: {},
         });
     },
     // contact import
-    contactUploads: {},
-    changeContactUpload: (contactId: string, changes: any) => {
-        const updatedContactUploads = structuredClone(get().contactUploads);
-        const contactUpload = { ...updatedContactUploads[contactId], ...changes };
-        updatedContactUploads[contactId] = contactUpload;
-        set({ contactUploads: updatedContactUploads });
+    contactImports: {},
+    changeContactImport: (contactId: string, changes: any) => {
+        const updatedContactImports = structuredClone(get().contactImports);
+        const contactImport = { ...updatedContactImports[contactId], ...changes };
+        updatedContactImports[contactId] = contactImport;
+        set({ contactImports: updatedContactImports });
     },
-    removeContactUpload: (contactId: string) => {
-        const updatedContactUploads = structuredClone(get().contactUploads);
-        delete updatedContactUploads[contactId];
-        set({ contactUploads: updatedContactUploads });
+    removeContactImport: (contactId: string) => {
+        const updatedContactImports = structuredClone(get().contactImports);
+        delete updatedContactImports[contactId];
+        set({ contactImports: updatedContactImports });
     },
-    changeContactUploads: (contactUploads: { [contactId: string]: ContactImport }) => {
-        set({ contactUploads: contactUploads });
+    changeContactImports: (contactImports: { [contactId: string]: ContactImport }) => {
+        set({ contactImports: contactImports });
     },
-    clearContactUploads: () => {
-        set({ contactUploads: {} });
+    clearContactImports: () => {
+        set({ contactImports: {} });
     },
     contactSelectionActive: false,
     setContactSelectionActive: (value: boolean) => {

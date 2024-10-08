@@ -6,14 +6,14 @@ import { ZodError } from "zod";
 import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useGetContactUploads } from "@/modules/data_management/hooks/useGetContactUploads";
 import { ContactsPersistence } from "@/modules/data_management/services/data_upload/persistence/ContactsPersistence";
 import { ContactSelection } from "@/modules/data_management/components/upload_section/tables/ContactSelection";
+import { useGetContactImports } from "@/modules/data_management/hooks/useGetContactImports";
 
 export const ContactUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
-    const contactUploads = useGetContactUploads();
+    const contactImports = useGetContactImports();
     const setContactSelectionActive = useDataManagementStore((state) => state.setContactSelectionActive);
     const contactSelectionActive = useDataManagementStore((state) => state.contactSelectionActive);
 
@@ -43,12 +43,12 @@ export const ContactUpload = ({ onSubmit }: { onSubmit: () => void }) => {
                 className="text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: t(`upload.help.cases`) }}
             ></small>
-            {contactUploads && (
+            {contactImports && (
                 <Dialog
                     onOpenChange={(open) => {
                         setContactSelectionActive(open);
                         if (!open) {
-                            useDataManagementStore.getState().clearCaseUploads();
+                            useDataManagementStore.getState().clearCaseImports();
                             useDataManagementStore.getState().clearExistingCases();
                         }
                     }}

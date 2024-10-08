@@ -8,11 +8,11 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 export class ContactsPersistence extends PersistenceStrategy {
     protected persist = async () => {
         const bulkData = [] as ContactSchema[];
-        const contactUploads = useDataManagementStore.getState().contactUploads;
+        const contactImports = useDataManagementStore.getState().contactImports;
         // create Set of caseIds to fetch them from the database
         const caseIds = new Set<string>();
-        for (const contactId of Object.keys(contactUploads)) {
-            const contact = contactUploads[contactId];
+        for (const contactId of Object.keys(contactImports)) {
+            const contact = contactImports[contactId];
             caseIds.add(contact.case_id_1);
             caseIds.add(contact.case_id_2);
         }
@@ -26,8 +26,8 @@ export class ContactsPersistence extends PersistenceStrategy {
             casesMap.set(caseData.case_id, caseData);
         }
 
-        for (const contactId of Object.keys(contactUploads)) {
-            const contact = contactUploads[contactId];
+        for (const contactId of Object.keys(contactImports)) {
+            const contact = contactImports[contactId];
 
             const case1 = casesMap.get(contact.case_id_1);
             const case2 = casesMap.get(contact.case_id_2);
@@ -48,7 +48,7 @@ export class ContactsPersistence extends PersistenceStrategy {
         // Bulk add the data to the database
         await db.contacts.bulkAdd(bulkData);
         useDataManagementStore.getState().setContactSelectionActive(false);
-        useDataManagementStore.getState().clearContactUploads();
+        useDataManagementStore.getState().clearContactImports();
         toast({
             title: "Datei wurde erfolgreich hochgeladen",
             duration: 5000,

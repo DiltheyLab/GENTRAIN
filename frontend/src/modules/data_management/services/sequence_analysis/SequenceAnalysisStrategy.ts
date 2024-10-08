@@ -81,13 +81,13 @@ export abstract class SequenceAnalysisStrategy {
                 await this.runAnalysis();
             });
             socket.on("sequence_analysis_enqueued", (fastaId: string) => {
-                this.dataManagementState.changeSampleUpload(fastaId, { status: "enqueued" });
+                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
             });
             socket.on("sequence_analysis_failed", (fastaId: string) => {
-                this.dataManagementState.changeSampleUpload(fastaId, { status: "failed" });
+                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
             });
             socket.on("sequence_analysis_started", (fastaId: string) => {
-                this.dataManagementState.changeSampleUpload(fastaId, { status: "started" });
+                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
             });
         }
     };
@@ -102,7 +102,7 @@ export abstract class SequenceAnalysisStrategy {
                 continue;
             }
             // skip sample if it was excluded from uploads
-            if (!Object.keys(this.dataManagementState.sampleUploads).includes(fastaId)) {
+            if (!Object.keys(this.dataManagementState.sampleImports).includes(fastaId)) {
                 continue;
             }
             // found case (only import if case exists)
@@ -140,7 +140,7 @@ export abstract class SequenceAnalysisStrategy {
     public async handleSingleAnalysisResult(data: { fasta_id: string; result: any; sequence_length: number }) {
         this.finishedFastaIds.push(data.fasta_id);
         await this.createSampleAndSequenceAnalysis(data.fasta_id, data.result, data.sequence_length);
-        this.dataManagementState.changeSampleUpload(data.fasta_id, { status: "finished" });
+        this.dataManagementState.changeSampleImport(data.fasta_id, { status: "finished" });
         this.removePersistedResultFromRedis(data.fasta_id);
     }
 

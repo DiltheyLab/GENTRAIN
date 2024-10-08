@@ -13,7 +13,7 @@ export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _a
     );
 };
 
-export const caseUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+export const caseImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return (
         caseIdContainsValue(row.original, value) ||
@@ -24,12 +24,12 @@ export const caseUploadFilterFn = (row: any, _columnId: any, value: string, _add
     );
 };
 
-export const sampleUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+export const sampleImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return caseIdContainsValue(row.original, value) || fastaIdContainsValue(row.original, value);
 };
 
-export const contactUploadFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+export const contactImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return (
         contactCaseIdsContainValue(row.original, value) ||

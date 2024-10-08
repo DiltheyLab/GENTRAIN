@@ -7,15 +7,15 @@ import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/u
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 import { SamplesPersistence } from "@/modules/data_management/services/data_upload/persistence/SamplesPersistence";
-import { useGetSampleUploads } from "@/modules/data_management/hooks/useGetSampleUploads";
 import { SampleSelection } from "@/modules/data_management/components/upload_section/tables/SampleSelection";
+import { useGetSampleImports } from "@/modules/data_management/hooks/useGetSampleImports";
 
 export const SampleUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
-    const sampleUploads = useGetSampleUploads();
+    const sampleImports = useGetSampleImports();
     const setSampleSelectionActive = useDataManagementStore((state) => state.setSampleSelectionActive);
-    const clearSampleUploads = useDataManagementStore((state) => state.clearSampleUploads);
+    const clearSampleImports = useDataManagementStore((state) => state.clearSampleImports);
     const sampleSelectionActive = useDataManagementStore((state) => state.sampleSelectionActive);
 
     const handleSubmit = async () => {
@@ -44,12 +44,12 @@ export const SampleUpload = ({ onSubmit }: { onSubmit: () => void }) => {
                 className="text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: t(`upload.help.samples`) }}
             ></small>
-            {sampleUploads && (
+            {sampleImports && (
                 <Dialog
                     onOpenChange={(open) => {
                         setSampleSelectionActive(open);
                         if (!open) {
-                            clearSampleUploads();
+                            clearSampleImports();
                         }
                     }}
                     open={sampleSelectionActive}

@@ -14,12 +14,12 @@ export class CasesPersistence extends PersistenceStrategy {
             throw new GentrainException("InvalidPathogenSelection");
         }
 
-        const caseUploads = useDataManagementStore.getState().caseUploads;
+        const caseImports = useDataManagementStore.getState().caseImports;
 
         // run db operations in transaction to rollback in error cases
         await db.transaction("rw", [db.cases, db.categories, db.groups, db.outbreaks], async () => {
-            for (const caseId of Object.keys(caseUploads)) {
-                const currentCase = caseUploads[caseId];
+            for (const caseId of Object.keys(caseImports)) {
+                const currentCase = caseImports[caseId];
                 if (!currentCase.upload) {
                     continue;
                 }
@@ -41,7 +41,7 @@ export class CasesPersistence extends PersistenceStrategy {
             }
         });
         useDataManagementStore.getState().setCaseSelectionActive(false);
-        useDataManagementStore.getState().clearCaseUploads();
+        useDataManagementStore.getState().clearCaseImports();
 
         toast({
             title: "Datei wurde erfolgreich hochgeladen",
@@ -60,7 +60,7 @@ export class CasesPersistence extends PersistenceStrategy {
         // run db operations in transaction to rollback in error cases
         await db.transaction("rw", [db.cases, db.categories, db.groups, db.outbreaks], async () => {
             for (const caseId of Object.keys(existingCases)) {
-                const currentCase = existingCases[caseId].caseUpload;
+                const currentCase = existingCases[caseId].caseImport;
                 if (!currentCase.upload) {
                     continue;
                 }

@@ -24,7 +24,9 @@ const getColorClassNames = (status: string) => {
 };
 
 export function SampleUploadStatus() {
-    const { sampleUploads, hideSampleUploadContent, setHideSampleUploadContent } = useDataManagementStore();
+    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const setHideSampleUploadContent = useDataManagementStore((state) => state.setHideSampleUploadContent);
+    const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
 
@@ -48,11 +50,11 @@ export function SampleUploadStatus() {
                             <span>
                                 (
                                 {
-                                    Object.keys(sampleUploads).filter(
-                                        (key: string) => sampleUploads[key].status === "finished"
+                                    Object.keys(sampleImports).filter(
+                                        (key: string) => sampleImports[key].status === "finished"
                                     ).length
                                 }{" "}
-                                von {Object.keys(sampleUploads).filter((key) => sampleUploads[key].upload).length}{" "}
+                                von {Object.keys(sampleImports).filter((key) => sampleImports[key].upload).length}{" "}
                                 abgeschlossen)
                             </span>
                         </small>
@@ -86,29 +88,29 @@ export function SampleUploadStatus() {
                             </small>
                             <ScrollArea>
                                 <div className="w-full flex flex-wrap max-h-[300px] mt-2">
-                                    {Object.keys(sampleUploads).map((fastaId) => {
-                                        if (!sampleUploads[fastaId].upload) return;
+                                    {Object.keys(sampleImports).map((fastaId) => {
+                                        if (!sampleImports[fastaId].upload) return;
                                         return (
                                             <div key={fastaId} className="w-full sm:w-1/3 p-1">
                                                 <div
                                                     className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
-                                                        sampleUploads[fastaId].status
+                                                        sampleImports[fastaId].status
                                                     )}`}
                                                 >
                                                     <div className="mr-2 text-xs">{fastaId}</div>
-                                                    {sampleUploads[fastaId].status === "sent" && (
+                                                    {sampleImports[fastaId].status === "sent" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {sampleUploads[fastaId].status === "enqueued" && (
+                                                    {sampleImports[fastaId].status === "enqueued" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {sampleUploads[fastaId].status === "started" && (
+                                                    {sampleImports[fastaId].status === "started" && (
                                                         <LoadingSpinner className="w-[17px]" strokeWidth={1.5} />
                                                     )}
-                                                    {sampleUploads[fastaId].status === "finished" && (
+                                                    {sampleImports[fastaId].status === "finished" && (
                                                         <Check width={18} />
                                                     )}
-                                                    {sampleUploads[fastaId].status === "failed" && (
+                                                    {sampleImports[fastaId].status === "failed" && (
                                                         <CircleAlert width={18} />
                                                     )}
                                                 </div>

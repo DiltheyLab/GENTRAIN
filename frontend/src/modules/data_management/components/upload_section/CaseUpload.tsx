@@ -7,14 +7,14 @@ import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/u
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 import { CasesPersistence } from "@/modules/data_management/services/data_upload/persistence/CasesPersistence";
-import { useGetCaseUploads } from "@/modules/data_management/hooks/useGetCaseUploads";
 import { CaseSelection } from "@/modules/data_management/components/upload_section/tables/CaseSelection";
 import { CaseUpdate } from "@/modules/data_management/components/upload_section/tables/CaseUpdate";
+import { useGetCaseImports } from "@/modules/data_management/hooks/useGetCaseImports";
 
 export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
-    const caseUploads = useGetCaseUploads();
+    const caseImports = useGetCaseImports();
     const setCaseSelectionActive = useDataManagementStore((state) => state.setCaseSelectionActive);
     const caseSelectionActive = useDataManagementStore((state) => state.caseSelectionActive);
 
@@ -63,19 +63,19 @@ export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
                 className="text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: t(`upload.help.cases`) }}
             ></small>
-            {caseUploads && (caseUploads.create || caseUploads.update) && (
+            {caseImports && (caseImports.create || caseImports.update) && (
                 <Dialog
                     onOpenChange={(open) => {
                         setCaseSelectionActive(open);
                         if (!open) {
-                            useDataManagementStore.getState().clearCaseUploads();
+                            useDataManagementStore.getState().clearCaseImports();
                             useDataManagementStore.getState().clearExistingCases();
                         }
                     }}
                     open={caseSelectionActive}
                 >
                     <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
-                        {caseSelectionActive && !caseUploads.update && caseUploads.create && (
+                        {caseSelectionActive && !caseImports.update && caseImports.create && (
                             <>
                                 <CaseSelection />
                                 <DialogFooter>
@@ -83,7 +83,7 @@ export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
                                 </DialogFooter>
                             </>
                         )}
-                        {caseSelectionActive && caseUploads.update && (
+                        {caseSelectionActive && caseImports.update && (
                             <>
                                 <CaseUpdate />
                                 <DialogFooter>

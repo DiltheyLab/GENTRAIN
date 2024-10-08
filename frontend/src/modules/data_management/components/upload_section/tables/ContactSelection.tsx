@@ -6,11 +6,11 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { useGetContactTableData } from "@/modules/data_management/hooks/useGetContactTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { contactUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
 import { ContactImport } from "@/modules/core/models/contacts";
+import { contactImportFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function ContactSelection() {
-    const changeContactUpload = useDataManagementStore((state) => state.changeContactUpload);
+    const changeContactImport = useDataManagementStore((state) => state.changeContactImport);
     const contactTableData = useGetContactTableData();
     const columns: ColumnDef<ContactImport>[] = [
         {
@@ -21,7 +21,7 @@ export function ContactSelection() {
                     onCheckedChange={(value) => {
                         table.toggleAllPageRowsSelected(!!value);
                         table.getRowModel().rows.forEach((row) => {
-                            changeContactUpload(row.original.contact_id!, { upload: !!value });
+                            changeContactImport(row.original.contact_id!, { upload: !!value });
                         });
                     }}
                     aria-label="Select all"
@@ -33,7 +33,7 @@ export function ContactSelection() {
                         checked={row.getIsSelected()}
                         onCheckedChange={(value) => {
                             row.toggleSelected(!!value);
-                            changeContactUpload(row.original.contact_id!, { upload: !!value });
+                            changeContactImport(row.original.contact_id!, { upload: !!value });
                         }}
                         aria-label="Select row"
                     />
@@ -118,10 +118,10 @@ export function ContactSelection() {
                 data={contactTableData}
                 columns={columns}
                 pageSize={5}
-                filterFn={contactUploadFilterFn}
+                filterFn={contactImportFilterFn}
                 onRowClick={(row: any) => {
                     if (!row.original.contact_id) return;
-                    changeContactUpload(row.original.contact_id, { upload: !row.original.upload });
+                    changeContactImport(row.original.contact_id, { upload: !row.original.upload });
                     row.toggleSelected(!row.getIsSelected());
                 }}
                 preselectRows

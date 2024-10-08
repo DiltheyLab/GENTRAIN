@@ -2,24 +2,24 @@ import { useEffect, useState } from "react";
 import { useDataManagementStore } from "../stores/dataManagement";
 import { CaseSchema, CaseImport } from "@/modules/core/models/cases";
 
-export const useGetCaseUploads = () => {
-    const caseUploads = useDataManagementStore((state) => state.caseUploads);
+export const useGetCaseImports = () => {
+    const caseImports = useDataManagementStore((state) => state.caseImports);
     const existingUploads = useDataManagementStore((state) => state.existingCases);
-    const [uploads, setUploads] = useState<{
+    const [imports, setImports] = useState<{
         create: { [caseId: string]: CaseImport } | null;
         update: {
             [caseId: string]: {
                 existingCase: CaseSchema;
-                caseUpload: CaseImport;
+                caseImport: CaseImport;
             };
         } | null;
     }>({ create: null, update: null });
 
     useEffect(() => {
-        const create = Object.keys(caseUploads).length > 0 ? caseUploads : null;
+        const create = Object.keys(caseImports).length > 0 ? caseImports : null;
         const update = Object.keys(existingUploads).length > 0 ? existingUploads : null;
-        setUploads({ create: create, update: update });
-    }, [caseUploads, existingUploads]);
+        setImports({ create: create, update: update });
+    }, [caseImports, existingUploads]);
 
-    return uploads;
+    return imports;
 };

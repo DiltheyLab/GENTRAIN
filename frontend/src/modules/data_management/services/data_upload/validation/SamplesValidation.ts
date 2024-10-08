@@ -20,7 +20,7 @@ export class SamplesValidation extends ValidationStrategy {
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                this.dataManagementState.changeSampleUpload(sample.fastaId, {
+                this.dataManagementState.changeSampleImport(sample.fastaId, {
                     case_id: sampleCase.case_id,
                     status: "sent",
                     sequence: sample.sequence,

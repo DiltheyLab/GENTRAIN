@@ -9,12 +9,12 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { Label } from "@/modules/core/components/ui/Label";
 import { useEffect, useState } from "react";
-import { caseUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
 import { CaseImport } from "@/modules/core/models/cases";
+import { caseImportFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
-    const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
+    const changeCaseImport = useDataManagementStore((state) => state.changeCaseImport);
     const [table, setTable] = useState<Table<CaseImport> | null>(null);
     const [selectAll, setSelectAll] = useState(true);
     const [selectCasesWithSequence, setSelectCasesWithSequence] = useState(false);
@@ -29,7 +29,7 @@ export function CaseSelection() {
                     (selectCasesWithSequence && row.original.fasta_id !== null) ||
                     (selectCasesWithOutbreak && row.original.outbreak !== null)
             );
-            changeCaseUpload(row.original.case_id!, {
+            changeCaseImport(row.original.case_id!, {
                 upload:
                     selectAll ||
                     (selectCasesWithSequence && row.original.fasta_id !== null) ||
@@ -47,7 +47,7 @@ export function CaseSelection() {
                     onCheckedChange={(value) => {
                         table.toggleAllPageRowsSelected(!!value);
                         table.getRowModel().rows.forEach((row) => {
-                            changeCaseUpload(row.original.case_id!, { upload: !!value });
+                            changeCaseImport(row.original.case_id!, { upload: !!value });
                         });
                     }}
                     aria-label="Select all"
@@ -59,7 +59,7 @@ export function CaseSelection() {
                         checked={row.getIsSelected()}
                         onCheckedChange={(value) => {
                             row.toggleSelected(!!value);
-                            changeCaseUpload(row.original.case_id!, { upload: !!value });
+                            changeCaseImport(row.original.case_id!, { upload: !!value });
                         }}
                         aria-label="Select row"
                     />
@@ -122,16 +122,14 @@ export function CaseSelection() {
             cell: ({ row }) => {
                 const groups: { name: string; category: string }[] = row.getValue("groups");
                 return (
-                    <>
+                    <div key={`${row.original.case_id}_groups`}>
                         {groups &&
                             groups.map((group) => (
-                                <>
-                                    <p className="block">
-                                        <b>{group.category}:</b> {group.name}
-                                    </p>
-                                </>
+                                <p key={`${group.category}_${group.name}`} className="block">
+                                    <b>{group.category}:</b> {group.name}
+                                </p>
                             ))}
-                    </>
+                    </div>
                 );
             },
         },
@@ -155,10 +153,10 @@ export function CaseSelection() {
                     data={caseTableData}
                     columns={columns}
                     pageSize={5}
-                    filterFn={caseUploadFilterFn}
+                    filterFn={caseImportFilterFn}
                     onRowClick={(row: any) => {
                         if (!row.original.case_id) return;
-                        changeCaseUpload(row.original.case_id!, { upload: !row.getIsSelected() });
+                        changeCaseImport(row.original.case_id!, { upload: !row.getIsSelected() });
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows

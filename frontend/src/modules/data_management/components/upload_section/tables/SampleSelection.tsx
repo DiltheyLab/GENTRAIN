@@ -4,12 +4,12 @@ import { DataTable } from "@/modules/data_management/components/data_table/DataT
 import { useGetSampleTableData } from "@/modules/data_management/hooks/useGetSampleTableData";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { sampleUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { sampleImportFilterFn } from "@/modules/data_management/helpers/dataTable";
 import { SampleImport } from "@/modules/core/models/samples";
 
 export function SampleSelection() {
     const sampleTableData = useGetSampleTableData();
-    const changeSampleUpload = useDataManagementStore((state) => state.changeSampleUpload);
+    const changeSampleImport = useDataManagementStore((state) => state.changeSampleImport);
 
     const columns: ColumnDef<SampleImport>[] = [
         {
@@ -20,7 +20,7 @@ export function SampleSelection() {
                     onCheckedChange={(value) => {
                         table.toggleAllPageRowsSelected(!!value);
                         table.getRowModel().rows.forEach((row) => {
-                            changeSampleUpload(row.original.fasta_id!, { upload: !!value });
+                            changeSampleImport(row.original.fasta_id!, { upload: !!value });
                         });
                     }}
                     aria-label="Select all"
@@ -32,7 +32,7 @@ export function SampleSelection() {
                         checked={row.getIsSelected()}
                         onCheckedChange={(value) => {
                             row.toggleSelected(!!value);
-                            changeSampleUpload(row.original.fasta_id!, { upload: !!value });
+                            changeSampleImport(row.original.fasta_id!, { upload: !!value });
                         }}
                         aria-label="Select row"
                     />
@@ -63,9 +63,9 @@ export function SampleSelection() {
                 data={sampleTableData}
                 columns={columns}
                 pageSize={5}
-                filterFn={sampleUploadFilterFn}
+                filterFn={sampleImportFilterFn}
                 onRowClick={(row: any) => {
-                    changeSampleUpload(row.original.fasta_id, { upload: !row.original.upload });
+                    changeSampleImport(row.original.fasta_id, { upload: !row.original.upload });
                     row.toggleSelected(!row.getIsSelected());
                 }}
                 preselectRows

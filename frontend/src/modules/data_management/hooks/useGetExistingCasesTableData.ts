@@ -4,14 +4,14 @@ import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 
 export const useGetExistingCasesTableData = () => {
     const existingCases = useDataManagementStore((state) => state.existingCases);
-    const [tableData, setTableData] = useState<{ existingCase: CaseSchema; caseUpload: CaseImport }[] | null>(null);
+    const [tableData, setTableData] = useState<{ existingCase: CaseSchema; caseImport: CaseImport }[] | null>(null);
 
     useEffect(() => {
-        const cases: { existingCase: CaseSchema; caseUpload: CaseImport }[] = [];
+        const cases: { existingCase: CaseSchema; caseImport: CaseImport }[] = [];
         for (const caseId of Object.keys(existingCases)) {
-            const caseUpload = existingCases[caseId].caseUpload;
-            caseUpload.case_id = caseId;
-            cases.push({ existingCase: existingCases[caseId].existingCase, caseUpload: caseUpload });
+            const caseImport = existingCases[caseId].caseImport;
+            caseImport.case_id = caseId;
+            cases.push({ existingCase: existingCases[caseId].existingCase, caseImport: caseImport });
         }
         if (cases.length > 0) {
             setTableData(cases);
