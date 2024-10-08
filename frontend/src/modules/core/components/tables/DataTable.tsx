@@ -15,18 +15,9 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { Input } from "@/modules/core/components/ui/Input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
 import { useEffect, useState } from "react";
+import { cn } from "../../helpers/cn";
 
-export function DataTable({
-    data,
-    columns,
-    enableFilter = true,
-    pageSize = 10,
-    filterFn = undefined,
-    onRowClick = () => {},
-    preselectRows = false,
-    onInit,
-    actions,
-}: {
+type DataTableProps = {
     data: any[];
     columns: ColumnDef<any>[];
     enableFilter?: boolean;
@@ -36,7 +27,21 @@ export function DataTable({
     preselectRows?: boolean;
     onInit?: (table: TanStackTable<any>) => void;
     actions?: (table: TanStackTable<any>) => JSX.Element;
-}) {
+    className?: string;
+};
+
+export const DataTable = ({
+    data,
+    columns,
+    enableFilter = true,
+    pageSize = 10,
+    filterFn = undefined,
+    onRowClick = () => {},
+    preselectRows = false,
+    onInit,
+    actions,
+    className,
+}: DataTableProps) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
@@ -78,7 +83,7 @@ export function DataTable({
     }, []);
 
     return (
-        <div className="w-full overflow-x-scroll">
+        <div className={cn("w-full overflow-x-auto", className)}>
             {enableFilter && (
                 <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
                     <Input
@@ -163,4 +168,4 @@ export function DataTable({
             </div>
         </div>
     );
-}
+};
