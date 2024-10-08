@@ -12,6 +12,7 @@
     "outbreakAnalysis": {
         "title": "Fehler beim Speichern der Analyse",
         "AnalysisIdIsNotInStore": "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut.",
-        "AnalysisIdIsNotInDB": "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut."
+        "AnalysisIdIsNotInDB": "Die Analyse konnte nicht gespeichert werden. Bitte versuche es erneut.",
+        "PathogenNotSelected": "Bitte wählen Sie zunächst ein Pathogen aus."
     }
 }

@@ -1,4 +1,4 @@
-import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
+import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useState } from "react";
@@ -8,6 +8,8 @@ import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
 import { UploadSection } from "../components/upload_section/UploadSection";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { Layout } from "@/modules/core/components/layout/Layout";
+import { uploadedDataColumns } from "@/modules/data_management/components/uploaded_data/uploadedDataColumns";
+import { uploadedDataFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
@@ -48,7 +50,9 @@ export function DataManagement() {
                             </h2>
                         </div>
                     </div>
-                    {casesData && <DataTable data={casesData} />}
+                    {casesData && (
+                        <DataTable data={casesData} columns={uploadedDataColumns} filterFn={uploadedDataFilterFn} />
+                    )}
 
                     <div className="flex justify-end">
                         {casesData && activePathogen && (

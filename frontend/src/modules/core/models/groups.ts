@@ -1,7 +1,7 @@
 import { z } from "zod";
+import { CaseImport } from "@/modules/core/models/cases";
 import { CategorySchema, persistCategoryIfNotExist } from "@/modules/core/models/categories";
 import { db } from "@/modules/core/infrastructure/database";
-import { collectCategoryData } from "@/modules/core/helpers/categories";
 
 export interface GroupSchema {
     id: number;
@@ -66,24 +66,11 @@ export const createGroupIfNotExist = async (groupName: string, categoryId: numbe
  * @param caseData
  * @returns
  */
-export const persistGroupsForCategories = async (
-    flexibleCategoryNames: Array<string>,
-    caseData: Array<string>,
-    pathogenId: number
-) => {
+export const persistGroupsForCategories = async (caseData: CaseImport, pathogenId: number) => {
     let groups = [];
-    for (const category of [
-        collectCategoryData(flexibleCategoryNames[0], caseData[4]),
-        collectCategoryData(flexibleCategoryNames[1], caseData[5]),
-        collectCategoryData(flexibleCategoryNames[2], caseData[6]),
-    ]) {
-        if (!category) {
-            continue;
-        }
-        const categoryId = await persistCategoryIfNotExist(category.name, pathogenId);
-        for (const group of category.groups) {
-            groups.push(await createGroupIfNotExist(group, categoryId, pathogenId));
-        }
+    for (const group of caseData.groups) {
+        const categoryId = await persistCategoryIfNotExist(group.category, pathogenId);
+        groups.push(await createGroupIfNotExist(group.name, categoryId, pathogenId));
     }
     return groups;
 };

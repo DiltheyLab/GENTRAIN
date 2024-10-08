@@ -5,12 +5,13 @@ import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
 import { toSlug } from "@/modules/core/helpers/strings";
+import { BacterialQualityParameters, SampleImport, ViralQualityParameters } from "@/modules/core/models/samples";
 
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
-    protected sampleData: { fastaId: string; sequence: string }[] | undefined;
+    protected sampleData: { [fasta_id: string]: SampleImport } = {};
     protected fastaIdsToAnalyse: string[];
     protected finishedFastaIds: string[];
     protected roomName: string;
@@ -21,6 +22,8 @@ export abstract class SequenceAnalysisStrategy {
         sequenceLength?: number
     ): Promise<void>;
 
+    public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
+
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();
         this.dataManagementState = useDataManagementStore.getState();
@@ -30,7 +33,7 @@ export abstract class SequenceAnalysisStrategy {
         this.roomName = "";
     }
 
-    public setSampleData = (sampleData: { fastaId: string; sequence: string }[]) => {
+    public setSampleData = (sampleData: { [fasta_id: string]: SampleImport }) => {
         this.sampleData = sampleData;
     };
 
@@ -78,13 +81,13 @@ export abstract class SequenceAnalysisStrategy {
                 await this.runAnalysis();
             });
             socket.on("sequence_analysis_enqueued", (fastaId: string) => {
-                this.dataManagementState.changeUpload(fastaId, "enqueued");
+                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
             });
             socket.on("sequence_analysis_failed", (fastaId: string) => {
-                this.dataManagementState.changeUpload(fastaId, "failed");
+                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
             });
             socket.on("sequence_analysis_started", (fastaId: string) => {
-                this.dataManagementState.changeUpload(fastaId, "started");
+                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
             });
         }
     };
@@ -93,18 +96,22 @@ export abstract class SequenceAnalysisStrategy {
         if (!this.sampleData) {
             return;
         }
-        for (const sample of this.sampleData) {
+        for (const fastaId of Object.keys(this.sampleData)) {
+            const sample = this.sampleData[fastaId];
+            if (!sample.upload) {
+                continue;
+            }
             // skip sample if it was excluded from uploads
-            if (!Object.keys(this.dataManagementState.uploads).includes(sample.fastaId)) {
+            if (!Object.keys(this.dataManagementState.sampleImports).includes(fastaId)) {
                 continue;
             }
             // found case (only import if case exists)
-            const sampleCase = await db.cases.where({ fasta_id: sample.fastaId }).first();
+            const sampleCase = await db.cases.where({ fasta_id: fastaId }).first();
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                this.emitSequenceAnalysisMessage(sample);
-                this.fastaIdsToAnalyse.push(sample.fastaId);
+                this.emitSequenceAnalysisMessage({ fastaId: fastaId, sequence: sample.sequence });
+                this.fastaIdsToAnalyse.push(fastaId);
             }
         }
     };
@@ -133,7 +140,7 @@ export abstract class SequenceAnalysisStrategy {
     public async handleSingleAnalysisResult(data: { fasta_id: string; result: any; sequence_length: number }) {
         this.finishedFastaIds.push(data.fasta_id);
         await this.createSampleAndSequenceAnalysis(data.fasta_id, data.result, data.sequence_length);
-        this.dataManagementState.changeUpload(data.fasta_id, "finished");
+        this.dataManagementState.changeSampleImport(data.fasta_id, { status: "finished" });
         this.removePersistedResultFromRedis(data.fasta_id);
     }
 

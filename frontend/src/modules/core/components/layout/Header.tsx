@@ -36,9 +36,6 @@ export const Header = () => {
                 >
                     Datenverwaltung
                 </Link>
-                <Link to="#" className={`${isSelected("#")} transition-colors hover:text-foreground text-md`}>
-                    Hilfe/FAQ
-                </Link>
             </nav>
             <Sheet>
                 <SheetTrigger asChild>

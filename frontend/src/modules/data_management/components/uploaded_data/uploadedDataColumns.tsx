@@ -17,7 +17,7 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 
-export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
+export const uploadedDataColumns: ColumnDef<CaseWithRelationships>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -98,7 +98,7 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
         },
     },
     {
-        accessorKey: "outbreak",
+        accessorKey: "outbreak_id",
         header: ({ column }) => {
             return (
                 <Button
@@ -114,27 +114,12 @@ export const DataColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const outbreak = row.original.outbreak;
             if (!outbreak) return;
-            return (
-                <p className="inline-block cursor-default bg-slate-900 text-white py-1 px-2 rounded-xl">
-                    {outbreak ? outbreak.name : ""}
-                </p>
-            );
+            return <>{outbreak ? outbreak.name : ""}</>;
         },
     },
     {
         accessorKey: "contacts",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    className="px-0"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Kontakte
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
+        header: "Kontakte",
         cell: ({ row }) => {
             const contacts = row.original.contacts;
             if (!contacts) return;

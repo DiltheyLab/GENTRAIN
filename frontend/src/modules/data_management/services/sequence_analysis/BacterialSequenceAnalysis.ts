@@ -19,4 +19,14 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
             first_contig_length: sequenceAnalysisResult["first_contig_length"],
         });
     };
+
+    public getQualityParameters = (sequence: string) => {
+        const contigs = sequence
+            .replace("\r", "")
+            .replace(/>(.*?)\n/g, ">\n")
+            .replace("\n", "")
+            .split(">");
+        contigs.shift();
+        return { contig_count: contigs.length, first_contig_length: contigs[0].length };
+    };
 }

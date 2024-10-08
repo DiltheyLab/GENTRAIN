@@ -40,14 +40,14 @@ export class PathogenStrategyManager {
         }
     };
 
-    public static getFileReadingStrategy = async (): Promise<FileReadingStrategy | undefined> => {
+    public static getFileReadingStrategy = async (type: string): Promise<FileReadingStrategy | undefined> => {
         const pathogenType = await this.getPathogenTypeName();
         if (!pathogenType) {
             return;
         }
         switch (pathogenType) {
             case PathogenTypeName[PathogenTypeName.bacterial]:
-                return new MultiFileReading();
+                return type === "samples" ? new MultiFileReading() : new SingleFileReading();
             default:
                 return new SingleFileReading();
         }

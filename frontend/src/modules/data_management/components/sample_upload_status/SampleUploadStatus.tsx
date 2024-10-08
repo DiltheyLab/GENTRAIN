@@ -2,7 +2,7 @@ import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Check, CircleAlert, ChevronsDown, ChevronsUp, CircleDashed } from "lucide-react";
-import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
+import { DistanceCalculationProgress } from "@/modules/data_management/components/sample_upload_status/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 
@@ -24,7 +24,9 @@ const getColorClassNames = (status: string) => {
 };
 
 export function SampleUploadStatus() {
-    const { uploads, hideSampleUploadContent, setHideSampleUploadContent } = useDataManagementStore();
+    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const setHideSampleUploadContent = useDataManagementStore((state) => state.setHideSampleUploadContent);
+    const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
 
@@ -46,8 +48,14 @@ export function SampleUploadStatus() {
                         <small className="mr-6">
                             Sequenzen werden auf Mutationen untersucht{" "}
                             <span>
-                                ({Object.keys(uploads).filter((key: string) => uploads[key] === "finished").length} von{" "}
-                                {Object.keys(uploads).length} abgeschlossen)
+                                (
+                                {
+                                    Object.keys(sampleImports).filter(
+                                        (key: string) => sampleImports[key].status === "finished"
+                                    ).length
+                                }{" "}
+                                von {Object.keys(sampleImports).filter((key) => sampleImports[key].upload).length}{" "}
+                                abgeschlossen)
                             </span>
                         </small>
                     )}
@@ -80,27 +88,31 @@ export function SampleUploadStatus() {
                             </small>
                             <ScrollArea>
                                 <div className="w-full flex flex-wrap max-h-[300px] mt-2">
-                                    {Object.keys(uploads).map((fastaId, key) => {
+                                    {Object.keys(sampleImports).map((fastaId) => {
+                                        if (!sampleImports[fastaId].upload) return;
                                         return (
-                                            <div key={key} className="w-full sm:w-1/3 p-1">
+                                            <div key={fastaId} className="w-full sm:w-1/3 p-1">
                                                 <div
-                                                    key={fastaId}
                                                     className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
-                                                        uploads[fastaId]
+                                                        sampleImports[fastaId].status
                                                     )}`}
                                                 >
                                                     <div className="mr-2 text-xs">{fastaId}</div>
-                                                    {uploads[fastaId] === "sent" && (
+                                                    {sampleImports[fastaId].status === "sent" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {uploads[fastaId] === "enqueued" && (
+                                                    {sampleImports[fastaId].status === "enqueued" && (
                                                         <CircleDashed className="mr-[1px]" width={15} />
                                                     )}
-                                                    {uploads[fastaId] === "started" && (
+                                                    {sampleImports[fastaId].status === "started" && (
                                                         <LoadingSpinner className="w-[17px]" strokeWidth={1.5} />
                                                     )}
-                                                    {uploads[fastaId] === "finished" && <Check width={18} />}
-                                                    {uploads[fastaId] === "failed" && <CircleAlert width={18} />}
+                                                    {sampleImports[fastaId].status === "finished" && (
+                                                        <Check width={18} />
+                                                    )}
+                                                    {sampleImports[fastaId].status === "failed" && (
+                                                        <CircleAlert width={18} />
+                                                    )}
                                                 </div>
                                             </div>
                                         );
