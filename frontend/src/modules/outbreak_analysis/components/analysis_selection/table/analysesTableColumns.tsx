@@ -6,7 +6,7 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { TableActions } from "./TableActions";
 
-export const columns: ColumnDef<AnalysisSchema>[] = [
+export const analysesTableColumns: ColumnDef<AnalysisSchema>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -60,7 +60,7 @@ export const columns: ColumnDef<AnalysisSchema>[] = [
         cell: ({ row }) => {
             const created_at = row.original.created_at;
             if (!created_at) return;
-            return <p className="font-medium">{formatDate(created_at)}</p>;
+            return <p>{formatDate(created_at)}</p>;
         },
     },
     {
@@ -79,7 +79,7 @@ export const columns: ColumnDef<AnalysisSchema>[] = [
         },
         cell: ({ row }) => {
             const selectedOutbreak = row.original.analysisSettings.selectedOutbreak;
-            return <p className="font-medium"> {selectedOutbreak ? selectedOutbreak.name : "-"}</p>;
+            return <p> {selectedOutbreak ? selectedOutbreak.name : "-"}</p>;
         },
     },
     {

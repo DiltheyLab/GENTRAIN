@@ -148,77 +148,79 @@ export function CaseSelection() {
                 werden aktualisiert.
             </DialogDescription>
             {caseTableData && (
-                <DataTable
-                    onInit={(table) => setTable(table)}
-                    data={caseTableData}
-                    columns={columns}
-                    pageSize={5}
-                    filterFn={caseImportFilterFn}
-                    onRowClick={(row: any) => {
-                        if (!row.original.case_id) return;
-                        changeCaseImport(row.original.case_id!, { upload: !row.getIsSelected() });
-                        row.toggleSelected(!row.getIsSelected());
-                    }}
-                    preselectRows
-                    actions={() => {
-                        return (
-                            <div className="flex gap-3">
-                                <div className="flex items-center">
-                                    <Checkbox
-                                        id="selectAll"
-                                        className="mr-2"
-                                        checked={selectAll}
-                                        onCheckedChange={(value) => {
-                                            setSelectAll(value ? true : false);
-                                            if (value) {
-                                                setSelectCasesWithSequence(false);
-                                                setSelectCasesWithOutbreak(false);
-                                            }
-                                        }}
-                                        aria-label="Select all"
-                                    />
-                                    <Label htmlFor="selectAll" className="font-normal mt-[2px] ">
-                                        Alle Fälle auswählen
-                                    </Label>
+                <div className="p-2">
+                    <DataTable
+                        onInit={(table) => setTable(table)}
+                        data={caseTableData}
+                        columns={columns}
+                        pageSize={5}
+                        filterFn={caseImportFilterFn}
+                        onRowClick={(row: any) => {
+                            if (!row.original.case_id) return;
+                            changeCaseImport(row.original.case_id!, { upload: !row.getIsSelected() });
+                            row.toggleSelected(!row.getIsSelected());
+                        }}
+                        preselectRows
+                        actions={() => {
+                            return (
+                                <div className="flex gap-3">
+                                    <div className="flex items-center">
+                                        <Checkbox
+                                            id="selectAll"
+                                            className="mr-2"
+                                            checked={selectAll}
+                                            onCheckedChange={(value) => {
+                                                setSelectAll(value ? true : false);
+                                                if (value) {
+                                                    setSelectCasesWithSequence(false);
+                                                    setSelectCasesWithOutbreak(false);
+                                                }
+                                            }}
+                                            aria-label="Select all"
+                                        />
+                                        <Label htmlFor="selectAll" className="font-normal mt-[2px] ">
+                                            Alle Fälle auswählen
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <Checkbox
+                                            id="selectWithSequence"
+                                            className="mr-2"
+                                            checked={selectCasesWithSequence}
+                                            onCheckedChange={(value) => {
+                                                setSelectCasesWithSequence(value ? true : false);
+                                                if (value) {
+                                                    setSelectAll(false);
+                                                }
+                                            }}
+                                            aria-label="Select with sequence"
+                                        />
+                                        <Label htmlFor="selectWithSequence" className="font-normal mt-[2px] ">
+                                            Fälle mit Sequenz auswählen
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <Checkbox
+                                            id="selectWithOutbreak"
+                                            className="mr-2"
+                                            checked={selectCasesWithOutbreak}
+                                            onCheckedChange={(value) => {
+                                                setSelectCasesWithOutbreak(value ? true : false);
+                                                if (value) {
+                                                    setSelectAll(false);
+                                                }
+                                            }}
+                                            aria-label="Select with outbreak"
+                                        />
+                                        <Label htmlFor="selectWithOutbreak" className="font-normal mt-[2px] ">
+                                            Fälle mit Ausbruch auswählen
+                                        </Label>
+                                    </div>
                                 </div>
-                                <div className="flex items-center">
-                                    <Checkbox
-                                        id="selectWithSequence"
-                                        className="mr-2"
-                                        checked={selectCasesWithSequence}
-                                        onCheckedChange={(value) => {
-                                            setSelectCasesWithSequence(value ? true : false);
-                                            if (value) {
-                                                setSelectAll(false);
-                                            }
-                                        }}
-                                        aria-label="Select with sequence"
-                                    />
-                                    <Label htmlFor="selectWithSequence" className="font-normal mt-[2px] ">
-                                        Fälle mit Sequenz auswählen
-                                    </Label>
-                                </div>
-                                <div className="flex items-center">
-                                    <Checkbox
-                                        id="selectWithOutbreak"
-                                        className="mr-2"
-                                        checked={selectCasesWithOutbreak}
-                                        onCheckedChange={(value) => {
-                                            setSelectCasesWithOutbreak(value ? true : false);
-                                            if (value) {
-                                                setSelectAll(false);
-                                            }
-                                        }}
-                                        aria-label="Select with outbreak"
-                                    />
-                                    <Label htmlFor="selectWithOutbreak" className="font-normal mt-[2px] ">
-                                        Fälle mit Ausbruch auswählen
-                                    </Label>
-                                </div>
-                            </div>
-                        );
-                    }}
-                />
+                            );
+                        }}
+                    />
+                </div>
             )}
         </>
     );

@@ -78,7 +78,7 @@ export function DataTable({
     }, []);
 
     return (
-        <div className="w-full overflow-x-scroll p-2">
+        <div className="w-full overflow-x-scroll">
             {enableFilter && (
                 <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
                     <Input
@@ -135,12 +135,12 @@ export function DataTable({
                     </TableBody>
                 </Table>
             </div>
-            {(table.getCanPreviousPage() || table.getCanNextPage()) && (
-                <div className="flex items-center justify-end space-x-2 py-4">
-                    <div className="flex-1 text-sm text-muted-foreground">
-                        {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
-                        Spalte(n) ausgewählt.
-                    </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="flex-1 text-sm text-muted-foreground">
+                    {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
+                    Spalte(n) ausgewählt.
+                </div>
+                {(table.getCanPreviousPage() || table.getCanNextPage()) && (
                     <div className="space-x-2">
                         <Button
                             variant="outline"
@@ -159,8 +159,8 @@ export function DataTable({
                             Nächste
                         </Button>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

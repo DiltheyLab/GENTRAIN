@@ -114,18 +114,20 @@ export function ContactSelection() {
             <DialogDescription>
                 Folgende Kontakte wurden in der CSV-Datei gefunden. Alle ausgewählte Kontakte werden hinzugefügt.
             </DialogDescription>
-            <DataTable
-                data={contactTableData}
-                columns={columns}
-                pageSize={5}
-                filterFn={contactImportFilterFn}
-                onRowClick={(row: any) => {
-                    if (!row.original.contact_id) return;
-                    changeContactImport(row.original.contact_id, { upload: !row.original.upload });
-                    row.toggleSelected(!row.getIsSelected());
-                }}
-                preselectRows
-            />
+            <div className="p-2">
+                <DataTable
+                    data={contactTableData}
+                    columns={columns}
+                    pageSize={5}
+                    filterFn={contactImportFilterFn}
+                    onRowClick={(row: any) => {
+                        if (!row.original.contact_id) return;
+                        changeContactImport(row.original.contact_id, { upload: !row.original.upload });
+                        row.toggleSelected(!row.getIsSelected());
+                    }}
+                    preselectRows
+                />
+            </div>
         </>
     );
 }

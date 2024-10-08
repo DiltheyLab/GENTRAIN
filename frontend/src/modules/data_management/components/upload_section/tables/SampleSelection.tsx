@@ -92,19 +92,21 @@ export function SampleSelection() {
             <DialogDescription>
                 Folgende Sequenzen wurden in der Fastadatei gefunden. Alle ausgewählte Sequenzen werden hinzugefügt.
             </DialogDescription>
-            <DataTable
-                data={sampleTableData}
-                columns={columns.concat(
-                    activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? viralColumns : bacterialColumns
-                )}
-                pageSize={5}
-                filterFn={sampleImportFilterFn}
-                onRowClick={(row: any) => {
-                    changeSampleImport(row.original.fasta_id, { upload: !row.original.upload });
-                    row.toggleSelected(!row.getIsSelected());
-                }}
-                preselectRows
-            />
+            <div className="p-2">
+                <DataTable
+                    data={sampleTableData}
+                    columns={columns.concat(
+                        activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? viralColumns : bacterialColumns
+                    )}
+                    pageSize={5}
+                    filterFn={sampleImportFilterFn}
+                    onRowClick={(row: any) => {
+                        changeSampleImport(row.original.fasta_id, { upload: !row.original.upload });
+                        row.toggleSelected(!row.getIsSelected());
+                    }}
+                    preselectRows
+                />
+            </div>
         </>
     );
 }
