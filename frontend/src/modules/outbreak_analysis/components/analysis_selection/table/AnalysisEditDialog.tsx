@@ -27,6 +27,7 @@ type AnalysisEditDialogProps = {
 export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [analysisName, setAnalysisName] = useState("");
+    const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { analyseNameIsValid, isUniqueName } = validateAnalysisName(analyses, analysisName);
 
@@ -67,10 +68,14 @@ export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
                         className={cn("w-full", !isUniqueName() && "focus-visible:ring-red-500")}
                         value={analysisName}
                         placeholder="Analysename"
-                        onChange={(e) => setAnalysisName(e.target.value)}
+                        onChange={(e) => {
+                            setAnalysisName(e.target.value);
+                        }}
+                        onFocus={() => setIsTouched(true)}
+                        onBlur={() => setIsTouched(false)}
                     />
                 </div>
-                {!isUniqueName() && isOpen && (
+                {isTouched && !isUniqueName() && (
                     <p className="text-red-500 text-sm -mt-2">
                         Der Name der Analyse ist bereits vergeben. Bitte wählen Sie einen anderen.
                     </p>
