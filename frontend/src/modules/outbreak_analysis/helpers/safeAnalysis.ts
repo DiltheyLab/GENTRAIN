@@ -7,14 +7,14 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 export const safeAnalysis = async (outbreakAnalysisStore: OutbreakAnalysisStore, enableSuccessToast = true) => {
     try {
         if (!outbreakAnalysisStore.id) throw new GentrainException("AnalysisIdIsNotInStore");
-        const analysisSettingsId = await updateAnalysisSettings(
+        const analysisId = await updateAnalysisSettings(
             outbreakAnalysisStore.id,
             outbreakAnalysisStore.analysisSettings,
             outbreakAnalysisStore.graphSettings,
             outbreakAnalysisStore.generalSettings
         );
 
-        if (!analysisSettingsId) {
+        if (!analysisId) {
             throw new GentrainException("AnalysisIdIsNotInDB");
         }
 
