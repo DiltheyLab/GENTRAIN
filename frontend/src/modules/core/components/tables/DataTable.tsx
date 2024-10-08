@@ -21,6 +21,7 @@ type DataTableProps = {
     data: any[];
     columns: ColumnDef<any>[];
     enableFilter?: boolean;
+    filterPlaceholder?: string;
     pageSize?: number;
     filterFn?: ((row: any, _columnId: any, value: string, _addMeta: any) => boolean) | undefined;
     onRowClick?: (row?: Row<any>) => void;
@@ -34,6 +35,7 @@ export const DataTable = ({
     data,
     columns,
     enableFilter = true,
+    filterPlaceholder = "Daten durchsuchen...",
     pageSize = 10,
     filterFn = undefined,
     onRowClick = () => {},
@@ -83,11 +85,11 @@ export const DataTable = ({
     }, []);
 
     return (
-        <div className={cn("w-full overflow-x-auto", className)}>
+        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 pt-2 -mt-2", className)}>
             {enableFilter && (
                 <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
                     <Input
-                        placeholder="Daten filtern..."
+                        placeholder={filterPlaceholder}
                         value={(globalFilter as string) ?? ""}
                         onChange={(event) => {
                             setGlobalFilter(event.target.value);

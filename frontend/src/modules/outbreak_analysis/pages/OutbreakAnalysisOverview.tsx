@@ -1,7 +1,7 @@
 import { Layout } from "@/modules/core/components/layout/Layout";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { customFilterFn } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
+import { analysesTableFilter } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
 import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
 import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
 
@@ -20,11 +20,12 @@ export const OutbreakAnalysisOverview = () => {
                         data={analyses}
                         columns={analysesTableColumns}
                         pageSize={10}
-                        filterFn={customFilterFn}
+                        filterFn={analysesTableFilter}
                         actions={() => {
                             return <AnalysisCreation />;
                         }}
                         className="mt-8"
+                        filterPlaceholder="Analyse suchen..."
                     />
                 )}
             </div>
