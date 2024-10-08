@@ -19,6 +19,18 @@ interface SampleSchema {
     updated_at?: Date;
 }
 
+export type ViralQualityParameters = {
+    sequence_length: number;
+    n_count: number;
+    ambiguity_character_count: number;
+    lineage?: string;
+};
+
+export type BacterialQualityParameters = {
+    contig_count: number;
+    first_contig_length: number;
+};
+
 export const deleteSampleById = async (id: number) => {
     await db.samples.delete(id);
 };

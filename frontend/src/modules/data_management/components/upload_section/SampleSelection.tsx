@@ -1,10 +1,9 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../data_table/DataTable";
 import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
 import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
-import { CheckCheck } from "lucide-react";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 
 export function SampleSelection() {
@@ -50,18 +49,6 @@ export function SampleSelection() {
             accessorKey: "case_id",
             header: "Fall",
             cell: ({ row }) => <>{row.getValue("case_id")}</>,
-        },
-        {
-            id: "select",
-            header: "Zum Import ausgewählt",
-            cell: ({ row }) => (
-                <CheckCheck
-                    onClick={() => {}}
-                    className={`${row.original.upload ? "text-primary opacity-100" : "opacity-20"}`}
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
         },
     ];
 

@@ -1,19 +1,71 @@
-import { SamplesPersistence } from "@/modules/data_management/services/data_upload/persistence/SamplesPersistence";
-import { SamplesValidation } from "@/modules/data_management/services/data_upload/validation/SamplesValidation";
-import { FileUpload } from "@/modules/data_management/components/upload_section/FileUpload";
-import { useGetFileReadingStrategy } from "@/modules/data_management/hooks/useGetFileReadingStrategy";
+import { useToast } from "@/modules/core/components/ui/UseToast";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { getToastDescription } from "@/modules/core/helpers/errors";
+import { useTranslation } from "react-i18next";
+import { ZodError } from "zod";
+import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
+import { useDataManagementStore } from "../../stores/dataManagement";
+import { Button } from "@/modules/core/components/ui/Button";
+import { SamplesPersistence } from "../../services/data_upload/persistence/SamplesPersistence";
+import { useGetSampleUploads } from "../../hooks/useGetSampleUploads";
+import { SampleSelection } from "./SampleSelection";
 
-export const SamplesUpload = () => {
-    const fileReadingStrategy = useGetFileReadingStrategy();
-    if (!fileReadingStrategy) return;
+export const SamplesUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+    const { toast } = useToast();
+    const { t } = useTranslation();
+    const sampleUploads = useGetSampleUploads();
+    const setSampleSelectionActive = useDataManagementStore((state) => state.setSampleSelectionActive);
+    const clearSampleUploads = useDataManagementStore((state) => state.clearSampleUploads);
+    const sampleSelectionActive = useDataManagementStore((state) => state.sampleSelectionActive);
+
+    const handleSubmit = async () => {
+        const persistenceStrategy = new SamplesPersistence();
+        try {
+            await persistenceStrategy.executePersist();
+            onSubmit();
+        } catch (error) {
+            if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
+                toast({
+                    title: t(`error:upload.title`),
+                    description: getToastDescription(error),
+                    duration: 10000,
+                    variant: "destructive",
+                });
+                console.log(error, error.message);
+                return;
+            }
+            console.log(error);
+        }
+    };
+
     return (
         <>
-            <FileUpload
-                type="samples"
-                fileReadingStrategy={fileReadingStrategy}
-                validationStrategy={new SamplesValidation()}
-                persistenceStrategy={new SamplesPersistence()}
-            />
+            <small
+                className="text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: t(`upload.help.samples`) }}
+            ></small>
+            {sampleUploads && (
+                <Dialog
+                    onOpenChange={(open) => {
+                        setSampleSelectionActive(open);
+                        if (!open) {
+                            clearSampleUploads();
+                        }
+                    }}
+                    open={sampleSelectionActive}
+                >
+                    <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
+                        {sampleSelectionActive && (
+                            <>
+                                <SampleSelection />
+                                <DialogFooter>
+                                    <Button onClick={handleSubmit}>Sequenzen hinzufügen</Button>
+                                </DialogFooter>
+                            </>
+                        )}
+                    </DialogContent>
+                </Dialog>
+            )}
         </>
     );
 };

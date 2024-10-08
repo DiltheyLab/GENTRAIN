@@ -6,6 +6,7 @@ import { PathogenStrategyManager } from "@/modules/data_management/services/path
 import { db } from "@/modules/core/infrastructure/database";
 import { toSlug } from "@/modules/core/helpers/strings";
 import { SampleUpload } from "../data_upload/validation/SamplesValidation";
+import { BacterialQualityParameters, ViralQualityParameters } from "@/modules/core/models/samples";
 
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
@@ -21,6 +22,8 @@ export abstract class SequenceAnalysisStrategy {
         sequenceAnalysisResult: object,
         sequenceLength?: number
     ): Promise<void>;
+
+    public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.coreState = useCoreStore.getState();

@@ -28,4 +28,9 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
             sequence_analysis_id: sequenceAnalysisId,
         });
     };
+
+    public getQualityParameters = (sequence: string) => {
+        console.log(sequence);
+        return { sequence_length: 0, n_count: 0, ambiguity_character_count: 0 };
+    };
 }

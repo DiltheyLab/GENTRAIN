@@ -1,15 +1,17 @@
 import { Label } from "./Label";
 import { Input } from "./Input";
 import { useTranslation } from "react-i18next";
-import { FileUploadTypes } from "@/modules/data_management/components/upload_section/FileUpload";
+import { FileReadingStrategy } from "@/modules/data_management/services/data_upload/file_reading/FileReadingStrategy";
+
+export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
 
 type FileUploadButtonProps = {
     type: FileUploadTypes;
-    accept: string;
-    multiple: boolean;
+    fileReadingStrategy: FileReadingStrategy;
     onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-export const FileUploadButton = ({ type, accept, multiple, onUpload }: FileUploadButtonProps) => {
+
+export const FileUploadButton = ({ type, fileReadingStrategy, onUpload }: FileUploadButtonProps) => {
     const { t, i18n } = useTranslation();
 
     return (
@@ -24,7 +26,13 @@ export const FileUploadButton = ({ type, accept, multiple, onUpload }: FileUploa
                 ></small>
             )}
             <div>
-                <Input id={type} type="file" accept={accept} multiple={multiple} onChange={(e) => onUpload(e)} />
+                <Input
+                    id={type}
+                    type="file"
+                    accept={fileReadingStrategy.getAcceptedMimeType(type)}
+                    multiple={fileReadingStrategy.allowMultifile()}
+                    onChange={(e) => onUpload(e)}
+                />
             </div>
         </div>
     );

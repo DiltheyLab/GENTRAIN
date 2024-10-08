@@ -3,7 +3,6 @@ import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
 import { SampleUpload } from "../services/data_upload/validation/SamplesValidation";
 import { ContactUpload } from "../services/data_upload/validation/ContactsValidation";
 import { CaseSchema } from "@/modules/core/models/cases";
-import { ContactSchema } from "@/modules/core/models/contacts";
 
 export interface DataManagementState {
     isUploading: boolean;
@@ -34,6 +33,7 @@ export interface DataManagementState {
     clearExistingCases: () => void;
     clearCaseUploads: () => void;
     clearContactUploads: () => void;
+    clearSampleUploads: () => void;
     changeCaseUploads: (caseUploads: { [caseId: string]: CaseUpload }) => void;
     changeContactUploads: (contactUploads: { [contactId: string]: ContactUpload }) => void;
     removeSampleUpload: (key: string) => void;
@@ -105,6 +105,9 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     },
     clearCaseUploads: () => {
         set({ caseUploads: {} });
+    },
+    clearSampleUploads: () => {
+        set({ sampleUploads: {} });
     },
     clearContactUploads: () => {
         set({ contactUploads: {} });
