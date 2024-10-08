@@ -2,7 +2,7 @@ import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { StepIndicator } from "@/modules/core/components/ui/StepIndicator";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Check, CircleAlert, ChevronsDown, ChevronsUp, CircleDashed } from "lucide-react";
-import { DistanceCalculationProgress } from "@/modules/data_management/components/upload_section/DistanceCalculationProgress";
+import { DistanceCalculationProgress } from "@/modules/data_management/components/sample_upload_status/DistanceCalculationProgress";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 
@@ -52,7 +52,8 @@ export function SampleUploadStatus() {
                                         (key: string) => sampleUploads[key].status === "finished"
                                     ).length
                                 }{" "}
-                                von {Object.keys(sampleUploads).length} abgeschlossen)
+                                von {Object.keys(sampleUploads).filter((key) => sampleUploads[key].upload).length}{" "}
+                                abgeschlossen)
                             </span>
                         </small>
                     )}

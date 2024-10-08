@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDataManagementStore } from "../stores/dataManagement";
-import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
-import { CaseSchema } from "@/modules/core/models/cases";
+import { CaseSchema, CaseImport } from "@/modules/core/models/cases";
 
 export const useGetCaseUploads = () => {
     const caseUploads = useDataManagementStore((state) => state.caseUploads);
     const existingUploads = useDataManagementStore((state) => state.existingCases);
     const [uploads, setUploads] = useState<{
-        create: { [caseId: string]: CaseUpload } | null;
+        create: { [caseId: string]: CaseImport } | null;
         update: {
             [caseId: string]: {
                 existingCase: CaseSchema;
-                caseUpload: CaseUpload;
+                caseUpload: CaseImport;
             };
         } | null;
     }>({ create: null, update: null });

@@ -1,19 +1,8 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { db } from "@/modules/core/infrastructure/database";
 import { ValidationStrategy } from "./ValidationStrategy";
+import { SampleImport } from "@/modules/core/models/samples";
 
-export type SampleUpload = {
-    fasta_id?: string;
-    case_id: string;
-    status: string;
-    sequence: string;
-    sequence_length?: number;
-    n_count?: number;
-    ambiguity_character_count?: number;
-    contig_count?: number;
-    first_contig_length?: number;
-    upload: boolean;
-};
 export class SamplesValidation extends ValidationStrategy {
     protected validate = async (data: { fastaId: string; sequence: string }[]) => {
         const samplesWithoutCase: string[] = [];
@@ -36,7 +25,7 @@ export class SamplesValidation extends ValidationStrategy {
                     status: "sent",
                     sequence: sample.sequence,
                     upload: true,
-                });
+                } satisfies SampleImport);
             }
         }
 

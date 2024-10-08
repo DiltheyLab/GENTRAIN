@@ -1,6 +1,5 @@
-import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
-import { ContactUpload } from "../services/data_upload/validation/ContactsValidation";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
+import { ContactImport } from "@/modules/core/models/contacts";
 
 export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
@@ -43,15 +42,15 @@ const caseIdContainsValue = (data: CaseWithRelationships, value: string) => {
     return data.case_id.toLowerCase().includes(value);
 };
 
-const contactCaseIdsContainValue = (data: ContactUpload, value: string) => {
+const contactCaseIdsContainValue = (data: ContactImport, value: string) => {
     return data.case_id_1.toLowerCase().includes(value) || data.case_id_2.toLowerCase().includes(value);
 };
 
-const contactTypeContainsValue = (data: ContactUpload, value: string) => {
+const contactTypeContainsValue = (data: ContactImport, value: string) => {
     return data.type.toLowerCase().includes(value);
 };
 
-const contactContextContainsValue = (data: ContactUpload, value: string) => {
+const contactContextContainsValue = (data: ContactImport, value: string) => {
     return data.context.toLowerCase().includes(value);
 };
 
@@ -69,7 +68,7 @@ const lineageContainsValue = (data: CaseWithRelationships, value: string) => {
     return data.sample?.lineage?.toLowerCase().includes(value);
 };
 
-const categoryNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+const categoryNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {
     if (data.groups) {
         for (const group of data.groups) {
             if (group.category instanceof String && group.category.toLowerCase().includes(value)) {
@@ -82,7 +81,7 @@ const categoryNameContainsValue = (data: CaseWithRelationships | CaseUpload, val
     return false;
 };
 
-const groupNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+const groupNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {
     if (data.groups) {
         for (const group of data.groups) {
             if (group.name.toLowerCase().includes(value)) {
@@ -93,7 +92,7 @@ const groupNameContainsValue = (data: CaseWithRelationships | CaseUpload, value:
     return false;
 };
 
-const outbreakNameContainsValue = (data: CaseWithRelationships | CaseUpload, value: string) => {
+const outbreakNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {
     if (data.outbreak) {
         if (data.outbreak instanceof Object && data.outbreak?.name.toLowerCase().includes(value)) {
             return true;

@@ -1,17 +1,17 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "../data_table/DataTable";
-import { useGetSampleTableData } from "../../hooks/useGetSampleTableData";
-import { SampleUpload } from "../../services/data_upload/validation/SamplesValidation";
+import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
+import { useGetSampleTableData } from "@/modules/data_management/hooks/useGetSampleTableData";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { sampleUploadFilterFn } from "../../helpers/dataTable";
+import { sampleUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { SampleImport } from "@/modules/core/models/samples";
 
 export function SampleSelection() {
     const sampleTableData = useGetSampleTableData();
     const changeSampleUpload = useDataManagementStore((state) => state.changeSampleUpload);
 
-    const columns: ColumnDef<SampleUpload>[] = [
+    const columns: ColumnDef<SampleImport>[] = [
         {
             id: "select",
             header: ({ table }) => (

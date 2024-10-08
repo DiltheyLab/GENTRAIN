@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { useDataManagementStore } from "../stores/dataManagement";
-import { CaseUpload } from "../services/data_upload/validation/CasesValidation";
-import { CaseSchema } from "@/modules/core/models/cases";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 
 export const useGetExistingCasesTableData = () => {
     const existingCases = useDataManagementStore((state) => state.existingCases);
-    const [tableData, setTableData] = useState<{ existingCase: CaseSchema; caseUpload: CaseUpload }[] | null>(null);
+    const [tableData, setTableData] = useState<{ existingCase: CaseSchema; caseUpload: CaseImport }[] | null>(null);
 
     useEffect(() => {
-        const cases: { existingCase: CaseSchema; caseUpload: CaseUpload }[] = [];
+        const cases: { existingCase: CaseSchema; caseUpload: CaseImport }[] = [];
         for (const caseId of Object.keys(existingCases)) {
             const caseUpload = existingCases[caseId].caseUpload;
             caseUpload.case_id = caseId;

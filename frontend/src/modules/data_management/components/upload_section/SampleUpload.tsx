@@ -4,13 +4,13 @@ import { getToastDescription } from "@/modules/core/helpers/errors";
 import { useTranslation } from "react-i18next";
 import { ZodError } from "zod";
 import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
-import { SamplesPersistence } from "../../services/data_upload/persistence/SamplesPersistence";
-import { useGetSampleUploads } from "../../hooks/useGetSampleUploads";
-import { SampleSelection } from "./SampleSelection";
+import { SamplesPersistence } from "@/modules/data_management/services/data_upload/persistence/SamplesPersistence";
+import { useGetSampleUploads } from "@/modules/data_management/hooks/useGetSampleUploads";
+import { SampleSelection } from "@/modules/data_management/components/upload_section/tables/SampleSelection";
 
-export const SamplesUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const SampleUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const sampleUploads = useGetSampleUploads();

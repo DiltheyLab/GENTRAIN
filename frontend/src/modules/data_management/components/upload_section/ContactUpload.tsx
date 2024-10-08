@@ -4,13 +4,13 @@ import { getToastDescription } from "@/modules/core/helpers/errors";
 import { useTranslation } from "react-i18next";
 import { ZodError } from "zod";
 import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useGetContactUploads } from "../../hooks/useGetContactUploads";
-import { ContactSelection } from "./ContactSelection";
-import { ContactsPersistence } from "../../services/data_upload/persistence/ContactsPersistence";
+import { useGetContactUploads } from "@/modules/data_management/hooks/useGetContactUploads";
+import { ContactsPersistence } from "@/modules/data_management/services/data_upload/persistence/ContactsPersistence";
+import { ContactSelection } from "@/modules/data_management/components/upload_section/tables/ContactSelection";
 
-export const ContactsUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const ContactUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const contactUploads = useGetContactUploads();

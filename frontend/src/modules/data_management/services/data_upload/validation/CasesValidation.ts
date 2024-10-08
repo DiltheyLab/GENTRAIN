@@ -1,21 +1,13 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/infrastructure/database";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
-export type CaseUpload = {
-    case_id?: string;
-    fasta_id: string | null;
-    groups: { name: string; category: string }[];
-    outbreak: string | null;
-    registered_at: Date;
-    upload: boolean;
-};
 
 export class CasesValidation extends ValidationStrategy {
     protected validate = async (data: Array<Array<string>>) => {
@@ -74,7 +66,7 @@ export class CasesValidation extends ValidationStrategy {
             outbreakMap.set(outbreak.id, outbreak);
         }
 
-        const casesToUpload: { [caseId: string]: CaseUpload } = {};
+        const casesToUpload: { [caseId: string]: CaseImport } = {};
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             const existingCase = caseMap.get(row[0]);
@@ -84,7 +76,7 @@ export class CasesValidation extends ValidationStrategy {
                 outbreak: row[3] !== "" ? row[3] : null,
                 registered_at: parseGermanDateFormat(row[2]),
                 upload: true,
-            } satisfies CaseUpload;
+            } satisfies CaseImport;
             if (existingCase) {
                 existingCase.outbreak = existingCase.outbreak_id ? outbreakMap.get(existingCase.outbreak_id) : null;
                 if (!this.caseUploadEqualsExistingCase(caseUpload, existingCase)) {
@@ -97,7 +89,7 @@ export class CasesValidation extends ValidationStrategy {
         return casesToUpload;
     };
 
-    private caseUploadEqualsExistingCase = (caseUpload: CaseUpload, existingCase: CaseWithRelationships) => {
+    private caseUploadEqualsExistingCase = (caseUpload: CaseImport, existingCase: CaseWithRelationships) => {
         return (
             ((!caseUpload.fasta_id && !caseUpload.fasta_id) || caseUpload.fasta_id === existingCase.fasta_id) &&
             ((!caseUpload.outbreak && !caseUpload.outbreak) || caseUpload.outbreak === existingCase.outbreak?.name) &&

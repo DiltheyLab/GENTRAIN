@@ -30,6 +30,15 @@ export interface CaseWithRelationships extends CaseSchema {
     contacts?: GroupedContacts | null;
 }
 
+export type CaseImport = {
+    case_id?: string;
+    fasta_id: string | null;
+    groups: { name: string; category: string }[];
+    outbreak: string | null;
+    registered_at: Date;
+    upload: boolean;
+};
+
 export const caseRules = z.object({
     case_id: z.string().min(1),
     fasta_id: z.string().min(1).or(z.null()),

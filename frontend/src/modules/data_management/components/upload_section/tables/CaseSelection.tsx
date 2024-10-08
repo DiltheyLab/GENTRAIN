@@ -1,20 +1,21 @@
 import { ColumnDef, Row, Table } from "@tanstack/react-table";
-import { useGetCaseTableData } from "../../hooks/useGetCaseTableData";
-import { DataTable } from "../data_table/DataTable";
-import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
+import { useGetCaseTableData } from "@/modules/data_management/hooks/useGetCaseTableData";
+import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { Label } from "@/modules/core/components/ui/Label";
 import { useEffect, useState } from "react";
-import { caseUploadFilterFn } from "../../helpers/dataTable";
+import { caseUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { CaseImport } from "@/modules/core/models/cases";
+
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
     const changeCaseUpload = useDataManagementStore((state) => state.changeCaseUpload);
-    const [table, setTable] = useState<Table<CaseUpload> | null>(null);
+    const [table, setTable] = useState<Table<CaseImport> | null>(null);
     const [selectAll, setSelectAll] = useState(true);
     const [selectCasesWithSequence, setSelectCasesWithSequence] = useState(false);
     const [selectCasesWithOutbreak, setSelectCasesWithOutbreak] = useState(false);
@@ -22,7 +23,7 @@ export function CaseSelection() {
     useEffect(() => {
         if (!table) return;
         const allRows = Object.keys(table.getRowModel().rowsById).map((key) => table.getRowModel().rowsById[key]);
-        allRows.forEach((row: Row<CaseUpload>) => {
+        allRows.forEach((row: Row<CaseImport>) => {
             row.toggleSelected(
                 selectAll ||
                     (selectCasesWithSequence && row.original.fasta_id !== null) ||
@@ -37,7 +38,7 @@ export function CaseSelection() {
         });
     }, [selectAll, selectCasesWithSequence, selectCasesWithOutbreak]);
 
-    const columns: ColumnDef<CaseUpload>[] = [
+    const columns: ColumnDef<CaseImport>[] = [
         {
             id: "select",
             header: ({ table }) => (

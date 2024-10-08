@@ -12,6 +12,15 @@ export interface ContactSchema {
     updated_at?: Date;
 }
 
+export type ContactImport = {
+    contact_id?: string;
+    case_id_1: string;
+    case_id_2: string;
+    type: string;
+    context: string;
+    upload: boolean;
+};
+
 export interface ContactForCase {
     id: number;
     case_id: string;

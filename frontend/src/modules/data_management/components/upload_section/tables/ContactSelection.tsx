@@ -1,18 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "../data_table/DataTable";
+import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
-import { useGetContactTableData } from "../../hooks/useGetContactTableData";
-import { ContactUpload } from "../../services/data_upload/validation/ContactsValidation";
+import { useGetContactTableData } from "@/modules/data_management/hooks/useGetContactTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { contactUploadFilterFn } from "../../helpers/dataTable";
+import { contactUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { ContactImport } from "@/modules/core/models/contacts";
 
 export function ContactSelection() {
     const changeContactUpload = useDataManagementStore((state) => state.changeContactUpload);
     const contactTableData = useGetContactTableData();
-    const columns: ColumnDef<ContactUpload>[] = [
+    const columns: ColumnDef<ContactImport>[] = [
         {
             id: "select",
             header: ({ table }) => (

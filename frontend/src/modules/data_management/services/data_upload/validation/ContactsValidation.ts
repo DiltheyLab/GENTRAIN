@@ -1,20 +1,11 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { db } from "@/modules/core/infrastructure/database";
-import { getAllCasesForPathogenWithRelationships, CaseSchema } from "@/modules/core/models/cases";
+import { CaseSchema } from "@/modules/core/models/cases";
 import { ValidationStrategy } from "./ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { ContactSchema } from "@/modules/core/models/contacts";
+import { ContactImport } from "@/modules/core/models/contacts";
 
 const CONTACT_COLUMN_NAMES = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
-
-export type ContactUpload = {
-    contact_id?: string;
-    case_id_1: string;
-    case_id_2: string;
-    type: string;
-    context: string;
-    upload: boolean;
-};
 
 export class ContactsValidation extends ValidationStrategy {
     protected validate = async (data: string[][]) => {
@@ -71,7 +62,7 @@ export class ContactsValidation extends ValidationStrategy {
     };
 
     private filterAlreadyExistingContact = async (data: string[][], cases: Map<string, CaseSchema>) => {
-        const contactUploads: { [contactId: string]: ContactUpload } = {};
+        const contactUploads: { [contactId: string]: ContactImport } = {};
         for (const index in data) {
             const row = data[index];
             const case1 = cases.get(row[0]);
@@ -97,7 +88,7 @@ export class ContactsValidation extends ValidationStrategy {
                 type: row[2],
                 context: row[3],
                 upload: true,
-            } satisfies ContactUpload;
+            } satisfies ContactImport;
         }
         return contactUploads;
     };

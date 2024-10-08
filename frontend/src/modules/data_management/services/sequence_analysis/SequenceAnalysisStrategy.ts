@@ -5,14 +5,13 @@ import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
 import { toSlug } from "@/modules/core/helpers/strings";
-import { SampleUpload } from "../data_upload/validation/SamplesValidation";
-import { BacterialQualityParameters, ViralQualityParameters } from "@/modules/core/models/samples";
+import { BacterialQualityParameters, SampleImport, ViralQualityParameters } from "@/modules/core/models/samples";
 
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
-    protected sampleData: { [fasta_id: string]: SampleUpload } = {};
+    protected sampleData: { [fasta_id: string]: SampleImport } = {};
     protected fastaIdsToAnalyse: string[];
     protected finishedFastaIds: string[];
     protected roomName: string;
@@ -34,7 +33,7 @@ export abstract class SequenceAnalysisStrategy {
         this.roomName = "";
     }
 
-    public setSampleData = (sampleData: { [fasta_id: string]: SampleUpload }) => {
+    public setSampleData = (sampleData: { [fasta_id: string]: SampleImport }) => {
         this.sampleData = sampleData;
     };
 

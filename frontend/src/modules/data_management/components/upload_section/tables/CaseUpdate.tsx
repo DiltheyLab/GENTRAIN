@@ -1,28 +1,27 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { DataTable } from "../data_table/DataTable";
-import { CaseUpload } from "../../services/data_upload/validation/CasesValidation";
+import { DataTable } from "@/modules/data_management/components/data_table/DataTable";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { useDataManagementStore } from "../../stores/dataManagement";
-import { useGetExistingCasesTableData } from "../../hooks/useGetExistingCasesTableData";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { useGetExistingCasesTableData } from "@/modules/data_management/hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { caseUploadFilterFn } from "../../helpers/dataTable";
+import { caseUploadFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
     const existingCasesTableData = useGetExistingCasesTableData();
 
-    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>) => {
+    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseUpload: CaseImport }>) => {
         const updatedCase = row.original.caseUpload;
         updatedCase.upload = !updatedCase.upload;
         changeExistingCase(row.original.caseUpload.case_id!, {
             caseUpload: updatedCase,
         });
     };
-    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseUpload }>[] = [
+    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseUpload: CaseImport }>[] = [
         {
             id: "select",
             header: ({ table }) => (

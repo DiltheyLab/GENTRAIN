@@ -4,14 +4,14 @@ import { getToastDescription } from "@/modules/core/helpers/errors";
 import { useTranslation } from "react-i18next";
 import { ZodError } from "zod";
 import { Dialog, DialogContent, DialogFooter } from "@/modules/core/components/ui/Dialog";
-import { CaseSelection } from "./CaseSelection";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
-import { CasesPersistence } from "../../services/data_upload/persistence/CasesPersistence";
-import { CaseUpdate } from "./CaseUpdate";
-import { useGetCaseUploads } from "../../hooks/useGetCaseUploads";
+import { CasesPersistence } from "@/modules/data_management/services/data_upload/persistence/CasesPersistence";
+import { useGetCaseUploads } from "@/modules/data_management/hooks/useGetCaseUploads";
+import { CaseSelection } from "@/modules/data_management/components/upload_section/tables/CaseSelection";
+import { CaseUpdate } from "@/modules/data_management/components/upload_section/tables/CaseUpdate";
 
-export const CasesUpload = ({ onSubmit }: { onSubmit: () => void }) => {
+export const CaseUpload = ({ onSubmit }: { onSubmit: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const caseUploads = useGetCaseUploads();

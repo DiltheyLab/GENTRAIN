@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDataManagementStore } from "../stores/dataManagement";
-import { SampleUpload } from "../services/data_upload/validation/SamplesValidation";
+import { SampleImport } from "@/modules/core/models/samples";
 
 export const useGetSampleTableData = () => {
     const sampleUploads = useDataManagementStore((state) => state.sampleUploads);
-    const [tableData, setTableData] = useState<SampleUpload[]>([]);
+    const [tableData, setTableData] = useState<SampleImport[]>([]);
 
     useEffect(() => {
-        const cases: SampleUpload[] = [];
+        const cases: SampleImport[] = [];
         for (const fastaId of Object.keys(sampleUploads)) {
             const currentSample = {
                 fasta_id: fastaId,

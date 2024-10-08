@@ -1,6 +1,6 @@
-import { CasesUpload } from "./CasesUpload";
-import { SamplesUpload } from "./SamplesUpload";
-import { ContactsUpload } from "./ContactsUpload";
+import { CaseUpload } from "@/modules/data_management/components/upload_section/CaseUpload";
+import { SampleUpload } from "@/modules/data_management/components/upload_section/SampleUpload";
+import { ContactUpload } from "@/modules/data_management/components/upload_section/ContactUpload";
 import { useGetFileReadingStrategy } from "../../hooks/useGetFileReadingStrategy";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
@@ -8,10 +8,10 @@ import { useRef } from "react";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { t } from "i18next";
 import { formatInArray } from "@/modules/core/helpers/files";
-import { ValidationStrategy } from "../../services/data_upload/validation/ValidationStrategy";
-import { ContactsValidation } from "../../services/data_upload/validation/ContactsValidation";
-import { SamplesValidation } from "../../services/data_upload/validation/SamplesValidation";
-import { CasesValidation } from "../../services/data_upload/validation/CasesValidation";
+import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { ContactsValidation } from "@/modules/data_management/services/data_upload/validation/ContactsValidation";
+import { SamplesValidation } from "@/modules/data_management/services/data_upload/validation/SamplesValidation";
+import { CasesValidation } from "@/modules/data_management/services/data_upload/validation/CasesValidation";
 
 export const UploadSection = () => {
     const fileReadingStrategy = useGetFileReadingStrategy();
@@ -90,7 +90,7 @@ export const UploadSection = () => {
                             />
                         </div>
                     </div>
-                    <CasesUpload onSubmit={resetUpload} />
+                    <CaseUpload onSubmit={resetUpload} />
                     <div ref={containerRef} className="flex flex-col gap-3">
                         <div className="flex flex-row items-end gap-3">
                             <FileUploadButton
@@ -100,7 +100,7 @@ export const UploadSection = () => {
                             />
                         </div>
                     </div>
-                    <SamplesUpload onSubmit={resetUpload} />
+                    <SampleUpload onSubmit={resetUpload} />
                     <div ref={containerRef} className="flex flex-col gap-3">
                         <div className="flex flex-row items-end gap-3">
                             <FileUploadButton
@@ -110,7 +110,7 @@ export const UploadSection = () => {
                             />
                         </div>
                     </div>
-                    <ContactsUpload onSubmit={resetUpload} />
+                    <ContactUpload onSubmit={resetUpload} />
                 </>
             )}
         </>
