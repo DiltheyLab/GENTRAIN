@@ -31,7 +31,7 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
 
     public getQualityParameters = (sequence: string) => {
         const nCount = (sequence.match(/N/g) || []).length;
-        const ambiguityCharacterCount = (sequence.match(/BDHKMNRSUVWY/g) || []).length;
+        const ambiguityCharacterCount = (sequence.match(/[BDHKMRSUVWY]/g) || []).length;
         return {
             sequence_length: sequence.length,
             n_count: nCount,
