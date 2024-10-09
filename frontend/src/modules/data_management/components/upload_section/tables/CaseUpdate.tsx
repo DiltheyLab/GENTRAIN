@@ -8,21 +8,21 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { useGetExistingCasesTableData } from "@/modules/data_management/hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { caseImportFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { caseUpdateFilterFn } from "@/modules/data_management/helpers/dataTable";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
     const existingCasesTableData = useGetExistingCasesTableData();
 
-    const changeUploadValueOfRow = (row: Row<{ existingCase: CaseWithRelationships; caseImport: CaseImport }>) => {
-        const updatedCase = row.original.caseImport;
+    const changeUploadValueOfRow = (row: Row<CaseImport & { existingCase: CaseWithRelationships }>) => {
+        const updatedCase = row.original;
         updatedCase.upload = !updatedCase.upload;
-        changeExistingCase(row.original.caseImport.case_id!, {
+        changeExistingCase(row.original.case_id!, {
             caseImport: updatedCase,
         });
     };
 
-    const columns: ColumnDef<{ existingCase: CaseWithRelationships; caseImport: CaseImport }>[] = [
+    const caseUpdateColumns: ColumnDef<CaseImport & { existingCase: CaseWithRelationships }>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -66,11 +66,7 @@ export function CaseUpdate() {
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <>
-                    <div>{row.original.existingCase.case_id}</div>
-                </>
-            ),
+            cell: ({ row }) => <>{row.original.case_id}</>,
         },
         {
             accessorKey: "fasta_id",
@@ -88,10 +84,10 @@ export function CaseUpdate() {
             },
             cell: ({ row }) => (
                 <>
-                    {row.original.existingCase.fasta_id !== row.original.caseImport.fasta_id && (
+                    {row.original.existingCase.fasta_id !== row.original.fasta_id && (
                         <div className="line-through">{row.original.existingCase.fasta_id}</div>
                     )}
-                    <div>{row.original.caseImport.fasta_id}</div>
+                    <div>{row.original.fasta_id}</div>
                 </>
             ),
         },
@@ -111,10 +107,10 @@ export function CaseUpdate() {
             },
             cell: ({ row }) => (
                 <>
-                    {row.original.existingCase.outbreak?.name !== row.original.caseImport.outbreak && (
+                    {row.original.existingCase.outbreak?.name !== row.original.outbreak && (
                         <div className="line-through">{row.original.existingCase.outbreak?.name}</div>
                     )}
-                    <div>{row.original.caseImport.outbreak}</div>
+                    <div>{row.original.outbreak}</div>
                 </>
             ),
         },
@@ -127,11 +123,11 @@ export function CaseUpdate() {
                     <>
                         {groups &&
                             groups.map((group) => (
-                                <>
+                                <div key={`${row.original.case_id}_${group.category}_${group.name}`}>
                                     <p className="block">
                                         <b>{group.category}:</b> {group.name}
                                     </p>
-                                </>
+                                </div>
                             ))}
                     </>
                 );
@@ -142,11 +138,10 @@ export function CaseUpdate() {
             header: "Registrierungsdatum",
             cell: ({ row }) => (
                 <>
-                    {formatDate(row.original.existingCase.registered_at) !==
-                        formatDate(row.original.caseImport.registered_at) && (
+                    {formatDate(row.original.existingCase.registered_at) !== formatDate(row.original.registered_at) && (
                         <div className="line-through">{formatDate(row.original.existingCase.registered_at)}</div>
                     )}
-                    <div>{formatDate(row.original.caseImport.registered_at)}</div>
+                    <div>{formatDate(row.original.registered_at)}</div>
                 </>
             ),
         },
@@ -162,9 +157,9 @@ export function CaseUpdate() {
             {existingCasesTableData && (
                 <DataTable
                     data={existingCasesTableData}
-                    columns={columns}
+                    columns={caseUpdateColumns}
                     pageSize={5}
-                    filterFn={caseImportFilterFn}
+                    filterFn={caseUpdateFilterFn}
                     onRowClick={(row: any) => {
                         row.toggleSelected(!row.getIsSelected());
                         if (!row.original.caseImport.case_id) return;

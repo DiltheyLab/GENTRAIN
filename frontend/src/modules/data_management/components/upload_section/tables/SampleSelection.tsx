@@ -13,7 +13,7 @@ export function SampleSelection() {
     const sampleTableData = useGetSampleTableData();
     const changeSampleImport = useDataManagementStore((state) => state.changeSampleImport);
     const activePathogen = useCoreStore((state) => state.activePathogen);
-    const columns: ColumnDef<SampleImport>[] = [
+    const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -95,7 +95,7 @@ export function SampleSelection() {
             <div className="p-2">
                 <DataTable
                     data={sampleTableData}
-                    columns={columns.concat(
+                    columns={sampleSelectionColumns.concat(
                         activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? viralColumns : bacterialColumns
                     )}
                     pageSize={5}

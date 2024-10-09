@@ -12,7 +12,7 @@ import { contactImportFilterFn } from "@/modules/data_management/helpers/dataTab
 export function ContactSelection() {
     const changeContactImport = useDataManagementStore((state) => state.changeContactImport);
     const contactTableData = useGetContactTableData();
-    const columns: ColumnDef<ContactImport>[] = [
+    const contactSelectionColumns: ColumnDef<ContactImport>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -117,7 +117,7 @@ export function ContactSelection() {
             <div className="p-2">
                 <DataTable
                     data={contactTableData}
-                    columns={columns}
+                    columns={contactSelectionColumns}
                     pageSize={5}
                     filterFn={contactImportFilterFn}
                     onRowClick={(row: any) => {

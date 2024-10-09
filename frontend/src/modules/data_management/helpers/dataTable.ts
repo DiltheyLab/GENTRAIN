@@ -24,6 +24,17 @@ export const caseImportFilterFn = (row: any, _columnId: any, value: string, _add
     );
 };
 
+export const caseUpdateFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return (
+        caseIdContainsValue(row.original, value) ||
+        existingAndImportedFastaIdContainsValue(row.original, value) ||
+        existingAndImportedOutbreakNameContainsValue(row.original, value) ||
+        existingAndImportedCategoryNameContainsValue(row.original, value) ||
+        existingAndImportedGroupNameContainsValue(row.original, value)
+    );
+};
+
 export const sampleImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return caseIdContainsValue(row.original, value) || fastaIdContainsValue(row.original, value);
@@ -61,6 +72,19 @@ const fastaIdContainsValue = (data: CaseWithRelationships, value: string) => {
     return data.fasta_id?.toLowerCase().includes(value);
 };
 
+const existingAndImportedFastaIdContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.fasta_id && data.fasta_id?.toLowerCase().includes(value)) {
+        return true;
+    }
+    if (data.existingCase.fasta_id && data.existingCase.fasta_id?.toLowerCase().includes(value)) {
+        return true;
+    }
+    return false;
+};
+
 const lineageContainsValue = (data: CaseWithRelationships, value: string) => {
     if (!data.sample?.lineage) {
         return false;
@@ -81,9 +105,51 @@ const categoryNameContainsValue = (data: CaseWithRelationships | CaseImport, val
     return false;
 };
 
+const existingAndImportedCategoryNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.groups) {
+        for (const group of data.groups) {
+            if (group.category.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    if (data.existingCase.groups) {
+        for (const group of data.existingCase.groups) {
+            if (group.category?.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
 const groupNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {
     if (data.groups) {
         for (const group of data.groups) {
+            if (group.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+const existingAndImportedGroupNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.groups) {
+        for (const group of data.groups) {
+            if (group.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    if (data.existingCase.groups) {
+        for (const group of data.existingCase.groups) {
             if (group.name.toLowerCase().includes(value)) {
                 return true;
             }
@@ -99,6 +165,19 @@ const outbreakNameContainsValue = (data: CaseWithRelationships | CaseImport, val
         } else if (data.outbreak.toString().toLowerCase().includes(value)) {
             return true;
         }
+    }
+    return false;
+};
+
+const existingAndImportedOutbreakNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.outbreak && data.outbreak.toString().toLowerCase().includes(value)) {
+        return true;
+    }
+    if (data.existingCase.outbreak && data.existingCase.outbreak?.name.toString().toLowerCase().includes(value)) {
+        return true;
     }
     return false;
 };
