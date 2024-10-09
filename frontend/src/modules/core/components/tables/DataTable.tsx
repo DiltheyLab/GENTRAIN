@@ -48,6 +48,7 @@ export const DataTable = ({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [globalFilter, setGlobalFilter] = useState("");
+    const [initializedRowSelection, setInitializedRowSelection] = useState(false);
 
     const table = useReactTable({
         data,
@@ -76,9 +77,13 @@ export const DataTable = ({
     });
 
     useEffect(() => {
-        if (preselectRows) {
-            table.toggleAllRowsSelected();
+        if (!initializedRowSelection && preselectRows && data.length > 0) {
+            table.toggleAllPageRowsSelected();
+            setInitializedRowSelection(true);
         }
+    }, [data]);
+
+    useEffect(() => {
         if (table && onInit) {
             onInit(table);
         }
