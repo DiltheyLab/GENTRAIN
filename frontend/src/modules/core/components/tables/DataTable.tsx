@@ -78,7 +78,7 @@ export const DataTable = ({
 
     useEffect(() => {
         if (!initializedRowSelection && preselectRows && data.length > 0) {
-            table.toggleAllPageRowsSelected();
+            table.toggleAllRowsSelected();
             setInitializedRowSelection(true);
         }
     }, [data]);
