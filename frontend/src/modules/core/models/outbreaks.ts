@@ -5,6 +5,7 @@ export interface OutbreakSchema {
     id: number;
     name: string;
     pathogen_id?: number;
+    case_count?: number;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -20,6 +21,24 @@ export const getOutbreaksForPathogenId = async (pathogenId: number) => {
         .toArray()
         .then((outbreaks) => outbreaks.sort((a, b) => a.name.localeCompare(b.name)));
     return outbreaksForPathogen;
+};
+
+export const getOutbreaksWithCaseCountForPathogenId = async (pathogenId: number) => {
+    let outbreaksForPathogen = await db.outbreaks
+        .where({ pathogen_id: pathogenId })
+        .toArray()
+        .then((outbreaks) => outbreaks.sort((a, b) => a.name.localeCompare(b.name)));
+
+    for (const outbreak of outbreaksForPathogen) {
+        outbreak.case_count = await getOutbreakCaseCount(outbreak.id);
+    }
+
+    return outbreaksForPathogen;
+};
+
+export const getOutbreakCaseCount = async (outbreakId: number) => {
+    const caseCount = await db.cases.where({ outbreak_id: outbreakId }).count();
+    return caseCount;
 };
 
 export const deleteOutbreaksByPathogenId = async (pathogen_id: number) => {
