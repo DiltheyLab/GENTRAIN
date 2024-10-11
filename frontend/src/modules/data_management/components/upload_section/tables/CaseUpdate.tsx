@@ -9,7 +9,6 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { useGetExistingCasesTableData } from "@/modules/data_management/hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { caseUpdateFilterFn } from "@/modules/data_management/helpers/dataTable";
-import { remove } from "lodash";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);

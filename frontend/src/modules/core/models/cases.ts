@@ -9,7 +9,7 @@ import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
-import { Collection, WhereClause } from "dexie";
+import { Collection } from "dexie";
 
 export interface CaseSchema {
     id: number;
