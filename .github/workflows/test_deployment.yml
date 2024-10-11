@@ -44,6 +44,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          passphrase: ${{secrets.GENTRAIN_PASSWORD_TEST_SERVER}}
           port: ${{ vars.SSH_PORT_TEST_SERVER }}
           script_stop: true
           script: |
@@ -75,6 +76,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          passphrase: ${{secrets.GENTRAIN_PASSWORD_TEST_SERVER}}
           port: ${{ vars.SSH_PORT_TEST_SERVER }}
           script_stop: true
           script: |
@@ -97,6 +99,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          passphrase: ${{secrets.GENTRAIN_PASSWORD_TEST_SERVER}}
           port: ${{ vars.SSH_PORT_TEST_SERVER }}
           script_stop: true
           script: |
