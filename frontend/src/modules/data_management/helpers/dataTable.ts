@@ -1,3 +1,4 @@
+import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactImport } from "@/modules/core/models/contacts";
 
@@ -9,7 +10,8 @@ export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _a
         lineageContainsValue(row.original, value) ||
         outbreakNameContainsValue(row.original, value) ||
         groupNameContainsValue(row.original, value) ||
-        categoryNameContainsValue(row.original, value)
+        categoryNameContainsValue(row.original, value) ||
+        registeredAtContainsValue(row.original, value)
     );
 };
 
@@ -20,7 +22,19 @@ export const caseImportFilterFn = (row: any, _columnId: any, value: string, _add
         fastaIdContainsValue(row.original, value) ||
         outbreakNameContainsValue(row.original, value) ||
         groupNameContainsValue(row.original, value) ||
-        categoryNameContainsValue(row.original, value)
+        categoryNameContainsValue(row.original, value) ||
+        registeredAtContainsValue(row.original, value)
+    );
+};
+
+export const caseUpdateFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+    value = value.toLowerCase();
+    return (
+        caseIdContainsValue(row.original, value) ||
+        existingAndImportedFastaIdContainsValue(row.original, value) ||
+        existingAndImportedOutbreakNameContainsValue(row.original, value) ||
+        existingAndImportedCategoryNameContainsValue(row.original, value) ||
+        existingAndImportedGroupNameContainsValue(row.original, value)
     );
 };
 
@@ -61,6 +75,19 @@ const fastaIdContainsValue = (data: CaseWithRelationships, value: string) => {
     return data.fasta_id?.toLowerCase().includes(value);
 };
 
+const existingAndImportedFastaIdContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.fasta_id && data.fasta_id?.toLowerCase().includes(value)) {
+        return true;
+    }
+    if (data.existingCase.fasta_id && data.existingCase.fasta_id?.toLowerCase().includes(value)) {
+        return true;
+    }
+    return false;
+};
+
 const lineageContainsValue = (data: CaseWithRelationships, value: string) => {
     if (!data.sample?.lineage) {
         return false;
@@ -81,9 +108,51 @@ const categoryNameContainsValue = (data: CaseWithRelationships | CaseImport, val
     return false;
 };
 
+const existingAndImportedCategoryNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.groups) {
+        for (const group of data.groups) {
+            if (group.category.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    if (data.existingCase.groups) {
+        for (const group of data.existingCase.groups) {
+            if (group.category?.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
 const groupNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {
     if (data.groups) {
         for (const group of data.groups) {
+            if (group.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+const existingAndImportedGroupNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.groups) {
+        for (const group of data.groups) {
+            if (group.name.toLowerCase().includes(value)) {
+                return true;
+            }
+        }
+    }
+    if (data.existingCase.groups) {
+        for (const group of data.existingCase.groups) {
             if (group.name.toLowerCase().includes(value)) {
                 return true;
             }
@@ -101,4 +170,27 @@ const outbreakNameContainsValue = (data: CaseWithRelationships | CaseImport, val
         }
     }
     return false;
+};
+
+const existingAndImportedOutbreakNameContainsValue = (
+    data: CaseImport & { existingCase: CaseWithRelationships },
+    value: string
+) => {
+    if (data.outbreak && data.outbreak.toString().toLowerCase().includes(value)) {
+        return true;
+    }
+    if (data.existingCase.outbreak && data.existingCase.outbreak?.name.toString().toLowerCase().includes(value)) {
+        return true;
+    }
+    return false;
+};
+
+const registeredAtContainsValue = (
+    data: CaseWithRelationships | CaseImport | (CaseImport & { existingCase: CaseWithRelationships }),
+    value: string
+) => {
+    if (!data.registered_at) {
+        return false;
+    }
+    return formatDate(data.registered_at).toLowerCase().includes(value);
 };

@@ -60,6 +60,7 @@ export const analysesTableColumns: ColumnDef<AnalysisSchema>[] = [
         cell: ({ row }) => {
             const created_at = row.original.created_at;
             if (!created_at) return;
+
             return <p>{formatDate(created_at)}</p>;
         },
     },

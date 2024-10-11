@@ -20,7 +20,7 @@ import { cn } from "../../helpers/cn";
 type DataTableProps = {
     data: any[];
     columns: ColumnDef<any>[];
-    enableFilter?: boolean;
+    enableSearch?: boolean;
     filterPlaceholder?: string;
     pageSize?: number;
     filterFn?: ((row: any, _columnId: any, value: string, _addMeta: any) => boolean) | undefined;
@@ -34,7 +34,7 @@ type DataTableProps = {
 export const DataTable = ({
     data,
     columns,
-    enableFilter = true,
+    enableSearch = true,
     filterPlaceholder = "Daten durchsuchen...",
     pageSize = 10,
     filterFn = undefined,
@@ -48,6 +48,7 @@ export const DataTable = ({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [globalFilter, setGlobalFilter] = useState("");
+    const [initializedRowSelection, setInitializedRowSelection] = useState(false);
 
     const table = useReactTable({
         data,
@@ -76,9 +77,15 @@ export const DataTable = ({
     });
 
     useEffect(() => {
-        if (preselectRows) {
+        // preselect all rows if corresponding flag is set to true
+        if (!initializedRowSelection && preselectRows && data.length > 0) {
             table.toggleAllRowsSelected();
+            setInitializedRowSelection(true);
         }
+    }, [data]);
+
+    useEffect(() => {
+        // execute passed onInit-method when component is mounted
         if (table && onInit) {
             onInit(table);
         }
@@ -86,20 +93,21 @@ export const DataTable = ({
 
     return (
         <div className={cn("w-full overflow-x-auto pl-2 -ml-2 pt-2 -mt-2", className)}>
-            {enableFilter && (
+            {(enableSearch || actions) && (
                 <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
-                    <Input
-                        placeholder={filterPlaceholder}
-                        value={(globalFilter as string) ?? ""}
-                        onChange={(event) => {
-                            setGlobalFilter(event.target.value);
-                        }}
-                        className="max-w-sm"
-                    />
-                    <div className="flex flex-wrap">{actions !== undefined && actions(table)}</div>
+                    {enableSearch && (
+                        <Input
+                            placeholder={filterPlaceholder}
+                            value={(globalFilter as string) ?? ""}
+                            onChange={(event) => {
+                                setGlobalFilter(event.target.value);
+                            }}
+                            className="max-w-sm"
+                        />
+                    )}
+                    {actions && <div className="flex flex-wrap">{actions(table)}</div>}
                 </div>
             )}
-
             <div className="rounded-md border">
                 <Table className="w-full">
                     <TableHeader>

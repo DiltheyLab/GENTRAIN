@@ -1,7 +1,7 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/infrastructure/database";
-import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
+import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
@@ -27,16 +27,6 @@ export class CasesValidation extends ValidationStrategy {
         };
     };
 
-    private collectGroups = (header: string[], row: string[]) => {
-        const groups: { name: string; category: string }[] = [];
-        for (let i = 4; i <= 6; i++) {
-            if (row[i] !== "") {
-                groups.push({ category: header[i], name: row[i] });
-            }
-        }
-        return groups;
-    };
-
     private isCasesHeaderValid = (header: string[], columnNames: string[]) => {
         // exclude additional category columns from header validation
         const requiredHeaderColumnNames = header.slice(0, CASES_COLUMN_NAMES.length);
@@ -54,7 +44,8 @@ export class CasesValidation extends ValidationStrategy {
         }
 
         const caseIds = data.map((row) => row[0]);
-        const cases = await db.cases.where("case_id").anyOf(Array.from(caseIds)).toArray();
+
+        let cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
         const caseMap = new Map<string, CaseWithRelationships>();
         for (const caseData of cases) {
             caseMap.set(caseData.case_id, caseData);
@@ -70,9 +61,10 @@ export class CasesValidation extends ValidationStrategy {
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             const existingCase = caseMap.get(row[0]);
+
             const caseImport = {
                 fasta_id: row[1] !== "" ? row[1] : null,
-                groups: this.collectGroups(header, row),
+                groups: this.collectNewGroups(header, row, existingCase),
                 outbreak: row[3] !== "" ? row[3] : null,
                 registered_at: parseGermanDateFormat(row[2]),
                 upload: true,
@@ -89,10 +81,30 @@ export class CasesValidation extends ValidationStrategy {
         return casesToUpload;
     };
 
+    private collectNewGroups = (header: string[], row: string[], existingCase: CaseWithRelationships | undefined) => {
+        const groups: { name: string; category: string; remaining: boolean }[] = [];
+
+        for (let i = 4; i <= 6; i++) {
+            if (row[i] !== "") {
+                const group = { category: header[i], name: row[i], remaining: false };
+                const groupExists = existingCase
+                    ? existingCase.groups?.some((existingGroup) => {
+                          return existingGroup.category?.name === group.category && existingGroup.name === group.name;
+                      })
+                    : false;
+                group.remaining = groupExists ?? false;
+
+                groups.push(group);
+            }
+        }
+        return groups;
+    };
+
     private caseImportEqualsExistingCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
         return (
             ((!caseImport.fasta_id && !caseImport.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
             ((!caseImport.outbreak && !caseImport.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
+            caseImport.groups.filter((group) => !group.remaining).length === 0 &&
             formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
         );
     };
