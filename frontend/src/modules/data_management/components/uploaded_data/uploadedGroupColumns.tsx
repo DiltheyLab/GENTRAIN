@@ -1,10 +1,10 @@
 import { Button } from "@/modules/core/components/ui/Button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { OutbreakSchema } from "@/modules/core/models/outbreaks";
-import { OutbreakEditDialog } from "./OutbreakEditDialog";
+import { GroupSchema } from "@/modules/core/models/groups";
+import { GroupEditDialog } from "./GroupEditDialog";
 
-export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
+export const uploadedGroupColumns: ColumnDef<GroupSchema>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -19,7 +19,7 @@ export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <p className="capitalize font-medium">{row.original.name}</p>,
+        cell: ({ row }) => <p className="font-medium">{row.original.name}</p>,
     },
     {
         accessorKey: "case_count",
@@ -58,6 +58,6 @@ export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
         enableHiding: false,
         enableSorting: false,
         header: () => <p>Aktionen</p>,
-        cell: ({ row }) => <OutbreakEditDialog row={row} />,
+        cell: ({ row }) => <GroupEditDialog row={row} />,
     },
 ];

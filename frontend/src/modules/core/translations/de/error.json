@@ -18,7 +18,13 @@
     "outbreak": {
         "title": "Fehler beim Speichern des Ausbruchs",
         "OutbreakIdIsNotInStore": "Der Ausbruch konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
-        "OutbreakIdIsNotInDB": "Die Analyse konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "OutbreakIdIsNotInDB": "Der Ausbruch konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "PathogenNotSelected": "Bitte wählen Sie zunächst ein Pathogen aus."
+    },
+    "group": {
+        "title": "Fehler beim Speichern der Gruppe",
+        "OutbreakIdIsNotInStore": "Die Gruppe konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "OutbreakIdIsNotInDB": "Die Gruppe konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
         "PathogenNotSelected": "Bitte wählen Sie zunächst ein Pathogen aus."
     }
 }

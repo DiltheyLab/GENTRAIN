@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "@/modules/core/infrastructure/database";
-import { GroupSchema } from "./groups";
+import { getGroupCaseCount, getGroupSequencedCaseCount, GroupSchema } from "./groups";
 
 export interface CategorySchema {
     id: number;
@@ -26,6 +26,23 @@ export const getAllCategoriesWithGroups = async () => {
         // retrieve groups schema object
         const groups = await db.groups.where({ category_id: categories[key].id }).toArray();
         categoriesWithGroups[key].groups = groups;
+    }
+    return categoriesWithGroups;
+};
+
+export const getCategoriesWithGroupsAndCaseCountForActivePathogen = async (pathogenId: number) => {
+    const categories = await db.categories.where({ pathogen_id: pathogenId }).toArray();
+    let categoriesWithGroups: CategoriesWithGroups[] = [];
+    for (const key in categories) {
+        categoriesWithGroups[key] = categories[key];
+        // retrieve groups schema object
+        const groups = await db.groups.where({ category_id: categories[key].id }).toArray();
+        categoriesWithGroups[key].groups = groups;
+        categoriesWithGroups[key].groups.map(async (group) => {
+            group.case_count = await getGroupCaseCount(group.id);
+            group.sequenced_case_count = await getGroupSequencedCaseCount(group.id);
+            return group;
+        });
     }
     return categoriesWithGroups;
 };

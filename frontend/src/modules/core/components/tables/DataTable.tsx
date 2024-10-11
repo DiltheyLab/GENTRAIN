@@ -108,7 +108,7 @@ export const DataTable = ({
                     {actions && <div className="flex flex-wrap">{actions(table)}</div>}
                 </div>
             )}
-            <div className="rounded-md border">
+            <div className="rounded-md border bg-white">
                 <Table className="w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (

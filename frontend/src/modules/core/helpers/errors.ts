@@ -43,3 +43,18 @@ export const handleOutbreakError = (error: any) => {
     }
     console.error("Error while saving analysis", error);
 };
+
+export const handleGroupError = (error: any) => {
+    if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
+        toast({
+            title: t([`error:group.title`]),
+            description:
+                getToastDescription(error, "group") ?? "Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
+            duration: 10000,
+            variant: "destructive",
+        });
+        console.log(error, error.message);
+        return;
+    }
+    console.error("Error while saving analysis", error);
+};

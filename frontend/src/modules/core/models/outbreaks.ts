@@ -6,6 +6,7 @@ export interface OutbreakSchema {
     name: string;
     pathogen_id?: number;
     case_count?: number;
+    sequenced_case_count?: number;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -31,6 +32,7 @@ export const getOutbreaksWithCaseCountForPathogenId = async (pathogenId: number)
 
     for (const outbreak of outbreaksForPathogen) {
         outbreak.case_count = await getOutbreakCaseCount(outbreak.id);
+        outbreak.sequenced_case_count = await getOutbreakSequencedCaseCount(outbreak.id);
     }
 
     return outbreaksForPathogen;
@@ -38,6 +40,15 @@ export const getOutbreaksWithCaseCountForPathogenId = async (pathogenId: number)
 
 export const getOutbreakCaseCount = async (outbreakId: number) => {
     const caseCount = await db.cases.where({ outbreak_id: outbreakId }).count();
+    return caseCount;
+};
+
+export const getOutbreakSequencedCaseCount = async (outbreakId: number) => {
+    const caseCount = await db.cases
+        .where("outbreak_id")
+        .equals(outbreakId)
+        .and((currentCase) => currentCase.fasta_id !== null)
+        .count();
     return caseCount;
 };
 
