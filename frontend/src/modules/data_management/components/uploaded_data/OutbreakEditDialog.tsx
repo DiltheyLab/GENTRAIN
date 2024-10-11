@@ -14,7 +14,6 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
 import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
@@ -27,10 +26,13 @@ type OutbreakEditDialogProps = {
 
 export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [outbreakName, setOutbreakName] = useState("");
+    const [outbreakName, setOutbreakName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const outbreaks = useGetOutbreaksForActivePathogen();
-    const { outbreakNameNotValid, isUniqueName } = validateOutbreakName(outbreaks, outbreakName);
+    const { outbreakNameNotValid, isUniqueName } = validateOutbreakName(
+        outbreaks?.filter((outbreak) => outbreak.name !== row.original.name),
+        outbreakName
+    );
 
     const updateOutbreak = async () => {
         try {
@@ -67,7 +69,7 @@ export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
                         id="name"
                         className={cn("w-full", !isUniqueName() && "focus-visible:ring-red-500")}
                         value={outbreakName}
-                        placeholder="Ausbruchsname"
+                        placeholder={row.original.name}
                         onChange={(e) => {
                             setOutbreakName(e.target.value);
                         }}

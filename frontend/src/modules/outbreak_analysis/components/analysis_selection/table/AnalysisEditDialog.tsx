@@ -26,10 +26,13 @@ type AnalysisEditDialogProps = {
 
 export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [analysisName, setAnalysisName] = useState("");
+    const [analysisName, setAnalysisName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
-    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(analyses, analysisName);
+    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(
+        analyses?.filter((analysis) => analysis.name !== row.original.name),
+        analysisName
+    );
 
     const updateAnalysis = async () => {
         try {
