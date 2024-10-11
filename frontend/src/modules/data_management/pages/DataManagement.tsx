@@ -12,7 +12,6 @@ import { uploadedCaseColumns } from "@/modules/data_management/components/upload
 import { uploadedDataFilterFn } from "@/modules/data_management/helpers/dataTable";
 import { uploadedOutbreakColumns } from "../components/uploaded_data/uploadedOutbreakColumns";
 import { useGetOutbreaksWithCaseCountForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksWithCaseCountForActivePathogen";
-
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);

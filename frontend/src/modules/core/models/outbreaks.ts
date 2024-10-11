@@ -76,3 +76,9 @@ export const createOutbreak = async (name: string, pathogenId: number) => {
     const outbreakId = await db.outbreaks.add(dto);
     return outbreakId;
 };
+
+export const updateOutbreakName = async (id: number, name: string) => {
+    return await db.outbreaks.update(id, {
+        name: name,
+    });
+};

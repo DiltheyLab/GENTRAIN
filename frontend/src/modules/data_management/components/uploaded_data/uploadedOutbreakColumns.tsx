@@ -3,6 +3,7 @@ import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { OutbreakEditDialog } from "./OutbreakEditDialog";
 
 export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
     {
@@ -54,6 +55,13 @@ export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <p className="capitalize font-medium">{row.original.case_count}</p>,
+        cell: ({ row }) => row.original.case_count,
+    },
+    {
+        id: "actions",
+        enableHiding: false,
+        enableSorting: false,
+        header: () => <p>Aktionen</p>,
+        cell: ({ row }) => <OutbreakEditDialog row={row} />,
     },
 ];
