@@ -48,8 +48,8 @@ jobs:
           port: ${{ vars.SSH_PORT_TEST_SERVER }}
           script_stop: true
           script: |
-            echo "Verbunden mit der VM über Port-Forwarding"
             cd ${{ vars.GENTRAIN_DIR }}
+            git fetch
             git checkout ${{ vars.TEST_BRANCH }}
             git pull
             exit
