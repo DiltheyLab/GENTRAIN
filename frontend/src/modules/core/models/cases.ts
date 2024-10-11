@@ -9,6 +9,7 @@ import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
+import { Collection, WhereClause } from "dexie";
 
 export interface CaseSchema {
     id: number;
@@ -33,7 +34,7 @@ export interface CaseWithRelationships extends CaseSchema {
 export type CaseImport = {
     case_id?: string;
     fasta_id: string | null;
-    groups: { name: string; category: string }[];
+    groups: { name: string; category: string; remaining?: boolean }[];
     outbreak: string | null;
     registered_at: Date;
     upload: boolean;
@@ -51,6 +52,51 @@ export const caseRules = z.object({
 export const getAllCases = async () => {
     const cases = await db.cases.toArray();
     return cases;
+};
+
+export const getWithRelations = async (collection: Collection, includeSequenceAnalysisResult = false) => {
+    const cases = await collection.toArray();
+
+    let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
+
+    for (const currentCase of cases) {
+        let caseWithRelationships: CaseWithRelationships = currentCase;
+        // retrieve sample schema object
+        if (currentCase.fasta_id) {
+            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
+            if (sample) {
+                caseWithRelationships.sample = sample;
+                if (caseWithRelationships.sample) {
+                    const sequenceAnalysis = await db.sequence_analyses.get(
+                        caseWithRelationships.sample.sequence_analysis_id
+                    );
+                    if (sequenceAnalysis) {
+                        if (!includeSequenceAnalysisResult) {
+                            sequenceAnalysis.result = {} as ViralAnalysisResult;
+                        }
+                        caseWithRelationships.sample.sequence_analysis = sequenceAnalysis;
+                    }
+                }
+            }
+        }
+        // retrieve outbreak schema object
+        if (currentCase.outbreak_id) {
+            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
+            if (outbreak) {
+                caseWithRelationships.outbreak = outbreak;
+            }
+        }
+        // retrieve group schema objects
+        if (currentCase.group_ids.length > 0) {
+            const groups: GroupSchema[] = await getGroupsByIdsWithRelationships(currentCase.group_ids);
+            caseWithRelationships.groups = groups;
+        }
+        casesWithRelationships[currentCase.id] = caseWithRelationships;
+    }
+
+    casesWithRelationships = await collectContactsForCases(casesWithRelationships);
+
+    return Object.values(casesWithRelationships);
 };
 
 export const getCasesByConditionWithRelationships = async (

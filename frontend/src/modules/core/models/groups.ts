@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CaseImport } from "@/modules/core/models/cases";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { CategorySchema, persistCategoryIfNotExist } from "@/modules/core/models/categories";
 import { db } from "@/modules/core/infrastructure/database";
 

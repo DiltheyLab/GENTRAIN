@@ -1,3 +1,4 @@
+import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactImport } from "@/modules/core/models/contacts";
 
@@ -9,7 +10,8 @@ export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _a
         lineageContainsValue(row.original, value) ||
         outbreakNameContainsValue(row.original, value) ||
         groupNameContainsValue(row.original, value) ||
-        categoryNameContainsValue(row.original, value)
+        categoryNameContainsValue(row.original, value) ||
+        registeredAtContainsValue(row.original, value)
     );
 };
 
@@ -20,7 +22,8 @@ export const caseImportFilterFn = (row: any, _columnId: any, value: string, _add
         fastaIdContainsValue(row.original, value) ||
         outbreakNameContainsValue(row.original, value) ||
         groupNameContainsValue(row.original, value) ||
-        categoryNameContainsValue(row.original, value)
+        categoryNameContainsValue(row.original, value) ||
+        registeredAtContainsValue(row.original, value)
     );
 };
 
@@ -180,4 +183,14 @@ const existingAndImportedOutbreakNameContainsValue = (
         return true;
     }
     return false;
+};
+
+const registeredAtContainsValue = (
+    data: CaseWithRelationships | CaseImport | (CaseImport & { existingCase: CaseWithRelationships }),
+    value: string
+) => {
+    if (!data.registered_at) {
+        return false;
+    }
+    return formatDate(data.registered_at).toLowerCase().includes(value);
 };

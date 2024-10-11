@@ -9,6 +9,7 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { useGetExistingCasesTableData } from "@/modules/data_management/hooks/useGetExistingCasesTableData";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { caseUpdateFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { remove } from "lodash";
 
 export function CaseUpdate() {
     const changeExistingCase = useDataManagementStore((state) => state.changeExistingCase);
@@ -118,13 +119,42 @@ export function CaseUpdate() {
             accessorKey: "groups",
             header: "Gruppen",
             cell: ({ row }) => {
-                const groups: { name: string; category: string }[] = row.getValue("groups");
+                const updatedGroups = row.original.groups;
+                const removedGroups =
+                    row.original.existingCase.groups
+                        ?.filter((existingGroup) =>
+                            updatedGroups.some(
+                                (group) => existingGroup.category?.name === group.category && !group.remaining
+                            )
+                        )
+                        .map((group) => {
+                            return { category: group.category?.name, name: group.name, type: "remove" };
+                        }) ?? [];
+                const groups = [];
+                for (const group of removedGroups) {
+                    groups.push({ category: group.category, name: group.name, type: "remove" });
+                }
+                for (const group of updatedGroups) {
+                    groups.push({ category: group.category, name: group.name, type: "add" });
+                }
+
+                groups.sort((a: any, b: any) => {
+                    const categoryA = a.category.toUpperCase();
+                    const categoryB = b.category.toUpperCase();
+                    if (categoryA < categoryB) {
+                        return -1;
+                    }
+                    if (categoryA > categoryB) {
+                        return 1;
+                    }
+                    return 0;
+                });
                 return (
                     <>
                         {groups &&
                             groups.map((group) => (
-                                <div key={`${row.original.case_id}_${group.category}_${group.name}`}>
-                                    <p className="block">
+                                <div key={`updated_${row.original.case_id}_${group.category}_${group.name}`}>
+                                    <p className={`block ${group.type === "remove" ? "line-through" : ""}`}>
                                         <b>{group.category}:</b> {group.name}
                                     </p>
                                 </div>
@@ -162,7 +192,7 @@ export function CaseUpdate() {
                     filterFn={caseUpdateFilterFn}
                     onRowClick={(row: any) => {
                         row.toggleSelected(!row.getIsSelected());
-                        if (!row.original.caseImport.case_id) return;
+                        if (!row.original.case_id) return;
                         changeUploadValueOfRow(row);
                     }}
                     preselectRows
