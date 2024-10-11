@@ -47,7 +47,7 @@ jobs:
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
-            git checkout ${{ vars.MAIN_BRANCH }}
+            git checkout ${{ vars.PRODUCTION_BRANCH }}
             git pull
             exit
       - name: Notify Slack Action Success
