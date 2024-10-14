@@ -67,7 +67,7 @@ export const AnalysisCreation = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="primary">Neue Analyse erstellen</Button>
+                <Button variant="default">Neue Analyse erstellen</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
