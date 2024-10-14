@@ -37,7 +37,9 @@ export const TableActions = ({ row }: TableActionsProps) => {
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <AnalysisEditDialog row={row} />
+                        <span>
+                            <AnalysisEditDialog row={row} />
+                        </span>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>Analyse bearbeiten</p>
@@ -45,7 +47,9 @@ export const TableActions = ({ row }: TableActionsProps) => {
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <AnalysisDeleteAlertDialog row={row} />
+                        <span>
+                            <AnalysisDeleteAlertDialog row={row} />
+                        </span>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>Analyse löschen</p>
