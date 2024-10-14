@@ -73,6 +73,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                             setAnalysisName(e.target.value);
                         }}
                         onFocus={() => setIsTouched(true)}
+                        autoFocus
                     />
                 </div>
                 {isTouched && !isUniqueName() && (
