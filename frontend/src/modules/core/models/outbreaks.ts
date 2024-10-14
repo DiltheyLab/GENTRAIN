@@ -93,3 +93,12 @@ export const updateOutbreakName = async (id: number, name: string) => {
         name: name,
     });
 };
+
+export const getOutbreakMapForPathogenId = async (pathogenId: number) => {
+    const outbreaks = await db.outbreaks.where({ pathogen_id: pathogenId }).toArray();
+    const outbreakMap = new Map<number, OutbreakSchema>();
+    for (const outbreak of outbreaks) {
+        outbreakMap.set(outbreak.id, outbreak);
+    }
+    return outbreakMap;
+};

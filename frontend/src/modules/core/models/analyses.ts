@@ -1,5 +1,6 @@
 import { AnalysisSettings, GeneralSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { db } from "@/modules/core/infrastructure/database";
+import { getOutbreakMapForPathogenId } from "./outbreaks";
 
 export interface AnalysisSchema {
     id: number;
@@ -17,7 +18,15 @@ export const getAllAnalyses = () => {
 };
 
 export const getAnalysesForPathogenId = async (pathogenId: number) => {
-    return await db.analyses.where({ pathogen_id: pathogenId }).toArray();
+    const analyses = await db.analyses.where({ pathogen_id: pathogenId }).toArray();
+    const outbreakMap = await getOutbreakMapForPathogenId(pathogenId);
+    for (const analysis of analyses) {
+        if (analysis.analysisSettings.selectedOutbreak?.id) {
+            analysis.analysisSettings.selectedOutbreak =
+                outbreakMap.get(analysis.analysisSettings.selectedOutbreak?.id) ?? null;
+        }
+    }
+    return analyses;
 };
 
 export const createAnalysis = async (
@@ -37,8 +46,13 @@ export const createAnalysis = async (
     return await db.analyses.add(analysis);
 };
 
-export const getAnalysisByID = (id: number) => {
-    return db.analyses.get(id);
+export const getAnalysisByID = async (id: number) => {
+    const analysis = await db.analyses.get(id);
+    if (analysis?.analysisSettings.selectedOutbreak?.id) {
+        analysis.analysisSettings.selectedOutbreak =
+            (await db.outbreaks.get(analysis.analysisSettings.selectedOutbreak.id)) ?? null;
+    }
+    return analysis;
 };
 
 export const updateAnalysisSettings = async (
