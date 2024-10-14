@@ -160,6 +160,7 @@ export function CaseSelection() {
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows
+                    selectionLabel="Fällen"
                     actions={() => {
                         return (
                             <div className="flex gap-3">

@@ -26,6 +26,7 @@ type DataTableProps = {
     filterFn?: ((row: any, _columnId: any, value: string, _addMeta: any) => boolean) | undefined;
     onRowClick?: (row?: Row<any>) => void;
     preselectRows?: boolean;
+    selectionLabel?: string;
     onInit?: (table: TanStackTable<any>) => void;
     actions?: (table: TanStackTable<any>) => JSX.Element;
     className?: string;
@@ -40,6 +41,7 @@ export const DataTable = ({
     filterFn = undefined,
     onRowClick = () => {},
     preselectRows = false,
+    selectionLabel = "Einträgen",
     onInit,
     actions,
     className,
@@ -153,7 +155,7 @@ export const DataTable = ({
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
-                    Spalte(n) ausgewählt.
+                    {selectionLabel} ausgewählt.
                 </div>
                 {(table.getCanPreviousPage() || table.getCanNextPage()) && (
                     <div className="space-x-2">

@@ -126,6 +126,7 @@ export function ContactSelection() {
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows
+                    selectionLabel="Kontakten"
                 />
             </div>
         </>

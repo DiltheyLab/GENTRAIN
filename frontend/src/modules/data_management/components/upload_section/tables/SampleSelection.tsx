@@ -105,6 +105,7 @@ export function SampleSelection() {
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows
+                    selectionLabel="Sequenzen"
                 />
             </div>
         </>

@@ -62,11 +62,16 @@ export function DataManagement() {
                         </div>
                     </div>
                     {casesData && (
-                        <DataTable data={casesData} columns={uploadedCaseColumns} filterFn={uploadedDataFilterFn} />
+                        <DataTable
+                            data={casesData}
+                            columns={uploadedCaseColumns}
+                            filterFn={uploadedDataFilterFn}
+                            selectionLabel="Fällen"
+                        />
                     )}
                 </div>
                 <Accordion type="multiple">
-                    {outbreakData && (
+                    {outbreakData && outbreakData.length > 0 && (
                         <AccordionItem value="item-1">
                             <AccordionTrigger className="py-2">
                                 <h3 className="font-bold tracking-tight">Ausbrüche</h3>
@@ -76,11 +81,12 @@ export function DataManagement() {
                                     data={outbreakData ?? []}
                                     enableSearch={false}
                                     columns={uploadedOutbreakColumns}
+                                    selectionLabel="Ausbrüchen"
                                 />
                             </AccordionContent>
                         </AccordionItem>
                     )}
-                    {groupData && (
+                    {groupData && groupData.length > 0 && (
                         <AccordionItem value="item-2">
                             <AccordionTrigger className="py-2">
                                 <h3 className="font-bold tracking-tight">Gruppen</h3>
@@ -97,6 +103,7 @@ export function DataManagement() {
                                                 data={category.groups ?? []}
                                                 enableSearch={false}
                                                 columns={uploadedGroupColumns}
+                                                selectionLabel="Gruppen"
                                             />
                                         </div>
                                     );

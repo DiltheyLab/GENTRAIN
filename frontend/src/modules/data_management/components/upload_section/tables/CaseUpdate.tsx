@@ -195,6 +195,7 @@ export function CaseUpdate() {
                         changeUploadValueOfRow(row);
                     }}
                     preselectRows
+                    selectionLabel="Fällen"
                 />
             )}
         </>
