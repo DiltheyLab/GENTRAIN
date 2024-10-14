@@ -4,6 +4,9 @@ import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { analysesTableFilter } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
 import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
 import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
+import { AnalysisSchema } from "@/modules/core/models/analyses";
+import { Row } from "@tanstack/react-table";
+import { SelectedAnalysesDeleteDialog } from "../components/analysis_selection/table/SelectedAnalysesDeleteAlertDialog";
 
 export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();
@@ -21,8 +24,18 @@ export const OutbreakAnalysisOverview = () => {
                         columns={analysesTableColumns}
                         pageSize={10}
                         filterFn={analysesTableFilter}
-                        actions={() => {
-                            return <AnalysisCreation />;
+                        actions={(table) => {
+                            const selectedAnalyses: Row<AnalysisSchema>[] = table.getSelectedRowModel().flatRows;
+
+                            return (
+                                <>
+                                    <AnalysisCreation />
+                                    <SelectedAnalysesDeleteDialog
+                                        selectedAnalyses={selectedAnalyses}
+                                        disabled={selectedAnalyses.length === 0}
+                                    />
+                                </>
+                            );
                         }}
                         className="mt-8"
                         filterPlaceholder="Analyse suchen..."

@@ -18,13 +18,13 @@ import { AnalysisSchema, updateAnalysisName } from "@/modules/core/models/analys
 import { validateAnalysisName } from "@/modules/outbreak_analysis/helpers/analysisNameValidation";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 
 type AnalysisEditDialogProps = {
     row: Row<AnalysisSchema>;
 };
 
-export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
+export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDialogProps>(({ row }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [analysisName, setAnalysisName] = useState("");
     const [isTouched, setIsTouched] = useState(false);
@@ -33,6 +33,7 @@ export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
 
     const updateAnalysis = async () => {
         try {
+            setIsTouched(false);
             const analysisId = await updateAnalysisName(row.original.id, analysisName);
             if (!analysisId) {
                 throw new GentrainException("AnalysisIdIsNotInDB");
@@ -47,7 +48,7 @@ export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button size={"icon"} variant={"secondary"}>
+                <Button ref={ref} size={"icon"} variant={"secondary"}>
                     <Pencil size={15} />
                 </Button>
             </DialogTrigger>
@@ -72,7 +73,7 @@ export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
                             setAnalysisName(e.target.value);
                         }}
                         onFocus={() => setIsTouched(true)}
-                        onBlur={() => setIsTouched(false)}
+                        autoFocus
                     />
                 </div>
                 {isTouched && !isUniqueName() && (
@@ -88,4 +89,6 @@ export const AnalysisEditDialog = ({ row }: AnalysisEditDialogProps) => {
             </DialogContent>
         </Dialog>
     );
-};
+});
+
+AnalysisEditDialog.displayName = "AnalysisEditDialog";
