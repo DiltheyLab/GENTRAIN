@@ -19,6 +19,7 @@ import { useState } from "react";
 import { GroupSchema, updateGroupName } from "@/modules/core/models/groups";
 import { useGetGroupsForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsForActivePathogen";
 import { validatGroupName } from "../../helpers/groupNameValidation";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 type GroupEditDialogProps = {
     row: Row<GroupSchema>;
@@ -33,6 +34,7 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
         groups?.filter((group) => group.name !== row.original.name),
         groupName
     );
+    const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
 
     const updateGroup = async () => {
         try {
@@ -44,6 +46,7 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
             handleGroupError(error);
         } finally {
             setIsOpen(false);
+            updateCasesWithRelationships();
         }
     };
 

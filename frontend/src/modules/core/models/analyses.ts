@@ -1,6 +1,7 @@
 import { AnalysisSettings, GeneralSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { db } from "@/modules/core/infrastructure/database";
 import { getOutbreakMapForPathogenId } from "./outbreaks";
+import { GroupWithCategory } from "./groups";
 
 export interface AnalysisSchema {
     id: number;
@@ -51,6 +52,14 @@ export const getAnalysisByID = async (id: number) => {
     if (analysis?.analysisSettings.selectedOutbreak?.id) {
         analysis.analysisSettings.selectedOutbreak =
             (await db.outbreaks.get(analysis.analysisSettings.selectedOutbreak.id)) ?? null;
+        const groupIds =
+            analysis.analysisSettings.selectedBackground?.groupsWithCategories.map((group) => group.id) ?? [];
+
+        const groups = await db.groups.where("id").anyOf(groupIds).toArray();
+        analysis.analysisSettings.selectedBackground.groupsWithCategories = groups.map(async (group) => {
+            const category = await db.categories.get(group.category_id);
+            return { ...group, categoryName: category?.name ?? null } as GroupWithCategory;
+        });
     }
     return analysis;
 };
