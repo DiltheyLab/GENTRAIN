@@ -6,6 +6,7 @@ import { ColorMapGeneratorStrategy } from "@/modules/core/services/graph/ColorMa
 export const useSyncColorMapWithOutbreaks = () => {
     const outbreaks = useGetOutbreaksForActivePathogen();
     const graphSettings = useOutbreakAnalysisStore((state) => state.graphSettings);
+    const selectedOutbreak = useOutbreakAnalysisStore((state) => state.analysisSettings.selectedOutbreak);
 
     // if the user changes an outbreakname or add a new outbreak which is not already in the colormap of the analysis,
     // we have to update the colormap to show the new outbreakname with a correct color
@@ -13,7 +14,8 @@ export const useSyncColorMapWithOutbreaks = () => {
         if (!outbreaks) return;
         graphSettings.colorMap = ColorMapGeneratorStrategy.updateClustersInColorMap(
             graphSettings.colorMap,
-            outbreaks.map((outbreak) => outbreak.name)
+            outbreaks.map((outbreak) => outbreak.name),
+            selectedOutbreak?.name
         );
     }, [outbreaks]);
 };
