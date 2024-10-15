@@ -4,13 +4,13 @@ import { VisualizationPanel } from "../components/graph/VisualizationPanel";
 import { useSyncOutbreakAnalysisStoreWithDB } from "../hooks/useSyncOutbreakAnalysisStoreWithDB";
 import { useAutoSave } from "../hooks/useAutoSave";
 import { useNavigateOnPathogenChange } from "../hooks/useNavigateOnPathogenChange";
-import { useUpdateColorMapByOutbreakNameChange } from "../hooks/useUpdateColorMapByOutbreakNameChange";
+import { useSyncColorMapWithOutbreaks } from "../hooks/useSyncColorMapWithOutbreaks";
 
 export const OutbreakAnalysis = () => {
     useSyncOutbreakAnalysisStoreWithDB();
     useAutoSave();
     useNavigateOnPathogenChange();
-    useUpdateColorMapByOutbreakNameChange();
+    useSyncColorMapWithOutbreaks();
 
     return (
         <Layout>
