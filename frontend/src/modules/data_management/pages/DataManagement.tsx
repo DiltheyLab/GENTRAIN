@@ -15,21 +15,26 @@ import { useGetOutbreaksWithCaseCountForActivePathogen } from "@/modules/core/ho
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modules/core/hooks/database/categories/useGetCategoriesWithCaseCountForActivePathogen";
 import { uploadedGroupColumns } from "../components/uploaded_data/uploadedGroupColumns";
-import { InitialUploadDialog } from "../components/upload_section/InitialUploadDialog";
+import { useDataManagementStore } from "../stores/dataManagement";
+import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
+import { InitialUpload } from "../components/upload_section/InitialUpload";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const casesData = useCoreStore((state) => state.casesWithRelationships);
+    const casesForPathogen = useGetAllCasesForActivePathogenWithRelationships();
     const outbreakData = useGetOutbreaksWithCaseCountForActivePathogen();
     const groupData = useGetCategoriesWithGroupsAndCaseCountForActivePathogen();
-    const [initialModalOpened, setInitialModalOpened] = useState(false);
+
+    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const setShowInitialUpload = useDataManagementStore((state) => state.setShowInitialUpload);
 
     useEffect(() => {
-        if (!initialModalOpened && casesData.length === 0) {
-            setInitialModalOpened(false);
+        if (!showInitialUpload && casesForPathogen && casesForPathogen.length === 0) {
+            setShowInitialUpload(true);
         }
-    }, [casesData]);
+    }, [casesForPathogen]);
 
     const deleteData = async () => {
         if (activePathogen) {
@@ -42,20 +47,27 @@ export function DataManagement() {
 
     return (
         <Layout>
-            {initialModalOpened && <InitialUploadDialog />}
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-                <div className="space-y-8">
-                    <div className="flex items-center justify-between space-y-2">
-                        <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
-                            <p className="text-muted-foreground">
-                                Laden Sie hier Falldaten zu {activePathogen?.name} hoch. Zu jedem hochgeladenen Fall
-                                können Sequenz- sowie Kontaktdaten hinterlegt werden.
-                            </p>
-                        </div>
+                {showInitialUpload && (
+                    <div className="space-y-8">
+                        <InitialUpload />
                     </div>
-                    <UploadSection />
-                </div>
+                )}
+
+                {!showInitialUpload && (
+                    <div className="space-y-8 w-full">
+                        <div className="flex items-center justify-between space-y-2">
+                            <div>
+                                <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
+                                <p className="text-muted-foreground">
+                                    Laden Sie hier Falldaten zu {activePathogen?.name} hoch. Zu jedem hochgeladenen Fall
+                                    können Sequenz- sowie Kontaktdaten hinterlegt werden.
+                                </p>
+                            </div>
+                        </div>
+                        <UploadSection />
+                    </div>
+                )}
                 <Separator />
                 <div>
                     <div className="flex items-center justify-between mb-4">

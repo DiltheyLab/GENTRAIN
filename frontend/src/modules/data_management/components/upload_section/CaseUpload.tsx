@@ -10,21 +10,22 @@ import { CasesPersistence } from "@/modules/data_management/services/data_upload
 import { CaseSelection } from "@/modules/data_management/components/upload_section/tables/CaseSelection";
 import { CaseUpdate } from "@/modules/data_management/components/upload_section/tables/CaseUpdate";
 import { useGetCaseImports } from "@/modules/data_management/hooks/useGetCaseImports";
-import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
 import { CasesValidation } from "../../services/data_upload/validation/CasesValidation";
+import { FileDropzone } from "./FileDropzone";
+import { ContactRound } from "lucide-react";
 
-export const CaseUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) => {
+export const CaseUpload = () => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const caseImports = useGetCaseImports();
     const setCaseSelectionActive = useDataManagementStore((state) => state.setCaseSelectionActive);
     const caseSelectionActive = useDataManagementStore((state) => state.caseSelectionActive);
+    const setInitialUploadStep = useDataManagementStore((state) => state.setInitialUploadStep);
 
     const handleSubmit = async () => {
         const persistenceStrategy = new CasesPersistence();
         try {
             await persistenceStrategy.executePersist();
-            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({
@@ -37,6 +38,8 @@ export const CaseUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) =
                 return;
             }
             console.log(error);
+        } finally {
+            setInitialUploadStep("samples");
         }
     };
 
@@ -60,16 +63,17 @@ export const CaseUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) =
     };
 
     return (
-        <>
-            <div className="flex flex-col gap-3">
-                <div className="flex flex-row items-end gap-3">
-                    <FileUploadButton type="cases" validationStrategy={new CasesValidation()} />
+        <div className="w-1/3 h-full">
+            <div className="flex flex-col gap-3 h-full">
+                <div className="flex flex-row items-end gap-3 h-full">
+                    <FileDropzone
+                        label="Falldaten"
+                        type="cases"
+                        icon={<ContactRound width={50} height={50} />}
+                        validationStrategy={new CasesValidation()}
+                    />
                 </div>
             </div>
-            <small
-                className="text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: t(`upload.help.cases`) }}
-            ></small>
             {caseImports && (caseImports.create || caseImports.update) && (
                 <Dialog
                     onOpenChange={(open) => {
@@ -101,6 +105,6 @@ export const CaseUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) =
                     </DialogContent>
                 </Dialog>
             )}
-        </>
+        </div>
     );
 };

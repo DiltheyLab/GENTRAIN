@@ -46,6 +46,11 @@ export interface DataManagementState {
     clearContactImports: () => void;
     contactSelectionActive: boolean;
     setContactSelectionActive: (value: boolean) => void;
+    // initial upload modal
+    initialUploadStep: string | null;
+    setInitialUploadStep: (uploadStep: string) => void;
+    showInitialUpload: boolean;
+    setShowInitialUpload: (value: boolean) => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
@@ -167,5 +172,14 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     contactSelectionActive: false,
     setContactSelectionActive: (value: boolean) => {
         set({ contactSelectionActive: value });
+    },
+    // initial upload modal
+    initialUploadStep: null,
+    setInitialUploadStep: (uploadStep: string) => {
+        set({ initialUploadStep: uploadStep });
+    },
+    showInitialUpload: false,
+    setShowInitialUpload: (value: boolean) => {
+        set({ showInitialUpload: value });
     },
 }));

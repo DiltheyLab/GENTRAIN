@@ -4,10 +4,10 @@ import { ContactUpload } from "@/modules/data_management/components/upload_secti
 
 export const UploadSection = () => {
     return (
-        <>
+        <div className="flex gap-8">
             <CaseUpload />
             <SampleUpload />
             <ContactUpload />
-        </>
+        </div>
     );
 };

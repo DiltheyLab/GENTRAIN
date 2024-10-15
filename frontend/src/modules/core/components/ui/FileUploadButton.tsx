@@ -1,5 +1,4 @@
 import { Label } from "./Label";
-import { Input } from "./Input";
 import { useTranslation } from "react-i18next";
 import { GentrainException } from "../../exceptions/GentrainException";
 import { formatInArray } from "../../helpers/files";
@@ -13,10 +12,11 @@ export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping"
 type FileUploadButtonProps = {
     type: FileUploadTypes;
     validationStrategy: ValidationStrategy;
+    hideLabel?: boolean;
 };
 
-export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonProps) => {
-    const { t, i18n } = useTranslation();
+export const FileUploadButton = ({ type, validationStrategy, hideLabel = false }: FileUploadButtonProps) => {
+    const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -37,12 +37,12 @@ export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonP
         }
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (files: any) => {
         if (!fileReadingStrategy) {
             return;
         }
         try {
-            const fileReaderResult = await fileReadingStrategy.execute(e.target.files);
+            const fileReaderResult = await fileReadingStrategy.execute(files);
             if (!fileReaderResult) return;
 
             // format the file content into an array
@@ -57,7 +57,6 @@ export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonP
                 resetUpload();
                 return;
             }
-            e.target.value = "";
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
@@ -76,8 +75,6 @@ export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonP
                     variant: "destructive",
                 });
             }
-            // reset the input field to allow the user to try again with the same file
-            e.target.value = "";
             console.log(error);
         }
     };
@@ -85,25 +82,12 @@ export const FileUploadButton = ({ type, validationStrategy }: FileUploadButtonP
         <>
             {fileReadingStrategy && (
                 <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor={type} className="font-medium">
-                        {t(`upload.label.${type}`)}
-                    </Label>
-                    {i18n.exists(`upload.info.${type}`) && (
-                        <small
-                            className="text-muted-foreground"
-                            dangerouslySetInnerHTML={{ __html: t(`upload.info.${type}`) }}
-                        ></small>
+                    {!hideLabel && (
+                        <Label htmlFor={type} className="font-medium">
+                            {t(`upload.label.${type}`)}
+                        </Label>
                     )}
-                    <div>
-                        <Input
-                            ref={inputRef}
-                            id={type}
-                            type="file"
-                            accept={fileReadingStrategy.getAcceptedMimeType(type)}
-                            multiple={fileReadingStrategy.allowMultifile()}
-                            onChange={(e) => handleFileUpload(e)}
-                        />
-                    </div>
+                    <div></div>
                 </div>
             )}
         </>

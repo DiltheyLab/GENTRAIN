@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { db } from "@/modules/core/infrastructure/database";
 import { getGroupCaseCount, getGroupSequencedCaseCount, GroupSchema } from "./groups";
+import { useCoreStore } from "../stores/core";
+import { EntityTable } from "dexie";
+import { ObjectRelationalMapper } from "../services/database/ObjectRelationalMapper";
 
 export interface CategorySchema {
     id: number;
@@ -28,6 +31,14 @@ export const getAllCategoriesWithGroups = async () => {
         categoriesWithGroups[key].groups = groups;
     }
     return categoriesWithGroups;
+};
+
+export const getCategoriesForActivePathogen = async () => {
+    const activePathogen = useCoreStore.getState().activePathogen;
+    if (!activePathogen) return new Map<number, CategorySchema>();
+    const categories = await db.categories.where({ pathogen_id: activePathogen.id }).toArray();
+    const categoryMap = ObjectRelationalMapper.arrayToMap(categories);
+    return categoryMap;
 };
 
 export const getCategoriesWithGroupsAndCaseCountForActivePathogen = async (pathogenId: number) => {

@@ -1,7 +1,7 @@
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { db } from "@/modules/core/infrastructure/database";
-import { CaseSchema } from "@/modules/core/models/cases";
 import { ContactSchema, contactRules } from "@/modules/core/models/contacts";
+import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { PersistenceStrategy } from "@/modules/data_management/services/data_upload/persistence/PersistenceStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
@@ -18,13 +18,7 @@ export class ContactsPersistence extends PersistenceStrategy {
         }
 
         const cases = await db.cases.where("case_id").anyOf(Array.from(caseIds)).toArray();
-
-        // create lookup table to improve performance
-        // fetching single cases in a loop is very unefficent with indexedDB
-        const casesMap = new Map<string, CaseSchema>();
-        for (const caseData of cases) {
-            casesMap.set(caseData.case_id, caseData);
-        }
+        const casesMap = ObjectRelationalMapper.arrayToMap(cases, "case_id");
 
         for (const contactId of Object.keys(contactImports)) {
             const contact = contactImports[contactId];

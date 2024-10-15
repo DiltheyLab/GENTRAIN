@@ -11,9 +11,10 @@ import { ContactSelection } from "@/modules/data_management/components/upload_se
 import { useGetContactImports } from "@/modules/data_management/hooks/useGetContactImports";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ContactsValidation } from "../../services/data_upload/validation/ContactsValidation";
-import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
+import { FileDropzone } from "./FileDropzone";
+import { Users, UsersRound } from "lucide-react";
 
-export const ContactUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) => {
+export const ContactUpload = () => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const contactImports = useGetContactImports();
@@ -25,7 +26,6 @@ export const ContactUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }
         const persistenceStrategy = new ContactsPersistence();
         try {
             await persistenceStrategy.executePersist();
-            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({
@@ -42,20 +42,21 @@ export const ContactUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }
     };
 
     return (
-        <>
+        <div className="w-1/3">
             <div
                 className={`flex flex-col gap-3 ${
                     cases.length === 0 ? "pointer-events-none opacity-50" : "opacity-100"
                 }`}
             >
                 <div className="flex flex-row items-end gap-3">
-                    <FileUploadButton type="contacts" validationStrategy={new ContactsValidation()} />
+                    <FileDropzone
+                        label="Kontaktdaten"
+                        type="contacts"
+                        icon={<UsersRound width={50} height={50} />}
+                        validationStrategy={new ContactsValidation()}
+                    />
                 </div>
             </div>
-            <small
-                className="text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: t(`upload.help.cases`) }}
-            ></small>
             {contactImports && (
                 <Dialog
                     onOpenChange={(open) => {
@@ -79,6 +80,6 @@ export const ContactUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }
                     </DialogContent>
                 </Dialog>
             )}
-        </>
+        </div>
     );
 };
