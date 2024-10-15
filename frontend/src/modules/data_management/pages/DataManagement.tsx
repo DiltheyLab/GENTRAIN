@@ -1,7 +1,7 @@
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
@@ -15,12 +15,21 @@ import { useGetOutbreaksWithCaseCountForActivePathogen } from "@/modules/core/ho
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modules/core/hooks/database/categories/useGetCategoriesWithCaseCountForActivePathogen";
 import { uploadedGroupColumns } from "../components/uploaded_data/uploadedGroupColumns";
+import { InitialUploadDialog } from "../components/upload_section/InitialUploadDialog";
+
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const casesData = useCoreStore((state) => state.casesWithRelationships);
     const outbreakData = useGetOutbreaksWithCaseCountForActivePathogen();
     const groupData = useGetCategoriesWithGroupsAndCaseCountForActivePathogen();
+    const [initialModalOpened, setInitialModalOpened] = useState(false);
+
+    useEffect(() => {
+        if (!initialModalOpened && casesData.length === 0) {
+            setInitialModalOpened(false);
+        }
+    }, [casesData]);
 
     const deleteData = async () => {
         if (activePathogen) {
@@ -33,6 +42,7 @@ export function DataManagement() {
 
     return (
         <Layout>
+            {initialModalOpened && <InitialUploadDialog />}
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
                 <div className="space-y-8">
                     <div className="flex items-center justify-between space-y-2">
@@ -44,21 +54,24 @@ export function DataManagement() {
                             </p>
                         </div>
                     </div>
-
                     <UploadSection />
                 </div>
                 <Separator />
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between space-y-2 ">
+                <div>
+                    <div className="flex items-center justify-between mb-4">
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight">
                                 Importierte Daten zu {activePathogen?.name}
                             </h2>
+                            <p className="text-muted-foreground">
+                                Laden Sie hier Falldaten zu {activePathogen?.name} hoch. Zu jedem hochgeladenen Fall
+                                können Sequenz- sowie Kontaktdaten hinterlegt werden.
+                            </p>
                         </div>
                     </div>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="font-bold tracking-tight">Fälle, Sequenzen und Kontakte</h3>
+                            <h3 className="font-bold tracking-tight mb-2 text-lg">Falldaten</h3>
                         </div>
                     </div>
                     {casesData && (
@@ -67,6 +80,7 @@ export function DataManagement() {
                             columns={uploadedCaseColumns}
                             filterFn={uploadedDataFilterFn}
                             selectionLabel="Fällen"
+                            pageSize={5}
                         />
                     )}
                 </div>
@@ -74,7 +88,7 @@ export function DataManagement() {
                     {outbreakData && outbreakData.length > 0 && (
                         <AccordionItem value="item-1">
                             <AccordionTrigger className="py-2">
-                                <h3 className="font-bold tracking-tight">Ausbrüche</h3>
+                                <h3 className="font-bold tracking-tight text-lg">Ausbrüche</h3>
                             </AccordionTrigger>
                             <AccordionContent>
                                 <DataTable
@@ -82,6 +96,7 @@ export function DataManagement() {
                                     enableSearch={false}
                                     columns={uploadedOutbreakColumns}
                                     selectionLabel="Ausbrüchen"
+                                    pageSize={5}
                                 />
                             </AccordionContent>
                         </AccordionItem>
@@ -89,7 +104,7 @@ export function DataManagement() {
                     {groupData && groupData.length > 0 && (
                         <AccordionItem value="item-2">
                             <AccordionTrigger className="py-2">
-                                <h3 className="font-bold tracking-tight">Gruppen</h3>
+                                <h3 className="font-bold tracking-tight text-lg">Gruppen</h3>
                             </AccordionTrigger>
                             <AccordionContent>
                                 {groupData?.map((category) => {
@@ -104,6 +119,7 @@ export function DataManagement() {
                                                 enableSearch={false}
                                                 columns={uploadedGroupColumns}
                                                 selectionLabel="Gruppen"
+                                                pageSize={5}
                                             />
                                         </div>
                                     );

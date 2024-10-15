@@ -19,6 +19,7 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { validateOutbreakName } from "../../helpers/outbreakNameValidation";
 import { OutbreakSchema, updateOutbreakName } from "@/modules/core/models/outbreaks";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 type OutbreakEditDialogProps = {
     row: Row<OutbreakSchema>;
@@ -34,6 +35,8 @@ export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
         outbreakName
     );
 
+    const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
+
     const updateOutbreak = async () => {
         try {
             const outbreakId = await updateOutbreakName(row.original.id, outbreakName);
@@ -44,6 +47,7 @@ export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
             handleOutbreakError(error);
         } finally {
             setIsOpen(false);
+            updateCasesWithRelationships();
         }
     };
 

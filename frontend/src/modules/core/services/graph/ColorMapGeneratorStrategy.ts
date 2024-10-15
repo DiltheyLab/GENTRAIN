@@ -64,4 +64,19 @@ export abstract class ColorMapGeneratorStrategy {
             };
         }
     };
+
+    public static updateClustersInColorMap = (colorMap: ColorMap, updatedClusterNames: string[]) => {
+        let colorMapClusterNames = Object.keys(colorMap);
+        for (const updatedClusterName of updatedClusterNames) {
+            if (!colorMapClusterNames.includes(updatedClusterName)) {
+                const colorIndex = colorMapClusterNames.length;
+                colorMap[updatedClusterName] = {
+                    color: createColorByGoldenAngleApproximation(colorIndex),
+                    isActive: true,
+                };
+                colorMapClusterNames.push(updatedClusterName);
+            }
+        }
+        return colorMap;
+    };
 }

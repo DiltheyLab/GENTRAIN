@@ -9,19 +9,24 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { SamplesPersistence } from "@/modules/data_management/services/data_upload/persistence/SamplesPersistence";
 import { SampleSelection } from "@/modules/data_management/components/upload_section/tables/SampleSelection";
 import { useGetSampleImports } from "@/modules/data_management/hooks/useGetSampleImports";
+import { SamplesValidation } from "../../services/data_upload/validation/SamplesValidation";
+import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
+import { useCoreStore } from "@/modules/core/stores/core";
 
-export const SampleUpload = () => {
+export const SampleUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const sampleImports = useGetSampleImports();
     const setSampleSelectionActive = useDataManagementStore((state) => state.setSampleSelectionActive);
     const clearSampleImports = useDataManagementStore((state) => state.clearSampleImports);
     const sampleSelectionActive = useDataManagementStore((state) => state.sampleSelectionActive);
+    const cases = useCoreStore((state) => state.casesWithRelationships);
 
     const handleSubmit = async () => {
         const persistenceStrategy = new SamplesPersistence();
         try {
             await persistenceStrategy.executePersist();
+            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({
@@ -39,6 +44,15 @@ export const SampleUpload = () => {
 
     return (
         <>
+            <div
+                className={`flex flex-col gap-3 ${
+                    cases.length === 0 ? "pointer-events-none opacity-50" : "opacity-100"
+                }`}
+            >
+                <div className="flex flex-row items-end gap-3">
+                    <FileUploadButton type="samples" validationStrategy={new SamplesValidation()} />
+                </div>
+            </div>
             <small
                 className="text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: t(`upload.help.samples`) }}

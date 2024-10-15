@@ -10,8 +10,10 @@ import { CasesPersistence } from "@/modules/data_management/services/data_upload
 import { CaseSelection } from "@/modules/data_management/components/upload_section/tables/CaseSelection";
 import { CaseUpdate } from "@/modules/data_management/components/upload_section/tables/CaseUpdate";
 import { useGetCaseImports } from "@/modules/data_management/hooks/useGetCaseImports";
+import { FileUploadButton } from "@/modules/core/components/ui/FileUploadButton";
+import { CasesValidation } from "../../services/data_upload/validation/CasesValidation";
 
-export const CaseUpload = () => {
+export const CaseUpload = ({ onSubmit = () => {} }: { onSubmit?: () => void }) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const caseImports = useGetCaseImports();
@@ -22,6 +24,7 @@ export const CaseUpload = () => {
         const persistenceStrategy = new CasesPersistence();
         try {
             await persistenceStrategy.executePersist();
+            onSubmit();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({
@@ -58,6 +61,11 @@ export const CaseUpload = () => {
 
     return (
         <>
+            <div className="flex flex-col gap-3">
+                <div className="flex flex-row items-end gap-3">
+                    <FileUploadButton type="cases" validationStrategy={new CasesValidation()} />
+                </div>
+            </div>
             <small
                 className="text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: t(`upload.help.cases`) }}
