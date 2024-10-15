@@ -1,5 +1,4 @@
 import { Button } from "@/modules/core/components/ui/Button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/core/components/ui/Tooltip";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
 import { Play } from "lucide-react";
