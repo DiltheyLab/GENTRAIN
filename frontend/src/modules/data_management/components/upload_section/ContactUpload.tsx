@@ -21,6 +21,8 @@ export const ContactUpload = () => {
     const setContactSelectionActive = useDataManagementStore((state) => state.setContactSelectionActive);
     const contactSelectionActive = useDataManagementStore((state) => state.contactSelectionActive);
     const cases = useCoreStore((state) => state.casesWithRelationships);
+    const setInitialUploadStep = useDataManagementStore((state) => state.setInitialUploadStep);
+    const setShowInitialUpload = useDataManagementStore((state) => state.setShowInitialUpload);
 
     const handleSubmit = async () => {
         const persistenceStrategy = new ContactsPersistence();
@@ -38,11 +40,14 @@ export const ContactUpload = () => {
                 return;
             }
             console.log(error);
+        } finally {
+            setInitialUploadStep(null);
+            setShowInitialUpload(false);
         }
     };
 
     return (
-        <div className="w-1/3">
+        <div className="w-full">
             <div
                 className={`flex flex-col gap-3 ${
                     cases.length === 0 ? "pointer-events-none opacity-50" : "opacity-100"

@@ -17,7 +17,7 @@ import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modul
 import { uploadedGroupColumns } from "../components/uploaded_data/uploadedGroupColumns";
 import { useDataManagementStore } from "../stores/dataManagement";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { InitialUpload } from "../components/upload_section/InitialUpload";
+import { InitialUploadDialog } from "../components/upload_section/InitialUploadDialog";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
@@ -50,24 +50,22 @@ export function DataManagement() {
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
                 {showInitialUpload && (
                     <div className="space-y-8">
-                        <InitialUpload />
+                        <InitialUploadDialog />
                     </div>
                 )}
 
-                {!showInitialUpload && (
-                    <div className="space-y-8 w-full">
-                        <div className="flex items-center justify-between space-y-2">
-                            <div>
-                                <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
-                                <p className="text-muted-foreground">
-                                    Laden Sie hier Falldaten zu {activePathogen?.name} hoch. Zu jedem hochgeladenen Fall
-                                    können Sequenz- sowie Kontaktdaten hinterlegt werden.
-                                </p>
-                            </div>
+                <div className="space-y-8 w-full">
+                    <div className="flex items-center justify-between space-y-2">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
+                            <p className="text-muted-foreground">
+                                Laden Sie hier Falldaten zu {activePathogen?.name} hoch. Zu jedem hochgeladenen Fall
+                                können Sequenz- sowie Kontaktdaten hinterlegt werden.
+                            </p>
                         </div>
-                        <UploadSection />
                     </div>
-                )}
+                    <UploadSection />
+                </div>
                 <Separator />
                 <div>
                     <div className="flex items-center justify-between mb-4">

@@ -46,7 +46,7 @@ export const SampleUpload = () => {
     };
 
     return (
-        <div className="w-1/3">
+        <div className="w-full">
             <div
                 className={`flex flex-col gap-3 ${
                     cases.length === 0 ? "pointer-events-none opacity-50" : "opacity-100"

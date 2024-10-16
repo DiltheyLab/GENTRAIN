@@ -63,7 +63,7 @@ export const CaseUpload = () => {
     };
 
     return (
-        <div className="w-1/3 h-full">
+        <div className="w-full h-full">
             <div className="flex flex-col gap-3 h-full">
                 <div className="flex flex-row items-end gap-3 h-full">
                     <FileDropzone

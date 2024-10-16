@@ -90,7 +90,7 @@ export const FileDropzone = ({
                             handleFileUpload(e.target.files);
                         }}
                     />
-                    <h3 className="font-bold tracking-tight text-lg mb-2">{label}</h3>
+                    <h3 className="font-bold tracking-tight text-lg mb-4">{label}</h3>
                     <div className="relative">
                         <CirclePlus
                             className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
