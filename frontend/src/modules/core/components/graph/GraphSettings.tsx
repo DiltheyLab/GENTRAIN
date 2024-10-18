@@ -58,7 +58,7 @@ export const GraphSettings = ({
                 </div>
                 <div className="flex space-x-3">
                     <Label htmlFor="forceLinkDistance" className="text-sm leading-none">
-                        Kantenabstand
+                        Kantenlänge
                     </Label>
                     <Slider
                         id="forceLinkDistance"

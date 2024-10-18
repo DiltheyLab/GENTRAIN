@@ -38,7 +38,7 @@ export const AnalysisDeleteAlertDialog = forwardRef<HTMLButtonElement, AnalysisD
                 dialogDescription="Dieser Vorgang kann nicht rückgängig gemacht werden. Dadurch wird Ihre Analyse dauerhaft
                         gelöscht."
                 triggerComponent={
-                    <Button ref={ref} size={"icon"} variant={"secondary"}>
+                    <Button ref={ref} size={"icon"} variant={"secondary"} title="Analyse löschen">
                         <Trash2 size={15} />
                     </Button>
                 }

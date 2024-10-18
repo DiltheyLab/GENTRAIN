@@ -7,7 +7,7 @@ import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 
 export const Pathogens = {
-    "Covid-19": { type: PathogenTypeName.viral, geneticDistanceThreshold: 2 },
+    "Covid-19": { type: PathogenTypeName.viral, geneticDistanceThreshold: 1 },
     "Enterococcus Faecium": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 10 },
     "Staphylococcus Aureus": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 12 },
     "Bordetella Pertussis": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 5 },

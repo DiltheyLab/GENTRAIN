@@ -51,7 +51,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button ref={ref} size={"icon"} variant={"secondary"}>
+                <Button ref={ref} size={"icon"} variant={"secondary"} title="Analyse bearbeiten">
                     <Pencil size={15} />
                 </Button>
             </DialogTrigger>
@@ -76,6 +76,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                             setAnalysisName(e.target.value);
                         }}
                         onFocus={() => setIsTouched(true)}
+                        autoFocus
                     />
                 </div>
                 {isTouched && !isUniqueName() && (
@@ -84,7 +85,12 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                     </p>
                 )}
                 <DialogFooter>
-                    <Button type="submit" disabled={!analyseNameIsValid()} onClick={updateAnalysis}>
+                    <Button
+                        type="submit"
+                        disabled={!analyseNameIsValid()}
+                        onClick={updateAnalysis}
+                        title="Analyse bearbeiten"
+                    >
                         Änderungen speichern
                     </Button>
                 </DialogFooter>
