@@ -2,7 +2,6 @@ import { z } from "zod";
 import { db } from "@/modules/core/infrastructure/database";
 import { getGroupCaseCount, getGroupSequencedCaseCount, GroupSchema } from "./groups";
 import { useCoreStore } from "../stores/core";
-import { EntityTable } from "dexie";
 import { ObjectRelationalMapper } from "../services/database/ObjectRelationalMapper";
 
 export interface CategorySchema {
