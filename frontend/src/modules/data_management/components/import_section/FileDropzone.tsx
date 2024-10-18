@@ -94,7 +94,7 @@ export const FileDropzone = ({
                         }}
                     />
                     {!showInitialUpload && (
-                        <h3 className="font-bold tracking-tight text-lg mb-4">{t(`upload.label.${type}`)}</h3>
+                        <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
                     )}
                     <div className="relative">
                         <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
@@ -119,11 +119,11 @@ export const FileDropzone = ({
                         ) : (
                             <small>
                                 Ziehen Sie {fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in die
-                                Fläche oder klicken Sie auf die Fläche um {t(`upload.label.${type}`)} auszuwählen.
+                                Fläche oder klicken Sie auf die Fläche um {t(`import:labels.${type}`)} auszuwählen.
                             </small>
                         )}
                     </div>
-                    <Button className="mt-4">{t(`upload.label.${type}`)} auswählen</Button>
+                    <Button className="mt-4">{t(`import:labels.${type}`)} auswählen</Button>
                 </div>
             )}
         </>

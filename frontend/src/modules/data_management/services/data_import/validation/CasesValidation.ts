@@ -23,15 +23,17 @@ export class CasesValidation extends ValidationStrategy {
         const caseImports = await this.collectCaseImports(header, data);
         useDataManagementStore.getState().setCaseSelectionActive(true);
         useDataManagementStore.getState().setCaseImports(caseImports);
-        if (useDataManagementStore.getState().showInitialUpload) {
-            useDataManagementStore.getState().nextInitialUploadStep();
-        }
+
         if (Object.keys(caseImports).length === 0) {
             toast({
                 title: "Die ausgewählte Datei enthält keine neuen Fälle.",
                 duration: 5000,
                 variant: "default",
             });
+        } else {
+            if (useDataManagementStore.getState().showInitialUpload) {
+                useDataManagementStore.getState().nextInitialUploadStep();
+            }
         }
 
         return {

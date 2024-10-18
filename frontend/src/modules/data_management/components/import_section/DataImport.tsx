@@ -13,6 +13,7 @@ import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { useState } from "react";
+import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 
 type DataImportParameters = {
     children: JSX.Element;
@@ -68,18 +69,13 @@ export const DataImport = ({
                     open={openDialog}
                 >
                     <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
-                        <DialogTitle>
-                            Es wurden bereits bestehende {t(`upload.label.${type}`)} hinzugefügt. Möchten Sie diese
-                            hinzufügen?
-                        </DialogTitle>
-                        <DialogDescription>
-                            Folgende {t(`upload.label.${type}`)} wurden in der CSV-Datei und im bestehenden Datenbestand
-                            gefunden. Alle ausgewählte Fälle werden aktualisiert.
-                        </DialogDescription>
+                        <DialogTitle>{t(`import:titles.${type}_selection`)}</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                        {renderHtmlFromTranslation(`import:${type}_selection.shared`)}
                         {children}
                         <div className="flex justify-end">
                             {actions}
-                            <Button onClick={handleSubmit}>{t(`upload.label.${type}`)} hinzufügen</Button>
+                            <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
                         </div>
                     </DialogContent>
                 </Dialog>
@@ -90,7 +86,7 @@ export const DataImport = ({
                 {children}
                 <div className="flex justify-end gap-4">
                     {actions}
-                    <Button onClick={handleSubmit}>{t(`upload.label.${type}`)} hinzufügen</Button>
+                    <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
                 </div>
             </>
         );

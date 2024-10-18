@@ -14,7 +14,7 @@ export abstract class FileReadingStrategy {
 
     public getAcceptedMimeType(importType: string) {
         switch (importType) {
-            case "samples":
+            case "sequence":
                 return ".fasta";
             default:
                 return ".csv";

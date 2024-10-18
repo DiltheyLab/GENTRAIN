@@ -51,10 +51,6 @@ export class SamplesValidation extends ValidationStrategy {
 
         useDataManagementStore.getState().setSampleImports(sampleImports);
 
-        if (useDataManagementStore.getState().showInitialUpload) {
-            useDataManagementStore.getState().nextInitialUploadStep();
-        }
-
         if (data.length > 0) {
             this.dataManagementState.setSampleSelectionActive(true);
         }
@@ -65,6 +61,10 @@ export class SamplesValidation extends ValidationStrategy {
                 duration: 5000,
                 variant: "default",
             });
+        } else {
+            if (useDataManagementStore.getState().showInitialUpload) {
+                useDataManagementStore.getState().nextInitialUploadStep();
+            }
         }
 
         return {

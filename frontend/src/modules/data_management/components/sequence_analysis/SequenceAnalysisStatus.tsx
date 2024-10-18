@@ -4,23 +4,7 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { Check, CircleAlert, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/sequence_analysis/DistanceCalculationProgress";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
-
-const getColorClassNames = (status: string) => {
-    switch (status) {
-        case "sent":
-            return "text-slate-200 border-slate-200";
-        case "enqueued":
-            return "text-slate-700 border-slate-700";
-        case "started":
-            return "text-yellow-600 border-yellow-600";
-        case "finished":
-            return "text-green-600 border-green-600";
-        case "failed":
-            return "text-red-600 border-red-600";
-        default:
-            return "";
-    }
-};
+import { getSampleStatusColorClassNames } from "../../helpers/samples";
 
 export function SequenceAnalysisStatus() {
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
@@ -32,22 +16,24 @@ export function SequenceAnalysisStatus() {
         <>
             {sequenceAnalysisRunning && (
                 <>
-                    <div className="mb-2 mt-4 flex items-center text-sm">
+                    <div className={`mb-2 mt-4 flex items-center ${showInitialUpload ? "text-md" : "text-sm"}`}>
                         {sequenceAnalysisRunning && <LoadingSpinner className="w-[18px] mr-2" />}
                         {!sequenceAnalysisRunning && <StepIndicator>1</StepIndicator>}
                         Sequenzen werden auf Mutationen untersucht
                     </div>
                     {!showInitialUpload && (
-                        <small>Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.</small>
+                        <small className="block mb-2">
+                            Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
+                        </small>
                     )}
                     <ScrollArea>
-                        <div className="w-full flex flex-wrap max-h-[300px] mt-2">
+                        <div className="w-full flex flex-wrap max-h-[300px]">
                             {Object.keys(sampleImports).map((fastaId) => {
                                 if (!sampleImports[fastaId].import) return;
                                 return (
                                     <div key={fastaId} className="w-full sm:w-1/3 p-1">
                                         <div
-                                            className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getColorClassNames(
+                                            className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
                                                 sampleImports[fastaId].status
                                             )}`}
                                         >
@@ -69,22 +55,66 @@ export function SequenceAnalysisStatus() {
                             })}
                         </div>
                     </ScrollArea>
+                    {showInitialUpload && (
+                        <div className="flex gap-2 flex-wrap justify-end mt-4">
+                            <div
+                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
+                                    "sent"
+                                )}`}
+                            >
+                                <div className="mr-2 text-xs">Datenübertragung</div>
+                                <CircleDashed className="mr-[1px]" width={15} />
+                            </div>
+                            <div
+                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
+                                    "queued"
+                                )}`}
+                            >
+                                <div className="mr-2 text-xs">Warteschlange</div>
+                                <CircleDashed className="mr-[1px]" width={15} />
+                            </div>
+                            <div
+                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
+                                    "started"
+                                )}`}
+                            >
+                                <div className="mr-2 text-xs">In Bearbeitung</div>
+                                <LoadingSpinner className="w-[17px]" strokeWidth={1.5} animate={false} />
+                            </div>
+                            <div
+                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
+                                    "finished"
+                                )}`}
+                            >
+                                <div className="mr-2 text-xs">Beendet</div>
+                                <Check width={18} />
+                            </div>
+                            <div
+                                className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
+                                    "failed"
+                                )}`}
+                            >
+                                <div className="mr-2 text-xs">Fehlgeschlagen</div>
+                                <CircleAlert width={18} />
+                            </div>
+                        </div>
+                    )}
                 </>
             )}
             {distanceCalculationRunning && (
                 <>
-                    <div className="mb-2 flex items-center text-sm">
+                    <div className={`mb-2 flex items-center ${showInitialUpload ? "text-md" : "text-sm"}`}>
                         {distanceCalculationRunning && <LoadingSpinner className="w-[18px] mr-2" />}
                         {!distanceCalculationRunning && <StepIndicator>2</StepIndicator>}
                         Genetische Distanzen werden berechnet
                     </div>
                     {!showInitialUpload && (
-                        <small>
+                        <small className="block mb-2">
                             Auf Basis der Mutationen der sequenzierten Fälle werden genetische Distanzen zwischen den
                             Fällen berechnet.
                         </small>
                     )}
-                    <div className="mt-2">
+                    <div>
                         <DistanceCalculationProgress />
                     </div>
                 </>

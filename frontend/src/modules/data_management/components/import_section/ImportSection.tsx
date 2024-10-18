@@ -44,7 +44,7 @@ export const ImportSection = () => {
                         submitStrategy={new CasesPersistence()}
                         validationStrategy={new CasesValidation()}
                         dialog
-                        type="cases"
+                        type="case"
                         icon={<ContactRound />}
                     >
                         <CaseSelection />
@@ -56,7 +56,7 @@ export const ImportSection = () => {
                         submitStrategy={new SamplesPersistence()}
                         validationStrategy={new SamplesValidation()}
                         dialog
-                        type="samples"
+                        type="sequence"
                         icon={<Dna />}
                         disable={casesForActivePathogen.length === 0}
                     >
@@ -69,7 +69,7 @@ export const ImportSection = () => {
                         submitStrategy={new ContactsPersistence()}
                         validationStrategy={new ContactsValidation()}
                         dialog
-                        type="contacts"
+                        type="contact"
                         icon={<UsersRound />}
                         disable={casesForActivePathogen.length === 0}
                     >

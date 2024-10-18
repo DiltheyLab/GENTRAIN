@@ -69,11 +69,31 @@ export function DataManagement() {
                 {casesData && casesData.length > 0 && (
                     <>
                         <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <div>
-                                    <h2 className="text-2xl font-bold tracking-tight">
-                                        Importierte Daten zu {activePathogen?.name}
-                                    </h2>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h2 className="text-2xl font-bold tracking-tight">
+                                            Importierte Daten zu {activePathogen?.name}
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div className="flex justify-end">
+                                    {casesData && activePathogen && (
+                                        <DeleteDialog
+                                            deleteAction={deleteData}
+                                            dialogTitle="Falldaten löschen"
+                                            dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
+                                            triggerComponent={
+                                                <Button variant="destructive">
+                                                    {isDeleting ? (
+                                                        <LoadingSpinner />
+                                                    ) : (
+                                                        <>Alle Daten zu {activePathogen.name} löschen</>
+                                                    )}
+                                                </Button>
+                                            }
+                                        />
+                                    )}
                                 </div>
                             </div>
                             <div className="flex items-center justify-between">
@@ -92,63 +112,52 @@ export function DataManagement() {
                             )}
                         </div>
                         {((outbreakData && outbreakData.length > 0) || (groupData && groupData.length > 0)) && (
-                            <Accordion type="multiple">
-                                <AccordionItem value="item-1">
-                                    <AccordionTrigger className="py-2">
-                                        <h3 className="font-bold tracking-tight text-lg">Ausbrüche</h3>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <DataTable
-                                            data={outbreakData ?? []}
-                                            enableSearch={false}
-                                            columns={uploadedOutbreakColumns}
-                                            selectionLabel="Ausbrüchen"
-                                            pageSize={5}
-                                        />
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="item-2">
-                                    <AccordionTrigger className="py-2">
-                                        <h3 className="font-bold tracking-tight text-lg">Gruppen</h3>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        {groupData?.map((category) => (
-                                            <div key={category.id} className="px-4 pt-4 bg-muted/50 rounded-lg mb-4">
-                                                <p className="text-md">
-                                                    <span className="font-medium">Kategorie:</span> {category.name}
-                                                </p>
-                                                <DataTable
-                                                    className="mt-1"
-                                                    data={category.groups ?? []}
-                                                    enableSearch={false}
-                                                    columns={uploadedGroupColumns}
-                                                    selectionLabel="Gruppen"
-                                                    pageSize={5}
-                                                />
-                                            </div>
-                                        ))}
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
+                            <>
+                                <Accordion type="multiple">
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger className="py-2">
+                                            <h3 className="font-bold tracking-tight text-lg">Ausbrüche</h3>
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            <DataTable
+                                                data={outbreakData ?? []}
+                                                enableSearch={false}
+                                                columns={uploadedOutbreakColumns}
+                                                selectionLabel="Ausbrüchen"
+                                                pageSize={5}
+                                            />
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                                <Accordion type="multiple">
+                                    <AccordionItem value="item-2">
+                                        <AccordionTrigger className="py-2">
+                                            <h3 className="font-bold tracking-tight text-lg">Gruppen</h3>
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            {groupData?.map((category) => (
+                                                <div
+                                                    key={category.id}
+                                                    className="px-4 pt-4 bg-muted/50 rounded-lg mb-4"
+                                                >
+                                                    <p className="text-md">
+                                                        <span className="font-medium">Kategorie:</span> {category.name}
+                                                    </p>
+                                                    <DataTable
+                                                        className="mt-1"
+                                                        data={category.groups ?? []}
+                                                        enableSearch={false}
+                                                        columns={uploadedGroupColumns}
+                                                        selectionLabel="Gruppen"
+                                                        pageSize={5}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            </>
                         )}
-                        <div className="flex justify-end">
-                            {casesData && activePathogen && (
-                                <DeleteDialog
-                                    deleteAction={deleteData}
-                                    dialogTitle="Falldaten löschen"
-                                    dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
-                                    triggerComponent={
-                                        <Button variant="destructive">
-                                            {isDeleting ? (
-                                                <LoadingSpinner />
-                                            ) : (
-                                                <>Alle Daten zu {activePathogen.name} löschen</>
-                                            )}
-                                        </Button>
-                                    }
-                                />
-                            )}
-                        </div>
                     </>
                 )}
             </div>

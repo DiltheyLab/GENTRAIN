@@ -31,8 +31,17 @@ export class ContactsValidation extends ValidationStrategy {
         const contactImports = await this.filterAlreadyExistingContact(data, caseMap);
         useDataManagementStore.getState().setContactImports(contactImports);
         useDataManagementStore.getState().setContactSelectionActive(true);
-        if (useDataManagementStore.getState().showInitialUpload) {
-            useDataManagementStore.getState().nextInitialUploadStep();
+
+        if (Object.keys(contactImports).length === 0) {
+            toast({
+                title: "Die ausgewählte Datei enthält keine neuen Kontaktabgaben.",
+                duration: 5000,
+                variant: "default",
+            });
+        } else {
+            if (useDataManagementStore.getState().showInitialUpload) {
+                useDataManagementStore.getState().nextInitialUploadStep();
+            }
         }
 
         return {
@@ -73,13 +82,6 @@ export class ContactsValidation extends ValidationStrategy {
                 persisted: null,
                 import: true,
             };
-        }
-        if (Object.keys(contactImports).length === 0) {
-            toast({
-                title: "Die ausgewählte Datei enthält keine neuen Kontaktabgaben.",
-                duration: 5000,
-                variant: "default",
-            });
         }
         return contactImports;
     };

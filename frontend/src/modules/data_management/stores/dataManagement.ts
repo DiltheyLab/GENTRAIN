@@ -204,16 +204,16 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
                 set({ initialUploadStep: "case_import", caseImports: {} });
                 break;
             case "sequence_introduction":
-                set({ initialUploadStep: "case_selection" });
+                set({ initialUploadStep: "case_import" });
                 break;
             case "sequence_import":
                 set({ initialUploadStep: "sequence_introduction" });
                 break;
             case "sequence_selection":
-                set({ initialUploadStep: "sequence_import" });
+                set({ initialUploadStep: "sequence_import", sampleImports: {} });
                 break;
             case "sequence_analysis":
-                set({ initialUploadStep: "sequence_selection", sampleImports: {} });
+                set({ initialUploadStep: "case_import" });
                 break;
             case "contact_import":
                 set({
@@ -240,6 +240,10 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
                 set({ initialUploadStep: "case_import" });
                 break;
             case "case_import":
+                if (Object.keys(get().caseImports).length === 0) {
+                    set({ initialUploadStep: "sequence_introduction" });
+                    break;
+                }
                 set({ initialUploadStep: "case_selection" });
                 break;
             case "case_selection":
@@ -262,6 +266,10 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
                 set({ initialUploadStep: "contact_import" });
                 break;
             case "contact_import":
+                if (Object.keys(get().contactImports).length === 0) {
+                    set({ initialUploadStep: "conclusion" });
+                    break;
+                }
                 set({ initialUploadStep: "contact_selection" });
                 break;
             case "contact_selection":

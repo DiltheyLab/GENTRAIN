@@ -89,5 +89,8 @@ export abstract class DistanceCalculationStrategy {
         });
         useDataManagementStore.getState().setDistanceCalculationRunning(false);
         useDataManagementStore.getState().resetSampleUpload();
+        if (useDataManagementStore.getState().initialUploadStep === "sequence_analysis") {
+            useDataManagementStore.getState().nextInitialUploadStep();
+        }
     };
 }
