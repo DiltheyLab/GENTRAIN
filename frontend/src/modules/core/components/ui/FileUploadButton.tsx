@@ -4,7 +4,7 @@ import { GentrainException } from "../../exceptions/GentrainException";
 import { formatInArray } from "../../helpers/files";
 import { toast } from "./UseToast";
 import { useGetFileReadingStrategy } from "@/modules/data_management/hooks/useGetFileReadingStrategy";
-import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
 import { useRef } from "react";
 
 export type FileUploadTypes = "contacts" | "cases" | "samples" | "sampleMapping";
@@ -84,7 +84,7 @@ export const FileUploadButton = ({ type, validationStrategy, hideLabel = false }
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                     {!hideLabel && (
                         <Label htmlFor={type} className="font-medium">
-                            {t(`upload.label.${type}`)}
+                            {t(`upload.label.${type}`)} hinzufügen
                         </Label>
                     )}
                     <div></div>

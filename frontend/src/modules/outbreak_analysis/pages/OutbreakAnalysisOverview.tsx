@@ -3,7 +3,7 @@ import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/da
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { analysesTableFilter } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
 import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
-import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
+import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableColumns";
 
 export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();

@@ -1,16 +1,13 @@
-import { ColumnDef, Row, Table } from "@tanstack/react-table";
+import { Row, Table } from "@tanstack/react-table";
 import { useGetCaseTableData } from "@/modules/data_management/hooks/useGetCaseTableData";
 import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { Button } from "@/modules/core/components/ui/Button";
-import { ArrowUpDown } from "lucide-react";
-import { DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
-import { formatDate } from "@/modules/core/helpers/dates";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
 import { Label } from "@/modules/core/components/ui/Label";
 import { useEffect, useState } from "react";
 import { CaseImport } from "@/modules/core/models/cases";
 import { caseImportFilterFn } from "@/modules/data_management/helpers/dataTable";
+import { caseSelectionColumns } from "./caseSelectionColumns";
 
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
@@ -30,7 +27,7 @@ export function CaseSelection() {
                     (selectCasesWithOutbreak && row.original.outbreak !== null)
             );
             changeCaseImport(row.original.case_id!, {
-                upload:
+                import:
                     selectAll ||
                     (selectCasesWithSequence && row.original.fasta_id !== null) ||
                     (selectCasesWithOutbreak && row.original.outbreak !== null),
@@ -38,115 +35,8 @@ export function CaseSelection() {
         });
     }, [selectAll, selectCasesWithSequence, selectCasesWithOutbreak]);
 
-    const caseSelectionColumns: ColumnDef<CaseImport>[] = [
-        {
-            id: "select",
-            header: ({ table }) => (
-                <Checkbox
-                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                    onCheckedChange={(value) => {
-                        table.toggleAllPageRowsSelected(!!value);
-                        table.getRowModel().rows.forEach((row) => {
-                            changeCaseImport(row.original.case_id!, { upload: !!value });
-                        });
-                    }}
-                    aria-label="Select all"
-                />
-            ),
-            cell: ({ row }) => {
-                return (
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={(value) => {
-                            row.toggleSelected(!!value);
-                            changeCaseImport(row.original.case_id!, { upload: !!value });
-                        }}
-                        aria-label="Select row"
-                    />
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
-        {
-            accessorKey: "case_id",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Fall
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => <>{row.getValue("case_id")}</>,
-        },
-        {
-            accessorKey: "fasta_id",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Sequenz
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => <>{row.getValue("fasta_id")}</>,
-        },
-        {
-            accessorKey: "outbreak",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Ausbruch
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => <>{row.getValue("outbreak")}</>,
-        },
-        {
-            accessorKey: "groups",
-            header: "Gruppen",
-            cell: ({ row }) => {
-                const groups: { name: string; category: string }[] = row.getValue("groups");
-                return (
-                    <div key={`${row.original.case_id}_groups`}>
-                        {groups &&
-                            groups.map((group) => (
-                                <p key={`${group.category}_${group.name}`} className="block">
-                                    <b>{group.category}:</b> {group.name}
-                                </p>
-                            ))}
-                    </div>
-                );
-            },
-        },
-        {
-            accessorKey: "registered_at",
-            header: "Registrierungsdatum",
-            cell: ({ row }) => <>{formatDate(row.getValue("registered_at"))}</>,
-        },
-    ];
-
     return (
         <>
-            <DialogTitle>Es wurden neue Fälle hochgeladen. Möchten Sie diese hinzufügen?</DialogTitle>
-            <DialogDescription>
-                Folgende Fälle wurden in der CSV-Datei und im bestehenden Datenbestand gefunden. Alle ausgewählte Fälle
-                werden aktualisiert.
-            </DialogDescription>
             {caseTableData && (
                 <DataTable
                     onInit={(table) => setTable(table)}
@@ -156,7 +46,7 @@ export function CaseSelection() {
                     filterFn={caseImportFilterFn}
                     onRowClick={(row: any) => {
                         if (!row.original.case_id) return;
-                        changeCaseImport(row.original.case_id!, { upload: !row.getIsSelected() });
+                        changeCaseImport(row.original.case_id!, { import: !row.getIsSelected() });
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows

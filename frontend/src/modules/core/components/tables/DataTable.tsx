@@ -80,7 +80,7 @@ export const DataTable = ({
 
     useEffect(() => {
         // preselect all rows if corresponding flag is set to true
-        if (!initializedRowSelection && preselectRows && data.length > 0) {
+        if (!initializedRowSelection && preselectRows) {
             table.toggleAllRowsSelected();
             setInitializedRowSelection(true);
         }
@@ -145,7 +145,7 @@ export const DataTable = ({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Es existieren noch keine Falldaten.
+                                    Es existieren noch keine Einträge.
                                 </TableCell>
                             </TableRow>
                         )}

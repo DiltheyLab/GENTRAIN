@@ -9,6 +9,7 @@ export enum PathogenTypeName {
 export interface PathogenTypeSchema {
     id: number;
     name: PathogenTypeName;
+    initialized_at: Date | null;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -42,4 +43,10 @@ export const getPathogenTypeForActivePathogen = async () => {
     }
     const pathogenType = await db.pathogen_types.get(activePathogen.pathogen_type_id);
     return pathogenType;
+};
+
+export const setInitializedAtForPathogenType = async (pathogenTypeId: number) => {
+    await db.pathogen_types.update(pathogenTypeId, {
+        initialized_at: new Date(),
+    });
 };

@@ -1,0 +1,186 @@
+{
+    "guide": {
+        "titles": {
+            "introduction": "Willkommen beim Gentrain Import-Assistenten!",
+            "case_import": "Import von Falldaten",
+            "case_selection": "Import von Falldaten",
+            "sequence_introduction": "Import von Sequenzdaten",
+            "sequence_import": "Import von Sequenzdaten",
+            "sequence_selection": "Import von Sequenzdaten",
+            "sequence_analysis": "Analyse der Sequenzdaten",
+            "contact_import": "Import von Kontaktdaten",
+            "contact_selection": "Import von Falldaten",
+            "conclusion": "Ihr Datenimport war erfolgreich!"
+        },
+        "introduction": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Dieser Assistent führt Sie Schritt für Schritt durch den Prozess des Datenimports, damit Sie Ihre Daten schnell und unkompliziert hochladen können."
+                }
+            ]
+        },
+        "case_import": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Fügen Sie zunächst Falldaten hinzu. Diese Informationen sind entscheidend, um die betroffenen Personen zu identifizieren und die Ausbreitung der Infektion zu verstehen. Stellen Sie sicher, dass die Daten vollständig und korrekt sind, um signifikante Ergebnisse zu erhalten. Beachten Sie, dass es auch Fälle ohne Sequenz- oder Kontaktdaten geben kann."
+                }
+            ]
+        },
+        "case_selection": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Sie können aus der Tabelle auswählen, welche Fälle Sie importieren möchten. Überprüfen Sie die Liste und wählen Sie die Fälle aus, die Sie importieren wollen. Fälle, die Sie nicht importieren möchten, können Sie einfach abwählen."
+                },
+                {
+                    "tag": "p",
+                    "content": "Bitte beachten Sie, dass bereits vorhandene Fälle aktualisiert werden, wenn die importierte Datei Änderungen enthält."
+                }
+            ]
+        },
+        "sequence_introduction": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Im nächsten Schritt benötigen wir Sequenzdaten zu den von Ihnen hinzugefügten Falldaten. Diese Daten helfen uns, die genetischen Informationen des Erregers zu analysieren und mögliche Mutationen zu identifizieren. Wenn es jedoch keine Sequenzdaten für einige Fälle gibt, können Sie diesen Schritt überspringen oder nur die Ihnen verfügbaren Sequenzdaten hinzufügen."
+                }
+            ],
+            "viral": [
+                {
+                    "tag": "p",
+                    "content": "Für den Import viraler Sequenzen benötigen Sie eine einzelne FASTA-Datei. Diese Datei sollte alle zu importierenden viralen Sequenzen in einem geeigneten Format enthalten. Bitte stellen Sie sicher, dass:"
+                },
+                {
+                    "tag": "ul",
+                    "content": [
+                        "Die FASTA-Datei korrekt formatiert ist. Jede Sequenz sollte mit einer Zeile beginnen, die ein '>'-Zeichen gefolgt von der Sequenzbezeichnung enthält.",
+                        "Die Sequenzen in aufeinanderfolgender Form (ohne Leerzeilen) folgen und nur aus Buchstaben bestehen, die die Nukleotid- oder Aminosäuresequenzen darstellen."
+                    ]
+                },
+                {
+                    "tag": "p",
+                    "content": "Beispiel für eine korrekt formatierte bakterielle FASTA-Datei:"
+                },
+                {
+                    "tag": "code",
+                    "content": "&gt; &lt;Virus_Sequenz_1&gt; <br/>ATGCAGTCGATCGATCGATCG... <br /> &gt; &lt;Virus_Sequenz_2&gt; <br /> GTCGATCGATCGATCAGTCG... <br /> ... <br /> &gt; &lt;Virus_Sequenz_N&gt; <br /> CTCGATCGATAGATCAGTCG..."
+                }
+            ],
+            "bacterial": [
+                {
+                    "tag": "p",
+                    "content": "Für bakterielle Sequenzen ist der Import komplexer, da mehrere FASTA-Dateien benötigt werden. Jede Datei sollte ein Assembly von Contigs für die jeweilige Sequenz enthalten. Bitte beachten Sie folgende Vorgaben:"
+                },
+                {
+                    "tag": "ul",
+                    "content": [
+                        "Einzelne FASTA-Datei pro Sequenz: Für jede bakterielle Sequenz muss eine separate FASTA-Datei erstellt werden.",
+                        "Format der FASTA-Dateien: Ähnlich wie bei den viralen Sequenzen sollten auch die bakteriellen FASTA-Dateien im korrekten Format vorliegen, mit einer Überschrift und der entsprechenden Sequenz.",
+                        "Assembly von Contigs: Stellen Sie sicher, dass die Contigs in der Datei korrekt angeordnet und in einem einheitlichen Format präsentiert werden."
+                    ]
+                },
+                {
+                    "tag": "p",
+                    "content": "Beispiel für eine korrekt formatierte bakterielle FASTA-Datei:"
+                },
+                {
+                    "tag": "code",
+                    "content": "&gt; &lt;Bacterium_Sequenz_1_Contig_1&gt; <br /> ATGCAGTCGATCGATCGATCG... <br /> &gt; &lt;Bacterium_Sequenz_1_Contig_2&gt; <br /> GTCGATCGATCGATCAGTCG... <br /> ... <br /> &gt; &lt;Bacterium_Sequenz_1_Contig_N&gt; <br /> CTCGATCGATAGATCAGTCG..."
+                }
+            ]
+        },
+        "sequence_import": {
+            "viral": [
+                {
+                    "tag": "p",
+                    "content": "Ziehen Sie ihre FASTA-Datei in die grau hinterlegte Fläche oder klicken Sie auf die Fläche um eine Datei auszuwählen."
+                }
+            ],
+            "bacterial": [
+                {
+                    "tag": "p",
+                    "content": "Ziehen Sie ihre FASTA-Dateien in die grau hinterlegte Fläche oder klicken Sie auf die Fläche um Dateien auszuwählen."
+                }
+            ]
+        },
+        "sequence_selection": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Sie können aus der Tabelle, welche Sequenzen Sie importieren möchten. Überprüfen Sie die Liste und wählen Sie die Sequenzen aus, die Sie importieren wollen. Fälle, die Sie nicht importieren möchten, können Sie einfach abwählen."
+                }
+            ]
+        },
+        "sequence_analysis": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Die von Ihnen importieren Sequenzen werden derzeit mit ihrem Referenzgenom verglichen und auf Mutationen analysiert. Mutationen sind Veränderungen in der DNA-Sequenz, die potenziell wichtige Informationen über genetische Variationen liefern."
+                },
+                {
+                    "tag": "p",
+                    "content": "Basierend auf den identifizierten Mutationen wird anschließend die genetische Distanz zwischen den untersuchten Sequenzen berechnet. Diese Distanz gibt an, wie unterschiedlich zwei Sequenzen zueinander sind und ist in Abhängigkeit des zu untersuchenden Pathogens zu interpretieren."
+                },
+                {
+                    "tag": "p",
+                    "content": "Todo: Erklärung Icons"
+                }
+            ],
+            "viral": [
+                {
+                    "tag": "p",
+                    "content": "Da bakterielle Genome weitaus größe sind als virale Genome, kann die Analyse einige Minuten in Anspruch nehmen."
+                }
+            ],
+            "bacterial": [
+                {
+                    "tag": "p",
+                    "content": "Da bakterielle Genome weitaus größer sind als virale Genome, kann die Analyse einige Minuten in Anspruch nehmen."
+                }
+            ]
+        },
+        "contact_import": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Im letzten Schritt haben Sie die Möglichkeit Kontaktangaben zwischen verschiedenen Fällen zu hinterlegen. Anhand dieser Kontaktangaben können Infektionensketten präziser verfolgt und nachvollzogen werden."
+                },
+                {
+                    "tag": "p",
+                    "content": "Hierzu wird eine CSV-Datei benötigt, die aus folgenden Spalten besteht:"
+                },
+                {
+                    "tag": "ul",
+                    "content": [
+                        "Fall 1 (Identifikationsnummer aus dem Gesundheitsamt)",
+                        "Fall 2 (Identifikationsnummer aus dem Gesundheitsamt)",
+                        "Typ des Kontaktes",
+                        "Kontext des Kontaktes"
+                    ]
+                },
+                {
+                    "tag": "p",
+                    "content": "Eine entsprechende Vorlage können Sie <a href='#'>hier</a> herunterladen."
+                }
+            ]
+        },
+        "contact_selection": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Sie können aus der Tabelle auswählen, welche Kontaktangaben Sie importieren möchten. Überprüfen Sie die Liste und wählen Sie die Kontaktangaben aus, die Sie importieren wollen. Kontaktangaben, die Sie nicht importieren möchten, können Sie einfach abwählen."
+                }
+            ]
+        },
+        "conclusion": {
+            "shared": [
+                {
+                    "tag": "p",
+                    "content": "Sie haben nun die Möglichkeit, zur <strong>Dashboard-Ansicht</strong> zu wechseln, um einen umfassenden Überblick über die importierten Daten zu erhalten. Zusätzlich können Sie <strong>Ausbruchsanalysen</strong> erstellen, um das Ausbruchsgeschehen besser zu verstehen und wichtige Erkenntnisse zu gewinnen. Falls Sie Ihre hochgeladenen Daten weiter verwalten möchten, können Sie jederzeit zur <strong>Datenverwaltung</strong> zurückkehren."
+                }
+            ]
+        }
+    }
+}

@@ -12,8 +12,8 @@ export abstract class FileReadingStrategy {
         return this.collectFileObject(files);
     };
 
-    public getAcceptedMimeType(uploadType: string) {
-        switch (uploadType) {
+    public getAcceptedMimeType(importType: string) {
+        switch (importType) {
             case "samples":
                 return ".fasta";
             default:

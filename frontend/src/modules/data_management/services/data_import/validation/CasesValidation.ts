@@ -1,10 +1,11 @@
+import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/infrastructure/database";
 import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { ValidationStrategy } from "@/modules/data_management/services/data_upload/validation/ValidationStrategy";
+import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
@@ -19,9 +20,20 @@ export class CasesValidation extends ValidationStrategy {
         // receive ids of cases already persisted in the db to throw an error containing case ids
         data = data.slice(1, data.length);
 
-        const caseImports = await this.filterAlreadyExistingCases(header, data);
+        const caseImports = await this.collectCaseImports(header, data);
         useDataManagementStore.getState().setCaseSelectionActive(true);
-        useDataManagementStore.getState().changeCaseImports(caseImports);
+        useDataManagementStore.getState().setCaseImports(caseImports);
+        if (useDataManagementStore.getState().showInitialUpload) {
+            useDataManagementStore.getState().nextInitialUploadStep();
+        }
+        if (Object.keys(caseImports).length === 0) {
+            toast({
+                title: "Die ausgewählte Datei enthält keine neuen Fälle.",
+                duration: 5000,
+                variant: "default",
+            });
+        }
+
         return {
             data: data,
         };
@@ -36,7 +48,7 @@ export class CasesValidation extends ValidationStrategy {
         );
     };
 
-    private filterAlreadyExistingCases = async (header: string[], data: Array<Array<string>>) => {
+    private collectCaseImports = async (header: string[], data: Array<Array<string>>) => {
         const activePathogen = useCoreStore.getState().activePathogen;
 
         if (!activePathogen) {
@@ -57,27 +69,30 @@ export class CasesValidation extends ValidationStrategy {
             outbreakMap.set(outbreak.id, outbreak);
         }
 
-        const casesToUpload: { [caseId: string]: CaseImport } = {};
+        const casesToUpload: {
+            [caseId: string]: {
+                imported: CaseImport;
+                persisted: CaseWithRelationships | null;
+                import: boolean;
+            };
+        } = {};
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
-            const existingCase = caseMap.get(row[0]);
-
-            const caseImport = {
+            const persistedCase = caseMap.get(row[0]);
+            const importedCase = {
                 fasta_id: row[1] !== "" ? row[1] : null,
-                groups: this.collectNewGroups(header, row, existingCase),
+                groups: this.collectNewGroups(header, row, persistedCase),
                 outbreak: row[3] !== "" ? row[3] : null,
                 registered_at: parseGermanDateFormat(row[2]),
-                upload: true,
             } satisfies CaseImport;
-            if (existingCase) {
-                existingCase.outbreak = existingCase.outbreak_id ? outbreakMap.get(existingCase.outbreak_id) : null;
-                if (!this.caseImportEqualsExistingCase(caseImport, existingCase)) {
-                    useDataManagementStore.getState().addExistingCase(row[0], existingCase, caseImport);
-                }
-                continue;
+
+            if (persistedCase) {
+                persistedCase.outbreak = persistedCase.outbreak_id ? outbreakMap.get(persistedCase.outbreak_id) : null;
+                if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
             }
-            casesToUpload[row[0]] = caseImport;
+            casesToUpload[row[0]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
         }
+
         return casesToUpload;
     };
 
@@ -100,7 +115,7 @@ export class CasesValidation extends ValidationStrategy {
         return groups;
     };
 
-    private caseImportEqualsExistingCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
+    private importedCaseEqualsPersistedCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
         return (
             ((!caseImport.fasta_id && !caseImport.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
             ((!caseImport.outbreak && !caseImport.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&

@@ -1,8 +1,10 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { db } from "@/modules/core/infrastructure/database";
 import { ValidationStrategy } from "./ValidationStrategy";
-import { SampleImport } from "@/modules/core/models/samples";
+import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { toast } from "@/modules/core/components/ui/UseToast";
 
 export class SamplesValidation extends ValidationStrategy {
     protected validate = async (data: { fastaId: string; sequence: string }[]) => {
@@ -13,6 +15,14 @@ export class SamplesValidation extends ValidationStrategy {
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
+        const sampleImports: {
+            [id: string]: {
+                imported: SampleImport;
+                persisted: SampleSchema | null;
+                import: boolean;
+                status: string;
+            };
+        } = {};
         for (const sample of data) {
             // only import if case for the pathogen and a samples with the same fasta id does not already exist
             const sampleCase = await db.cases
@@ -20,40 +30,45 @@ export class SamplesValidation extends ValidationStrategy {
                 .equals([sample.fastaId, activePathogen.id])
                 .first();
             const existingSample = await db.samples.where({ fasta_id: sample.fastaId }).first();
+
             if (!sampleCase || existingSample) {
                 samplesWithoutCase.push(sample.fastaId);
             } else {
-                this.dataManagementState.changeSampleImport(sample.fastaId, {
-                    ...{
-                        case_id: sampleCase.case_id,
-                        status: "sent",
-                        sequence: sample.sequence,
-                        upload: true,
-                    },
-                    ...sequenceAnalysisStrategy?.getQualityParameters(sample.sequence),
-                } satisfies SampleImport);
+                sampleImports[sample.fastaId] = {
+                    imported: {
+                        ...{
+                            case_id: sampleCase.case_id,
+                            sequence: sample.sequence,
+                        },
+                        ...sequenceAnalysisStrategy?.getQualityParameters(sample.sequence),
+                    } satisfies SampleImport,
+                    persisted: null,
+                    import: true,
+                    status: "sent",
+                };
             }
         }
 
-        // get only samples which were not marked as a sample without a case
-        data = data.filter(function (sample) {
-            return !samplesWithoutCase.includes(sample.fastaId);
-        });
+        useDataManagementStore.getState().setSampleImports(sampleImports);
+
+        if (useDataManagementStore.getState().showInitialUpload) {
+            useDataManagementStore.getState().nextInitialUploadStep();
+        }
 
         if (data.length > 0) {
             this.dataManagementState.setSampleSelectionActive(true);
         }
+
+        if (Object.keys(sampleImports).length === 0) {
+            toast({
+                title: "Die ausgewählte Datei enthält keine neuen Sequenzen.",
+                duration: 5000,
+                variant: "default",
+            });
+        }
+
         return {
             data: data,
-            warnings:
-                samplesWithoutCase.length > 0
-                    ? [
-                          {
-                              title: "Folgende Sequenzen existieren bereits oder konnten keinem existierenden Fall zugeordnet werden.",
-                              description: samplesWithoutCase.join(", "),
-                          },
-                      ]
-                    : [],
         };
     };
 }

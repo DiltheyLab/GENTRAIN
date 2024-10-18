@@ -1,25 +1,28 @@
 import { useDropzone } from "react-dropzone";
-import { CirclePlus, Upload } from "lucide-react";
+import { CirclePlus, File } from "lucide-react";
 import { formatInArray } from "@/modules/core/helpers/files";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { useTranslation } from "react-i18next";
 import { useGetFileReadingStrategy } from "../../hooks/useGetFileReadingStrategy";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { ValidationStrategy } from "../../services/data_upload/validation/ValidationStrategy";
+import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
+import { Button } from "@/modules/core/components/ui/Button";
+import { useDataManagementStore } from "../../stores/dataManagement";
 
 export const FileDropzone = ({
-    label,
     type,
     validationStrategy,
-    icon = <Upload width={50} height={50} />,
+    icon,
+    onFileUpload,
 }: {
-    label: string;
     type: string;
     validationStrategy: ValidationStrategy;
-    icon?: JSX.Element;
+    icon?: JSX.Element | null;
+    onFileUpload: () => void;
 }) => {
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
+    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -49,6 +52,7 @@ export const FileDropzone = ({
             if (validationResult.warnings) {
                 showWarningToasts(validationResult.warnings);
             }
+            onFileUpload();
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
@@ -72,13 +76,12 @@ export const FileDropzone = ({
     };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileUpload });
-
     return (
         <>
             {fileReadingStrategy && (
                 <div
                     {...getRootProps()}
-                    className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group cursor-pointer ${
+                    className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${
                         isDragActive ? "border-muted-foreground/30" : ""
                     }`}
                 >
@@ -90,17 +93,22 @@ export const FileDropzone = ({
                             handleFileUpload(e.target.files);
                         }}
                     />
-                    <h3 className="font-bold tracking-tight text-lg mb-4">{label}</h3>
+                    {!showInitialUpload && (
+                        <h3 className="font-bold tracking-tight text-lg mb-4">{t(`upload.label.${type}`)}</h3>
+                    )}
                     <div className="relative">
+                        <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
+                            {icon && <>{icon}</>}
+                            {!icon && <File />}
+                        </div>
+
                         <CirclePlus
                             className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
                                 isDragActive ? "fill-primary scale-125" : " fill-black"
                             }`}
                             fill="black"
                         />
-                        {icon && <div>{icon}</div>}
                     </div>
-
                     <div className="text-center mt-4 flex items-center justfy-center flex-1 lg:px-10">
                         {isDragActive ? (
                             <small>
@@ -111,10 +119,11 @@ export const FileDropzone = ({
                         ) : (
                             <small>
                                 Ziehen Sie {fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in die
-                                Fläche oder klicken Sie auf die Fläche um {label} zu auszuwählen.
+                                Fläche oder klicken Sie auf die Fläche um {t(`upload.label.${type}`)} auszuwählen.
                             </small>
                         )}
                     </div>
+                    <Button className="mt-4">{t(`upload.label.${type}`)} auswählen</Button>
                 </div>
             )}
         </>

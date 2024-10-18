@@ -1,8 +1,8 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { PathogenTypeName, getPathogenTypeForActivePathogen } from "@/modules/core/models/pathogen_types";
-import { FileReadingStrategy } from "../data_upload/file_reading/FileReadingStrategy";
-import { MultiFileReading } from "../data_upload/file_reading/MultiFileReading";
-import { SingleFileReading } from "../data_upload/file_reading/SingleFileReading";
+import { FileReadingStrategy } from "../data_import/file_reading/FileReadingStrategy";
+import { MultiFileReading } from "../data_import/file_reading/MultiFileReading";
+import { SingleFileReading } from "../data_import/file_reading/SingleFileReading";
 import { BacterialDistanceCalculation } from "../distance_calculation/BacterialDistanceCalculation";
 import { ViralDistanceCalculation } from "../distance_calculation/ViralDistanceCalculation";
 import { ViralSequenceAnalysis } from "@/modules/data_management/services/sequence_analysis/ViralSequenceAnalysis";

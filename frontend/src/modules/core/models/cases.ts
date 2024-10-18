@@ -37,7 +37,6 @@ export type CaseImport = {
     groups: { name: string; category: string; remaining?: boolean }[];
     outbreak: string | null;
     registered_at: Date;
-    upload: boolean;
 };
 
 export const caseRules = z.object({

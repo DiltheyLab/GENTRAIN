@@ -3,7 +3,8 @@ import { db } from "@/modules/core/infrastructure/database";
 import { CaseSchema } from "@/modules/core/models/cases";
 import { ValidationStrategy } from "./ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { ContactImport } from "@/modules/core/models/contacts";
+import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
+import { toast } from "@/modules/core/components/ui/UseToast";
 
 const CONTACT_COLUMN_NAMES = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
 
@@ -28,8 +29,11 @@ export class ContactsValidation extends ValidationStrategy {
         }
 
         const contactImports = await this.filterAlreadyExistingContact(data, caseMap);
-        useDataManagementStore.getState().changeContactImports(contactImports);
-        this.dataManagementState.setContactSelectionActive(true);
+        useDataManagementStore.getState().setContactImports(contactImports);
+        useDataManagementStore.getState().setContactSelectionActive(true);
+        if (useDataManagementStore.getState().showInitialUpload) {
+            useDataManagementStore.getState().nextInitialUploadStep();
+        }
 
         return {
             data: data,
@@ -37,7 +41,9 @@ export class ContactsValidation extends ValidationStrategy {
     };
 
     private filterAlreadyExistingContact = async (data: string[][], cases: Map<string, CaseSchema>) => {
-        const contactImports: { [contactId: string]: ContactImport } = {};
+        const contactImports: {
+            [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
+        } = {};
         for (const index in data) {
             const row = data[index];
             const case1 = cases.get(row[0]);
@@ -57,13 +63,23 @@ export class ContactsValidation extends ValidationStrategy {
             }
 
             contactImports[index] = {
-                contact_id: index,
-                case_id_1: case1.case_id,
-                case_id_2: case2.case_id,
-                type: row[2],
-                context: row[3],
-                upload: true,
-            } satisfies ContactImport;
+                imported: {
+                    contact_id: index,
+                    case_id_1: case1.case_id,
+                    case_id_2: case2.case_id,
+                    type: row[2],
+                    context: row[3],
+                } satisfies ContactImport,
+                persisted: null,
+                import: true,
+            };
+        }
+        if (Object.keys(contactImports).length === 0) {
+            toast({
+                title: "Die ausgewählte Datei enthält keine neuen Kontaktabgaben.",
+                duration: 5000,
+                variant: "default",
+            });
         }
         return contactImports;
     };
