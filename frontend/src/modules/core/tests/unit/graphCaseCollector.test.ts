@@ -1,81 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
-import { CaseWithRelationships } from "../../models/cases";
 import { createCase } from "../entities/cases";
 import { createSample } from "../entities/samples";
-import { OutbreakSchema } from "../../models/outbreaks";
 import { createDistance } from "../entities/distances";
 
 describe("GraphCaseCollector", () => {
     let settings: AnalysisSettings;
-    let allCases: CaseWithRelationships[];
-    let caseInOutbreak1WithoutSample: CaseWithRelationships;
-    let caseInOutbreak1WithSample2: CaseWithRelationships;
-    let caseInOutbreak1WithSample: CaseWithRelationships;
-    let caseInOutbreak2WithoutSample: CaseWithRelationships;
-    let caseInOutbreak2WithSample: CaseWithRelationships;
-    let caseInOutbreak3WithoutSample: CaseWithRelationships;
-    let caseInOutbreak3WithSample: CaseWithRelationships;
-    let caseWithoutOutbreakAndWithoutSample: CaseWithRelationships;
-    let caseWithoutOutbreakWithSample: CaseWithRelationships;
-    let outbreak1: OutbreakSchema;
-    let outbreak2: OutbreakSchema;
-    let outbreak3: OutbreakSchema;
 
     beforeEach(() => {
-        // set default outbreaks
-        outbreak1 = { name: ":outbreakName1:", pathogen_id: undefined, id: 1 };
-        outbreak2 = { name: ":outbreakName2:", pathogen_id: undefined, id: 2 };
-        outbreak3 = { name: ":outbreakName3:", pathogen_id: undefined, id: 3 };
-
-        // set default cases
-        caseInOutbreak1WithoutSample = createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id });
-        caseInOutbreak1WithSample = createCase({
-            id: 2,
-            outbreak: outbreak1,
-            outbreak_id: outbreak1.id,
-            sample: createSample({}),
-        });
-        caseInOutbreak1WithSample2 = createCase({
-            id: 3,
-            outbreak: outbreak1,
-            outbreak_id: outbreak1.id,
-            sample: createSample({}),
-        });
-        caseInOutbreak2WithoutSample = createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id });
-        caseInOutbreak2WithSample = createCase({
-            id: 5,
-            outbreak: outbreak2,
-            outbreak_id: outbreak2.id,
-            sample: createSample({}),
-        });
-        caseInOutbreak3WithoutSample = createCase({ id: 6, outbreak: outbreak3, outbreak_id: outbreak3.id });
-        caseInOutbreak3WithSample = createCase({
-            id: 7,
-            outbreak: outbreak3,
-            outbreak_id: outbreak3.id,
-            sample: createSample({}),
-        });
-        caseWithoutOutbreakAndWithoutSample = createCase({ id: 8 });
-        caseWithoutOutbreakWithSample = createCase({ id: 9, sample: createSample({}) });
-        allCases = [
-            caseInOutbreak1WithoutSample,
-            caseInOutbreak1WithSample,
-            caseInOutbreak1WithSample2,
-            caseInOutbreak2WithoutSample,
-            caseInOutbreak2WithSample,
-            caseInOutbreak3WithoutSample,
-            caseInOutbreak3WithSample,
-            caseWithoutOutbreakAndWithoutSample,
-            caseWithoutOutbreakWithSample,
-        ];
-
-        // set default settings
+        // Set default settings
         settings = {
             backgroundType: "all",
             selectedOutbreak: null,
-            datesOfCasesInSelectedOutbreak: [], // not relevant for this test
+            datesOfCasesInSelectedOutbreak: [],
             selectedBackground: null,
             excludeCasesAboveGeneticDistanceThreshold: false,
             excludeCasesOutsideOfDateRange: false,
@@ -85,26 +23,42 @@ describe("GraphCaseCollector", () => {
                 to: new Date("2022-03-04T23:00:00.000Z"),
             },
             geneticDistanceThreshold: 2,
-            showContactTracingLinks: false, // not relevant for this test
-            clusteringThreshold: 2, // not relevant for this test
+            showContactTracingLinks: false,
+            clusteringThreshold: 2,
         };
     });
 
     it("should collect all sequenced cases", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+        const outbreak3 = { id: 3, name: ":outbreakName3:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
+            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({ id: 6, outbreak: outbreak3, outbreak_id: outbreak3.id }),
+            createCase({ id: 7, outbreak: outbreak3, outbreak_id: outbreak3.id, sample: createSample({}) }),
+            createCase({ id: 8 }),
+            createCase({ id: 9, sample: createSample({}) }),
+        ];
+
         settings.excludeCasesWithoutSequence = true;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithSample.id,
-            caseInOutbreak1WithSample2.id,
-            caseInOutbreak2WithSample.id,
-            caseInOutbreak3WithSample.id,
-            caseWithoutOutbreakWithSample.id,
-        ]);
+        expect(result).toEqual([2, 3, 5, 7, 9]);
     });
 
-    it("should collect all cases", async () => {
+    it("should collect all cases (even without sequence)", async () => {
+        const allCases = [
+            createCase({ id: 1 }),
+            createCase({ id: 2, sample: createSample({}) }),
+            createCase({ id: 3 }),
+        ];
+
         settings.excludeCasesWithoutSequence = false;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
@@ -112,31 +66,60 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(allCases);
     });
 
-    it("should only include cases of the selectedOutbreak (with sample and without sample)", async () => {
+    it("should only include cases of the selected outbreak (with sample and without sample)", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
+            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+        ];
+
         settings.selectedOutbreak = outbreak1;
         settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = false;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithoutSample.id,
-            caseInOutbreak1WithSample.id,
-            caseInOutbreak1WithSample2.id,
-        ]);
+        expect(result).toEqual([1, 2, 3]);
     });
 
     it("should only include cases with sample of the selectedOutbreak", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
+            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+        ];
+
         settings.selectedOutbreak = outbreak1;
         settings.backgroundType = "none";
         settings.excludeCasesWithoutSequence = true;
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([caseInOutbreak1WithSample.id, caseInOutbreak1WithSample2.id]);
+        expect(result).toEqual([2, 3]);
     });
 
-    it("should only include cases of the selectedOutbreak and cases which are not assigned to an outbreak", async () => {
+    it("should only include cases of the selected outbreak and cases which are not assigned to an outbreak", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({ id: 4 }),
+            createCase({ id: 5, sample: createSample({}) }),
+        ];
+
         settings.selectedOutbreak = outbreak1;
         settings.backgroundType = "specific";
         settings.selectedBackground = {
@@ -148,24 +131,67 @@ describe("GraphCaseCollector", () => {
 
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithSample.id,
-            caseInOutbreak1WithSample2.id,
-            caseWithoutOutbreakWithSample.id,
-        ]);
+        expect(result).toEqual([2, 5]);
     });
 
-    it("should only include cases of the selectedOutbreak and no background", async () => {
+    it("should only include cases of the selected outbreak and which are in a specific outbreak", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+        const outbreak3 = { id: 3, name: ":outbreakName2:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({ id: 4 }),
+            createCase({ id: 5, sample: createSample({}) }),
+            createCase({ id: 6, outbreak: outbreak3, outbreak_id: outbreak3.id }),
+        ];
+
         settings.selectedOutbreak = outbreak1;
-        settings.backgroundType = "none";
-        settings.excludeCasesWithoutSequence = false;
+        settings.backgroundType = "specific";
+        settings.excludeCasesWithoutSequence = true; // don't allow unsequenced cases in the result
+        settings.selectedBackground = {
+            outbreaks: [outbreak2],
+            groupsWithCategories: [],
+            casesWithoutOutbreakExist: false,
+        };
+
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithoutSample.id,
-            caseInOutbreak1WithSample.id,
-            caseInOutbreak1WithSample2.id,
-        ]);
+        expect(result).toEqual([2, 3]);
+    });
+
+    it("should only include cases of the selected outbreak and which are in a specific group", async () => {
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+        const group1 = {
+            id: 1,
+            category_id: 0,
+            categoryName: ":category_name:",
+            name: ":group_name:",
+        };
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({ id: 4 }),
+            createCase({ id: 5, sample: createSample({}) }),
+            createCase({ id: 6, group_ids: [group1.id], sample: createSample({}) }),
+        ];
+
+        settings.selectedOutbreak = outbreak1;
+        settings.backgroundType = "specific";
+        settings.excludeCasesWithoutSequence = true; // don't allow unsequenced cases in the result
+        settings.selectedBackground = {
+            outbreaks: [outbreak2],
+            groupsWithCategories: [group1],
+            casesWithoutOutbreakExist: false,
+        };
+
+        const graphCaseCollector = new GraphCaseCollector(allCases, settings);
+        const result = (await graphCaseCollector.execute()).map((c) => c.id);
+        expect(result).toEqual([2, 3, 6]);
     });
 
     it("should only include cases in the dateRange", async () => {
@@ -179,7 +205,7 @@ describe("GraphCaseCollector", () => {
             to: new Date("2022-03-04T23:00:00.000Z"),
         };
 
-        settings.selectedOutbreak = outbreak1;
+        settings.selectedOutbreak = { id: 1, name: ":outbreakName1:" };
         settings.excludeCasesOutsideOfDateRange = true;
         settings.excludeCasesWithoutSequence = false;
 
@@ -192,8 +218,14 @@ describe("GraphCaseCollector", () => {
     });
 
     it("should only include cases of the selectedOutbreak and cases below the genetic distance threshold", async () => {
-        caseInOutbreak1WithSample.sample!.id = 1;
-        caseInOutbreak2WithSample.sample!.id = 2;
+        const outbreak1 = { id: 1, name: ":outbreakName1:" };
+        const outbreak2 = { id: 2, name: ":outbreakName2:" };
+
+        const allCases = [
+            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({ id: 1 }) }),
+            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({ id: 2 }) }),
+        ];
 
         // mocks the function which access the indexedDB
         vi.mock("@/modules/core/models/distances", () => ({
@@ -210,10 +242,6 @@ describe("GraphCaseCollector", () => {
         settings.excludeCasesAboveGeneticDistanceThreshold = true;
         const graphCaseCollector = new GraphCaseCollector(allCases, settings);
         const result = (await graphCaseCollector.execute()).map((c) => c.id);
-        expect(result).toEqual([
-            caseInOutbreak1WithSample.id, //included because in outbreak
-            caseInOutbreak1WithSample2.id, //included because in outbreak
-            caseInOutbreak2WithSample.id, //included because distance below threshold
-        ]);
+        expect(result).toEqual([1, 2, 3]);
     });
 });
