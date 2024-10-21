@@ -1,13 +1,18 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import fs from "fs";
 import {
     collectFastaIdsAndSequences,
+    downloadFile,
     formatInArray,
     readFileAsText,
     readFilesAsText,
 } from "@/modules/core/helpers/files";
 
 describe("FilesHelper", () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     describe("readFileAsText", () => {
         it("should read txt content as text", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
@@ -120,15 +125,28 @@ describe("FilesHelper", () => {
         });
     });
 
+    // Not really testable.
     describe("downloadFile", async () => {
-        it("should", async () => {
-            expect(true).toBeTruthy();
+        it("should return an objectUrl of the downloaded blob file", async () => {
+            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
+            const blob = new Blob([fileBuffer1]);
+            const link = document.createElement("a");
+            window.URL.createObjectURL = vi.fn(() => ":object_url:");
+            const spyOnCreateElement = vi.spyOn(document, "createElement").mockImplementation(() => link);
+            const spyOnLinkClick = vi.spyOn(link, "click").mockImplementation(() => {});
+            downloadFile(blob, ":file_name:");
+
+            expect(spyOnCreateElement).toHaveBeenCalledOnce();
+            expect(link.download).toBe(":file_name:");
+            expect(link.href).toContain(":object_url:");
+            expect(spyOnLinkClick).toHaveBeenCalledOnce();
         });
     });
 });
 
 const mockFileList = (files: File[]) => {
     const input = document.createElement("input");
+
     input.setAttribute("type", "file");
     input.setAttribute("name", "file-upload");
     input.multiple = true;

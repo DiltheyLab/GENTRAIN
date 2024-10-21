@@ -1,10 +1,17 @@
+/**
+ * Create a download anchor tag to download a file. Removes it afterwards.
+ * @param blob
+ * @param name
+ * @returns objectUrl of the blogfile.
+ */
 export const downloadFile = (blob: Blob, name: string) => {
-    const jsonURL = window.URL.createObjectURL(blob);
+    const objectUrl = window.URL.createObjectURL(blob);
     const tempLink = document.createElement("a");
-    tempLink.href = jsonURL;
+    tempLink.href = objectUrl;
     tempLink.setAttribute("download", name);
     tempLink.click();
     tempLink.remove();
+    return objectUrl;
 };
 
 /**
@@ -65,7 +72,11 @@ export const formatInArray = (
     }
 };
 
-// split fasta ids and sequences
+/**
+ * Create an object array containing fasta ids and sequences from fasta_id/sequence-strings.
+ * @param fastaSequences
+ * @returns
+ */
 export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
     let fastaSequencesArray = [];
     for (let sequence of fastaSequences) {
