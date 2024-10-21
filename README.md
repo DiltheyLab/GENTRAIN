@@ -176,6 +176,23 @@ iptables -P FORWARD ACCEPT
 The script ensures that the testing environment is accessible through specific ports while maintaining isolation from the production environment.
 The setup of the test instance in de.NBI Cloud follows this tutorial: `https://cloud.denbi.de/wiki/Tutorials/SaveFloatingIPs/`
 
+### GitHub Actions Variables and Secrets for Testing
+
+In addition to the variables and secrets required for deployment, the testing pipeline needs some extra configuration. Make sure to add these to your GitHub repository settings under "Settings" > "Secrets and variables" > "Actions":
+
+#### Additional Variables:
+
+- `SSH_PORT_TEST_SERVER`: The SSH port for the test server
+- `HTTPS_PORT_TEST_SERVER`: The HTTPS port for the test server
+- `TESTING_BRANCH`: The branch name for testing deployments (e.g., "test")
+
+#### Additional Secrets:
+
+- `SSH_PRIVATE_KEY_TEST_SERVER`: The SSH private key for accessing the test server
+- `GENTRAIN_PASSWORD_TEST_SERVER`: The sudo password for the test server
+
+These additional variables and secrets are used in the `.github/workflows/test_deployment.yml` file to manage the test environment deployment.
+
 ### Automated Testing Workflow
 
 1. **Trigger**: The testing workflow is triggered by pushes to the `test` branch or manually through GitHub Actions.
