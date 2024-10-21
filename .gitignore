@@ -3,3 +3,5 @@ caddy
 .env*
 Caddyfile
 .vscode
+
+!.env.production.example
