@@ -1,0 +1,49 @@
+api.gentrain.bi.denbi.de {
+  tls /data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt /data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.key
+  
+  # If you want Caddys internal certificate uncomment next line
+  # tls internal
+
+  @not_options {
+    not method OPTIONS
+  }
+
+  # Reverse proxy to the backend docker container
+  reverse_proxy backend:8080
+
+  @cors_preflight {
+    method OPTIONS
+  }
+  respond @cors_preflight 204
+
+  header {
+    Access-Control-Allow-Origin https://gentrain.bi.denbi.de
+    Access-Control-Allow-Methods GET,POST,OPTIONS,HEAD,PATCH,PUT,DELETE
+    Access-Control-Allow-Headers User-Agent,Content-Type,Authorization
+    Access-Control-Max-Age 86400
+  }
+
+  # Log
+  log {
+    output stdout
+  }
+}
+
+# Frontend app (React)
+gentrain.bi.denbi.de {
+  tls /data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt /data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.key
+    
+  # If you want Caddys internal certificate uncomment next line
+  # tls internal
+
+  # Enables basic authentification
+  basicauth {
+    <USERNAME> <PASSWORD>
+  }
+  root * /srv
+  try_files {path} /index.html
+  file_server
+  log {
+    output stdout
+  }
+}

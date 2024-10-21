@@ -176,6 +176,22 @@ iptables -P FORWARD ACCEPT
 The script ensures that the testing environment is accessible through specific ports while maintaining isolation from the production environment.
 The setup of the test instance in de.NBI Cloud follows this tutorial: `https://cloud.denbi.de/wiki/Tutorials/SaveFloatingIPs/`
 
+### SSL Configuration for Test Server
+
+To ensure a secure, SSL-encrypted connection to the test server with a valid certificate, follow these steps:
+
+1. The production instance automatically generates SSL certificates using Caddy.
+2. These certificates are stored in specific folders on the production server.
+3. To use these certificates for the test server:
+   - Copy the certificate files (.crt and .key) from the production instance to the corresponding folders on the test instance.
+   - The paths for these certificates are defined in the Caddyfile. We have created an example file (`Caddyfile.test.example`) where you can see the structure:
+     - For the API: `/data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
+     - For the frontend: `/data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
+
+By copying these certificates, you ensure that the test server uses the same valid SSL certificates as the production server, allowing for secure, encrypted connections during testing.
+
+> Note: Remember to update these certificates periodically to maintain security and prevent expiration issues.
+
 ### GitHub Actions Variables and Secrets for Testing
 
 In addition to the variables and secrets required for deployment, the testing pipeline needs some extra configuration. Make sure to add these to your GitHub repository settings under "Settings" > "Secrets and variables" > "Actions":
