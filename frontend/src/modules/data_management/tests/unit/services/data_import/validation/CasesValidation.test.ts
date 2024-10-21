@@ -5,7 +5,7 @@ describe("CasesValidation", () => {
     let casesValidationStrategy: any;
 
     beforeEach(() => {
-        casesValidationStrategy = Object.getPrototypeOf(new CasesValidation());
+        casesValidationStrategy = new CasesValidation();
     });
 
     describe("validate", () => {
@@ -19,7 +19,7 @@ describe("CasesValidation", () => {
         it("should detect valid header when passing up to 3 flxeible category names", () => {
             const header = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
             for (let categoryIndex = 1; categoryIndex <= 3; categoryIndex++) {
-                header.push(`:flexible_category_${categoryIndex}`);
+                header.push(`:flexible_category_${categoryIndex}:`);
                 const result = casesValidationStrategy.isCasesHeaderValid(header);
                 expect(result).toBeTruthy();
             }

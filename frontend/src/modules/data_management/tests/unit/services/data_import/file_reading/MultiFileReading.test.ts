@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import fs from "fs";
 import { MultiFileReading } from "@/modules/data_management/services/data_import/file_reading/MultiFileReading";
 import { mockFileList } from "@/modules/core/tests/mocks/files";
 
@@ -7,7 +6,7 @@ describe("MultiFileReading", () => {
     let multiFileReadingStrategy: any;
 
     beforeEach(() => {
-        multiFileReadingStrategy = Object.getPrototypeOf(new MultiFileReading());
+        multiFileReadingStrategy = new MultiFileReading();
     });
 
     describe("getAcceptedMimeType", () => {
@@ -36,11 +35,9 @@ describe("MultiFileReading", () => {
 
     describe("readContent", () => {
         it("should read content of multiple text files correctly", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../../../fixtures/files/test1.txt`);
-            let fileBuffer2 = fs.readFileSync(`${__dirname}/../../../../fixtures/files/test2.txt`);
             const files = mockFileList([
-                new File([new Blob([fileBuffer1])], ":file_name_1:"),
-                new File([new Blob([fileBuffer2])], ":file_name_2:"),
+                new File([new Blob(["test1"])], ":file_name_1:"),
+                new File([new Blob(["test2"])], ":file_name_2:"),
             ]);
             await multiFileReadingStrategy.readContent(files);
 
@@ -73,6 +70,59 @@ describe("MultiFileReading", () => {
                 { filename: ":file_name_1:", content: ":file_content_1:", mimetype: "fasta" },
                 { filename: ":file_name_2:", content: ":file_content_2:", mimetype: "fasta" },
             ]);
+        });
+
+        it("should return undefined with empty content", async () => {
+            const files = mockFileList([
+                new File([new Blob([":file_content_1:"])], ":file_name_1:"),
+                new File([new Blob([":file_content_2:"])], ":file_name_2:"),
+            ]);
+
+            const result = multiFileReadingStrategy.collectFileObject(files);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe("execute", () => {
+        it("should return csv file list", async () => {
+            const files = mockFileList([
+                new File([new Blob(["test1"])], ":file_name_1:", { type: "text/csv" }),
+                new File([new Blob(["test2"])], ":file_name_2:", { type: "text/csv" }),
+            ]);
+            const result = await multiFileReadingStrategy.execute(files);
+            expect(result).toEqual([
+                { filename: ":file_name_1:", content: "test1", mimetype: "csv" },
+                { filename: ":file_name_2:", content: "test2", mimetype: "csv" },
+            ]);
+        });
+
+        it("should return fasta file list", async () => {
+            const files = mockFileList([
+                new File([new Blob(["test1"])], ":file_name_1:"),
+                new File([new Blob(["test2"])], ":file_name_2:"),
+            ]);
+            const result = await multiFileReadingStrategy.execute(files);
+            expect(result).toEqual([
+                { filename: ":file_name_1:", content: "test1", mimetype: "fasta" },
+                { filename: ":file_name_2:", content: "test2", mimetype: "fasta" },
+            ]);
+        });
+
+        it("should return file list with different mimetypes", async () => {
+            const files = mockFileList([
+                new File([new Blob(["test1"])], ":file_name_1:", { type: "text/csv" }),
+                new File([new Blob(["test2"])], ":file_name_2:"),
+            ]);
+            const result = await multiFileReadingStrategy.execute(files);
+            expect(result).toEqual([
+                { filename: ":file_name_1:", content: "test1", mimetype: "csv" },
+                { filename: ":file_name_2:", content: "test2", mimetype: "fasta" },
+            ]);
+        });
+
+        it("should return null with missing files parameter", async () => {
+            const result = await multiFileReadingStrategy.execute(null);
+            expect(result).toBeUndefined();
         });
     });
 });

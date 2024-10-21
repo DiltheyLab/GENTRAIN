@@ -7,7 +7,7 @@ describe("SingleFileReading", () => {
     let singleFileReadingStrategy: any;
 
     beforeEach(() => {
-        singleFileReadingStrategy = Object.getPrototypeOf(new SingleFileReading());
+        singleFileReadingStrategy = new SingleFileReading();
     });
 
     describe("getAcceptedMimeType", () => {
@@ -55,6 +55,30 @@ describe("SingleFileReading", () => {
             singleFileReadingStrategy.content = ":file_content:";
             const result = singleFileReadingStrategy.collectFileObject(files);
             expect(result).toEqual({ ":file_name:": ":file_content:", mimetype: "fasta" });
+        });
+
+        it("should return undefined with empty content", async () => {
+            const files = mockFileList([new File([new Blob([":file_content:"])], ":file_name:", { type: "text/csv" })]);
+            const result = singleFileReadingStrategy.collectFileObject(files);
+            expect(result).toBeUndefined();
+        });
+    });
+    describe("execute", () => {
+        it("should return csv file list", async () => {
+            const files = mockFileList([new File([new Blob(["test"])], ":file_name_1:", { type: "text/csv" })]);
+            const result = await singleFileReadingStrategy.execute(files);
+            expect(result).toEqual({ ":file_name_1:": "test", mimetype: "csv" });
+        });
+
+        it("should return fasta file list", async () => {
+            const files = mockFileList([new File([new Blob(["test"])], ":file_name_1:")]);
+            const result = await singleFileReadingStrategy.execute(files);
+            expect(result).toEqual({ ":file_name_1:": "test", mimetype: "fasta" });
+        });
+
+        it("should return null with missing files parameter", async () => {
+            const result = await singleFileReadingStrategy.execute(null);
+            expect(result).toBeUndefined();
         });
     });
 });
