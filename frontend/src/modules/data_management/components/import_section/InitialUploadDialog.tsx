@@ -45,7 +45,7 @@ export function InitialUploadDialog() {
             case "introduction":
                 return (
                     <div className="flex justify-end">
-                        <Button onClick={nextInitialUploadStep}>Starten</Button>
+                        <Button onClick={nextInitialUploadStep}>Import starten</Button>
                     </div>
                 );
             case "case_import":

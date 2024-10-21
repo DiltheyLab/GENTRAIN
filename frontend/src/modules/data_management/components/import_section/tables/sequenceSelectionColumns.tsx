@@ -45,7 +45,7 @@ export const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
     {
         accessorKey: "case_id",
         header: "Fall",
-        cell: ({ row }) => <>{row.original.sequence_length}</>,
+        cell: ({ row }) => <>{row.original.case_id}</>,
     },
 ];
 

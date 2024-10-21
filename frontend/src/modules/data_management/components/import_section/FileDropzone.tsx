@@ -76,6 +76,7 @@ export const FileDropzone = ({
     };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileUpload });
+
     return (
         <>
             {fileReadingStrategy && (

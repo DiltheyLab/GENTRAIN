@@ -34,7 +34,7 @@ export class ContactsValidation extends ValidationStrategy {
 
         if (Object.keys(contactImports).length === 0) {
             toast({
-                title: "Die ausgewählte Datei enthält keine neuen Kontaktabgaben.",
+                title: "Die ausgewählte Datei enthält keine neuen Kontaktangaben.",
                 duration: 5000,
                 variant: "default",
             });

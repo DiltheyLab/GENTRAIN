@@ -20,7 +20,15 @@
         "shared": [
             {
                 "tag": "p",
-                "content": "Dieser Assistent führt Sie Schritt für Schritt durch den Prozess des Datenimports, damit Sie Ihre Daten schnell und unkompliziert hochladen können."
+                "content": "Dieser Assistent führt Sie Schritt für Schritt durch den Prozess des Datenimports, damit Sie Ihre Daten schnell und unkompliziert importieren können. Der Import von Falldaten stellt die Grundlage für die Ausbruchsanalyse dar. Anhand von Sequenz- und Kontaktdaten werden die Fälle anschließend miteinander in Verbindung gestellt, um Schlüsse aus dem Ausbruchsgeschehen ziehen zu können."
+            },
+            {
+                "tag": "p",
+                "content": "Sie können den Import-Assistenten schließen, indem Sie oben rechts auf das Kreuz klicken. In der Ansicht <strong>Datenverwaltung</strong> können Sie anschließend jederzeit neue Daten importieren oder den Import-Assistenten erneut aufrufen."
+            },
+            {
+                "tag": "p",
+                "content": "Klicken Sie auf <strong>Import starten</strong> um durch den Importprozess geleitet zu werden."
             }
         ]
     },

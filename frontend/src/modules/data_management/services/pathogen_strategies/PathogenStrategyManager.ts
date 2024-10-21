@@ -47,7 +47,7 @@ export class PathogenStrategyManager {
         }
         switch (pathogenType) {
             case PathogenTypeName[PathogenTypeName.bacterial]:
-                return type === "sample" ? new MultiFileReading() : new SingleFileReading();
+                return type === "sequence" ? new MultiFileReading() : new SingleFileReading();
             default:
                 return new SingleFileReading();
         }
