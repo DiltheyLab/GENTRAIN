@@ -11,15 +11,26 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "22.10.0"
-      - name: Build frontend
+      - name: Install dependencies
         run: |
           cd frontend
           npm ci
+      - name: Run Unit tests
+        run: |
+          cd frontend
+          npx vitest --coverage.enabled true
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: frontend
+      - name: Build
+        run: |
+          cd frontend
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
