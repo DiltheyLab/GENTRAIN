@@ -1,37 +1,22 @@
-import { useState } from "react";
-
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/modules/core/components/ui/Dialog";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { SequenceAnalysisStatus } from "../sequence_analysis/SequenceAnalysisStatus";
 import { CasesPersistence } from "../../services/data_import/persistence/CasesPersistence";
 import { CasesValidation } from "../../services/data_import/validation/CasesValidation";
-import { CaseSelection } from "./tables/CaseSelection";
-import { DataImport } from "./DataImport";
-import { SequenceSelection } from "./tables/SequenceSelection";
 import { SamplesPersistence } from "../../services/data_import/persistence/SamplesPersistence";
 import { SamplesValidation } from "../../services/data_import/validation/SamplesValidation";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
-import { ContactSelection } from "./tables/ContactSelection";
 import { Button } from "@/modules/core/components/ui/Button";
 import { ContactRound, Dna, UsersRound } from "lucide-react";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
+import { CaseSelection } from "../import_section/tables/CaseSelection";
+import { DataImport } from "../import_section/DataImport";
+import { SequenceSelection } from "../import_section/tables/SequenceSelection";
+import { ContactSelection } from "../import_section/tables/ContactSelection";
 
-export function InitialUploadDialog() {
-    const { t, i18n } = useTranslation();
-    const [opened, setOpened] = useState(true);
-    const activePathogen = useCoreStore((state) => state.activePathogen);
+export function ActionArea() {
     const persistedCasesForPathogen = useCoreStore((state) => state.casesWithRelationships);
-
     const initalUploadStep = useDataManagementStore((state) => state.initialUploadStep);
     const previousInitialUploadStep = useDataManagementStore((state) => state.previousInitialUploadStep);
     const nextInitialUploadStep = useDataManagementStore((state) => state.nextInitialUploadStep);
@@ -165,13 +150,13 @@ export function InitialUploadDialog() {
                         <div>
                             <div className="flex justify-end gap-4 mt-4">
                                 <Link to="/">
-                                    <Button onClick={closeInitialUpload}>Zum Dashboard</Button>
+                                    <Button onClick={resetInitialUpload}>Zum Dashboard</Button>
                                 </Link>
                                 <Link to="/outbreak-analysis">
-                                    <Button onClick={closeInitialUpload}>Zu den Ausbruchsanalysen</Button>
+                                    <Button onClick={resetInitialUpload}>Zu den Ausbruchsanalysen</Button>
                                 </Link>
                                 <Link to="/data-management">
-                                    <Button onClick={closeInitialUpload}>Zur Datenverwaltung</Button>
+                                    <Button onClick={resetInitialUpload}>Zur Datenverwaltung</Button>
                                 </Link>
                             </div>
                         </div>
@@ -182,25 +167,5 @@ export function InitialUploadDialog() {
         }
     };
 
-    const closeInitialUpload = () => {
-        setOpened(!opened);
-        resetInitialUpload();
-    };
-
-    return (
-        <Dialog open={opened} onOpenChange={closeInitialUpload}>
-            <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
-                <DialogHeader>
-                    <DialogTitle>{t(`import:titles.${initalUploadStep}`)}</DialogTitle>
-                    <DialogDescription></DialogDescription>
-                </DialogHeader>
-
-                {i18n.exists(`import:${initalUploadStep}.shared`) &&
-                    renderHtmlFromTranslation(`import:${initalUploadStep}.shared`)}
-                {i18n.exists(`import:${initalUploadStep}.${activePathogen?.pathogen_type?.name}`) &&
-                    renderHtmlFromTranslation(`import:${initalUploadStep}.${activePathogen?.pathogen_type?.name}`)}
-                {getImportComponentBasedOnInitalUploadStep()}
-            </DialogContent>
-        </Dialog>
-    );
+    return getImportComponentBasedOnInitalUploadStep();
 }

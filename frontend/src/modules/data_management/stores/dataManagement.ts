@@ -284,6 +284,6 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         set({ showInitialUpload: value });
     },
     resetInitialUpload: () => {
-        set({ showInitialUpload: false, initialUploadStep: "case_import" });
+        set({ showInitialUpload: false, initialUploadStep: "introduction" });
     },
 }));

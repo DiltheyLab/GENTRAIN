@@ -68,7 +68,10 @@ export const DataImport = ({
                     }}
                     open={openDialog}
                 >
-                    <DialogContent className="max-w-[1000px] w-[calc(100vw-50px)]">
+                    <DialogContent
+                        className="max-w-[1000px] w-[calc(100vw-50px)]"
+                        onInteractOutside={(e) => e.preventDefault()}
+                    >
                         <DialogTitle>{t(`import:titles.${type}_selection`)}</DialogTitle>
                         <DialogDescription></DialogDescription>
                         {renderHtmlFromTranslation(`import:${type}_selection.shared`)}

@@ -16,8 +16,8 @@ import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modul
 import { uploadedGroupColumns } from "../components/imported_data/uploadedGroupColumns";
 import { useDataManagementStore } from "../stores/dataManagement";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { InitialUploadDialog } from "../components/import_section/InitialUploadDialog";
 import { ImportSection } from "../components/import_section/ImportSection";
+import { ImportAssistent } from "../components/import_assistent/ImportAssistent";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
@@ -55,7 +55,7 @@ export function DataManagement() {
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
                 {showInitialUpload && (
                     <div className="space-y-8">
-                        <InitialUploadDialog />
+                        <ImportAssistent />
                     </div>
                 )}
                 {!showInitialUpload && (
