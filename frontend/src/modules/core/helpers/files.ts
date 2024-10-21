@@ -2,7 +2,6 @@
  * Create a download anchor tag to download a file. Removes it afterwards.
  * @param blob
  * @param name
- * @returns objectUrl of the blogfile.
  */
 export const downloadFile = (blob: Blob, name: string) => {
     const objectUrl = window.URL.createObjectURL(blob);
@@ -11,7 +10,6 @@ export const downloadFile = (blob: Blob, name: string) => {
     tempLink.setAttribute("download", name);
     tempLink.click();
     tempLink.remove();
-    return objectUrl;
 };
 
 /**

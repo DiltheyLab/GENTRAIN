@@ -7,6 +7,7 @@ import {
     readFileAsText,
     readFilesAsText,
 } from "@/modules/core/helpers/files";
+import { mockFileList } from "@/modules/core/tests/mocks/files";
 
 describe("FilesHelper", () => {
     afterEach(() => {
@@ -20,7 +21,7 @@ describe("FilesHelper", () => {
             expect(result).toEqual("test1");
         });
         it("should read csv content as text", async () => {
-            const fileBuffer = fs.readFileSync(`${__dirname}/../../fixtures/files/cases.csv`);
+            const fileBuffer = fs.readFileSync(`${__dirname}/../../fixtures/files/test_cases.csv`);
             const file = new File([new Blob([fileBuffer])], ":file_name:");
             const result = await readFileAsText(file);
 
@@ -127,11 +128,12 @@ describe("FilesHelper", () => {
 
     // Not really testable.
     describe("downloadFile", async () => {
-        it("should return an objectUrl of the downloaded blob file", async () => {
+        it("should create an anchor element with correct file name and object url as parameters which is clicked once to download the file", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             const blob = new Blob([fileBuffer1]);
             const link = document.createElement("a");
             window.URL.createObjectURL = vi.fn(() => ":object_url:");
+            // mock methods that are not yet supported by jsdom
             const spyOnCreateElement = vi.spyOn(document, "createElement").mockImplementation(() => link);
             const spyOnLinkClick = vi.spyOn(link, "click").mockImplementation(() => {});
             downloadFile(blob, ":file_name:");
@@ -143,17 +145,3 @@ describe("FilesHelper", () => {
         });
     });
 });
-
-const mockFileList = (files: File[]) => {
-    const input = document.createElement("input");
-
-    input.setAttribute("type", "file");
-    input.setAttribute("name", "file-upload");
-    input.multiple = true;
-    const mockFileList = Object.create(input.files);
-    for (const index in files) {
-        mockFileList[index] = files[index];
-    }
-    Object.defineProperty(mockFileList, "length", { value: files.length });
-    return mockFileList;
-};
