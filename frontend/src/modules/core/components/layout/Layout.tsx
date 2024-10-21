@@ -7,13 +7,13 @@ export const Layout = ({ children }: any) => {
     const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
     return (
         <div>
             <Header />
             <main className="max-w-[1500px] mx-auto min-h-[calc(100vh-185px)]">{children}</main>
-            {(sequenceAnalysisRunning || distanceCalculationRunning) && !showInitialUpload && (
+            {(sequenceAnalysisRunning || distanceCalculationRunning) && !showImportAssistent && (
                 <div className="relative z-50">
                     <div
                         className={`fixed bottom-0 right-0 p-8 ${

@@ -8,11 +8,11 @@ import { contactSelectionColumns } from "./contactSelectionColumns";
 export function ContactSelection() {
     const changeContactImport = useDataManagementStore((state) => state.changeContactImport);
     const contactTableData = useGetContactTableData();
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
     return (
         <>
-            {!showInitialUpload && (
+            {!showImportAssistent && (
                 <>
                     <DialogTitle>Kontakte hinzufügen</DialogTitle>
                     <DialogDescription>

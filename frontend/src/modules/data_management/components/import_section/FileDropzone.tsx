@@ -22,7 +22,7 @@ export const FileDropzone = ({
 }) => {
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -94,7 +94,7 @@ export const FileDropzone = ({
                             handleFileUpload(e.target.files);
                         }}
                     />
-                    {!showInitialUpload && (
+                    {!showImportAssistent && (
                         <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
                     )}
                     <div className="relative">

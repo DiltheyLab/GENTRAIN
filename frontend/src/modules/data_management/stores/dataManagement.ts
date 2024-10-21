@@ -59,12 +59,12 @@ export interface DataManagementState {
     contactSelectionActive: boolean;
     setContactSelectionActive: (value: boolean) => void;
     // initial upload modal
-    initialUploadStep: string | null;
-    previousInitialUploadStep: () => void;
-    nextInitialUploadStep: () => void;
-    showInitialUpload: boolean;
-    setShowInitialUpload: (value: boolean) => void;
-    resetInitialUpload: () => void;
+    importAssistentStep: string | null;
+    previousImportAssistentStep: () => void;
+    nextImportAssistentStep: () => void;
+    showImportAssistent: boolean;
+    setShowImportAssistent: (value: boolean) => void;
+    resetImportAssistent: () => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
@@ -192,32 +192,32 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     setContactSelectionActive: (value: boolean) => {
         set({ contactSelectionActive: value });
     },
-    // initial upload modal
-    initialUploadStep: "introduction",
-    previousInitialUploadStep: () => {
-        const initialUploadStep = get().initialUploadStep;
-        switch (initialUploadStep) {
+    // improt asssitent
+    importAssistentStep: "introduction",
+    previousImportAssistentStep: () => {
+        const importAssistentStep = get().importAssistentStep;
+        switch (importAssistentStep) {
             case "case_import":
-                set({ initialUploadStep: "introduction" });
+                set({ importAssistentStep: "introduction" });
                 break;
             case "case_selection":
-                set({ initialUploadStep: "case_import", caseImports: {} });
+                set({ importAssistentStep: "case_import", caseImports: {} });
                 break;
             case "sequence_introduction":
-                set({ initialUploadStep: "case_import" });
+                set({ importAssistentStep: "case_import" });
                 break;
             case "sequence_import":
-                set({ initialUploadStep: "sequence_introduction" });
+                set({ importAssistentStep: "sequence_introduction" });
                 break;
             case "sequence_selection":
-                set({ initialUploadStep: "sequence_import", sampleImports: {} });
+                set({ importAssistentStep: "sequence_import", sampleImports: {} });
                 break;
             case "sequence_analysis":
-                set({ initialUploadStep: "case_import" });
+                set({ importAssistentStep: "case_import" });
                 break;
             case "contact_import":
                 set({
-                    initialUploadStep:
+                    importAssistentStep:
                         get().sequenceAnalysisRunning || get().distanceCalculationRunning
                             ? "sequence_analysis"
                             : "sequence_import",
@@ -225,65 +225,65 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
                 break;
             case "contact_selection":
                 set({
-                    initialUploadStep: "contact_import",
+                    importAssistentStep: "contact_import",
                     contactImports: {},
                 });
                 break;
             default:
-                set({ initialUploadStep: "introduction" });
+                set({ importAssistentStep: "introduction" });
         }
     },
-    nextInitialUploadStep: () => {
-        const initialUploadStep = get().initialUploadStep;
-        switch (initialUploadStep) {
+    nextImportAssistentStep: () => {
+        const importAssistentStep = get().importAssistentStep;
+        switch (importAssistentStep) {
             case "introduction":
-                set({ initialUploadStep: "case_import" });
+                set({ importAssistentStep: "case_import" });
                 break;
             case "case_import":
                 if (Object.keys(get().caseImports).length === 0) {
-                    set({ initialUploadStep: "sequence_introduction" });
+                    set({ importAssistentStep: "sequence_introduction" });
                     break;
                 }
-                set({ initialUploadStep: "case_selection" });
+                set({ importAssistentStep: "case_selection" });
                 break;
             case "case_selection":
-                set({ initialUploadStep: "sequence_introduction" });
+                set({ importAssistentStep: "sequence_introduction" });
                 break;
             case "sequence_introduction":
-                set({ initialUploadStep: "sequence_import" });
+                set({ importAssistentStep: "sequence_import" });
                 break;
             case "sequence_import":
                 if (Object.keys(get().sampleImports).length === 0) {
-                    set({ initialUploadStep: "contact_import" });
+                    set({ importAssistentStep: "contact_import" });
                     break;
                 }
-                set({ initialUploadStep: "sequence_selection" });
+                set({ importAssistentStep: "sequence_selection" });
                 break;
             case "sequence_selection":
-                set({ initialUploadStep: "sequence_analysis" });
+                set({ importAssistentStep: "sequence_analysis" });
                 break;
             case "sequence_analysis":
-                set({ initialUploadStep: "contact_import" });
+                set({ importAssistentStep: "contact_import" });
                 break;
             case "contact_import":
                 if (Object.keys(get().contactImports).length === 0) {
-                    set({ initialUploadStep: "conclusion" });
+                    set({ importAssistentStep: "conclusion" });
                     break;
                 }
-                set({ initialUploadStep: "contact_selection" });
+                set({ importAssistentStep: "contact_selection" });
                 break;
             case "contact_selection":
-                set({ initialUploadStep: "conclusion" });
+                set({ importAssistentStep: "conclusion" });
                 break;
             default:
-                set({ initialUploadStep: "introduction", showInitialUpload: false });
+                set({ importAssistentStep: "introduction", showImportAssistent: false });
         }
     },
-    showInitialUpload: false,
-    setShowInitialUpload: (value: boolean) => {
-        set({ showInitialUpload: value });
+    showImportAssistent: false,
+    setShowImportAssistent: (value: boolean) => {
+        set({ showImportAssistent: value });
     },
-    resetInitialUpload: () => {
-        set({ showInitialUpload: false, initialUploadStep: "introduction" });
+    resetImportAssistent: () => {
+        set({ showImportAssistent: false, importAssistentStep: "introduction" });
     },
 }));

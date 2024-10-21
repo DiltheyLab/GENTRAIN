@@ -51,8 +51,8 @@ export const DataImport = ({
     const { toast } = useToast();
     const { t } = useTranslation();
     const clearImports = useDataManagementStore((state) => state.clearImports);
-    const nextInitialUploadStep = useDataManagementStore((state) => state.nextInitialUploadStep);
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
     const [openDialog, setOpenDialog] = useState(false);
 
     const renderDataSelection = () => {
@@ -97,7 +97,7 @@ export const DataImport = ({
 
     const handleSubmit = async () => {
         setOpenDialog(false);
-        nextInitialUploadStep();
+        nextImportAssistentStep();
         try {
             await submitStrategy.execute();
         } catch (error) {
@@ -117,7 +117,7 @@ export const DataImport = ({
 
     return (
         <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
-            {(!showInitialUpload || (showInitialUpload && Object.keys(data).length === 0)) && (
+            {(!showImportAssistent || (showImportAssistent && Object.keys(data).length === 0)) && (
                 <div className={`flex flex-col gap-3 h-full`}>
                     <div className="flex flex-col items-end gap-3 h-full">
                         <FileDropzone

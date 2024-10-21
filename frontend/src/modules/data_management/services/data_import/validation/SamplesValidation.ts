@@ -62,8 +62,8 @@ export class SamplesValidation extends ValidationStrategy {
                 variant: "default",
             });
         } else {
-            if (useDataManagementStore.getState().showInitialUpload) {
-                useDataManagementStore.getState().nextInitialUploadStep();
+            if (useDataManagementStore.getState().showImportAssistent) {
+                useDataManagementStore.getState().nextImportAssistentStep();
             }
         }
 

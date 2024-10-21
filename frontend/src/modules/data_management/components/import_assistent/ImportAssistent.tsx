@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -16,29 +16,29 @@ export function ImportAssistent() {
     const { t, i18n } = useTranslation();
     const [opened, setOpened] = useState(true);
     const activePathogen = useCoreStore((state) => state.activePathogen);
-    const initalUploadStep = useDataManagementStore((state) => state.initialUploadStep);
-    const resetInitialUpload = useDataManagementStore((state) => state.resetInitialUpload);
+    const importAssistentStep = useDataManagementStore((state) => state.importAssistentStep);
+    const resetImportAssistent = useDataManagementStore((state) => state.resetImportAssistent);
 
-    const closeInitialUpload = () => {
+    const closeImportAssistent = () => {
         setOpened(!opened);
-        resetInitialUpload();
+        resetImportAssistent();
     };
 
     return (
-        <Dialog open={opened} onOpenChange={closeInitialUpload}>
+        <Dialog open={opened} onOpenChange={closeImportAssistent}>
             <DialogContent
                 className="max-w-[1000px] w-[calc(100vw-50px)]"
                 onInteractOutside={(e) => e.preventDefault()}
             >
                 <DialogHeader>
-                    <DialogTitle>{t(`import:titles.${initalUploadStep}`)}</DialogTitle>
+                    <DialogTitle>{t(`import:titles.${importAssistentStep}`)}</DialogTitle>
                     <DialogDescription></DialogDescription>
                 </DialogHeader>
 
-                {i18n.exists(`import:${initalUploadStep}.shared`) &&
-                    renderHtmlFromTranslation(`import:${initalUploadStep}.shared`)}
-                {i18n.exists(`import:${initalUploadStep}.${activePathogen?.pathogen_type?.name}`) &&
-                    renderHtmlFromTranslation(`import:${initalUploadStep}.${activePathogen?.pathogen_type?.name}`)}
+                {i18n.exists(`import:${importAssistentStep}.shared`) &&
+                    renderHtmlFromTranslation(`import:${importAssistentStep}.shared`)}
+                {i18n.exists(`import:${importAssistentStep}.${activePathogen?.pathogen_type?.name}`) &&
+                    renderHtmlFromTranslation(`import:${importAssistentStep}.${activePathogen?.pathogen_type?.name}`)}
                 <ActionArea />
             </DialogContent>
         </Dialog>

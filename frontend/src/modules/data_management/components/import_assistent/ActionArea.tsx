@@ -17,20 +17,20 @@ import { ContactSelection } from "../import_section/tables/ContactSelection";
 
 export function ActionArea() {
     const persistedCasesForPathogen = useCoreStore((state) => state.casesWithRelationships);
-    const initalUploadStep = useDataManagementStore((state) => state.initialUploadStep);
-    const previousInitialUploadStep = useDataManagementStore((state) => state.previousInitialUploadStep);
-    const nextInitialUploadStep = useDataManagementStore((state) => state.nextInitialUploadStep);
-    const resetInitialUpload = useDataManagementStore((state) => state.resetInitialUpload);
+    const importAssistentStep = useDataManagementStore((state) => state.importAssistentStep);
+    const previousImportAssistentStep = useDataManagementStore((state) => state.previousImportAssistentStep);
+    const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
+    const resetImportAssistent = useDataManagementStore((state) => state.resetImportAssistent);
     const caseImports = useDataManagementStore((state) => state.caseImports);
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
 
     const getImportComponentBasedOnInitalUploadStep = () => {
-        switch (initalUploadStep) {
+        switch (importAssistentStep) {
             case "introduction":
                 return (
                     <div className="flex justify-end">
-                        <Button onClick={nextInitialUploadStep}>Import starten</Button>
+                        <Button onClick={nextImportAssistentStep}>Import starten</Button>
                     </div>
                 );
             case "case_import":
@@ -43,7 +43,7 @@ export function ActionArea() {
                             validationStrategy={new CasesValidation()}
                             type="case"
                             actions={
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
                             }
@@ -53,11 +53,11 @@ export function ActionArea() {
                         </DataImport>
                         {Object.keys(caseImports).length === 0 && (
                             <div className="flex justify-end gap-4">
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
                                 {Object.keys(persistedCasesForPathogen).length > 0 && (
-                                    <Button onClick={nextInitialUploadStep}>Weiter</Button>
+                                    <Button onClick={nextImportAssistentStep}>Weiter</Button>
                                 )}
                             </div>
                         )}
@@ -73,7 +73,7 @@ export function ActionArea() {
                             validationStrategy={new SamplesValidation()}
                             type="sequence"
                             actions={
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
                             }
@@ -83,10 +83,10 @@ export function ActionArea() {
                         </DataImport>
                         {Object.keys(sampleImports).length === 0 && (
                             <div className="flex justify-end gap-4">
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
-                                <Button variant="secondary" onClick={nextInitialUploadStep}>
+                                <Button variant="secondary" onClick={nextImportAssistentStep}>
                                     Überspringen
                                 </Button>
                             </div>
@@ -96,10 +96,10 @@ export function ActionArea() {
             case "sequence_introduction":
                 return (
                     <div className="flex justify-end gap-4">
-                        <Button variant="secondary" onClick={previousInitialUploadStep}>
+                        <Button variant="secondary" onClick={previousImportAssistentStep}>
                             Zurück
                         </Button>
-                        <Button onClick={nextInitialUploadStep}>Weiter</Button>
+                        <Button onClick={nextImportAssistentStep}>Weiter</Button>
                     </div>
                 );
             case "sequence_analysis":
@@ -107,10 +107,10 @@ export function ActionArea() {
                     <>
                         <SequenceAnalysisStatus />
                         <div className="flex justify-end gap-4">
-                            <Button variant="secondary" onClick={previousInitialUploadStep}>
+                            <Button variant="secondary" onClick={previousImportAssistentStep}>
                                 Zurück
                             </Button>
-                            <Button onClick={nextInitialUploadStep}>Weiter</Button>
+                            <Button onClick={nextImportAssistentStep}>Weiter</Button>
                         </div>
                     </>
                 );
@@ -124,7 +124,7 @@ export function ActionArea() {
                             validationStrategy={new ContactsValidation()}
                             type="contact"
                             actions={
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
                             }
@@ -134,10 +134,10 @@ export function ActionArea() {
                         </DataImport>
                         {Object.keys(contactImports).length === 0 && (
                             <div className="flex justify-end gap-4">
-                                <Button variant="secondary" onClick={previousInitialUploadStep}>
+                                <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
-                                <Button variant="secondary" onClick={nextInitialUploadStep}>
+                                <Button variant="secondary" onClick={nextImportAssistentStep}>
                                     Überspringen
                                 </Button>
                             </div>
@@ -150,13 +150,13 @@ export function ActionArea() {
                         <div>
                             <div className="flex justify-end gap-4 mt-4">
                                 <Link to="/">
-                                    <Button onClick={resetInitialUpload}>Zum Dashboard</Button>
+                                    <Button onClick={resetImportAssistent}>Zum Dashboard</Button>
                                 </Link>
                                 <Link to="/outbreak-analysis">
-                                    <Button onClick={resetInitialUpload}>Zu den Ausbruchsanalysen</Button>
+                                    <Button onClick={resetImportAssistent}>Zu den Ausbruchsanalysen</Button>
                                 </Link>
                                 <Link to="/data-management">
-                                    <Button onClick={resetInitialUpload}>Zur Datenverwaltung</Button>
+                                    <Button onClick={resetImportAssistent}>Zur Datenverwaltung</Button>
                                 </Link>
                             </div>
                         </div>

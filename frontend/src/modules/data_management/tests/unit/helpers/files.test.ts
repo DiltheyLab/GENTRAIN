@@ -126,7 +126,6 @@ describe("FilesHelper", () => {
         });
     });
 
-    // Not really testable.
     describe("downloadFile", async () => {
         it("should create an anchor element with correct file name and object url as parameters which is clicked once to download the file", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);

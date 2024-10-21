@@ -10,18 +10,18 @@ export function SequenceAnalysisStatus() {
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
     return (
         <>
             {sequenceAnalysisRunning && (
                 <>
-                    <div className={`mb-2 mt-4 flex items-center ${showInitialUpload ? "text-md" : "text-sm"}`}>
+                    <div className={`mb-2 mt-4 flex items-center ${showImportAssistent ? "text-md" : "text-sm"}`}>
                         {sequenceAnalysisRunning && <LoadingSpinner className="w-[18px] mr-2" />}
                         {!sequenceAnalysisRunning && <StepIndicator>1</StepIndicator>}
                         Sequenzen werden auf Mutationen untersucht
                     </div>
-                    {!showInitialUpload && (
+                    {!showImportAssistent && (
                         <small className="block mb-2">
                             Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
                         </small>
@@ -55,7 +55,7 @@ export function SequenceAnalysisStatus() {
                             })}
                         </div>
                     </ScrollArea>
-                    {showInitialUpload && (
+                    {showImportAssistent && (
                         <div className="flex gap-2 flex-wrap justify-end mt-4">
                             <div
                                 className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
@@ -103,12 +103,12 @@ export function SequenceAnalysisStatus() {
             )}
             {distanceCalculationRunning && (
                 <>
-                    <div className={`mb-2 flex items-center ${showInitialUpload ? "text-md" : "text-sm"}`}>
+                    <div className={`mb-2 flex items-center ${showImportAssistent ? "text-md" : "text-sm"}`}>
                         {distanceCalculationRunning && <LoadingSpinner className="w-[18px] mr-2" />}
                         {!distanceCalculationRunning && <StepIndicator>2</StepIndicator>}
                         Genetische Distanzen werden berechnet
                     </div>
-                    {!showInitialUpload && (
+                    {!showImportAssistent && (
                         <small className="block mb-2">
                             Auf Basis der Mutationen der sequenzierten Fälle werden genetische Distanzen zwischen den
                             Fällen berechnet.

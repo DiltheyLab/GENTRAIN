@@ -27,17 +27,17 @@ export function DataManagement() {
     const outbreakData = useGetOutbreaksWithCaseCountForActivePathogen();
     const groupData = useGetCategoriesWithGroupsAndCaseCountForActivePathogen();
 
-    const showInitialUpload = useDataManagementStore((state) => state.showInitialUpload);
-    const setShowInitialUpload = useDataManagementStore((state) => state.setShowInitialUpload);
+    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
+    const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
 
     useEffect(() => {
         if (
-            !showInitialUpload &&
+            !showImportAssistent &&
             !activePathogen?.pathogen_type?.initialized_at &&
             casesForPathogen &&
             casesForPathogen.length === 0
         ) {
-            setShowInitialUpload(true);
+            setShowImportAssistent(true);
         }
     }, [casesForPathogen]);
 
@@ -53,12 +53,12 @@ export function DataManagement() {
     return (
         <Layout>
             <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-                {showInitialUpload && (
+                {showImportAssistent && (
                     <div className="space-y-8">
                         <ImportAssistent />
                     </div>
                 )}
-                {!showInitialUpload && (
+                {!showImportAssistent && (
                     <>
                         <div className="space-y-8 w-full">
                             <ImportSection />

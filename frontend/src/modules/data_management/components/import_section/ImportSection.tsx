@@ -19,7 +19,7 @@ export const ImportSection = () => {
     const caseImports = useDataManagementStore((state) => state.caseImports);
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
-    const setShowInitialUpload = useDataManagementStore((state) => state.setShowInitialUpload);
+    const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
 
     return (
         <div>
@@ -32,7 +32,7 @@ export const ImportSection = () => {
                     </p>
                 </div>
                 <div className="flex justify-end">
-                    <Button variant="secondary" onClick={() => setShowInitialUpload(true)}>
+                    <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
                         Import-Assistent starten
                     </Button>
                 </div>
