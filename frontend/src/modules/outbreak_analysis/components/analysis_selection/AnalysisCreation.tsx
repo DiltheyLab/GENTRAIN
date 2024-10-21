@@ -29,6 +29,7 @@ import { validateAnalysisName } from "../../helpers/analysisNameValidation";
 export const AnalysisCreation = () => {
     const [analysisName, setAnalysisName] = useState("");
     const [isOpen, setIsOpen] = useState(false);
+    const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
     const { activePathogen } = useCoreStore();
     const navigate = useNavigate();
@@ -37,6 +38,7 @@ export const AnalysisCreation = () => {
 
     const createAndNavigateToNewAnalysis = async () => {
         try {
+            setIsTouched(false);
             if (!activePathogen) {
                 throw new GentrainException("PathogenNotSelected");
             }
@@ -84,19 +86,17 @@ export const AnalysisCreation = () => {
                         value={analysisName}
                         placeholder="Analysename"
                         onChange={(e) => setAnalysisName(e.target.value)}
+                        onFocus={() => setIsTouched(true)}
+                        autoFocus
                     />
                 </div>
-                {!isUniqueName() && (
+                {isTouched && !isUniqueName() && (
                     <p className="text-red-500 text-sm -mt-2">
                         Der Name der Analyse ist bereits vergeben. Bitte wählen Sie einen anderen.
                     </p>
                 )}
                 <DialogFooter>
-                    <Button
-                        type="button"
-                        disabled={!analyseNameIsValid()}
-                        onClick={() => createAndNavigateToNewAnalysis()}
-                    >
+                    <Button type="button" disabled={!analyseNameIsValid()} onClick={createAndNavigateToNewAnalysis}>
                         Speichern und Analyse starten
                     </Button>
                 </DialogFooter>

@@ -1,6 +1,5 @@
 import { CustomLink, CustomNode } from "@/modules/core/types/graph";
 import i18next from "i18next";
-import { createNodeMap } from "../../helpers/cases";
 import { CONTACT_LINK_VALUE } from "./GraphDataGenerator";
 
 export class ClusterAnalyser {
@@ -36,7 +35,15 @@ export class ClusterAnalyser {
     };
 
     public getClusters = () => {
-        const nodeMap = createNodeMap(this.nodes);
+        //filter out nodes without samples because they would build own clusters
+        const nodesWithSamples = this.nodes.filter((node) => node.caseData.sample);
+
+        //create node map for performance
+        const nodeMap = new Map<number, CustomNode>();
+        for (const node of nodesWithSamples) {
+            nodeMap.set(node.id, node);
+        }
+
         return this.clusters.map((cluster) => cluster.map((id) => nodeMap.get(id)));
     };
 

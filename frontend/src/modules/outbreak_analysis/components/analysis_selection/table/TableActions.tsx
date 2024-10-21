@@ -1,5 +1,4 @@
 import { Button } from "@/modules/core/components/ui/Button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/core/components/ui/Tooltip";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
 import { Play } from "lucide-react";
@@ -24,38 +23,11 @@ export const TableActions = ({ row }: TableActionsProps) => {
 
     return (
         <div className="flex gap-3 mx-auto">
-            <TooltipProvider delayDuration={50} skipDelayDuration={50}>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button size={"icon"} variant={"secondary"} onClick={startAnalysis}>
-                            <Play size={15} />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Analyse starten</p>
-                    </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <span>
-                            <AnalysisEditDialog row={row} />
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Analyse bearbeiten</p>
-                    </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <span>
-                            <AnalysisDeleteAlertDialog row={row} />
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Analyse löschen</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <Button variant={"secondary"} onClick={startAnalysis}>
+                <Play size={15} className="mr-2" /> Analyse starten
+            </Button>
+            <AnalysisEditDialog row={row} />
+            <AnalysisDeleteAlertDialog row={row} />
         </div>
     );
 };
