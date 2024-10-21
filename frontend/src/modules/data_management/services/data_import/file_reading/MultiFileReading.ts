@@ -4,7 +4,7 @@ import { FileReadingStrategy } from "./FileReadingStrategy";
 export class MultiFileReading extends FileReadingStrategy {
     protected content: string[] | null = null;
 
-    protected async readContent(files: FileList) {
+    public async readContent(files: FileList) {
         this.content = await readFilesAsText(files);
     }
 
