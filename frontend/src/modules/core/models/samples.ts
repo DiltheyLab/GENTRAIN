@@ -22,14 +22,12 @@ interface SampleSchema {
 export type SampleImport = {
     fasta_id?: string;
     case_id: string;
-    status: string;
     sequence: string;
     sequence_length?: number;
     n_count?: number;
     ambiguity_character_count?: number;
     contig_count?: number;
     first_contig_length?: number;
-    upload: boolean;
 };
 
 export type ViralQualityParameters = {

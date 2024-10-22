@@ -48,7 +48,7 @@ db.version(1).stores({
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at",
     pathogens: "++id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
-    pathogen_types: "++id, name, created_at, updated_at",
+    pathogen_types: "++id, name, initialized_at, created_at, updated_at",
     categories: "++id, name, pathogen_id, created_at, updated_at",
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
     outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
@@ -65,6 +65,7 @@ db.on("populate", async () => {
         if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
             const newPathogenTypeId = await db.pathogen_types.add({
                 name: pathogenTypeName as unknown as PathogenTypeName,
+                initialized_at: null,
             });
             persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
         }

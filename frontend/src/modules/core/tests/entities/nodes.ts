@@ -3,14 +3,14 @@ import { CustomNode } from "../../types/graph";
 import { createCase } from "./cases";
 import { createSample } from "./samples";
 
-type CustomNodeTest = Partial<CustomNode>;
+type TestCustomNode = Partial<CustomNode>;
 
-export const createNodeWithSample = ({ id }: CustomNodeTest) => {
+export const createNodeWithSample = ({ id }: TestCustomNode) => {
     const caseDataWithSample = createCase({ id: id, sample: createSample({}) }) as CaseWithRelationships;
     return { id, caseData: caseDataWithSample } as CustomNode;
 };
 
-export const createNodeWithoutSample = ({ id }: CustomNodeTest) => {
+export const createNodeWithoutSample = ({ id }: TestCustomNode) => {
     const caseDataWithSample = createCase({ id: id, sample: null }) as CaseWithRelationships;
     return { id, caseData: caseDataWithSample } as CustomNode;
 };

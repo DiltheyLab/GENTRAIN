@@ -64,4 +64,26 @@ export abstract class ColorMapGeneratorStrategy {
             };
         }
     };
+
+    public static updateClustersInColorMap = (
+        colorMap: ColorMap,
+        updatedClusterNames: string[],
+        selectedOutbreakName: string | undefined
+    ) => {
+        let colorMapClusterNames = Object.keys(colorMap);
+        for (const updatedClusterName of updatedClusterNames) {
+            if (!colorMapClusterNames.includes(updatedClusterName)) {
+                const colorIndex = colorMapClusterNames.length;
+                colorMap[updatedClusterName] = {
+                    color:
+                        selectedOutbreakName === updatedClusterName
+                            ? COLOR_FOR_SELECTED_OUTBREAK
+                            : createColorByGoldenAngleApproximation(colorIndex),
+                    isActive: true,
+                };
+                colorMapClusterNames.push(updatedClusterName);
+            }
+        }
+        return colorMap;
+    };
 }

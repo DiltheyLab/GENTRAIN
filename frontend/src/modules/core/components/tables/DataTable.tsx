@@ -26,6 +26,7 @@ type DataTableProps = {
     filterFn?: ((row: any, _columnId: any, value: string, _addMeta: any) => boolean) | undefined;
     onRowClick?: (row?: Row<any>) => void;
     preselectRows?: boolean;
+    selectionLabel?: string;
     onInit?: (table: TanStackTable<any>) => void;
     actions?: (table: TanStackTable<any>) => JSX.Element;
     className?: string;
@@ -40,6 +41,7 @@ export const DataTable = ({
     filterFn = undefined,
     onRowClick = () => {},
     preselectRows = false,
+    selectionLabel = "Einträgen",
     onInit,
     actions,
     className,
@@ -78,7 +80,7 @@ export const DataTable = ({
 
     useEffect(() => {
         // preselect all rows if corresponding flag is set to true
-        if (!initializedRowSelection && preselectRows && data.length > 0) {
+        if (!initializedRowSelection && preselectRows) {
             table.toggleAllRowsSelected();
             setInitializedRowSelection(true);
         }
@@ -108,7 +110,7 @@ export const DataTable = ({
                     {actions && <div className="flex flex-wrap">{actions(table)}</div>}
                 </div>
             )}
-            <div className="rounded-md border">
+            <div className="rounded-md border bg-white">
                 <Table className="w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -143,7 +145,7 @@ export const DataTable = ({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Es existieren noch keine Falldaten.
+                                    Es existieren noch keine Einträge.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -153,7 +155,7 @@ export const DataTable = ({
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} von {table.getFilteredRowModel().rows.length}{" "}
-                    Spalte(n) ausgewählt.
+                    {selectionLabel} ausgewählt.
                 </div>
                 {(table.getCanPreviousPage() || table.getCanNextPage()) && (
                     <div className="space-x-2">

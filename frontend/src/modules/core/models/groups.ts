@@ -8,6 +8,8 @@ export interface GroupSchema {
     name: string;
     category_id: number;
     pathogen_id?: number;
+    case_count?: number | null;
+    sequenced_case_count?: number | null;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -34,6 +36,19 @@ export const getGroupsByIdsWithRelationships = async (group_ids: number[]) => {
         groupsWithRelationships[key].category = category;
     }
     return groupsWithRelationships;
+};
+
+export const getGroupCaseCount = async (groupId: number) => {
+    const caseCount = await db.cases.where({ group_ids: groupId }).count();
+    return caseCount;
+};
+
+export const getGroupSequencedCaseCount = async (groupId: number) => {
+    const caseCount = await db.cases
+        .where({ group_ids: groupId })
+        .and((currentCase) => currentCase.fasta_id !== null)
+        .count();
+    return caseCount;
 };
 
 export const getGroupsForPathogenId = async (pathogenId: number) => {
@@ -73,4 +88,10 @@ export const persistGroupsForCategories = async (caseData: CaseImport, pathogenI
         groups.push(await createGroupIfNotExist(group.name, categoryId, pathogenId));
     }
     return groups;
+};
+
+export const updateGroupName = async (id: number, name: string) => {
+    return await db.groups.update(id, {
+        name: name,
+    });
 };
