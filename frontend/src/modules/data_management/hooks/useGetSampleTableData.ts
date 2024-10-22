@@ -7,24 +7,22 @@ export const useGetSampleTableData = () => {
     const [tableData, setTableData] = useState<SampleImport[]>([]);
 
     useEffect(() => {
-        const cases: SampleImport[] = [];
+        const samples: SampleImport[] = [];
         for (const fastaId of Object.keys(sampleImports)) {
+            const sample = sampleImports[fastaId].imported;
             const currentSample = {
                 fasta_id: fastaId,
-                case_id: sampleImports[fastaId].case_id,
-                status: sampleImports[fastaId].status,
-                upload: sampleImports[fastaId].upload,
-                sequence: sampleImports[fastaId].sequence,
-                sequence_length: sampleImports[fastaId].sequence_length,
-                n_count: sampleImports[fastaId].n_count,
-                ambiguity_character_count: sampleImports[fastaId].ambiguity_character_count,
-                contig_count: sampleImports[fastaId].contig_count,
-                first_contig_length: sampleImports[fastaId].first_contig_length,
+                case_id: sample.case_id,
+                sequence: sample.sequence,
+                sequence_length: sample.sequence_length,
+                n_count: sample.n_count,
+                ambiguity_character_count: sample.ambiguity_character_count,
+                contig_count: sample.contig_count,
+                first_contig_length: sample.first_contig_length,
             };
-            cases.push(currentSample);
+            samples.push(currentSample);
         }
-        setTableData(cases);
+        setTableData(samples);
     }, [sampleImports]);
-
     return tableData;
 };

@@ -55,7 +55,7 @@ export abstract class DistanceCalculationStrategy {
 
     private initProgress = () => {
         const sampleAmount = Object.keys(this.samples).length;
-        this.dataManagementState.setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
+        useDataManagementStore.getState().setDistanceCalculationSum((sampleAmount * (sampleAmount + 1)) / 2);
     };
 
     private calculateSampleDistances = async () => {
@@ -76,7 +76,7 @@ export abstract class DistanceCalculationStrategy {
                     distance_matrix_id: this.distanceMatrixId,
                 });
             }
-            this.dataManagementState.incrementDistanceCalculationCount();
+            useDataManagementStore.getState().incrementDistanceCalculationCount();
         }
         this.handleCompletedCalculation();
     };
@@ -87,7 +87,10 @@ export abstract class DistanceCalculationStrategy {
             duration: 5000,
             variant: "success",
         });
-        this.dataManagementState.setDistanceCalculationRunning(false);
-        this.dataManagementState.resetSampleUpload();
+        useDataManagementStore.getState().setDistanceCalculationRunning(false);
+        useDataManagementStore.getState().resetSampleUpload();
+        if (useDataManagementStore.getState().importAssistentStep === "sequence_analysis") {
+            useDataManagementStore.getState().nextImportAssistentStep();
+        }
     };
 }

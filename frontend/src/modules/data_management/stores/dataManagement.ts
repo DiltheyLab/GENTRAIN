@@ -1,25 +1,36 @@
 import { create } from "zustand";
 import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
-import { SampleImport } from "@/modules/core/models/samples";
-import { ContactImport } from "@/modules/core/models/contacts";
+import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
+import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
+import { toast } from "@/modules/core/components/ui/UseToast";
 
 export interface DataManagementState {
+    clearImports: () => void;
     // case import
-    caseImports: { [caseId: string]: CaseImport };
+    caseImports: {
+        [id: string]: {
+            imported: CaseImport;
+            persisted: CaseSchema | null;
+            import: boolean;
+        };
+    };
     changeCaseImport: (key: string, value: any) => void;
     removeCaseImport: (key: string) => void;
-    changeCaseImports: (caseImports: { [caseId: string]: CaseImport }) => void;
+    setCaseImports: (caseImports: {
+        [id: string]: { imported: CaseImport; persisted: CaseSchema | null; import: boolean };
+    }) => void;
     clearCaseImports: () => void;
-    existingCases: { [caseId: string]: { existingCase: CaseSchema; caseImport: CaseImport } };
-    addExistingCase: (caseId: string, existingCase: CaseSchema, caseImport: CaseImport) => void;
-    changeExistingCase: (key: string, value: any) => void;
-    clearExistingCases: () => void;
     caseSelectionActive: boolean;
     setCaseSelectionActive: (value: boolean) => void;
     // sample import
-    sampleImports: { [fastaId: string]: SampleImport };
+    sampleImports: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
+    };
     changeSampleImport: (key: string, value: any) => void;
     removeSampleImport: (key: string) => void;
+    setSampleImports: (imports: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
+    }) => void;
     clearSampleImports: () => void;
     sampleSelectionActive: boolean;
     setSampleSelectionActive: (value: boolean) => void;
@@ -39,21 +50,36 @@ export interface DataManagementState {
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
     // contact import
-    contactImports: { [contactId: string]: ContactImport };
+    contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
     changeContactImport: (key: string, value: any) => void;
     removeContactImport: (key: string) => void;
-    changeContactImports: (contactImports: { [contactId: string]: ContactImport }) => void;
+    setContactImports: (contactImports: {
+        [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
+    }) => void;
     clearContactImports: () => void;
     contactSelectionActive: boolean;
     setContactSelectionActive: (value: boolean) => void;
+    // initial upload modal
+    importAssistentStep: string | null;
+    previousImportAssistentStep: () => void;
+    nextImportAssistentStep: () => void;
+    showImportAssistent: boolean;
+    setShowImportAssistent: (value: boolean) => void;
+    resetImportAssistent: (triggerSuccessToast?: boolean) => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
+    clearImports: () => {
+        set({ caseImports: {}, sampleImports: {}, contactImports: {} });
+    },
     // case import
     caseImports: {},
-    changeCaseImport: (caseId: string, changes: any) => {
+    changeCaseImport: (caseId: string, value: any) => {
         const updatedCaseImports = structuredClone(get().caseImports);
-        const caseImport = { ...updatedCaseImports[caseId], ...changes };
+        const caseImport = {
+            ...updatedCaseImports[caseId],
+            ...value,
+        };
         updatedCaseImports[caseId] = caseImport;
         set({ caseImports: updatedCaseImports });
     },
@@ -62,26 +88,17 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         delete updatedCaseImports[caseId];
         set({ caseImports: updatedCaseImports });
     },
-    changeCaseImports: (caseImports: { [caseId: string]: CaseImport }) => {
-        set({ caseImports: caseImports });
+    setCaseImports: (caseImports: {
+        [id: string]: {
+            imported: CaseImport;
+            persisted: CaseSchema | null;
+            import: boolean;
+        };
+    }) => {
+        set({ caseImports: caseImports ?? null });
     },
     clearCaseImports: () => {
         set({ caseImports: {} });
-    },
-    existingCases: {},
-    addExistingCase: (caseId: string, existingCase: CaseSchema, caseImport: CaseImport) => {
-        const updateExistingCases = structuredClone(get().existingCases);
-        updateExistingCases[caseId] = { existingCase: existingCase, caseImport: caseImport };
-        set({ existingCases: updateExistingCases });
-    },
-    changeExistingCase: (caseId: string, changes: any) => {
-        const updateExistingCases = structuredClone(get().existingCases);
-        const caseUpdate = { ...updateExistingCases[caseId], ...changes };
-        updateExistingCases[caseId] = caseUpdate;
-        set({ existingCases: updateExistingCases });
-    },
-    clearExistingCases: () => {
-        set({ existingCases: {} });
     },
     caseSelectionActive: false,
     setCaseSelectionActive: (value: boolean) => {
@@ -94,6 +111,11 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         const sampleImport = { ...updatedSampleImports[fastaId], ...changes };
         updatedSampleImports[fastaId] = sampleImport;
         set({ sampleImports: updatedSampleImports });
+    },
+    setSampleImports: (imports: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
+    }) => {
+        set({ sampleImports: imports });
     },
     removeSampleImport: (fastaId: string) => {
         const updatedSampleImports = structuredClone(get().sampleImports);
@@ -142,6 +164,7 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
             distanceCalculationSum: 0,
             isUploading: false,
             showSampleUploadStatus: false,
+            hideSampleUploadContent: false,
             sampleImports: {},
         });
     },
@@ -153,13 +176,15 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
         updatedContactImports[contactId] = contactImport;
         set({ contactImports: updatedContactImports });
     },
+    setContactImports: (contactImports: {
+        [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
+    }) => {
+        set({ contactImports: contactImports });
+    },
     removeContactImport: (contactId: string) => {
         const updatedContactImports = structuredClone(get().contactImports);
         delete updatedContactImports[contactId];
         set({ contactImports: updatedContactImports });
-    },
-    changeContactImports: (contactImports: { [contactId: string]: ContactImport }) => {
-        set({ contactImports: contactImports });
     },
     clearContactImports: () => {
         set({ contactImports: {} });
@@ -167,5 +192,104 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     contactSelectionActive: false,
     setContactSelectionActive: (value: boolean) => {
         set({ contactSelectionActive: value });
+    },
+    // improt asssitent
+    importAssistentStep: "introduction",
+    previousImportAssistentStep: () => {
+        const importAssistentStep = get().importAssistentStep;
+        switch (importAssistentStep) {
+            case "case_import":
+                set({ importAssistentStep: "introduction" });
+                break;
+            case "case_selection":
+                set({ importAssistentStep: "case_import", caseImports: {} });
+                break;
+            case "sequence_introduction":
+                set({ importAssistentStep: "case_import" });
+                break;
+            case "sequence_import":
+                set({ importAssistentStep: "sequence_introduction" });
+                break;
+            case "sequence_selection":
+                set({ importAssistentStep: "sequence_import", sampleImports: {} });
+                break;
+            case "sequence_analysis":
+                set({ importAssistentStep: "case_import" });
+                break;
+            case "contact_import":
+                set({
+                    importAssistentStep:
+                        get().sequenceAnalysisRunning || get().distanceCalculationRunning
+                            ? "sequence_analysis"
+                            : "sequence_import",
+                });
+                break;
+            case "contact_selection":
+                set({
+                    importAssistentStep: "contact_import",
+                    contactImports: {},
+                });
+                break;
+            default:
+                set({ importAssistentStep: "introduction" });
+        }
+    },
+    nextImportAssistentStep: () => {
+        const importAssistentStep = get().importAssistentStep;
+        switch (importAssistentStep) {
+            case "introduction":
+                set({ importAssistentStep: "case_import" });
+                break;
+            case "case_import":
+                if (Object.keys(get().caseImports).length === 0) {
+                    set({ importAssistentStep: "sequence_introduction" });
+                    break;
+                }
+                set({ importAssistentStep: "case_selection" });
+                break;
+            case "case_selection":
+                set({ importAssistentStep: "sequence_introduction" });
+                break;
+            case "sequence_introduction":
+                set({ importAssistentStep: "sequence_import" });
+                break;
+            case "sequence_import":
+                if (Object.keys(get().sampleImports).length === 0) {
+                    set({ importAssistentStep: "contact_import" });
+                    break;
+                }
+                set({ importAssistentStep: "sequence_selection" });
+                break;
+            case "sequence_selection":
+                set({ importAssistentStep: "sequence_analysis" });
+                break;
+            case "sequence_analysis":
+                set({ importAssistentStep: "contact_import" });
+                break;
+            case "contact_import":
+                if (Object.keys(get().contactImports).length === 0) {
+                    set({ importAssistentStep: "conclusion" });
+                    break;
+                }
+                set({ importAssistentStep: "contact_selection" });
+                break;
+            default:
+                set({ importAssistentStep: "introduction", showImportAssistent: false });
+        }
+    },
+    showImportAssistent: false,
+    setShowImportAssistent: (value: boolean) => {
+        set({ showImportAssistent: value });
+    },
+    resetImportAssistent: (triggerSuccessToast: boolean = false) => {
+        set({ showImportAssistent: false, importAssistentStep: "introduction" });
+        if (triggerSuccessToast) {
+            toast({
+                title: "Herzlichen Glückwunsch!",
+                description: "Ihr Import war erfolgreich.",
+                duration: 5000,
+                variant: "success",
+            });
+        }
     },
 }));

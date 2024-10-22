@@ -10,7 +10,7 @@ export const useGetContactTableData = () => {
         const contacts: ContactImport[] = [];
 
         for (const contactId of Object.keys(contactImports)) {
-            const contact = contactImports[contactId];
+            const contact = contactImports[contactId].imported;
             contact.contact_id = contactId;
             contacts.push(contact);
         }

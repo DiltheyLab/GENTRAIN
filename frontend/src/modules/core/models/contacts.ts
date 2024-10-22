@@ -18,7 +18,6 @@ export type ContactImport = {
     case_id_2: string;
     type: string;
     context: string;
-    upload: boolean;
 };
 
 export interface ContactForCase {

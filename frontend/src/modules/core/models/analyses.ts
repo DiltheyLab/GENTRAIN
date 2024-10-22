@@ -1,5 +1,8 @@
 import { AnalysisSettings, GeneralSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { db } from "@/modules/core/infrastructure/database";
+import { getOutbreakMapForPathogenId } from "./outbreaks";
+import { GroupWithCategory } from "./groups";
+import { getCategoriesForActivePathogen } from "./categories";
 
 export interface AnalysisSchema {
     id: number;
@@ -17,7 +20,25 @@ export const getAllAnalyses = () => {
 };
 
 export const getAnalysesForPathogenId = async (pathogenId: number) => {
-    return await db.analyses.where({ pathogen_id: pathogenId }).toArray();
+    const analyses = await db.analyses.where({ pathogen_id: pathogenId }).toArray();
+    const outbreakMap = await getOutbreakMapForPathogenId(pathogenId);
+    for (const analysis of analyses) {
+        if (analysis.analysisSettings.selectedOutbreak?.id) {
+            analysis.analysisSettings.selectedOutbreak =
+                outbreakMap.get(analysis.analysisSettings.selectedOutbreak?.id) ?? null;
+        }
+        if (analysis.analysisSettings.selectedBackground) {
+            const groupIds =
+                analysis.analysisSettings.selectedBackground.groupsWithCategories.map((group) => group.id) ?? [];
+            const groups = await db.groups.where("id").anyOf(groupIds).toArray();
+            const categories = await getCategoriesForActivePathogen();
+            const groupWithCategory = groups.map((group) => {
+                return { ...group, categoryName: categories.get(group.category_id)?.name } as GroupWithCategory;
+            });
+            analysis.analysisSettings.selectedBackground.groupsWithCategories = groupWithCategory;
+        }
+    }
+    return analyses;
 };
 
 export const createAnalysis = async (
@@ -35,10 +56,6 @@ export const createAnalysis = async (
         pathogen_id: pathogen_id,
     };
     return await db.analyses.add(analysis);
-};
-
-export const getAnalysisByID = (id: number) => {
-    return db.analyses.get(id);
 };
 
 export const updateAnalysisSettings = async (

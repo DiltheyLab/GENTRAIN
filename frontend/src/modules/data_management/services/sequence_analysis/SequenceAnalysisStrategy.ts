@@ -5,13 +5,20 @@ import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
 import { toSlug } from "@/modules/core/helpers/strings";
-import { BacterialQualityParameters, SampleImport, ViralQualityParameters } from "@/modules/core/models/samples";
+import {
+    BacterialQualityParameters,
+    SampleImport,
+    SampleSchema,
+    ViralQualityParameters,
+} from "@/modules/core/models/samples";
 
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
-    protected sampleData: { [fasta_id: string]: SampleImport } = {};
+    protected sampleData: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean };
+    } = {};
     protected fastaIdsToAnalyse: string[];
     protected finishedFastaIds: string[];
     protected roomName: string;
@@ -33,7 +40,9 @@ export abstract class SequenceAnalysisStrategy {
         this.roomName = "";
     }
 
-    public setSampleData = (sampleData: { [fasta_id: string]: SampleImport }) => {
+    public setSampleData = (sampleData: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean };
+    }) => {
         this.sampleData = sampleData;
     };
 
@@ -98,7 +107,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         for (const fastaId of Object.keys(this.sampleData)) {
             const sample = this.sampleData[fastaId];
-            if (!sample.upload) {
+            if (!sample.import) {
                 continue;
             }
             // skip sample if it was excluded from uploads
@@ -110,7 +119,7 @@ export abstract class SequenceAnalysisStrategy {
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                this.emitSequenceAnalysisMessage({ fastaId: fastaId, sequence: sample.sequence });
+                this.emitSequenceAnalysisMessage({ fastaId: fastaId, sequence: sample.imported.sequence });
                 this.fastaIdsToAnalyse.push(fastaId);
             }
         }

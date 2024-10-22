@@ -3,10 +3,10 @@ import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/da
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { analysesTableFilter } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
 import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
-import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/table/analysesTableColumns";
+import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableColumns";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
-import { SelectedAnalysesDeleteDialog } from "../components/analysis_selection/table/SelectedAnalysesDeleteAlertDialog";
+import { SelectedAnalysesDeleteDialog } from "../components/analysis_selection/tables/SelectedAnalysesDeleteAlertDialog";
 
 export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();
@@ -37,6 +37,7 @@ export const OutbreakAnalysisOverview = () => {
                                 </>
                             );
                         }}
+                        selectionLabel="Analysen"
                         className="mt-8"
                         filterPlaceholder="Analyse suchen..."
                     />
