@@ -1,7 +1,7 @@
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { Separator } from "@/modules/core/components/ui/Separator";
 import { Button } from "@/modules/core/components/ui/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
@@ -15,7 +15,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modules/core/hooks/database/categories/useGetCategoriesWithCaseCountForActivePathogen";
 import { uploadedGroupColumns } from "../components/imported_data/uploadedGroupColumns";
 import { useDataManagementStore } from "../stores/dataManagement";
-import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
 import { ImportSection } from "../components/import_section/ImportSection";
 import { ImportAssistent } from "../components/import_assistent/ImportAssistent";
 
@@ -23,23 +22,9 @@ export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const casesData = useCoreStore((state) => state.casesWithRelationships);
-    const casesForPathogen = useGetAllCasesForActivePathogenWithRelationships();
     const outbreakData = useGetOutbreaksWithCaseCountForActivePathogen();
     const groupData = useGetCategoriesWithGroupsAndCaseCountForActivePathogen();
-
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
-    const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
-
-    useEffect(() => {
-        if (
-            !showImportAssistent &&
-            !activePathogen?.pathogen_type?.initialized_at &&
-            casesForPathogen &&
-            casesForPathogen.length === 0
-        ) {
-            setShowImportAssistent(true);
-        }
-    }, [casesForPathogen]);
 
     const deleteData = async () => {
         if (activePathogen) {
