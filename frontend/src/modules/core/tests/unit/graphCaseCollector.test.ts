@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { createCase } from "../entities/cases";
@@ -26,6 +26,10 @@ describe("GraphCaseCollector", () => {
             showContactTracingLinks: false,
             clusteringThreshold: 2,
         };
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it("should collect all sequenced cases", async () => {
@@ -229,7 +233,7 @@ describe("GraphCaseCollector", () => {
 
         // mocks the function which access the indexedDB
         vi.mock("@/modules/core/models/distances", () => ({
-            getDistancesFromSampleIdsBelowThreshold: vi.fn().mockImplementation(() => {
+            getDistancesFromSampleIdsBelowThreshold: vi.fn(() => {
                 //create mock distance
                 const distance1 = createDistance({ sample_id_1: 1, sample_id_2: 2 });
                 return [distance1];

@@ -1,16 +1,9 @@
-import { describe, test, expect, beforeEach, vi } from "vitest";
+import { describe, expect, beforeEach, vi, it, afterEach } from "vitest";
 import { CustomNode, CustomLink } from "@/modules/core/types/graph";
 import { ClusterAnalyser } from "../../services/graph/ClusterAnalyser";
 import { createNodeWithoutSample, createNodeWithSample } from "../entities/nodes";
 import i18next from "i18next";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
-
-// Mock i18next
-vi.mock("i18next", () => ({
-    default: {
-        t: vi.fn((key) => key),
-    },
-}));
 
 describe("ClusterAnalyser", () => {
     let nodes: CustomNode[];
@@ -37,14 +30,24 @@ describe("ClusterAnalyser", () => {
         ] as CustomLink[];
     });
 
-    test("constructor initializes correctly", () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it("should initializes the constructor correctly", () => {
         const analyser = new ClusterAnalyser(nodes, links, 1, 2);
         expect(analyser).toBeDefined();
     });
 
-    test("assignClusterNamesToNodes assigns correct cluster names", () => {
+    it("should assign correct cluster names to nodes", () => {
         const analyser = new ClusterAnalyser(nodes, links, 1, 2);
         const nodesWithClusters = analyser.assignClusterNamesToNodes();
+
+        vi.mock("i18next", () => ({
+            default: {
+                t: vi.fn((key: string) => key),
+            },
+        }));
 
         expect(nodesWithClusters).toHaveLength(8);
         expect(nodesWithClusters[0].cluster).toBe("Cluster 1");
@@ -57,7 +60,7 @@ describe("ClusterAnalyser", () => {
         expect(nodesWithClusters[7].cluster).toBe(i18next.t("clusterTypes.noClusterAssigned"));
     });
 
-    test("getClusters returns correct clusters", () => {
+    it("should return correct clusters", () => {
         const analyser = new ClusterAnalyser(nodes, links, 1, 2);
         const clusters = analyser.getClusters();
 
@@ -68,7 +71,7 @@ describe("ClusterAnalyser", () => {
         expect(clusters[1].map((node) => node?.id)).toEqual([4, 5]);
     });
 
-    test('nodes not in any cluster are assigned "noClusterAssigned"', () => {
+    it('should assign "keinem Ausbruch zugewiesen" to nodes which are not assigned to any cluster ', () => {
         const isolatedNode = { id: 9 } as CustomNode;
         nodes.push(isolatedNode);
 
@@ -79,7 +82,7 @@ describe("ClusterAnalyser", () => {
         expect(isolatedNodeResult?.cluster).toBe("clusterTypes.noClusterAssigned");
     });
 
-    test("respects minClusterSize", () => {
+    it("should respect the minimum cluster size of nodes", () => {
         const analyser = new ClusterAnalyser(nodes, links, 1, 3);
         const clusters = analyser.getClusters();
 
@@ -88,7 +91,7 @@ describe("ClusterAnalyser", () => {
         expect(clusters[0].map((node) => node?.id)).toEqual([1, 2, 3]);
     });
 
-    test("respects clusteringThreshold", () => {
+    it("should respect the clustering threshold", () => {
         const analyser = new ClusterAnalyser(nodes, links, 0, 2);
         const clusters = analyser.getClusters();
 
@@ -97,7 +100,7 @@ describe("ClusterAnalyser", () => {
         expect(clusters[0].map((node) => node?.id)).toEqual([1, 2, 3]);
     });
 
-    test("ignores CONTACT_LINK_VALUE links", () => {
+    it("should ignore contact links with a CONTACT_LINK_VALUE", () => {
         //connect node 1 with node 5 with a contact link (-1)
         links.push({ source: 1, target: 5, value: CONTACT_LINK_VALUE } as CustomLink);
         const analyser = new ClusterAnalyser(nodes, links, 1, 2);
