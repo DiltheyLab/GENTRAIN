@@ -1,4 +1,4 @@
-import { describe, expect, beforeEach, vi, it } from "vitest";
+import { describe, expect, beforeEach, vi, it, afterEach } from "vitest";
 import { CustomNode, CustomLink } from "@/modules/core/types/graph";
 import { ClusterAnalyser } from "../../services/graph/ClusterAnalyser";
 import { createNodeWithoutSample, createNodeWithSample } from "../entities/nodes";
@@ -6,11 +6,6 @@ import i18next from "i18next";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 
 // Mock i18next
-vi.mock("i18next", () => ({
-    default: {
-        t: vi.fn((key) => key),
-    },
-}));
 
 describe("ClusterAnalyser", () => {
     let nodes: CustomNode[];
@@ -45,6 +40,12 @@ describe("ClusterAnalyser", () => {
     it("should assign correct cluster names to nodes", () => {
         const analyser = new ClusterAnalyser(nodes, links, 1, 2);
         const nodesWithClusters = analyser.assignClusterNamesToNodes();
+
+        vi.mock("i18next", () => ({
+            default: {
+                t: vi.fn((key: string) => key),
+            },
+        }));
 
         expect(nodesWithClusters).toHaveLength(8);
         expect(nodesWithClusters[0].cluster).toBe("Cluster 1");
