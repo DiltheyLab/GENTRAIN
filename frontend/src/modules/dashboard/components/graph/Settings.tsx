@@ -4,7 +4,11 @@ import { OptionSwitches } from "./OptionSwitches";
 export const DashboardSettings = () => {
     return (
         <form className="flex flex-col items-center w-full gap-4">
-            <fieldset className="flex flex-col rounded-lg border p-4 w-full">
+            <fieldset
+                data-joyride-index="1"
+                id="dashboardSettings"
+                className="flex flex-col rounded-lg border p-4 w-full"
+            >
                 <h1 className="text-xl font-semibold leading-none">Einstellungen</h1>
                 <p className="text-sm text-muted-foreground mt-1">
                     Optionen zur Visualisierung von Fällen und Verbindungen.

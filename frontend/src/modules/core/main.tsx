@@ -17,6 +17,7 @@ import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/m
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
+import Joyride from "react-joyride";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -46,6 +47,17 @@ const App = () => {
         });
     }, []);
 
+    const steps = [
+        {
+            target: "#outbreakAnalysis",
+            content: "This is my awesome feature!",
+        },
+        {
+            target: "[data-joyride-index='1']",
+            content: "This another awesome feature!",
+        },
+    ];
+
     if (session === undefined) {
         return <RefreshLoader />;
     }
@@ -73,7 +85,12 @@ const App = () => {
         },
     ]);
 
-    return <RouterProvider router={router} />;
+    return (
+        <>
+            <Joyride steps={steps} />
+            <RouterProvider router={router} />
+        </>
+    );
 };
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

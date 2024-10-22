@@ -25,6 +25,7 @@ export const Header = () => {
                     Dashboard
                 </Link>
                 <Link
+                    id="outbreakAnalysis"
                     to="/outbreak-analysis"
                     className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground text-md`}
                 >
