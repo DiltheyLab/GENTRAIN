@@ -5,8 +5,6 @@ import { createNodeWithoutSample, createNodeWithSample } from "../entities/nodes
 import i18next from "i18next";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 
-// Mock i18next
-
 describe("ClusterAnalyser", () => {
     let nodes: CustomNode[];
     let links: CustomLink[];
@@ -30,6 +28,10 @@ describe("ClusterAnalyser", () => {
             { source: 1, target: 4, value: 2 }, // Above threshold
             { source: 1, target: 6, value: 3 }, // Above threshold and not connected to any other node
         ] as CustomLink[];
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it("should initializes the constructor correctly", () => {
