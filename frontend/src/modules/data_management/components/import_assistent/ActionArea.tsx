@@ -9,7 +9,6 @@ import { ContactsValidation } from "../../services/data_import/validation/Contac
 import { Button } from "@/modules/core/components/ui/Button";
 import { ContactRound, Dna, UsersRound } from "lucide-react";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { Link } from "react-router-dom";
 import { CaseSelection } from "../import_section/tables/CaseSelection";
 import { DataImport } from "../import_section/DataImport";
 import { SequenceSelection } from "../import_section/tables/SequenceSelection";
@@ -137,29 +136,11 @@ export function ActionArea() {
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
                                 </Button>
-                                <Button variant="secondary" onClick={nextImportAssistentStep}>
+                                <Button variant="secondary" onClick={() => resetImportAssistent(true)}>
                                     Überspringen
                                 </Button>
                             </div>
                         )}
-                    </>
-                );
-            case "conclusion":
-                return (
-                    <>
-                        <div>
-                            <div className="flex justify-end gap-4 mt-4">
-                                <Link to="/">
-                                    <Button onClick={resetImportAssistent}>Zum Dashboard</Button>
-                                </Link>
-                                <Link to="/outbreak-analysis">
-                                    <Button onClick={resetImportAssistent}>Zu den Ausbruchsanalysen</Button>
-                                </Link>
-                                <Link to="/data-management">
-                                    <Button onClick={resetImportAssistent}>Zur Datenverwaltung</Button>
-                                </Link>
-                            </div>
-                        </div>
                     </>
                 );
             default:

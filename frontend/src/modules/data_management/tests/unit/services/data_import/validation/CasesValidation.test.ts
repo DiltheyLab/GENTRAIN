@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { CasesValidation } from "@/modules/data_management/services/data_import/validation/CasesValidation";
-import { CaseImport, CaseSchema, CaseWithRelationships } from "@/modules/core/models/cases";
+import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/tests/entities/outbreaks";
-import { createGroup, createGroups } from "@/modules/core/tests/entities/groups";
+import { createGroups } from "@/modules/core/tests/entities/groups";
 import { createCase } from "@/modules/core/tests/entities/cases";
-import { before } from "lodash";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { GroupSchema } from "@/modules/core/models/groups";
 
@@ -179,10 +178,11 @@ describe("CasesValidation", () => {
 
             expect(result).toBeFalsy();
         });
-        it("should detect that a group was removed", () => {
+
+        it("should detect that a imported fasta id is empty", () => {
             const importedCase: CaseImport = {
                 case_id: ":case_id:",
-                fasta_id: ":fasta_id:",
+                fasta_id: null,
                 groups: groups
                     .filter((group) => group.id !== 0)
                     .map((group) => {
@@ -194,6 +194,30 @@ describe("CasesValidation", () => {
             const persistedCase: CaseWithRelationships = createCase({
                 case_id: ":case_id:",
                 fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+
+        it("should detect that a persisted fasta id is empty", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id",
+                groups: groups
+                    .filter((group) => group.id !== 0)
+                    .map((group) => {
+                        return { category: ":category_name:", name: group.name, remaining: true };
+                    }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: null,
                 groups: groups,
                 outbreak: outbreak,
                 registered_at: registeredAt,

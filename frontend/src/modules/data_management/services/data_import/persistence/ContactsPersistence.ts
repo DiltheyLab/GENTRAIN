@@ -43,11 +43,14 @@ export class ContactsPersistence extends PersistenceStrategy {
         await db.contacts.bulkAdd(bulkData);
         useDataManagementStore.getState().setContactSelectionActive(false);
         useDataManagementStore.getState().clearContactImports();
-        toast({
-            title: "Datei wurde erfolgreich hochgeladen",
-            duration: 5000,
-            variant: "success",
-        });
+        if (!useDataManagementStore.getState().showImportAssistent) {
+            toast({
+                title: "Datei wurde erfolgreich hochgeladen",
+                duration: 5000,
+                variant: "success",
+            });
+        }
+        useDataManagementStore.getState().resetImportAssistent(true);
     };
 
     protected update = async () => {};

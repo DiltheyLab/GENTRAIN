@@ -159,7 +159,7 @@
         "bacterial": [
             {
                 "tag": "p",
-                "content": "Da bakterielle Genome weitaus größer sind als virale Genome, kann die Analyse einige Minuten in Anspruch nehmen."
+                "content": "Da bakterielle Genome weitaus größer sind als virale Genome, kann die Analyse <strong>einige Minuten</strong> in Anspruch nehmen."
             }
         ]
     },
@@ -176,8 +176,8 @@
             {
                 "tag": "ul",
                 "content": [
-                    "Fall 1 (Identifikationsnummer aus dem Gesundheitsamt)",
-                    "Fall 2 (Identifikationsnummer aus dem Gesundheitsamt)",
+                    "Fall 1 (eindeutige Identifikationsnummer)",
+                    "Fall 2 (eindeutige Identifikationsnummer)",
                     "Typ des Kontaktes",
                     "Kontext des Kontaktes"
                 ]

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
+import { toast } from "@/modules/core/components/ui/UseToast";
 
 export interface DataManagementState {
     clearImports: () => void;
@@ -64,7 +65,7 @@ export interface DataManagementState {
     nextImportAssistentStep: () => void;
     showImportAssistent: boolean;
     setShowImportAssistent: (value: boolean) => void;
-    resetImportAssistent: () => void;
+    resetImportAssistent: (triggerSuccessToast?: boolean) => void;
 }
 
 export const useDataManagementStore = create<DataManagementState>((set, get) => ({
@@ -272,9 +273,6 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
                 }
                 set({ importAssistentStep: "contact_selection" });
                 break;
-            case "contact_selection":
-                set({ importAssistentStep: "conclusion" });
-                break;
             default:
                 set({ importAssistentStep: "introduction", showImportAssistent: false });
         }
@@ -283,7 +281,15 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     setShowImportAssistent: (value: boolean) => {
         set({ showImportAssistent: value });
     },
-    resetImportAssistent: () => {
+    resetImportAssistent: (triggerSuccessToast: boolean = false) => {
         set({ showImportAssistent: false, importAssistentStep: "introduction" });
+        if (triggerSuccessToast) {
+            toast({
+                title: "Herzlichen Glückwunsch!",
+                description: "Ihr Import war erfolgreich.",
+                duration: 5000,
+                variant: "success",
+            });
+        }
     },
 }));

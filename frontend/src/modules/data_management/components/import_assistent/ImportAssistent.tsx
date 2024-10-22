@@ -11,6 +11,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { useTranslation } from "react-i18next";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 import { ActionArea } from "./ActionArea";
+import { Bot } from "lucide-react";
 
 export function ImportAssistent() {
     const { t, i18n } = useTranslation();
@@ -31,7 +32,20 @@ export function ImportAssistent() {
                 onInteractOutside={(e) => e.preventDefault()}
             >
                 <DialogHeader>
-                    <DialogTitle>{t(`import:titles.${importAssistentStep}`)}</DialogTitle>
+                    <DialogTitle>
+                        <div className="flex items-center">
+                            {importAssistentStep === "introduction" ? (
+                                <>
+                                    <Bot width={70} height={70} />
+                                    <span className="text-[2rem] ml-4">
+                                        {t(`import:titles.${importAssistentStep}`)}
+                                    </span>
+                                </>
+                            ) : (
+                                t(`import:titles.${importAssistentStep}`)
+                            )}
+                        </div>
+                    </DialogTitle>
                     <DialogDescription></DialogDescription>
                 </DialogHeader>
 
