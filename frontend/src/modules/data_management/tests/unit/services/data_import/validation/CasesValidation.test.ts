@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { CasesValidation } from "@/modules/data_management/services/data_import/validation/CasesValidation";
+import { CaseImport, CaseSchema, CaseWithRelationships } from "@/modules/core/models/cases";
+import { createOutbreak } from "@/modules/core/tests/entities/outbreaks";
+import { createGroup, createGroups } from "@/modules/core/tests/entities/groups";
+import { createCase } from "@/modules/core/tests/entities/cases";
+import { before } from "lodash";
+import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { GroupSchema } from "@/modules/core/models/groups";
 
 describe("CasesValidation", () => {
     let casesValidationStrategy: any;
@@ -8,7 +15,7 @@ describe("CasesValidation", () => {
         casesValidationStrategy = new CasesValidation();
     });
 
-    describe("validate", () => {
+    describe("isCasesHeaderValid", () => {
         it("should detect valid header when passing correct column names", () => {
             const header = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
             const result = casesValidationStrategy.isCasesHeaderValid(header);
@@ -48,6 +55,152 @@ describe("CasesValidation", () => {
                 const result = casesValidationStrategy.isCasesHeaderValid(tempHeader);
                 expect(result).toBeFalsy();
             }
+        });
+    });
+
+    describe("importedCaseEqualsPersistedCase", () => {
+        let outbreak: OutbreakSchema;
+        let groups: GroupSchema[];
+        let registeredAt: Date;
+
+        beforeEach(() => {
+            outbreak = createOutbreak({ id: 1, name: ":outbreak_name:" });
+            groups = createGroups(3);
+            registeredAt = new Date();
+        });
+
+        it("should detect equality between imported and persisted case", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups.map((group) => {
+                    return { category: ":category_1:", name: group.name, remaining: true };
+                }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeTruthy();
+        });
+
+        it("should detect differing fasta ids", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id_1:",
+                groups: groups.map((group) => {
+                    return { category: ":category_1:", name: group.name, remaining: true };
+                }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id_2:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+
+        it("should detect differing outbreak name", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups.map((group) => {
+                    return { category: ":category_1:", name: group.name, remaining: true };
+                }),
+                outbreak: ":other_outbreak_name",
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+
+        it("should detect differing registered at date", () => {
+            const otherDate = new Date(registeredAt.getDate() + 1);
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups.map((group) => {
+                    return { category: ":category_name:", name: group.name, remaining: true };
+                }),
+                outbreak: outbreak.name,
+                registered_at: otherDate,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+
+        it("should detect that new group was assigned", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups.map((group) => {
+                    return { category: ":category_name:", name: group.name, remaining: group.id === 0 ? false : true };
+                }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+        it("should detect that a group was removed", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups
+                    .filter((group) => group.id !== 0)
+                    .map((group) => {
+                        return { category: ":category_name:", name: group.name, remaining: true };
+                    }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
         });
     });
 });

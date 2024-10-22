@@ -11,7 +11,7 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 const CASES_COLUMN_NAMES = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 
 export class CasesValidation extends ValidationStrategy {
-    protected validate = async (data: Array<Array<string>>) => {
+    protected async validate(data: Array<Array<string>>) {
         const header = data[0];
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
         if (!this.isCasesHeaderValid(header)) {
@@ -39,7 +39,7 @@ export class CasesValidation extends ValidationStrategy {
         return {
             data: data,
         };
-    };
+    }
 
     private isCasesHeaderValid(header: string[]) {
         // exclude additional category columns from header validation
@@ -52,7 +52,7 @@ export class CasesValidation extends ValidationStrategy {
         );
     }
 
-    private collectCaseImports = async (header: string[], data: Array<Array<string>>) => {
+    private async collectCaseImports(header: string[], data: Array<Array<string>>) {
         const activePathogen = useCoreStore.getState().activePathogen;
 
         if (!activePathogen) {
@@ -98,9 +98,9 @@ export class CasesValidation extends ValidationStrategy {
         }
 
         return casesToUpload;
-    };
+    }
 
-    private collectNewGroups = (header: string[], row: string[], existingCase: CaseWithRelationships | undefined) => {
+    private collectNewGroups(header: string[], row: string[], existingCase: CaseWithRelationships | undefined) {
         const groups: { name: string; category: string; remaining: boolean }[] = [];
 
         for (let i = 4; i <= 6; i++) {
@@ -117,14 +117,15 @@ export class CasesValidation extends ValidationStrategy {
             }
         }
         return groups;
-    };
+    }
 
-    private importedCaseEqualsPersistedCase = (caseImport: CaseImport, existingCase: CaseWithRelationships) => {
+    private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
-            ((!caseImport.fasta_id && !caseImport.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
-            ((!caseImport.outbreak && !caseImport.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
+            ((!caseImport.fasta_id && !existingCase.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
+            ((!caseImport.outbreak && !existingCase.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
             caseImport.groups.filter((group) => !group.remaining).length === 0 &&
+            caseImport.groups.length === existingCase.groups?.length &&
             formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
         );
-    };
+    }
 }

@@ -105,10 +105,11 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
             const updatedGroups = row.original.groups;
             const removedGroups =
                 row.original.existingCase?.groups
-                    ?.filter((existingGroup) =>
-                        updatedGroups.some(
-                            (group) => existingGroup.category?.name === group.category && !group.remaining
-                        )
+                    ?.filter(
+                        (existingGroup) =>
+                            updatedGroups.some(
+                                (group) => existingGroup.category?.name === group.category && !group.remaining
+                            ) || !updatedGroups.some((group) => existingGroup.category?.name === group.category)
                     )
                     .map((group) => {
                         return { category: group.category?.name, name: group.name, type: "remove" };
