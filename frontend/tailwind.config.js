@@ -36,6 +36,7 @@ module.exports = {
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
                 success: "hsl(var(--success))",
+                warning: "hsl(var(--yellow-600))",
             },
             borderRadius: {
                 DEFAULT: "var(--radius)",

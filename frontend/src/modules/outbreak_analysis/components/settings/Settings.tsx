@@ -25,6 +25,7 @@ export const Settings = () => {
     const [showPdfExportDialog, setShowPdfExportDialog] = useState(false);
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
     const navigate = useNavigate();
+
     return (
         <form className="w-full px-1 flex flex-col justify-between overflow-y-hidden h-full">
             <fieldset className="flex border rounded-lg flex-col h-[calc(100%-102px)] mb-4 gap-3 px-3 pb-4 pt-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">

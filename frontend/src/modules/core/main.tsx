@@ -8,6 +8,7 @@ import { DataManagement } from "@/modules/data_management/pages/DataManagement.t
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
 import translation_de from "@/modules/core/translations/de/common.json";
+import import_de from "@/modules/core/translations/de/import.json";
 import error_de from "@/modules/core/translations/de/error.json";
 import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
@@ -23,7 +24,7 @@ i18next.init({
     interpolation: { escapeValue: false },
     lng: "de",
     resources: {
-        de: { translation: translation_de, error: error_de },
+        de: { translation: translation_de, import: import_de, error: error_de },
     },
 });
 

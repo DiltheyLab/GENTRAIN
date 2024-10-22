@@ -39,8 +39,8 @@ export function SampleInformationTable() {
     const renderRows = () => {
         return casesWithSamples.map((caseData) => {
             return (
-                <TableRow key={caseData.id} className="border-muted font-medium">
-                    <TableCell className="p-2 text-xs ">{caseData.case_id}</TableCell>
+                <TableRow key={caseData.id} className="border-muted">
+                    <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
                     <TableCell className="p-2 text-xs">{caseData.sample?.fasta_id}</TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
