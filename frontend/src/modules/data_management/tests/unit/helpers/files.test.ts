@@ -18,8 +18,10 @@ describe("FilesHelper", () => {
         it("should read txt content as text", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             const result = await readFileAsText(new File([new Blob([fileBuffer1])], ":file_name_1:"));
+
             expect(result).toEqual("test1");
         });
+
         it("should read csv content as text", async () => {
             const fileBuffer = fs.readFileSync(`${__dirname}/../../fixtures/files/test_cases.csv`);
             const file = new File([new Blob([fileBuffer])], ":file_name:");
@@ -62,6 +64,7 @@ describe("FilesHelper", () => {
                 ">:fasta_id_3:\n:sequence_3:",
             ];
             const result = collectFastaIdsAndSequences(sequences);
+
             expect(result).toEqual([
                 { fastaId: ":fasta_id_1:", sequence: ":sequence_1:" },
                 { fastaId: ":fasta_id_2:", sequence: ":sequence_2:" },
@@ -76,6 +79,7 @@ describe("FilesHelper", () => {
                 ":file_name": ">:fasta_id_1:\n:sequence_1:\n>:fasta_id_2:\n:sequence_2:\n>:fasta_id_3:\n:sequence_3:",
                 mimetype: "fasta",
             });
+
             expect(result).toEqual([
                 { fastaId: ":fasta_id_1:", sequence: ":sequence_1:" },
                 { fastaId: ":fasta_id_2:", sequence: ":sequence_2:" },
@@ -89,6 +93,7 @@ describe("FilesHelper", () => {
                     ":column_1:;:column_2:;:column_3:\n:column_1_row_1:;:column_2_row_1:;:column_3_row_1:\n:column_1_row_2:;:column_2_row_2:;:column_3_row_2:",
                 mimetype: "csv",
             });
+
             expect(result).toEqual([
                 [":column_1:", ":column_2:", ":column_3:"],
                 [":column_1_row_1:", ":column_2_row_1:", ":column_3_row_1:"],
@@ -111,6 +116,7 @@ describe("FilesHelper", () => {
                     mimetype: "fasta",
                 },
             ]);
+
             expect(result).toEqual([
                 {
                     fastaId: ":fasta_id_1:",
@@ -134,7 +140,7 @@ describe("FilesHelper", () => {
             window.URL.createObjectURL = vi.fn(() => ":object_url:");
             // mock methods that are not yet supported by jsdom
             const spyOnCreateElement = vi.spyOn(document, "createElement").mockImplementation(() => link);
-            const spyOnLinkClick = vi.spyOn(link, "click").mockImplementation(() => {});
+            const spyOnLinkClick = vi.spyOn(link, "click");
             downloadFile(blob, ":file_name:");
 
             expect(spyOnCreateElement).toHaveBeenCalledOnce();

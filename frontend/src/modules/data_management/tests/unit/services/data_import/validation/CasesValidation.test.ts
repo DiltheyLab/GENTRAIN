@@ -119,7 +119,7 @@ describe("CasesValidation", () => {
                 groups: groups.map((group) => {
                     return { category: ":category_1:", name: group.name, remaining: true };
                 }),
-                outbreak: ":other_outbreak_name",
+                outbreak: ":other_outbreak_name:",
                 registered_at: registeredAt,
             };
             const persistedCase: CaseWithRelationships = createCase({

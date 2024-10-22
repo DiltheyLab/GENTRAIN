@@ -14,12 +14,15 @@ describe("SingleFileReading", () => {
         it("should return fasta mime type for sequence imports", () => {
             expect(singleFileReadingStrategy.getAcceptedMimeType("sequence")).toEqual(".fasta");
         });
+
         it("should return csv mime type for case imports", () => {
             expect(singleFileReadingStrategy.getAcceptedMimeType("case")).toEqual(".csv");
         });
+
         it("should return csv mime type for contact imports", () => {
             expect(singleFileReadingStrategy.getAcceptedMimeType("contact")).toEqual(".csv");
         });
+
         it("should return csv mime type for other import types", () => {
             expect(singleFileReadingStrategy.getAcceptedMimeType(":type:")).toEqual(".csv");
         });

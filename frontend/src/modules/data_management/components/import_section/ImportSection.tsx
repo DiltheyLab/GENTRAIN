@@ -41,7 +41,7 @@ export const ImportSection = () => {
                 <div className="w-1/3">
                     <DataImport
                         data={caseImports}
-                        submitStrategy={new CasesPersistence()}
+                        persistenceStrategy={new CasesPersistence()}
                         validationStrategy={new CasesValidation()}
                         dialog
                         type="case"
@@ -53,7 +53,7 @@ export const ImportSection = () => {
                 <div className="w-1/3">
                     <DataImport
                         data={sampleImports}
-                        submitStrategy={new SamplesPersistence()}
+                        persistenceStrategy={new SamplesPersistence()}
                         validationStrategy={new SamplesValidation()}
                         dialog
                         type="sequence"
@@ -66,7 +66,7 @@ export const ImportSection = () => {
                 <div className="w-1/3">
                     <DataImport
                         data={contactImports}
-                        submitStrategy={new ContactsPersistence()}
+                        persistenceStrategy={new ContactsPersistence()}
                         validationStrategy={new ContactsValidation()}
                         dialog
                         type="contact"

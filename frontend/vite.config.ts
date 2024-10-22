@@ -24,7 +24,6 @@ export default defineConfig({
                 functions: 80,
             }, */
         },
-        globals: true,
         environment: "jsdom",
     },
 });

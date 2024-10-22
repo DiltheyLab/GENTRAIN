@@ -18,7 +18,7 @@ import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 type DataImportParameters = {
     children: JSX.Element;
     data: ImportData;
-    submitStrategy: PersistenceStrategy;
+    persistenceStrategy: PersistenceStrategy;
     validationStrategy: ValidationStrategy;
     actions?: JSX.Element | JSX.Element[];
     buttonText?: string;
@@ -40,7 +40,7 @@ type ImportData = {
 export const DataImport = ({
     children,
     data,
-    submitStrategy,
+    persistenceStrategy,
     validationStrategy,
     actions,
     dialog = false,
@@ -99,7 +99,7 @@ export const DataImport = ({
         setOpenDialog(false);
         nextImportAssistentStep();
         try {
-            await submitStrategy.execute();
+            await persistenceStrategy.execute();
         } catch (error) {
             if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
                 toast({

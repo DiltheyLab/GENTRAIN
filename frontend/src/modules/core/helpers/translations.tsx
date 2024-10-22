@@ -18,7 +18,7 @@ export const renderHtmlFromTranslation = (i18nKey: string) => {
                     <ul className="list-disc pl-4">
                         {element.content.map((child) => (
                             <li>
-                                <Trans>{child}</Trans>
+                                <Trans shouldEscape>{child}</Trans>
                             </li>
                         ))}
                     </ul>

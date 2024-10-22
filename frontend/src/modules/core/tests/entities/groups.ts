@@ -1,15 +1,6 @@
 import { GroupSchema } from "../../models/groups";
 
-type TestGroup = {
-    id?: number;
-    name?: string;
-    category_id?: number;
-    pathogen_id?: number;
-    case_count?: number | null;
-    sequenced_case_count?: number | null;
-    created_at?: Date;
-    updated_at?: Date;
-};
+type TestGroup = Partial<GroupSchema>;
 
 export const createGroup = ({
     id = 0,

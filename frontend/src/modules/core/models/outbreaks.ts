@@ -5,8 +5,8 @@ export interface OutbreakSchema {
     id: number;
     name: string;
     pathogen_id?: number;
-    case_count?: number;
-    sequenced_case_count?: number;
+    case_count?: number | null;
+    sequenced_case_count?: number | null;
     created_at?: Date;
     updated_at?: Date;
 }

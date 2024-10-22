@@ -38,7 +38,7 @@ export function ActionArea() {
                     <>
                         <DataImport
                             data={caseImports}
-                            submitStrategy={new CasesPersistence()}
+                            persistenceStrategy={new CasesPersistence()}
                             validationStrategy={new CasesValidation()}
                             type="case"
                             actions={
@@ -68,7 +68,7 @@ export function ActionArea() {
                     <>
                         <DataImport
                             data={sampleImports}
-                            submitStrategy={new SamplesPersistence()}
+                            persistenceStrategy={new SamplesPersistence()}
                             validationStrategy={new SamplesValidation()}
                             type="sequence"
                             actions={
@@ -119,7 +119,7 @@ export function ActionArea() {
                     <>
                         <DataImport
                             data={contactImports}
-                            submitStrategy={new ContactsPersistence()}
+                            persistenceStrategy={new ContactsPersistence()}
                             validationStrategy={new ContactsValidation()}
                             type="contact"
                             actions={

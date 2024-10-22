@@ -1,14 +1,6 @@
 import { OutbreakSchema } from "../../models/outbreaks";
 
-type TestOutbreak = {
-    id?: number;
-    name?: string;
-    pathogen_id?: number;
-    case_count?: number | null;
-    sequenced_case_count?: number | null;
-    created_at?: Date;
-    updated_at?: Date;
-};
+type TestOutbreak = Partial<OutbreakSchema>;
 
 export const createOutbreak = ({
     id = 0,
