@@ -17,6 +17,7 @@ import { uploadedGroupColumns } from "../components/imported_data/uploadedGroupC
 import { useDataManagementStore } from "../stores/dataManagement";
 import { ImportSection } from "../components/import_section/ImportSection";
 import { ImportAssistent } from "../components/import_assistent/ImportAssistent";
+import { DatabaseDeletion } from "../components/DatabaseDeletion";
 
 export function DataManagement() {
     const { activePathogen, updateCasesWithRelationships } = useCoreStore();
@@ -145,6 +146,7 @@ export function DataManagement() {
                         )}
                     </>
                 )}
+                <DatabaseDeletion />
             </div>
         </Layout>
     );

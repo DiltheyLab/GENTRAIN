@@ -31,11 +31,9 @@ export const ImportSection = () => {
                         Sequenz- sowie Kontaktdaten hinterlegt werden.
                     </p>
                 </div>
-                <div className="flex justify-end">
-                    <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
-                        Import-Assistent starten
-                    </Button>
-                </div>
+                <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
+                    Import-Assistent starten
+                </Button>
             </div>
             <div className="flex gap-8">
                 <div className="w-1/3">
