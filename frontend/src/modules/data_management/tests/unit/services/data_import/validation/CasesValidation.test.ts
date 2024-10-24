@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { CasesValidation } from "@/modules/data_management/services/data_import/validation/CasesValidation";
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/tests/entities/outbreaks";
@@ -16,24 +16,26 @@ describe("CasesValidation", () => {
         casesValidationStrategy = new CasesValidation();
     });
 
-    describe("isCasesHeaderValid", () => {
+    describe("isHeaderValid", () => {
         it("should detect valid header when passing correct column names", () => {
             const header = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
+            casesValidationStrategy.collectData([header]);
             const result = casesValidationStrategy.isCasesHeaderValid(header);
 
             expect(result).toBeTruthy();
         });
 
-        it("should detect valid header when passing up to 3 flxeible category names", () => {
+        it("should detect valid header when passing up to 3 flexible category names", () => {
             const header = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
             for (let categoryIndex = 1; categoryIndex <= 3; categoryIndex++) {
                 header.push(`:flexible_category_${categoryIndex}:`);
-                const result = casesValidationStrategy.isCasesHeaderValid(header);
+                casesValidationStrategy.collectData([header]);
+                const result = casesValidationStrategy.isCasesHeaderValid();
                 expect(result).toBeTruthy();
             }
         });
 
-        it("should detect valid header when passing more than 3 flxeible category names", () => {
+        it("should detect invalid header when passing more than 3 flexible category names", () => {
             const header = [
                 "Fall ID",
                 "Sequenz ID",
@@ -44,7 +46,8 @@ describe("CasesValidation", () => {
                 ":flexible_category_3:",
                 ":flexible_category_4:",
             ];
-            const result = casesValidationStrategy.isCasesHeaderValid(header);
+            casesValidationStrategy.collectData([header]);
+            const result = casesValidationStrategy.isCasesHeaderValid();
             expect(result).toBeFalsy();
         });
 
@@ -53,7 +56,8 @@ describe("CasesValidation", () => {
             for (let index = 0; index < header.length; index++) {
                 const tempHeader = structuredClone(header);
                 tempHeader[index] = ":incorrect_column_name:";
-                const result = casesValidationStrategy.isCasesHeaderValid(tempHeader);
+                casesValidationStrategy.collectData([tempHeader]);
+                const result = casesValidationStrategy.isCasesHeaderValid();
                 expect(result).toBeFalsy();
             }
         });
