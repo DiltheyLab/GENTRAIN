@@ -1,11 +1,13 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { CasesValidation } from "@/modules/data_management/services/data_import/validation/CasesValidation";
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/tests/entities/outbreaks";
-import { createGroups } from "@/modules/core/tests/entities/groups";
+import { createGroup, createGroups } from "@/modules/core/tests/entities/groups";
 import { createCase } from "@/modules/core/tests/entities/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { GroupSchema } from "@/modules/core/models/groups";
+import { CategorySchema } from "@/modules/core/models/categories";
+import { createCategory } from "@/modules/core/tests/entities/categories";
 
 describe("CasesValidation", () => {
     let casesValidationStrategy: any;
@@ -64,7 +66,7 @@ describe("CasesValidation", () => {
 
         beforeEach(() => {
             outbreak = createOutbreak({ id: 1, name: ":outbreak_name:" });
-            groups = createGroups(3);
+            groups = createGroups();
             registeredAt = new Date();
         });
 
@@ -179,15 +181,41 @@ describe("CasesValidation", () => {
             expect(result).toBeFalsy();
         });
 
-        it("should detect that a imported fasta id is empty", () => {
+        it("should detect that a group was removed", () => {
             const importedCase: CaseImport = {
                 case_id: ":case_id:",
-                fasta_id: null,
+                fasta_id: ":fasta_id:",
                 groups: groups
                     .filter((group) => group.id !== 0)
                     .map((group) => {
-                        return { category: ":category_name:", name: group.name, remaining: true };
+                        return {
+                            category: ":category_name:",
+                            name: group.name,
+                            remaining: true,
+                        };
                     }),
+                outbreak: outbreak.name,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeFalsy();
+        });
+
+        it("should detect that an imported fasta id is empty", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: null,
+                groups: groups.map((group) => {
+                    return { category: ":category_name:", name: group.name, remaining: true };
+                }),
                 outbreak: outbreak.name,
                 registered_at: registeredAt,
             };
@@ -207,11 +235,9 @@ describe("CasesValidation", () => {
             const importedCase: CaseImport = {
                 case_id: ":case_id:",
                 fasta_id: ":fasta_id",
-                groups: groups
-                    .filter((group) => group.id !== 0)
-                    .map((group) => {
-                        return { category: ":category_name:", name: group.name, remaining: true };
-                    }),
+                groups: groups.map((group) => {
+                    return { category: ":category_name:", name: group.name, remaining: true };
+                }),
                 outbreak: outbreak.name,
                 registered_at: registeredAt,
             };
@@ -225,6 +251,249 @@ describe("CasesValidation", () => {
             const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
 
             expect(result).toBeFalsy();
+        });
+
+        it("should detect that a outbreak are empty for imported and persisted case", () => {
+            const importedCase: CaseImport = {
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups.map((group) => {
+                    return { category: ":category_name:", name: group.name, remaining: true };
+                }),
+                outbreak: null,
+                registered_at: registeredAt,
+            };
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                groups: groups,
+                outbreak: null,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.importedCaseEqualsPersistedCase(importedCase, persistedCase);
+
+            expect(result).toBeTruthy();
+        });
+    });
+
+    describe("collectNewGroups", () => {
+        let outbreak: OutbreakSchema;
+        let registeredAt: Date;
+        let groups: GroupSchema[] = [];
+        let categories: CategorySchema[] = [];
+
+        beforeEach(() => {
+            const category1 = createCategory({ id: 1, name: ":category_1:" });
+            const group1 = createGroup({ id: 1, name: ":group_1:", category: category1 });
+            const category2 = createCategory({ id: 2, name: ":category_2:" });
+            const group2 = createGroup({ id: 2, name: ":group_2:", category: category2 });
+            const category3 = createCategory({ id: 3, name: ":category_3:" });
+            const group3 = createGroup({ id: 3, name: ":group_3:", category: category3 });
+            categories = [category1, category2, category3];
+            groups = [group1, group2, group3];
+            outbreak = createOutbreak({ id: 1, name: ":outbreak_name:" });
+            registeredAt = new Date();
+        });
+
+        it("should detect remaining groups for persisted case", () => {
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                group_ids: groups.map((group) => group.id),
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    groups[0].name,
+                    groups[1].name,
+                    groups[2].name,
+                ],
+                persistedCase
+            );
+
+            for (const group of result) {
+                expect(group.remaining).toBeTruthy();
+            }
+        });
+
+        it("should detect new group for first flexible column", () => {
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                group_ids: groups.map((group) => group.id),
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    ":new_group:",
+                    groups[1].name,
+                    groups[2].name,
+                ],
+                persistedCase
+            );
+
+            expect(result[0].remaining).toBeFalsy();
+        });
+
+        it("should detect new group for second flexible column", () => {
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                group_ids: groups.map((group) => group.id),
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    groups[0].name,
+                    ":new_group:",
+                    groups[2].name,
+                ],
+                persistedCase
+            );
+
+            expect(result[1].remaining).toBeFalsy();
+        });
+
+        it("should detect new group for first flexible column", () => {
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                group_ids: groups.map((group) => group.id),
+                groups: groups,
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    groups[0].name,
+                    groups[1].name,
+                    ":new_group:",
+                ],
+                persistedCase
+            );
+
+            expect(result[2].remaining).toBeFalsy();
+        });
+
+        it("should detect new groups for undefined persisted case", () => {
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    groups[0].name,
+                    groups[1].name,
+                    ":new_group:",
+                ],
+                undefined
+            );
+
+            for (const group of result) {
+                expect(group.remaining).toBeFalsy();
+            }
+        });
+
+        it("should detect new groups for undefined groups array", () => {
+            const persistedCase: CaseWithRelationships = createCase({
+                case_id: ":case_id:",
+                fasta_id: ":fasta_id:",
+                group_ids: groups.map((group) => group.id),
+                outbreak: outbreak,
+                registered_at: registeredAt,
+            });
+            const result = casesValidationStrategy.collectNewGroups(
+                [
+                    ":case_id_column:",
+                    ":fasta_id_column:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    categories[0].name,
+                    categories[1].name,
+                    categories[2].name,
+                ],
+                [
+                    ":case_id:",
+                    ":fasta_id:",
+                    ":registered_at_column:",
+                    ":outbreak_column:",
+                    groups[0].name,
+                    groups[1].name,
+                    groups[2].name,
+                ],
+                persistedCase
+            );
+
+            for (const group of result) {
+                expect(group.remaining).toBeFalsy();
+            }
         });
     });
 });

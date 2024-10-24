@@ -4,6 +4,7 @@ import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates"
 import { db } from "@/modules/core/infrastructure/database";
 import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
+import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
@@ -61,11 +62,9 @@ export class CasesValidation extends ValidationStrategy {
 
         const caseIds = data.map((row) => row[0]);
 
-        let cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
-        const caseMap = new Map<string, CaseWithRelationships>();
-        for (const caseData of cases) {
-            caseMap.set(caseData.case_id, caseData);
-        }
+        const caseMap = ObjectRelationalMapper.arrayToMap(
+            await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)))
+        );
 
         const outbreaks = await db.outbreaks.where("pathogen_id").equals(activePathogen.id).toArray();
         const outbreakMap = new Map<number, OutbreakSchema>();
@@ -80,6 +79,7 @@ export class CasesValidation extends ValidationStrategy {
                 import: boolean;
             };
         } = {};
+
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             const persistedCase = caseMap.get(row[0]);
@@ -100,18 +100,25 @@ export class CasesValidation extends ValidationStrategy {
         return casesToUpload;
     }
 
+    /**
+     * Detect if groups are remaining or new to the existing case or not.
+     * @param header
+     * @param row
+     * @param existingCase
+     * @returns
+     */
     private collectNewGroups(header: string[], row: string[], existingCase: CaseWithRelationships | undefined) {
         const groups: { name: string; category: string; remaining: boolean }[] = [];
 
         for (let i = 4; i <= 6; i++) {
             if (row[i] !== "") {
                 const group = { category: header[i], name: row[i], remaining: false };
-                const groupExists = existingCase
+                const groupExistsForCase = existingCase
                     ? existingCase.groups?.some((existingGroup) => {
                           return existingGroup.category?.name === group.category && existingGroup.name === group.name;
                       })
                     : false;
-                group.remaining = groupExists ?? false;
+                group.remaining = groupExistsForCase ?? false;
 
                 groups.push(group);
             }
@@ -119,6 +126,12 @@ export class CasesValidation extends ValidationStrategy {
         return groups;
     }
 
+    /**
+     * Returns if an imported and a persisted case are equal in terms of fasta_id, case_id, groups and registered_at-date.
+     * @param caseImport
+     * @param existingCase
+     * @returns
+     */
     private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
             ((!caseImport.fasta_id && !existingCase.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&

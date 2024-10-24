@@ -1,30 +1,43 @@
-import { GroupSchema } from "../../models/groups";
+import { GroupWithRelationships } from "../../models/groups";
 
-type TestGroup = Partial<GroupSchema>;
+type TestGroup = Partial<GroupWithRelationships>;
 
 export const createGroup = ({
     id = 0,
     name = ":group_name:",
     category_id = 0,
+    category = null,
     pathogen_id = 0,
+    pathogen = null,
     case_count = null,
     sequenced_case_count = null,
     created_at = new Date(),
     updated_at = new Date(),
-}: TestGroup) => {
+}: TestGroup = {}) => {
     return {
         id: id,
         name: name,
         category_id: category_id,
+        category: category,
         pathogen_id: pathogen_id,
+        pathogen: pathogen,
         case_count: case_count,
         sequenced_case_count: sequenced_case_count,
         created_at: created_at,
         updated_at: updated_at,
-    } as GroupSchema;
+    } as GroupWithRelationships;
 };
 
-export const createGroups = (amount: number = 2, category_id: number = 0, pathogen_id: number = 0) => {
+export const createGroups = (
+    {
+        category_id = 0,
+        pathogen_id = 0,
+    }: {
+        category_id?: number;
+        pathogen_id?: number;
+    } = {},
+    amount = 2
+) => {
     const groups = [];
     const date = new Date();
     for (let i = 0; i < amount; i++) {
