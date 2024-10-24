@@ -43,6 +43,7 @@ export const TutorialTour = () => {
 
     return (
         <Joyride
+            tooltipComponent={CustomTutorialTourTooltip}
             steps={steps}
             continuous={true}
             showProgress={true}
