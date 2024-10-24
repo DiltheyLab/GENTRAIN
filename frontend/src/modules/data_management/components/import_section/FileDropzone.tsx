@@ -48,7 +48,8 @@ export const FileDropzone = ({
             const fileAsStringArray = formatInArray(fileReaderResult);
 
             // validate the data
-            const validationResult = await validationStrategy.execute(fileAsStringArray);
+            validationStrategy.collectData(fileAsStringArray);
+            const validationResult = await validationStrategy.execute();
             if (validationResult.warnings) {
                 showWarningToasts(validationResult.warnings);
             }
