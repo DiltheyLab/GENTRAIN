@@ -6,7 +6,6 @@ import { createGroup, createGroups } from "@/modules/core/tests/entities/groups"
 import { createCase } from "@/modules/core/tests/entities/cases";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { GroupSchema } from "@/modules/core/models/groups";
-import { CategorySchema } from "@/modules/core/models/categories";
 import { createCategory } from "@/modules/core/tests/entities/categories";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { formatDate } from "@/modules/core/helpers/dates";
