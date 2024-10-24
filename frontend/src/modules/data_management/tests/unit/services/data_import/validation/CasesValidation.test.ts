@@ -199,7 +199,7 @@ describe("CasesValidation", () => {
             expect(result).toBeFalsy();
         });
 
-        it("should detect that new group was assigned", () => {
+        it("should detect that new group was assigned to the imported case", () => {
             const importedCase: CaseImport = {
                 case_id: ":case_id:",
                 fasta_id: ":fasta_id:",
