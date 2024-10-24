@@ -37,7 +37,7 @@ export const createCase = ({
     outbreak = null,
     groups = null,
     contacts = null,
-}: TestCase) => {
+}: TestCase = {}) => {
     return {
         id: id,
         case_id: case_id,

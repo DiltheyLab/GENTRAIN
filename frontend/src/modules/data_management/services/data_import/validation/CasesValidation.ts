@@ -78,14 +78,13 @@ export class CasesValidation extends ValidationStrategy {
             const persistedCase = this.cases?.get(row[0]);
             const importedCase = {
                 fasta_id: row[1] !== "" ? row[1] : null,
-                groups: this.collectNewGroups(this.header, row, persistedCase),
+                groups: this.collectNewGroups(row, persistedCase),
                 outbreak: row[3] !== "" ? row[3] : null,
                 registered_at: parseGermanDateFormat(row[2]),
             } satisfies CaseImport;
             if (persistedCase) {
-                persistedCase.outbreak = persistedCase.outbreak_id
-                    ? this.outbreaks?.get(persistedCase.outbreak_id)
-                    : null;
+                persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
+
                 if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
             }
             casesToUpload[row[0]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
@@ -101,12 +100,12 @@ export class CasesValidation extends ValidationStrategy {
      * @param existingCase
      * @returns
      */
-    private collectNewGroups(header: string[], row: string[], existingCase: CaseWithRelationships | undefined) {
+    private collectNewGroups(row: string[], existingCase: CaseWithRelationships | undefined) {
         const groups: { name: string; category: string; remaining: boolean }[] = [];
 
         for (let i = 4; i <= 6; i++) {
             if (row[i] !== "") {
-                const group = { category: header[i], name: row[i], remaining: false };
+                const group = { category: this.header[i], name: row[i], remaining: false };
                 const groupExistsForCase = existingCase
                     ? existingCase.groups?.some((existingGroup) => {
                           return existingGroup.category?.name === group.category && existingGroup.name === group.name;

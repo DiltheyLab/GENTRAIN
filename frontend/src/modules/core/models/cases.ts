@@ -200,6 +200,11 @@ export const getAllCasesForPathogenWithRelationships = async (
     return Object.values(casesWithRelationships);
 };
 
+export const getCaseByCaseId = async (caseId: string) => {
+    const caseByCaseId = await db.cases.where({ case_id: caseId }).first();
+    return caseByCaseId;
+};
+
 export const getCaseByFastaId = async (fastaId: string) => {
     const caseByFastaId = await db.cases.where({ fasta_id: fastaId }).first();
     return caseByFastaId;
