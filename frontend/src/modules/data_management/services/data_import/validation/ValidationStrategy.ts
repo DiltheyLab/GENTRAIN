@@ -1,5 +1,5 @@
 export abstract class ValidationStrategy {
-    protected header?: string[] = [];
+    protected header?: string[];
     protected data: string[][] | { fastaId: string; sequence: string }[] = [];
     protected columnNames: string[] = [];
 
