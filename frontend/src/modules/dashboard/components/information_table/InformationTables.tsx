@@ -25,7 +25,7 @@ export const InformationTables = () => {
                     </AccordionContent>
                 </AccordionItem>
             )}
-            <AccordionItem value="item-3">
+            <AccordionItem value="item-3" data-tutorial-tour-step="4">
                 <AccordionTrigger className="py-2">
                     Genetische Distanzen der im Datensatz enthaltenen Fälle
                 </AccordionTrigger>

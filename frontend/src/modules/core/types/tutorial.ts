@@ -1,4 +1,4 @@
 export type Tutorial = {
-    tutorialIsActive: boolean;
+    tutorialTourIsActive: boolean;
     step: number;
 };

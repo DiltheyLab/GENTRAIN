@@ -18,7 +18,7 @@ import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/m
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
-import Joyride from "react-joyride";
+import { TutorialTour } from "../dashboard/components/tutorial/TutorialTour";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -32,7 +32,7 @@ const App = () => {
     const session = useCoreStore((state) => state.session);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
-
+    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
     useHandlePersistedSessionResults();
 
     useEffect(() => {
@@ -47,17 +47,6 @@ const App = () => {
             }
         });
     }, []);
-
-    const steps = [
-        {
-            target: "#outbreakAnalysis",
-            content: "This is my awesome feature!",
-        },
-        {
-            target: "[data-joyride-index='1']",
-            content: "This another awesome feature!",
-        },
-    ];
 
     if (session === undefined) {
         return <RefreshLoader />;
@@ -88,7 +77,7 @@ const App = () => {
 
     return (
         <>
-            <Joyride steps={steps} />
+            {tutorialTourIsActive && <TutorialTour />}
             <RouterProvider router={router} />
         </>
     );
