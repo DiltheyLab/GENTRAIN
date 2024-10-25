@@ -84,14 +84,6 @@ services:
       backend:
         condition: service_started
 
-  redis-insight:
-    container_name: gentrain-redis-insight
-    image: redis/redisinsight:latest
-    ports:
-      - "5540:5540"
-    networks:
-      - caddy
-
 volumes:
   # persist data caddy_data
   caddy_data: # persist config caddy_config:
