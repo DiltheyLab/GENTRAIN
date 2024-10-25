@@ -1,6 +1,7 @@
 import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { PersistenceStrategy } from "./PersistenceStrategy";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export class SamplesPersistence extends PersistenceStrategy {
     protected dataManagementState: DataManagementState;
