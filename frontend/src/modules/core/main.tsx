@@ -18,7 +18,7 @@ import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/m
 import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
-import { TutorialTour } from "../dashboard/components/tutorial/TutorialTour";
+import { TutorialTour } from "./components/tutorial/TutorialTour";
 
 i18next.init({
     interpolation: { escapeValue: false },

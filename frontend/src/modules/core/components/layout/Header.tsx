@@ -5,10 +5,12 @@ import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/modules/core/helpers/database";
 import { useRef } from "react";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
+import { useCoreStore } from "../../stores/core";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname.split("/")[1];
+    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
 
     const isSelected = (url: string) => {
         return pathName === url ? "text-foreground" : "text-muted-foreground";
@@ -17,31 +19,36 @@ export const Header = () => {
     return (
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[49] px-4 md:px-6">
             <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-                <Link
-                    data-tutorial-tour-step="1"
-                    to="/"
-                    className="flex items-center gap-2 text-md md:text-base gentrain-logo"
-                >
+                <Link to="/" className="flex items-center gap-2 text-md md:text-base gentrain-logo">
                     <Share2 className="h-6 w-6 text-primary" />
                     <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">Gentrain</div>
                 </Link>
-                <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground text-md`}>
+                <Link
+                    data-tutorial-tour-step="dashboard-nav"
+                    to="/"
+                    className={`${isSelected("")} transition-colors hover:text-foreground text-md`}
+                >
                     Dashboard
                 </Link>
                 <Link
-                    data-tutorial-tour-step="2"
                     to="/outbreak-analysis"
                     className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground text-md`}
                 >
                     Ausbruchsanalyse
                 </Link>
                 <Link
-                    data-tutorial-tour-step="3"
                     to="/data-management"
                     className={`${isSelected("data-management")} transition-colors hover:text-foreground text-md`}
                 >
                     Datenverwaltung
                 </Link>
+                <Button
+                    onClick={() => {
+                        changeTutorialTourIsActive(true);
+                    }}
+                >
+                    Tutorial
+                </Button>
             </nav>
             <Sheet>
                 <SheetTrigger asChild>

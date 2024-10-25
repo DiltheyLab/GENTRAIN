@@ -91,6 +91,7 @@ export const DashboardVisualizationPanel = () => {
 
     return (
         <div
+            data-tutorial-tour-step="dashboard-visualization-panel"
             ref={containerRef}
             className="relative flex flex-col justify-center items-center h-full rounded-lg bg-muted lg:col-span-2"
         >
