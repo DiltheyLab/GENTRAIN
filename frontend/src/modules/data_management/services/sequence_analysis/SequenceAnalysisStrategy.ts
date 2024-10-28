@@ -148,7 +148,6 @@ export abstract class SequenceAnalysisStrategy {
         //console.log(`${this.makeSequence(500000)}\n`.slice(-3));
 
         for (const index in sequenceChunks!) {
-            console.log(fastaId);
             if (socket) {
                 socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequenceChunks[index], {
                     total: sequenceChunks.length,

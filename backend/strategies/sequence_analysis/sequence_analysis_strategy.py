@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import json
+import logging
 import socketio
 from redis import Redis
 from backend.exceptions.genomic_error_exception import GenomicErrorException
@@ -82,7 +83,15 @@ class SequenceAnalysisStrategy(ABC):
                 room=f"{self.type}_{self.socket_id}",
             )
             return result
-        except SequenceAnalysisFailedException:
+        except SequenceAnalysisFailedException as e:
+            logging.exception(e)
+            sio.emit(
+                event="sequence_analysis_failed",
+                data=self.fasta_id,
+                room=f"{self.type}_{self.socket_id}",
+            )
+        except Exception as e:
+            logging.exception(e)
             sio.emit(
                 event="sequence_analysis_failed",
                 data=self.fasta_id,
