@@ -213888,7 +213888,7 @@
                 "rows": [
                     {
                         "name": "Covid-19",
-                        "genetic_distance_threshold": 2,
+                        "genetic_distance_threshold": 1,
                         "pathogen_type_id": 1,
                         "activated_at": "2024-10-14T11:11:06.871Z",
                         "created_at": 1728904264505,
