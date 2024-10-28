@@ -8,7 +8,6 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useDataManagementStore } from "../../stores/dataManagement";
-import { useCoreStore } from "@/modules/core/stores/core";
 
 export const FileDropzone = ({
     type,
