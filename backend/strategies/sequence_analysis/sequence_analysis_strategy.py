@@ -3,6 +3,9 @@ import json
 import socketio
 from redis import Redis
 from backend.exceptions.genomic_error_exception import GenomicErrorException
+from backend.exceptions.sequence_analysis_failed_exception import (
+    SequenceAnalysisFailedException,
+)
 
 redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
 mgr = socketio.RedisManager("redis://gentrain-redis:6379")
@@ -56,28 +59,35 @@ class SequenceAnalysisStrategy(ABC):
 
     def execute(self):
         """Run strategy actions."""
-        sio.emit(
-            "sequence_analysis_started",
-            self.fasta_id,
-            room=f"{self.type}_{self.socket_id}",
-        )
-        genomic_errors = self.find_genomic_validation_errors()
-        if genomic_errors and len(genomic_errors) > 0:
-            raise GenomicErrorException
-        self.create_input_and_output_files()
-        result = self.run_analysis()
-        response = self.get_response(result)
-        self.persist_result(response)
-        sio.emit(
-            "sequence_analysis_response",
-            {
-                "result": response,
-                "fasta_id": self.fasta_id,
-                "sequence_length": len(self.sequence),
-            },
-            room=f"{self.type}_{self.socket_id}",
-        )
-        return result
+        try:
+            sio.emit(
+                "sequence_analysis_started",
+                self.fasta_id,
+                room=f"{self.type}_{self.socket_id}",
+            )
+            genomic_errors = self.find_genomic_validation_errors()
+            if genomic_errors and len(genomic_errors) > 0:
+                raise GenomicErrorException
+            self.create_input_and_output_files()
+            result = self.run_analysis()
+            response = self.get_response(result)
+            self.persist_result(response)
+            sio.emit(
+                "sequence_analysis_response",
+                {
+                    "result": response,
+                    "fasta_id": self.fasta_id,
+                    "sequence_length": len(self.sequence),
+                },
+                room=f"{self.type}_{self.socket_id}",
+            )
+            return result
+        except SequenceAnalysisFailedException:
+            sio.emit(
+                event="sequence_analysis_failed",
+                data=self.fasta_id,
+                room=f"{self.type}_{self.socket_id}",
+            )
 
     def enqueue_analysis(self, queue):
         queue.enqueue(self.execute, result_ttl=0)
