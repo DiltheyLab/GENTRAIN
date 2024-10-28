@@ -49,14 +49,30 @@ export const ColorSelection = () => {
                         Cluster
                     </Label>
                 </div>
-                <div className={`${coloringMode === "clusters" ? "block" : "hidden"} -mt-1`}>
-                    <Label htmlFor="geneticDistanceThreshold">Cluster Schwellenwert</Label>
+                <div className={`-mt-1`}>
+                    <Label
+                        htmlFor="geneticDistanceThreshold"
+                        className={`${coloringMode !== "clusters" ? "text-gray-400" : "text-black"}`}
+                        title={`${
+                            coloringMode !== "clusters"
+                                ? "Cluster auswählen, um den Cluster Schwellenwert zu bearbeiten."
+                                : ""
+                        }`}
+                    >
+                        Cluster Schwellenwert
+                    </Label>
                     <Input
                         type="number"
                         min={0}
                         id="clusteringThreshold"
                         value={clusteringThreshold}
                         onChange={(e) => updateSettings({ clusteringThreshold: +e.target.value })}
+                        disabled={coloringMode !== "clusters" ? true : false}
+                        title={`${
+                            coloringMode !== "clusters"
+                                ? "Cluster auswählen, um den Cluster Schwellenwert zu bearbeiten."
+                                : ""
+                        }`}
                     />
                 </div>
             </>
