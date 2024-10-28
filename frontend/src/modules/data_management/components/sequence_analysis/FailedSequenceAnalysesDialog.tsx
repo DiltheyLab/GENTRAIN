@@ -15,7 +15,7 @@ export function FailedSequenceAnalysesDialog() {
 
     return (
         <>
-            {failedSampleImports && (
+            {failedSampleImports.length > 0 && (
                 <AlertDialog open>
                     <AlertDialogContent className="z-[105]">
                         <AlertDialogHeader>
@@ -29,7 +29,7 @@ export function FailedSequenceAnalysesDialog() {
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogAction onClick={() => setFailedSampleImports(null)}>Okay</AlertDialogAction>
+                            <AlertDialogAction onClick={() => setFailedSampleImports([])}>Okay</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
