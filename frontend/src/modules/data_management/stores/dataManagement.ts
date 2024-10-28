@@ -44,6 +44,8 @@ export interface DataManagementState {
     distanceCalculationSum: number;
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
+    failedSampleImports: string[] | null;
+    setFailedSampleImports: (fastaId: string[] | null) => void;
     // contact import
     contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
     changeContactImport: (key: string, value: any) => void;
@@ -162,6 +164,10 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
             hideSampleUploadContent: false,
             sampleImports: {},
         });
+    },
+    failedSampleImports: null,
+    setFailedSampleImports: (fastaIds: string[] | null) => {
+        set({ failedSampleImports: fastaIds });
     },
     // contact import
     contactImports: {},

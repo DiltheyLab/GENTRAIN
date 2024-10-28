@@ -53,7 +53,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         this.dataManagementState.setSequenceAnalysisRunning(true);
         this.joinRoomAndRunAnalysis();
-        this.handleCompletedAnalyses();
+        this.handleAnalysisEvents();
     };
 
     public handlePersistedResults = async () => {
@@ -86,15 +86,6 @@ export abstract class SequenceAnalysisStrategy {
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
             });
-            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
-            });
-            socket.on("sequence_analysis_failed", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
-            });
-            socket.on("sequence_analysis_started", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
-            });
         }
     };
 
@@ -122,11 +113,21 @@ export abstract class SequenceAnalysisStrategy {
         }
     };
 
-    private handleCompletedAnalyses = () => {
+    private handleAnalysisEvents = () => {
         if (socket) {
             socket.on("sequence_analysis_response", async (data: any) => {
                 this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
+            });
+            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
+            });
+            socket.on("sequence_analysis_failed", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
+                this.finishedFastaIds.push(fastaId);
+            });
+            socket.on("sequence_analysis_started", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
             });
         }
     };
