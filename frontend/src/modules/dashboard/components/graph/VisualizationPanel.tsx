@@ -25,7 +25,7 @@ export const DashboardVisualizationPanel = () => {
     const dashboardStore = useDashboardStore();
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         dashboardStore.graphSettings;
-    const [showGraphSettings, setShowGraphSettings] = useState(false);
+    const [showGraphSettings, setShowGraphSettings] = useState(true);
     const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
