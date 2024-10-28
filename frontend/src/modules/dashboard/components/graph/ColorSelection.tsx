@@ -55,11 +55,11 @@ export const ColorSelection = () => {
                         className={`${coloringMode !== "clusters" ? "text-gray-400" : "text-black"}`}
                         title={`${
                             coloringMode !== "clusters"
-                                ? "Cluster auswählen, um den Cluster Schwellenwert zu bearbeiten."
+                                ? "Cluster auswählen, um den Clusterschwellenwert zu bearbeiten."
                                 : ""
                         }`}
                     >
-                        Cluster Schwellenwert
+                        Clusterschwellenwert
                     </Label>
                     <Input
                         type="number"
@@ -70,7 +70,7 @@ export const ColorSelection = () => {
                         disabled={coloringMode !== "clusters" ? true : false}
                         title={`${
                             coloringMode !== "clusters"
-                                ? "Cluster auswählen, um den Cluster Schwellenwert zu bearbeiten."
+                                ? "Cluster auswählen, um den Clusterschwellenwert zu bearbeiten."
                                 : ""
                         }`}
                     />

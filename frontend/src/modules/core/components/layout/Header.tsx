@@ -46,6 +46,7 @@ export const Header = () => {
                     onClick={() => {
                         changeTutorialTourIsActive(true);
                     }}
+                    className="absolute"
                 >
                     Tutorial
                 </Button>
@@ -106,8 +107,9 @@ export const Header = () => {
                                 evt.preventDefault();
                                 if (uploadFileRef?.current) uploadFileRef?.current.click();
                             }}
+                            title="Zustand importieren"
                         >
-                            <span className="hidden sm:block md:hidden lg:block">Zustand importieren</span>
+                            <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand importieren</span>
                             <Upload className="h-5 w-5" />
                         </Button>
                     </label>
@@ -115,8 +117,9 @@ export const Header = () => {
                         variant="outline"
                         className="gap-2 flex items-center"
                         onClick={() => exportDatabaseToJson()}
+                        title="Zustand speichern"
                     >
-                        <span className="hidden sm:block md:hidden lg:block">Zustand speichern</span>
+                        <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand speichern</span>
                         <Save className="h-5 w-5" />
                     </Button>
                     <PathogenSwitch />
