@@ -11,7 +11,6 @@ export function SequenceAnalysisStatus() {
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
-
     return (
         <>
             {sequenceAnalysisRunning && (

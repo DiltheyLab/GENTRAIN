@@ -1,6 +1,5 @@
 import { db } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
-import { useCoreStore } from "@/modules/core/stores/core";
 
 export enum PathogenTypeName {
     bacterial = "bacterial",
@@ -36,12 +35,8 @@ export const getAllPathogenTypesWithRelationships = async () => {
     return pathogenTypesWithRelationships;
 };
 
-export const getPathogenTypeForActivePathogen = async () => {
-    const activePathogen = useCoreStore.getState().activePathogen;
-    if (!activePathogen) {
-        return;
-    }
-    const pathogenType = await db.pathogen_types.get(activePathogen.pathogen_type_id);
+export const getPathogenTypeForPathogen = async (pathogen: PathogenSchema) => {
+    const pathogenType = await db.pathogen_types.get(pathogen.pathogen_type_id);
     return pathogenType;
 };
 
