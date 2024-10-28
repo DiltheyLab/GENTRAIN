@@ -125,6 +125,7 @@ export abstract class SequenceAnalysisStrategy {
             socket.on("sequence_analysis_failed", (fastaId: string) => {
                 this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
                 this.finishedFastaIds.push(fastaId);
+                this.continueIfAllAnalysesAreDone();
             });
             socket.on("sequence_analysis_started", (fastaId: string) => {
                 this.dataManagementState.changeSampleImport(fastaId, { status: "started" });

@@ -1,7 +1,6 @@
 import {
     AlertDialog,
     AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
@@ -26,11 +25,10 @@ export function FailedSequenceAnalysesDialog() {
                                     Folgende Sequenzen konnten nicht erfolgreich analysisiert werden. Bitte überprüfen
                                     Sie die importierten FASTA-Dateien:
                                 </p>
-                                <p className="font-bold">{failedSampleImports.map((fastaId) => fastaId).join(",")}</p>
+                                <p className="font-bold">{failedSampleImports.map((fastaId) => fastaId).join(", ")}</p>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
                             <AlertDialogAction onClick={() => setFailedSampleImports(null)}>Okay</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
