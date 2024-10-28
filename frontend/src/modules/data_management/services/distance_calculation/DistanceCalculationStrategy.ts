@@ -91,6 +91,12 @@ export abstract class DistanceCalculationStrategy {
             variant: "success",
         });
         useDataManagementStore.getState().setDistanceCalculationRunning(false);
+        const sampleImports = useDataManagementStore.getState().sampleImports;
+        useDataManagementStore.getState().setFailedSampleImports(
+            Object.keys(sampleImports)
+                .filter((fastaId) => sampleImports[fastaId].status === "failed")
+                .map((fastaId) => fastaId)
+        );
         useDataManagementStore.getState().resetSampleUpload();
         if (useDataManagementStore.getState().importAssistentStep === "sequence_analysis") {
             useDataManagementStore.getState().nextImportAssistentStep();

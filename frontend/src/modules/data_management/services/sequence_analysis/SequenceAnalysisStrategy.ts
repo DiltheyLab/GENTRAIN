@@ -53,7 +53,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         this.dataManagementState.setSequenceAnalysisRunning(true);
         this.joinRoomAndRunAnalysis();
-        this.handleCompletedAnalyses();
+        this.handleAnalysisEvents();
     };
 
     public handlePersistedResults = async () => {
@@ -86,15 +86,6 @@ export abstract class SequenceAnalysisStrategy {
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
             });
-            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
-            });
-            socket.on("sequence_analysis_failed", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
-            });
-            socket.on("sequence_analysis_started", (fastaId: string) => {
-                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
-            });
         }
     };
 
@@ -122,17 +113,42 @@ export abstract class SequenceAnalysisStrategy {
         }
     };
 
-    private handleCompletedAnalyses = () => {
+    private handleAnalysisEvents = () => {
         if (socket) {
             socket.on("sequence_analysis_response", async (data: any) => {
                 this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
             });
+            socket.on("sequence_analysis_enqueued", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "enqueued" });
+            });
+            socket.on("sequence_analysis_failed", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "failed" });
+                this.finishedFastaIds.push(fastaId);
+                this.continueIfAllAnalysesAreDone();
+            });
+            socket.on("sequence_analysis_started", (fastaId: string) => {
+                this.dataManagementState.changeSampleImport(fastaId, { status: "started" });
+            });
         }
     };
 
+    private makeSequence(length: number) {
+        let result = "";
+        const characters = "ATCG";
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
+        }
+        return result;
+    }
+
     private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
         const sequenceChunks = sequence.match(/(.|[\r\n]){1,500000}/g);
+        //console.log(`${this.makeSequence(500000)}\n`.slice(-3));
+
         for (const index in sequenceChunks!) {
             if (socket) {
                 socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequenceChunks[index], {

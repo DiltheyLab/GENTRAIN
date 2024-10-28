@@ -80,7 +80,7 @@ export const DataTable = ({
 
     useEffect(() => {
         // preselect all rows if corresponding flag is set to true
-        if (!initializedRowSelection && preselectRows) {
+        if (!initializedRowSelection && preselectRows && data.length > 0) {
             table.toggleAllRowsSelected();
             setInitializedRowSelection(true);
         }
