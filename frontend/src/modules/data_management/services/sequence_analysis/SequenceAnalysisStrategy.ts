@@ -133,21 +133,8 @@ export abstract class SequenceAnalysisStrategy {
         }
     };
 
-    private makeSequence(length: number) {
-        let result = "";
-        const characters = "ATCG";
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            counter += 1;
-        }
-        return result;
-    }
-
     private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
         const sequenceChunks = sequence.match(/(.|[\r\n]){1,500000}/g);
-        //console.log(`${this.makeSequence(500000)}\n`.slice(-3));
 
         for (const index in sequenceChunks!) {
             if (socket) {
