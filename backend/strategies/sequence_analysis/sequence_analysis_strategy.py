@@ -1,16 +1,15 @@
 from abc import ABC, abstractmethod
 import json
 import logging
-import socketio
 from redis import Redis
+from flask_socketio import SocketIO
 from backend.exceptions.genomic_error_exception import GenomicErrorException
 from backend.exceptions.sequence_analysis_failed_exception import (
     SequenceAnalysisFailedException,
 )
 
 redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
-mgr = socketio.RedisManager("redis://gentrain-redis:6379")
-sio = socketio.Server(client_manager=mgr)
+sio = SocketIO(message_queue="redis://gentrain-redis:6379")
 
 
 class SequenceAnalysisStrategy(ABC):
@@ -64,7 +63,7 @@ class SequenceAnalysisStrategy(ABC):
             sio.emit(
                 "sequence_analysis_started",
                 self.fasta_id,
-                room=f"{self.type}_{self.socket_id}",
+                to=f"{self.type}_{self.socket_id}",
             )
             genomic_errors = self.find_genomic_validation_errors()
             if genomic_errors and len(genomic_errors) > 0:
@@ -80,7 +79,7 @@ class SequenceAnalysisStrategy(ABC):
                     "fasta_id": self.fasta_id,
                     "sequence_length": len(self.sequence),
                 },
-                room=f"{self.type}_{self.socket_id}",
+                to=f"{self.type}_{self.socket_id}",
             )
             return result
         except SequenceAnalysisFailedException as e:
@@ -88,14 +87,14 @@ class SequenceAnalysisStrategy(ABC):
             sio.emit(
                 event="sequence_analysis_failed",
                 data=self.fasta_id,
-                room=f"{self.type}_{self.socket_id}",
+                to=f"{self.type}_{self.socket_id}",
             )
         except Exception as e:
             logging.exception(e)
             sio.emit(
                 event="sequence_analysis_failed",
                 data=self.fasta_id,
-                room=f"{self.type}_{self.socket_id}",
+                to=f"{self.type}_{self.socket_id}",
             )
 
     def enqueue_analysis(self, queue):
@@ -103,5 +102,5 @@ class SequenceAnalysisStrategy(ABC):
         sio.emit(
             "sequence_analysis_enqueued",
             self.fasta_id,
-            room=f"{self.type}_{self.socket_id}",
+            to=f"{self.type}_{self.socket_id}",
         )

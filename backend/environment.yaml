@@ -1,8 +1,10 @@
 name: gentrain
 channels:
+  - defaults
   - bioconda
   - conda-forge
-  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -132,6 +134,9 @@ dependencies:
       - bidict==0.23.1
       - blinker==1.8.2
       - click==8.1.7
+      - flask==3.0.3
+      - flask-admin==1.6.1
+      - flask-socketio==5.4.1
       - gunicorn==23.0.0
       - h11==0.14.0
       - itsdangerous==2.2.0
@@ -150,6 +155,7 @@ dependencies:
       - typing-extensions==4.12.2
       - werkzeug==3.0.3
       - wsproto==1.2.0
+      - wtforms==3.2.1
       - zope-event==5.0
       - zope-interface==7.0.3
 prefix: /opt/conda/envs/gentrain

@@ -82,6 +82,7 @@ export abstract class SequenceAnalysisStrategy {
         if (socket) {
             socket.emit(`join_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
             socket.once(`${this.pathogen.pathogen_type?.name}_room_created`, async (roomName: string) => {
+                console.log(roomName);
                 this.roomName = roomName;
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
