@@ -34,25 +34,25 @@ export const TutorialTour = () => {
                     </p>
                     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
                         <h2 className="text-lg font-bold mb-2">Interaktionen mit dem Graphen</h2>
-                        <ul className="list-disc list-inside space-y-2">
-                            <li className="2xl:hidden">
+                        <div className="space-y-2">
+                            <p className="2xl:hidden">
                                 <strong>Knoten anklicken:</strong> Klicken Sie mit der linken Maustaste auf einen
                                 Knoten, um zusätzliche Informationen zum Fall anzuzeigen.
-                            </li>
-                            <li className="hidden 2xl:block">
+                            </p>
+                            <p className="hidden 2xl:block">
                                 <strong>Knoten anklicken:</strong> Klicken Sie mit der linken Maustaste auf einen
                                 Knoten, um zusätzliche Informationen zum Fall anzuzeigen (untere rechte Ecke) oder
                                 weitere genetische Abstände einzublenden, falls vorhanden (rote gestrichelte Kante).
-                            </li>
-                            <li>
+                            </p>
+                            <p>
                                 <strong>Knoten verschieben:</strong> Halten Sie die linke Maustaste gedrückt und ziehen
                                 Sie den Knoten an die gewünschte Position.
-                            </li>
-                            <li>
+                            </p>
+                            <p>
                                 <strong>Rein- und Rauszoomen:</strong> Verwenden Sie das Mausrad, um in den Graphen
                                 hinein- oder herauszuzoomen.
-                            </li>
-                        </ul>
+                            </p>
+                        </div>
                     </div>
                 </>
             ),
@@ -72,7 +72,7 @@ export const TutorialTour = () => {
             content: (
                 <p>
                     Hier sehen Sie Informationen über Knoten und Kanten des Graphen. Alle blau eingefärbten Knoten
-                    gehören beispielsweise zum Ausbruch <br />
+                    gehören beispielsweise zum Ausbruch{"  "}
                     <span
                         style={{
                             backgroundColor: "#0000FF",
