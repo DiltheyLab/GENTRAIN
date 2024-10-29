@@ -99,30 +99,36 @@ export const Header = () => {
                     }}
                 />
                 <div className="flex flex-row gap-4">
-                    <label htmlFor="dexie-file-upload">
+                    <div className="flex flex-row gap-4" data-tutorial-tour-step="dashboard-state-import">
+                        <label htmlFor="dexie-file-upload">
+                            <Button
+                                variant="outline"
+                                className="gap-2 flex items-center"
+                                onClick={async (evt) => {
+                                    evt.preventDefault();
+                                    if (uploadFileRef?.current) uploadFileRef?.current.click();
+                                }}
+                                title="Zustand importieren"
+                            >
+                                <span className="hidden sm:block md:hidden lg:hidden xl:block">
+                                    Zustand importieren
+                                </span>
+                                <Upload className="h-5 w-5" />
+                            </Button>
+                        </label>
                         <Button
                             variant="outline"
                             className="gap-2 flex items-center"
-                            onClick={async (evt) => {
-                                evt.preventDefault();
-                                if (uploadFileRef?.current) uploadFileRef?.current.click();
-                            }}
-                            title="Zustand importieren"
+                            onClick={() => exportDatabaseToJson()}
+                            title="Zustand speichern"
                         >
-                            <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand importieren</span>
-                            <Upload className="h-5 w-5" />
+                            <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand speichern</span>
+                            <Save className="h-5 w-5" />
                         </Button>
-                    </label>
-                    <Button
-                        variant="outline"
-                        className="gap-2 flex items-center"
-                        onClick={() => exportDatabaseToJson()}
-                        title="Zustand speichern"
-                    >
-                        <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand speichern</span>
-                        <Save className="h-5 w-5" />
-                    </Button>
-                    <PathogenSwitch />
+                    </div>
+                    <div data-tutorial-tour-step="dashboard-pathogen-switch">
+                        <PathogenSwitch />
+                    </div>
                 </div>
             </div>
         </header>

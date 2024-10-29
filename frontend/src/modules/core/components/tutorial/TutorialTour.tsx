@@ -1,6 +1,6 @@
 import { useDisableScollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
 import { useCoreStore } from "@/modules/core/stores/core";
-import Joyride, { Step } from "react-joyride";
+import Joyride, { CallBackProps, Step } from "react-joyride";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 
@@ -13,8 +13,12 @@ export const TutorialTour = () => {
         {
             target: "[data-tutorial-tour-step='dashboard-nav']",
             title: "Das Dashboard.",
-            content:
-                "Das Dashboard bietet Ihnen einen umfassenden Überblick über Ihre Daten. Es umfasst Einstellungen, Diagramme, Visualisierungen und detaillierte Informationstabellen.",
+            content: (
+                <p>
+                    Das Dashboard bietet Ihnen einen Überblick über Ihre Daten. Es umfasst Einstellungen, Charts, einen
+                    minimalen Spannbaum und detaillierte Informationstabellen.
+                </p>
+            ),
             disableBeacon: true,
             spotlightClicks: false,
             disableScrolling: true,
@@ -91,26 +95,30 @@ export const TutorialTour = () => {
         {
             target: "[data-tutorial-tour-step='dashboard-visualization-panel-graph-settings']",
             title: "Die Grapheneinstellungen.",
-            content:
-                "Mit Hilfe dieser Einstellungen können Sie das Aussehen des Graphen einstellen. Ändern Sie beispielsweise die Kantenlänge ab und schauen Sie sich den Unterschied an.",
+            content: (
+                <p>
+                    Mit Hilfe dieser Einstellungen können Sie das Aussehen des Graphen einstellen. Ändern Sie
+                    beispielsweise die Kantenlänge ab und schauen Sie sich den Unterschied an.
+                </p>
+            ),
             disableBeacon: true,
             spotlightClicks: true,
             disableScrolling: true,
             placement: "left-start",
-            styles: {
-                spotlight: {
-                    borderRadius: 0,
-                },
-            },
+            disableScrollParentFix: true,
         },
         {
             target: "[data-tutorial-tour-step='dashboard-settings']",
             title: "Einstellungen ändern.",
-            content:
-                "Sie haben hier die Möglichkeit Fälle im Graphen einzublenden, bei denen keine genetische Sequenz hinterlegt ist. Desweiteren können Sie Kontaktkanten zwischen den Knoten anzeigen lassen.",
+            content: (
+                <p>
+                    Sie haben hier die Möglichkeit Fälle im Graphen einzublenden, bei denen keine genetische Sequenz
+                    hinterlegt ist. Desweiteren können Sie Kontaktkanten zwischen den Knoten anzeigen lassen.
+                </p>
+            ),
             disableBeacon: true,
             spotlightClicks: true,
-            disableScrolling: true,
+            disableScrolling: false,
             placement: "right",
         },
         {
@@ -134,48 +142,75 @@ export const TutorialTour = () => {
             ),
             disableBeacon: true,
             spotlightClicks: true,
-            disableScrolling: true,
+            disableScrolling: false,
             placement: "right",
         },
-        /*   {
-            target: "[data-tutorial-tour-step='2']",
-            title: "Die Ausbruchsanalyse.",
-            content:
-                "Die Ausbruchsanalyse hilft Ihnen, Ausbrüche zu analysieren und Infektionsketten nachzuvollziehen.",
+        {
+            target: "[data-tutorial-tour-step='dashboard-charts']",
+            title: "Die Charts.",
+            content: (
+                <p>
+                    Im <strong>oberen Diagramm</strong> sehen Sie die Verteilung der täglich aufgetretenen Fälle. Dies
+                    ermöglicht es Ihnen, das Infektionsgeschehen zeitlich besser einzuordnen und Auffälligkeiten direkt
+                    zu erkennen.
+                    <br />
+                    <br />
+                    Das <strong>untere Diagramm</strong> zeigt die Anzahl aller Fälle pro Cluster oder Ausbruch,
+                    abhängig von der gewählten Einfärbung.
+                </p>
+            ),
             disableBeacon: true,
             spotlightClicks: true,
-            disableScrolling: true,
-        }, */
+            disableScrolling: false,
+            placement: "right",
+        },
         {
-            target: "[data-tutorial-tour-step='3']",
-            title: "Die Datenverwaltung.",
-            content: "This another awesome feature!",
+            target: "[data-tutorial-tour-step='dashboard-state-import']",
+            title: "Zustände sichern und importieren.",
+            content: (
+                <>
+                    <p>
+                        Die bereits hochgeladenen Daten <strong>verbleiben ausschließlich in Ihrem Browser</strong> und{" "}
+                        <strong>werden nicht übertragen</strong>.
+                    </p>
+                    <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
+                        <p>
+                            Wenn Sie die <strong>Daten</strong> mit anderen <strong>teilen</strong> möchten oder mit dem
+                            gleichen Stand an einem anderen Computer arbeiten wollen, können Sie hier Ihre Daten{" "}
+                            <strong>sichern, übertragen und wieder importieren</strong>.
+                        </p>
+                    </div>
+                </>
+            ),
             disableBeacon: true,
             spotlightClicks: false,
             disableScrolling: true,
+            placement: "bottom",
         },
         {
-            target: "[data-tutorial-tour-step='4']",
-            title: "Zustände sichern und importieren.",
-            content: "Hier können Sie die Daten, die Sie ber",
+            target: "[data-tutorial-tour-step='dashboard-pathogen-switch']",
+            title: "Andere Pathogene.",
+            content: (
+                <p>
+                    Gentrain unterstützt <strong>unterschiedliche Pathogene</strong>. Sie können jederzeit das zu
+                    bearbeitende Pathogen ändern und entsprechende Fall- und Sequenzdaten dazu hochladen.
+                </p>
+            ),
             disableBeacon: true,
-            spotlightClicks: true,
-            disableScrolling: true,
-            placement: "right",
-        },
-        {
-            target: "[data-tutorial-tour-step='5']",
-            title: "Andere Pathogene auswählen.",
-            content: "Sie haben hier die Möglichkeit zwischen Pathogenen zu wechseln.",
-            disableBeacon: true,
-            spotlightClicks: true,
-            placement: "right",
+            spotlightClicks: false,
+            placement: "bottom",
             disableScrolling: true,
         },
     ];
 
     if (!tutorialTourIsActive) return null;
 
+    const handleJoyrideCallback = (state: CallBackProps) => {
+        if (state.status === "finished") {
+            changeTutorialTourIsActive(false);
+            window.scrollTo(0, 0);
+        }
+    };
     return (
         <>
             <Joyride
@@ -186,17 +221,14 @@ export const TutorialTour = () => {
                 scrollDuration={500}
                 spotlightClicks={true}
                 disableOverlayClose={true}
-                callback={(state) => {
-                    if (state.status === "finished") {
-                        changeTutorialTourIsActive(false);
-                    }
-                }}
+                callback={(state) => handleJoyrideCallback(state)}
                 styles={{
                     spotlight: {
                         borderRadius: 5,
                         zIndex: 40,
                     },
                 }}
+                scrollOffset={25}
             />
             <Button
                 className="font-bold text-xl fixed right-5 bottom-5 z-[1001] tracking-tight"
