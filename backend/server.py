@@ -54,5 +54,4 @@ from backend.events import connection
 from backend.events import sequence_analysis
 
 if __name__ == "__main__":
-
     app.run()

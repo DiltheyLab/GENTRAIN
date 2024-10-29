@@ -7,3 +7,4 @@ class Pathogen(db.Model):
     genetic_distance_threshold = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String, nullable=False)
     scheme_name = db.Column(db.String, nullable=False)
+    scheme_path = db.Column(db.String, nullable=False)
