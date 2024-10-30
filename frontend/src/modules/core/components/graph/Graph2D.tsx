@@ -8,7 +8,6 @@ import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors"
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
-import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
 import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
 
 type Graph2DProps = {
