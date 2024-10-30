@@ -32,8 +32,8 @@ export const TutorialIntro = () => {
                         Willkommen bei GENTRAIN
                     </DialogTitle>
                     <DialogDescription className="text-md font-normal text-black">
-                        Dieses Tutorial führt Sie durch die wichtigsten Funktionen der Software und zeigt Ihnen, wie Sie
-                        GENTRAIN effektiv nutzen können. Sie können das Tutorial jederzeit beenden.
+                        Dieses Tutorial führt Sie durch die wichtigsten Funktionen der Software und zeigt Ihnen, wie Sie{" "}
+                        <strong>GENTRAIN</strong> effektiv nutzen können. Sie können das Tutorial jederzeit beenden.
                     </DialogDescription>
                 </DialogHeader>
 

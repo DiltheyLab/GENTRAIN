@@ -3,6 +3,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import Joyride, { CallBackProps, Step } from "react-joyride";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
+import { DoorOpen } from "lucide-react";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
@@ -72,12 +73,12 @@ export const TutorialTour = () => {
             content: (
                 <p>
                     Hier sehen Sie Informationen über Knoten und Kanten des Graphen. Alle blau eingefärbten Knoten
-                    gehören beispielsweise zum Ausbruch{"  "}
+                    gehören beispielsweise zum Ausbruch <br />
                     <span
                         style={{
                             backgroundColor: "#0000FF",
                         }}
-                        className={"rounded-full h-3 w-3 -mt-[1px] mr-2 inline-block"}
+                        className={"rounded-full h-3 w-3 -mt-[1px] mr-1 inline-block"}
                     />
                     <strong>Schule A</strong>.
                 </p>
@@ -147,7 +148,7 @@ export const TutorialTour = () => {
         },
         {
             target: "[data-tutorial-tour-step='dashboard-charts']",
-            title: "Die Charts.",
+            title: "Die Diagramme.",
             content: (
                 <p>
                     Im <strong>oberen Diagramm</strong> sehen Sie die Verteilung der täglich aufgetretenen Fälle. Dies
@@ -170,7 +171,7 @@ export const TutorialTour = () => {
             content: (
                 <>
                     <p>
-                        Die bereits hochgeladenen Daten <strong>verbleiben ausschließlich in Ihrem Browser</strong> und{" "}
+                        Ihre personenbezogenen Daten <strong>verbleiben ausschließlich in Ihrem Browser</strong> und{" "}
                         <strong>werden nicht übertragen</strong>.
                     </p>
                     <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
@@ -192,7 +193,7 @@ export const TutorialTour = () => {
             title: "Andere Pathogene.",
             content: (
                 <p>
-                    Gentrain unterstützt <strong>unterschiedliche Pathogene</strong>. Sie können jederzeit das zu
+                    Gentrain unterstützt <strong>virale und bakterielle Pathogene</strong>. Sie können jederzeit das zu
                     bearbeitende Pathogen ändern und entsprechende Fall- und Sequenzdaten dazu hochladen.
                 </p>
             ),
@@ -231,10 +232,11 @@ export const TutorialTour = () => {
                 scrollOffset={25}
             />
             <Button
-                className="font-bold text-xl fixed right-5 bottom-5 z-[1001] tracking-tight"
+                className="text-lg fixed right-5 bottom-5 z-[1001]"
                 onClick={() => changeTutorialTourIsActive(false)}
             >
                 Tutorial beenden
+                <DoorOpen className="ml-2" />
             </Button>
         </>
     );

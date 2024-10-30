@@ -40,8 +40,8 @@ export const MouseCursor = () => {
                         />
                     ) : (
                         <MousePointerClick
-                            size={40}
-                            className="absolute right-5 top-1/3 translate-x-[500px] translate-y-[100px] scale-125 text-primary"
+                            size={53}
+                            className="absolute right-5 top-1/3 translate-x-[501px] translate-y-[88px] text-primary"
                             fill="hsl(var(--primary))"
                         />
                     )}
