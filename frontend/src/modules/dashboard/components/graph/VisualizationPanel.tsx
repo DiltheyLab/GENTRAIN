@@ -125,11 +125,15 @@ export const DashboardVisualizationPanel = () => {
                 nodeSize={nodeSize}
                 showNodeLabel={showNodeLabel}
                 linkWidth={linkWidth}
-                initialCenter={true}
+                initialZoomToFit={true}
                 updateSelectedNode={(selectedCase) => setSelectedNode(selectedCase)}
                 selectedNode={selectedNode}
                 isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                 linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                zoomToFitTriggers={[
+                    dashboardStore.settings.excludeCasesWithoutSequence,
+                    dashboardStore.settings.showContactTracingLinks,
+                ]}
             />
         </div>
     );

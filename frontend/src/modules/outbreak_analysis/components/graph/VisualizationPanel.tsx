@@ -106,6 +106,7 @@ export const VisualizationPanel = () => {
                         selectedNode={selectedNode}
                         isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                         linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                        initialZoomToFit={true}
                     />
                 </>
             ) : (

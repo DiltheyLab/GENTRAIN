@@ -8,6 +8,8 @@ import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors"
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useDashboardStore } from "@/modules/dashboard/stores/dashboard";
+import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
 
 type Graph2DProps = {
     data: GraphData;
@@ -23,11 +25,12 @@ type Graph2DProps = {
     showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
-    initialCenter?: boolean;
+    initialZoomToFit?: boolean;
     updateSelectedNode: (selectedNode: (NodeObject & CustomNode) | null) => void;
     selectedNode: (NodeObject & CustomNode) | null;
     isLoading?: boolean;
     linksBelowGeneticDistanceThreshold?: CustomLink[];
+    zoomToFitTriggers?: Array<any>;
 };
 
 export const Graph2D = ({
@@ -48,12 +51,14 @@ export const Graph2D = ({
     showNodeLabel = false,
     labelTransparency = 0.3,
     coolDownTicks = 120,
-    initialCenter = false,
+    initialZoomToFit = false,
+    zoomToFitTriggers = [],
 }: Graph2DProps) => {
-    const [zoomToFit, setZoomToFit] = useState(initialCenter);
+    const [zoomToFit, setZoomToFit] = useState(initialZoomToFit);
     const forceRef = useRef<ForceGraphMethods>();
     const navigate = useNavigate();
     useCanvasClick([() => updateSelectedNode(null)]);
+    useZoomToFit(zoomToFitTriggers, () => setZoomToFit(true));
 
     // custom d3 force setup
     useEffect(() => {
@@ -70,6 +75,7 @@ export const Graph2D = ({
         return map;
     }, [data.nodes]);
 
+    // zoom out once after engine stops
     const handleEngineStop = () => {
         if (zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
