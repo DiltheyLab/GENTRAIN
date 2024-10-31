@@ -101,40 +101,4 @@ db.tables.forEach(function (table) {
     });
 });
 
-if (socket) {
-    socket.on(
-        "pathogen_created",
-        async (pathogen: { id: number; name: string; type: string; genetic_distance_threshold: number }) => {
-            const pathogenType = await db.pathogen_types.where({ name: pathogen.type }).first();
-            if (!pathogenType) {
-                return;
-            }
-            db.pathogens.add({
-                id: pathogen.id,
-                name: pathogen.name,
-                genetic_distance_threshold: pathogen.genetic_distance_threshold,
-                pathogen_type_id: pathogenType.id,
-                activated_at: null,
-            });
-        }
-    );
-    socket.on(
-        "pathogen_changed",
-        async (pathogen: { id: number; name: string; type: string; genetic_distance_threshold: number }) => {
-            const pathogenType = await db.pathogen_types.where({ name: pathogen.type }).first();
-            if (!pathogenType) {
-                return;
-            }
-            db.pathogens.update(pathogen.id, {
-                name: pathogen.name,
-                genetic_distance_threshold: pathogen.genetic_distance_threshold,
-                pathogen_type_id: pathogenType.id,
-            });
-        }
-    );
-    socket.on("pathogen_deleted", async (pathogen_id: number) => {
-        db.pathogens.delete(pathogen_id);
-    });
-}
-
 export { db };
