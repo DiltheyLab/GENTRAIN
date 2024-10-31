@@ -3,7 +3,9 @@ import { Header } from "@/modules/core/components/layout/Header";
 import { SequenceAnalysisModal } from "@/modules/data_management/components/sequence_analysis/SequenceAnalysisModal";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
-export const Layout = ({ children }: any) => {
+import { ReactNode } from "react";
+
+export const Layout = ({ children }: { children: ReactNode }) => {
     const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
