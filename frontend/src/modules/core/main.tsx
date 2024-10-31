@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import * as ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { Dashboard } from "@/modules/dashboard/pages/Dashboard.tsx";
 import "@/modules/core/index.css";
 import { Error } from "@/modules/core/pages/Error.tsx";
@@ -19,6 +19,7 @@ import { Onboarding } from "@/modules/core/pages/Onboarding";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
 import { TutorialTour } from "./components/tutorial/TutorialTour";
+import { Layout } from "./components/layout/Layout";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -28,7 +29,7 @@ i18next.init({
     },
 });
 
-const App = () => {
+const Root = () => {
     const session = useCoreStore((state) => state.session);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
@@ -56,38 +57,34 @@ const App = () => {
         return <Onboarding />;
     }
 
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            errorElement: <Error />,
-            element: <Dashboard />,
-        },
-        {
-            path: "/outbreak-analysis",
-            errorElement: <Error />,
-            element: <OutbreakAnalysisOverview />,
-        },
-        { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis />, errorElement: <Error /> },
-        {
-            path: "/data-management",
-            errorElement: <Error />,
-            element: <DataManagement />,
-        },
-    ]);
-
     return (
         <>
             {tutorialTourIsActive && <TutorialTour />}
-            <RouterProvider router={router} />
+            <Layout>
+                <Outlet />
+            </Layout>
         </>
     );
 };
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Root />,
+        errorElement: <Error />,
+        children: [
+            { path: "/", element: <Dashboard /> },
+            { path: "/outbreak-analysis", element: <OutbreakAnalysisOverview /> },
+            { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis /> },
+            { path: "/data-management", element: <DataManagement /> },
+        ],
+    },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <I18nextProvider i18n={i18next}>
             <Toaster />
-            <App />
+            <RouterProvider router={router} />
         </I18nextProvider>
     </React.StrictMode>
 );
