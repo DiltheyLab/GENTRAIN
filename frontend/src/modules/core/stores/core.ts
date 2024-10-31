@@ -3,18 +3,20 @@ import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
 import { socket } from "@/modules/core/helpers/socket";
+import { Step } from "react-joyride";
+import { tutorialSteps } from "../components/tutorial/tutorialSteps";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
     session: SessionsSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
-    tutorialStep: number;
+    tutorialIsRunnung: boolean;
+    tutorialSteps: Step[];
+    tutorialStepIndex: number;
     tutorialTourIsActive: boolean;
-    tutorialIntroIsActive: boolean;
-    incrementTutorialSteps: () => void;
-    decrementTutorialSteps: () => void;
+    changeTutorialStepIndex: (index: number) => void;
     changeTutorialTourIsActive: (isActive: boolean) => void;
-    changeTutorialIntroIsActive: (isActive: boolean) => void;
+    changeTutorialIsRunning: (tutorialIsRunnung: boolean) => void;
     updateCasesWithRelationships: () => Promise<void>;
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
@@ -26,13 +28,13 @@ export const useCoreStore = create<CoreState>((set, get) => {
         activePathogen: null,
         session: undefined,
         casesWithRelationships: [],
-        tutorialStep: 0,
+        tutorialStepIndex: 0,
         tutorialTourIsActive: false,
-        tutorialIntroIsActive: false,
-        incrementTutorialSteps: () => set((state) => ({ tutorialStep: state.tutorialStep + 1 })),
-        decrementTutorialSteps: () => set((state) => ({ tutorialStep: state.tutorialStep - 1 })),
+        tutorialIsRunnung: false,
+        tutorialSteps: tutorialSteps,
+        changeTutorialStepIndex: (index) => set(() => ({ tutorialStepIndex: index })),
+        changeTutorialIsRunning: (tutorialIsRunnung) => set(() => ({ tutorialIsRunnung: tutorialIsRunnung })),
         changeTutorialTourIsActive: (isActive) => set(() => ({ tutorialTourIsActive: isActive })),
-        changeTutorialIntroIsActive: (isActive) => set(() => ({ tutorialIntroIsActive: isActive })),
         updateCasesWithRelationships: async () => {
             const activePathogenId = get().activePathogen?.id;
             if (!activePathogenId) return;
