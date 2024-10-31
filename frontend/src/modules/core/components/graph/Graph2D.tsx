@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
+import { Loader2 } from "lucide-react";
+
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { Loader2 } from "lucide-react";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
 import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
-import { useNavigate } from "react-router-dom";
 import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
 
 type Graph2DProps = {
@@ -157,7 +158,7 @@ export const Graph2D = ({
 
             if (!sourceNode?.x || !sourceNode?.y || !targetNode?.x || !targetNode?.y) return;
 
-            // Draw line
+            // Draw a dashed line between the source and target nodes
             ctx.beginPath();
             ctx.setLineDash([3, 2]);
             ctx.moveTo(sourceNode.x, sourceNode.y);
@@ -166,13 +167,18 @@ export const Graph2D = ({
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Optionally, draw the link value
+            // Draw the link value at the midpoint of the line
             const midX = (sourceNode.x + targetNode.x) / 2;
             const midY = (sourceNode.y + targetNode.y) / 2;
             ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
             ctx.font = "10px Merriweather";
             ctx.fillText(link.value?.toString() || "", midX, midY);
         });
+    };
+
+    const handleNodeDrag = (node: NodeObject) => {
+        node.fx = node.x;
+        node.fy = node.y;
     };
 
     if (isLoading) {
@@ -219,14 +225,8 @@ export const Graph2D = ({
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
             onNodeClick={(node, _event) => updateSelectedNode(node as CustomNode & NodeObject)}
-            onNodeDrag={(node) => {
-                node.fx = node.x;
-                node.fy = node.y;
-            }}
-            onNodeDragEnd={(node) => {
-                node.fx = node.x;
-                node.fy = node.y;
-            }}
+            onNodeDrag={handleNodeDrag}
+            onNodeDragEnd={handleNodeDrag}
             onRenderFramePost={(ctx, _globalScale) => {
                 if (selectedNode) {
                     drawCustomLinksBelowGeneticDistanceThreshold(ctx);
