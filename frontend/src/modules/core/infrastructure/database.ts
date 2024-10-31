@@ -8,7 +8,7 @@ import { DistancesSchema } from "@/modules/core/models/distances";
 import { GroupSchema } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { PathogenSchema, Pathogens } from "@/modules/core/models/pathogens";
+import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { v4 as uuidv4 } from "uuid";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
