@@ -10,22 +10,13 @@ import {
 } from "@/modules/core/components/ui/Dialog";
 
 export const TutorialIntro = () => {
-    const tutorialIntroIsActive = useCoreStore((state) => state.tutorialIntroIsActive);
-    const changeTutorialIntroIsActive = useCoreStore((state) => state.changeTutorialIntroIsActive);
+    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
+    const tutorialIsRunnung = useCoreStore((state) => state.tutorialIsRunnung);
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-
-    const startTutorialTour = () => {
-        changeTutorialIntroIsActive(false);
-        changeTutorialTourIsActive(true);
-    };
-
-    const skipTutorialTour = () => {
-        changeTutorialIntroIsActive(false);
-        changeTutorialTourIsActive(false);
-    };
+    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
 
     return (
-        <Dialog open={tutorialIntroIsActive} onOpenChange={changeTutorialIntroIsActive}>
+        <Dialog open={tutorialTourIsActive && !tutorialIsRunnung} onOpenChange={changeTutorialTourIsActive}>
             <DialogContent className="sm:max-w-[625px]">
                 <DialogHeader>
                     <DialogTitle className="flex text-2xl text-primary items-center">
@@ -38,10 +29,10 @@ export const TutorialIntro = () => {
                 </DialogHeader>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={skipTutorialTour}>
+                    <Button variant="outline" onClick={() => changeTutorialTourIsActive(false)}>
                         Tutorial überspringen
                     </Button>
-                    <Button onClick={startTutorialTour}>Starten</Button>
+                    <Button onClick={() => changeTutorialIsRunning(true)}>Starten</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
