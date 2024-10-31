@@ -1,4 +1,3 @@
-import re
 import shutil
 import time
 import pathlib
@@ -86,7 +85,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/datasets/chewBBACA_schemes/{self.pathogen_name}",
+                f"{get_project_path()}/schemes/{self.pathogen.scheme_name}",
                 "-output",
                 self.output,
             ],

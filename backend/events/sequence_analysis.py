@@ -4,12 +4,12 @@ from flask import request
 from flask_socketio import leave_room, join_room
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
 from backend.strategies.pathogen_strategy_manager import PathogenStrategyManager
+from backend.admin.models import Pathogen
 
 
 @sio.event
-def sequence_analysis_request(
-    pathogen_name, fasta_id, sequence_chunk, chunk_information
-):
+def sequence_analysis_request(pathogen_id, fasta_id, sequence_chunk, chunk_information):
+    pathogen = Pathogen.query.get(pathogen_id)
     socket_id = request.sid
     # validate sequence before persisting
     sequence_chunk = sequence_chunk.replace("\r", "")
@@ -19,7 +19,7 @@ def sequence_analysis_request(
         sio.emit(
             event="sequence_analysis_failed",
             data=fasta_id,
-            to=f"{PathogenStrategyManager.get_type_for_pathogen(pathogen_name)}_{socket_id}",
+            to=f"{pathogen.type}_{socket_id}",
         )
         return
     persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id)
@@ -31,7 +31,7 @@ def sequence_analysis_request(
         sequence += redis_connection.get(key)
         redis_connection.delete(key)
     strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
-        pathogen_name=pathogen_name,
+        pathogen=pathogen,
         fasta_id=fasta_id,
         sequence=sequence,
         socket_id=socket_id,

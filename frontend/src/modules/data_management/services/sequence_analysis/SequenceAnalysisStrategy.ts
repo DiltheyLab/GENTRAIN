@@ -4,7 +4,7 @@ import { socket } from "@/modules/core/helpers/socket";
 import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
-import { toSlug } from "@/modules/core/helpers/strings";
+
 import {
     BacterialQualityParameters,
     SampleImport,
@@ -82,7 +82,6 @@ export abstract class SequenceAnalysisStrategy {
         if (socket) {
             socket.emit(`join_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
             socket.once(`${this.pathogen.pathogen_type?.name}_room_created`, async (roomName: string) => {
-                console.log(roomName);
                 this.roomName = roomName;
                 console.log(`Room ${this.roomName} was joined.`);
                 await this.runAnalysis();
@@ -134,25 +133,12 @@ export abstract class SequenceAnalysisStrategy {
         }
     };
 
-    private makeSequence(length: number) {
-        let result = "";
-        const characters = "ATCG";
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            counter += 1;
-        }
-        return result;
-    }
-
     private emitSequenceAnalysisMessage = async ({ fastaId, sequence }: { fastaId: string; sequence: string }) => {
         const sequenceChunks = sequence.match(/(.|[\r\n]){1,500000}/g);
-        //console.log(`${this.makeSequence(500000)}\n`.slice(-3));
 
         for (const index in sequenceChunks!) {
             if (socket) {
-                socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequenceChunks[index], {
+                socket.emit("sequence_analysis_request", this.pathogen.id, fastaId, sequenceChunks[index], {
                     total: sequenceChunks.length,
                     index: index,
                 });

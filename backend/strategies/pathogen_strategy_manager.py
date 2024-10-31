@@ -4,6 +4,7 @@ from backend.strategies.sequence_analysis.bacterial_sequence_analysis import (
 from backend.strategies.sequence_analysis.viral_sequence_analysis import (
     ViralSequenceAnalysis,
 )
+from backend.admin.models import Pathogen
 
 
 pathogen_type_mappings = {
@@ -30,23 +31,18 @@ class PathogenStrategyManager:
 
     @staticmethod
     def get_sequence_analysis_strategy(
-        pathogen_name: str,
+        pathogen: Pathogen,
         fasta_id: str,
         sequence: str,
         socket_id: str,
     ):
         """Initialize and return a strategy based on pathogen type."""
-        if (
-            PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
-            == "viral"
-        ):
-            return ViralSequenceAnalysis(pathogen_name, fasta_id, sequence, socket_id)
-        if (
-            PathogenStrategyManager.get_type_for_pathogen(pathogen_name=pathogen_name)
-            == "bacterial"
-        ):
-            return BacterialSequenceAnalysis(
-                pathogen_name, fasta_id, sequence, socket_id
-            )
+        if pathogen is not None:
+            if pathogen.type == "viral":
+                return ViralSequenceAnalysis(pathogen, fasta_id, sequence, socket_id)
+            if pathogen.type == "bacterial":
+                return BacterialSequenceAnalysis(
+                    pathogen, fasta_id, sequence, socket_id
+                )
 
         return

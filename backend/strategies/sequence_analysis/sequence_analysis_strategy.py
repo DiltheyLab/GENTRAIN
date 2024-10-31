@@ -15,10 +15,10 @@ sio = SocketIO(message_queue="redis://gentrain-redis:6379")
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
 
-    def __init__(self, pathogen_name, fasta_id, sequence, socket_id):
+    def __init__(self, pathogen, fasta_id, sequence, socket_id):
         self.fasta_id = fasta_id
         self.sequence = sequence
-        self.pathogen_name = pathogen_name
+        self.pathogen = pathogen
         self.socket_id = socket_id
         self.type = None
         self.input = None

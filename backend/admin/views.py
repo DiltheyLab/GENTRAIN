@@ -1,10 +1,11 @@
 from os import path
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.upload import FileUploadField
-from backend.server import get_project_root
+from backend.config import get_project_path
 from zipfile import ZipFile
 import time
 import shutil
+from backend.server import sio
 
 
 class PathogenView(ModelView):
@@ -18,29 +19,45 @@ class PathogenView(ModelView):
     form_args = {
         "scheme_path": {
             "label": "File",
-            "base_path": path.join(get_project_root(), "datasets/uploads"),
+            "base_path": path.join(get_project_path(), "schemes/uploads"),
             "allow_overwrite": True,
         }
     }
 
     def after_model_change(self, form, model, is_created):
+        if is_created is True:
+            sio.emit(
+                event="pathogen_created",
+                data=model.serialize(),
+            )
+        else:
+            sio.emit(
+                event="pathogen_changed",
+                data=model.serialize(),
+            )
         with ZipFile(
-            path.join(get_project_root(), f"datasets/uploads/{model.scheme_path}"), "r"
+            path.join(get_project_path(), f"schemes/uploads/{model.scheme_path}"), "r"
         ) as file:
             directory_name = f"{model.scheme_name}_{round(time.time() * 1000)}"
             file.extractall(
                 path=path.join(
-                    get_project_root(),
-                    f"datasets/chewBBACA_schemes/{directory_name}",
+                    get_project_path(),
+                    f"schemes/{directory_name}",
                 )
             )
             shutil.move(
                 path.join(
-                    get_project_root(),
-                    f"datasets/chewBBACA_schemes/{directory_name}",
+                    get_project_path(),
+                    f"schemes/{directory_name}",
                 ),
                 path.join(
-                    get_project_root(),
-                    f"datasets/chewBBACA_schemes/{model.scheme_name}",
+                    get_project_path(),
+                    f"schemes/{model.scheme_name}",
                 ),
             )
+
+    def after_model_delete(self, model):
+        sio.emit(
+            event="pathogen_deleted",
+            data=model.id,
+        )

@@ -1,9 +1,4 @@
-datasets/RKI/*
-datasets/nextclade_covid/*
-datasets/chewBBACA_schemes/*
-datasets/uploads/*
-datasets/example_files/example_sequence_edit_error.tsv
-datasets/example_files/example_sequence_edit_error.fa
+schemes/*
 temp_data
 
 # Byte-compiled / optimized / DLL files

@@ -48,7 +48,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 f"{get_project_path()}/scripts/sequence_analysis/viral.sh",
                 self.input,
                 self.output,
-                f"{get_project_path()}/datasets/nextclade_covid",
+                f"{get_project_path()}/schemes/{self.pathogen.scheme_name}",
             ],
             check=False,
         )
