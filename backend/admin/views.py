@@ -1,4 +1,4 @@
-from os import path
+from os import path, listdir
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.upload import FileUploadField
 from backend.config import get_project_path
@@ -37,14 +37,28 @@ class PathogenView(ModelView):
             )
         with ZipFile(
             path.join(get_project_path(), f"schemes/uploads/{model.scheme_path}"), "r"
-        ) as file:
-            directory_name = f"{model.scheme_name}_{round(time.time() * 1000)}"
-            file.extractall(
-                path=path.join(
+        ) as archive:
+            directory_name = f"{model.scheme_path}_{round(time.time() * 1000)}"
+            extract_path = path.join(
+                get_project_path(),
+                f"schemes/{directory_name}",
+            )
+            archive.extractall(path=extract_path)
+            content = listdir(
+                path.join(
                     get_project_path(),
                     f"schemes/{directory_name}",
                 )
             )
+            if len(content) == 1:
+                sub_path = path.join(
+                        get_project_path(),
+                        f"schemes/{directory_name}/{content[0]}",
+                    )
+                elements = listdir(sub_path)
+                for element in elements:
+                    shutil.move(path.join(sub_path, element), extract_path)
+                shutil.rmtree(sub_path)
             shutil.move(
                 path.join(
                     get_project_path(),

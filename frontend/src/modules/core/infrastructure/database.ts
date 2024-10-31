@@ -63,18 +63,15 @@ db.on("populate", async () => {
         type: PathogenTypeName;
         genetic_distance_threshold: number;
     }[] = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`).then((response) => response.json());
+    for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
+        const newPathogenTypeId = await db.pathogen_types.add({
+            name: pathogenTypeName as unknown as PathogenTypeName,
+            initialized_at: null,
+        });
+        persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
+    }
+
     for (const pathogen of pathogens) {
-        // retrieve pathogen type name from enum
-        const pathogenTypeName = PathogenTypeName[pathogen.type];
-        // check if the type of the pathogen (bacterial or viral) already exists in pathogen_types-table
-        // otherwise persist pathogen_type
-        if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
-            const newPathogenTypeId = await db.pathogen_types.add({
-                name: pathogenTypeName as unknown as PathogenTypeName,
-                initialized_at: null,
-            });
-            persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
-        }
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen
         if (!(await db.pathogens.get(pathogen.id))) {

@@ -137,7 +137,7 @@ dependencies:
       - blinker==1.8.2
       - click==8.1.7
       - flask==3.0.3
-      - flask-admin==1.6.1
+      - flask-admin==2.0.0a2
       - flask-cors==5.0.0
       - flask-socketio==5.4.1
       - flask-sqlalchemy==3.1.1

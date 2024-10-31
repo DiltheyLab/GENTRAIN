@@ -1,5 +1,5 @@
 from rq import Queue
-from os import path, environ
+from os import environ
 from redis import Redis
 from flask import jsonify
 from flask_socketio import SocketIO
