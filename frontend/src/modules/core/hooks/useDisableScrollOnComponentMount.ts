@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export const useDisableScollOnComponentMount = (deps: [any]) => {
+export const useDisableScrollOnComponentMount = (deps: [any]) => {
     useEffect(() => {
         const disableScroll = () => {
             document.body.style.overflow = "hidden";

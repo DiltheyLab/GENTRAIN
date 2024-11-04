@@ -10,7 +10,7 @@ export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
     session: SessionsSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
-    tutorialIsRunnung: boolean;
+    tutorialIsRunning: boolean;
     tutorialSteps: Step[];
     tutorialStepIndex: number;
     tutorialTourIsActive: boolean;
@@ -30,10 +30,10 @@ export const useCoreStore = create<CoreState>((set, get) => {
         casesWithRelationships: [],
         tutorialStepIndex: 0,
         tutorialTourIsActive: false,
-        tutorialIsRunnung: false,
+        tutorialIsRunning: false,
         tutorialSteps: tutorialSteps,
         changeTutorialStepIndex: (index) => set(() => ({ tutorialStepIndex: index })),
-        changeTutorialIsRunning: (tutorialIsRunnung) => set(() => ({ tutorialIsRunnung: tutorialIsRunnung })),
+        changeTutorialIsRunning: (tutorialIsRunnung) => set(() => ({ tutorialIsRunning: tutorialIsRunnung })),
         changeTutorialTourIsActive: (isActive) => set(() => ({ tutorialTourIsActive: isActive })),
         updateCasesWithRelationships: async () => {
             const activePathogenId = get().activePathogen?.id;
