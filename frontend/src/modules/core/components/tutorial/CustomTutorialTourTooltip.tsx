@@ -6,6 +6,16 @@ import MouseCursor from "./MouseCursor";
 export function CustomTutorialTourTooltip(props: TooltipRenderProps) {
     const { backProps, index, primaryProps, step, tooltipProps, isLastStep, size } = props;
 
+    const getNextButtonText = () => {
+        let buttonText = "Weiter";
+        if (step?.data?.["next"]) {
+            buttonText = "Zur nächsten Seite";
+        } else if (isLastStep) {
+            buttonText = "Fertig";
+        }
+        return buttonText;
+    };
+
     return (
         <>
             {step.target === "[data-tutorial-tour-step='dashboard-visualization-panel']" && <MouseCursor />}
@@ -28,7 +38,9 @@ export function CustomTutorialTourTooltip(props: TooltipRenderProps) {
                                 Zurück
                             </Button>
                         )}
-                        <Button {...primaryProps}>{isLastStep ? "Fertig" : "Weiter"}</Button>
+                        <Button className="max-w-60 text-wrap p-3" {...primaryProps}>
+                            {getNextButtonText()}
+                        </Button>
                     </div>
                 </CardFooter>
             </Card>

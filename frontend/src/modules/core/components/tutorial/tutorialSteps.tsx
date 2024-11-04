@@ -13,10 +13,6 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-visualization-panel']",
@@ -60,10 +56,6 @@ export const tutorialSteps: Step[] = [
                 width: "20vw", //ensures that the tooltip is not floating below the graph even if the screen width is 1024px
             },
         },
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-visualization-panel-legend']",
@@ -94,10 +86,6 @@ export const tutorialSteps: Step[] = [
                 width: "20vw",
             },
         },
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-visualization-panel-graph-settings']",
@@ -113,10 +101,6 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         placement: "left-start",
         disableScrollParentFix: true,
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-settings']",
@@ -131,10 +115,6 @@ export const tutorialSteps: Step[] = [
         spotlightClicks: true,
         disableScrolling: false,
         placement: "right",
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-coloring']",
@@ -159,10 +139,6 @@ export const tutorialSteps: Step[] = [
         spotlightClicks: true,
         disableScrolling: false,
         placement: "right",
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-charts']",
@@ -182,10 +158,6 @@ export const tutorialSteps: Step[] = [
         spotlightClicks: true,
         disableScrolling: false,
         placement: "right",
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-state-import']",
@@ -209,10 +181,6 @@ export const tutorialSteps: Step[] = [
         spotlightClicks: true,
         disableScrolling: true,
         placement: "bottom",
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='dashboard-pathogen-switch']",
@@ -227,10 +195,6 @@ export const tutorialSteps: Step[] = [
         spotlightClicks: false,
         placement: "bottom",
         disableScrolling: true,
-        data: {
-            next: null,
-            previous: null,
-        },
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-overview-nav']",
@@ -246,7 +210,123 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         data: {
             next: "/outbreak-analysis",
-            previous: null,
+            prev: null,
         },
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-overview']",
+        title: "Die Übersicht über alle Ausbruchsanalysen.",
+        content: (
+            <p>
+                Hier sehen Sie alle angelegten Analysen in einer Tabelle. Sie können nach Analysen suchen, diese
+                bearbeiten, löschen oder neue Analysen anlegen.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: "/",
+        },
+        styles: {
+            spotlight: {
+                marginTop: 19,
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-overview-start']",
+        title: "Analyse starten.",
+        content: (
+            <p>
+                Im nächsten Schritt zeigen wir Ihnen wie Sie eine Ausbruchsanalyse durchführen können. Dafür starten wir
+                eine Beispielanalyse mit dem Namen <strong>Schule A</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: "/outbreak-analysis/1",
+            prev: null,
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-outbreak-selection']",
+        title: "Schritt 1 - Die Ausbruchsauswahl.",
+        content: (
+            <p>
+                Jede Analyse startet mit der Auswahl eines Ausbruchs. Hier wurde Ausbruch <strong>Schule A</strong>{" "}
+                ausgewählt.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: "/outbreak-analysis",
+        },
+        placement: "right",
+        styles: {
+            spotlight: {
+                marginTop: 2,
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-background-selection']",
+        title: "Schritt 2 - Die Hintergrunddaten.",
+        content: (
+            <p>
+                Sie können entweder <strong>alle vorhandenen Fälle</strong> als Hintergrunddaten verwenden,{" "}
+                <strong>keine Fälle </strong>
+                auswählen oder <strong>spezielle Falldaten</strong> aus anderen Ausbrüchen oder Gruppen nutzen.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: null,
+        },
+        placement: "right",
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-background-filtering']",
+        title: "Schritt 3 - Hintergrunddaten filtern.",
+        content: (
+            <>
+                <p>
+                    In diesem Schritt können Sie die Hintergunddaten weiter nach verschiedenen Kriterien filtern.{" "}
+                    <strong>Fälle aus dem ausgewählten Ausbruch werden nicht beeinflusst.</strong>
+                </p>
+                <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
+                    <div className="space-y-2">
+                        <p>
+                            <strong>Nicht sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische
+                            Sequenzen aus.
+                        </p>
+                        <p>
+                            <strong>Sequenzierte Fälle mit genetischer Distanz &gt; 1 ausschließen:</strong> Blendet
+                            alle Fälle mit einer genetischen Distanz über einem festgelegten Schwellenwert aus.
+                        </p>
+                        <p>
+                            <strong>Zeitspanne auswählen:</strong> Blendet alle Fälle außerhalb einer Zeitspanne aus.
+                        </p>
+                    </div>
+                </div>
+            </>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: false,
+        data: {
+            next: null,
+            prev: null,
+        },
+        placement: "right",
     },
 ];

@@ -11,6 +11,7 @@ export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname.split("/")[1];
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
+    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
 
     const isSelected = (url: string) => {
         return pathName === url ? "text-foreground" : "text-muted-foreground";
@@ -32,6 +33,7 @@ export const Header = () => {
                 </Link>
                 <Link
                     to="/outbreak-analysis"
+                    data-tutorial-tour-step="outbreak-analysis-overview-nav"
                     className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground text-md`}
                 >
                     Ausbruchsanalyse
@@ -44,6 +46,7 @@ export const Header = () => {
                 </Link>
                 <Button
                     onClick={() => {
+                        changeTutorialIsRunning(true);
                         changeTutorialTourIsActive(true);
                     }}
                     className="absolute"

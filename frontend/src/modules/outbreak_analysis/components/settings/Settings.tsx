@@ -28,16 +28,17 @@ export const Settings = () => {
 
     return (
         <form className="w-full px-1 flex flex-col justify-between overflow-y-hidden h-full">
-            <fieldset className="flex border rounded-lg flex-col h-[calc(100%-102px)] mb-4 gap-3 px-3 pb-4 pt-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
+            <fieldset className="flex bg-white border rounded-lg flex-col h-[calc(100%-102px)] mb-4 gap-3 px-3 pb-4 pt-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#CCC]">
                 <Accordion
                     type="multiple"
                     className="w-full flex flex-col gap-2"
                     defaultValue={outbreakAnalysisStore.generalSettings.openAccordionItems}
+                    value={outbreakAnalysisStore.generalSettings.openAccordionItems}
                     onValueChange={(value) =>
                         outbreakAnalysisStore.updateGeneralSettings({ openAccordionItems: value })
                     }
                 >
-                    <AccordionItem value="item-1">
+                    <AccordionItem data-tutorial-tour-step="outbreak-analysis-outbreak-selection" value="item-1">
                         <AccordionTrigger className="flex w-full justify-between items-center">
                             <SectionHeader
                                 step={1}
@@ -49,7 +50,11 @@ export const Settings = () => {
                             <OutbreakSelection />
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-2" disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}>
+                    <AccordionItem
+                        value="item-2"
+                        disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                        data-tutorial-tour-step="outbreak-analysis-background-selection"
+                    >
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={2}
@@ -62,7 +67,11 @@ export const Settings = () => {
                             <BackgroundSelection />
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-3" disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}>
+                    <AccordionItem
+                        value="item-3"
+                        disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                        data-tutorial-tour-step="outbreak-analysis-background-filtering"
+                    >
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={3}
@@ -80,7 +89,11 @@ export const Settings = () => {
                             />
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-4" disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}>
+                    <AccordionItem
+                        value="item-4"
+                        disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                        data-tutorial-tour-step="outbreak-analysis-contact-tracing"
+                    >
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={4}
@@ -93,7 +106,11 @@ export const Settings = () => {
                             <ContactTracing />
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-5" disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}>
+                    <AccordionItem
+                        value="item-5"
+                        disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                        data-tutorial-tour-step="outbreak-analysis-coloring"
+                    >
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={5}
@@ -108,7 +125,10 @@ export const Settings = () => {
                     </AccordionItem>
                 </Accordion>
             </fieldset>
-            <fieldset className="flex flex-col justify-evenly gap-3 p-3 border rounded-lg h-[102px]">
+            <fieldset
+                className="flex flex-col justify-evenly gap-3 p-3 border rounded-lg h-[102px]"
+                data-tutorial-tour-step="outbreak-analysis-report-export"
+            >
                 <Suspense
                     fallback={
                         <Button disabled variant="outline" type="button">

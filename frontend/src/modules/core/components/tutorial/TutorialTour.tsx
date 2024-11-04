@@ -1,10 +1,11 @@
 import { useDisableScollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
 import { useCoreStore } from "@/modules/core/stores/core";
-import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS } from "react-joyride";
+import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS, Step } from "react-joyride";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
@@ -14,7 +15,11 @@ export const TutorialTour = () => {
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
     const changeTutorialStepIndex = useCoreStore((state) => state.changeTutorialStepIndex);
+    const updateGeneralSettings = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
+    const openAccordionItems = useOutbreakAnalysisStore((state) => state.generalSettings.openAccordionItems);
+
     useDisableScollOnComponentMount([tutorialTourIsActive]);
+    const navigate = useNavigate();
 
     if (!tutorialTourIsActive) return null;
 
@@ -25,50 +30,64 @@ export const TutorialTour = () => {
         changeTutorialTourIsActive(false);
         window.scrollTo(0, 0);
     };
+    console.log(openAccordionItems);
+
+    const handleOutbreakAnalysisAccordion = (step: Step, type: Events) => {
+        if (type === EVENTS.STEP_BEFORE) {
+            console.log("Target:", step.target);
+            switch (step.target) {
+                case "[data-tutorial-tour-step='outbreak-analysis-outbreak-selection']":
+                    updateGeneralSettings({ openAccordionItems: ["item-1"] });
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-background-selection']":
+                    updateGeneralSettings({ openAccordionItems: ["item-2"] });
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-background-filtering']":
+                    updateGeneralSettings({ openAccordionItems: ["item-3"] });
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-contact-tracing']":
+                    updateGeneralSettings({ openAccordionItems: ["item-4"] });
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-coloring']":
+                    updateGeneralSettings({ openAccordionItems: ["item-5"] });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 
     const handleCallback = (data: CallBackProps) => {
-        const {
-            action,
-            index,
-            step: {
-                data: { next, previous },
-            },
-            type,
-            status,
-            origin,
-        } = data;
+        const { action, index, step, type, status, origin } = data;
         console.log("action:", action);
         console.log("index:", index);
         console.log("status:", status);
         console.log("type:", type);
+        console.log("step:", step?.data);
+
+        handleOutbreakAnalysisAccordion(step, type);
+
+        // Closes tutorial on pressing ESC-button
         if (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) {
             closeTutorial();
             return;
         }
+
+        // Changes the tutorial step index and closes the tutorial if the status is 'finished' or 'skipped'.
         if (([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND] as Events[]).includes(type)) {
             const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
             changeTutorialStepIndex(nextStepIndex);
         } else if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
             closeTutorial();
         }
-        /*
-        if (type === "step:after") {
-            if (index < 2) {
-                changeTutorialIsRunning(false);
 
-                             navigate(isPreviousAction && previous ? previous : next);
-                 
-            }
-           
-            if (index === 2) {
-                if (isPreviousAction && previous) {
-                    changeTutorialIsRunning(false);
-                    navigate(previous);
-                } else {
-                    setState({ run: false, stepIndex: 0, tourActive: false });
-                } 
-            }
-        } */
+        // Navigates to the next or previous page
+        if (type === EVENTS.STEP_AFTER && step?.data?.["next"] && action === ACTIONS.NEXT) {
+            navigate(step?.data["next"]);
+        } else if (type === EVENTS.STEP_AFTER && step?.data?.["prev"] && action === ACTIONS.PREV) {
+            navigate(step?.data["prev"]);
+        }
     };
     return (
         <>
@@ -87,6 +106,9 @@ export const TutorialTour = () => {
                     spotlight: {
                         borderRadius: 5,
                         zIndex: 40,
+                    },
+                    options: {
+                        overlayColor: "rgba(0,0,0,0.5)",
                     },
                 }}
                 scrollOffset={25}
