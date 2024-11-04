@@ -41,6 +41,7 @@ export const Header = () => {
                 <Link
                     to="/data-management"
                     className={`${isSelected("data-management")} transition-colors hover:text-foreground text-md`}
+                    data-tutorial-tour-step="data-management-nav"
                 >
                     Datenverwaltung
                 </Link>

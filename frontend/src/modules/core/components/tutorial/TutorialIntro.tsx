@@ -11,7 +11,7 @@ import {
 
 export const TutorialIntro = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
-    const tutorialIsRunnung = useCoreStore((state) => state.tutorialIsRunnung);
+    const tutorialIsRunnung = useCoreStore((state) => state.tutorialIsRunning);
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
 

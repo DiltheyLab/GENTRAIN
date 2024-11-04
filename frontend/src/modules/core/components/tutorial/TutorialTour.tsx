@@ -1,99 +1,111 @@
-import { useDisableScollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
-import { useCoreStore } from "@/modules/core/stores/core";
-import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS, Step } from "react-joyride";
-import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
-import { Button } from "@/modules/core/components/ui/Button";
+import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS } from "react-joyride";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import { useDisableScrollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
+import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
-    const tutorialIsRunnung = useCoreStore((state) => state.tutorialIsRunnung);
+    const tutorialIsRunning = useCoreStore((state) => state.tutorialIsRunning);
     const steps = useCoreStore((state) => state.tutorialSteps);
     const stepIndex = useCoreStore((state) => state.tutorialStepIndex);
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
     const changeTutorialStepIndex = useCoreStore((state) => state.changeTutorialStepIndex);
-    const updateGeneralSettings = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
-    const openAccordionItems = useOutbreakAnalysisStore((state) => state.generalSettings.openAccordionItems);
-
-    useDisableScollOnComponentMount([tutorialTourIsActive]);
+    const updateOutbreakAnalysisAccordion = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
+    useDisableScrollOnComponentMount([tutorialTourIsActive]);
     const navigate = useNavigate();
 
     if (!tutorialTourIsActive) return null;
 
     const closeTutorial = () => {
-        // Need to set our running state to false, so we can restart if we click start again.
         changeTutorialStepIndex(0);
         changeTutorialIsRunning(false);
         changeTutorialTourIsActive(false);
         window.scrollTo(0, 0);
     };
-    console.log(openAccordionItems);
 
-    const handleOutbreakAnalysisAccordion = (step: Step, type: Events) => {
-        if (type === EVENTS.STEP_BEFORE) {
-            console.log("Target:", step.target);
-            switch (step.target) {
-                case "[data-tutorial-tour-step='outbreak-analysis-outbreak-selection']":
-                    updateGeneralSettings({ openAccordionItems: ["item-1"] });
-                    break;
-                case "[data-tutorial-tour-step='outbreak-analysis-background-selection']":
-                    updateGeneralSettings({ openAccordionItems: ["item-2"] });
-                    break;
-                case "[data-tutorial-tour-step='outbreak-analysis-background-filtering']":
-                    updateGeneralSettings({ openAccordionItems: ["item-3"] });
-                    break;
-                case "[data-tutorial-tour-step='outbreak-analysis-contact-tracing']":
-                    updateGeneralSettings({ openAccordionItems: ["item-4"] });
-                    break;
-                case "[data-tutorial-tour-step='outbreak-analysis-coloring']":
-                    updateGeneralSettings({ openAccordionItems: ["item-5"] });
-                    break;
-
-                default:
-                    break;
-            }
-        }
+    //Updates the accordion state and continues the tutorial with a delay.
+    const updateAccordionAndContinueWithDelay = (nextStepIndex: number, openAccordionItems: string[], delay = 350) => {
+        changeTutorialIsRunning(false);
+        updateOutbreakAnalysisAccordion({ openAccordionItems: openAccordionItems });
+        changeTutorialStepIndex(nextStepIndex);
+        setTimeout(() => {
+            changeTutorialIsRunning(true);
+        }, delay);
     };
 
-    const handleCallback = (data: CallBackProps) => {
-        const { action, index, step, type, status, origin } = data;
-        console.log("action:", action);
-        console.log("index:", index);
-        console.log("status:", status);
-        console.log("type:", type);
-        console.log("step:", step?.data);
+    const handleCallback = ({ action, index, step, type, status, origin }: CallBackProps) => {
+        const nextStep = action === ACTIONS.NEXT;
+        const prevStep = action === ACTIONS.PREV;
+        const nextStepIndex = index + (prevStep ? -1 : 1);
 
-        handleOutbreakAnalysisAccordion(step, type);
+        const manageTutorialStep = () => {
+            switch (step.target) {
+                case "[data-tutorial-tour-step='outbreak-analysis-overview-start']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["outbreak-selection"]);
+                    else if (prevStep) changeTutorialStepIndex(nextStepIndex);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-outbreak-selection']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-selection"]);
+                    else if (prevStep) changeTutorialStepIndex(nextStepIndex);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-background-selection']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-filtering"]);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["outbreak-selection"]);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-background-filtering']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["contact-tracing"]);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-selection"]);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-contact-tracing']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["coloring"]);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-filtering"]);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-coloring']":
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, [], 0);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["contact-tracing"]);
+                    break;
+                case "[data-tutorial-tour-step='outbreak-analysis-report-export']":
+                    if (nextStep) changeTutorialStepIndex(nextStepIndex);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["coloring"]);
+                    break;
+                default:
+                    changeTutorialStepIndex(nextStepIndex);
+            }
+        };
 
-        // Closes tutorial on pressing ESC-button
-        if (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) {
+        // Closes tutorial on pressing ESC-button or if tour is over
+        if (
+            (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) ||
+            ([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)
+        ) {
             closeTutorial();
             return;
         }
 
-        // Changes the tutorial step index and closes the tutorial if the status is 'finished' or 'skipped'.
+        // Changes the tutorial step index on pressing the next or previous button
         if (([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND] as Events[]).includes(type)) {
-            const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
-            changeTutorialStepIndex(nextStepIndex);
-        } else if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
-            closeTutorial();
+            manageTutorialStep();
         }
 
         // Navigates to the next or previous page
-        if (type === EVENTS.STEP_AFTER && step?.data?.["next"] && action === ACTIONS.NEXT) {
+        if (type === EVENTS.STEP_AFTER && step?.data?.["next"] && nextStep) {
             navigate(step?.data["next"]);
-        } else if (type === EVENTS.STEP_AFTER && step?.data?.["prev"] && action === ACTIONS.PREV) {
+        } else if (type === EVENTS.STEP_AFTER && step?.data?.["prev"] && prevStep) {
             navigate(step?.data["prev"]);
         }
     };
+
     return (
         <>
             <Joyride
                 tooltipComponent={CustomTutorialTourTooltip}
-                run={tutorialIsRunnung}
+                run={tutorialIsRunning}
                 steps={steps}
                 stepIndex={stepIndex}
                 continuous={true}
@@ -101,7 +113,7 @@ export const TutorialTour = () => {
                 scrollDuration={500}
                 spotlightClicks={true}
                 disableOverlayClose={true}
-                callback={(data) => handleCallback(data)}
+                callback={handleCallback}
                 styles={{
                     spotlight: {
                         borderRadius: 5,

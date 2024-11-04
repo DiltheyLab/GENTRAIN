@@ -38,7 +38,10 @@ export const Settings = () => {
                         outbreakAnalysisStore.updateGeneralSettings({ openAccordionItems: value })
                     }
                 >
-                    <AccordionItem data-tutorial-tour-step="outbreak-analysis-outbreak-selection" value="item-1">
+                    <AccordionItem
+                        data-tutorial-tour-step="outbreak-analysis-outbreak-selection"
+                        value="outbreak-selection"
+                    >
                         <AccordionTrigger className="flex w-full justify-between items-center">
                             <SectionHeader
                                 step={1}
@@ -51,7 +54,7 @@ export const Settings = () => {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem
-                        value="item-2"
+                        value="background-selection"
                         disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                         data-tutorial-tour-step="outbreak-analysis-background-selection"
                     >
@@ -68,7 +71,7 @@ export const Settings = () => {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem
-                        value="item-3"
+                        value="background-filtering"
                         disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                         data-tutorial-tour-step="outbreak-analysis-background-filtering"
                     >
@@ -90,7 +93,7 @@ export const Settings = () => {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem
-                        value="item-4"
+                        value="contact-tracing"
                         disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                         data-tutorial-tour-step="outbreak-analysis-contact-tracing"
                     >
@@ -107,7 +110,7 @@ export const Settings = () => {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem
-                        value="item-5"
+                        value="coloring"
                         disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                         data-tutorial-tour-step="outbreak-analysis-coloring"
                     >
@@ -125,10 +128,7 @@ export const Settings = () => {
                     </AccordionItem>
                 </Accordion>
             </fieldset>
-            <fieldset
-                className="flex flex-col justify-evenly gap-3 p-3 border rounded-lg h-[102px]"
-                data-tutorial-tour-step="outbreak-analysis-report-export"
-            >
+            <fieldset className="flex flex-col justify-evenly gap-3 p-3 border rounded-lg h-[102px] bg-white">
                 <Suspense
                     fallback={
                         <Button disabled variant="outline" type="button">
@@ -137,7 +137,7 @@ export const Settings = () => {
                     }
                 >
                     <Dialog open={showPdfExportDialog} onOpenChange={(value) => setShowPdfExportDialog(value)}>
-                        <DialogTrigger asChild>
+                        <DialogTrigger data-tutorial-tour-step="outbreak-analysis-report-export" asChild>
                             <Button className="text-wrap w-full" variant="outline" type="button">
                                 Ausbruchsanalyse-Report exportieren
                             </Button>

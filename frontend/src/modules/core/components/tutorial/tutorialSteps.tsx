@@ -1,6 +1,7 @@
 import { Step } from "react-joyride";
 
 export const tutorialSteps: Step[] = [
+    // ------------------------------DASHBOARD--------------------------------
     {
         target: "[data-tutorial-tour-step='dashboard-nav']",
         title: "Das Dashboard.",
@@ -213,13 +214,14 @@ export const tutorialSteps: Step[] = [
             prev: null,
         },
     },
+    // ------------------------------Outbreak-Analyses-Overview--------------------------------
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-overview']",
         title: "Die Übersicht über alle Ausbruchsanalysen.",
         content: (
             <p>
-                Hier sehen Sie alle angelegten Analysen in einer Tabelle. Sie können nach Analysen suchen, diese
-                bearbeiten, löschen oder neue Analysen anlegen.
+                Hier sehen Sie alle angelegten Analysen in einer Tabelle. Sie können nach{" "}
+                <strong> Analysen suchen, diese bearbeiten, löschen oder neue Analysen anlegen</strong>.
             </p>
         ),
         disableBeacon: true,
@@ -241,7 +243,7 @@ export const tutorialSteps: Step[] = [
         content: (
             <p>
                 Im nächsten Schritt zeigen wir Ihnen wie Sie eine Ausbruchsanalyse durchführen können. Dafür starten wir
-                eine Beispielanalyse mit dem Namen <strong>Schule A</strong>
+                eine Beispielanalyse mit dem Namen <strong>Schule A</strong>.
             </p>
         ),
         disableBeacon: true,
@@ -252,13 +254,14 @@ export const tutorialSteps: Step[] = [
             prev: null,
         },
     },
+    // ------------------------------Outbreak-Analysis--------------------------------
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-outbreak-selection']",
         title: "Schritt 1 - Die Ausbruchsauswahl.",
         content: (
             <p>
-                Jede Analyse startet mit der Auswahl eines Ausbruchs. Hier wurde Ausbruch <strong>Schule A</strong>{" "}
-                ausgewählt.
+                Jede Analyse startet mit der Auswahl eines Ausbruchs. Hier wurde{" "}
+                <strong>Ausbruch Schule A ausgewählt</strong>.
             </p>
         ),
         disableBeacon: true,
@@ -282,7 +285,7 @@ export const tutorialSteps: Step[] = [
             <p>
                 Sie können entweder <strong>alle vorhandenen Fälle</strong> als Hintergrunddaten verwenden,{" "}
                 <strong>keine Fälle </strong>
-                auswählen oder <strong>spezielle Falldaten</strong> aus anderen Ausbrüchen oder Gruppen nutzen.
+                auswählen oder <strong>spezielle Falldaten</strong> aus anderen Ausbrüchen oder Kategorien nutzen.
             </p>
         ),
         disableBeacon: true,
@@ -322,11 +325,85 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
-        disableScrolling: false,
+        disableScrolling: true,
         data: {
             next: null,
             prev: null,
         },
         placement: "right",
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-contact-tracing']",
+        title: "Schritt 4 - Die Kontaktnachverfolgung.",
+        content: (
+            <p>
+                Hier können Sie einstellen, ob die Kontaktnachverfolungsdaten miteinbezogen werden sollen. Abhängig
+                davon werden dann entsprechende Kontaktkanten zwischen den Knoten angezeigt.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: null,
+        },
+        placement: "right",
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-coloring']",
+        title: "Schritt 5 - Die Einfärbung.",
+        content: (
+            <p>
+                Über diese Einstellung können Sie die Knoten des Graphen einfärben. Dabei haben Sie die Wahl zwischen
+                einer Einfärbung nach der <strong>Zeitspanne</strong> oder nach <strong>Ausbrüchen</strong>. Wenn Sie
+                die Knoten nach Ausbrüchen einfärben, können Sie die Farbe jedes Ausbruchs durch einen Klick auf das
+                Farbfeld auf der rechten Seite ändern.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: null,
+        },
+        placement: "right",
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-report-export']",
+        title: "Der Analyse-Report.",
+        content: (
+            <p>
+                Sie können einen Ausbruchanalyse-Report zu Ihrem analysierten Ausbruch anfertigen. Im Report finden Sie{" "}
+                <strong>eine Zusammenfassung</strong> des Datensatzes und eine{" "}
+                <strong>automatisch erzeugte Ergebnisbewertung</strong>. Sie können den Report als PDF exportieren.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: null,
+        },
+        placement: "top",
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-nav']",
+        title: "Die Datenverwaltung.",
+        content: (
+            <p>
+                Unter dem Reiter Datenverwaltung finden Sie eine Übersicht aller Daten. Sie können hier Falldaten,
+                Sequenzdaten oder Kontaktdaten importieren, ändern und löschen.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: "/data-management",
+            prev: null,
+        },
     },
 ];
