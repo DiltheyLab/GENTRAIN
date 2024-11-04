@@ -1,14 +1,37 @@
 from os import path, listdir, remove, rename
-from flask_admin.contrib.sqla import ModelView
+
+from flask import request, url_for, redirect, abort
+from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField
+from flask_login import current_user
+
 from backend.config import get_project_path
 from zipfile import ZipFile
 import time
 import shutil
-from backend.server import sio
 
+class AuthModelView(sqla.ModelView):
+    def is_accessible(self):
+        return (
+            current_user.is_active
+            and current_user.is_authenticated
+            and current_user.has_role("superuser")
+        )
 
-class PathogenView(ModelView):
+    def _handle_view(self, name, **kwargs):
+        """
+        Override builtin _handle_view in order to redirect users when a view is not
+        accessible.
+        """
+        if not self.is_accessible():
+            if current_user.is_authenticated:
+                # permission denied
+                abort(403)
+            else:
+                # login
+                return redirect(url_for("security.login", next=request.url))
+
+class PathogenView(AuthModelView):
     prior_scheme_name = None
     form_choices = {
         "type": [
