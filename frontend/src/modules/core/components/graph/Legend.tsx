@@ -81,7 +81,7 @@ export const Legend = ({
 
         return (
             <div className="flex flex-col">
-                <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Background</Label>
+                <Label className="-ml-1 px-1 text-xs font-medium">Ausgewählter Umgebung</Label>
                 {renderClusterItems(selectedBackground)}
             </div>
         );

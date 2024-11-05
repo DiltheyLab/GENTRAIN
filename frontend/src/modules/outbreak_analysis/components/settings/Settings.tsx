@@ -61,7 +61,7 @@ export const Settings = () => {
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={2}
-                                title="Background auswählen"
+                                title="Umgebung auswählen"
                                 tooltipContent={tooltipBackgroundSelection}
                                 disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                             />
@@ -78,7 +78,7 @@ export const Settings = () => {
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={3}
-                                title="Background filtern"
+                                title="Umgebung filtern"
                                 tooltipContent={tooltipBackgroundFilter}
                                 disabled={
                                     !outbreakAnalysisStore.analysisSettings.selectedOutbreak ||
