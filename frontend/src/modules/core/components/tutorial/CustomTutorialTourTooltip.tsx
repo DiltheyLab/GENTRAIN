@@ -25,9 +25,9 @@ export function CustomTutorialTourTooltip(props: TooltipRenderProps) {
                 style={{ width: step.styles.options.width, zIndex: 10! }}
             >
                 <CardHeader>
-                    <CardTitle>{step.title}</CardTitle>
+                    <CardTitle className="text-lg xl:text-2xl">{step.title}</CardTitle>
                 </CardHeader>
-                <CardContent>{step.content}</CardContent>
+                <CardContent className="text-xs xl:text-[1rem]">{step.content}</CardContent>
                 <CardFooter className="flex justify-between gap-3 flex-col-reverse xl:flex-row">
                     <small className="text-sm text-muted-foreground">
                         Schritt {index + 1} von {size}
