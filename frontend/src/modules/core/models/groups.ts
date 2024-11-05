@@ -2,6 +2,7 @@ import { z } from "zod";
 import { CaseImport } from "@/modules/core/models/cases";
 import { CategorySchema, persistCategoryIfNotExist } from "@/modules/core/models/categories";
 import { db } from "@/modules/core/infrastructure/database";
+import { PathogenSchema } from "./pathogens";
 
 export interface GroupSchema {
     id: number;
@@ -16,6 +17,7 @@ export interface GroupSchema {
 
 export interface GroupWithRelationships extends GroupSchema {
     category?: CategorySchema | null;
+    pathogen?: PathogenSchema | null;
 }
 
 export type GroupWithCategory = GroupSchema & { categoryName: string | undefined };

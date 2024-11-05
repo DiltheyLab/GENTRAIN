@@ -16,7 +16,10 @@ export abstract class DistanceCalculationStrategy {
     protected distanceMatrixId: number | undefined;
     protected samples: SampleSchema[];
 
-    protected abstract calculateSampleDistance(sample1: SampleSchema, sample2: SampleSchema): Promise<number> | number;
+    protected abstract calculateSampleDistanceForTwoSamples(
+        sample1: SampleSchema,
+        sample2: SampleSchema
+    ): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
         this.dataManagementState = useDataManagementStore.getState();
@@ -68,7 +71,7 @@ export abstract class DistanceCalculationStrategy {
             // as limit we use the index of the current sample incremented by 1 since slice excludes the end index
             const previousSamples = this.samples.slice(0, +index);
             for (const sample2 of previousSamples) {
-                const distance = await this.calculateSampleDistance(sample1, sample2);
+                const distance = await this.calculateSampleDistanceForTwoSamples(sample1, sample2);
                 await db.distances.add({
                     sample_id_1: sample1.id,
                     sample_id_2: sample2.id,
@@ -88,6 +91,12 @@ export abstract class DistanceCalculationStrategy {
             variant: "success",
         });
         useDataManagementStore.getState().setDistanceCalculationRunning(false);
+        const sampleImports = useDataManagementStore.getState().sampleImports;
+        useDataManagementStore.getState().setFailedSampleImports(
+            Object.keys(sampleImports)
+                .filter((fastaId) => sampleImports[fastaId].status === "failed")
+                .map((fastaId) => fastaId)
+        );
         useDataManagementStore.getState().resetSampleUpload();
         if (useDataManagementStore.getState().importAssistentStep === "sequence_analysis") {
             useDataManagementStore.getState().nextImportAssistentStep();

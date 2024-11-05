@@ -1,30 +1,28 @@
-import { CoreState, useCoreStore } from "@/modules/core/stores/core";
-import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-
 export abstract class ValidationStrategy {
-    protected coreState: CoreState;
-    protected dataManagementState: DataManagementState;
+    protected header?: string[];
+    protected data: string[][] | { fastaId: string; sequence: string }[] = [];
+    protected columnNames: string[] = [];
 
-    constructor() {
-        this.coreState = useCoreStore.getState();
-        this.dataManagementState = useDataManagementStore.getState();
-    }
-
-    protected abstract validate(
-        data: Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]
-    ): Promise<{
+    protected abstract validate(): Promise<{
         data: string[][] | { fastaId: string; sequence: string }[];
         warnings?: { title: string; description: string }[];
     }>;
 
-    public async execute(data: Array<Array<string>> | { fastaId: string; sequence: string }[] | string[][]): Promise<{
+    public abstract collectData(data: string[][] | { fastaId: string; sequence: string }[]): void;
+
+    public async execute(): Promise<{
         data: string[][] | { fastaId: string; sequence: string }[];
         warnings?: { title: string; description: string }[];
     }> {
-        return this.validate(data);
+        return this.validate();
     }
 
-    protected isHeaderValid = (header: string[], columnNames: string[]) => {
-        return header.length === columnNames.length && header.every((value, index) => value === columnNames[index]);
+    protected isHeaderValid = () => {
+        if (!this.header) return false;
+        const requiredColumns = this.header.slice(0, this.columnNames.length);
+        return (
+            requiredColumns.length === this.columnNames.length &&
+            requiredColumns.every((value, index) => value === this.columnNames[index])
+        );
     };
 }
