@@ -17,12 +17,15 @@ export const tutorialSteps: Step[] = [
     },
     {
         target: "[data-tutorial-tour-step='dashboard-visualization-panel']",
-        title: "Der minimale Spannbaum.",
+        title: "Der Graph.",
         content: (
             <>
-                <p className="mb-4">
+                <p className="mb-4 -mt-3">
                     Zu den hochgeladenen Falldaten und deren genetischen Sequenzen berechnen wir die genetischen
-                    Abstände und zeigen alle Daten in einem minimalen Spannbaum (MST) an.
+                    Distanzen und zeigen alle Daten in einem minimalen Spannbaum an.{" "}
+                    <strong>
+                        Die Knoten repräsentieren dabei die Fälle und die grauen Kanten die genetischen Distanzen.
+                    </strong>
                 </p>
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md">
                     <h2 className="text-lg font-bold mb-2">Interaktionen mit dem Graphen</h2>
@@ -65,15 +68,14 @@ export const tutorialSteps: Step[] = [
             <p>
                 Hier sehen Sie Informationen über Knoten und Kanten des Graphen. Alle{" "}
                 <strong>
-                    {" "}
-                    blau ({" "}
+                    blau eingefärbten Knoten ({" "}
                     <span
                         style={{
                             backgroundColor: "#0000FF",
                         }}
                         className={"rounded-full h-3 w-3 -mt-[1px] mr-1 inline-block"}
                     />
-                    ) eingefärbten Knoten
+                    )
                 </strong>{" "}
                 gehören beispielsweise zum Ausbruch <strong>Schule A</strong>.
             </p>
@@ -130,8 +132,8 @@ export const tutorialSteps: Step[] = [
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-2">
                     <p>
                         Der standardmäßig eingestellte Clusterschwellenwert hängt vom aktiven Pathogen ab. Bei Covid-19
-                        kann man bei einer genetischen Distanz von ≤ 1 davon ausgehen, dass es sich um eine Infektion
-                        mit dem gleichen Erreger handelt.
+                        kann man bei einer genetischen Distanz ≤ 1 davon ausgehen, dass es sich um eine Infektion mit
+                        dem gleichen Erreger handelt.
                     </p>
                 </div>
             </>
@@ -179,7 +181,7 @@ export const tutorialSteps: Step[] = [
             </>
         ),
         disableBeacon: true,
-        spotlightClicks: true,
+        spotlightClicks: false,
         disableScrolling: true,
         placement: "bottom",
     },
@@ -280,10 +282,10 @@ export const tutorialSteps: Step[] = [
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-background-selection']",
-        title: "Schritt 2 - Die Hintergrunddaten.",
+        title: "Schritt 2 - Die Umgebung.",
         content: (
             <p>
-                Sie können entweder <strong>alle vorhandenen Fälle</strong> als Hintergrunddaten verwenden,{" "}
+                Sie können entweder <strong>alle vorhandenen Fälle</strong> als Umgebungsdaten verwenden,{" "}
                 <strong>keine Fälle </strong>
                 auswählen oder <strong>spezielle Falldaten</strong> aus anderen Ausbrüchen oder Kategorien nutzen.
             </p>
@@ -291,15 +293,11 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: null,
-        },
         placement: "right",
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-background-filtering']",
-        title: "Schritt 3 - Hintergrunddaten filtern.",
+        title: "Schritt 3 - Umgebungdaten filtern.",
         content: (
             <>
                 <p>
@@ -326,10 +324,6 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: null,
-        },
         placement: "right",
     },
     {
@@ -344,10 +338,6 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: null,
-        },
         placement: "right",
     },
     {
@@ -364,11 +354,29 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: null,
-        },
         placement: "right",
+    },
+    {
+        target: "[data-tutorial-tour-step='outbreak-analysis-visualization-panel']",
+        title: "Der Graph.",
+        content: (
+            <p>
+                Die Darstellung der Daten erfolgt, wie bereits im Dashboard, als <strong>minimaler Spannbaum</strong>,
+                bei dem die Knoten die Fälle repräsentieren und die grauen Kanten die genetischen Distanzen anzeigen.
+                Werden Daten aus der Kontaktnachverfolgung genutzt, erscheinen zusätzlich farbige Kontaktkanten, die in
+                der Legende erläutert sind. Die Analyse-Einstellungen werden automatisch gespeichert, solange die Option{" "}
+                <strong>"Autom. Speichern"</strong> in der unteren linken Ecke aktiviert ist.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: true,
+        disableScrolling: true,
+        placement: "left-start",
+        styles: {
+            options: {
+                width: "20vw",
+            },
+        },
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-report-export']",
@@ -383,10 +391,6 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: null,
-        },
         placement: "top",
     },
     {
@@ -404,6 +408,19 @@ export const tutorialSteps: Step[] = [
         data: {
             next: "/data-management",
             prev: null,
+        },
+    },
+    // ------------------------------Data-Management--------------------------------
+    {
+        target: "[data-tutorial-tour-step='data-management-import']",
+        title: "Die Datenverwaltung.",
+        content: <p></p>,
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: true,
+        data: {
+            next: null,
+            prev: "/outbreak-analysis/1",
         },
     },
 ];

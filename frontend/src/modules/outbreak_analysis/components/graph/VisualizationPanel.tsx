@@ -60,6 +60,7 @@ export const VisualizationPanel = () => {
         <div
             ref={containerRef}
             className="relative flex flex-col justify-center items-center rounded-lg bg-muted lg:col-span-2 graph-visualization-panel h-full"
+            data-tutorial-tour-step="outbreak-analysis-visualization-panel"
         >
             {outbreakAnalysisStore.analysisSettings.selectedOutbreak ? (
                 <>
