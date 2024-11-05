@@ -1,0 +1,14 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block create_form %}
+    {% call lib.form_tag(action=action) %}
+        {{ lib.render_form_fields(form, form_opts=form_opts) }}
+        <div class="d-flex justify-content-end form-group mt-5">
+            <input type="submit" class="btn btn-primary" value="{{ _gettext('Save') }}"/>
+        </div>
+    {% endcall %}
+{% endblock %}
+
+{% block tail %}
+    {{ super() }}
+{% endblock %}
