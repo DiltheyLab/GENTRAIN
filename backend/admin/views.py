@@ -31,13 +31,16 @@ class PanelView(AdminIndexView):
         Override builtin _handle_view in order to redirect users when a view is not
         accessible.
         """
+
+        if not current_user.is_authenticated:
+            return redirect(url_for("security.login", next=request.url))
+
+        #if not current_user.confirmed_at:
+         #   return redirect(url_for("confirm_user", next=request.url))
+
         if not self.is_accessible():
-            if current_user.is_authenticated:
-                # permission denied
-                abort(403)
-            else:
-                # login
-                return redirect(url_for("security.login", next=request.url))
+            abort(403)
+
 
     @expose('/')
     def index(self):
