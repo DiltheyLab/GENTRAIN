@@ -35,8 +35,8 @@ class PanelView(AdminIndexView):
         if not current_user.is_authenticated:
             return redirect(url_for("security.login", next=request.url))
 
-        #if not current_user.confirmed_at:
-         #   return redirect(url_for("confirm_user", next=request.url))
+        if not current_user.confirmed_at:
+            return redirect(url_for("security.change_password", next=request.url))
 
         if not self.is_accessible():
             abort(403)

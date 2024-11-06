@@ -17,3 +17,4 @@ roles_users = db.Table(
 
 from backend.events import connection
 from backend.events import sequence_analysis
+import backend.db

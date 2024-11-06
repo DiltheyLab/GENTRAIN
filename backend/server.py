@@ -1,18 +1,17 @@
-from flask_login import login_required, current_user
-from flask_security import Form
-from flask_security.forms import get_form_field_label, Length, password_required, EqualTo
-from flask_security.utils import get_message
+from alembic.command import current
+from flask_login import current_user
+from flask_security import hash_password
 from rq import Queue
 from os import environ
 from redis import Redis
-from flask import jsonify, render_template, redirect, request
+from flask import jsonify, redirect, current_app, request
 from flask import url_for
 from flask_admin import helpers as admin_helpers
 from flask_socketio import SocketIO
-from wtforms.fields.simple import PasswordField, SubmitField
-
+from sqlalchemy.sql.functions import current_timestamp
+from werkzeug.local import LocalProxy
 from backend import db
-from backend.app import admin, app, security
+from backend.app import admin, app, security, user_datastore
 
 redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
 queue_viral = Queue(name="viral", connection=redis_connection)
@@ -54,34 +53,17 @@ def security_context_processor():
         get_url=url_for,
     )
 
-class ConfirmUserForm(Form):
-    """The default change password form"""
-
-    new_password = PasswordField(
-        get_form_field_label('new_password'),
-        validators=[password_required, Length(min=6, max=128, message='PASSWORD_INVALID_LENGTH')])
-
-    new_password_confirm = PasswordField(
-        get_form_field_label('retype_password'),
-        validators=[EqualTo('new_password',
-                            message='RETYPE_PASSWORD_MISMATCH'),
-                    password_required])
-
-    submit = SubmitField(get_form_field_label('change_password'))
-
-    def validate(self):
-        if current_user.password == self.new_password.data:
-            self.new_password.errors.append(get_message('PASSWORD_IS_THE_SAME')[0])
-            return False
-        return True
-
-@app.route("/admin/confirm_user", methods=["GET"])
+@app.route("/admin/confirm_user", methods=["POST"])
 def confirm_user():
-    form = ConfirmUserForm()
-    return render_template(
-        'security/change_password.html',
-        confirm_user_form=form,
-    )
+    new_password = request.form['new_password']
+    new_password_confirm = request.form['new_password_confirm']
+    if new_password != new_password_confirm:
+        return redirect(url_for("security.change_password"))
+    current_user.confirmed_at = current_timestamp()
+    current_user.password = hash_password(new_password)
+    user_datastore.put(current_user)
+    db.session.commit()
+    return redirect("/admin")
 
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():

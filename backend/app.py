@@ -17,5 +17,4 @@ app.config.from_pyfile("config.py")
 admin = Admin(app, name="gentrain-admin", theme=Bootstrap4Theme(base_template="master.html"), index_view=PanelView(name="Panel"))
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
-
 db.init_app(app)
