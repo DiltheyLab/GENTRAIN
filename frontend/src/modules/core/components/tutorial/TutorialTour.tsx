@@ -55,16 +55,16 @@ export const TutorialTour = () => {
                     else if (prevStep) changeTutorialStepIndex(nextStepIndex);
                     break;
                 case "[data-tutorial-tour-step='outbreak-analysis-background-selection']":
-                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-filtering"]);
+                    if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["case-filtering"]);
                     else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["outbreak-selection"]);
                     break;
-                case "[data-tutorial-tour-step='outbreak-analysis-background-filtering']":
+                case "[data-tutorial-tour-step='outbreak-analysis-case-filtering']":
                     if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["contact-tracing"]);
                     else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-selection"]);
                     break;
                 case "[data-tutorial-tour-step='outbreak-analysis-contact-tracing']":
                     if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["coloring"]);
-                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["background-filtering"]);
+                    else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["case-filtering"]);
                     break;
                 case "[data-tutorial-tour-step='outbreak-analysis-coloring']":
                     if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, [], 0);

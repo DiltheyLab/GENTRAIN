@@ -296,14 +296,11 @@ export const tutorialSteps: Step[] = [
         placement: "right",
     },
     {
-        target: "[data-tutorial-tour-step='outbreak-analysis-background-filtering']",
-        title: "Schritt 3 - Umgebungdaten filtern.",
+        target: "[data-tutorial-tour-step='outbreak-analysis-case-filtering']",
+        title: "Schritt 3 - Fälle filtern.",
         content: (
             <>
-                <p>
-                    In diesem Schritt können Sie die Hintergunddaten weiter nach verschiedenen Kriterien filtern.{" "}
-                    <strong>Fälle aus dem ausgewählten Ausbruch werden nicht beeinflusst.</strong>
-                </p>
+                <p>In diesem Schritt können Sie die Fälle weiter nach verschiedenen Kriterien filtern. </p>
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
                     <div className="space-y-2">
                         <p>
@@ -311,11 +308,13 @@ export const tutorialSteps: Step[] = [
                             Sequenzen aus.
                         </p>
                         <p>
-                            <strong>Sequenzierte Fälle mit genetischer Distanz &gt; 1 ausschließen:</strong> Blendet
-                            alle Fälle mit einer genetischen Distanz über einem festgelegten Schwellenwert aus.
+                            <strong>Sequenzierte Umgebungsfälle mit genetischer Distanz &gt; 1 ausschließen:</strong>{" "}
+                            Blendet alle Umgebungsfälle mit einer genetischen Distanz über einem festgelegten
+                            Schwellenwert aus.
                         </p>
                         <p>
-                            <strong>Zeitspanne auswählen:</strong> Blendet alle Fälle außerhalb einer Zeitspanne aus.
+                            <strong>Zeitspanne auswählen:</strong> Blendet alle Umgebungsfälle außerhalb einer
+                            Zeitspanne aus.
                         </p>
                     </div>
                 </div>

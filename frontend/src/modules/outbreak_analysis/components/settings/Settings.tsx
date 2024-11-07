@@ -2,14 +2,13 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { OutbreakSelection } from "./outbreak_selection/OutbreakSelection";
 import { BackgroundSelection } from "./background_selection/BackgroundSelection";
-import { BackgroundFilter } from "./background_filter/BackgroundFilter";
 import { ContactTracing } from "./contact_tracing/ContactTracing";
 import { SectionHeader } from "./SectionHeader";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import {
     tooltipOutbreakSelection,
     tooltipBackgroundSelection,
-    tooltipBackgroundFilter,
+    tooltipCaseFilter,
     tooltipContactTracing,
     tooltipColorSelection,
 } from "./Tooltips";
@@ -18,6 +17,7 @@ import { lazy, Suspense, useState } from "react";
 import { safeAnalysis } from "../../helpers/safeAnalysis";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogTrigger } from "@/modules/core/components/ui/Dialog";
+import { CaseFilter } from "./case_filter/CaseFilter";
 
 const PdfExportConfiguration = lazy(() => import("../pdf_export/PdfExportConfiguration"));
 
@@ -71,25 +71,20 @@ export const Settings = () => {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem
-                        value="background-filtering"
+                        value="case-filtering"
                         disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
-                        data-tutorial-tour-step="outbreak-analysis-background-filtering"
+                        data-tutorial-tour-step="outbreak-analysis-case-filtering"
                     >
                         <AccordionTrigger className="flex w-full justify-between items-center disabled:hover:no-underline">
                             <SectionHeader
                                 step={3}
-                                title="Umgebung filtern"
-                                tooltipContent={tooltipBackgroundFilter}
-                                disabled={
-                                    !outbreakAnalysisStore.analysisSettings.selectedOutbreak ||
-                                    outbreakAnalysisStore.analysisSettings.backgroundType === "none"
-                                }
+                                title="Fälle filtern"
+                                tooltipContent={tooltipCaseFilter}
+                                disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
                             />
                         </AccordionTrigger>
                         <AccordionContent>
-                            <BackgroundFilter
-                                disabled={outbreakAnalysisStore.analysisSettings.backgroundType === "none"}
-                            />
+                            <CaseFilter />
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem

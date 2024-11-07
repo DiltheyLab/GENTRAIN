@@ -8,7 +8,7 @@ export const tooltipBackgroundSelection = (
     </p>
 );
 
-export const tooltipBackgroundFilter = (
+export const tooltipCaseFilter = (
     <>
         <p>
             In diesem Schritt können Sie die Hintergunddaten weiter nach verschiedenen Kriterien filtern.{" "}
