@@ -1,5 +1,6 @@
 from os import path, listdir, remove, rename
 
+from alembic.command import current
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField
@@ -27,13 +28,15 @@ class AuthModelView(sqla.ModelView):
         Override builtin _handle_view in order to redirect users when a view is not
         accessible.
         """
+
+        if not current_user.is_authenticated:
+            return redirect(url_for("security.login", next=request.url))
+
         if not self.is_accessible():
-            if current_user.is_authenticated:
-                # permission denied
-                abort(403)
-            else:
-                # login
-                return redirect(url_for("security.login", next=request.url))
+            abort(403)
+
+        if not current_user.confirmed_at:
+            return redirect(url_for("security.change_password", next=request.url))
 
 
 class UserView(AuthModelView):
