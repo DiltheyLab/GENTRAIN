@@ -215,7 +215,6 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         data: {
             next: "/outbreak-analysis",
-            prev: null,
         },
     },
     // ------------------------------Outbreak-Analyses-Overview--------------------------------
@@ -231,14 +230,13 @@ export const tutorialSteps: Step[] = [
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
-        data: {
-            next: null,
-            prev: "/",
-        },
         styles: {
             spotlight: {
                 marginTop: 19,
             },
+        },
+        data: {
+            prev: "/",
         },
     },
     {
@@ -255,7 +253,6 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         data: {
             next: "/outbreak-analysis/1",
-            prev: null,
         },
     },
     // ------------------------------Outbreak-Analysis--------------------------------
@@ -377,6 +374,9 @@ export const tutorialSteps: Step[] = [
             options: {
                 width: "20vw",
             },
+            spotlight: {
+                marginTop: 5,
+            },
         },
     },
     {
@@ -408,19 +408,23 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         data: {
             next: "/data-management",
-            prev: null,
         },
     },
     // ------------------------------Data-Management--------------------------------
     {
         target: "[data-tutorial-tour-step='data-management-import']",
-        title: "Die Datenverwaltung.",
-        content: <p></p>,
+        title: "Der Datenimport.",
+        content: (
+            <p>
+                Hier können Sie entweder manuell <strong>Falldaten, Sequenzdaten und Kontaktdaten</strong> importieren
+                oder den Import-Assistenten verwenden, der Sie durch den Importprozess führt und Ihnen mehr
+                Informaitonen zu den einzelnen Daten liefert.{" "}
+            </p>
+        ),
         disableBeacon: true,
         spotlightClicks: false,
         disableScrolling: true,
         data: {
-            next: null,
             prev: "/outbreak-analysis/1",
         },
     },
