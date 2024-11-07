@@ -3,7 +3,7 @@ from flask_admin.theme import Bootstrap4Theme
 
 from backend import db
 from backend.app import app
-gifrom backend.modules.admin.views import PathogenView, UserView, PathogenIndexView
+from backend.modules.admin.views import PathogenView, UserView, PathogenIndexView
 from backend.modules.core.models import User, Pathogen
 
 # init flask admin with pathogen view as index and bind a custom master template
