@@ -1,6 +1,13 @@
 from flask_security import RoleMixin, UserMixin
-from backend import db, roles_users
 
+from backend.app import db
+
+
+roles_users = db.Table(
+    "roles_users",
+    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
+    db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
+)
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)

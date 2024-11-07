@@ -1,7 +1,6 @@
 from os import path, listdir, remove, rename
 
 from flask import request, url_for, redirect, abort
-from flask_admin import expose, AdminIndexView
 from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField
 from flask_login import current_user
@@ -11,7 +10,7 @@ from zipfile import ZipFile
 import time
 import shutil
 
-from backend import db
+from backend.app import db
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
 
@@ -45,9 +44,11 @@ class UserView(AuthModelView):
         )
 
     column_list = ["id", "email", "first_name", "last_name"]
-    form_columns = ["roles", "email", "first_name", "last_name", "password"]
+    form_create_rules = ('roles', 'email', 'first_name', "last_name", "password")
+    form_edit_rules = ('roles', 'email', 'first_name', "last_name")
     edit_template = 'admin/edit.html'
     create_template = 'admin/create.html'
+
     def create_model(self, form):
         user_datastore = SQLAlchemyUserDatastore(db, User, Role)
         user_datastore.create_user(
@@ -59,7 +60,10 @@ class UserView(AuthModelView):
         )
         db.session.commit()
 
+
 class PathogenView(AuthModelView):
+    schemes_root = f"{get_project_path()}/modules/sequence_analysis/schemes"
+
     def is_accessible(self):
         return (
                 super().is_accessible()
@@ -79,7 +83,7 @@ class PathogenView(AuthModelView):
     form_args = {
         "scheme_path": {
             "label": "File",
-            "base_path": path.join(get_project_path(), "modules/sequence_analysis/schemes"),
+            "base_path": schemes_root,
             "allow_overwrite": True,
             "allowed_extensions": ["zip"]
         }
@@ -92,55 +96,55 @@ class PathogenView(AuthModelView):
     def after_model_change(self, form, model, is_created):
         if self.scheme_added(model.scheme_path):
             with ZipFile(
-                    path.join(get_project_path(), f"modules/sequence_analysis/schemes/{model.scheme_path}"), "r"
+                    path.join(self.schemes_root, model.scheme_path), "r"
             ) as archive:
                 directory_name = f"{model.scheme_name}_{round(time.time() * 1000)}"
                 extract_path = path.join(
-                    get_project_path(),
-                    f"modules/sequence_analysis/schemes/{directory_name}",
+                    self.schemes_root, directory_name
                 )
                 archive.extractall(path=extract_path)
                 content = listdir(
                     path.join(
-                        get_project_path(),
-                        f"modules/sequence_analysis/schemes/{directory_name}",
+                        self.schemes_root, directory_name
                     )
                 )
                 if len(content) == 1:
                     sub_path = path.join(
-                        get_project_path(),
-                        f"modules/sequence_analysis/schemes/{directory_name}/{content[0]}",
+                        self.schemes_root,
+                        f"{directory_name}/{content[0]}",
                     )
                     elements = listdir(sub_path)
                     for element in elements:
                         shutil.move(path.join(sub_path, element), extract_path)
                     shutil.rmtree(sub_path)
                 if self.scheme_exists(self.prior_scheme_name):
-                    shutil.rmtree(path.join(get_project_path(), f"schemes/{self.prior_scheme_name}"))
+                    shutil.rmtree(path.join(self.schemes_root, self.prior_scheme_name))
                 shutil.move(
                     path.join(
-                        get_project_path(),
-                        f"modules/sequence_analysis/schemes/{directory_name}",
+                        self.schemes_root,
+                        directory_name,
                     ),
                     path.join(
-                        get_project_path(),
-                        f"modules/sequence_analysis/schemes/{model.scheme_name}",
+                        self.schemes_root,
+                        model.scheme_name,
                     ),
                 )
-            remove(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{model.scheme_path}"))
+            remove(path.join(self.schemes_root, model.scheme_path))
         if is_created is False and model.scheme_name and model.scheme_name != self.prior_scheme_name:
-            rename(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{self.prior_scheme_name}"),
-                   path.join(get_project_path(), f"modules/sequence_analysis/schemes/{model.scheme_name}"))
+            rename(path.join(self.schemes_root, self.prior_scheme_name),
+                   path.join(self.schemes_root, model.scheme_name))
 
     def after_model_delete(self, model):
-        if path.isdir(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{model.scheme_name}")):
-            shutil.rmtree(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{model.scheme_name}"))
+        if path.isdir(path.join(self.schemes_root, model.scheme_name)):
+            shutil.rmtree(path.join(self.schemes_root, model.scheme_name))
 
     def scheme_exists(self, scheme_name):
-        return scheme_name and path.isdir(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{scheme_name}"))
+        return scheme_name and path.isdir(
+            path.join(self.schemes_root, scheme_name))
 
     def scheme_added(self, scheme_path):
-        return path.isfile(path.join(get_project_path(), f"modules/sequence_analysis/schemes/{scheme_path}"))
+        return path.isfile(path.join(self.schemes_root, scheme_path))
+
 
 class PathogenIndexView(PathogenView):
     def __init__(self, model, session, *args, **kwargs):

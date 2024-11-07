@@ -2,8 +2,7 @@ from flask import session, request, redirect, url_for
 from flask_login import current_user
 from flask_security import hash_password
 from sqlalchemy.sql.functions import current_timestamp
-from backend import db
-from backend.app import app
+from backend.app import app, db
 from backend.modules.admin.users import user_datastore
 
 

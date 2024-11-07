@@ -1,8 +1,7 @@
 from flask_admin import Admin
 from flask_admin.theme import Bootstrap4Theme
 
-from backend import db
-from backend.app import app
+from backend.app import db, app
 from backend.modules.admin.views import PathogenView, UserView, PathogenIndexView
 from backend.modules.core.models import User, Pathogen
 

@@ -1,6 +1,5 @@
 from flask_security import SQLAlchemyUserDatastore, hash_password
-from backend import db
-from backend.app import app
+from backend.app import app, db
 from backend.modules.core.models import User, Role
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)

@@ -1,0 +1,15 @@
+10:37:30 Worker rq:worker:ace69d0bd514498f8cf5100d45f73670 started with PID 11, version 1.16.2
+10:37:30 Subscribing to channel rq:pubsub:ace69d0bd514498f8cf5100d45f73670
+10:37:30 *** Listening on bacterial...
+10:37:30 Cleaning registries for queue: bacterial
+10:37:31 Worker rq:worker:5667da173a3a46198cd467fef34e3f10 started with PID 10, version 1.16.2
+10:37:31 Subscribing to channel rq:pubsub:5667da173a3a46198cd467fef34e3f10
+10:37:31 *** Listening on bacterial...
+10:37:31 Cleaning registries for queue: bacterial
+10:37:31 Worker rq:worker:1c96463cdb794622bca49e81cf820938 started with PID 9, version 1.16.2
+10:37:31 Subscribing to channel rq:pubsub:1c96463cdb794622bca49e81cf820938
+10:37:31 *** Listening on bacterial...
+10:37:31 Cleaning registries for queue: bacterial
+10:51:00 Cleaning registries for queue: bacterial
+10:51:01 Cleaning registries for queue: bacterial
+10:51:01 Cleaning registries for queue: bacterial
