@@ -24,7 +24,7 @@ export const DataOverview = () => {
         }
     };
 
-    if (!casesData || !activePathogen) return null;
+    if (!casesData || casesData?.length === 0 || !activePathogen) return null;
 
     return (
         <>

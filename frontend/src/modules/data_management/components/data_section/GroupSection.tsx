@@ -5,6 +5,7 @@ import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modul
 
 export const GroupSection = () => {
     const groupData = useGetCategoriesWithGroupsAndCaseCountForActivePathogen();
+
     if (!groupData) return null;
 
     return (
