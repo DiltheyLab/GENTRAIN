@@ -1,11 +1,6 @@
 from pydantic import BaseModel
 
 
-# sequence variants action models
-class SequenceAnalysisRequestBodyModel(BaseModel):
-    sequence: str
-
-
 class ViralSequenceAnalysisResponseModel(BaseModel):
     nextclade_version: str
     lineage: str

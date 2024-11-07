@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
 from backend.config import get_project_path
-from backend.models.sequence_analysis import ViralSequenceAnalysisResponseModel
+from backend.modules.sequence_analysis.response_models import ViralSequenceAnalysisResponseModel
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )

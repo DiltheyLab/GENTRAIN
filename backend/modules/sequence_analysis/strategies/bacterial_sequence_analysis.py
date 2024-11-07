@@ -9,7 +9,7 @@ from backend.config import get_project_path
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
-from backend.models.sequence_analysis import BacterialSequenceAnalysisResponseModel
+from backend.modules.sequence_analysis.response_models import BacterialSequenceAnalysisResponseModel
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
