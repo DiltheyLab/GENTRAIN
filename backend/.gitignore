@@ -4,3 +4,4 @@ __pycache__/
 .env
 supervisord.pid
 supervisord.log
+logs/*
