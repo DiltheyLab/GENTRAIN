@@ -24,11 +24,13 @@ export const tutorialSteps: Step[] = [
                     Zu den hochgeladenen Falldaten und deren genetischen Sequenzen berechnen wir die genetischen
                     Distanzen und zeigen alle Daten in einem minimalen Spannbaum an.{" "}
                     <strong>
-                        Die Knoten repräsentieren dabei die Fälle und die grauen Kanten die genetischen Distanzen.
+                        Die Knoten repräsentieren dabei die Fälle und die grauen Kanten die genetischen Distanzen (keine
+                        Übertragungsevents).
                     </strong>
                 </p>
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-                    <h2 className="text-lg font-bold mb-2">Interaktionen mit dem Graphen</h2>
+                    <h2 className="text-lg font-bold mb-2 2xl:hidden">Interaktionen</h2>
+                    <h2 className="text-lg font-bold mb-2 hidden 2xl:block">Interaktionen mit dem Graphen</h2>
                     <div className="space-y-2">
                         <p className="2xl:hidden">
                             <strong>Knoten anklicken:</strong> Klicken Sie mit der linken Maustaste auf einen Knoten, um
