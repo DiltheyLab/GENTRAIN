@@ -1,5 +1,4 @@
 from flask_security import RoleMixin, UserMixin
-
 from backend import db, roles_users
 
 
@@ -27,6 +26,7 @@ class User(db.Model, UserMixin):
 
     def __str__(self):
         return self.email
+
 
 class Pathogen(db.Model):
     id = db.Column(db.Integer, primary_key=True)

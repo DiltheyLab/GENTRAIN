@@ -4,11 +4,9 @@ import pathlib
 import tempfile
 import sys
 from subprocess import Popen
-from backend.exceptions.sequence_analysis_failed_exception import (
-    SequenceAnalysisFailedException,
-)
+from backend.modules.core.exceptions import SequenceAnalysisFailedException
 from backend.config import get_project_path
-from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
+from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
 from backend.models.sequence_analysis import BacterialSequenceAnalysisResponseModel
@@ -81,11 +79,11 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         process = Popen(
             [
                 "perl",
-                f"{get_project_path()}/scripts/sequence_analysis/bacterial.pl",
+                f"{get_project_path()}/modules/sequence_analysis/scripts/bacterial.pl",
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/schemes/{self.pathogen.scheme_name}",
+                f"{get_project_path()}/modules/sequence_analysis/schemes/{self.pathogen.scheme_name}",
                 "-output",
                 self.output,
             ],

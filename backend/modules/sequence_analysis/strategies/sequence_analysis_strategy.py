@@ -3,10 +3,7 @@ import json
 import logging
 from redis import Redis
 from flask_socketio import SocketIO
-from backend.exceptions.genomic_error_exception import GenomicErrorException
-from backend.exceptions.sequence_analysis_failed_exception import (
-    SequenceAnalysisFailedException,
-)
+from backend.modules.core.exceptions import GenomicErrorException, SequenceAnalysisFailedException
 
 redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
 sio = SocketIO(message_queue="redis://gentrain-redis:6379")

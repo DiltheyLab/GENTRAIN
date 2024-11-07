@@ -15,6 +15,4 @@ roles_users = db.Table(
     db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
 )
 
-from backend.events import connection
-from backend.events import sequence_analysis
-import backend.db
+import backend.modules

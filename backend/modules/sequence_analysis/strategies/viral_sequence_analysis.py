@@ -3,13 +3,10 @@ import pathlib
 import re
 import subprocess
 import tempfile
-from backend.exceptions.sequence_analysis_failed_exception import (
-    SequenceAnalysisFailedException,
-)
-from backend.exceptions.genomic_error_exception import GenomicErrorException
+from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
 from backend.config import get_project_path
 from backend.models.sequence_analysis import ViralSequenceAnalysisResponseModel
-from backend.strategies.sequence_analysis.sequence_analysis_strategy import (
+from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
 
@@ -45,10 +42,10 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"{get_project_path()}/scripts/sequence_analysis/viral.sh",
+                f"{get_project_path()}/modules/sequence_analysis/scripts/viral.sh",
                 self.input,
                 self.output,
-                f"{get_project_path()}/schemes/{self.pathogen.scheme_name}",
+                f"{get_project_path()}/modules/sequence_analysis/schemes/{self.pathogen.scheme_name}",
             ],
             check=False,
         )

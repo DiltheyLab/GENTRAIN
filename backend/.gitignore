@@ -1,4 +1,4 @@
-schemes/*
+modules/sequence_analysis/schemes/*
 temp_data
 
 # Byte-compiled / optimized / DLL files
