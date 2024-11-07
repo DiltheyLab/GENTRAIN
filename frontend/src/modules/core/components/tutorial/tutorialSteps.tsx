@@ -131,9 +131,9 @@ export const tutorialSteps: Step[] = [
                 </p>
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-2">
                     <p>
-                        Der standardmäßig eingestellte Clusterschwellenwert hängt vom aktiven Pathogen ab. Bei Covid-19
-                        kann man bei einer genetischen Distanz ≤ 1 davon ausgehen, dass es sich um eine Infektion mit
-                        dem gleichen Erreger handelt.
+                        Der standardmäßig eingestellte Clusterschwellenwert hängt vom aktiven Pathogen ab. Bei
+                        SARS-CoV-2 kann man bei einer genetischen Distanz ≤ 1 davon ausgehen, dass es sich um eine
+                        Infektion mit dem gleichen Erreger handelt.
                     </p>
                 </div>
             </>
