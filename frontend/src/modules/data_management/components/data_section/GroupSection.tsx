@@ -9,8 +9,13 @@ export const GroupSection = () => {
     if (!groupData) return null;
 
     return (
-        <Accordion type="multiple">
-            <AccordionItem value="item-2">
+        <Accordion
+            type="multiple"
+            data-tutorial-tour-step="data-management-group-section"
+            defaultValue={["data-management-group-section"]}
+            className="bg-white rounded-lg p-3"
+        >
+            <AccordionItem value="data-management-group-section">
                 <AccordionTrigger className="py-2">
                     <h3 className="font-bold tracking-tight text-lg">Gruppen</h3>
                 </AccordionTrigger>

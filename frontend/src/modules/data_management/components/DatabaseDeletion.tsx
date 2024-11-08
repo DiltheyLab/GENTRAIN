@@ -23,7 +23,7 @@ export const DatabaseDeletion = () => {
         }
     };
     return (
-        <div>
+        <div data-tutorial-tour-step="data-management-delete-data-section" className="bg-white rounded-xl p-3">
             <h2 className="text-2xl font-bold tracking-tight">Alle Daten löschen</h2>
             <p className="text-muted-foreground mb-4">
                 Hier können Sie alle bereits importierten Daten löschen. Dies schließt Daten aller Pathogen ein. Diese

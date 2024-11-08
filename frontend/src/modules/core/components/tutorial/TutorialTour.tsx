@@ -26,6 +26,7 @@ export const TutorialTour = () => {
         changeTutorialStepIndex(0);
         changeTutorialIsRunning(false);
         changeTutorialTourIsActive(false);
+        navigate("/");
         window.scrollTo(0, 0);
     };
 
@@ -70,7 +71,7 @@ export const TutorialTour = () => {
                     if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, [], 0);
                     else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["contact-tracing"]);
                     break;
-                case "[data-tutorial-tour-step='outbreak-analysis-report-export']":
+                case "[data-tutorial-tour-step='outbreak-analysis-visualization-panel']":
                     if (nextStep) changeTutorialStepIndex(nextStepIndex);
                     else if (prevStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["coloring"]);
                     break;
@@ -111,7 +112,6 @@ export const TutorialTour = () => {
                 continuous={true}
                 showProgress={true}
                 scrollDuration={500}
-                spotlightClicks={true}
                 disableOverlayClose={true}
                 callback={handleCallback}
                 styles={{
@@ -123,7 +123,7 @@ export const TutorialTour = () => {
                         overlayColor: "rgba(0,0,0,0.5)",
                     },
                 }}
-                scrollOffset={25}
+                scrollOffset={70}
             />
             <Button className="text-lg fixed right-5 bottom-5 z-[1001]" onClick={closeTutorial}>
                 Tutorial beenden

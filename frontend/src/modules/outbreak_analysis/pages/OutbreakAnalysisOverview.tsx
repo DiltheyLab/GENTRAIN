@@ -11,33 +11,35 @@ export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();
 
     return (
-        <div className="flex h-full flex-1 flex-col p-8 bg-white" data-tutorial-tour-step="outbreak-analysis-overview">
-            <h2 className="text-2xl font-bold tracking-tight">Übersicht der Ausbruchsanalysen</h2>
-            <p className="text-muted-foreground">
-                Hier können Sie alle Ihre Ausbruchsanalyse einsehen und neue anlegen.
-            </p>
-            <DataTable
-                data={analyses ?? []}
-                columns={analysesTableColumns}
-                pageSize={10}
-                filterFn={analysesTableFilter}
-                actions={(table) => {
-                    const selectedAnalyses: Row<AnalysisSchema>[] = table.getSelectedRowModel().flatRows;
+        <div className="p-5">
+            <div className="p-3 rounded-lg bg-white" data-tutorial-tour-step="outbreak-analysis-overview">
+                <h2 className="text-2xl font-bold tracking-tight">Übersicht der Ausbruchsanalysen</h2>
+                <p className="text-muted-foreground">
+                    Hier können Sie alle Ihre Ausbruchsanalyse einsehen und neue anlegen.
+                </p>
+                <DataTable
+                    data={analyses ?? []}
+                    columns={analysesTableColumns}
+                    pageSize={10}
+                    filterFn={analysesTableFilter}
+                    actions={(table) => {
+                        const selectedAnalyses: Row<AnalysisSchema>[] = table.getSelectedRowModel().flatRows;
 
-                    return (
-                        <>
-                            <AnalysisCreation />
-                            <SelectedAnalysesDeleteDialog
-                                selectedAnalyses={selectedAnalyses}
-                                disabled={selectedAnalyses.length === 0}
-                            />
-                        </>
-                    );
-                }}
-                selectionLabel="Analysen"
-                className="mt-8"
-                filterPlaceholder="Analyse suchen..."
-            />
+                        return (
+                            <>
+                                <AnalysisCreation />
+                                <SelectedAnalysesDeleteDialog
+                                    selectedAnalyses={selectedAnalyses}
+                                    disabled={selectedAnalyses.length === 0}
+                                />
+                            </>
+                        );
+                    }}
+                    selectionLabel="Analysen"
+                    className="mt-8"
+                    filterPlaceholder="Analyse suchen..."
+                />
+            </div>
         </div>
     );
 };

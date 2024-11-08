@@ -28,8 +28,10 @@ export const DataOverview = () => {
 
     return (
         <>
-            <Separator />
-            <div>
+            <div className="p-3">
+                <Separator />
+            </div>
+            <div data-tutorial-tour-step="data-management-case-section" className="bg-white rounded-lg p-3">
                 <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold tracking-tight mb-4">
                         Importierte Daten zu {activePathogen.name}

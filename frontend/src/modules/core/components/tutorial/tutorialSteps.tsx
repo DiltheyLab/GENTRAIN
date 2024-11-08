@@ -91,6 +91,7 @@ export const tutorialSteps: Step[] = [
                 width: "20vw",
             },
         },
+        spotlightPadding: 6,
     },
     {
         target: "[data-tutorial-tour-step='dashboard-visualization-panel-graph-settings']",
@@ -106,6 +107,7 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         placement: "left-start",
         disableScrollParentFix: true,
+        spotlightPadding: 6,
     },
     {
         target: "[data-tutorial-tour-step='dashboard-settings']",
@@ -170,7 +172,7 @@ export const tutorialSteps: Step[] = [
         content: (
             <>
                 <p>
-                    Ihre personenbezogenen Daten <strong>verbleiben ausschließlich in Ihrem Browser</strong> und{" "}
+                    Ihre importierten Daten <strong>verbleiben ausschließlich in Ihrem Browser</strong> und{" "}
                     <strong>werden nicht übertragen</strong>.
                 </p>
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
@@ -232,12 +234,13 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
         styles: {
             spotlight: {
-                marginTop: 19,
+                marginTop: 2,
             },
         },
         data: {
             prev: "/",
         },
+        offset: 5,
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-overview-start']",
@@ -423,9 +426,99 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
-        disableScrolling: true,
+        disableScrolling: false,
         data: {
             prev: "/outbreak-analysis/1",
         },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-case-section']",
+        title: "Ihre Datenübersicht.",
+        content: (
+            <p>
+                In diesem Bereich finden Sie eine Übersicht über alle importierten Daten. Hier können Sie entweder
+                einzelne Datensätze löschen oder alle Datensätze des entsprechenden Pathogens entfernen.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: false,
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-outbreak-section']",
+        title: "Ihre Ausbrüche.",
+        content: (
+            <p>
+                Diese Tabelle listet alle von Ihnen angelegten Ausbrüche auf. Sie können hier{" "}
+                <strong>neue Ausbrüche erstellen</strong> und diesen <strong>Fälle zuordnen.</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: false,
+        placement: "auto",
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-group-section']",
+        title: "Ihre Gruppen.",
+        content: <p>Hier finden Sie Informationen zu allen angelegten Gruppen. </p>,
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: false,
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-delete-data-section']",
+        title: "Alle Daten löschen.",
+        content: (
+            <p>
+                Wenn Sie ihren gesamten Datenbestand löschen wollen, können Sie das hier tun.{" "}
+                <strong>Achtung: Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        disableScrolling: false,
+        placement: "top",
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='tutorial-end']",
+        title: "Das Tutorial ist beendet.",
+        content: (
+            <p>
+                Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Unter dem Reiter{" "}
+                <strong>Hilfe</strong> können Sie das Tutorial jederzeit erneut starten.{" "}
+                <strong>Wir wünschen Ihnen viel Erfolg bei der Arbeit mit Gentrain!</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        placement: "center",
     },
 ];

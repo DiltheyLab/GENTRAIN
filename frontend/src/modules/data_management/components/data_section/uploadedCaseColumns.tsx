@@ -125,7 +125,7 @@ export const uploadedCaseColumns: ColumnDef<CaseWithRelationships>[] = [
             if (!contacts) return;
             const caseIds = Object.keys(contacts);
             return (
-                <div className="flex flex-wrap max-w-[240px] gap-1">
+                <div className="flex flex-wrap max-w-[240px] xl:max-w-[350px] gap-1">
                     {caseIds.map((case_id: string) => (
                         <HoverCard key={case_id} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>

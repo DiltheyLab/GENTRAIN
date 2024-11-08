@@ -5,6 +5,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 
 export const CaseSection = () => {
     const casesData = useCoreStore((state) => state.casesWithRelationships);
+
     if (!casesData) return null;
 
     return (

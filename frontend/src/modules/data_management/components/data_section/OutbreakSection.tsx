@@ -8,8 +8,13 @@ export const OutbreakSection = () => {
     if (!outbreakData) return null;
 
     return (
-        <Accordion type="multiple">
-            <AccordionItem value="item-1">
+        <Accordion
+            className="bg-white rounded-lg p-3"
+            data-tutorial-tour-step="data-management-outbreak-section"
+            type="multiple"
+            defaultValue={["data-management-outbreak-section"]}
+        >
+            <AccordionItem value="data-management-outbreak-section">
                 <AccordionTrigger className="py-2">
                     <h3 className="font-bold tracking-tight text-lg">Ausbrüche</h3>
                 </AccordionTrigger>

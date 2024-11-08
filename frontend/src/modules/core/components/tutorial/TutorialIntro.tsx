@@ -22,7 +22,7 @@ export const TutorialIntro = () => {
                     <DialogTitle className="flex text-2xl text-primary items-center">
                         Willkommen bei GENTRAIN
                     </DialogTitle>
-                    <DialogDescription className="text-md font-normal text-black">
+                    <DialogDescription className="text-[1rem] text-black">
                         Dieses Tutorial führt Sie durch die wichtigsten Funktionen der Software und zeigt Ihnen, wie Sie{" "}
                         <strong>GENTRAIN</strong> effektiv nutzen können. Sie können das Tutorial jederzeit beenden.
                     </DialogDescription>
