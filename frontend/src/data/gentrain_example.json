@@ -214056,7 +214056,7 @@
                             "linkWidth": 2.5,
                             "charge": -80
                         },
-                        "generalSettings": { "autoSave": true, "openAccordionItems": ["item-1"] },
+                        "generalSettings": { "autoSave": true, "openAccordionItems": ["outbreak-selection"] },
                         "pathogen_id": 1,
                         "created_at": 1730992810167,
                         "updated_at": 1730992810167,
