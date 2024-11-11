@@ -3,7 +3,7 @@ import { BacterialAnalysisResult } from "@/modules/core/models/sequence_analyses
 import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
 
 export class BacterialDistanceCalculation extends DistanceCalculationStrategy {
-    protected calculateSampleDistance = (sample1: SampleSchema, sample2: SampleSchema) => {
+    protected calculateSampleDistanceForTwoSamples = (sample1: SampleSchema, sample2: SampleSchema) => {
         const sequenceAnalysisResult1 = sample1.sequence_analysis?.result as BacterialAnalysisResult;
         const sequenceAnalysisResult2 = sample2.sequence_analysis?.result as BacterialAnalysisResult;
         if (!sequenceAnalysisResult1 || !sequenceAnalysisResult2) return 0;

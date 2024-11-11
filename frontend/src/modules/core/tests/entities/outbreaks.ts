@@ -4,7 +4,7 @@ type TestOutbreak = Partial<OutbreakSchema>;
 
 export const createOutbreak = ({
     id = 0,
-    name = ":outbreak_id:",
+    name = ":outbreak_name:",
     pathogen_id = 0,
     case_count = null,
     sequenced_case_count = null,

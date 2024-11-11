@@ -9,7 +9,7 @@ import {
 } from "@/modules/data_management/services/distance_calculation/ViralPositionExtractor";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
-    protected calculateSampleDistance = async (sample1: SampleSchema, sample2: SampleSchema) => {
+    protected calculateSampleDistanceForTwoSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
         const viralDistanceExtractor = new ViralDistanceExtractor(sample1, sample2);
         const alignment = await this.alignSamples(sample1, sample2);
         viralDistanceExtractor.calculateDistance(alignment[0], alignment[1]);

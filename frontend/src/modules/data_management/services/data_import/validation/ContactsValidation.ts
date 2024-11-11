@@ -5,20 +5,26 @@ import { ValidationStrategy } from "./ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
-
-const CONTACT_COLUMN_NAMES = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export class ContactsValidation extends ValidationStrategy {
-    protected validate = async (data: string[][]) => {
-        const activePathogen = this.coreState.activePathogen;
+    protected header: string[] = [];
+    protected data: string[][] = [];
+    protected columnNames = ["Fall ID 1", "Fall ID 2", "Typ", "Kontext"];
+
+    public collectData(data: string[][]) {
+        this.header = data[0];
+        this.data = data.slice(1, data.length);
+    }
+
+    protected validate = async () => {
+        const activePathogen = useCoreStore.getState().activePathogen;
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        const header = data[0];
-        data = data.slice(1, data.length);
 
         //check if header is exactly the same as columnNameRequirements
-        if (!this.isHeaderValid(header, CONTACT_COLUMN_NAMES)) {
+        if (!this.isHeaderValid()) {
             throw new GentrainException("InvalidHeaderError");
         }
 
@@ -28,7 +34,7 @@ export class ContactsValidation extends ValidationStrategy {
             caseMap.set(caseData.case_id, caseData);
         }
 
-        const contactImports = await this.filterAlreadyExistingContact(data, caseMap);
+        const contactImports = await this.filterAlreadyExistingContact(this.data, caseMap);
         useDataManagementStore.getState().setContactImports(contactImports);
         useDataManagementStore.getState().setContactSelectionActive(true);
 
@@ -45,7 +51,7 @@ export class ContactsValidation extends ValidationStrategy {
         }
 
         return {
-            data: data,
+            data: this.data,
         };
     };
 

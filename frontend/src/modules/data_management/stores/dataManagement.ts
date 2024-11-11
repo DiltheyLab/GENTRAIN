@@ -3,17 +3,12 @@ import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
+import { CaseImports } from "../types/import";
 
 export interface DataManagementState {
     clearImports: () => void;
     // case import
-    caseImports: {
-        [id: string]: {
-            imported: CaseImport;
-            persisted: CaseSchema | null;
-            import: boolean;
-        };
-    };
+    caseImports: CaseImports;
     changeCaseImport: (key: string, value: any) => void;
     removeCaseImport: (key: string) => void;
     setCaseImports: (caseImports: {
@@ -49,6 +44,8 @@ export interface DataManagementState {
     distanceCalculationSum: number;
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
+    failedSampleImports: string[];
+    setFailedSampleImports: (fastaId: string[]) => void;
     // contact import
     contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
     changeContactImport: (key: string, value: any) => void;
@@ -167,6 +164,10 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
             hideSampleUploadContent: false,
             sampleImports: {},
         });
+    },
+    failedSampleImports: [],
+    setFailedSampleImports: (fastaIds: string[]) => {
+        set({ failedSampleImports: fastaIds });
     },
     // contact import
     contactImports: {},

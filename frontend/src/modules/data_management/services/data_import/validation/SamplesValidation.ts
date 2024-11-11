@@ -5,11 +5,18 @@ import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { toast } from "@/modules/core/components/ui/UseToast";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export class SamplesValidation extends ValidationStrategy {
-    protected validate = async (data: { fastaId: string; sequence: string }[]) => {
+    protected data: { fastaId: string; sequence: string }[] = [];
+
+    public collectData(data: { fastaId: string; sequence: string }[]) {
+        this.data = data;
+    }
+
+    protected validate = async () => {
         const samplesWithoutCase: string[] = [];
-        const activePathogen = this.coreState.activePathogen;
+        const activePathogen = useCoreStore.getState().activePathogen;
         const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
 
         if (!activePathogen) {
@@ -23,7 +30,7 @@ export class SamplesValidation extends ValidationStrategy {
                 status: string;
             };
         } = {};
-        for (const sample of data) {
+        for (const sample of this.data) {
             // only import if case for the pathogen and a samples with the same fasta id does not already exist
             const sampleCase = await db.cases
                 .where("[fasta_id+pathogen_id]")
@@ -51,8 +58,8 @@ export class SamplesValidation extends ValidationStrategy {
 
         useDataManagementStore.getState().setSampleImports(sampleImports);
 
-        if (data.length > 0) {
-            this.dataManagementState.setSampleSelectionActive(true);
+        if (this.data.length > 0) {
+            useDataManagementStore.getState().setSampleSelectionActive(true);
         }
 
         if (Object.keys(sampleImports).length === 0) {
@@ -68,7 +75,7 @@ export class SamplesValidation extends ValidationStrategy {
         }
 
         return {
-            data: data,
+            data: this.data,
         };
     };
 }

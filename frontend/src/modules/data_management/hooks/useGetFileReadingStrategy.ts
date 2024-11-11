@@ -8,7 +8,8 @@ export const useGetFileReadingStrategy = (type: string) => {
     const [fileReadingStrategy, setFileReadingStrategy] = useState<FileReadingStrategy | undefined>();
 
     useEffect(() => {
-        PathogenStrategyManager.getFileReadingStrategy(type).then((fileReadingStrategy) =>
+        if (!activePathogen) return;
+        PathogenStrategyManager.getFileReadingStrategy(type, activePathogen).then((fileReadingStrategy) =>
             setFileReadingStrategy(fileReadingStrategy)
         );
     }, [activePathogen]);
