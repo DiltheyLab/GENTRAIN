@@ -593,8 +593,10 @@ export const tutorialSteps: Step[] = [
         title: "Das Tutorial ist beendet.",
         content: (
             <p>
-                Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Unter dem Reiter{" "}
-                <strong>Hilfe</strong> können Sie das Tutorial jederzeit erneut starten.{" "}
+                Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Sie können die Anwendung weiter mit
+                den Beispieldaten erkunden oder diese löschen und eigene Daten hochladen.{" "}
+                {/* Unter dem Reiter{" "}
+                <strong>Hilfe</strong> können Sie das Tutorial jederzeit erneut starten.{" "} */}
                 <strong>Wir wünschen Ihnen viel Erfolg bei der Arbeit mit Gentrain!</strong>
             </p>
         ),
