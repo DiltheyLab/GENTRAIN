@@ -59,7 +59,8 @@ export const VisualizationPanel = () => {
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col justify-center items-center rounded-lg bg-muted lg:col-span-2 graph-visualization-panel h-full"
+            className="relative flex flex-col justify-center items-center rounded-lg bg-muted lg:col-span-2 h-full"
+            data-tutorial-tour-step="outbreak-analysis-visualization-panel"
         >
             {outbreakAnalysisStore.analysisSettings.selectedOutbreak ? (
                 <>
@@ -106,6 +107,7 @@ export const VisualizationPanel = () => {
                         selectedNode={selectedNode}
                         isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                         linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                        initialZoomToFit={true}
                     />
                 </>
             ) : (

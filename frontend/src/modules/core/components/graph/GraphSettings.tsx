@@ -4,6 +4,7 @@ import { Label } from "@/modules/core/components/ui/Label";
 import { Slider } from "@/modules/core/components/ui/Slider";
 import { Switch } from "@/modules/core/components/ui/Switch";
 import { GraphSettings as GraphSettingsType } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { defaultGraphSettings } from "@/modules/dashboard/stores/dashboard";
 
 type GraphSettingsProps = {
     showGraphSettings: boolean;
@@ -32,8 +33,22 @@ export const GraphSettings = ({
         );
     }
 
+    const resetGraphSettings = () => {
+        const { linkDistance, linkWidth, nodeSize, showNodeLabel } = defaultGraphSettings;
+
+        updateGraphSettings({
+            linkDistance: linkDistance,
+            linkWidth: linkWidth,
+            nodeSize: nodeSize,
+            showNodeLabel: showNodeLabel,
+        });
+    };
+
     return (
-        <fieldset className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none pdf-hide">
+        <fieldset
+            data-tutorial-tour-step="dashboard-visualization-panel-graph-settings"
+            className="absolute z-10 right-2 top-2 rounded-lg w-fit border p-4 bg-muted/80 pointer-events-none pdf-hide"
+        >
             <legend className="-ml-1 px-1 text-sm font-medium">Grapheinstellungen</legend>
             <Button
                 className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
@@ -64,7 +79,7 @@ export const GraphSettings = ({
                         id="forceLinkDistance"
                         sliderColorIsGrey={true}
                         className="w-1/2"
-                        defaultValue={[graphSettings.linkDistance]}
+                        value={[graphSettings.linkDistance]}
                         max={130}
                         min={10}
                         step={10}
@@ -79,7 +94,7 @@ export const GraphSettings = ({
                         id="nodeSize"
                         sliderColorIsGrey={true}
                         className="w-1/2"
-                        defaultValue={[graphSettings.nodeSize]}
+                        value={[graphSettings.nodeSize]}
                         max={15}
                         min={1}
                         step={1}
@@ -95,12 +110,16 @@ export const GraphSettings = ({
                         sliderColorIsGrey={true}
                         className="w-1/2"
                         defaultValue={[graphSettings.linkWidth]}
+                        value={[graphSettings.linkWidth]}
                         max={15}
                         min={1}
                         step={1}
                         onValueChange={(value) => updateGraphSettings({ linkWidth: value[0] })}
                     />
                 </div>
+                <Button variant="outline" size="sm" onClick={resetGraphSettings}>
+                    Zurücksetzen
+                </Button>
             </div>
         </fieldset>
     );
