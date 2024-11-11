@@ -13,6 +13,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
     },
     {
@@ -89,6 +94,9 @@ export const tutorialSteps: Step[] = [
         styles: {
             options: {
                 width: "20vw",
+            },
+            spotlight: {
+                cursor: "not-allowed",
             },
         },
         spotlightPadding: 6,
@@ -186,6 +194,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "bottom",
     },
@@ -200,6 +213,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         placement: "bottom",
         disableScrolling: true,
     },
@@ -214,6 +232,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         data: {
             next: "/outbreak-analysis",
@@ -231,12 +254,13 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
-        disableScrolling: true,
         styles: {
             spotlight: {
                 marginTop: 2,
+                cursor: "not-allowed",
             },
         },
+        disableScrolling: true,
         data: {
             prev: "/",
         },
@@ -253,6 +277,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         data: {
             next: "/outbreak-analysis/1",
@@ -279,6 +308,7 @@ export const tutorialSteps: Step[] = [
         styles: {
             spotlight: {
                 marginTop: 2,
+                cursor: "not-allowed",
             },
         },
     },
@@ -294,6 +324,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "right",
     },
@@ -324,6 +359,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "right",
     },
@@ -338,6 +378,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "right",
     },
@@ -347,13 +392,17 @@ export const tutorialSteps: Step[] = [
         content: (
             <p>
                 Über diese Einstellung können Sie die Knoten des Graphen einfärben. Dabei haben Sie die Wahl zwischen
-                einer Einfärbung nach der <strong>Zeitspanne</strong> oder nach <strong>Ausbrüchen</strong>. Wenn Sie
-                die Knoten nach Ausbrüchen einfärben, können Sie die Farbe jedes Ausbruchs durch einen Klick auf das
-                Farbfeld auf der rechten Seite ändern.
+                einer Einfärbung nach der <strong>Zeitspanne</strong> oder nach <strong>Ausbrüchen</strong>. Über die
+                Farbfelder auf der Seite können Sie die Knotenfarbe ändern.
             </p>
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "right",
     },
@@ -394,6 +443,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         placement: "top",
     },
@@ -408,6 +462,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: true,
         data: {
             next: "/data-management",
@@ -426,6 +485,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: false,
         data: {
             prev: "/outbreak-analysis/1",
@@ -434,14 +498,14 @@ export const tutorialSteps: Step[] = [
     {
         target: "[data-tutorial-tour-step='data-management-case-section']",
         title: "Ihre Datenübersicht.",
-        content: (
-            <p>
-                In diesem Bereich finden Sie eine Übersicht über alle importierten Daten. Hier können Sie entweder
-                einzelne Datensätze löschen oder alle Datensätze des entsprechenden Pathogens entfernen.
-            </p>
-        ),
+        content: <p>In diesem Bereich finden Sie eine Übersicht über alle importierten Daten.</p>,
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: false,
         floaterProps: {
             options: {
@@ -449,6 +513,7 @@ export const tutorialSteps: Step[] = [
                     boundariesElement: "viewport",
                 },
             },
+            offset: 60,
         },
     },
     {
@@ -462,6 +527,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: false,
         placement: "auto",
         floaterProps: {
@@ -478,6 +548,11 @@ export const tutorialSteps: Step[] = [
         content: <p>Hier finden Sie Informationen zu allen angelegten Gruppen. </p>,
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: false,
         floaterProps: {
             options: {
@@ -498,6 +573,11 @@ export const tutorialSteps: Step[] = [
         ),
         disableBeacon: true,
         spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
         disableScrolling: false,
         placement: "top",
         floaterProps: {
