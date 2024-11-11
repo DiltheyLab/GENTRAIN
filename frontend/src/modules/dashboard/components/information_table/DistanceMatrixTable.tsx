@@ -55,10 +55,10 @@ export function DistanceMatrixTable() {
             {distanceMatrix && distanceMatrixAssembly && (
                 <>
                     <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
-                    <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
+                    <div className="mt-4 border-[1px] border-muted rounded-xl relative w-full overflow-auto max-h-[50rem]">
                         <Table>
                             <TableBody>
-                                <TableRow className="bg-muted/30 border-muted p-2">
+                                <TableRow className="border-muted p-2">
                                     <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
                                     {Object.keys(distanceMatrixAssembly)
                                         .sort()
