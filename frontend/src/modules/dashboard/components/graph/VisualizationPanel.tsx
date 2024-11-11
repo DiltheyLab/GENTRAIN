@@ -25,7 +25,7 @@ export const DashboardVisualizationPanel = () => {
     const dashboardStore = useDashboardStore();
     const { charge, showNodeLabel, linkDistance, linkWidth, nodeSize, colorMap, coloringMode } =
         dashboardStore.graphSettings;
-    const [showGraphSettings, setShowGraphSettings] = useState(false);
+    const [showGraphSettings, setShowGraphSettings] = useState(true);
     const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
     const contacts = useGetAllContacts();
     const cases = useCoreStore((state) => state.casesWithRelationships);
@@ -91,6 +91,7 @@ export const DashboardVisualizationPanel = () => {
 
     return (
         <div
+            data-tutorial-tour-step="dashboard-visualization-panel"
             ref={containerRef}
             className="relative flex flex-col justify-center items-center h-full rounded-lg bg-muted lg:col-span-2"
         >
@@ -124,11 +125,15 @@ export const DashboardVisualizationPanel = () => {
                 nodeSize={nodeSize}
                 showNodeLabel={showNodeLabel}
                 linkWidth={linkWidth}
-                initialCenter={true}
+                initialZoomToFit={true}
                 updateSelectedNode={(selectedCase) => setSelectedNode(selectedCase)}
                 selectedNode={selectedNode}
                 isLoading={typeof distanceMatrixAssembly === "undefined" || !contacts || !cases}
                 linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
+                zoomToFitTriggers={[
+                    dashboardStore.settings.excludeCasesWithoutSequence,
+                    dashboardStore.settings.showContactTracingLinks,
+                ]}
             />
         </div>
     );
