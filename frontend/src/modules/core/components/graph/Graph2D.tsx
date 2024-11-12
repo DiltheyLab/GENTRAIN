@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
-import { Loader2 } from "lucide-react";
-
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { Loader2 } from "lucide-react";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
 import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "@/modules/core/helpers/colors";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
-import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
+import { useNavigate } from "react-router-dom";
 
 type Graph2DProps = {
     data: GraphData;
@@ -25,12 +23,11 @@ type Graph2DProps = {
     showNodeLabel?: boolean;
     labelTransparency?: number;
     coolDownTicks?: number;
-    initialZoomToFit?: boolean;
+    initialCenter?: boolean;
     updateSelectedNode: (selectedNode: (NodeObject & CustomNode) | null) => void;
     selectedNode: (NodeObject & CustomNode) | null;
     isLoading?: boolean;
     linksBelowGeneticDistanceThreshold?: CustomLink[];
-    zoomToFitTriggers?: Array<any>;
 };
 
 export const Graph2D = ({
@@ -51,14 +48,12 @@ export const Graph2D = ({
     showNodeLabel = false,
     labelTransparency = 0.3,
     coolDownTicks = 120,
-    initialZoomToFit = false,
-    zoomToFitTriggers = [],
+    initialCenter = false,
 }: Graph2DProps) => {
-    const [zoomToFit, setZoomToFit] = useState(initialZoomToFit);
+    const [zoomToFit, setZoomToFit] = useState(initialCenter);
     const forceRef = useRef<ForceGraphMethods>();
     const navigate = useNavigate();
     useCanvasClick([() => updateSelectedNode(null)]);
-    useZoomToFit(zoomToFitTriggers, () => setZoomToFit(true));
 
     // custom d3 force setup
     useEffect(() => {
@@ -75,7 +70,6 @@ export const Graph2D = ({
         return map;
     }, [data.nodes]);
 
-    // zoom out once after engine stops
     const handleEngineStop = () => {
         if (zoomToFit === false) return;
         forceRef.current?.zoomToFit(100);
@@ -158,7 +152,7 @@ export const Graph2D = ({
 
             if (!sourceNode?.x || !sourceNode?.y || !targetNode?.x || !targetNode?.y) return;
 
-            // Draw a dashed line between the source and target nodes
+            // Draw line
             ctx.beginPath();
             ctx.setLineDash([3, 2]);
             ctx.moveTo(sourceNode.x, sourceNode.y);
@@ -167,18 +161,13 @@ export const Graph2D = ({
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Draw the link value at the midpoint of the line
+            // Optionally, draw the link value
             const midX = (sourceNode.x + targetNode.x) / 2;
             const midY = (sourceNode.y + targetNode.y) / 2;
             ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
             ctx.font = "10px Merriweather";
             ctx.fillText(link.value?.toString() || "", midX, midY);
         });
-    };
-
-    const handleNodeDrag = (node: NodeObject) => {
-        node.fx = node.x;
-        node.fy = node.y;
     };
 
     if (isLoading) {
@@ -201,7 +190,7 @@ export const Graph2D = ({
         return (
             <div className="flex flex-col p-4 text-center">
                 <h4 className="text-lg font-semibold">Der ausgewählte Ausbruch besteht nur aus einem Datenpunkt.</h4>
-                <p> Bitte fügen Sie weitere Umgebungsdaten hinzu, um den Graph zu erstellen.</p>
+                <p> Bitte fügen Sie weitere Daten (Background) hinzu, um den Graph zu erstellen.</p>
             </div>
         );
     }
@@ -225,8 +214,14 @@ export const Graph2D = ({
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
             onNodeClick={(node, _event) => updateSelectedNode(node as CustomNode & NodeObject)}
-            onNodeDrag={handleNodeDrag}
-            onNodeDragEnd={handleNodeDrag}
+            onNodeDrag={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
+            onNodeDragEnd={(node) => {
+                node.fx = node.x;
+                node.fy = node.y;
+            }}
             onRenderFramePost={(ctx, _globalScale) => {
                 if (selectedNode) {
                     drawCustomLinksBelowGeneticDistanceThreshold(ctx);

@@ -6,13 +6,13 @@ const CasesPerClusterChart = lazy(() => import("./CasesPerClusterChart"));
 
 export const Charts = () => {
     return (
-        <div className="flex flex-col gap-4" data-tutorial-tour-step="dashboard-charts">
+        <>
             <Suspense fallback={<Skeleton className="w-full h-full" />}>
                 <CasesPerDayChart />
             </Suspense>
             <Suspense fallback={<Skeleton className="w-full h-full" />}>
                 <CasesPerClusterChart />
             </Suspense>
-        </div>
+        </>
     );
 };

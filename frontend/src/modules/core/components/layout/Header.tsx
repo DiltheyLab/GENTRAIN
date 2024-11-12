@@ -9,8 +9,6 @@ import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname.split("/")[1];
-    /*     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning); */
 
     const isSelected = (url: string) => {
         return pathName === url ? "text-foreground" : "text-muted-foreground";
@@ -23,16 +21,11 @@ export const Header = () => {
                     <Share2 className="h-6 w-6 text-primary" />
                     <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">Gentrain</div>
                 </Link>
-                <Link
-                    data-tutorial-tour-step="dashboard-nav"
-                    to="/"
-                    className={`${isSelected("")} transition-colors hover:text-foreground text-md`}
-                >
+                <Link to="/" className={`${isSelected("")} transition-colors hover:text-foreground text-md`}>
                     Dashboard
                 </Link>
                 <Link
                     to="/outbreak-analysis"
-                    data-tutorial-tour-step="outbreak-analysis-overview-nav"
                     className={`${isSelected("outbreak-analysis")} transition-colors hover:text-foreground text-md`}
                 >
                     Ausbruchsanalyse
@@ -40,19 +33,9 @@ export const Header = () => {
                 <Link
                     to="/data-management"
                     className={`${isSelected("data-management")} transition-colors hover:text-foreground text-md`}
-                    data-tutorial-tour-step="data-management-nav"
                 >
                     Datenverwaltung
                 </Link>
-                {/*  <Button
-                    onClick={() => {
-                        changeTutorialIsRunning(true);
-                        changeTutorialTourIsActive(true);
-                    }}
-                    className="absolute"
-                >
-                    Tutorial
-                </Button> */}
             </nav>
             <Sheet>
                 <SheetTrigger asChild>
@@ -102,36 +85,28 @@ export const Header = () => {
                     }}
                 />
                 <div className="flex flex-row gap-4">
-                    <div className="flex flex-row gap-4" data-tutorial-tour-step="dashboard-state-import">
-                        <label htmlFor="dexie-file-upload">
-                            <Button
-                                variant="outline"
-                                className="gap-2 flex items-center"
-                                onClick={async (evt) => {
-                                    evt.preventDefault();
-                                    if (uploadFileRef?.current) uploadFileRef?.current.click();
-                                }}
-                                title="Zustand importieren"
-                            >
-                                <span className="hidden sm:block md:hidden lg:hidden xl:block">
-                                    Zustand importieren
-                                </span>
-                                <Upload className="h-5 w-5" />
-                            </Button>
-                        </label>
+                    <label htmlFor="dexie-file-upload">
                         <Button
                             variant="outline"
                             className="gap-2 flex items-center"
-                            onClick={() => exportDatabaseToJson()}
-                            title="Zustand speichern"
+                            onClick={async (evt) => {
+                                evt.preventDefault();
+                                if (uploadFileRef?.current) uploadFileRef?.current.click();
+                            }}
                         >
-                            <span className="hidden sm:block md:hidden lg:hidden xl:block">Zustand speichern</span>
-                            <Save className="h-5 w-5" />
+                            <span className="hidden sm:block md:hidden lg:block">Zustand importieren</span>
+                            <Upload className="h-5 w-5" />
                         </Button>
-                    </div>
-                    <div data-tutorial-tour-step="dashboard-pathogen-switch">
-                        <PathogenSwitch />
-                    </div>
+                    </label>
+                    <Button
+                        variant="outline"
+                        className="gap-2 flex items-center"
+                        onClick={() => exportDatabaseToJson()}
+                    >
+                        <span className="hidden sm:block md:hidden lg:block">Zustand speichern</span>
+                        <Save className="h-5 w-5" />
+                    </Button>
+                    <PathogenSwitch />
                 </div>
             </div>
         </header>

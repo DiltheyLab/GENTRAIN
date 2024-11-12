@@ -5,19 +5,14 @@ import { importDataFromJson } from "@/modules/core/helpers/database";
 
 export default function InitExampleButton() {
     const initSession = useCoreStore((state) => state.initSession);
-    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
+
     const initExampleImport = () => {
         importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
         initSession();
     };
 
     return (
-        <Button
-            onClick={() => {
-                initExampleImport();
-                changeTutorialTourIsActive(true);
-            }}
-        >
+        <Button onClick={() => initExampleImport()} variant="secondary" className="ml-2">
             Beispielszenario starten
         </Button>
     );

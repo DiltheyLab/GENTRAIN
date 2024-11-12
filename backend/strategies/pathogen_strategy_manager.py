@@ -7,7 +7,7 @@ from backend.strategies.sequence_analysis.viral_sequence_analysis import (
 
 
 pathogen_type_mappings = {
-    "viral": ["SARS-CoV-2"],
+    "viral": ["covid-19"],
     "bacterial": [
         "enterococcus-faecium",
         "staphylococcus-aureus",

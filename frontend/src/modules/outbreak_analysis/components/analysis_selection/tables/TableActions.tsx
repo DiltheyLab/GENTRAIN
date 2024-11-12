@@ -22,14 +22,12 @@ export const TableActions = ({ row }: TableActionsProps) => {
     };
 
     return (
-        <div className="mx-auto">
-            <div className="w-fit flex gap-3" data-tutorial-tour-step="outbreak-analysis-overview-start">
-                <Button variant={"secondary"} onClick={startAnalysis}>
-                    <Play size={15} className="mr-2" /> Analyse starten
-                </Button>
-                <AnalysisEditDialog row={row} />
-                <AnalysisDeleteAlertDialog row={row} />
-            </div>
+        <div className="flex gap-3 mx-auto">
+            <Button variant={"secondary"} onClick={startAnalysis}>
+                <Play size={15} className="mr-2" /> Analyse starten
+            </Button>
+            <AnalysisEditDialog row={row} />
+            <AnalysisDeleteAlertDialog row={row} />
         </div>
     );
 };

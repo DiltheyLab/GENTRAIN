@@ -22,7 +22,7 @@ export const ImportSection = () => {
     const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
 
     return (
-        <div data-tutorial-tour-step="data-management-import" className="bg-white rounded-lg p-3">
+        <div>
             <div className="mb-4 flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
@@ -31,9 +31,11 @@ export const ImportSection = () => {
                         Sequenz- sowie Kontaktdaten hinterlegt werden.
                     </p>
                 </div>
-                <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
-                    Import-Assistent starten
-                </Button>
+                <div className="flex justify-end">
+                    <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
+                        Import-Assistent starten
+                    </Button>
+                </div>
             </div>
             <div className="flex gap-8">
                 <div className="w-1/3">
