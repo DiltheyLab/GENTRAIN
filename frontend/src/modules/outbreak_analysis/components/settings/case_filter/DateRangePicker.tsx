@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/componen
 import { Label } from "@/modules/core/components/ui/Label";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import { CustomTooltip } from "@/modules/core/components/ui/CustomTooltip";
 
 type DateRangePickerProps = {
     disabled?: boolean;
@@ -35,6 +36,16 @@ export const DateRangePicker = ({ disabled = false }: DateRangePickerProps) => {
                 <Label htmlFor="excludeCasesOutsideOfDateRange" className="font-normal mt-[2px] ">
                     Zeitspanne auswählen
                 </Label>
+                <CustomTooltip
+                    content={
+                        <p>
+                            <strong className="font-bold">Umgebungsfälle</strong> außerhalb des ausgewählten Zeitraums
+                            werden ausgeschlossen. Fälle im ausgewählten Ausbruch werden nicht von diesem Filter
+                            beeinflusst.
+                        </p>
+                    }
+                    disabled={false}
+                />
             </div>
             <Popover>
                 <PopoverTrigger asChild>

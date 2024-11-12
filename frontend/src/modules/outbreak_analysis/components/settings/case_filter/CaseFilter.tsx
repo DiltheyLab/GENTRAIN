@@ -4,13 +4,12 @@ import { DateRangePicker } from "./DateRangePicker";
 import { Switch } from "@/modules/core/components/ui/Switch";
 import { Input } from "@/modules/core/components/ui/Input";
 
-type BackgroundFilterProps = {
-    disabled: boolean;
+type CaseFilterProps = {
+    disabled?: boolean;
 };
 
-export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
+export const CaseFilter = ({ disabled = false }: CaseFilterProps) => {
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
-
     const handleExcludeCasesAboveGeneticDistanceThreshold = (value: boolean) => {
         outbreakAnalysisStore.updateAnalysisSettings({ excludeCasesAboveGeneticDistanceThreshold: value });
     };
@@ -30,7 +29,6 @@ export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
                     id="excludeCasesWithoutSequence"
                     checked={outbreakAnalysisStore.analysisSettings.excludeCasesWithoutSequence}
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
-                    disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesWithoutSequence" className="text-md leading-5">
                     Nicht sequenzierte Fälle ausschließen
@@ -44,7 +42,7 @@ export const BackgroundFilter = ({ disabled }: BackgroundFilterProps) => {
                     disabled={disabled}
                 />
                 <Label htmlFor="excludeCasesAboveGeneticDistanceThreshold" className="text-md leading-5">
-                    Sequenzierte Fälle mit genetischer Distanz &gt;{" "}
+                    Sequenzierte Umgebungsfälle mit genetischer Distanz &gt;{" "}
                     {outbreakAnalysisStore.analysisSettings.geneticDistanceThreshold} ausschließen
                 </Label>
             </div>
