@@ -264,7 +264,7 @@ export const tutorialSteps: Step[] = [
         data: {
             prev: "/",
         },
-        offset: 5,
+        offset: -10,
     },
     {
         target: "[data-tutorial-tour-step='outbreak-analysis-overview-start']",
