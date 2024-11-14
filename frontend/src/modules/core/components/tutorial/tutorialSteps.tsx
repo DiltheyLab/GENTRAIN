@@ -72,20 +72,26 @@ export const tutorialSteps: Step[] = [
         target: "[data-tutorial-tour-step='dashboard-visualization-panel-legend']",
         title: "Die Legende.",
         content: (
-            <p>
-                Hier sehen Sie Informationen über Knoten und Kanten des Graphen. Alle{" "}
-                <strong>
-                    blau eingefärbten Knoten ({" "}
-                    <span
-                        style={{
-                            backgroundColor: "#0000FF",
-                        }}
-                        className={"rounded-full h-3 w-3 -mt-[1px] mr-1 inline-block"}
-                    />
-                    )
-                </strong>{" "}
-                gehören beispielsweise zum Ausbruch <strong>Schule A</strong>.
-            </p>
+            <>
+                <p>Hier sehen Sie Informationen über Knoten und Kanten des Graphen.</p>
+                <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-2">
+                    <p>
+                        Die durchgezogene graue Kante{" "}
+                        <span className="inline-block">
+                            (<span className="h-[3px] w-5 inline-block bg-[#CCCCCC] mb-1" />)
+                        </span>{" "}
+                        zeigt genetische Distanzen, die unter einem pathogenabhängigen Schwellenwert liegen. Diese
+                        Kanten deuten auf eine direkte Ansteckung mit dem genetisch identischen Erreger hin. Die
+                        gestrichelte graue Kante{" "}
+                        <span className="inline-block">
+                            (
+                            <span className="h-[3px] w-6 border-b-[3px] border-[#CCCCCC] border-dashed inline-block mb-1" />
+                            )
+                        </span>{" "}
+                        zeigt genetische Distanzen, die über dem Schwellenwert liegen.
+                    </p>
+                </div>
+            </>
         ),
         disableBeacon: true,
         spotlightClicks: false,
