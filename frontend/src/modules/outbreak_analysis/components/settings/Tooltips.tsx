@@ -14,18 +14,21 @@ export const tooltipCaseFilter = (
             In diesem Schritt können Sie die Hintergunddaten weiter nach verschiedenen Kriterien filtern.{" "}
             <strong>Fälle aus dem ausgewählten Ausbruch werden nicht beeinflusst.</strong>
         </p>
-        <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
+        <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 mb-2 ">
             <div className="space-y-2">
                 <p>
                     <strong>Nicht sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische Sequenzen
                     aus.
                 </p>
                 <p>
-                    <strong>Sequenzierte Fälle mit genetischer Distanz &gt; 1 ausschließen:</strong> Blendet alle Fälle
-                    mit einer genetischen Distanz über einem festgelegten Schwellenwert aus.
+                    <strong>Sequenzierte Fälle mit genetischer Distanz &gt; X ausschließen: </strong>Umgebungsfälle, die
+                    eine genetische Distanz unterhalb des Schwellenwerts{" "}
+                    <u>zu mindestens einem Fall im ausgewählten Ausbruch aufweisen,</u> bleiben im Graphen enthalten.
+                    Umgebungsfälle oberhalb des Schwellenwerts werden ausgeschlossen. Fälle im ausgewählten Ausbruch
+                    sind von diesem Filter nicht betroffen.
                 </p>
                 <p>
-                    <strong>Zeitspanne auswählen:</strong> Blendet alle Fälle außerhalb einer Zeitspanne aus.
+                    <strong>Zeitspanne auswählen:</strong> Blendet alle Umgebungsfälle außerhalb einer Zeitspanne aus.
                 </p>
             </div>
         </div>
