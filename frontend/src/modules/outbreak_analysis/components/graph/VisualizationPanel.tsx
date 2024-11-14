@@ -109,6 +109,11 @@ export const VisualizationPanel = () => {
                         linksBelowGeneticDistanceThreshold={linksBelowGeneticDistanceThreshold}
                         initialZoomToFit={true}
                         geneticDistanceThreshold={geneticDistanceThreshold}
+                        zoomToFitTriggers={[
+                            outbreakAnalysisStore.analysisSettings.backgroundType,
+                            outbreakAnalysisStore.analysisSettings.excludeCasesWithoutSequence,
+                            outbreakAnalysisStore.analysisSettings.excludeCasesAboveGeneticDistanceThreshold,
+                        ]}
                     />
                 </>
             ) : (
