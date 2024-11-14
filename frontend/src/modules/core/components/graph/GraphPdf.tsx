@@ -16,6 +16,7 @@ type Graph2DProps = {
     nodeSize?: number;
     linkWidth?: number;
     coolDownTicks?: number;
+    geneticDistanceThreshold?: number;
     exportPdfOnEngineStop: () => void;
 };
 
@@ -25,6 +26,7 @@ export const GraphPdf = ({
     height,
     colorMap,
     cases,
+    geneticDistanceThreshold,
     linkDistance = 70,
     charge = -80,
     nodeSize = 6,
@@ -113,6 +115,10 @@ export const GraphPdf = ({
             linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
+            linkLineDash={(link) => {
+                if (!geneticDistanceThreshold) return [];
+                return link.value <= geneticDistanceThreshold ? [] : [5, 5];
+            }}
             onNodeDrag={(node) => {
                 node.fx = node.x;
                 node.fy = node.y;

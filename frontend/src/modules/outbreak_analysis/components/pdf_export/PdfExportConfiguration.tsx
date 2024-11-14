@@ -19,7 +19,7 @@ import OutbreakAnalysisReportPdf from "./OutbreakAnalysisReportPdf";
 import PdfGraphLegend from "./PdfGraphLegend";
 
 const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) => {
-    const activePathogen = useCoreStore((state) => state.casesWithRelationships);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     const cases = useCoreStore((state) => state.casesWithRelationships);
     const analysisName = useOutbreakAnalysisStore((state) => state.name);
     const analysisReport = useOutbreakAnalysisStore((state) => state.analysisReport);
@@ -86,6 +86,7 @@ const PdfExportConfiguration = ({ onPdfExport }: { onPdfExport: () => void }) =>
                                 linkDistance={50}
                                 nodeSize={10}
                                 linkWidth={2}
+                                geneticDistanceThreshold={activePathogen?.genetic_distance_threshold}
                                 exportPdfOnEngineStop={() => setGraphReadyForExport(true)}
                             />
                         </div>
