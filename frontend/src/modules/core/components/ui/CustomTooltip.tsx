@@ -3,10 +3,10 @@ import { Info } from "lucide-react";
 
 type CustomTooltipProps = {
     content: React.ReactNode;
-    disabled: boolean;
+    disabled?: boolean;
 };
 
-export const CustomTooltip = ({ content, disabled }: CustomTooltipProps) => {
+export const CustomTooltip = ({ content, disabled = false }: CustomTooltipProps) => {
     if (disabled) {
         return <Info aria-disabled className="h-5 w-5 mb-1 text-slate-900/50" />;
     }

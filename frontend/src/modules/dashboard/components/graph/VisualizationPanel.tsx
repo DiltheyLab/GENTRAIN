@@ -134,6 +134,7 @@ export const DashboardVisualizationPanel = () => {
                     dashboardStore.settings.excludeCasesWithoutSequence,
                     dashboardStore.settings.showContactTracingLinks,
                 ]}
+                geneticDistanceThreshold={geneticDistanceThreshold}
             />
         </div>
     );

@@ -1,14 +1,13 @@
 import { ColorMap, CustomLink, CustomNode } from "@/modules/core/types/graph";
 import { Label } from "@/modules/core/components/ui/Label";
 import {
+    categorizeLinks,
     getRegisteredAtTimestamps,
     getSelectedClusters,
     getUniqueClusters,
-    getUniqueTypesOfLinks,
     moveNoOutbreakAssignedToEnd,
 } from "@/modules/core/helpers/graphs";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
 import { ColorCircle } from "./ColorCircle";
 
 type LegendProps = {
@@ -34,8 +33,10 @@ export const Legend = ({
         return moveNoOutbreakAssignedToEnd(uniqueClusterNames);
     }, [nodes, variant]);
     const registeredAtTimeStamps = useMemo(() => getRegisteredAtTimestamps(nodes), [nodes, variant]);
-    const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
-    const { t } = useTranslation();
+    const { geneticDistanceLinksBelowThreshold, geneticDistanceLinksAboveThreshold, contactTracingLinks } = useMemo(
+        () => categorizeLinks(links, geneticDistanceThreshold),
+        [links]
+    );
 
     const renderClusterItems = (clusters: string[]) => {
         return clusters.map((cluster) => (
@@ -67,15 +68,6 @@ export const Legend = ({
         );
     };
 
-    const renderLinkItems = (links: CustomLink[]) => {
-        return links.map((link) => (
-            <div className="flex items-center gap-2" key={link.type}>
-                <span style={{ backgroundColor: `${link.color}` }} className={"h-[3px] w-5"} />
-                <p className="text-xs">{link.type}</p>
-            </div>
-        ));
-    };
-
     const renderBackgroundLegend = () => {
         if (selectedBackground.length === 0) return null;
 
@@ -88,26 +80,44 @@ export const Legend = ({
     };
 
     const renderLinkLegend = () => {
-        const geneticDistanceLinks = uniqueTypesOfLinks.filter((link) => link.type === t(`linkTypes.geneticDistance`));
-        const contactTracingLinks = uniqueTypesOfLinks.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
         return (
             <div className="flex flex-col mt-2">
-                {geneticDistanceLinks.length > 0 && (
+                {(geneticDistanceLinksAboveThreshold.length > 0 || geneticDistanceLinksBelowThreshold.length > 0) && (
                     <div className="flex flex-col">
                         <Label className="-ml-1 px-1 text-xs font-medium">Genetische Kanten</Label>
-                        {renderLinkItems(geneticDistanceLinks)}
+                        {geneticDistanceLinksBelowThreshold.map((link) => (
+                            <div className="flex items-center gap-2" key={link.type}>
+                                <span style={{ backgroundColor: `${link.color}` }} className={"h-[3px] w-6"} />
+                                <p className="text-xs">Genetische Distanz &le; {geneticDistanceThreshold} </p>
+                            </div>
+                        ))}
+                        {geneticDistanceLinksAboveThreshold.map((link) => (
+                            <div className="flex items-center gap-2" key={link.type}>
+                                <span
+                                    className={"h-[3px] w-6 border-b-[3px] border-dashed"}
+                                    style={{ borderColor: `${link.color}` }}
+                                />
+                                <p className="text-xs">Genetische Distanz &gt; {geneticDistanceThreshold} </p>
+                            </div>
+                        ))}
                     </div>
                 )}
                 {linksBelowGeneticDistanceThreshold && linksBelowGeneticDistanceThreshold.length > 0 && (
                     <div className="flex items-center gap-2">
-                        <span className={"h-[3px] w-5 border-b-[3px] border-red-500 border-dashed"} />
+                        <span className={"h-[3px] w-6 border-b-[3px] border-red-500 border-dashed"} />
                         <p className="text-xs">Genetische Distanz &le; {geneticDistanceThreshold} </p>
                     </div>
                 )}
+
                 {contactTracingLinks.length > 0 && (
                     <div className="flex flex-col mt-2">
                         <Label className="-ml-1 px-1 text-xs font-medium">Kontaktkanten</Label>
-                        {renderLinkItems(contactTracingLinks)}
+                        {contactTracingLinks.map((link) => (
+                            <div className="flex items-center gap-2" key={link.type}>
+                                <span style={{ backgroundColor: `${link.color}` }} className={"h-[3px] w-6"} />
+                                <p className="text-xs">{link.type}</p>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
