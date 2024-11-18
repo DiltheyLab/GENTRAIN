@@ -81,6 +81,7 @@ services:
     command: [ "supervisord", "-c", "/home/backend/supervisor_test.conf" ]
     links:
       - redis
+    env_file: ".env"
     networks:
       - caddy
 
