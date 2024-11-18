@@ -90,17 +90,24 @@ jobs:
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
-            rm -f frontend/.env backend/.env
-            touch frontend/.env
-            echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> frontend/.env
-            echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> frontend/.env
-            echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> frontend/.env
-            echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> frontend/.env
-            touch backend/.env
-            echo -e "APP_ENV=${{vars.APP_ENV}}" >> backend/.env
-            echo -e "FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE=${{vars.FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE}}" >> backend/.env
-            echo -e "RQ_SECRET=${{secrets.RQ_SECRET}}" >> backend/.env
-            echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> backend/.env
+            rm -f .env
+            touch .env
+            echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> .env
+            echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> .env
+            echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> .env
+            echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
+            echo -e "APP_ENV=${{vars.APP_ENV}}" >> .env
+            echo -e "RQ_SECRET=${{secrets.SECRET_KEY}}" >> .env
+            echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> .env
+            echo -e "REDIS_URL=${{vars.REDIS_PORT}}" >> .env
+            echo -e "REDIS_URL=${{vars.ADMIN_EMAIL}}" >> .env
+            echo -e "REDIS_URL=${{secrets.ADMIN_PASSWORD}}" >> .env
+            echo -e "REDIS_URL=${{vars.DATABASE_DRIVER}}" >> .env
+            echo -e "REDIS_URL=${{vars.DATABASE_NAME}}" >> .env
+            echo -e "REDIS_URL=${{vars.DATABASE_HOST}}" >> .env
+            echo -e "REDIS_URL=${{vars.DATABASE_PORT}}" >> .env
+            echo -e "REDIS_URL=${{vars.DATABASE_USER}}" >> .env
+            echo -e "REDIS_URL=${{secrets.DATABASE_PASSWORD}}" >> .env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
