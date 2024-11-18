@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0060dbab-9958-44f1-a68f-bfd878824746" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.test.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.test.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +110,7 @@
       <workItem from="1730724385979" duration="14187000" />
       <workItem from="1730794452773" duration="2918000" />
       <workItem from="1730797681483" duration="15420000" />
-      <workItem from="1731933592107" duration="448000" />
+      <workItem from="1731933592107" duration="1059000" />
     </task>
     <servers />
   </component>

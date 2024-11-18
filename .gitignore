@@ -4,3 +4,4 @@ caddy
 Caddyfile
 .vscode
 .idea
+.idea/*
