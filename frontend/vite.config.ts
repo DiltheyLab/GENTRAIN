@@ -6,7 +6,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react()],
-    envDir: process.env.NODE_ENV === 'development' ? "../" : ".env",
+    envDir: process.env.NODE_ENV === 'development' ? "../" : "./",
     server: {
         port: 3000,
     },

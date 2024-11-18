@@ -3,3 +3,4 @@ caddy
 .env*
 Caddyfile
 .vscode
+.idea
