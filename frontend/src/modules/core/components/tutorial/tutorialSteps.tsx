@@ -486,7 +486,7 @@ export const tutorialSteps: Step[] = [
             <p>
                 Hier können Sie entweder manuell <strong>Falldaten, Sequenzdaten und Kontaktdaten</strong> importieren
                 oder den Import-Assistenten verwenden, der Sie durch den Importprozess führt und Ihnen mehr
-                Informaitonen zu den einzelnen Daten liefert.{" "}
+                Informationen zu den einzelnen Daten liefert.{" "}
             </p>
         ),
         disableBeacon: true,
