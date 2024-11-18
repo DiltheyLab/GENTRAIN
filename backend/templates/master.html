@@ -1,0 +1,71 @@
+{% extends 'admin/base.html' %}
+
+{% block head_css %}
+    {{ super() }}
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icon/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block page_body %}
+    <div class="header">
+        <div class="navbar">
+            {% block brand %}
+                <a class="gentrain-brand" href="/admin">
+                    <div class="gentrain-brand-logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-share-2">
+                            <circle cx="18" cy="5" r="3"/>
+                            <circle cx="6" cy="12" r="3"/>
+                            <circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/>
+                            <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>
+                        </svg>
+                    </div>
+                    <div class="gentrain-brand-title">GENTRAIN<span>ADMIN</span></div>
+                </a>
+            {% endblock %}
+            <div class="navbar-nav">
+                {{ layout.menu() }}
+            </div>
+        </div>
+        {% block access_control %}
+            {% if current_user.is_authenticated %}
+                <div class="navbar-text btn-group pull-right">
+                    <div class="user-menu-toggle">
+                        <div class="user-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 28 28"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="lucide lucide-user">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="user-name">
+                            {% if current_user.first_name -%}
+                                {{ current_user.first_name }} {% if current_user.last_name -%} {{ current_user.last_name }} {%- endif %}
+                            {% else -%}
+                                {{ current_user.email }}
+                            {%- endif %}
+                        </div>
+                        <div class="user-menu">
+                            <ul>
+                                <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+    <div class="content container{% if config.get('FLASK_ADMIN_FLUID_LAYOUT', False) %}-fluid{% endif %}">
+        {% block messages %}
+            {{ layout.messages() }}
+        {% endblock %}
+
+        {# store the jinja2 context for form_rules rendering logic #}
+        {% set render_ctx = h.resolve_ctx() %}
+
+        {% block body %}{% endblock %}
+    </div>
+{% endblock %}

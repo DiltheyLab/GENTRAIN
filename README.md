@@ -35,7 +35,7 @@ To ensure proper functionality of the CI/CD pipeline, the following GitHub Actio
 - `HTBASIC_USERNAME`: The username for HTTP basic authentication
 - `API_HOST`: The URL of your API (e.g., https://api.yourdomain.com)
 - `ENABLE_WEBSOCKETS`: Set to "true" to enable WebSocket connections
-- `FLASK_ENV`: The Flask environment (e.g., "production")
+- `APP_ENV`: The runtime environment (e.g., "production")
 - `FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE`: The HTTP status code for Pydantic validation errors (e.g., 422)
 - `REDIS_URL`: The URL for the Redis connection
 - `SLACK_WEBHOOK_URL`: The Slack webhook URL for notifications

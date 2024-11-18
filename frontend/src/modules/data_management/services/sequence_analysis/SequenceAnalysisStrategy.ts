@@ -4,7 +4,7 @@ import { socket } from "@/modules/core/helpers/socket";
 import { CoreState, useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
-import { toSlug } from "@/modules/core/helpers/strings";
+
 import {
     BacterialQualityParameters,
     SampleImport,
@@ -138,7 +138,7 @@ export abstract class SequenceAnalysisStrategy {
 
         for (const index in sequenceChunks!) {
             if (socket) {
-                socket.emit("sequence_analysis_request", toSlug(this.pathogen.name), fastaId, sequenceChunks[index], {
+                socket.emit("sequence_analysis_request", this.pathogen.id, fastaId, sequenceChunks[index], {
                     total: sequenceChunks.length,
                     index: index,
                 });

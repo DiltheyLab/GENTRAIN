@@ -27,6 +27,16 @@ export interface PathogenWithRelationships extends PathogenSchema {
     pathogen_type?: PathogenTypeSchema | null;
 }
 
+export const fetchPathogensFromServer = async () => {
+    const pathogens: {
+        id: number;
+        name: string;
+        type: PathogenTypeName;
+        genetic_distance_threshold: number;
+    }[] = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`).then((response) => response.json());
+    return pathogens;
+};
+
 export const getAllPathogensWithRelationships = async () => {
     const pathogens = await db.pathogens.toArray();
     let pathogensWithRelationships: PathogenWithRelationships[] = [];
