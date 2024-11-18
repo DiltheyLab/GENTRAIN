@@ -83,7 +83,7 @@ jobs:
             echo -e "VITE_API_HOST=${{vars.API_HOST}}" >> frontend/.env
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
             echo -e "APP_ENV=${{vars.APP_ENV}}" >> .env
-            echo -e "RQ_SECRET=${{secrets.SECRET_KEY}}" >> .env
+            echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> .env
             echo -e "REDIS_URL=${{vars.REDIS_PORT}}" >> .env
             echo -e "REDIS_URL=${{vars.ADMIN_EMAIL}}" >> .env

@@ -97,7 +97,7 @@ jobs:
             echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> .env
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
             echo -e "APP_ENV=${{vars.APP_ENV}}" >> .env
-            echo -e "RQ_SECRET=${{secrets.SECRET_KEY}}" >> .env
+            echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "ADMIN_EMAIL=${{vars.ADMIN_EMAIL}}" >> .env
