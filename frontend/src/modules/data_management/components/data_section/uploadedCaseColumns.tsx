@@ -125,14 +125,12 @@ export const uploadedCaseColumns: ColumnDef<CaseWithRelationships>[] = [
             if (!contacts) return;
             const caseIds = Object.keys(contacts);
             return (
-                <>
+                <div className="flex flex-wrap max-w-[240px] xl:max-w-[350px] gap-1">
                     {caseIds.map((case_id: string) => (
                         <HoverCard key={case_id} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>
-                                <div className="mb-1">
-                                    <div className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
-                                        {case_id}
-                                    </div>
+                                <div className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
+                                    {case_id}
                                 </div>
                             </HoverCardTrigger>
                             <HoverCardContent className="text-center py-0 px-2 w-auto">
@@ -147,7 +145,7 @@ export const uploadedCaseColumns: ColumnDef<CaseWithRelationships>[] = [
                             </HoverCardContent>
                         </HoverCard>
                     ))}
-                </>
+                </div>
             );
         },
     },

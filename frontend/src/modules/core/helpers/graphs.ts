@@ -45,12 +45,45 @@ export const getUniqueClusters = (nodes: CustomNode[]) => {
     return uniqueClusters;
 };
 
-export const getUniqueTypesOfLinks = (links: CustomLink[]) => {
+type LinkType = { type: string; color: string };
+const getUniqueTypesOfLinks = (links: LinkType[]) => {
     return links
         .filter((link, index, self) => {
             return index === self.findIndex((l) => l.type === link.type);
         })
         .sort((a, b) => a.type.localeCompare(b.type));
+};
+
+export const categorizeLinks = (links: CustomLink[], geneticDistanceThreshold: number | undefined) => {
+    const geneticDistanceLinksBelowThreshold: LinkType[] = [];
+    const geneticDistanceLinksAboveThreshold: LinkType[] = [];
+    const contactTracingLinks: LinkType[] = [];
+
+    links.forEach((link) => {
+        if (link.type === i18next.t(`linkTypes.geneticDistance`)) {
+            if (geneticDistanceThreshold && link.value > geneticDistanceThreshold) {
+                geneticDistanceLinksAboveThreshold.push({
+                    type: `${link.type} > ${geneticDistanceThreshold}`,
+                    color: link.color,
+                });
+            } else if (geneticDistanceThreshold && link.value <= geneticDistanceThreshold) {
+                geneticDistanceLinksBelowThreshold.push({
+                    type: `${link.type} ≤ ${geneticDistanceThreshold}`,
+                    color: link.color,
+                });
+            } else {
+                geneticDistanceLinksBelowThreshold.push({ type: link.type, color: link.color }); //fallback if geneticDistanceThreshold is undefined
+            }
+        } else {
+            contactTracingLinks.push({ type: link.type, color: link.color });
+        }
+    });
+
+    return {
+        geneticDistanceLinksBelowThreshold: getUniqueTypesOfLinks(geneticDistanceLinksBelowThreshold),
+        geneticDistanceLinksAboveThreshold: getUniqueTypesOfLinks(geneticDistanceLinksAboveThreshold),
+        contactTracingLinks: getUniqueTypesOfLinks(contactTracingLinks),
+    };
 };
 
 export const getRegisteredAtTimestamps = (nodes: CustomNode[]) => {

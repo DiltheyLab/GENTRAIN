@@ -89,14 +89,14 @@ export const defaultGraphSettings: GraphSettings = {
 };
 export const defaultGeneralSettings: GeneralSettings = {
     autoSave: true,
-    openAccordionItems: ["item-1"],
+    openAccordionItems: ["outbreak-selection"],
 };
 
 export const getDefaultAnalysisSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
 
     return {
-        backgroundType: "all",
+        backgroundType: "none",
         selectedOutbreak: null,
         datesOfCasesInSelectedOutbreak: [],
         selectedBackground: null,
