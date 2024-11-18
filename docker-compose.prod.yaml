@@ -54,6 +54,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - caddy
 
   backend:
     container_name: gentrain-backend
@@ -102,9 +104,8 @@ services:
 volumes:
   # persist data caddy_data
   caddy_data: # persist config caddy_config:
-  postgres-data:
   caddy_config:
-
+  postgres-data:
 
 networks:
   # Docker network for Caddy
