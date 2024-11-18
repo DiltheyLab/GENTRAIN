@@ -20,7 +20,7 @@ export interface CoreState {
     updateCasesWithRelationships: () => Promise<void>;
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
-    updateActivePathogen: (pathogen: PathogenSchema) => void;
+    updateActivePathogen: (pathogen: PathogenSchema | null) => void;
 }
 
 export const useCoreStore = create<CoreState>((set, get) => {
@@ -52,7 +52,11 @@ export const useCoreStore = create<CoreState>((set, get) => {
                 socket.emit("init_gentrain_session", sessionId);
             }
         },
-        updateActivePathogen: async (pathogen: PathogenWithRelationships) => {
+        updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
+            if (!pathogen) {
+                set({ activePathogen: pathogen });
+                return;
+            }
             const activePathogen = get().activePathogen;
             if (activePathogen && activePathogen?.id !== pathogen.id) {
                 db.pathogens.update(activePathogen.id, { activated_at: null });

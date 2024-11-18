@@ -14,6 +14,9 @@ export function PathogenSwitch() {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const { t } = useTranslation();
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
+        if (pathogenType.pathogens?.length === 0) {
+            return null;
+        }
         return (
             <div key={pathogenType.name}>
                 <div className="text-xs font-bold px-4 py-2">{t(`pathogen_type.${pathogenType.name}`)}</div>

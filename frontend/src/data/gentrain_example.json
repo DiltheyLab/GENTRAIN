@@ -34,7 +34,7 @@
             { "name": "groups", "schema": "++id,name,category_id,pathogen_id,created_at,updated_at", "rowCount": 7 },
             {
                 "name": "pathogens",
-                "schema": "++id,name,genetic_distance_threshold,pathogen_type_id,activated_at,created_at,updated_at",
+                "schema": "id,name,genetic_distance_threshold,pathogen_type_id,activated_at,created_at,updated_at",
                 "rowCount": 4
             },
             { "name": "pathogen_types", "schema": "++id,name,initialized_at,created_at,updated_at", "rowCount": 2 },

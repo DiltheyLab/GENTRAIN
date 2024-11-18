@@ -8,11 +8,11 @@ import { DistancesSchema } from "@/modules/core/models/distances";
 import { GroupSchema } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { PathogenSchema, Pathogens } from "@/modules/core/models/pathogens";
+import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { v4 as uuidv4 } from "uuid";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
-
+import { socket } from "@/modules/core/helpers/socket";
 export interface SessionsSchema {
     id: string;
     created_at?: Date;
@@ -47,7 +47,7 @@ db.version(1).stores({
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at",
-    pathogens: "++id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
+    pathogens: "id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, initialized_at, created_at, updated_at",
     categories: "++id, name, pathogen_id, created_at, updated_at",
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
@@ -57,25 +57,29 @@ db.version(1).stores({
 
 db.on("populate", async () => {
     let persistedPathogenTypes = {} as Record<string, number>;
-    for (const [pathogenName, pathogenData] of Object.entries(Pathogens)) {
-        // retrieve pathogen type name from enum
-        const pathogenTypeName = PathogenTypeName[pathogenData.type];
-        // check if the type of the pathogen (bacterial or viral) already exists in pathogen_types-table
-        // otherwise persist pathogen_type
-        if ((await db.pathogen_types.where({ name: pathogenTypeName }).count()) === 0) {
-            const newPathogenTypeId = await db.pathogen_types.add({
-                name: pathogenTypeName as unknown as PathogenTypeName,
-                initialized_at: null,
-            });
-            persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
-        }
+    const pathogens: {
+        id: number;
+        name: string;
+        type: PathogenTypeName;
+        genetic_distance_threshold: number;
+    }[] = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`).then((response) => response.json());
+    for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
+        const newPathogenTypeId = await db.pathogen_types.add({
+            name: pathogenTypeName as unknown as PathogenTypeName,
+            initialized_at: null,
+        });
+        persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
+    }
+
+    for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen
-        if ((await db.pathogens.where({ name: pathogenName }).count()) === 0) {
+        if (!(await db.pathogens.get(pathogen.id))) {
             db.pathogens.add({
-                name: pathogenName,
-                genetic_distance_threshold: pathogenData.geneticDistanceThreshold,
-                pathogen_type_id: persistedPathogenTypes[pathogenTypeName],
+                id: pathogen.id,
+                name: pathogen.name,
+                genetic_distance_threshold: pathogen.genetic_distance_threshold,
+                pathogen_type_id: persistedPathogenTypes[pathogen.type],
                 activated_at: null,
             });
         }
