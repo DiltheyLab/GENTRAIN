@@ -65,9 +65,7 @@ services:
       - redis
       - db
     volumes:
-      - type: bind
-        source: ./backend
-        target: /home/backend
+      - ./backend/modules/sequence_analysis/schemes:/home/backend/modules/sequence_analysis/schemes
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
@@ -83,9 +81,7 @@ services:
     depends_on:
       - redis
     volumes:
-      - type: bind
-        source: ./backend
-        target: /home/backend
+      - ./backend/modules/sequence_analysis/schemes:/home/backend/modules/sequence_analysis/schemes
     command: [ "supervisord", "-c", "/home/backend/supervisor_test.conf" ]
     links:
       - redis
