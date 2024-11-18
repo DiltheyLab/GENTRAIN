@@ -63,7 +63,7 @@
       <recent name="$PROJECT_DIR$/backend/templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Flask server.GENTRAIN">
+  <component name="RunManager">
     <configuration name="GENTRAIN" type="PythonConfigurationType" factoryName="Python">
       <module name="GENTRAIN" />
       <option name="ENV_FILES" value="" />
@@ -125,7 +125,7 @@
       <workItem from="1730724385979" duration="14187000" />
       <workItem from="1730794452773" duration="2918000" />
       <workItem from="1730797681483" duration="15420000" />
-      <workItem from="1731935776267" duration="2973000" />
+      <workItem from="1731935776267" duration="3748000" />
     </task>
     <servers />
   </component>
