@@ -1,6 +1,5 @@
 from os import path, listdir, remove, rename
 
-from alembic.command import current
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField

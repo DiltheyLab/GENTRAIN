@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
-    env_file: "./backend/.env"
+    env_file: ".env"
     networks:
       - caddy
 
@@ -79,7 +79,7 @@ services:
         target: /app/dist
     networks:
       - caddy
-    env_file: "./frontend/.env"
+    env_file: ".env"
     depends_on:
       backend:
         condition: service_started

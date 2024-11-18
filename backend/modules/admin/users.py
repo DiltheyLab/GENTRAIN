@@ -1,3 +1,5 @@
+from os import environ
+
 from flask_security import SQLAlchemyUserDatastore, hash_password
 from backend.app import app, db
 from backend.modules.core.models import User, Role
@@ -15,9 +17,10 @@ with app.app_context():
     user_count = User.query.count()
     if user_count == 0:
         user_datastore.create_user(
-            first_name="Admin",
-            email="admin@example.com",
-            password=hash_password("admin"),
+            first_name="Super",
+            last_name="Admin",
+            email=environ.get("ADMIN_EMAIL"),
+            password=environ.get("ADMIN_PASSWORD"),
             roles=[super_user_role],
         )
     db.session.commit()

@@ -7,11 +7,10 @@ def get_project_path():
 
 
 # Create dummy secrey key so we can use sessions
-SECRET_KEY = "secret!"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # Create in-memory database
-DATABASE_FILE = "sample_db.sqlite"
-SQLALCHEMY_DATABASE_URI = "postgresql://admin:admin@gentrain-db:5432/gentrain_db"
+SQLALCHEMY_DATABASE_URI = f"{os.environ.get('DATABASE_DRIVER')}://{os.environ.get('DATABASE_USER')}:{os.environ.get('DATABASE_PASSWORD')}@{os.environ.get('DATABASE_HOST')}:{os.environ.get('DATABASE_PORT')}/{os.environ.get('DATABASE_NAME')}"
 SQLALCHEMY_ECHO = True
 
 # Flask-Security config

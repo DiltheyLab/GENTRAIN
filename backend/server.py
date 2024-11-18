@@ -5,7 +5,7 @@ from flask_socketio import SocketIO
 
 from backend.app import app
 
-redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
+redis_connection = Redis(host=environ.get("REDIS_HOST"), port=environ.get("REDIS_PORT"), decode_responses=True)
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)
 
@@ -13,14 +13,14 @@ if environ.get("FLASK_ENV") == "development":
     sio = SocketIO(
         app,
         async_mode="threading",
-        message_queue="redis://gentrain-redis:6379",
-        cors_allowed_origins=["http://localhost:3000", "http://localhost:4173"],
+        message_queue=f"redis://{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}",
+        cors_allowed_origins=[f"http://localhost:{environ.get('REACT_DEV_PORT')}", f"http://localhost:{environ.get('REACT_BUILD_PORT')}"],
     )
 else:
     sio = SocketIO(
         app,
         async_mode="threading",
-        message_queue="redis://gentrain-redis:6379",
+        message_queue=f"redis://{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}",
         cors_allowed_origins=[],
     )
 
