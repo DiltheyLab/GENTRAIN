@@ -1,4 +1,3 @@
-modules/sequence_analysis/schemes/*
 temp_data
 __pycache__/
 .env
