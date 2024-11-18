@@ -102,8 +102,8 @@ services:
 volumes:
   # persist data caddy_data
   caddy_data: # persist config caddy_config:
-
   caddy_config:
+  postgres-data:
 
 
 networks:
