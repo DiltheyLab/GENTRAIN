@@ -81,7 +81,7 @@ export const ClusterInformationTable = () => {
                         </>
                     )}
                     <TableCell className="p-2 text-xs">
-                        <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noClusterAssigned")}</p>
+                        <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs max-w-60">
                         <p>
