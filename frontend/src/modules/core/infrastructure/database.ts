@@ -12,7 +12,6 @@ import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { v4 as uuidv4 } from "uuid";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
-import { socket } from "@/modules/core/helpers/socket";
 export interface SessionsSchema {
     id: string;
     created_at?: Date;
