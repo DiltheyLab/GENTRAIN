@@ -64,6 +64,10 @@ services:
     depends_on:
       - redis
       - db
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /home/backend
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
@@ -78,6 +82,10 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /home/backend
     command: [ "supervisord", "-c", "/home/backend/supervisor_test.conf" ]
     links:
       - redis
