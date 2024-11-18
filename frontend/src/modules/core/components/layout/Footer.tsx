@@ -11,7 +11,7 @@ export const Footer = () => {
                             DiltheyLab
                         </a>
                     </div>
-                    <small>© 2024 Heinrich-Heine-Universität Düsseldorf</small>
+                    <small>© 2024 Universitätsklinikum Düsseldorf</small>
                     <div className="mt-2">
                         <a href="/contact" className="underline">
                             Kontakt
