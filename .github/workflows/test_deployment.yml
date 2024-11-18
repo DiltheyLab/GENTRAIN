@@ -98,7 +98,7 @@ jobs:
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
             echo -e "APP_ENV=${{vars.APP_ENV}}" >> .env
             echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
-            echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> .env
+            echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "ADMIN_EMAIL=${{vars.ADMIN_EMAIL}}" >> .env
             echo -e "ADMIN_PASSWORD=${{secrets.ADMIN_PASSWORD}}" >> .env
