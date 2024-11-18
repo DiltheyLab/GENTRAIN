@@ -5,76 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0060dbab-9958-44f1-a68f-bfd878824746" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/Root.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/tutorial/CustomTutorialTourTooltip.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/tutorial/MouseCursor.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/tutorial/TutorialIntro.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/tutorial/TutorialTour.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/tutorial/tutorialSteps.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/hooks/graph/useZoomToFit.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/hooks/useDisableScrollOnComponentMount.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/core/types/tutorial.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/DatabaseDeletion.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/CaseSection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/DataOverview.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/GroupSection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/OutbreakSection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/strategies/pathogen_strategy_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/strategies/pathogen_strategy_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.eslintrc.cjs" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.eslintrc.cjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/data/gentrain_example.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/data/gentrain_example.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/Graph2D.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/Graph2D.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/GraphPdf.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/GraphPdf.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/GraphSettings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/GraphSettings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/Legend.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/graph/Legend.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/layout/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/layout/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/CustomTooltip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/CustomTooltip.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/InitExampleButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/InitExampleButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/Table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/components/ui/Table.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/helpers/graphs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/helpers/graphs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/models/pathogens.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/models/pathogens.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/pages/Onboarding.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/pages/Onboarding.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/stores/core.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/stores/core.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/translations/de/import.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/translations/de/import.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/types/graph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/types/graph.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/charts/Charts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/charts/Charts.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/distance_matrix/DistanceMatrixTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/DistanceMatrixTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/ColorSelection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/ColorSelection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/Settings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/Settings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/VisualizationPanel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/graph/VisualizationPanel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/CasesInformationTable.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/ClusterInformationTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/ClusterInformationTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/InformationTables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/InformationTables.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/SampleInformationTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/components/information_table/SampleInformationTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/pages/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/pages/Dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/dashboard/stores/dashboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/dashboard/stores/dashboard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/import_section/ImportSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/import_section/ImportSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/imported_data/GroupEditDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/GroupEditDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/imported_data/OutbreakEditDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/OutbreakEditDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/imported_data/uploadedCaseColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/uploadedCaseColumns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/imported_data/uploadedGroupColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/uploadedGroupColumns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/components/imported_data/uploadedOutbreakColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/components/data_section/uploadedOutbreakColumns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/data_management/pages/DataManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/data_management/pages/DataManagement.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/analysis_selection/tables/TableActions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/analysis_selection/tables/TableActions.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/graph/VisualizationPanel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/graph/VisualizationPanel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/pdf_export/PdfExportConfiguration.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/pdf_export/PdfExportConfiguration.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/pdf_export/PdfGraphLegend.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/pdf_export/PdfGraphLegend.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/Settings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/Settings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/Tooltips.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/Tooltips.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/background_filter/BackgroundFilter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/case_filter/CaseFilter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/background_filter/DateRangePicker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/case_filter/DateRangePicker.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/background_selection/BackgroundSelection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/background_selection/BackgroundSelection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/color_selection/ColorSelection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/components/settings/color_selection/ColorSelection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/pages/OutbreakAnalysisOverview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/pages/OutbreakAnalysisOverview.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/stores/outbreakAnalysis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/outbreak_analysis/stores/outbreakAnalysis.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tailwind.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/modules/core/Root.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/modules/core/Root.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,8 +44,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Merging flask-admin",
-    "last_opened_file_path": "/Users/benkraling/code/GENTRAIN/backend/templates/security",
+    "git-widget-placeholder": "flask-admin",
+    "last_opened_file_path": "/Users/benkraling/code/GENTRAIN/frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -120,6 +58,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend" />
       <recent name="$PROJECT_DIR$/backend/templates/security" />
       <recent name="$PROJECT_DIR$/backend/static/icon" />
       <recent name="$PROJECT_DIR$/backend/static/font" />

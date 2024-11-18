@@ -47,6 +47,7 @@ services:
         target: /backend
     links:
       - redis
+    env_file: ".env"
   redis-insight:
     container_name: gentrain-redis-insight
     image: redis/redisinsight:latest

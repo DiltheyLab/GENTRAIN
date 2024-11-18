@@ -9,7 +9,7 @@ redis_connection = Redis(host=environ.get("REDIS_HOST"), port=environ.get("REDIS
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)
 
-if environ.get("FLASK_ENV") == "development":
+if environ.get("APP_ENV") == "development":
     sio = SocketIO(
         app,
         async_mode="threading",

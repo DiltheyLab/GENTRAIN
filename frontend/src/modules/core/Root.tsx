@@ -12,7 +12,7 @@ import {Onboarding} from "./pages/Onboarding";
 import {useCoreStore} from "./stores/core";
 import {Layout} from "./components/layout/Layout";
 import {PathogenTypeName} from "@/core/models/pathogen_types.ts";
-import {db} from "@/core/infrastructure/database.ts";
+import {db} from "@/modules/core/infrastructure/database.ts";
 
 export const Root = () => {
     const session = useCoreStore((state) => state.session);

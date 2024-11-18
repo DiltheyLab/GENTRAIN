@@ -97,7 +97,7 @@ jobs:
             echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> frontend/.env
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> frontend/.env
             touch backend/.env
-            echo -e "FLASK_ENV=${{vars.FLASK_ENV}}" >> backend/.env
+            echo -e "APP_ENV=${{vars.APP_ENV}}" >> backend/.env
             echo -e "FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE=${{vars.FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE}}" >> backend/.env
             echo -e "RQ_SECRET=${{secrets.RQ_SECRET}}" >> backend/.env
             echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> backend/.env
