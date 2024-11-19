@@ -1,0 +1,65 @@
+import { useCoreStore } from "@/modules/core/stores/core";
+import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
+import { Button } from "@/modules/core/components/ui/Button";
+import { Dna, GraduationCap, Share2 } from "lucide-react";
+import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
+import { lazy, Suspense } from "react";
+const InitExampleButton = lazy(() => import("@/modules/core/components/ui/InitExampleButton"));
+
+export function Onboarding() {
+    const initSession = useCoreStore((state) => state.initSession);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center">
+            <div className="w-10/12 md:w-3/4 lg:w-3/4 flex flex-col items-center justify-center text-center">
+                <div className="flex items-center text-primary mb-10">
+                    <Share2 className="w-16 h-16 mr-4" />
+                    <span className="text-[80px] text-primary text-3xl font-extrabold uppercase">Gentrain</span>
+                </div>
+                <p className="font-medium w-11/12">
+                    Das Gentrain Dashboard ermöglicht Ausbruchsanalysen auf Basis von Kontaktnachverfolgung und
+                    genetischen Distanzen. Es können Ausbruchsanalysen für virale und bakterielle Pathogene durchgeführt
+                    werden.
+                </p>
+
+                <div className="flex gap-4 mt-8">
+                    <div className="flex flex-col gap-4 px-8 py-10 items-center border-2 rounded-lg border-muted-foreground/10 bg-muted/50 w-full max-w-[560px]">
+                        <h3 className="font-bold tracking-tight text-xl">Tutorial starten</h3>
+                        <GraduationCap size={60} />
+                        <p className="text-center flex items-center justfy-center flex-1 lg:px-10">
+                            Um Ihnen den Einstieg in die Software zu erleichtern, haben wir ein Beispielszenario mit
+                            einem Tutorial vorbereitet.
+                        </p>
+                        <Suspense
+                            fallback={
+                                <Button className="ml-2" disabled>
+                                    Beispielszenario starten
+                                </Button>
+                            }
+                        >
+                            <InitExampleButton />
+                        </Suspense>
+                    </div>
+                    <div className="flex flex-col gap-4 p-8 py-10  items-center border-2 rounded-lg border-muted-foreground/10 bg-muted/50 w-full max-w-[560px]">
+                        <h3 className="font-bold tracking-tight text-xl">Anwendung starten</h3>
+                        <Dna size={60} />
+                        <p className="text-center flex items-center justfy-center flex-1 lg:px-10">
+                            Bitte wählen Sie zunächst das Pathogen aus, für welches Sie Ausbruchsanalysen durchführen
+                            möchten.
+                        </p>
+                        <div className="flex justify-center">
+                            <PathogenSwitch />
+                            <Button disabled={!activePathogen} onClick={initSession} className="ml-2">
+                                Zum Dashboard
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-20">
+                    <PartnerLogos />
+                </div>
+            </div>
+        </div>
+    );
+}
