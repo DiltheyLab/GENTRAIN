@@ -1,6 +1,6 @@
-from os import path, listdir, remove, rename
+from os import path, listdir, remove, rename, environ
 
-from flask import request, url_for, redirect, abort
+from flask import request, url_for, redirect, abort, Response
 from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField
 from flask_login import current_user
@@ -10,17 +10,32 @@ from zipfile import ZipFile
 import time
 import shutil
 
-from backend.app import db
+from werkzeug.exceptions import HTTPException
+
+from backend.app import db, basic_auth
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
 
 
+class AuthException(HTTPException):
+    def __init__(self, message):
+        super().__init__(message, Response(
+            "You could not be authenticated. Please refresh the page.", 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}))
+
+
 class AuthModelView(sqla.ModelView):
     def is_accessible(self):
+        if environ.get('APP_ENV') != "development" and not basic_auth.authenticate():
+            raise AuthException('Not authenticated.')
+
         return (
                 current_user.is_active
                 and current_user.is_authenticated
         )
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(basic_auth.challenge())
 
     def _handle_view(self, name, **kwargs):
         """

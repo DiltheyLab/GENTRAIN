@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0060dbab-9958-44f1-a68f-bfd878824746" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/prod_deployment.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/test_deployment.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/environment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/environment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/modules/admin/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/modules/admin/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +43,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;flask-admin&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ht-basic-admin&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/benkraling/code/GENTRAIN/frontend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -111,6 +117,7 @@
       <workItem from="1730794452773" duration="2918000" />
       <workItem from="1730797681483" duration="15420000" />
       <workItem from="1731933592107" duration="1059000" />
+      <workItem from="1732017716174" duration="2363000" />
     </task>
     <servers />
   </component>

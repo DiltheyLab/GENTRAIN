@@ -82,7 +82,7 @@ jobs:
             echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> frontend/.env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}" >> frontend/.env
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
-            echo -e "APP_ENV=${{vars.APP_ENV}}" >> .env
+            echo -e "APP_ENV=${{vars.PROD_APP_ENV}}" >> .env
             echo -e "RQ_SECRET=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_URL=${{vars.REDIS_URL}}" >> .env
             echo -e "REDIS_URL=${{vars.REDIS_PORT}}" >> .env
@@ -94,6 +94,8 @@ jobs:
             echo -e "REDIS_URL=${{vars.DATABASE_PORT}}" >> .env
             echo -e "REDIS_URL=${{vars.DATABASE_USER}}" >> .env
             echo -e "REDIS_URL=${{secrets.DATABASE_PASSWORD}}" >> .env
+            echo -e "ADMIN_HTBASIC_USERNAME=${{secrets.PROD_ADMIN_HTBASIC_USERNAME}}" >> .env
+            echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
