@@ -1,9 +1,9 @@
-import { getSelectedClusters, getUniqueTypesOfLinks } from "@/modules/core/helpers/graphs";
+import { categorizeLinks, getSelectedClusters } from "@/modules/core/helpers/graphs";
 import { Text } from "@react-pdf/renderer";
 import { View } from "lucide-react";
 import { useMemo } from "react";
 import { useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { t } from "i18next";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
     const selectedClusters = getSelectedClusters();
@@ -12,9 +12,11 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
     const selectedBackgroundNames = selectedClusters.selectedBackground;
     const colorMap = outbreakAnalysisState.graphSettings.colorMap;
     const links = useOutbreakAnalysisStore.getState().graphData.links;
-    const uniqueTypesOfLinks = useMemo(() => getUniqueTypesOfLinks(links), [links]);
-    const geneticDistanceLinks = uniqueTypesOfLinks.filter((link) => link.type === t(`linkTypes.geneticDistance`));
-    const uniqueContactTracingLinks = uniqueTypesOfLinks.filter((link) => link.type !== t(`linkTypes.geneticDistance`));
+    const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
+    const { geneticDistanceLinksBelowThreshold, geneticDistanceLinksAboveThreshold, contactTracingLinks } = useMemo(
+        () => categorizeLinks(links, geneticDistanceThreshold),
+        [links]
+    );
 
     const SectionHeadline = ({ children }: { children: string }) => {
         return (
@@ -28,7 +30,15 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
         );
     };
 
-    const Entry = ({ type, color, children }: { type: string; color: string; children: string }) => {
+    const Entry = ({
+        type,
+        color,
+        children,
+    }: {
+        type: "node" | "link" | "link-dashed";
+        color: string;
+        children: string;
+    }) => {
         return (
             <>
                 {preview ? (
@@ -37,12 +47,15 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                             className={`${
                                 type === "node"
                                     ? "rounded-full w-[5px] h-[5px] ml-[2px] mr-[7px]"
-                                    : "w-[9px] h-[2px] mr-[5px]"
+                                    : type === "link"
+                                    ? "w-[9px] h-[2px] mr-[5px]"
+                                    : "w-[9px] h-[2px] border-b-[2px] border-dashed mr-[5px]"
                             }`}
                             style={{
-                                backgroundColor: color,
+                                backgroundColor: type === "link-dashed" ? "" : color,
+                                borderColor: type === "link-dashed" ? color : "",
                             }}
-                        ></div>
+                        />
                         <p>{children}</p>
                     </div>
                 ) : (
@@ -55,7 +68,10 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                                 width: type === "node" ? 5 : 9,
                                 height: type === "node" ? 5 : 1,
                                 borderRadius: type === "node" ? "50%" : 0,
-                                backgroundColor: color,
+                                backgroundColor: type === "link-dashed" ? "" : color,
+                                borderColor: type === "link-dashed" ? color : "",
+                                borderStyle: type === "link-dashed" ? "dashed" : "solid",
+                                borderBottomWidth: type === "link-dashed" ? 1 : 0,
                             }}
                         ></div>
                         <Text
@@ -87,13 +103,18 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                     </Entry>
                 ))}
                 <SectionHeadline>Genetische Kanten</SectionHeadline>
-                {geneticDistanceLinks.map((link, index) => (
+                {geneticDistanceLinksBelowThreshold.map((link, index) => (
                     <Entry key={index} type="link" color={link.color}>
                         {link.type}
                     </Entry>
                 ))}
-                {uniqueContactTracingLinks.length > 0 && <SectionHeadline>Kontaktkanten</SectionHeadline>}
-                {uniqueContactTracingLinks.map((link, index) => (
+                {geneticDistanceLinksAboveThreshold.map((link, index) => (
+                    <Entry key={index} type="link-dashed" color={link.color}>
+                        {link.type}
+                    </Entry>
+                ))}
+                {contactTracingLinks.length > 0 && <SectionHeadline>Kontaktkanten</SectionHeadline>}
+                {contactTracingLinks.map((link, index) => (
                     <Entry key={index} type="link" color={link.color}>
                         {link.type}
                     </Entry>

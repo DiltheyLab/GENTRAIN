@@ -37,7 +37,23 @@ services:
     container_name: gentrain-redis
     image: "redis:alpine"
     ports:
-      - 6379:6379
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - caddy
+
+  db:
+    container_name: gentrain-db
+    image: postgres
+    hostname: localhost
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
     networks:
       - caddy
 
@@ -47,12 +63,17 @@ services:
     restart: unless-stopped
     depends_on:
       - redis
+      - db
+    volumes:
+      - type: bind
+        source: ./backend/modules/sequence_analysis/schemes
+        target: /home/backend/modules/sequence_analysis/schemes
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
-    env_file: "./backend/.env"
+    env_file: ".env"
     networks:
       - caddy
 
@@ -61,9 +82,14 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
+    volumes:
+      - type: bind
+        source: ./backend/modules/sequence_analysis/schemes
+        target: /home/backend/modules/sequence_analysis/schemes
     command: [ "supervisord", "-c", "/home/backend/supervisor_test.conf" ]
     links:
       - redis
+    env_file: ".env"
     networks:
       - caddy
 
@@ -79,7 +105,7 @@ services:
         target: /app/dist
     networks:
       - caddy
-    env_file: "./frontend/.env"
+    env_file: ".env"
     depends_on:
       backend:
         condition: service_started
@@ -87,8 +113,8 @@ services:
 volumes:
   # persist data caddy_data
   caddy_data: # persist config caddy_config:
-
   caddy_config:
+  postgres-data:
 
 
 networks:

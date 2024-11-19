@@ -3,15 +3,24 @@ import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
 import { socket } from "@/modules/core/helpers/socket";
+import { Step } from "react-joyride";
+import { tutorialSteps } from "../components/tutorial/tutorialSteps";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
     session: SessionsSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
+    tutorialIsRunning: boolean;
+    tutorialSteps: Step[];
+    tutorialStepIndex: number;
+    tutorialTourIsActive: boolean;
+    changeTutorialStepIndex: (index: number) => void;
+    changeTutorialTourIsActive: (isActive: boolean) => void;
+    changeTutorialIsRunning: (tutorialIsRunnung: boolean) => void;
     updateCasesWithRelationships: () => Promise<void>;
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
-    updateActivePathogen: (pathogen: PathogenSchema) => void;
+    updateActivePathogen: (pathogen: PathogenSchema | null) => void;
 }
 
 export const useCoreStore = create<CoreState>((set, get) => {
@@ -19,6 +28,13 @@ export const useCoreStore = create<CoreState>((set, get) => {
         activePathogen: null,
         session: undefined,
         casesWithRelationships: [],
+        tutorialStepIndex: 0,
+        tutorialTourIsActive: false,
+        tutorialIsRunning: false,
+        tutorialSteps: tutorialSteps,
+        changeTutorialStepIndex: (index) => set(() => ({ tutorialStepIndex: index })),
+        changeTutorialIsRunning: (tutorialIsRunnung) => set(() => ({ tutorialIsRunning: tutorialIsRunnung })),
+        changeTutorialTourIsActive: (isActive) => set(() => ({ tutorialTourIsActive: isActive })),
         updateCasesWithRelationships: async () => {
             const activePathogenId = get().activePathogen?.id;
             if (!activePathogenId) return;
@@ -36,7 +52,11 @@ export const useCoreStore = create<CoreState>((set, get) => {
                 socket.emit("init_gentrain_session", sessionId);
             }
         },
-        updateActivePathogen: async (pathogen: PathogenWithRelationships) => {
+        updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
+            if (!pathogen) {
+                set({ activePathogen: pathogen });
+                return;
+            }
             const activePathogen = get().activePathogen;
             if (activePathogen && activePathogen?.id !== pathogen.id) {
                 db.pathogens.update(activePathogen.id, { activated_at: null });

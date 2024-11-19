@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "@/modules/dashboard/pages/Dashboard.tsx";
@@ -12,12 +12,8 @@ import import_de from "@/modules/core/translations/de/import.json";
 import error_de from "@/modules/core/translations/de/error.json";
 import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
-import { useCoreStore } from "@/modules/core/stores/core.ts";
 import { OutbreakAnalysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
-import { getAllPathogensWithRelationships, PathogenWithRelationships } from "@/modules/core/models/pathogens.ts";
-import { Onboarding } from "@/modules/core/pages/Onboarding";
-import { RefreshLoader } from "./components/ui/RefreshLoader";
-import { useHandlePersistedSessionResults } from "@/modules/data_management/hooks/useHandlePersistedSessionResults";
+import { Root } from "./Root";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -27,61 +23,25 @@ i18next.init({
     },
 });
 
-const App = () => {
-    const session = useCoreStore((state) => state.session);
-    const fetchSession = useCoreStore((state) => state.fetchSession);
-    const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
-
-    useHandlePersistedSessionResults();
-
-    useEffect(() => {
-        fetchSession();
-        getAllPathogensWithRelationships().then((response) => {
-            const activelyPersistedPathogen = response.find(
-                (pathogen: PathogenWithRelationships) => pathogen.activated_at
-            );
-
-            if (activelyPersistedPathogen) {
-                updateActivePathogen(activelyPersistedPathogen);
-            }
-        });
-    }, []);
-
-    if (session === undefined) {
-        return <RefreshLoader />;
-    }
-
-    if (session === null) {
-        return <Onboarding />;
-    }
-
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            errorElement: <Error />,
-            element: <Dashboard />,
-        },
-        {
-            path: "/outbreak-analysis",
-            errorElement: <Error />,
-            element: <OutbreakAnalysisOverview />,
-        },
-        { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis />, errorElement: <Error /> },
-        {
-            path: "/data-management",
-            errorElement: <Error />,
-            element: <DataManagement />,
-        },
-    ]);
-
-    return <RouterProvider router={router} />;
-};
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Root />,
+        errorElement: <Error />,
+        children: [
+            { path: "/", element: <Dashboard /> },
+            { path: "/outbreak-analysis", element: <OutbreakAnalysisOverview /> },
+            { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis /> },
+            { path: "/data-management", element: <DataManagement /> },
+        ],
+    },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <I18nextProvider i18n={i18next}>
             <Toaster />
-            <App />
+            <RouterProvider router={router} />
         </I18nextProvider>
     </React.StrictMode>
 );

@@ -6,11 +6,15 @@ import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { formatDate } from "@/modules/core/helpers/dates";
+import { t } from "i18next";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
     const activePathogen = useCoreStore((state) => state.activePathogen);
+    const noClusterAssigned = useDashboardStore((state) => state.graphData.nodes).filter(
+        (node) => node.cluster === t("clusterTypes.noClusterAssigned")
+    );
 
     const renderHeadRow = () => {
         return (
@@ -44,8 +48,8 @@ export const ClusterInformationTable = () => {
             if (!node) return null;
 
             return (
-                <TableRow key={node.caseData.id} className="border-muted font-medium">
-                    <TableCell className="p-2 text-xs ">{node.caseData.case_id}</TableCell>
+                <TableRow key={node.caseData.id} className="border-muted">
+                    <TableCell className="p-2 text-xs  font-medium ">{node.caseData.case_id}</TableCell>
                     <TableCell className="p-2 text-xs">{node.caseData.sample?.fasta_id}</TableCell>
                     {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                         <>
@@ -77,9 +81,9 @@ export const ClusterInformationTable = () => {
                         </>
                     )}
                     <TableCell className="p-2 text-xs">
-                        <p>{node.caseData.outbreak?.name ?? "Umgebung"}</p>
+                        <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
-                    <TableCell className="p-2 text-xs">
+                    <TableCell className="p-2 text-xs max-w-60">
                         <p>
                             {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
                         </p>
@@ -96,7 +100,7 @@ export const ClusterInformationTable = () => {
         <Accordion type="multiple" className="px-0 rounded-lg">
             {clusters?.map((cluster, index) => {
                 return (
-                    <AccordionItem key={index} value={`${index}`} className="">
+                    <AccordionItem key={index} value={`${index}`}>
                         <AccordionTrigger className=" font-semibold py-1">
                             <div className="flex items-center gap-2">
                                 <ColorCircle colorMap={colorMap} cluster={`Cluster ${index + 1}`} />
@@ -107,8 +111,8 @@ export const ClusterInformationTable = () => {
                             <small>
                                 Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.
                             </small>
-                            <div className="border-[1px] border-muted rounded-xl overflow-hidden">
-                                <Table className="rounded-xl overflow-hidden">
+                            <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                                <Table className="rounded-xl">
                                     <TableHeader>{renderHeadRow()}</TableHeader>
                                     <TableBody>{renderRows(cluster)}</TableBody>
                                 </Table>
@@ -117,6 +121,27 @@ export const ClusterInformationTable = () => {
                     </AccordionItem>
                 );
             })}
+            {noClusterAssigned.length > 0 && (
+                <AccordionItem value={`noOutbreakAssigned`}>
+                    <AccordionTrigger className=" font-semibold py-1">
+                        <div className="flex items-center gap-2">
+                            <ColorCircle colorMap={colorMap} cluster={t("clusterTypes.noClusterAssigned")} />
+                            <p>{t("clusterTypes.noClusterAssigned")}</p>
+                        </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        <small>
+                            Es sind {noClusterAssigned.length} sequenzierte Fälle die keinem Cluster zugewiesen wurden.
+                        </small>
+                        <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                            <Table className="rounded-xl">
+                                <TableHeader>{renderHeadRow()}</TableHeader>
+                                <TableBody>{renderRows(noClusterAssigned)}</TableBody>
+                            </Table>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            )}
         </Accordion>
     );
 };

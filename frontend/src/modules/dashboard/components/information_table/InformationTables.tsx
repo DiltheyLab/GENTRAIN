@@ -1,8 +1,8 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { DistanceMatrixTable } from "../distance_matrix/DistanceMatrixTable";
 import { ClusterInformationTable } from "./ClusterInformationTable";
 import { SampleInformationTable } from "./SampleInformationTable";
 import { useDashboardStore } from "../../stores/dashboard";
+import { DistanceMatrixTable } from "./DistanceMatrixTable";
 
 export const InformationTables = () => {
     const coloringMode = useDashboardStore((state) => state.graphSettings.coloringMode);
