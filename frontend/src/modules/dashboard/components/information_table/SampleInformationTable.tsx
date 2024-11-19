@@ -74,7 +74,7 @@ export function SampleInformationTable() {
                     <TableCell className="p-2 text-xs">
                         <p>{caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
-                    <TableCell className="p-2 text-xs max-w-60">
+                    <TableCell className="p-2 text-xs">
                         <p>{caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
@@ -90,8 +90,8 @@ export function SampleInformationTable() {
             {casesWithSamples.length > 0 && (
                 <>
                     <small>Es sind {casesWithSamples.length} sequenzierte Fälle im Datensatz.</small>
-                    <div className="mt-4 border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                        <Table className="rounded-xl">
+                    <div className="mt-4 border-[1px] border-muted rounded-xl overflow-hidden">
+                        <Table className="rounded-xl overflow-hidden" id="sample-information-table">
                             <TableHeader>{renderHeadRow()}</TableHeader>
                             <TableBody>{renderRows()}</TableBody>
                         </Table>

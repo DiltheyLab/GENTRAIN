@@ -46,8 +46,8 @@ export const ColorSelection = () => {
             </RadioGroup>
             {outbreakAnalysisStore.graphSettings.coloringMode === "outbreaks" && (
                 <div className="flex flex-col gap-3 mt-4">
-                    <ColorSection label="Ausgewählten Ausbruch umfärben" clusters={selectedOutbreak} />
-                    <ColorSection label="Ausbrüche in der Umgebung umfärben" clusters={selectedBackground} />
+                    <ColorSection label="Selektierten Ausbruch umfärben" clusters={selectedOutbreak} />
+                    <ColorSection label="Background umfärben" clusters={selectedBackground} />
                 </div>
             )}
         </div>

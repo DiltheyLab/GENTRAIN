@@ -31,7 +31,6 @@ type Graph2DProps = {
     isLoading?: boolean;
     linksBelowGeneticDistanceThreshold?: CustomLink[];
     zoomToFitTriggers?: Array<any>;
-    geneticDistanceThreshold?: number;
 };
 
 export const Graph2D = ({
@@ -44,7 +43,6 @@ export const Graph2D = ({
     updateSelectedNode,
     selectedNode,
     linksBelowGeneticDistanceThreshold,
-    geneticDistanceThreshold,
     isLoading = false,
     linkDistance = 70,
     charge = -80,
@@ -226,10 +224,6 @@ export const Graph2D = ({
             linkCurvature={(link) => link.curvature}
             linkColor={(link) => link.color}
             linkWidth={linkWidth}
-            linkLineDash={(link) => {
-                if (!geneticDistanceThreshold) return [];
-                return link.value <= geneticDistanceThreshold ? [] : [5, 5];
-            }}
             onNodeClick={(node, _event) => updateSelectedNode(node as CustomNode & NodeObject)}
             onNodeDrag={handleNodeDrag}
             onNodeDragEnd={handleNodeDrag}

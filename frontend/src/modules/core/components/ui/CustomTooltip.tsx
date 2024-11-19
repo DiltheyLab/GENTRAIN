@@ -17,7 +17,7 @@ export const CustomTooltip = ({ content, disabled = false }: CustomTooltipProps)
                 <TooltipTrigger asChild>
                     <Info className="h-5 w-5 cursor-pointer mb-1" />
                 </TooltipTrigger>
-                <TooltipContent className="w-72 font-normal">{content}</TooltipContent>
+                <TooltipContent className="w-72">{content}</TooltipContent>
             </Tooltip>
         </TooltipProvider>
     );

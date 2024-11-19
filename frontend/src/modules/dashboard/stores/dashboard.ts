@@ -4,7 +4,7 @@ import { addWeeks } from "date-fns";
 import { AnalysisSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { useCoreStore } from "@/modules/core/stores/core";
 
-export const defaultGraphSettings: GraphSettings = {
+const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     nodeSize: 6,
     linkWidth: 3,
