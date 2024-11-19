@@ -16,10 +16,10 @@ export const Footer = () => {
                         <a href="/contact" className="underline">
                             Kontakt
                         </a>
-                        <a href="/contact" className="underline ml-4">
+                        <a href="/data-privacy" className="underline ml-4">
                             Datenschutz
                         </a>
-                        <a href="/contact" className="underline ml-4">
+                        <a href="/impress" className="underline ml-4">
                             Impressum
                         </a>
                     </div>
