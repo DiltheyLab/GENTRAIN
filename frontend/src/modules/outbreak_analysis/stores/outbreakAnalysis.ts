@@ -89,7 +89,7 @@ export const defaultGraphSettings: GraphSettings = {
 };
 export const defaultGeneralSettings: GeneralSettings = {
     autoSave: true,
-    openAccordionItems: ["item-1"],
+    openAccordionItems: ["outbreak-selection"],
 };
 
 export const getDefaultAnalysisSettings = (): AnalysisSettings => {
