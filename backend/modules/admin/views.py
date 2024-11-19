@@ -10,19 +10,10 @@ from zipfile import ZipFile
 import time
 import shutil
 
-from werkzeug.exceptions import HTTPException
-
 from backend.app import db, basic_auth
+from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
-
-
-class AuthException(HTTPException):
-    def __init__(self, message):
-        super().__init__(message, Response(
-            "You could not be authenticated. Please refresh the page.", 401,
-            {'WWW-Authenticate': 'Basic realm="Login Required"'}))
-
 
 class AuthModelView(sqla.ModelView):
     def is_accessible(self):
