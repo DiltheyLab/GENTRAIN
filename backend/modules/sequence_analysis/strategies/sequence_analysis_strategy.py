@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 import json
 import logging
+from os import environ
+
 from redis import Redis
 from flask_socketio import SocketIO
 from backend.modules.core.exceptions import GenomicErrorException, SequenceAnalysisFailedException
 
-redis_connection = Redis(host="gentrain-redis", port=6379, decode_responses=True)
-sio = SocketIO(message_queue="redis://gentrain-redis:6379")
+redis_connection = Redis(host=environ.get('REDIS_HOST'), port=environ.get('REDIS_PORT'), decode_responses=True)
+sio = SocketIO(message_queue=f"redis://{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}")
 
 
 class SequenceAnalysisStrategy(ABC):
