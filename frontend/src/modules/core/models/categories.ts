@@ -79,7 +79,7 @@ export const createCategory = async (categoryName: string, pathogenId: number) =
  * @returns
  */
 export const persistCategoryIfNotExist = async (categoryName: string, pathogenId: number) => {
-    const existingCategoryForName = await db.categories.where({ name: categoryName }).first();
+    const existingCategoryForName = await db.categories.where({ name: categoryName, pathogen_id: pathogenId }).first();
     const categoryId = existingCategoryForName
         ? existingCategoryForName.id
         : await createCategory(categoryName, pathogenId);

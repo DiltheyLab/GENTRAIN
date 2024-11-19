@@ -63,7 +63,7 @@ export const deleteGroupsByPathogenId = async (pathogen_id: number) => {
 };
 
 export const createGroupIfNotExist = async (groupName: string, categoryId: number, pathogenId: number) => {
-    const existingGroupForName = await db.groups.where({ name: groupName }).first();
+    const existingGroupForName = await db.groups.where({ name: groupName, category_id: categoryId, pathogen_id: pathogenId}).first();
     const data = {
         name: groupName,
         category_id: categoryId,
@@ -79,12 +79,12 @@ export const createGroupIfNotExist = async (groupName: string, categoryId: numbe
 /**
  * Create categories and grourps for a single case.
  *
- * @param flexibleCategoryNames
  * @param caseData
+ * @param pathogenId
  * @returns
  */
 export const persistGroupsForCategories = async (caseData: CaseImport, pathogenId: number) => {
-    let groups = [];
+    const groups = [];
     for (const group of caseData.groups) {
         const categoryId = await persistCategoryIfNotExist(group.category, pathogenId);
         groups.push(await createGroupIfNotExist(group.name, categoryId, pathogenId));
