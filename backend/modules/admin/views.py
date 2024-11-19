@@ -1,6 +1,6 @@
 from os import path, listdir, remove, rename, environ
 
-from flask import request, url_for, redirect, abort, Response
+from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
 from flask_admin.form.upload import FileUploadField
 from flask_login import current_user
