@@ -94,8 +94,8 @@ jobs:
             echo -e "DATABASE_PORT=${{vars.DATABASE_PORT}}" >> .env
             echo -e "DATABASE_USER=${{vars.DATABASE_USER}}" >> .env
             echo -e "DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}}" >> .env
-            echo -e "ADMIN_HTBASIC_USERNAME=${{secrets.TEST_ADMIN_HTBASIC_USERNAME}}" >> .env
-            echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.TEST_ADMIN_HTBASIC_PASSWORD}}" >> .env
+            echo -e "ADMIN_HTBASIC_USERNAME=${{secrets.PROD_ADMIN_HTBASIC_USERNAME}}" >> .env
+            echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
