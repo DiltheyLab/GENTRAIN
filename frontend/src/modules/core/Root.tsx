@@ -23,7 +23,11 @@ export const Root = () => {
     useHandlePersistedSessionResults();
 
     useEffect(() => {
-        mouseflow.initialize("");
+        mouseflow.initialize("7fd8d486-58e7-463b-adb0-e60e148a89f8");
+        console.log(session);
+
+        // Session ID
+        mouseflow.tag(session ?? {});
     }, []);
 
     useEffect(() => {
