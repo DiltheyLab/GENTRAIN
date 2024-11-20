@@ -1,12 +1,13 @@
-import { CoreState, useCoreStore } from "@/modules/core/stores/core";
-import { OutbreakAnalysisStore, useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
-import { CustomNode, GraphData } from "@/modules/core/types/graph";
+import {CoreState, useCoreStore} from "@/modules/core/stores/core";
+import {OutbreakAnalysisStore, useOutbreakAnalysisStore} from "../../stores/outbreakAnalysis";
+import {CaseWithRelationships} from "@/modules/core/models/cases";
+import {ClusterAnalyser} from "@/modules/core/services/graph/ClusterAnalyser";
+import {CustomNode, GraphData} from "@/modules/core/types/graph";
 import html2canvas from "html2canvas";
-import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { getSelectedClusters } from "@/modules/core/helpers/graphs";
-import { t } from "i18next";
+import {PathogenTypeName} from "@/modules/core/models/pathogen_types";
+import {getSelectedClusters} from "@/modules/core/helpers/graphs";
+import {t} from "i18next";
+import {concat} from "lodash";
 
 export class PdfDataGenerator {
     protected coreState: CoreState;
@@ -17,7 +18,6 @@ export class PdfDataGenerator {
     protected clusters: (CustomNode | undefined)[][];
     protected distantCasesOfSelectedOutbreak: (CustomNode | undefined)[];
     protected clustersContainingCasesOfSelectedOutbreak: number;
-    protected graphImageUrl: string | undefined;
 
     constructor() {
         this.coreState = useCoreStore.getState();
@@ -74,6 +74,12 @@ export class PdfDataGenerator {
 
     public generateConclusion = () => {
         let conclusion = "";
+        const mergedClusterCases = concat(...this.clusters).map((customNode) => customNode?.caseData.case_id);
+
+        this.distantCasesOfSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter((customNode) => {
+            return customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id && !mergedClusterCases.includes(customNode.caseData.case_id);
+        });
+
         for (const index in this.clusters) {
             const cluster = this.clusters[index];
             const selectedOutbreakCasesInCluster = cluster.filter(
@@ -89,15 +95,15 @@ export class PdfDataGenerator {
             }
             this.clustersContainingCasesOfSelectedOutbreak++;
             conclusion +=
-                this.getConlusionPhraseForSelectedOutbreakCasesInCluster(
+                this.getConclusionPhraseForSelectedOutbreakCasesInCluster(
                     selectedOutbreakCasesInCluster,
                     parseInt(index)
-                ) + this.getConlusionPhraseForSubgroupInCluster(cluster);
+                ) + this.getConclusionPhraseForSubgroupInCluster(cluster);
         }
-        return `${conclusion}${this.getConlusionPhraseForDistantCasesOfSelectedOutbreak()}${this.getConclusionPhraseForOutro()}`;
+        return `${conclusion}${this.getConclusionPhraseForDistantCasesOfSelectedOutbreak()}${this.getConclusionPhraseForOutro()}`;
     };
 
-    public getCaseDataTableColumns = () => {
+    getCaseDataTableColumns = () => {
         const columns = ["Fall-Nummer im MST", "Sequenz-ID", "Vermuteter Ausbruch"];
         if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
             columns.push("Ns", "IUPAC Ambiguity Characters", "Abstammung");
@@ -190,8 +196,8 @@ export class PdfDataGenerator {
         return `${
             caseCountWithoutOutbreak > 0
                 ? ` sowie ${caseCountWithoutOutbreak} ${
-                      caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
-                  } aus der Umgebung ohne Ausbruchszuweisung.`
+                    caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
+                } aus der Umgebung ohne Ausbruchszuweisung.`
                 : "."
         }`;
     };
@@ -220,7 +226,7 @@ export class PdfDataGenerator {
         return `\n\nEs sind ${allContactTracingLinks.length} Kontaktangaben aus der Kontaktnachverfolgung enthalten.`;
     };
 
-    private getConlusionPhraseForSelectedOutbreakCasesInCluster = (
+    private getConclusionPhraseForSelectedOutbreakCasesInCluster = (
         cases: (CustomNode | undefined)[],
         clusterIndex: number
     ) => {
@@ -240,24 +246,28 @@ export class PdfDataGenerator {
         }.${" "}`;
     };
 
-    private getConlusionPhraseForSubgroupInCluster = (cluster: (CustomNode | undefined)[]) => {
+    private getConclusionPhraseForSubgroupInCluster = (cluster: (CustomNode | undefined)[]) => {
         const otherOutbreakCasesInCluster = cluster.filter(
             (node) =>
                 node?.caseData.outbreak_id &&
                 node?.caseData.outbreak_id !== this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
         );
         const unassignedCasesInCluster = cluster.filter((node) => !node?.caseData.outbreak_id);
-        if (otherOutbreakCasesInCluster.length + unassignedCasesInCluster.length === 1) {
-            return `Es gibt mit ${otherOutbreakCasesInCluster[0]?.caseData.fasta_id} (${otherOutbreakCasesInCluster[0]?.index}) zudem eine Probe des vermuteten Ausbruchs "${otherOutbreakCasesInCluster[0]?.cluster}" die genetisch nah verwandt zu den untersuchten Ausbruchsproben innerhalb des Clusters ist.\n\n`;
+
+        if (otherOutbreakCasesInCluster.length === 1) {
+            return `Es gibt mit ${otherOutbreakCasesInCluster[0]?.caseData.fasta_id} (${otherOutbreakCasesInCluster[0]?.index}) zudem eine Probe des vermuteten Ausbruchs "${otherOutbreakCasesInCluster[0]?.cluster}" die genetisch nah verwandt zu den untersuchten Ausbruchsproben innerhalb des Clusters ist.`;
+        }
+        if (unassignedCasesInCluster.length === 1) {
+            return `Es gibt mit ${unassignedCasesInCluster[0]?.caseData.fasta_id} (${unassignedCasesInCluster[0]?.index}) zudem eine Probe aus der Umgebung des Ausbruchs die genetisch nah verwandt zu den untersuchten Ausbruchsproben innerhalb des Clusters ist.`;
         }
         return `Es gibt zudem eine Untergruppe von ${
             otherOutbreakCasesInCluster.length + unassignedCasesInCluster.length
-        } weiteren Proben die genetisch nah verwandt zu den untersuchten Ausbruchsproben innerhalb des Clusters sind. ${this.getConlusionPhraseForOtherOutbreakCasesInCluster(
+        } weiteren Proben die genetisch nah verwandt zu den untersuchten Ausbruchsproben innerhalb des Clusters sind. ${this.getConclusionPhraseForOtherOutbreakCasesInCluster(
             otherOutbreakCasesInCluster
-        )} ${this.getConlusionPhraseForUnassignedCasesInCluster(unassignedCasesInCluster)}`;
+        )} ${this.getConclusionPhraseForUnassignedCasesInCluster(unassignedCasesInCluster)}`;
     };
 
-    private getConlusionPhraseForOtherOutbreakCasesInCluster = (cases: (CustomNode | undefined)[]) => {
+    private getConclusionPhraseForOtherOutbreakCasesInCluster = (cases: (CustomNode | undefined)[]) => {
         const groupedCases: { [outbreakName: string]: CustomNode[] } = cases.reduce((r: any, node: any) => {
             r[node.cluster] = r[node.cluster] || [];
             r[node.cluster].push(node);
@@ -276,21 +286,22 @@ export class PdfDataGenerator {
             .replace(/,([^,]*)$/, " und$1")}`;
     };
 
-    private getConlusionPhraseForUnassignedCasesInCluster = (cases: (CustomNode | undefined)[]) => {
+    private getConclusionPhraseForUnassignedCasesInCluster = (cases: (CustomNode | undefined)[]) => {
         return `${
             cases.length === 0
                 ? "."
                 : `und mit ${cases
-                      .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
-                      .join(", ")
-                      .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
+                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                    .join(", ")
+                    .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
         }`;
     };
 
-    private getConlusionPhraseForDistantCasesOfSelectedOutbreak = () => {
+    private getConclusionPhraseForDistantCasesOfSelectedOutbreak = () => {
         if (this.distantCasesOfSelectedOutbreak.length === 0) {
             return "";
         }
+
         return `\n\nDie Probe${
             this.distantCasesOfSelectedOutbreak.length > 1 ? "n" : ""
         } ${this.distantCasesOfSelectedOutbreak
