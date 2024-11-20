@@ -25,8 +25,8 @@ export const Root = () => {
     useEffect(() => {
         mouseflow.initialize("7fd8d486-58e7-463b-adb0-e60e148a89f8");
         console.log(session);
-
         // Session ID
+        mouseflow.setVariable("session_id", session?.id ?? "");
         mouseflow.tag(session ?? {});
     }, []);
 
