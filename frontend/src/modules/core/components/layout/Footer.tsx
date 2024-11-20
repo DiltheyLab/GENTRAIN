@@ -11,15 +11,15 @@ export const Footer = () => {
                             DiltheyLab
                         </a>
                     </div>
-                    <small>© 2024 Heinrich-Heine-Universität Düsseldorf</small>
+                    <small>© 2024 Universitätsklinikum Düsseldorf</small>
                     <div className="mt-2">
                         <a href="/contact" className="underline">
                             Kontakt
                         </a>
-                        <a href="/contact" className="underline ml-4">
+                        <a href="/data-privacy" className="underline ml-4">
                             Datenschutz
                         </a>
-                        <a href="/contact" className="underline ml-4">
+                        <a href="/impress" className="underline ml-4">
                             Impressum
                         </a>
                     </div>

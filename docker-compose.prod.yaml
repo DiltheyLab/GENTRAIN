@@ -54,6 +54,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - caddy
 
   backend:
     container_name: gentrain-backend
@@ -62,6 +64,8 @@ services:
     depends_on:
       - redis
       - db
+    volumes:
+      - ./backend/modules/sequence_analysis/schemes:/home/backend/modules/sequence_analysis/schemes
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
@@ -76,9 +80,12 @@ services:
     image: gentrain-backend:latest
     depends_on:
       - redis
+    volumes:
+      - ./backend/modules/sequence_analysis/schemes:/home/backend/modules/sequence_analysis/schemes
     command: [ "supervisord", "-c", "/home/backend/supervisor.conf" ]
     links:
       - redis
+    env_file: ".env"
     networks:
       - caddy
 
@@ -99,20 +106,11 @@ services:
       backend:
         condition: service_started
 
-  redis-insight:
-    container_name: gentrain-redis-insight
-    image: redis/redisinsight:latest
-    ports:
-      - "5540:5540"
-    networks:
-      - caddy
-
 volumes:
   # persist data caddy_data
   caddy_data: # persist config caddy_config:
-  postgres-data:
   caddy_config:
-
+  postgres-data:
 
 networks:
   # Docker network for Caddy
