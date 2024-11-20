@@ -1,19 +1,18 @@
-import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
-import { useHandlePersistedSessionResults } from "../data_management/hooks/useHandlePersistedSessionResults";
-import { TutorialTour } from "./components/tutorial/TutorialTour";
-import { RefreshLoader } from "./components/ui/RefreshLoader";
+import {useEffect} from "react";
+import {Outlet} from "react-router-dom";
+import {useHandlePersistedSessionResults} from "../data_management/hooks/useHandlePersistedSessionResults";
+import {TutorialTour} from "./components/tutorial/TutorialTour";
+import {RefreshLoader} from "./components/ui/RefreshLoader";
 import {
     fetchPathogensFromServer,
     getAllPathogensWithRelationships,
-    PathogenWithRelationships,
+    PathogenWithRelationships
 } from "./models/pathogens";
-import { Onboarding } from "./pages/Onboarding";
-import { useCoreStore } from "./stores/core";
-import { Layout } from "./components/layout/Layout";
-import { PathogenTypeName } from "@/core/models/pathogen_types.ts";
-import { db } from "@/modules/core/infrastructure/database.ts";
-import { mouseflow } from "react-mouseflow";
+import {Onboarding} from "./pages/Onboarding";
+import {useCoreStore} from "./stores/core";
+import {Layout} from "./components/layout/Layout";
+import {PathogenTypeName} from "@/core/models/pathogen_types.ts";
+import {db} from "@/modules/core/infrastructure/database.ts";
 
 export const Root = () => {
     const session = useCoreStore((state) => state.session);
@@ -23,28 +22,19 @@ export const Root = () => {
     useHandlePersistedSessionResults();
 
     useEffect(() => {
-        mouseflow.initialize("7fd8d486-58e7-463b-adb0-e60e148a89f8");
-        console.log(session);
-        // Session ID
-        mouseflow.setVariable("session_id", session?.id ?? "");
-        mouseflow.tag(session ?? {});
-    }, []);
-
-    useEffect(() => {
         fetchSession();
-        fetchPathogensFromServer().then(
-            (
-                pathogensServerStorage: {
-                    id: number;
-                    name: string;
-                    type: PathogenTypeName;
-                    genetic_distance_threshold: number;
-                }[]
+        fetchPathogensFromServer().then((pathogensServerStorage:
+                                             {
+                                                 id: number;
+                                                 name: string;
+                                                 type: PathogenTypeName;
+                                                 genetic_distance_threshold: number;
+                                             }[]
             ) => {
                 getAllPathogensWithRelationships().then(async (pathogensClientStorage) => {
                     let pathogensToDelete = pathogensClientStorage;
                     for (const pathogenServer of pathogensServerStorage) {
-                        const pathogenType = await db.pathogen_types.where({ name: pathogenServer.type }).first();
+                        const pathogenType = await db.pathogen_types.where({name: pathogenServer.type}).first();
                         if (!pathogenType) {
                             continue;
                         }
@@ -82,22 +72,23 @@ export const Root = () => {
                     updateActivePathogen(activelyPersistedPathogen ?? null);
                 });
             }
-        );
+        )
     }, []);
 
+
     if (session === undefined) {
-        return <RefreshLoader />;
+        return <RefreshLoader/>;
     }
 
     if (session === null) {
-        return <Onboarding />;
+        return <Onboarding/>;
     }
 
     return (
         <>
-            {tutorialTourIsActive && <TutorialTour />}
+            {tutorialTourIsActive && <TutorialTour/>}
             <Layout>
-                <Outlet />
+                <Outlet/>
             </Layout>
         </>
     );
