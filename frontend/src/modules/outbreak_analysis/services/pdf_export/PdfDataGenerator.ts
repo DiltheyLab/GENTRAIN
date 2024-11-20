@@ -239,9 +239,9 @@ export class PdfDataGenerator {
             .replace(
                 /,([^,]*)$/,
                 " und$1"
-            )} des untersuchten vermuteten Ausbruchs bilden ein Cluster und sind untereinander genetisch identisch bzw nah verwandt ${
+            )} des untersuchten vermuteten Ausbruchs bilden ein Cluster und sind untereinander genetisch identisch bzw. nah verwandt ${
             clusterIndex === 0
-                ? `(minimaler paarweiser genetischer Abstand von < ${this.coreState.activePathogen?.genetic_distance_threshold})`
+                ? `(minimaler paarweiser genetischer Abstand von ≤ ${this.coreState.activePathogen?.genetic_distance_threshold})`
                 : ""
         }.${" "}`;
     };
