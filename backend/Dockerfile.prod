@@ -1,6 +1,9 @@
 # Use the official Miniconda3 image as the base image
 FROM continuumio/miniconda3:latest
 
+ARG USER_ID
+ARG GROUP_ID
+
 # Set working directory in the container
 WORKDIR /home/backend
 
@@ -10,10 +13,9 @@ COPY environment.yaml /home/backend
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /home/backend/environment.yaml
 
-# Create a new user 'gentrain' and set it as the current user
-RUN useradd -m gentrain
-RUN chown gentrain:gentrain -R /home/backend
-USER gentrain
+RUN addgroup --gid $GROUP_ID user
+RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID user
+USER user
 
 RUN rm -rf /home/backend/logs
 RUN mkdir /home/backend/logs
