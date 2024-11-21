@@ -10,10 +10,10 @@ COPY environment.yaml /home/backend
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /home/backend/environment.yaml
 
-# Create a new user 'uwsgi' and set it as the current user
-RUN useradd -m uwsgi
-RUN chown uwsgi:uwsgi -R /home/backend
-USER uwsgi
+# Create a new user 'gentrain' and set it as the current user
+RUN useradd -m gentrain
+RUN chown gentrain:gentrain -R /home/backend
+USER gentrain
 
 RUN rm -rf /home/backend/logs
 RUN mkdir /home/backend/logs
@@ -24,10 +24,9 @@ ENV PATH /opt/conda/envs/gentrain/bin:$PATH
 ENV PYTHONPATH="$PYTHONPATH:/home"
 
 # Copy the current directory contents into the container at the working directory
-COPY --chown=uwsgi . .
+COPY --chown=gentrain . .
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run app.py when the container launches using uWSGI
 CMD ["gunicorn", "--chdir", "/home", "--workers", "1", "--threads", "100", "--bind", ":8080", "backend.server:app"]
