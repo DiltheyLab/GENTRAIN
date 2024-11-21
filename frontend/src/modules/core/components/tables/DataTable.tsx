@@ -139,7 +139,7 @@ export const DataTable = ({
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                     onClick={() => onRowClick(row)}
-                                    style={setRowStyle(row.original)}
+                                    style={setRowStyle(row)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>

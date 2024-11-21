@@ -35,8 +35,8 @@ export function CaseSelection() {
         });
     }, [selectAll, selectCasesWithSequence, selectCasesWithOutbreak]);
 
-    const getRowStyle = (data: CaseImport & { existingCase: CaseWithRelationships }) => {
-        if(!data.existingCase) {
+    const getRowStyle = (row: Row<any>) => {
+        if(!row.original.existingCase) {
             return {
                 backgroundColor: "#f7fee7"
             }
@@ -59,7 +59,7 @@ export function CaseSelection() {
                         changeCaseImport(row.original.case_id!, {import: !row.getIsSelected()});
                         row.toggleSelected(!row.getIsSelected());
                     }}
-                    setRowStyle={(data) => getRowStyle(data)}
+                    setRowStyle={(row) => getRowStyle(row)}
                     preselectRows
                     selectionLabel="Fällen"
                     actions={() => {

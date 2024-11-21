@@ -107,3 +107,7 @@ a {
     font-display: swap;
     src: url("../../assets/font/Merriweather_Sans/MerriweatherSans-ExtraBold.ttf") format("truetype");
 }
+
+table tr[data-state="false"] {
+    background-color: #ffffff !important;
+}
