@@ -124,7 +124,7 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.test.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker system prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.test.yaml build --no-cache --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
-            echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S UID="$(id -u)" GID="$(id -g)" docker compose -f docker-compose.test.yaml up -d
+            echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.test.yaml up -d
             exit
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0

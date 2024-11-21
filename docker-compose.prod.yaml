@@ -3,6 +3,7 @@ services:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
     image: caddy:latest
+    user: "${UID}:${GID}"
     # Restart policy: restart the container unless explicitly stopped
     restart: unless-stopped
     # ports for Caddy
@@ -36,6 +37,7 @@ services:
   redis:
     container_name: gentrain-redis
     image: "redis:alpine"
+    user: "${UID}:${GID}"
     ports:
       - 6379:6379
     networks:
@@ -45,6 +47,7 @@ services:
     container_name: gentrain-db
     image: postgres
     hostname: localhost
+    user: "${UID}:${GID}"
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     environment:
