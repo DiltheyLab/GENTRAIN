@@ -110,6 +110,8 @@ jobs:
             echo -e "DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}}" >> .env
             echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
             echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.TEST_ADMIN_HTBASIC_PASSWORD}}" >> .env
+            echo -e "UID=$(id -u)" >> .env
+            echo -e "GID=$(id -g)" >> .env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3
@@ -121,8 +123,6 @@ jobs:
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
-            export UID=$(id -u)
-            export GID=$(id -g)
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.test.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker system prune -f
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.test.yaml build --no-cache --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
