@@ -1,26 +1,27 @@
-import { useDropzone } from "react-dropzone";
-import { CirclePlus, File } from "lucide-react";
-import { formatInArray } from "@/modules/core/helpers/files";
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { useTranslation } from "react-i18next";
-import { useGetFileReadingStrategy } from "../../hooks/useGetFileReadingStrategy";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
-import { Button } from "@/modules/core/components/ui/Button";
-import { useDataManagementStore } from "../../stores/dataManagement";
+import {useDropzone} from "react-dropzone";
+import {CirclePlus, File} from "lucide-react";
+import {formatInArray} from "@/modules/core/helpers/files";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {useTranslation} from "react-i18next";
+import {useGetFileReadingStrategy} from "../../hooks/useGetFileReadingStrategy";
+import {GentrainException} from "@/modules/core/exceptions/GentrainException";
+import {ValidationStrategy} from "../../services/data_import/validation/ValidationStrategy";
+import {Button} from "@/modules/core/components/ui/Button";
+import {useDataManagementStore} from "../../stores/dataManagement";
+import {useEffect} from "react";
 
 export const FileDropzone = ({
-    type,
-    validationStrategy,
-    icon,
-    onFileUpload,
-}: {
+                                 type,
+                                 validationStrategy,
+                                 icon,
+                                 onFileUpload,
+                             }: {
     type: string;
     validationStrategy: ValidationStrategy;
     icon?: JSX.Element | null;
     onFileUpload: () => void;
 }) => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
@@ -60,7 +61,7 @@ export const FileDropzone = ({
                 toast({
                     title: t(`error:upload.title`),
                     description: error.data
-                        ? t(`error:upload.${error.message}`, { data: error.data.join(", ") })
+                        ? t(`error:upload.${error.message}`, {data: error.data.join(", ")})
                         : t(`error:upload.${error.message}`),
                     duration: 10000,
                     variant: "destructive",
@@ -76,58 +77,59 @@ export const FileDropzone = ({
         }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileUpload });
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handleFileUpload});
 
+    useEffect(() => {
+        console.log(fileReadingStrategy)
+    }, [])
     return (
         <>
-            {fileReadingStrategy && (
-                <div
-                    {...getRootProps()}
-                    className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${
-                        isDragActive ? "border-muted-foreground/30" : ""
-                    }`}
-                >
-                    <input
-                        {...getInputProps()}
-                        accept={fileReadingStrategy.getAcceptedMimeType(type)}
-                        multiple={fileReadingStrategy.allowMultifile()}
-                        onChange={(e) => {
-                            handleFileUpload(e.target.files);
-                        }}
-                    />
-                    {!showImportAssistent && (
-                        <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
-                    )}
-                    <div className="relative">
-                        <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
-                            {icon && <>{icon}</>}
-                            {!icon && <File />}
-                        </div>
+            <div
+                {...getRootProps()}
+                className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${
+                    isDragActive ? "border-muted-foreground/30" : ""
+                }`}
+            >
+                {fileReadingStrategy && <input
+                    {...getInputProps()}
+                    accept={fileReadingStrategy.getAcceptedMimeType(type)}
+                    multiple={fileReadingStrategy.allowMultifile()}
+                    onChange={(e) => {
+                        handleFileUpload(e.target.files);
+                    }}
+                />}
+                {!showImportAssistent && (
+                    <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
+                )}
+                <div className="relative">
+                    <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
+                        {icon && <>{icon}</>}
+                        {!icon && <File/>}
+                    </div>
 
-                        <CirclePlus
-                            className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
-                                isDragActive ? "fill-primary scale-125" : " fill-black"
-                            }`}
-                            fill="black"
-                        />
-                    </div>
-                    <div className="text-center mt-4 flex items-center justfy-center flex-1 lg:px-10">
-                        {isDragActive ? (
-                            <small>
-                                Platzieren Sie die Dateien in der Fläche.
-                                <br />
-                                <br />
-                            </small>
-                        ) : (
-                            <small>
-                                Ziehen Sie {fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in die
-                                Fläche oder klicken Sie auf die Fläche um {t(`import:labels.${type}`)} auszuwählen.
-                            </small>
-                        )}
-                    </div>
-                    <Button className="mt-4">{t(`import:labels.${type}`)} auswählen</Button>
+                    <CirclePlus
+                        className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
+                            isDragActive ? "fill-primary scale-125" : " fill-black"
+                        }`}
+                        fill="black"
+                    />
                 </div>
-            )}
+                <div className="text-center mt-4 flex items-center justfy-center flex-1 lg:px-10">
+                    {isDragActive ? (
+                        <small>
+                            Platzieren Sie die Dateien in der Fläche.
+                            <br/>
+                            <br/>
+                        </small>
+                    ) : (
+                        <small>
+                            Ziehen Sie {fileReadingStrategy && fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in die
+                            Fläche oder klicken Sie auf die Fläche um {t(`import:labels.${type}`)} auszuwählen.
+                        </small>
+                    )}
+                </div>
+                <Button className="mt-4">{t(`import:labels.${type}`)} auswählen</Button>
+            </div>
         </>
     );
 };

@@ -5,7 +5,7 @@ import {useDataManagementStore} from "@/modules/data_management/stores/dataManag
 import {Checkbox} from "@/modules/core/components/ui/Checkbox";
 import {Label} from "@/modules/core/components/ui/Label";
 import {useEffect, useState} from "react";
-import {CaseImport, CaseWithRelationships} from "@/modules/core/models/cases";
+import {CaseImport} from "@/modules/core/models/cases";
 import {caseImportFilterFn} from "@/modules/data_management/helpers/dataTable";
 import {caseSelectionColumns} from "./caseSelectionColumns";
 
@@ -71,7 +71,7 @@ export function CaseSelection() {
                                         className="mr-2"
                                         checked={selectAll}
                                         onCheckedChange={(value) => {
-                                            setSelectAll(value ? true : false);
+                                            setSelectAll(!!value);
                                             if (value) {
                                                 setSelectCasesWithSequence(false);
                                                 setSelectCasesWithOutbreak(false);
@@ -89,7 +89,7 @@ export function CaseSelection() {
                                         className="mr-2"
                                         checked={selectCasesWithSequence}
                                         onCheckedChange={(value) => {
-                                            setSelectCasesWithSequence(value ? true : false);
+                                            setSelectCasesWithSequence(!!value);
                                             if (value) {
                                                 setSelectAll(false);
                                             }
@@ -106,7 +106,7 @@ export function CaseSelection() {
                                         className="mr-2"
                                         checked={selectCasesWithOutbreak}
                                         onCheckedChange={(value) => {
-                                            setSelectCasesWithOutbreak(value ? true : false);
+                                            setSelectCasesWithOutbreak(!!value);
                                             if (value) {
                                                 setSelectAll(false);
                                             }
