@@ -13,9 +13,9 @@ COPY environment.yaml /home/backend
 # Create a new Conda environment from the 'environment.yml' file
 RUN conda env create -f /home/backend/environment.yaml
 
-RUN addgroup --gid $GROUP_ID user
-RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID user
-USER user
+RUN addgroup --gid $GROUP_ID gentrain
+RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
+USER gentrain
 
 RUN rm -rf /home/backend/logs
 RUN mkdir /home/backend/logs
