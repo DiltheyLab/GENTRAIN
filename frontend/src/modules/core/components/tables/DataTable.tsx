@@ -11,11 +11,11 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { Button } from "@/modules/core/components/ui/Button";
-import { Input } from "@/modules/core/components/ui/Input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { useEffect, useState } from "react";
-import { cn } from "../../helpers/cn";
+import {Button} from "@/modules/core/components/ui/Button";
+import {Input} from "@/modules/core/components/ui/Input";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/modules/core/components/ui/Table";
+import {CSSProperties, useEffect, useState} from "react";
+import {cn} from "../../helpers/cn";
 
 type DataTableProps = {
     data: any[];
@@ -30,22 +30,27 @@ type DataTableProps = {
     onInit?: (table: TanStackTable<any>) => void;
     actions?: (table: TanStackTable<any>) => JSX.Element;
     className?: string;
+    setRowStyle?: (row: any) => CSSProperties;
 };
 
 export const DataTable = ({
-    data,
-    columns,
-    enableSearch = true,
-    filterPlaceholder = "Daten durchsuchen...",
-    pageSize = 10,
-    filterFn = undefined,
-    onRowClick = () => {},
-    preselectRows = false,
-    selectionLabel = "Einträgen",
-    onInit,
-    actions,
-    className,
-}: DataTableProps) => {
+                              data,
+                              columns,
+                              enableSearch = true,
+                              filterPlaceholder = "Daten durchsuchen...",
+                              pageSize = 10,
+                              filterFn = undefined,
+                              onRowClick = () => {
+                              },
+                              preselectRows = false,
+                              selectionLabel = "Einträgen",
+                              onInit,
+                              actions,
+                              className,
+                              setRowStyle = () => {
+                                  return {}
+                              }
+                          }: DataTableProps) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
@@ -129,11 +134,12 @@ export const DataTable = ({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
+                            table.getRowModel().rows.map((row) => {
+                                return <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                     onClick={() => onRowClick(row)}
+                                    style={setRowStyle(row.original)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
@@ -141,7 +147,7 @@ export const DataTable = ({
                                         </TableCell>
                                     ))}
                                 </TableRow>
-                            ))
+                            })
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
