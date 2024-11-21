@@ -15,6 +15,7 @@ RUN conda env create -f /home/backend/environment.yaml
 
 RUN addgroup --gid $GROUP_ID gentrain
 RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
+RUN chown gentrain:gentrain -R /home/backendg
 USER gentrain
 
 RUN rm -rf /home/backend/logs
