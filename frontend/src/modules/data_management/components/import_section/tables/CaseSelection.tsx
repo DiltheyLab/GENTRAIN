@@ -1,13 +1,13 @@
-import { Row, Table } from "@tanstack/react-table";
-import { useGetCaseTableData } from "@/modules/data_management/hooks/useGetCaseTableData";
-import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { Label } from "@/modules/core/components/ui/Label";
-import { useEffect, useState } from "react";
-import { CaseImport } from "@/modules/core/models/cases";
-import { caseImportFilterFn } from "@/modules/data_management/helpers/dataTable";
-import { caseSelectionColumns } from "./caseSelectionColumns";
+import {Row, Table} from "@tanstack/react-table";
+import {useGetCaseTableData} from "@/modules/data_management/hooks/useGetCaseTableData";
+import {DataTable} from "@/modules/core/components/tables/DataTable";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {Checkbox} from "@/modules/core/components/ui/Checkbox";
+import {Label} from "@/modules/core/components/ui/Label";
+import {useEffect, useState} from "react";
+import {CaseImport, CaseWithRelationships} from "@/modules/core/models/cases";
+import {caseImportFilterFn} from "@/modules/data_management/helpers/dataTable";
+import {caseSelectionColumns} from "./caseSelectionColumns";
 
 export function CaseSelection() {
     const caseTableData = useGetCaseTableData();
@@ -23,8 +23,8 @@ export function CaseSelection() {
         allRows.forEach((row: Row<CaseImport>) => {
             row.toggleSelected(
                 selectAll ||
-                    (selectCasesWithSequence && row.original.fasta_id !== null) ||
-                    (selectCasesWithOutbreak && row.original.outbreak !== null)
+                (selectCasesWithSequence && row.original.fasta_id !== null) ||
+                (selectCasesWithOutbreak && row.original.outbreak !== null)
             );
             changeCaseImport(row.original.case_id!, {
                 import:
@@ -35,6 +35,16 @@ export function CaseSelection() {
         });
     }, [selectAll, selectCasesWithSequence, selectCasesWithOutbreak]);
 
+    const getRowStyle = (data: CaseImport & { existingCase: CaseWithRelationships }) => {
+        if(!data.existingCase) {
+            return {
+                backgroundColor: "#f7fee7"
+            }
+        }
+        return {
+            backgroundColor: "#fefce8"
+        };
+    }
     return (
         <>
             {caseTableData && (
@@ -46,9 +56,10 @@ export function CaseSelection() {
                     filterFn={caseImportFilterFn}
                     onRowClick={(row: any) => {
                         if (!row.original.case_id) return;
-                        changeCaseImport(row.original.case_id!, { import: !row.getIsSelected() });
+                        changeCaseImport(row.original.case_id!, {import: !row.getIsSelected()});
                         row.toggleSelected(!row.getIsSelected());
                     }}
+                    setRowStyle={(data) => getRowStyle(data)}
                     preselectRows
                     selectionLabel="Fällen"
                     actions={() => {
