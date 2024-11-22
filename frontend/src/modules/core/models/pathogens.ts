@@ -6,11 +6,11 @@ import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 
-export const Pathogens = {
-    "SARS-CoV-2": { type: PathogenTypeName.viral, geneticDistanceThreshold: 1 },
-    "Enterococcus Faecium": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 10 },
-    "Staphylococcus Aureus": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 12 },
-    "Bordetella Pertussis": { type: PathogenTypeName.bacterial, geneticDistanceThreshold: 5 },
+export type Pathogen = {
+    id: number;
+    name: string;
+    type: PathogenTypeName;
+    genetic_distance_threshold: number;
 };
 
 export interface PathogenSchema {
@@ -28,12 +28,8 @@ export interface PathogenWithRelationships extends PathogenSchema {
 }
 
 export const fetchPathogensFromServer = async () => {
-    const pathogens: {
-        id: number;
-        name: string;
-        type: PathogenTypeName;
-        genetic_distance_threshold: number;
-    }[] = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`).then((response) => response.json());
+    const response = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`);
+    const pathogens: Pathogen[] = await response.json();
     return pathogens;
 };
 

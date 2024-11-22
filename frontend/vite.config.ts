@@ -2,11 +2,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import basicSsl from "@vitejs/plugin-basic-ssl";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react(), basicSsl()],
+    plugins: [react()],
+    envDir: process.env.NODE_ENV === "development" ? "../" : "./",
     server: {
         port: 3000,
     },

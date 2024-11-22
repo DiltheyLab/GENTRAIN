@@ -6,15 +6,12 @@ import { importDataFromJson } from "@/modules/core/helpers/database";
 export default function InitExampleButton() {
     const initSession = useCoreStore((state) => state.initSession);
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const initExampleImport = () => {
-        importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
-        initSession();
-    };
 
     return (
         <Button
             onClick={() => {
-                initExampleImport();
+                importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
+                initSession();
                 changeTutorialTourIsActive(true);
             }}
         >

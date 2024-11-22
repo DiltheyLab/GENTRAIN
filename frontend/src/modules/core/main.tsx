@@ -19,7 +19,7 @@ import { Contact } from "./pages/Contact";
 import { DataPrivacy } from "./pages/DataPrivacy";
 import { PostHogProvider } from "posthog-js/react";
 
-const options = {
+const postHogProviderOptions = {
     api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
 };
 
@@ -49,11 +49,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <I18nextProvider i18n={i18next}>
-            <Toaster />
-            <PostHogProvider apiKey={import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY} options={options}></PostHogProvider>
-            <RouterProvider router={router} />
-        </I18nextProvider>
-    </React.StrictMode>
+    <I18nextProvider i18n={i18next}>
+        <Toaster />
+        <PostHogProvider apiKey={import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY} options={postHogProviderOptions} />
+        <RouterProvider router={router} />
+    </I18nextProvider>
 );
