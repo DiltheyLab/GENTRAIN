@@ -8,7 +8,6 @@ import {GentrainException} from "@/modules/core/exceptions/GentrainException";
 import {ValidationStrategy} from "../../services/data_import/validation/ValidationStrategy";
 import {Button} from "@/modules/core/components/ui/Button";
 import {useDataManagementStore} from "../../stores/dataManagement";
-import {useEffect} from "react";
 
 export const FileDropzone = ({
                                  type,
@@ -79,9 +78,6 @@ export const FileDropzone = ({
 
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handleFileUpload});
 
-    useEffect(() => {
-        console.log(fileReadingStrategy)
-    }, [])
     return (
         <>
             <div

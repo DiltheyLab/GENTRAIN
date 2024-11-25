@@ -4,6 +4,9 @@ services:
     image: "redis:alpine"
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
   db:
     container_name: gentrain-db
     image: postgres
