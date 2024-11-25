@@ -86,6 +86,8 @@ jobs:
             echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
+            echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
+            echo -e "REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}}" >> .env
             echo -e "ADMIN_EMAIL=${{vars.ADMIN_EMAIL}}" >> .env
             echo -e "ADMIN_PASSWORD=${{secrets.ADMIN_PASSWORD}}" >> .env
             echo -e "DATABASE_DRIVER=${{vars.DATABASE_DRIVER}}" >> .env
