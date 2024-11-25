@@ -19,6 +19,7 @@ export class CasesValidation extends ValidationStrategy {
 
     public collectData(data: string[][]) {
         this.header = data[0];
+        // remove header from csv input
         this.data = data.slice(1, data.length);
     }
 
