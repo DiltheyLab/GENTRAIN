@@ -107,7 +107,7 @@ export abstract class SequenceAnalysisStrategy {
             // we currently only add samples if a case for the fasta id exists already
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
-                this.emitSequenceAnalysisMessage({ fastaId: fastaId, sequence: sample.imported.sequence });
+                await this.emitSequenceAnalysisMessage({ fastaId: fastaId, sequence: sample.imported.sequence });
                 this.fastaIdsToAnalyse.push(fastaId);
             }
         }
@@ -116,7 +116,7 @@ export abstract class SequenceAnalysisStrategy {
     private handleAnalysisEvents = () => {
         if (socket) {
             socket.on("sequence_analysis_response", async (data: any) => {
-                this.handleSingleAnalysisResult(data);
+                await this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
             });
             socket.on("sequence_analysis_enqueued", (fastaId: string) => {

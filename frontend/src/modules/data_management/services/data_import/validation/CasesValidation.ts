@@ -1,14 +1,14 @@
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
-import { db } from "@/modules/core/infrastructure/database";
-import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
-import { getOutbreaksForPathogenId, OutbreakSchema } from "@/modules/core/models/outbreaks";
-import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { CaseImports } from "@/modules/data_management/types/import";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {GentrainException} from "@/modules/core/exceptions/GentrainException";
+import {formatDate, parseGermanDateFormat} from "@/modules/core/helpers/dates";
+import {db} from "@/modules/core/infrastructure/database";
+import {CaseImport, CaseWithRelationships, getWithRelations} from "@/modules/core/models/cases";
+import {getOutbreaksForPathogenId, OutbreakSchema} from "@/modules/core/models/outbreaks";
+import {ObjectRelationalMapper} from "@/modules/core/services/database/ObjectRelationalMapper";
+import {useCoreStore} from "@/modules/core/stores/core";
+import {ValidationStrategy} from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {CaseImports} from "@/modules/data_management/types/import";
 
 export class CasesValidation extends ValidationStrategy {
     protected data: string[][] = [];
@@ -65,9 +65,7 @@ export class CasesValidation extends ValidationStrategy {
         this.cases = ObjectRelationalMapper.arrayToMap(cases, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);
         this.outbreaks = ObjectRelationalMapper.arrayToMap(outbreaks);
-        const casesToUpload = this.collectImportedAndPersistedCases();
-
-        return casesToUpload;
+        return this.collectImportedAndPersistedCases();
     }
 
     private collectImportedAndPersistedCases() {
@@ -95,7 +93,6 @@ export class CasesValidation extends ValidationStrategy {
 
     /**
      * Detect if groups are remaining or new to the existing case or not.
-     * @param header
      * @param row
      * @param existingCase
      * @returns
