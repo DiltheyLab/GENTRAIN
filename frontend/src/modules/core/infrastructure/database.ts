@@ -83,7 +83,15 @@ db.on("populate", async () => {
 });
 
 db.sessions.hook("creating", function (_primKey, obj, _transaction) {
-    obj.id = uuidv4();
+    // generate short id for usertests -> easier to write down, but has to be replaced with uuidv4 for production
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+    for (let i = 0; i < 8; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    obj.id = id.slice(0, 4) + "-" + id.slice(4);
+
+    //obj.id = uuidv4();
 });
 
 db.tables.forEach(function (table) {
