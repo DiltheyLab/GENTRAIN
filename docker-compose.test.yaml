@@ -38,7 +38,7 @@ services:
     image: gentrain-redis
     build:
       context: ./redis
-      dockerfile: redis/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
