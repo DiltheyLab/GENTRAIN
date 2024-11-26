@@ -5,12 +5,10 @@ import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/modules/core/helpers/database";
 import { useRef } from "react";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
-import { useCoreStore } from "../../stores/core";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname.split("/")[1];
-    const session = useCoreStore((state) => state.session);
 
     /*     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning); */
@@ -47,7 +45,6 @@ export const Header = () => {
                 >
                     Datenverwaltung
                 </Link>
-                <p> {session?.id}</p>
                 {/*  <Button
                     onClick={() => {
                         changeTutorialIsRunning(true);
