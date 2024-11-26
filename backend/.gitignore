@@ -4,3 +4,4 @@ __pycache__/
 supervisord.pid
 supervisord.log
 logs/*
+redis.conf

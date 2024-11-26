@@ -2,6 +2,7 @@ export function Impress() {
     return (
         <div className={"px-5 py-10"}>
             <h2 className="text-2xl font-bold tracking-tight mb-4">Impressum</h2>
+            <p className={"mb-4"}>Das Gentrain-Dashboard wird vom Universitätsklinikum Düsseldorf AöR durch ein Team am <i>Institut für Medizinische Mikrobiologie und Krankenhaushygiene</i> (Kontakt: Prof. Alexander Dilthey) im Auftrag des Ministeriums für Arbeit, Gesundheit und Soziales (MAGS) des Landes Nordrhein-Westfalen entwickelt.</p>
             <div className="mb-4">
                 <h3 className={"font-bold text-lg mb-1"}>
                     Universitätsklinikum Düsseldorf</h3>
