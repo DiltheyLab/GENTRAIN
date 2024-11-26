@@ -1,12 +1,15 @@
 services:
   redis:
     container_name: gentrain-redis
-    image: "redis:alpine"
+    image: gentrain-redis
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    volumes:
+      - "./redis/redis.conf:/usr/local/etc/redis/redis.conf"
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    command: redis-server /usr/local/etc/redis/redis.conf
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    restart: always
   db:
     container_name: gentrain-db
     image: postgres
