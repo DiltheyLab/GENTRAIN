@@ -10,7 +10,6 @@ import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { Pathogen, PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
-import { v4 as uuidv4 } from "uuid";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
 export interface SessionsSchema {
     id: string;
