@@ -6,4 +6,4 @@ Caddyfile
 .vscode
 .idea
 .idea/*
-redis.conf
+redis/redis.conf
