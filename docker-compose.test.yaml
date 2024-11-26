@@ -44,9 +44,11 @@ services:
     volumes:
       - ./redis/tls:/usr/local/etc/redis/tls
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - caddy
 
   db:
-    container_name: gentrain-db
+    container_name: gentrain-dbein
     image: postgres
     hostname: localhost
     ports:
