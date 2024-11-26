@@ -8,7 +8,7 @@ import { DistancesSchema } from "@/modules/core/models/distances";
 import { GroupSchema } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { PathogenSchema } from "@/modules/core/models/pathogens";
+import { Pathogen, PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { v4 as uuidv4 } from "uuid";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
@@ -56,12 +56,9 @@ db.version(1).stores({
 
 db.on("populate", async () => {
     let persistedPathogenTypes = {} as Record<string, number>;
-    const pathogens: {
-        id: number;
-        name: string;
-        type: PathogenTypeName;
-        genetic_distance_threshold: number;
-    }[] = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`).then((response) => response.json());
+    const response = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`);
+    const pathogens: Pathogen[] = await response.json();
+
     for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
         const newPathogenTypeId = await db.pathogen_types.add({
             name: pathogenTypeName as unknown as PathogenTypeName,
@@ -86,7 +83,15 @@ db.on("populate", async () => {
 });
 
 db.sessions.hook("creating", function (_primKey, obj, _transaction) {
-    obj.id = uuidv4();
+    // generate short id for usertests -> easier to write down, but has to be replaced with uuidv4 for production
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+    for (let i = 0; i < 8; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    obj.id = id.slice(0, 4) + "-" + id.slice(4);
+
+    //obj.id = uuidv4();
 });
 
 db.tables.forEach(function (table) {

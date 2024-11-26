@@ -9,6 +9,7 @@ import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
     const pathName = useLocation().pathname.split("/")[1];
+
     /*     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning); */
 
