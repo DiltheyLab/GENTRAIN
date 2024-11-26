@@ -5,7 +5,9 @@ from flask_socketio import SocketIO
 
 from backend.app import app
 
-redis_connection = Redis(host=environ.get("REDIS_HOST"), port=environ.get("REDIS_PORT"), ssl=True, ssl_cert_reqs=None, username=environ.get('REDIS_USERNAME'),
+redis_connection = Redis(host=environ.get("REDIS_HOST"), port=environ.get("REDIS_PORT"),
+                         ssl=True, ssl_cert_reqs=None,
+                         username=environ.get('REDIS_USERNAME'),
                          password=environ.get('REDIS_PASSWORD'), decode_responses=True, health_check_interval=30)
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)

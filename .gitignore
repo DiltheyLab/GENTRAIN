@@ -7,3 +7,4 @@ Caddyfile
 .idea
 .idea/*
 redis/redis.conf
+redis/tls

@@ -1,0 +1,6 @@
+FROM redis:alpine
+RUN addgroup --gid $GROUP_ID gentrain
+RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
+USER gentrain
+CMD [ "redis-server", "/usr/local/etc/redis/redis.conf"]
+
