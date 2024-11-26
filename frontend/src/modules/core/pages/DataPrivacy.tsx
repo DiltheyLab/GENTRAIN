@@ -18,21 +18,6 @@ export function DataPrivacy() {
                     Erhebung von Zugriffsdaten und Logfiles
                 </h3>
                 <p>
-                    Der Zugriff auf unser Onlineangebot wird in Form von so genannten "Server-Logfiles" protokolliert.
-                    Zu den Serverlogfiles können die Adresse und Name der abgerufenen Webseiten und Dateien, Datum und
-                    Uhrzeit des Abrufs, übertragene Datenmengen, Meldung über erfolgreichen Abruf, Browsertyp nebst
-                    Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite) und im Regelfall
-                    IP-Adressen und der anfragende Provider gehören. Die Serverlogfiles können zum einen zu Zwecken der
-                    Sicherheit eingesetzt werden, z.B., um eine Überlastung der Server zu vermeiden (insbesondere im
-                    Fall von missbräuchlichen Angriffen, sogenannten DDoS-Attacken) und zum anderen, um die Auslastung
-                    der Server und ihre Stabilität sicherzustellen; <strong>Rechtsgrundlagen:</strong> Berechtigte
-                    Interessen (Art. 6
-                    Abs. 1 S. 1 lit. f) DSGVO); <strong>Löschung von Daten:</strong> Logfile-Informationen werden für
-                    die Dauer von
-                    maximal 30 Tagen gespeichert und danach gelöscht oder anonymisiert. Daten, deren weitere
-                    Aufbewahrung zu Beweiszwecken erforderlich ist, sind bis zur endgültigen Klärung des jeweiligen
-                    Vorfalls von der Löschung ausgenommen.
-                    <br/><br/>
                     Alle in das Dashboard importierten Falldaten und Fall-assoziierten Daten (mit Ausnahme von Sequenzdaten, siehe unten) werden lokal im Browser des Benutzers gespeichert und nicht an an einen zentralen Server übermittelt oder zentral gespeichert. Eine Übermittlung dieser Daten über das Internet findet prinzipiell nicht statt. Vom Benutzer importierte Sequenzdaten werden, zusammen mit einem zufällig im lokalen Browser des Benutzers generierten Pseudonym, zur Verarbeitung an einen separaten Server übermittelt und zwischengespeichert. Spätestens 30 Minuten nach Übermittlung werden alle auf dem separaten Server zwischengespeicherten Daten gelöscht.
                 </p>
             </div>
