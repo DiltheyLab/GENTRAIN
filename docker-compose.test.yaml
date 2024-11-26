@@ -48,7 +48,7 @@ services:
       - caddy
 
   db:
-    container_name: gentrain-db
+    container_name: gentrain-dbein
     image: postgres
     hostname: localhost
     ports:
