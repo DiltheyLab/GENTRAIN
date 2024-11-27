@@ -28,9 +28,10 @@ export const Root = () => {
     }, []);
 
     useEffect(() => {
-        if (session?.id) {
-            posthog?.identify(session.id, { sessionID: session.id });
-        }
+        if (!session?.id) return;
+
+        posthog?.identify(session.id, { sessionID: session.id });
+        console.log("Posthog User-ID:", posthog.get_distinct_id());
     }, [posthog, session?.id]);
 
     useEffect(() => {
