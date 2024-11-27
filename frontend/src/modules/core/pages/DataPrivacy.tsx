@@ -21,8 +21,6 @@ export function DataPrivacy() {
                     Alle in das Dashboard importierten Falldaten und Fall-assoziierten Daten (mit Ausnahme von Sequenzdaten, siehe unten) werden lokal im Browser des Benutzers gespeichert und nicht an an einen zentralen Server übermittelt oder zentral gespeichert. Eine Übermittlung dieser Daten über das Internet findet prinzipiell nicht statt. Vom Benutzer importierte Sequenzdaten werden, zusammen mit einem zufällig im lokalen Browser des Benutzers generierten Pseudonym, zur Verarbeitung an einen separaten Server übermittelt und zwischengespeichert. Spätestens 30 Minuten nach Übermittlung werden alle auf dem separaten Server zwischengespeicherten Daten gelöscht.
                 </p>
             </div>
-
-
         </div>
     );
 }
