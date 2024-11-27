@@ -1,4 +1,20 @@
 services:
+  caddy-init:
+    image: caddy:latest
+    volumes:
+      - type: volume
+        source: caddy_data
+        target: /data
+      - type: volume
+        source: caddy_config
+        target: /config
+    networks:
+      - caddy
+    entrypoint:
+      - sh
+      - -c
+      - |
+        chown -R 65534:65534 /data /config
   caddy:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
@@ -28,6 +44,8 @@ services:
     networks:
       - caddy
     depends_on:
+      caddy-init:
+        condition: service_completed_successfully
       frontend:
         condition: service_started
       backend:
