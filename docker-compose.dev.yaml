@@ -10,19 +10,37 @@ services:
     volumes:
       - ./redis/tls:/usr/local/etc/redis/tls
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+  redis-insight:
+    container_name: gentrain-redis-insight
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"
+
   db:
     container_name: gentrain-db
     image: postgres
-    hostname: localhost
+    user: postgres:postgres
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
-    volumes:
-      - postgres-data:/var/lib/postgresql/data  
     restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: gentrain-pgadmin
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
   backend:
     container_name: gentrain-backend
     image: gentrain-backend
@@ -54,25 +72,10 @@ services:
     links:
       - redis
     env_file: ".env"
-  redis-insight:
-    container_name: gentrain-redis-insight
-    image: redis/redisinsight:latest
-    ports:
-      - "5540:5540"
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: gentrain-pgadmin
-    restart: always
-    ports:
-      - "8888:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+
 
 volumes:
-  postgres-data:
-  pgadmin-data:
+  postgres_data:
+  pgadmin_data:
 
 

@@ -17,9 +17,13 @@ import { Impress } from "./pages/Impress";
 import { Contact } from "./pages/Contact";
 import { DataPrivacy } from "./pages/DataPrivacy";
 import { PostHogProvider } from "posthog-js/react";
+import { PostHogConfig } from "posthog-js";
 
-const postHogProviderOptions = {
+const postHogProviderOptions: Partial<PostHogConfig> = {
     api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
+    session_recording: {
+        maskAllInputs: false,
+    },
 };
 
 i18next.init({
