@@ -1,4 +1,6 @@
 services:
+  # The caddy-init-container adjusts permissions for caddy
+  # container volumes to enable non-root container start up.
   caddy-init:
     image: caddy:latest
     volumes:
@@ -98,7 +100,6 @@ services:
     env_file: ".env"
     networks:
       - caddy
-
   worker:
     container_name: gentrain-worker
     image: gentrain-backend:latest
@@ -133,8 +134,7 @@ services:
         condition: service_started
 
 volumes:
-  # persist data caddy_data
-  caddy_data: # persist config caddy_config:
+  caddy_data:
   caddy_config:
   postgres_data:
 
