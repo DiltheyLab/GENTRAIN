@@ -47,6 +47,7 @@ services:
   db:
     container_name: gentrain-db
     image: postgres
+    user: postgres:postgres
     hostname: localhost
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
