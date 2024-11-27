@@ -1,6 +1,8 @@
 services:
   caddy:
     container_name: gentrain-caddy
+    # Use nobody user
+    user: 65534:65534
     # Use the caddy:latest image from Docker Hub
     image: caddy:latest
     # Restart policy: restart the container unless explicitly stopped
