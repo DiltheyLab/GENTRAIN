@@ -112,7 +112,9 @@ jobs:
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S sh redis/gen-certs.sh
+            cd redis
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S sh gen-certs.sh
+            cd ..
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
