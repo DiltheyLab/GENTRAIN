@@ -41,9 +41,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - ./redis/tls:/usr/local/etc/redis/tls
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - caddy
 
