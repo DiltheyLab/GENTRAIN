@@ -17,10 +17,10 @@ services:
         chown -R 65534:65534 /data /config
   caddy:
     container_name: gentrain-caddy
-    # Use nobody user
-    user: 65534:65534
     # Use the caddy:latest image from Docker Hub
     image: caddy:latest
+    # Use nobody user
+    user: 65534:65534
     # Restart policy: restart the container unless explicitly stopped
     restart: unless-stopped
     # ports for Caddy
