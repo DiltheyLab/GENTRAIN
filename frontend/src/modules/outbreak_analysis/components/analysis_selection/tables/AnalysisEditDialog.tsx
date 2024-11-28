@@ -15,7 +15,7 @@ import { cn } from "@/modules/core/helpers/cn";
 import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { AnalysisSchema, updateAnalysisName } from "@/modules/core/models/analyses";
-import { validateAnalysisName } from "@/modules/outbreak_analysis/helpers/analysisNameValidation";
+import { validateName } from "@/modules/core/helpers/validateName";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { forwardRef, useState } from "react";
@@ -29,7 +29,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
     const [analysisName, setAnalysisName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
-    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(
+    const { analyseNameIsValid, isUniqueName } = validateName(
         analyses?.filter((analysis) => analysis.name !== row.original.name),
         analysisName
     );
