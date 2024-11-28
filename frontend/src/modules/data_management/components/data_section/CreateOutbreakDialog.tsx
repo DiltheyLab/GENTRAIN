@@ -23,9 +23,9 @@ export const CreateOutbreakDialog = () => {
     const [outbreakName, setOutbeakName] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isTouched, setIsTouched] = useState(false);
-    const analyses = useGetOutbreaksForActivePathogen();
+    const outbreaks = useGetOutbreaksForActivePathogen();
     const { activePathogen } = useCoreStore();
-    const { analyseNameIsValid, isUniqueName } = validateName(analyses, outbreakName);
+    const { analyseNameIsValid, isUniqueName } = validateName(outbreaks, outbreakName);
 
     const createNewOutbreak = async () => {
         try {
