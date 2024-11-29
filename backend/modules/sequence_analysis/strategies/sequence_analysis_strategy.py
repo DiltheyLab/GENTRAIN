@@ -18,8 +18,8 @@ sio = SocketIO(
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
 
-    def __init__(self, pathogen, fasta_id, sequence, socket_id):
-        self.fasta_id = fasta_id
+    def __init__(self, pathogen, sequence_identifier, sequence, socket_id):
+        self.sequence_identifier = sequence_identifier
         self.sequence = sequence
         self.pathogen = pathogen
         self.socket_id = socket_id
@@ -48,15 +48,15 @@ class SequenceAnalysisStrategy(ABC):
             f"client:gentrain_session:{self.socket_id}"
         )
         redis_connection.hmset(
-            f"client:results:{gentrain_session_id}:{self.type}:{self.fasta_id}",
+            f"client:results:{gentrain_session_id}:{self.type}:{self.sequence_identifier}",
             {
                 "result": json.dumps(response),
-                "fasta_id": self.fasta_id,
+                "sequence_identifier": self.sequence_identifier,
                 "sequence_length": len(self.sequence),
             },
         )
         redis_connection.expire(
-            name=f"client:results:{gentrain_session_id}:{self.type}:{self.fasta_id}",
+            name=f"client:results:{gentrain_session_id}:{self.type}:{self.sequence_identifier}",
             time=1800,
         )
 
@@ -65,7 +65,7 @@ class SequenceAnalysisStrategy(ABC):
         try:
             sio.emit(
                 "sequence_analysis_started",
-                self.fasta_id,
+                self.sequence_identifier,
                 to=f"{self.type}_{self.socket_id}",
             )
             genomic_errors = self.find_genomic_validation_errors()
@@ -79,7 +79,7 @@ class SequenceAnalysisStrategy(ABC):
                 "sequence_analysis_response",
                 {
                     "result": response,
-                    "fasta_id": self.fasta_id,
+                    "sequence_identifier": self.sequence_identifier,
                     "sequence_length": len(self.sequence),
                 },
                 to=f"{self.type}_{self.socket_id}",
@@ -88,15 +88,15 @@ class SequenceAnalysisStrategy(ABC):
         except SequenceAnalysisFailedException as e:
             logging.exception(e)
             sio.emit(
-                event="sequence_analysis_failed",
-                data=self.fasta_id,
+                "sequence_analysis_failed",
+                self.sequence_identifier,
                 to=f"{self.type}_{self.socket_id}",
             )
         except Exception as e:
             logging.exception(e)
             sio.emit(
-                event="sequence_analysis_failed",
-                data=self.fasta_id,
+                "sequence_analysis_failed",
+                self.sequence_identifier,
                 to=f"{self.type}_{self.socket_id}",
             )
 
@@ -104,6 +104,6 @@ class SequenceAnalysisStrategy(ABC):
         queue.enqueue(self.execute, result_ttl=0)
         sio.emit(
             "sequence_analysis_enqueued",
-            self.fasta_id,
+            self.sequence_identifier,
             to=f"{self.type}_{self.socket_id}",
         )

@@ -13,17 +13,17 @@ class PathogenStrategyManager:
     @staticmethod
     def get_sequence_analysis_strategy(
             pathogen: Pathogen,
-            fasta_id: str,
+            sequence_identifier: str,
             sequence: str,
             socket_id: str,
     ):
         """Initialize and return a strategy based on pathogen type."""
         if pathogen is not None:
             if pathogen.type == "viral":
-                return ViralSequenceAnalysis(pathogen, fasta_id, sequence, socket_id)
+                return ViralSequenceAnalysis(pathogen, sequence_identifier, sequence, socket_id)
             if pathogen.type == "bacterial":
                 return BacterialSequenceAnalysis(
-                    pathogen, fasta_id, sequence, socket_id
+                    pathogen, sequence_identifier, sequence, socket_id
                 )
 
         return
