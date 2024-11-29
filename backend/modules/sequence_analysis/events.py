@@ -5,8 +5,9 @@ from flask_socketio import leave_room, join_room
 
 from backend.modules.core.models import Pathogen
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
-from backend.modules.sequence_analysis.strategies.pathogen_strategy_manager import PathogenStrategyManager
-
+from backend.modules.sequence_analysis.strategies.pathogen_strategy_manager import (
+    PathogenStrategyManager,
+)
 
 
 @sio.event
@@ -54,8 +55,11 @@ def leave_bacterial():
     leave_room(f"bacterial_{socket_id}")
     print(f"bacterial_{socket_id} closed")
 
+
 @sio.event
-def sequence_analysis_request(pathogen_id, fasta_id, sequence_chunk, chunk_information):
+def sequence_analysis_request(
+    pathogen_id, sequence_identifier, sequence_chunk, chunk_information
+):
     pathogen = Pathogen.query.get(pathogen_id)
     socket_id = request.sid
     # validate sequence before persisting
@@ -65,12 +69,14 @@ def sequence_analysis_request(pathogen_id, fasta_id, sequence_chunk, chunk_infor
     if len(genetic_errors) > 0:
         sio.emit(
             event="sequence_analysis_failed",
-            data=fasta_id,
+            data=sequence_identifier,
             to=f"{pathogen.type}_{socket_id}",
         )
         return
-    persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id)
-    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, fasta_id)
+    persist_sequence_chunk(
+        sequence_chunk, chunk_information, socket_id, sequence_identifier
+    )
+    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, sequence_identifier)
     if chunk_information["total"] > len(chunk_keys):
         return
     sequence = ""
@@ -79,7 +85,7 @@ def sequence_analysis_request(pathogen_id, fasta_id, sequence_chunk, chunk_infor
         redis_connection.delete(key)
     strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
         pathogen=pathogen,
-        fasta_id=fasta_id,
+        sequence_identifier=sequence_identifier,
         sequence=sequence,
         socket_id=socket_id,
     )
@@ -90,15 +96,15 @@ def sequence_analysis_request(pathogen_id, fasta_id, sequence_chunk, chunk_infor
 
 @sio.event
 def gentrain_session_results_remove_request(
-    gentrain_session_id, pathogen_type, fasta_id
+    gentrain_session_id, pathogen_type, sequence_identifier
 ):
     all_keys = list(
         redis_connection.hgetall(
-            f"client:results:{gentrain_session_id}:{pathogen_type}:{fasta_id}"
+            f"client:results:{gentrain_session_id}:{pathogen_type}:{sequence_identifier}"
         ).keys()
     )
     redis_connection.hdel(
-        f"client:results:{gentrain_session_id}:{pathogen_type}:{fasta_id}",
+        f"client:results:{gentrain_session_id}:{pathogen_type}:{sequence_identifier}",
         *all_keys,
     )
 
@@ -132,18 +138,20 @@ def get_genetic_errors(sequence_chunk):
     return re.findall(r"[^ATGCRYSWKMBDHVNXU\n\>]+", sequence_chunk)
 
 
-def persist_sequence_chunk(sequence_chunk, chunk_information, socket_id, fasta_id):
+def persist_sequence_chunk(
+    sequence_chunk, chunk_information, socket_id, sequence_identifier
+):
     redis_connection.set(
-        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        name=f"chunks:{socket_id}:{sequence_identifier}:{chunk_information['index']}",
         value=sequence_chunk,
     )
     redis_connection.expire(
-        name=f"chunks:{socket_id}:{fasta_id}:{chunk_information['index']}",
+        name=f"chunks:{socket_id}:{sequence_identifier}:{chunk_information['index']}",
         time=60,
     )
 
 
-def get_persisted_sequence_chunk_keys(socket_id, fasta_id):
-    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{fasta_id}:*")
+def get_persisted_sequence_chunk_keys(socket_id, sequence_identifier):
+    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{sequence_identifier}:*")
     chunk_keys.sort()
     return chunk_keys
