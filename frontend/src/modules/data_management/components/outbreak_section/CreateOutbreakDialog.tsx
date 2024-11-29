@@ -58,7 +58,7 @@ export const CreateOutbreakDialog = () => {
                         id="name"
                         className={cn("w-full", !isUniqueName() && "focus-visible:ring-red-500")}
                         value={outbreakName}
-                        placeholder="Analysename"
+                        placeholder="Ausbruchsname"
                         onChange={(e) => setOutbeakName(e.target.value)}
                         onFocus={() => setIsTouched(true)}
                         autoFocus
