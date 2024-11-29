@@ -1,6 +1,6 @@
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { uploadedGroupColumns } from "./uploadedGroupColumns";
+import { groupTableColumns } from "./groupTableColumns";
 import { useGetCategoriesWithGroupsAndCaseCountForActivePathogen } from "@/modules/core/hooks/database/categories/useGetCategoriesWithCaseCountForActivePathogen";
 
 export const GroupSection = () => {
@@ -29,7 +29,7 @@ export const GroupSection = () => {
                                 className="mt-1"
                                 data={category.groups ?? []}
                                 enableSearch={false}
-                                columns={uploadedGroupColumns}
+                                columns={groupTableColumns}
                                 selectionLabel="Gruppen"
                                 pageSize={5}
                             />

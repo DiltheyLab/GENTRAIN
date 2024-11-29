@@ -14,18 +14,15 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
 import { handleOutbreakError } from "@/modules/core/helpers/errors";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { validateName } from "@/modules/core/helpers/validateName";
 import { useState } from "react";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { createOutbreak } from "@/modules/core/models/outbreaks";
 
 export const AssignCasesToOutbreakDialog = () => {
-    const [outbreakName, setOutbeakName] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isTouched, setIsTouched] = useState(false);
-    const analyses = useGetOutbreaksForActivePathogen();
+    const outbreaks = useGetOutbreaksForActivePathogen();
     const { activePathogen } = useCoreStore();
-    const { analyseNameIsValid, isUniqueName } = validateName(analyses, outbreakName);
 
     const createNewOutbreak = async () => {
         try {
@@ -43,12 +40,12 @@ export const AssignCasesToOutbreakDialog = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="default">Neuen Ausbruch erstellen</Button>
+                <Button variant="default">Fälle einem Ausbruch zuordnen</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Ausbruch anlegen</DialogTitle>
-                    <DialogDescription>Hier können Sie einen neue Ausbruch erstellen.</DialogDescription>
+                    <DialogTitle>Fälle einem Ausbruch zuordnen</DialogTitle>
+                    <DialogDescription>Hier können Sie Fälle einem Ausbruch zuordnen.</DialogDescription>
                 </DialogHeader>
                 <div className="flex gap-5 items-center mt-4">
                     <Label htmlFor="name" className="font-normal">

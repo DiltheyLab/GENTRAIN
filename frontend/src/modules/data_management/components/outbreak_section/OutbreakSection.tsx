@@ -1,5 +1,5 @@
 import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { uploadedOutbreakColumns } from "./uploadedOutbreakColumns";
+import { outbreakTableColumns } from "./outbreakTableColumns";
 import { useGetOutbreaksWithCaseCountForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksWithCaseCountForActivePathogen";
 import { CreateOutbreakDialog } from "./CreateOutbreakDialog";
 import { Row } from "@tanstack/react-table";
@@ -16,7 +16,7 @@ export const OutbreakSection = () => {
             <p className="text-muted-foreground">Hier können Sie alle Ihre Ausbrüche einsehen und neue anlegen.</p>
             <DataTable
                 data={outbreakData ?? []}
-                columns={uploadedOutbreakColumns}
+                columns={outbreakTableColumns}
                 selectionLabel="Ausbrüchen"
                 pageSize={5}
                 actions={(_table) => (
