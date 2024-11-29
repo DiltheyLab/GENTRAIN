@@ -26,7 +26,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        self.input = f"{get_project_path()}/temp_data/sequence_analysis/{self.fasta_id}_{round(time.time() * 1000)}/"
+        self.input = f"{get_project_path()}/temp_data/sequence_analysis/{self.sequence_identifier}_{round(time.time() * 1000)}/"
         pathlib.Path(self.input).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
@@ -37,7 +37,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         self.index_sequences()
         with open(file=input_file, mode="w", encoding="utf-8") as input_file:
             input_file.write(self.sequence)
-        self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.fasta_id}_{round(time.time() * 1000)}"
+        self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.sequence_identifier}_{round(time.time() * 1000)}"
 
     def index_sequences(self):
         count = 0

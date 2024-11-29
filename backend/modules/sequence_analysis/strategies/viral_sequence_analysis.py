@@ -35,7 +35,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
             dir=temp_dir, suffix=".fa", delete=False
         ).name
         with open(file=self.input, mode="w", encoding="utf-8") as input_file:
-            input_file.write(f">{self.fasta_id}\n{self.sequence}")
+            input_file.write(f">{self.sequence_identifier}\n{self.sequence}")
         self.output = self.input[:-2] + "json"
 
     def run_analysis(self):
