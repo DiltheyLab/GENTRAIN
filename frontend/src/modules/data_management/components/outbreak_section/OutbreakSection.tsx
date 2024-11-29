@@ -4,7 +4,7 @@ import { useGetOutbreaksWithCaseCountForActivePathogen } from "@/modules/core/ho
 import { CreateOutbreakDialog } from "./CreateOutbreakDialog";
 import { Row } from "@tanstack/react-table";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
-import { AssignCasesToOutbreakDialog } from "./AssignCasesToOutbreakDialog";
+import { AssignCasesToOutbreakDialog } from "./caseAssignment/AssignCasesToOutbreakDialog";
 
 export const OutbreakSection = () => {
     const outbreakData = useGetOutbreaksWithCaseCountForActivePathogen();
@@ -21,8 +21,7 @@ export const OutbreakSection = () => {
                 pageSize={5}
                 actions={(_table) => (
                     <div className="flex space-x-3">
-                        {/*                         <AssignCasesToOutbreakDialog />
-                         */}{" "}
+                        <AssignCasesToOutbreakDialog />
                         <CreateOutbreakDialog />
                     </div>
                 )}

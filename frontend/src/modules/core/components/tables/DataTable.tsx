@@ -11,11 +11,11 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import {Button} from "@/modules/core/components/ui/Button";
-import {Input} from "@/modules/core/components/ui/Input";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/modules/core/components/ui/Table";
-import {CSSProperties, useEffect, useState} from "react";
-import {cn} from "../../helpers/cn";
+import { Button } from "@/modules/core/components/ui/Button";
+import { Input } from "@/modules/core/components/ui/Input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
+import { CSSProperties, useEffect, useState } from "react";
+import { cn } from "../../helpers/cn";
 
 type DataTableProps = {
     data: any[];
@@ -34,23 +34,22 @@ type DataTableProps = {
 };
 
 export const DataTable = ({
-                              data,
-                              columns,
-                              enableSearch = true,
-                              filterPlaceholder = "Daten durchsuchen...",
-                              pageSize = 10,
-                              filterFn = undefined,
-                              onRowClick = () => {
-                              },
-                              preselectRows = false,
-                              selectionLabel = "Einträgen",
-                              onInit,
-                              actions,
-                              className,
-                              setRowStyle = () => {
-                                  return {}
-                              }
-                          }: DataTableProps) => {
+    data,
+    columns,
+    enableSearch = true,
+    filterPlaceholder = "Daten durchsuchen...",
+    pageSize = 10,
+    filterFn = undefined,
+    onRowClick = () => {},
+    preselectRows = false,
+    selectionLabel = "Einträgen",
+    onInit,
+    actions,
+    className,
+    setRowStyle = () => {
+        return {};
+    },
+}: DataTableProps) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
@@ -135,18 +134,20 @@ export const DataTable = ({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => {
-                                return <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => onRowClick(row)}
-                                    style={setRowStyle(row)}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
+                                return (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        onClick={() => onRowClick(row)}
+                                        style={setRowStyle(row)}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                );
                             })
                         ) : (
                             <TableRow>
