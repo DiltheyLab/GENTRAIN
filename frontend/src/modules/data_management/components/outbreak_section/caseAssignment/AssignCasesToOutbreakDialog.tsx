@@ -12,7 +12,6 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { handleOutbreakError } from "@/modules/core/helpers/errors";
 import { useState } from "react";
 import { CaseAssignment } from "./CaseAssignment";
-import { UndoIcon } from "lucide-react";
 
 export const AssignCasesToOutbreakDialog = () => {
     const [isOpen, setIsOpen] = useState(false);

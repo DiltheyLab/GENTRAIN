@@ -1,12 +1,17 @@
-import { DataTable } from "@/modules/core/components/tables/DataTable";
+import { useEffect, useMemo, useState } from "react";
+import {
+    type MRT_TableOptions,
+    type MRT_ColumnDef,
+    type MRT_Row,
+    MaterialReactTable,
+    useMaterialReactTable,
+} from "material-react-table";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/core/components/ui/Select";
 import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core/hooks/database/cases/useGetAllCasesForActivePathogenWithRelationships";
-import { caseAssignmentTableColumns } from "./caseAssignmentTableColumns";
-import { caseAssignmentTableFilter } from "./CaseAssignmentTableFilter";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { t } from "i18next";
-import { useState } from "react";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
+import i18next, { t } from "i18next";
+import { formatDate } from "@/modules/core/helpers/dates";
 
 export const CaseAssignment = () => {
     const noOutbreakAssignedId = "0";
@@ -16,7 +21,259 @@ export const CaseAssignment = () => {
     const [casesInTable1, setCasesInTable1] = useState<CaseWithRelationships[]>([]);
     const [casesInTable2, setCasesInTable2] = useState<CaseWithRelationships[]>([]);
 
-    const changeCasesInTable = (outbreakId: string, setCasesInTable: (cases: CaseWithRelationships[]) => void) => {
+    const [draggingRow, setDraggingRow] = useState<MRT_Row<CaseWithRelationships> | null>(null);
+    const [hoveredTable, setHoveredTable] = useState<string | null>(null);
+
+    const [casesCopy, setCasesCopy] = useState(cases);
+    const [hoveredTableIsForbidden, setHoveredTableIsForbidden] = useState(false);
+    const [casesForUpdate, setCasesForUpdate] = useState<CaseWithRelationships[]>([]);
+    const [selectedOutbreakTable1, setSelectedOutbreakTable1] = useState<string | undefined>();
+    const [selectedOutbreakTable2, setSelectedOutbreakTable2] = useState<string | undefined>();
+
+    const columns = useMemo<MRT_ColumnDef<CaseWithRelationships>[]>(
+        //column definitions...
+        () => [
+            {
+                accessorKey: "case_id",
+                header: "Fall ID",
+                enableColumnActions: false,
+            },
+            {
+                accessorKey: "outbreak.name",
+                accessorFn: (originalRow) => {
+                    const outbreakName = originalRow.outbreak?.name ?? i18next.t("clusterTypes.noOutbreakAssigned");
+                    console.log(originalRow.outbreak_id);
+                    console.log(originalRow.outbreak?.id);
+
+                    if (
+                        originalRow.outbreak_id === originalRow.outbreak?.id ||
+                        (!originalRow.outbreak_id && !originalRow.outbreak?.id)
+                    ) {
+                        return outbreakName;
+                    } else {
+                        const originalOutbreakName = outbreaks?.find(
+                            (outbreak) => outbreak.id === originalRow.outbreak_id
+                        )?.name;
+                        return (
+                            <>
+                                <del>{outbreakName}</del>
+                                <p>{originalOutbreakName}</p>
+                            </>
+                        );
+                    }
+                },
+
+                header: "Ausbruch",
+                enableColumnActions: false,
+                enableSorting: false,
+            },
+            {
+                accessorKey: "registered_at",
+                accessorFn: (originalRow) => formatDate(originalRow.registered_at),
+                header: "Registrierungsdatum",
+                enableColumnActions: false,
+            },
+        ],
+        [outbreaks]
+        //end
+    );
+
+    useEffect(() => {
+        if (cases) {
+            setCasesCopy(structuredClone(cases));
+        }
+    }, [cases]);
+
+    const commonTableProps: Partial<MRT_TableOptions<CaseWithRelationships>> & {
+        columns: MRT_ColumnDef<CaseWithRelationships>[];
+    } = {
+        columns,
+        enableRowDragging: true,
+        enableFullScreenToggle: false,
+        muiTableContainerProps: {
+            sx: {
+                minHeight: "320px",
+                fontFamily: "Merriweather, sans serif",
+            },
+        },
+        muiTableHeadCellProps: {
+            sx: {
+                fontFamily: "Merriweather, sans-serif",
+                fontWeight: "normal",
+                fontSize: "14px",
+            },
+        },
+        muiTableBodyCellProps: {
+            sx: {
+                fontFamily: "Merriweather, sans-serif",
+                fontWeight: "normal",
+                fontSize: "12px",
+            },
+        },
+        onDraggingRowChange: setDraggingRow,
+        state: { draggingRow },
+    };
+
+    const table1 = useMaterialReactTable({
+        ...commonTableProps,
+        data: casesInTable1,
+        getRowId: (originalRow) => `table-1-${originalRow.case_id}`,
+        muiRowDragHandleProps: {
+            onDragEnd: () => {
+                if (
+                    hoveredTable === "table-2" &&
+                    selectedOutbreakTable1 !== selectedOutbreakTable2 &&
+                    selectedOutbreakTable1 &&
+                    selectedOutbreakTable2
+                ) {
+                    setCasesInTable2((data2) => [...data2, draggingRow!.original]);
+                    setCasesInTable1((data1) => data1.filter((d) => d !== draggingRow!.original));
+                    setCasesForUpdate((prevCases) => {
+                        if (selectedOutbreakTable2 === undefined) {
+                            return prevCases;
+                        }
+                        const newCase = draggingRow!.original;
+                        newCase.outbreak_id = +selectedOutbreakTable2;
+                        return [...prevCases, newCase];
+                    });
+                }
+                setHoveredTable(null);
+            },
+        },
+        muiTablePaperProps: {
+            onDragEnter: () => {
+                setHoveredTable("table-1");
+                if (!selectedOutbreakTable1) {
+                    setHoveredTableIsForbidden(true);
+                } else {
+                    setHoveredTableIsForbidden(false);
+                }
+            },
+            sx: {
+                outline:
+                    hoveredTable === "table-1" && !hoveredTableIsForbidden
+                        ? "2px dashed green"
+                        : hoveredTable === "table-1" && hoveredTableIsForbidden
+                        ? "2px dashed red"
+                        : undefined,
+            },
+        },
+        renderTopToolbarCustomActions: () => (
+            <Select
+                onValueChange={(outbreakId) => {
+                    setSelectedOutbreakTable1(outbreakId);
+                    changeCasesInTable(outbreakId, casesCopy, setCasesInTable1);
+                }}
+            >
+                <SelectTrigger className="mb-7">
+                    <SelectValue placeholder="Ausbruch auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                    {outbreaks?.map((outbreak) => {
+                        if (selectedOutbreakTable2 && outbreak.id === +selectedOutbreakTable2) return;
+                        return (
+                            <SelectItem key={outbreak.id} value={outbreak.id.toString()}>
+                                {outbreak.name}
+                            </SelectItem>
+                        );
+                    })}
+                    {noOutbreakIsAssigned && (
+                        <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
+                    )}
+                </SelectContent>
+            </Select>
+        ),
+        enableDensityToggle: false,
+        enableHiding: false,
+        enableColumnFilters: false,
+        muiPaginationProps: {
+            showRowsPerPage: false,
+        },
+    });
+
+    const table2 = useMaterialReactTable({
+        ...commonTableProps,
+        data: casesInTable2,
+        getRowId: (originalRow) => `table-2-${originalRow.case_id}`,
+        muiRowDragHandleProps: {
+            onDragEnd: () => {
+                if (
+                    hoveredTable === "table-1" &&
+                    selectedOutbreakTable1 !== selectedOutbreakTable2 &&
+                    selectedOutbreakTable1 &&
+                    selectedOutbreakTable2
+                ) {
+                    setCasesInTable1((data1) => [...data1, draggingRow!.original]);
+                    setCasesInTable2((data2) => data2.filter((d) => d !== draggingRow!.original));
+                    setCasesForUpdate((prevCases) => {
+                        if (selectedOutbreakTable1 === undefined) {
+                            return prevCases;
+                        }
+                        const newCase = draggingRow!.original;
+                        newCase.outbreak_id = +selectedOutbreakTable1;
+                        return [...prevCases, newCase];
+                    });
+                }
+                setHoveredTable(null);
+            },
+        },
+        muiTablePaperProps: {
+            onDragEnter: () => {
+                setHoveredTable("table-2");
+                if (!selectedOutbreakTable2) {
+                    setHoveredTableIsForbidden(true);
+                } else {
+                    setHoveredTableIsForbidden(false);
+                }
+            },
+            sx: {
+                outline:
+                    hoveredTable === "table-2" && !hoveredTableIsForbidden
+                        ? "2px dashed green"
+                        : hoveredTable === "table-2" && hoveredTableIsForbidden
+                        ? "2px dashed red"
+                        : undefined,
+            },
+        },
+        renderTopToolbarCustomActions: () => (
+            <Select
+                onValueChange={(outbreakId) => {
+                    setSelectedOutbreakTable2(outbreakId);
+                    changeCasesInTable(outbreakId, casesCopy, setCasesInTable2);
+                }}
+            >
+                <SelectTrigger className="mb-7">
+                    <SelectValue placeholder="Ausbruch auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                    {outbreaks?.map((outbreak) => {
+                        if (selectedOutbreakTable1 && outbreak.id === +selectedOutbreakTable1) return;
+                        return (
+                            <SelectItem key={outbreak.id} value={outbreak.id.toString()}>
+                                {outbreak.name}
+                            </SelectItem>
+                        );
+                    })}
+                    {noOutbreakIsAssigned && (
+                        <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
+                    )}
+                </SelectContent>
+            </Select>
+        ),
+        enableRowSelection: false,
+        enableDensityToggle: false,
+        enableHiding: false,
+        enableColumnFilters: false,
+        muiPaginationProps: {
+            showRowsPerPage: false,
+        },
+    });
+
+    const changeCasesInTable = (
+        outbreakId: string,
+        cases: CaseWithRelationships[] | undefined,
+        setCasesInTable: (cases: CaseWithRelationships[]) => void
+    ) => {
         if (!cases) return;
         let casesFilteredByOutbreak: CaseWithRelationships[] = [];
         if (outbreakId === noOutbreakAssignedId) {
@@ -30,56 +287,8 @@ export const CaseAssignment = () => {
 
     return (
         <div className="flex space-x-3 w-full max-h-[calc(100vh-270px)] h-[calc(100vh-270px)]">
-            <div className="flex flex-col w-1/2">
-                <Select onValueChange={(outbreakId) => changeCasesInTable(outbreakId, setCasesInTable1)}>
-                    <SelectTrigger className="mb-7">
-                        <SelectValue placeholder="Ausbruch auswählen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {outbreaks?.map((outbreak) => (
-                            <SelectItem value={outbreak.id.toString()}>{outbreak.name}</SelectItem>
-                        ))}
-                        {noOutbreakIsAssigned && (
-                            <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
-                        )}
-                    </SelectContent>
-                </Select>
-                <div className="overflow-auto flex-1">
-                    <DataTable
-                        data={casesInTable1 ?? []}
-                        columns={caseAssignmentTableColumns}
-                        filterFn={caseAssignmentTableFilter}
-                        selectionLabel="Fällen"
-                        pageSize={5}
-                        filterPlaceholder="Fälle durchsuchen"
-                    />
-                </div>
-            </div>
-            <div className="flex flex-col w-1/2">
-                <Select onValueChange={(outbreakId) => changeCasesInTable(outbreakId, setCasesInTable2)}>
-                    <SelectTrigger className="mb-7">
-                        <SelectValue placeholder="Ausbruch auswählen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {outbreaks?.map((outbreak) => (
-                            <SelectItem value={outbreak.id.toString()}>{outbreak.name}</SelectItem>
-                        ))}
-                        {noOutbreakIsAssigned && (
-                            <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
-                        )}
-                    </SelectContent>
-                </Select>
-                <div className="overflow-auto flex-1">
-                    <DataTable
-                        data={casesInTable2 ?? []}
-                        columns={caseAssignmentTableColumns}
-                        filterFn={caseAssignmentTableFilter}
-                        selectionLabel="Fällen"
-                        pageSize={5}
-                        filterPlaceholder="Fälle durchsuchen"
-                    />
-                </div>
-            </div>
+            <MaterialReactTable table={table1} />
+            <MaterialReactTable table={table2} />
         </div>
     );
 };
