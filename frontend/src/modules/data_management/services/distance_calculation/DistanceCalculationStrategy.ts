@@ -68,7 +68,7 @@ export abstract class DistanceCalculationStrategy {
         for (const index in this.samples) {
             const sample1 = this.samples[index];
             // we only calculate distances between current sample and previously iterated samples to minimize calculation count
-            // as limit we use the index of the current sample incremented by 1 since slice excludes the end index
+            // as limit we use the index of the current sample incremented by 1 since the slice-method excludes the end index
             const previousSamples = this.samples.slice(0, +index);
             for (const sample2 of previousSamples) {
                 const distance = await this.calculateSampleDistanceForTwoSamples(sample1, sample2);
