@@ -12,6 +12,7 @@ import { useGetAllCasesForActivePathogenWithRelationships } from "@/modules/core
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import i18next, { t } from "i18next";
 import { formatDate } from "@/modules/core/helpers/dates";
+import { MRT_Localization_DE } from "material-react-table/locales/de";
 
 export const CaseAssignment = () => {
     const noOutbreakAssignedId = "0";
@@ -42,23 +43,19 @@ export const CaseAssignment = () => {
                 accessorKey: "outbreak.name",
                 accessorFn: (originalRow) => {
                     const outbreakName = originalRow.outbreak?.name ?? i18next.t("clusterTypes.noOutbreakAssigned");
-                    console.log(originalRow.outbreak_id);
-                    console.log(originalRow.outbreak?.id);
-
                     if (
                         originalRow.outbreak_id === originalRow.outbreak?.id ||
                         (!originalRow.outbreak_id && !originalRow.outbreak?.id)
                     ) {
                         return outbreakName;
                     } else {
-                        const originalOutbreakName = outbreaks?.find(
-                            (outbreak) => outbreak.id === originalRow.outbreak_id
-                        )?.name;
+                        const originalOutbreakName =
+                            outbreaks?.find((outbreak) => outbreak.id === originalRow.outbreak_id)?.name ??
+                            i18next.t("clusterTypes.noOutbreakAssigned");
                         return (
-                            <>
-                                <del>{outbreakName}</del>
-                                <p>{originalOutbreakName}</p>
-                            </>
+                            <div>
+                                <del>{outbreakName}</del> <p>{originalOutbreakName}</p>
+                            </div>
                         );
                     }
                 },
@@ -92,26 +89,35 @@ export const CaseAssignment = () => {
         enableFullScreenToggle: false,
         muiTableContainerProps: {
             sx: {
-                minHeight: "320px",
-                fontFamily: "Merriweather, sans serif",
+                minHeight: "75%",
+                maxHeight: "70%",
             },
         },
         muiTableHeadCellProps: {
             sx: {
                 fontFamily: "Merriweather, sans-serif",
                 fontWeight: "normal",
-                fontSize: "14px",
+                fontSize: "0.85rem",
             },
         },
         muiTableBodyCellProps: {
             sx: {
                 fontFamily: "Merriweather, sans-serif",
                 fontWeight: "normal",
-                fontSize: "12px",
+                fontSize: "0.8rem",
             },
         },
         onDraggingRowChange: setDraggingRow,
-        state: { draggingRow },
+        state: {
+            draggingRow,
+        },
+        localization: MRT_Localization_DE,
+        enableDensityToggle: false,
+        enableHiding: false,
+        enableColumnFilters: false,
+        muiPaginationProps: {
+            showRowsPerPage: false,
+        },
     };
 
     const table1 = useMaterialReactTable({
@@ -177,18 +183,12 @@ export const CaseAssignment = () => {
                             </SelectItem>
                         );
                     })}
-                    {noOutbreakIsAssigned && (
+                    {noOutbreakIsAssigned && selectedOutbreakTable2 !== noOutbreakAssignedId && (
                         <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
                     )}
                 </SelectContent>
             </Select>
         ),
-        enableDensityToggle: false,
-        enableHiding: false,
-        enableColumnFilters: false,
-        muiPaginationProps: {
-            showRowsPerPage: false,
-        },
     });
 
     const table2 = useMaterialReactTable({
@@ -254,19 +254,12 @@ export const CaseAssignment = () => {
                             </SelectItem>
                         );
                     })}
-                    {noOutbreakIsAssigned && (
+                    {noOutbreakIsAssigned && selectedOutbreakTable1 !== noOutbreakAssignedId && (
                         <SelectItem value={noOutbreakAssignedId}>{t("clusterTypes.noOutbreakAssigned")}</SelectItem>
                     )}
                 </SelectContent>
             </Select>
         ),
-        enableRowSelection: false,
-        enableDensityToggle: false,
-        enableHiding: false,
-        enableColumnFilters: false,
-        muiPaginationProps: {
-            showRowsPerPage: false,
-        },
     });
 
     const changeCasesInTable = (
