@@ -118,6 +118,17 @@ export const CaseAssignment = () => {
         muiPaginationProps: {
             showRowsPerPage: false,
         },
+        positionGlobalFilter: "right",
+        initialState: {
+            showGlobalFilter: true,
+        },
+        //adjust height of tooltip
+        muiTopToolbarProps: {
+            sx: {
+                gap: "0px",
+                height: "55px",
+            },
+        },
     };
 
     const table1 = useMaterialReactTable({
@@ -162,6 +173,7 @@ export const CaseAssignment = () => {
                         : hoveredTable === "table-1" && hoveredTableIsForbidden
                         ? "2px dashed red"
                         : undefined,
+                width: "100%",
             },
         },
         renderTopToolbarCustomActions: () => (
@@ -233,6 +245,7 @@ export const CaseAssignment = () => {
                         : hoveredTable === "table-2" && hoveredTableIsForbidden
                         ? "2px dashed red"
                         : undefined,
+                width: "100%",
             },
         },
         renderTopToolbarCustomActions: () => (
