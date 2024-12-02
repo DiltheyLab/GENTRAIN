@@ -2,18 +2,41 @@ import { referenceString } from "@/data/referenceString";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
-import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
 import {
     ViralPositionExtractor,
     MutationsSchema,
 } from "@/modules/data_management/services/distance_calculation/ViralPositionExtractor";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
+    /*
     protected calculateSampleDistanceForTwoSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
+        console.time("Execution Time");
         const viralDistanceExtractor = new ViralDistanceExtractor(sample1, sample2);
         const alignment = await this.alignSamples(sample1, sample2);
         viralDistanceExtractor.calculateDistance(alignment[0], alignment[1]);
+        console.timeEnd("Execution Time");
         return viralDistanceExtractor.getDistance();
+    };
+*/
+    protected calculateSampleDistanceForTwoSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
+        const sequenceAnalysisResult1 = sample1.sequence_analysis?.result as ViralAnalysisResult;
+        const sequenceAnalysisResult2 = sample2.sequence_analysis?.result as ViralAnalysisResult;
+
+        try {
+            const distance = await fetch(`${import.meta.env.VITE_API_HOST}/distances`, {
+                method: "POST",
+                body: JSON.stringify({
+                    mutations_1: sequenceAnalysisResult1.mutations,
+                    mutations_2: sequenceAnalysisResult2.mutations,
+                }),
+                headers: { "Content-type": "application/json", Accept: "application/json" },
+            });
+            const response = await distance.json();
+            return response;
+        } catch (error) {
+            console.error("Error fetching distance from server", error);
+            throw error;
+        }
     };
 
     private alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
