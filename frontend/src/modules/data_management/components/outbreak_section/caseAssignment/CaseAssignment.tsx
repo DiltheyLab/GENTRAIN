@@ -13,6 +13,7 @@ import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/
 import i18next, { t } from "i18next";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { MRT_Localization_DE } from "material-react-table/locales/de";
+import { GripHorizontalIcon } from "lucide-react";
 
 export const CaseAssignment = () => {
     const noOutbreakAssignedId = "0";
@@ -100,6 +101,14 @@ export const CaseAssignment = () => {
                 fontSize: "0.85rem",
             },
         },
+        muiTableHeadProps: {
+            sx: {
+                boxShadow: "none",
+                "& .MuiTableRow-root": {
+                    boxShadow: "none",
+                },
+            },
+        },
         muiTableBodyCellProps: {
             sx: {
                 fontFamily: "Merriweather, sans-serif",
@@ -111,6 +120,18 @@ export const CaseAssignment = () => {
         state: {
             draggingRow,
         },
+        muiTableBodyRowProps: () => ({
+            draggable: true,
+            sx: {
+                cursor: "grab",
+                "&:active": {
+                    outline: "none",
+                },
+            },
+            onDragStart: (event) => {
+                event.dataTransfer.setData("text/plain", "");
+            },
+        }),
         localization: MRT_Localization_DE,
         enableDensityToggle: false,
         enableHiding: false,
@@ -127,7 +148,23 @@ export const CaseAssignment = () => {
             sx: {
                 gap: "0px",
                 height: "55px",
+                display: "flex",
+                "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                        borderColor: "#e5e7eb",
+                    },
+                    "&:hover fieldset": {
+                        borderColor: "#e5e7eb",
+                    },
+                    "&.Mui-focused fieldset": {
+                        boxShadow: "0 0 0 2px black",
+                        border: "none",
+                    },
+                },
             },
+        },
+        icons: {
+            DragHandleIcon: () => <GripHorizontalIcon />,
         },
     };
 
@@ -135,7 +172,15 @@ export const CaseAssignment = () => {
         ...commonTableProps,
         data: casesInTable1,
         getRowId: (originalRow) => `table-1-${originalRow.case_id}`,
-        muiRowDragHandleProps: {
+        muiTableBodyRowProps: ({ row }) => ({
+            draggable: true,
+            sx: {
+                cursor: "grab",
+            },
+            onDragStart: (event) => {
+                setDraggingRow(row);
+                event.dataTransfer.setData("text/plain", "");
+            },
             onDragEnd: () => {
                 if (
                     hoveredTable === "table-2" &&
@@ -143,20 +188,21 @@ export const CaseAssignment = () => {
                     selectedOutbreakTable1 &&
                     selectedOutbreakTable2
                 ) {
-                    setCasesInTable2((data2) => [...data2, draggingRow!.original]);
-                    setCasesInTable1((data1) => data1.filter((d) => d !== draggingRow!.original));
+                    setCasesInTable2((data2) => [row.original, ...data2]);
+                    setCasesInTable1((data1) => data1.filter((d) => d !== row.original));
                     setCasesForUpdate((prevCases) => {
                         if (selectedOutbreakTable2 === undefined) {
                             return prevCases;
                         }
-                        const newCase = draggingRow!.original;
+                        const newCase = row.original;
                         newCase.outbreak_id = +selectedOutbreakTable2;
                         return [...prevCases, newCase];
                     });
                 }
                 setHoveredTable(null);
+                setDraggingRow(null);
             },
-        },
+        }),
         muiTablePaperProps: {
             onDragEnter: () => {
                 setHoveredTable("table-1");
@@ -167,13 +213,15 @@ export const CaseAssignment = () => {
                 }
             },
             sx: {
-                outline:
+                border:
                     hoveredTable === "table-1" && !hoveredTableIsForbidden
-                        ? "2px dashed green"
+                        ? "2px dashed hsla(25,5%,45%,0.3)"
                         : hoveredTable === "table-1" && hoveredTableIsForbidden
                         ? "2px dashed red"
-                        : undefined,
+                        : "2px dashed hsla(25,5%,45%,0.1)",
                 width: "100%",
+                boxShadow: "none",
+                borderRadius: "0.5rem",
             },
         },
         renderTopToolbarCustomActions: () => (
@@ -183,7 +231,7 @@ export const CaseAssignment = () => {
                     changeCasesInTable(outbreakId, casesCopy, setCasesInTable1);
                 }}
             >
-                <SelectTrigger className="mb-7">
+                <SelectTrigger className="mt-2 h-[37px]">
                     <SelectValue placeholder="Ausbruch auswählen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,7 +255,15 @@ export const CaseAssignment = () => {
         ...commonTableProps,
         data: casesInTable2,
         getRowId: (originalRow) => `table-2-${originalRow.case_id}`,
-        muiRowDragHandleProps: {
+        muiTableBodyRowProps: ({ row }) => ({
+            draggable: true,
+            sx: {
+                cursor: "grab",
+            },
+            onDragStart: (event) => {
+                setDraggingRow(row);
+                event.dataTransfer.setData("text/plain", "");
+            },
             onDragEnd: () => {
                 if (
                     hoveredTable === "table-1" &&
@@ -215,20 +271,21 @@ export const CaseAssignment = () => {
                     selectedOutbreakTable1 &&
                     selectedOutbreakTable2
                 ) {
-                    setCasesInTable1((data1) => [...data1, draggingRow!.original]);
-                    setCasesInTable2((data2) => data2.filter((d) => d !== draggingRow!.original));
+                    setCasesInTable1((data1) => [row.original, ...data1]);
+                    setCasesInTable2((data2) => data2.filter((d) => d !== row.original));
                     setCasesForUpdate((prevCases) => {
                         if (selectedOutbreakTable1 === undefined) {
                             return prevCases;
                         }
-                        const newCase = draggingRow!.original;
+                        const newCase = row.original;
                         newCase.outbreak_id = +selectedOutbreakTable1;
                         return [...prevCases, newCase];
                     });
                 }
                 setHoveredTable(null);
+                setDraggingRow(null);
             },
-        },
+        }),
         muiTablePaperProps: {
             onDragEnter: () => {
                 setHoveredTable("table-2");
@@ -241,11 +298,13 @@ export const CaseAssignment = () => {
             sx: {
                 outline:
                     hoveredTable === "table-2" && !hoveredTableIsForbidden
-                        ? "2px dashed green"
+                        ? "2px dashed hsla(25,5%,45%,0.3)"
                         : hoveredTable === "table-2" && hoveredTableIsForbidden
                         ? "2px dashed red"
-                        : undefined,
+                        : "2px dashed hsla(25,5%,45%,0.1)",
                 width: "100%",
+                boxShadow: "none",
+                borderRadius: "0.5rem",
             },
         },
         renderTopToolbarCustomActions: () => (
@@ -255,7 +314,7 @@ export const CaseAssignment = () => {
                     changeCasesInTable(outbreakId, casesCopy, setCasesInTable2);
                 }}
             >
-                <SelectTrigger className="mb-7">
+                <SelectTrigger className="mt-2 h-[37px]">
                     <SelectValue placeholder="Ausbruch auswählen" />
                 </SelectTrigger>
                 <SelectContent>

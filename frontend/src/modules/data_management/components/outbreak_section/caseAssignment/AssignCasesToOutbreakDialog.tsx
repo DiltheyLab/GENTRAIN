@@ -12,6 +12,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { handleOutbreakError } from "@/modules/core/helpers/errors";
 import { useState } from "react";
 import { CaseAssignment } from "./CaseAssignment";
+import { GripHorizontalIcon } from "lucide-react";
 
 export const AssignCasesToOutbreakDialog = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,8 +26,11 @@ export const AssignCasesToOutbreakDialog = () => {
             </DialogTrigger>
             <DialogContent className="max-w-none w-[calc(100vw-100px)] h-[calc(100vh-100px)]">
                 <DialogHeader>
-                    <DialogTitle>Fälle einem Ausbruch zuordnen</DialogTitle>
-                    <DialogDescription>Hier können Sie Fälle einem Ausbruch zuordnen.</DialogDescription>
+                    <DialogTitle>Fälle einem anderen Ausbruch zuordnen</DialogTitle>
+                    <DialogDescription className="flex">
+                        Hier können Sie Fälle einem anderen Ausbruch zuordnen. Ziehen Sie dafür einfach den
+                        enstsprechenden Fall in die jeweilige Tabelle.
+                    </DialogDescription>
                 </DialogHeader>
                 <CaseAssignment />
                 <DialogFooter>
