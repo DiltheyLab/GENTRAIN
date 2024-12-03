@@ -63,6 +63,7 @@ class SequenceAnalysisStrategy(ABC):
     def execute(self):
         """Run strategy actions."""
         try:
+            print("started", self.sequence_identifier)
             sio.emit(
                 "sequence_analysis_started",
                 self.sequence_identifier,

@@ -85,7 +85,7 @@ export abstract class SequenceAnalysisStrategy {
             socket.once(`${this.pathogen.pathogen_type?.name}_room_created`, async (roomName: string) => {
                 this.roomName = roomName;
                 console.log(`Room ${this.roomName} was joined.`);
-                await this.runAnalysis();
+                this.runAnalysis();
             });
         }
     };
@@ -110,13 +110,10 @@ export abstract class SequenceAnalysisStrategy {
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
                 const uniqueSequenceIdentifier = uuidv4();
-                await this.emitSequenceAnalysisMessage({
-                    sequenceIdentifier: uniqueSequenceIdentifier,
-                    sequence: sample.imported.sequence,
-                });
                 this.fastaIdsToAnalyse[uniqueSequenceIdentifier] = fastaId;
             }
         }
+        this.initNextSequenceAnalyses();
     };
 
     private handleAnalysisEvents = () => {
@@ -124,6 +121,9 @@ export abstract class SequenceAnalysisStrategy {
             socket.on("sequence_analysis_response", async (data: any) => {
                 await this.handleSingleAnalysisResult(data);
                 this.continueIfAllAnalysesAreDone();
+                if (this.finishedFastaIds.length % 10 === 0) {
+                    this.initNextSequenceAnalyses();
+                }
             });
             socket.on("sequence_analysis_enqueued", (sequence_identifier: string) => {
                 this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
@@ -141,6 +141,23 @@ export abstract class SequenceAnalysisStrategy {
                 this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
                     status: "started",
                 });
+            });
+        }
+    };
+
+    private initNextSequenceAnalyses = async () => {
+        // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
+        // depending on which value is lower
+        const socketMessageLimit = Math.min(
+            this.finishedFastaIds.length + 10,
+            Object.keys(this.fastaIdsToAnalyse).length
+        );
+        // always send max. 10 message via websockt channel to regulate user inputs
+        for (let i = this.finishedFastaIds.length; i < socketMessageLimit; i++) {
+            const fastaIdToAnalyse = this.fastaIdsToAnalyse[Object.keys(this.fastaIdsToAnalyse)[i]];
+            await this.emitSequenceAnalysisMessage({
+                sequenceIdentifier: Object.keys(this.fastaIdsToAnalyse)[i],
+                sequence: this.sampleData[fastaIdToAnalyse].imported.sequence,
             });
         }
     };
