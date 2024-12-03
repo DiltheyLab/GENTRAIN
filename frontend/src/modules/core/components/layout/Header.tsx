@@ -22,7 +22,9 @@ export const Header = () => {
             <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                 <Link to="/" className="flex items-center gap-2 text-md md:text-base gentrain-logo">
                     <Share2 className="h-6 w-6 text-primary" />
-                    <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">Gentrain</div>
+                    <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">
+                        Gentrain<span className="text-[11px] font-thin leading-[11px]">NRW</span>
+                    </div>
                 </Link>
                 <Link
                     data-tutorial-tour-step="dashboard-nav"
