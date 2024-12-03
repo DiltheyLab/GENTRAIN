@@ -18,6 +18,7 @@ import { validateName } from "@/modules/core/helpers/validateName";
 import { useState } from "react";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { createOutbreak } from "@/modules/core/models/outbreaks";
+import { useToast } from "@/modules/core/components/ui/UseToast";
 
 export const CreateOutbreakDialog = () => {
     const [outbreakName, setOutbeakName] = useState("");
@@ -26,6 +27,7 @@ export const CreateOutbreakDialog = () => {
     const outbreaks = useGetOutbreaksForActivePathogen();
     const { activePathogen } = useCoreStore();
     const { analyseNameIsValid, isUniqueName } = validateName(outbreaks, outbreakName);
+    const { toast } = useToast();
 
     const createNewOutbreak = async () => {
         try {
@@ -34,6 +36,13 @@ export const CreateOutbreakDialog = () => {
                 throw new GentrainException("PathogenNotSelected");
             }
             await createOutbreak(outbreakName, activePathogen.id);
+            setIsOpen(false);
+            toast({
+                title: "Ausbruch angelegt",
+                description: `Der Ausbruch ${outbreakName} wurde erfolgreich angelegt.`,
+                variant: "success",
+                duration: 5000,
+            });
         } catch (error) {
             setIsOpen(false);
             handleOutbreakError(error);
