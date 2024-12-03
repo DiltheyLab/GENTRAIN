@@ -1,13 +1,14 @@
 {
     "upload": {
-        "title": "Fehlerhafter Upload",
+        "title": "Fehlerhafter Import",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",
         "InvalidPathogenSelection": "Sie müssen zunächst das behandelte Pathogen festlegen.",
         "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}.",
         "EmptyCaseId1": "Es gibt mindestens ein leeres Feld in der Spalte case_id_1. Ein Kontakt benötigt immer zwei Cases.",
         "EmptyCaseId2": "Es gibt mindestens ein leeres Feld in der Spalte case_id_2. Ein Kontakt benötigt immer zwei Cases.",
         "CaseDoesNotExist": "Für folgende Fälle existiert kein Eintrag in der Datenbank: {{data}}. Bitte laden Sie erst den entsprechenden Fall (Case) hoch.",
-        "ContactAlreadyExist": "Folgende Zeilen in der Kontaktdatei existieren bereits in der Datenbank: {{data}}. Bitte laden Sie den Kontakt nicht erneut hoch."
+        "ContactAlreadyExist": "Folgende Zeilen in der Kontaktdatei existieren bereits in der Datenbank: {{data}}. Bitte laden Sie den Kontakt nicht erneut hoch.",
+        "FailedAnalysesThresholdExceeded": "Zu viele Sequenzanalysen wurden nicht erfolgreich abgeschlossen."
     },
     "outbreakAnalysis": {
         "title": "Fehler beim Speichern der Analyse",

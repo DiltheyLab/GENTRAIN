@@ -12,7 +12,9 @@ import {
     SampleSchema,
     ViralQualityParameters,
 } from "@/modules/core/models/samples";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 
+const FAILED_ANALYSES_THRESHOLD = 10;
 export abstract class SequenceAnalysisStrategy {
     protected coreState: CoreState;
     protected dataManagementState: DataManagementState;
@@ -22,6 +24,7 @@ export abstract class SequenceAnalysisStrategy {
     } = {};
     protected fastaIdsToAnalyse: { [sequenceIdentifier: string]: string };
     protected finishedFastaIds: string[];
+    protected failedFastaIds: string[];
     protected roomName: string;
 
     public abstract createSampleAndSequenceAnalysis(
@@ -38,6 +41,7 @@ export abstract class SequenceAnalysisStrategy {
         this.pathogen = pathogen;
         this.fastaIdsToAnalyse = {};
         this.finishedFastaIds = [];
+        this.failedFastaIds = [];
         this.roomName = "";
     }
 
@@ -47,14 +51,18 @@ export abstract class SequenceAnalysisStrategy {
         this.sampleData = sampleData;
     };
 
-    public execute = async () => {
+    public execute = () => {
         if (!this.sampleData) {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
-        this.dataManagementState.setSequenceAnalysisRunning(true);
-        this.joinRoomAndRunAnalysis();
-        this.handleAnalysisEvents();
+        try {
+            this.dataManagementState.setSequenceAnalysisRunning(true);
+            this.joinRoomAndRunAnalysis();
+            this.handleAnalysisEvents();
+        } catch (error) {
+            throw error;
+        }
     };
 
     public handlePersistedResults = async () => {
@@ -135,7 +143,12 @@ export abstract class SequenceAnalysisStrategy {
                     status: "failed",
                 });
                 this.finishedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
+                this.failedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
                 this.continueIfAllAnalysesAreDone();
+                this.interruptIfFailedAnalysesThresholdExceeded();
+                if (this.finishedFastaIds.length % 10 === 0) {
+                    this.initNextSequenceAnalyses();
+                }
             });
             socket.on("sequence_analysis_started", (sequence_identifier: string) => {
                 this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
@@ -206,14 +219,28 @@ export abstract class SequenceAnalysisStrategy {
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === Object.keys(this.fastaIdsToAnalyse).length) {
-            this.dataManagementState.setSequenceAnalysisRunning(false);
-            this.coreState.updateCasesWithRelationships();
-            this.initDistanceCalculation();
-            if (socket) {
-                console.log(`Room ${this.roomName} was left.`);
-                socket.emit(`leave_${this.pathogen.pathogen_type?.name}`);
-                socket.off("sequence_analysis_response");
-            }
+            this.continue();
+        }
+    }
+
+    private interruptIfFailedAnalysesThresholdExceeded() {
+        if (this.failedFastaIds.length > FAILED_ANALYSES_THRESHOLD) {
+            this.continue();
+            throw new GentrainException("FailedAnalysesThresholdExceeded");
+        }
+    }
+
+    private continue() {
+        this.dataManagementState.setSequenceAnalysisRunning(false);
+        this.coreState.updateCasesWithRelationships();
+        this.initDistanceCalculation();
+        if (socket) {
+            console.log(`Room ${this.roomName} was left.`);
+            socket.emit(`leave_${this.pathogen.pathogen_type?.name}`);
+            socket.off("sequence_analysis_response");
+            socket.off("sequence_analysis_enqueued");
+            socket.off("sequence_analysis_failed");
+            socket.off("sequence_analysis_started");
         }
     }
 
