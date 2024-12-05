@@ -1,5 +1,5 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { updateAnalysisSettings } from "@/modules/core/models/analyses";
 import { OutbreakAnalysisStore } from "../stores/outbreakAnalysis";
 import { toast } from "@/modules/core/components/ui/UseToast";
@@ -27,7 +27,7 @@ export const safeAnalysis = async (outbreakAnalysisStore: OutbreakAnalysisStore,
         }
         return true;
     } catch (error) {
-        handleOutbreakAnalysisError(error);
+        handleError(error, "outbreakAnalysis");
         return false;
     }
 };

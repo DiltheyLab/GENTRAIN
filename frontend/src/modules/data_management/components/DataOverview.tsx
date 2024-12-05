@@ -1,12 +1,12 @@
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
 import { Separator } from "@/modules/core/components/ui/Separator";
-import { CaseSection } from "./CaseSection";
-import { GroupSection } from "./GroupSection";
+import { CaseSection } from "./case_section/CaseSection";
+import { GroupSection } from "./group_section/GroupSection";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { deleteDataForPathogen } from "@/modules/core/models/pathogens";
 import { useState } from "react";
-import { OutbreakSection } from "./OutbreakSection";
+import { OutbreakSection } from "./outbreak_section/OutbreakSection";
 import { Button } from "@/modules/core/components/ui/Button";
 
 export const DataOverview = () => {

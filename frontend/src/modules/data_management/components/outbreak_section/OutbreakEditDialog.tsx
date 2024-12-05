@@ -12,38 +12,39 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleGroupError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
+import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { GroupSchema, updateGroupName } from "@/modules/core/models/groups";
-import { useGetGroupsForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsForActivePathogen";
-import { validatGroupName } from "../../helpers/groupNameValidation";
+import { validateOutbreakName } from "../../helpers/outbreakNameValidation";
+import { OutbreakSchema, updateOutbreakName } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
 
-type GroupEditDialogProps = {
-    row: Row<GroupSchema>;
+type OutbreakEditDialogProps = {
+    row: Row<OutbreakSchema>;
 };
 
-export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
+export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [groupName, setGroupName] = useState(row.original.name);
+    const [outbreakName, setOutbreakName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
-    const groups = useGetGroupsForActivePathogen();
-    const { groupNameNotValid, isUniqueName } = validatGroupName(
-        groups?.filter((group) => group.name !== row.original.name),
-        groupName
+    const outbreaks = useGetOutbreaksForActivePathogen();
+    const { outbreakNameNotValid, isUniqueName } = validateOutbreakName(
+        outbreaks?.filter((outbreak) => outbreak.name !== row.original.name),
+        outbreakName
     );
+
     const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
 
-    const updateGroup = async () => {
+    const updateOutbreak = async () => {
         try {
-            const groupId = await updateGroupName(row.original.id, groupName);
-            if (!groupId) {
-                throw new GentrainException("GroupIdIsNotInDB");
+            const outbreakId = await updateOutbreakName(row.original.id, outbreakName);
+            if (!outbreakId) {
+                throw new GentrainException("OutbreakIdIsNotInDB");
             }
         } catch (error) {
-            handleGroupError(error);
+            handleError(error, "outbreak");
         } finally {
             setIsOpen(false);
             updateCasesWithRelationships();
@@ -59,9 +60,9 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Gruppe bearbeiten</DialogTitle>
+                    <DialogTitle>Ausbruch bearbeiten</DialogTitle>
                     <DialogDescription>
-                        Nehmen Sie hier Änderungen an der Gruppe vor. Klicken Sie auf Speichern, wenn Sie fertig sind.
+                        Nehmen Sie hier Änderungen an dem Ausbruch vor. Klicken Sie auf Speichern, wenn Sie fertig sind.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex gap-5 items-center mt-4">
@@ -71,10 +72,10 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
                     <Input
                         id="name"
                         className={cn("w-full", !isUniqueName() && "focus-visible:ring-red-500")}
-                        value={groupName}
+                        value={outbreakName}
                         placeholder={row.original.name}
                         onChange={(e) => {
-                            setGroupName(e.target.value);
+                            setOutbreakName(e.target.value);
                         }}
                         onFocus={() => setIsTouched(true)}
                         onBlur={() => setIsTouched(false)}
@@ -82,11 +83,11 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
                 </div>
                 {isTouched && !isUniqueName() && (
                     <p className="text-red-500 text-sm -mt-2">
-                        Der Name der Gruppe ist bereits vergeben. Bitte wählen Sie einen anderen.
+                        Der Name des Ausbruchs ist bereits vergeben. Bitte wählen Sie einen anderen.
                     </p>
                 )}
                 <DialogFooter>
-                    <Button type="submit" disabled={!groupNameNotValid()} onClick={updateGroup}>
+                    <Button type="submit" disabled={!outbreakNameNotValid()} onClick={updateOutbreak}>
                         Änderungen speichern
                     </Button>
                 </DialogFooter>

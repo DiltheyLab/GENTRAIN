@@ -23,8 +23,8 @@ import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { cn } from "@/modules/core/helpers/cn";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
-import { validateAnalysisName } from "../../helpers/analysisNameValidation";
+import { handleError } from "@/modules/core/helpers/errors";
+import { validateName } from "../../../core/helpers/validateName";
 
 export const AnalysisCreation = () => {
     const [analysisName, setAnalysisName] = useState("");
@@ -34,7 +34,7 @@ export const AnalysisCreation = () => {
     const { activePathogen } = useCoreStore();
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
-    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(analyses, analysisName);
+    const { analyseNameIsValid, isUniqueName } = validateName(analyses, analysisName);
 
     const createAndNavigateToNewAnalysis = async () => {
         try {
@@ -62,7 +62,7 @@ export const AnalysisCreation = () => {
             navigate(`${id}`);
         } catch (error) {
             setIsOpen(false);
-            handleOutbreakAnalysisError(error);
+            handleError(error, "outbreakAnalysis");
         }
     };
 

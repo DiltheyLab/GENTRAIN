@@ -3,6 +3,8 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { t } from "i18next";
 import { ZodError } from "zod";
 
+export type ToastErrorType = "outbreakAnalysis" | "outbreakAnalysis" | "outbreak" | "group" | "caseAssignment";
+
 export const getToastDescription = (error: GentrainException | ZodError | Error, category = "upload") => {
     let description = null;
     if (error instanceof GentrainException) {
@@ -13,12 +15,12 @@ export const getToastDescription = (error: GentrainException | ZodError | Error,
     return description;
 };
 
-export const handleOutbreakAnalysisError = (error: any) => {
+export const handleError = (error: any, toastErrorType: ToastErrorType) => {
     if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
         toast({
-            title: t([`error:outbreakAnalysis.title`]),
+            title: t([`error:${toastErrorType}.title`]),
             description:
-                getToastDescription(error, "outbreakAnalysis") ??
+                getToastDescription(error, toastErrorType) ??
                 "Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
             duration: 10000,
             variant: "destructive",
@@ -26,35 +28,5 @@ export const handleOutbreakAnalysisError = (error: any) => {
         console.log(error, error.message);
         return;
     }
-    console.error("Error while saving analysis", error);
-};
-
-export const handleOutbreakError = (error: any) => {
-    if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
-        toast({
-            title: t([`error:outbreak.title`]),
-            description:
-                getToastDescription(error, "outbreak") ?? "Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
-            duration: 10000,
-            variant: "destructive",
-        });
-        console.log(error, error.message);
-        return;
-    }
-    console.error("Error while saving analysis", error);
-};
-
-export const handleGroupError = (error: any) => {
-    if (error instanceof GentrainException || error instanceof ZodError || error instanceof Error) {
-        toast({
-            title: t([`error:group.title`]),
-            description:
-                getToastDescription(error, "group") ?? "Bitte laden Sie die Seite neu und versuchen Sie es erneut.",
-            duration: 10000,
-            variant: "destructive",
-        });
-        console.log(error, error.message);
-        return;
-    }
-    console.error("Error while saving analysis", error);
+    console.error(error);
 };

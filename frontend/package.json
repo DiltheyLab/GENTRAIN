@@ -55,6 +55,7 @@
         "jspdf": "^2.5.1",
         "lodash": "^4.17.21",
         "lucide-react": "^0.399.0",
+        "material-react-table": "^3.0.1",
         "npm": "^10.9.0",
         "posthog-js": "^1.187.2",
         "react": "^18.3.1",

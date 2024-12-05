@@ -30,6 +30,11 @@ export const TutorialTour = () => {
         window.scrollTo(0, 0);
     };
 
+    const scrollWindowToTopAndChangeIndex = (nextStepIndex: number) => {
+        changeTutorialStepIndex(nextStepIndex);
+        window.scrollTo(0, 0);
+    };
+
     //Updates the accordion state and continues the tutorial with a delay.
     const updateAccordionAndContinueWithDelay = (nextStepIndex: number, openAccordionItems: string[], delay = 350) => {
         changeTutorialIsRunning(false);
@@ -47,6 +52,10 @@ export const TutorialTour = () => {
 
         const manageTutorialStep = () => {
             switch (step.target) {
+                case "[data-tutorial-tour-step='outbreak-analysis-overview-nav']":
+                    if (nextStep) scrollWindowToTopAndChangeIndex(nextStepIndex);
+                    else if (prevStep) changeTutorialStepIndex(nextStepIndex);
+                    break;
                 case "[data-tutorial-tour-step='outbreak-analysis-overview-start']":
                     if (nextStep) updateAccordionAndContinueWithDelay(nextStepIndex, ["outbreak-selection"]);
                     else if (prevStep) changeTutorialStepIndex(nextStepIndex);
