@@ -268,3 +268,11 @@ export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
         );
     }
 };
+
+export type CaseToUpdate = {
+    key: number;
+    changes: Partial<CaseSchema>;
+};
+export const bulkUpdateCases = (casesToUpdate: CaseToUpdate[]) => {
+    return db.cases.bulkUpdate(casesToUpdate);
+};
