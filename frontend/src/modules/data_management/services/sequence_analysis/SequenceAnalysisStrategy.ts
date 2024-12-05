@@ -127,28 +127,24 @@ export abstract class SequenceAnalysisStrategy {
     private handleAnalysisEvents = () => {
         if (socket) {
             socket.on("sequence_analysis_response", async (data: any) => {
-                await this.handleSingleAnalysisResult(data);
-                this.continueIfAllAnalysesAreDone();
+                const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
+                if (data.status === "success") {
+                    await this.handleSuccessfulAnalysis(fastaId, data.result, data.sequence_length);
+                }
+                if (data.status === "error") {
+                    this.handleUnsuccessfulAnalysis(fastaId);
+                }
+                this.removePersistedResultFromRedis(data.sequence_identifier);
+                this.finishedFastaIds.push(fastaId);
                 if (this.finishedFastaIds.length % 10 === 0) {
                     this.initNextSequenceAnalyses();
                 }
+                this.continueIfAllAnalysesAreDone();
             });
             socket.on("sequence_analysis_enqueued", (sequence_identifier: string) => {
                 this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
                     status: "enqueued",
                 });
-            });
-            socket.on("sequence_analysis_failed", (sequence_identifier: string) => {
-                this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
-                    status: "failed",
-                });
-                this.finishedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
-                this.failedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
-                this.continueIfAllAnalysesAreDone();
-                this.interruptIfFailedAnalysesThresholdExceeded();
-                if (this.finishedFastaIds.length % 10 === 0) {
-                    this.initNextSequenceAnalyses();
-                }
             });
             socket.on("sequence_analysis_started", (sequence_identifier: string) => {
                 this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
@@ -156,6 +152,19 @@ export abstract class SequenceAnalysisStrategy {
                 });
             });
         }
+    };
+
+    private handleSuccessfulAnalysis = async (fastaId: string, result: any, sequence_length: number) => {
+        await this.createSampleAndSequenceAnalysis(fastaId, result, sequence_length);
+        this.dataManagementState.changeSampleImport(fastaId, { status: "finished" });
+    };
+
+    private handleUnsuccessfulAnalysis = (fastaId: string) => {
+        this.dataManagementState.changeSampleImport(fastaId, {
+            status: "failed",
+        });
+        this.failedFastaIds.push(fastaId);
+        this.interruptIfFailedAnalysesThresholdExceeded();
     };
 
     private initNextSequenceAnalyses = async () => {
@@ -193,18 +202,6 @@ export abstract class SequenceAnalysisStrategy {
             }
         }
     };
-
-    public async handleSingleAnalysisResult(data: {
-        sequence_identifier: string;
-        result: any;
-        sequence_length: number;
-    }) {
-        const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
-        this.finishedFastaIds.push(fastaId);
-        await this.createSampleAndSequenceAnalysis(fastaId, data.result, data.sequence_length);
-        this.dataManagementState.changeSampleImport(fastaId, { status: "finished" });
-        this.removePersistedResultFromRedis(data.sequence_identifier);
-    }
 
     private removePersistedResultFromRedis = (sequenceIdentifier: string) => {
         if (socket) {

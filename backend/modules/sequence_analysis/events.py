@@ -68,8 +68,11 @@ def sequence_analysis_request(
     genetic_errors = get_genetic_errors(sequence_chunk)
     if len(genetic_errors) > 0:
         sio.emit(
-            event="sequence_analysis_failed",
-            data=sequence_identifier,
+            "sequence_analysis_response",
+            {
+                "status": "error",
+                "sequence_identifier": sequence_identifier,
+            },
             to=f"{pathogen.type}_{socket_id}",
         )
         return
