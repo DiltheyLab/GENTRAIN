@@ -34,7 +34,7 @@ export const AnalysisCreation = () => {
     const { activePathogen } = useCoreStore();
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
-    const { analyseNameIsValid, isUniqueName } = validateName(analyses, analysisName);
+    const { isNameValid, isUniqueName } = validateName(analyses, analysisName);
 
     const createAndNavigateToNewAnalysis = async () => {
         try {
@@ -96,7 +96,7 @@ export const AnalysisCreation = () => {
                     </p>
                 )}
                 <DialogFooter>
-                    <Button type="button" disabled={!analyseNameIsValid()} onClick={createAndNavigateToNewAnalysis}>
+                    <Button type="button" disabled={!isNameValid()} onClick={createAndNavigateToNewAnalysis}>
                         Speichern und Analyse starten
                     </Button>
                 </DialogFooter>
