@@ -23,7 +23,7 @@ import { Label } from "@/modules/core/components/ui/Label";
 import { Input } from "@/modules/core/components/ui/Input";
 import { cn } from "@/modules/core/helpers/cn";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { validateName } from "../../../core/helpers/validateName";
 
 export const AnalysisCreation = () => {
@@ -62,7 +62,7 @@ export const AnalysisCreation = () => {
             navigate(`${id}`);
         } catch (error) {
             setIsOpen(false);
-            handleOutbreakAnalysisError(error);
+            handleError(error, "outbreakAnalysis");
         }
     };
 

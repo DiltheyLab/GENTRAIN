@@ -12,7 +12,7 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { AnalysisSchema, updateAnalysisName } from "@/modules/core/models/analyses";
 import { validateName } from "@/modules/core/helpers/validateName";
@@ -42,7 +42,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                 throw new GentrainException("AnalysisIdIsNotInDB");
             }
         } catch (error) {
-            handleOutbreakAnalysisError(error);
+            handleError(error, "outbreakAnalysis");
         } finally {
             setIsOpen(false);
         }

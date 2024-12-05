@@ -12,7 +12,7 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleOutbreakError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { validateName } from "@/modules/core/helpers/validateName";
 import { useState } from "react";
@@ -45,7 +45,7 @@ export const CreateOutbreakDialog = () => {
             });
         } catch (error) {
             setIsOpen(false);
-            handleOutbreakError(error);
+            handleError(error, "outbreak");
         }
     };
 

@@ -12,7 +12,7 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleOutbreakError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
@@ -44,7 +44,7 @@ export const OutbreakEditDialog = ({ row }: OutbreakEditDialogProps) => {
                 throw new GentrainException("OutbreakIdIsNotInDB");
             }
         } catch (error) {
-            handleOutbreakError(error);
+            handleError(error, "outbreak");
         } finally {
             setIsOpen(false);
             updateCasesWithRelationships();

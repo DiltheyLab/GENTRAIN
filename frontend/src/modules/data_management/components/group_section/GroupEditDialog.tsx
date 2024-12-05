@@ -12,7 +12,7 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleGroupError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
@@ -43,7 +43,7 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
                 throw new GentrainException("GroupIdIsNotInDB");
             }
         } catch (error) {
-            handleGroupError(error);
+            handleError(error, "group");
         } finally {
             setIsOpen(false);
             updateCasesWithRelationships();
