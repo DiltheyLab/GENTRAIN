@@ -8,16 +8,53 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/modules/core/components/ui/Dialog";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { handleOutbreakError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { useState } from "react";
 import { CaseAssignment } from "./CaseAssignment";
-import { GripHorizontalIcon } from "lucide-react";
+import { bulkUpdateCases, CaseToUpdate, CaseWithRelationships } from "@/modules/core/models/cases";
+import { useToast } from "@/modules/core/components/ui/UseToast";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const AssignCasesToOutbreakDialog = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [casesForUpdate, setCasesForUpdate] = useState<Map<number, CaseWithRelationships>>(new Map());
+    const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
 
-    const saveAssignment = () => {};
+    const { toast } = useToast();
+
+    const saveAssignment = async () => {
+        try {
+            const changes: CaseToUpdate[] = [];
+            for (const [id, caseData] of casesForUpdate) {
+                changes.push({ key: id, changes: { outbreak_id: caseData.outbreak_id } });
+            }
+            await bulkUpdateCases(changes);
+            updateCasesWithRelationships();
+            toast({
+                title: "Die Fälle wurden erfolgreich zugewiesen",
+                variant: "success",
+                duration: 5000,
+            });
+            setIsOpen(false);
+        } catch (error) {
+            handleError(error, "caseAssignment");
+        }
+    };
+
+    const registerCaseForDatabaseUpdate = (caseData: CaseWithRelationships, selectedOutbreakTable: string) => {
+        setCasesForUpdate((prevCasesMap) => {
+            if (selectedOutbreakTable === undefined) {
+                return prevCasesMap;
+            }
+
+            const newCasesMap = new Map(prevCasesMap);
+            const newCase = caseData;
+            newCase.outbreak_id = +selectedOutbreakTable;
+            newCasesMap.set(newCase.id, newCase);
+
+            return newCasesMap;
+        });
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -32,7 +69,7 @@ export const AssignCasesToOutbreakDialog = () => {
                         enstsprechenden Fall in die jeweilige Tabelle.
                     </DialogDescription>
                 </DialogHeader>
-                <CaseAssignment />
+                <CaseAssignment registerCaseForDatabaseUpdate={registerCaseForDatabaseUpdate} />
                 <DialogFooter>
                     <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>
                         Abbrechen
