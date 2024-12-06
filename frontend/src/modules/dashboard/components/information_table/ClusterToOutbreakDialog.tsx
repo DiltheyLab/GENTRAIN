@@ -1,3 +1,4 @@
+import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
 import { Button } from "@/modules/core/components/ui/Button";
 import {
     Dialog,
@@ -16,18 +17,21 @@ import { cn } from "@/modules/core/helpers/cn";
 import { handleError } from "@/modules/core/helpers/errors";
 import { validateName } from "@/modules/core/helpers/validateName";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
+import { db } from "@/modules/core/infrastructure/database";
+import { bulkUpdateCases, CaseToUpdate, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { CustomNode } from "@/modules/core/types/graph";
+import { ColorMap, CustomNode } from "@/modules/core/types/graph";
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
 type ClusterToOutbreakDialogProps = {
     cluster: Array<CustomNode | undefined>;
     clusterName: string;
+    colorMap: ColorMap;
 };
 
-export const ClusterToOutbreakDialog = ({ cluster, clusterName }: ClusterToOutbreakDialogProps) => {
+export const ClusterToOutbreakDialog = ({ cluster, clusterName, colorMap }: ClusterToOutbreakDialogProps) => {
     const [outbreakName, setOutbeakName] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isTouched, setIsTouched] = useState(false);
@@ -35,25 +39,45 @@ export const ClusterToOutbreakDialog = ({ cluster, clusterName }: ClusterToOutbr
     const { activePathogen } = useCoreStore();
     const { isNameValid, isUniqueName } = validateName(outbreaks, outbreakName);
     const { toast } = useToast();
+    const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
 
-    const createNewOutbreak = async () => {
+    const handleClusterToOutbreakAssignment = async () => {
         try {
             setIsTouched(false);
             if (!activePathogen) {
                 throw new GentrainException("PathogenNotSelected");
             }
-            await createOutbreak(outbreakName, activePathogen.id);
-            setIsOpen(false);
+
+            //create an outbreak and assign all cases from the cluster to it
+            await db.transaction("rw", [db.cases, db.outbreaks], async () => {
+                const outbreakId = await createOutbreak(outbreakName, activePathogen.id);
+                const cases = cluster.map((node) => node?.caseData);
+                await updateOutbreakIdInCases(cases, outbreakId);
+            });
+
+            // refresh cases in store to update the graph
+            updateCasesWithRelationships();
+
             toast({
                 title: "Ausbruch angelegt",
-                description: `Der Ausbruch ${outbreakName} wurde erfolgreich angelegt.`,
+                description: `Der Ausbruch ${outbreakName} wurde erfolgreich angelegt. Die Fälle wurden dem Ausbruch zugewiesen.`,
                 variant: "success",
                 duration: 5000,
             });
+            setIsOpen(false);
         } catch (error) {
             setIsOpen(false);
             handleError(error, "outbreak");
         }
+    };
+
+    const updateOutbreakIdInCases = async (cases: (CaseWithRelationships | undefined)[], outbreakId: number) => {
+        const changes: CaseToUpdate[] = [];
+        for (const caseData of cases) {
+            if (!caseData) continue;
+            changes.push({ key: caseData.id, changes: { outbreak_id: outbreakId } });
+        }
+        await bulkUpdateCases(changes);
     };
 
     return (
@@ -63,9 +87,17 @@ export const ClusterToOutbreakDialog = ({ cluster, clusterName }: ClusterToOutbr
                     Ausbruch generieren
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[455px]">
+            <DialogContent className="max-w-[620px]">
                 <DialogHeader>
-                    <DialogTitle>Ausbruch aus "{clusterName}" generieren</DialogTitle>
+                    <DialogTitle>
+                        Ausbruch aus
+                        <ColorCircle
+                            colorMap={colorMap}
+                            cluster={clusterName}
+                            className="ml-[0.4rem] mr-1 h-[0.95rem] w-[0.95rem] inline-block"
+                        />
+                        <u className="mr-[0.3rem]">{clusterName}</u> generieren
+                    </DialogTitle>
                     <DialogDescription>
                         Hier können Sie einen neuen Ausbruch erstellen und diesem alle Fälle aus dem ausgewählten
                         Cluster zuweisen.
@@ -94,12 +126,12 @@ export const ClusterToOutbreakDialog = ({ cluster, clusterName }: ClusterToOutbr
                 <div className="flex p-2 bg-gray-100 rounded-lg shadow-md  items-center justify-between space-x-3">
                     <AlertTriangle size={72} />
                     <p className="text-sm font-semibold">
-                        Achtung! Allen Fällen aus dem ausgewählten Cluster wird nach diesem Vorgang der neu erstellte
-                        Ausbruch zugewiesen. Diese Operation kann nicht rückgängig gemacht werden.
+                        Allen Fällen aus dem ausgewählten Cluster wird nach diesem Vorgang der neu erstellte Ausbruch
+                        zugewiesen. Diese Operation kann nicht rückgängig gemacht werden.
                     </p>
                 </div>
                 <DialogFooter>
-                    <Button type="button" disabled={!isNameValid()} onClick={createNewOutbreak}>
+                    <Button type="button" disabled={!isNameValid()} onClick={handleClusterToOutbreakAssignment}>
                         Speichern
                     </Button>
                 </DialogFooter>

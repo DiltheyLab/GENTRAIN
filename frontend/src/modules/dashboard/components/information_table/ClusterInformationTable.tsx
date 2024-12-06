@@ -112,7 +112,11 @@ export const ClusterInformationTable = () => {
                                             <h4 className="text-base">Cluster {index + 1}</h4>
                                         </div>
                                     </AccordionTrigger>
-                                    <ClusterToOutbreakDialog cluster={cluster} clusterName={`Cluster ${index + 1}`} />
+                                    <ClusterToOutbreakDialog
+                                        cluster={cluster}
+                                        clusterName={`Cluster ${index + 1}`}
+                                        colorMap={colorMap}
+                                    />
                                 </div>
                                 <AccordionContent>
                                     <small>
@@ -143,6 +147,7 @@ export const ClusterInformationTable = () => {
                                 <ClusterToOutbreakDialog
                                     cluster={noClusterAssigned}
                                     clusterName={t("clusterTypes.noClusterAssigned")}
+                                    colorMap={colorMap}
                                 />
                             </div>
                             <AccordionContent>
