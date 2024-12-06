@@ -29,7 +29,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
     const [analysisName, setAnalysisName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
-    const { analyseNameIsValid, isUniqueName } = validateName(
+    const { isNameValid, isUniqueName } = validateName(
         analyses?.filter((analysis) => analysis.name !== row.original.name),
         analysisName
     );
@@ -85,12 +85,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                     </p>
                 )}
                 <DialogFooter>
-                    <Button
-                        type="submit"
-                        disabled={!analyseNameIsValid()}
-                        onClick={updateAnalysis}
-                        title="Analyse bearbeiten"
-                    >
+                    <Button type="submit" disabled={!isNameValid()} onClick={updateAnalysis} title="Analyse bearbeiten">
                         Änderungen speichern
                     </Button>
                 </DialogFooter>

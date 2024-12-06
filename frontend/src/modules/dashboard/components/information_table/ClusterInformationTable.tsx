@@ -7,6 +7,8 @@ import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { t } from "i18next";
+import { ClusterToOutbreakDialog } from "./ClusterToOutbreakDialog";
+import { Card, CardContent } from "@/modules/core/components/ui/Card";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
@@ -97,51 +99,73 @@ export const ClusterInformationTable = () => {
     };
 
     return (
-        <Accordion type="multiple" className="px-0 rounded-lg">
-            {clusters?.map((cluster, index) => {
-                return (
-                    <AccordionItem key={index} value={`${index}`}>
-                        <AccordionTrigger className=" font-semibold py-1">
-                            <div className="flex items-center gap-2">
-                                <ColorCircle colorMap={colorMap} cluster={`Cluster ${index + 1}`} />
-                                <p>Cluster {index + 1}</p>
+        <Card>
+            <CardContent>
+                <Accordion type="multiple" className="px-0 rounded-lg">
+                    {clusters?.map((cluster, index) => {
+                        return (
+                            <AccordionItem key={index} value={`${index}`} className="mt-2">
+                                <div className="flex justify-between items-center">
+                                    <AccordionTrigger className="font-semibold py-3 w-full space-x-1">
+                                        <div className="flex items-center gap-2">
+                                            <ColorCircle colorMap={colorMap} cluster={`Cluster ${index + 1}`} />
+                                            <h4 className="text-base">Cluster {index + 1}</h4>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <ClusterToOutbreakDialog
+                                        cluster={cluster}
+                                        clusterName={`Cluster ${index + 1}`}
+                                        colorMap={colorMap}
+                                    />
+                                </div>
+                                <AccordionContent>
+                                    <small>
+                                        Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.
+                                    </small>
+                                    <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                                        <Table className="rounded-xl">
+                                            <TableHeader>{renderHeadRow()}</TableHeader>
+                                            <TableBody>{renderRows(cluster)}</TableBody>
+                                        </Table>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        );
+                    })}
+                    {noClusterAssigned.length > 0 && (
+                        <AccordionItem value={`noOutbreakAssigned`} className="mt-2">
+                            <div className="flex justify-between items-center">
+                                <AccordionTrigger className="font-semibold py-3 w-full space-x-1">
+                                    <div className="flex items-center gap-2">
+                                        <ColorCircle
+                                            colorMap={colorMap}
+                                            cluster={t("clusterTypes.noClusterAssigned")}
+                                        />
+                                        <h4 className="text-base">{t("clusterTypes.noClusterAssigned")}</h4>
+                                    </div>
+                                </AccordionTrigger>
+                                <ClusterToOutbreakDialog
+                                    cluster={noClusterAssigned}
+                                    clusterName={t("clusterTypes.noClusterAssigned")}
+                                    colorMap={colorMap}
+                                />
                             </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <small>
-                                Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.
-                            </small>
-                            <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                                <Table className="rounded-xl">
-                                    <TableHeader>{renderHeadRow()}</TableHeader>
-                                    <TableBody>{renderRows(cluster)}</TableBody>
-                                </Table>
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                );
-            })}
-            {noClusterAssigned.length > 0 && (
-                <AccordionItem value={`noOutbreakAssigned`}>
-                    <AccordionTrigger className=" font-semibold py-1">
-                        <div className="flex items-center gap-2">
-                            <ColorCircle colorMap={colorMap} cluster={t("clusterTypes.noClusterAssigned")} />
-                            <p>{t("clusterTypes.noClusterAssigned")}</p>
-                        </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                        <small>
-                            Es sind {noClusterAssigned.length} sequenzierte Fälle die keinem Cluster zugewiesen wurden.
-                        </small>
-                        <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                            <Table className="rounded-xl">
-                                <TableHeader>{renderHeadRow()}</TableHeader>
-                                <TableBody>{renderRows(noClusterAssigned)}</TableBody>
-                            </Table>
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
-            )}
-        </Accordion>
+                            <AccordionContent>
+                                <small>
+                                    Es sind {noClusterAssigned.length} sequenzierte Fälle die keinem Cluster zugewiesen
+                                    wurden.
+                                </small>
+                                <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                                    <Table className="rounded-xl">
+                                        <TableHeader>{renderHeadRow()}</TableHeader>
+                                        <TableBody>{renderRows(noClusterAssigned)}</TableBody>
+                                    </Table>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    )}
+                </Accordion>
+            </CardContent>
+        </Card>
     );
 };

@@ -26,7 +26,7 @@ export const CreateOutbreakDialog = () => {
     const [isTouched, setIsTouched] = useState(false);
     const outbreaks = useGetOutbreaksForActivePathogen();
     const { activePathogen } = useCoreStore();
-    const { analyseNameIsValid, isUniqueName } = validateName(outbreaks, outbreakName);
+    const { isNameValid, isUniqueName } = validateName(outbreaks, outbreakName);
     const { toast } = useToast();
 
     const createNewOutbreak = async () => {
@@ -79,7 +79,7 @@ export const CreateOutbreakDialog = () => {
                     </p>
                 )}
                 <DialogFooter>
-                    <Button type="button" disabled={!analyseNameIsValid()} onClick={createNewOutbreak}>
+                    <Button type="button" disabled={!isNameValid()} onClick={createNewOutbreak}>
                         Speichern
                     </Button>
                 </DialogFooter>

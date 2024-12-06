@@ -1,12 +1,14 @@
+import { cn } from "../../helpers/cn";
 import { COLOR_FOR_CASES_WITHOUT_CLUSTERS } from "../../helpers/colors";
 import { ColorMap } from "../../types/graph";
 
 type ColorCirlceProps = {
     colorMap: ColorMap;
     cluster: string;
+    className?: string;
 };
 
-export const ColorCircle = ({ colorMap, cluster }: ColorCirlceProps) => {
+export const ColorCircle = ({ colorMap, cluster, className }: ColorCirlceProps) => {
     return (
         <span
             style={{
@@ -14,7 +16,7 @@ export const ColorCircle = ({ colorMap, cluster }: ColorCirlceProps) => {
                     colorMap[cluster]?.isActive ? colorMap[cluster].color : COLOR_FOR_CASES_WITHOUT_CLUSTERS
                 }`,
             }}
-            className={"rounded-full h-3 w-3 -mt-[1px]"}
+            className={cn("rounded-full h-3 w-3 -mt-[1px]", className)}
         />
     );
 };

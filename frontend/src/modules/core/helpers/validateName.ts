@@ -15,5 +15,5 @@ export const validateName = (entities: AnalysisSchema[] | OutbreakSchema[] | und
         return nameLengthIsValid() && isUniqueName();
     };
 
-    return { isUniqueName, nameLengthIsValid, analyseNameIsValid: isNameValid };
+    return { isUniqueName, nameLengthIsValid, isNameValid };
 };
