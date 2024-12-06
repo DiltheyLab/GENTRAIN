@@ -8,7 +8,7 @@ export function DataManagement() {
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
 
     return (
-        <div className="flex flex-1 flex-col space-y-3 p-5" data-tutorial-tour-step="tutorial-end">
+        <div className="flex flex-1 flex-col space-y-3 p-5">
             {showImportAssistent && <ImportAssistent />}
             <ImportSection />
             <DataOverview />

@@ -12,7 +12,7 @@ export const OutbreakAnalysis = () => {
     useSyncColorMapWithOutbreaks();
 
     return (
-        <div className="relative mx-auto p-4">
+        <div className="relative mx-auto p-4" data-tutorial-tour-step="tutorial-end">
             <div className="flex flex-col-reverse gap-4 md:flex-row h-[85vh]">
                 <div className="w-full md:w-1/3 lg:w-1/4 ">
                     <Settings />

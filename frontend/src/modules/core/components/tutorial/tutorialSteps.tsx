@@ -228,6 +228,136 @@ export const tutorialSteps: Step[] = [
         disableScrolling: true,
     },
     {
+        target: "[data-tutorial-tour-step='data-management-nav']",
+        title: "Die Datenverwaltung.",
+        content: (
+            <p>
+                Unter dem Reiter Datenverwaltung finden Sie eine Übersicht aller Daten. Sie können hier Falldaten,
+                Sequenzdaten oder Kontaktdaten importieren, ändern und löschen.
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: true,
+        data: {
+            next: "/data-management",
+        },
+    },
+    // ------------------------------Data-Management--------------------------------
+    {
+        target: "[data-tutorial-tour-step='data-management-import']",
+        title: "Der Datenimport.",
+        content: (
+            <p>
+                Hier können Sie entweder manuell <strong>Falldaten, Sequenzdaten und Kontaktdaten</strong> importieren
+                oder den Import-Assistenten verwenden, der Sie durch den Importprozess führt und Ihnen mehr
+                Informationen zu den einzelnen Daten liefert.{" "}
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        data: {
+            prev: "/",
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-case-section']",
+        title: "Ihre Datenübersicht.",
+        content: <p>In diesem Bereich finden Sie eine Übersicht über alle importierten Daten.</p>,
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+            offset: 60,
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-outbreak-section']",
+        title: "Ihre Ausbrüche.",
+        content: (
+            <p>
+                Diese Tabelle listet alle von Ihnen angelegten Ausbrüche auf. Sie können hier{" "}
+                <strong>neue Ausbrüche erstellen</strong> und diesen <strong>Fälle zuordnen.</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        placement: "auto",
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-group-section']",
+        title: "Ihre Gruppen.",
+        content: <p>Hier finden Sie Informationen zu allen angelegten Gruppen. </p>,
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
+        target: "[data-tutorial-tour-step='data-management-delete-data-section']",
+        title: "Alle Daten löschen.",
+        content: (
+            <p>
+                Wenn Sie ihren gesamten Datenbestand löschen wollen, können Sie das hier tun.{" "}
+                <strong>Achtung: Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>
+            </p>
+        ),
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        placement: "top",
+    },
+    {
         target: "[data-tutorial-tour-step='outbreak-analysis-overview-nav']",
         title: "Die Ausbruchsanalysen.",
         content: (
@@ -268,7 +398,7 @@ export const tutorialSteps: Step[] = [
         },
         disableScrolling: true,
         data: {
-            prev: "/",
+            prev: "/data-management",
         },
         offset: -10,
     },
@@ -456,143 +586,6 @@ export const tutorialSteps: Step[] = [
         },
         disableScrolling: true,
         placement: "top",
-    },
-    {
-        target: "[data-tutorial-tour-step='data-management-nav']",
-        title: "Die Datenverwaltung.",
-        content: (
-            <p>
-                Unter dem Reiter Datenverwaltung finden Sie eine Übersicht aller Daten. Sie können hier Falldaten,
-                Sequenzdaten oder Kontaktdaten importieren, ändern und löschen.
-            </p>
-        ),
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: true,
-        data: {
-            next: "/data-management",
-        },
-    },
-    // ------------------------------Data-Management--------------------------------
-    {
-        target: "[data-tutorial-tour-step='data-management-import']",
-        title: "Der Datenimport.",
-        content: (
-            <p>
-                Hier können Sie entweder manuell <strong>Falldaten, Sequenzdaten und Kontaktdaten</strong> importieren
-                oder den Import-Assistenten verwenden, der Sie durch den Importprozess führt und Ihnen mehr
-                Informationen zu den einzelnen Daten liefert.{" "}
-            </p>
-        ),
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        data: {
-            prev: "/outbreak-analysis/1",
-        },
-    },
-    {
-        target: "[data-tutorial-tour-step='data-management-case-section']",
-        title: "Ihre Datenübersicht.",
-        content: <p>In diesem Bereich finden Sie eine Übersicht über alle importierten Daten.</p>,
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        floaterProps: {
-            options: {
-                preventOverflow: {
-                    boundariesElement: "viewport",
-                },
-            },
-            offset: 60,
-        },
-    },
-    {
-        target: "[data-tutorial-tour-step='data-management-outbreak-section']",
-        title: "Ihre Ausbrüche.",
-        content: (
-            <p>
-                Diese Tabelle listet alle von Ihnen angelegten Ausbrüche auf. Sie können hier{" "}
-                <strong>neue Ausbrüche erstellen</strong> und diesen <strong>Fälle zuordnen.</strong>
-            </p>
-        ),
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        placement: "auto",
-        floaterProps: {
-            options: {
-                preventOverflow: {
-                    boundariesElement: "viewport",
-                },
-            },
-        },
-    },
-    {
-        target: "[data-tutorial-tour-step='data-management-group-section']",
-        title: "Ihre Gruppen.",
-        content: <p>Hier finden Sie Informationen zu allen angelegten Gruppen. </p>,
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        floaterProps: {
-            options: {
-                preventOverflow: {
-                    boundariesElement: "viewport",
-                },
-            },
-        },
-    },
-    {
-        target: "[data-tutorial-tour-step='data-management-delete-data-section']",
-        title: "Alle Daten löschen.",
-        content: (
-            <p>
-                Wenn Sie ihren gesamten Datenbestand löschen wollen, können Sie das hier tun.{" "}
-                <strong>Achtung: Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>
-            </p>
-        ),
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        placement: "top",
-        floaterProps: {
-            options: {
-                preventOverflow: {
-                    boundariesElement: "viewport",
-                },
-            },
-        },
     },
     {
         target: "[data-tutorial-tour-step='tutorial-end']",
