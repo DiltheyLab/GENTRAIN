@@ -6,12 +6,8 @@ export abstract class PersistenceStrategy {
     protected abstract persist(): Promise<void>;
 
     public async execute() {
-        try {
-            await this.persist();
-            await this.synchronizeWithStore();
-        } catch (error) {
-            throw error;
-        }
+        await this.persist();
+        await this.synchronizeWithStore();
     }
 
     private async synchronizeWithStore() {
