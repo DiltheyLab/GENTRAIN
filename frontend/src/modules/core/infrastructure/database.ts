@@ -11,6 +11,7 @@ import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/path
 import { Pathogen, PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
+import { gentrainApi } from "../main";
 export interface SessionsSchema {
     id: string;
     created_at?: Date;
@@ -55,8 +56,6 @@ db.version(1).stores({
 
 db.on("populate", async () => {
     let persistedPathogenTypes = {} as Record<string, number>;
-    const response = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`);
-    const pathogens: Pathogen[] = await response.json();
 
     for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
         const newPathogenTypeId = await db.pathogen_types.add({
@@ -66,6 +65,7 @@ db.on("populate", async () => {
         persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
     }
 
+    const pathogens: Pathogen[] = await gentrainApi.getAllPathogens();
     for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen

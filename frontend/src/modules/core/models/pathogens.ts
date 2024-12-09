@@ -5,6 +5,7 @@ import { getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
+import { gentrainApi } from "../main";
 
 export type Pathogen = {
     id: number;
@@ -28,8 +29,7 @@ export interface PathogenWithRelationships extends PathogenSchema {
 }
 
 export const fetchPathogensFromServer = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`);
-    const pathogens: Pathogen[] = await response.json();
+    const pathogens: Pathogen[] = await gentrainApi.getAllPathogens();
     return pathogens;
 };
 

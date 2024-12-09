@@ -5,8 +5,6 @@ export class GentrainApi {
     protected username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
     protected password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
-    constructor() {}
-
     private defaultHeaderParameters = {
         Accept: "application/json",
         "Content-Type": "application/json",

@@ -18,6 +18,9 @@ import { Contact } from "./pages/Contact";
 import { DataPrivacy } from "./pages/DataPrivacy";
 import { PostHogProvider } from "posthog-js/react";
 import { PostHogConfig } from "posthog-js";
+import { GentrainApi } from "./adapters/GentrainAPI";
+
+export const gentrainApi = new GentrainApi();
 
 const postHogProviderOptions: Partial<PostHogConfig> = {
     api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
