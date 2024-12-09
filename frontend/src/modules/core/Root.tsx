@@ -14,7 +14,6 @@ import { useCoreStore } from "./stores/core";
 import { Layout } from "./components/layout/Layout";
 import { db } from "@/modules/core/infrastructure/database.ts";
 import { usePostHog } from "posthog-js/react";
-import { useGetSequenceIdentifierCount } from "./hooks/database/sequence_identifiers/useGetSequenceIdentifierCount";
 
 export const Root = () => {
     const session = useCoreStore((state) => state.session);

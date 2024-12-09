@@ -5,7 +5,7 @@ import "@/modules/core/index.css";
 import { Error } from "@/modules/core/pages/Error.tsx";
 import { DataManagement } from "@/modules/data_management/pages/DataManagement.tsx";
 import { I18nextProvider } from "react-i18next";
-import i18next, { t } from "i18next";
+import i18next from "i18next";
 import translation_de from "@/modules/core/translations/de/common.json";
 import import_de from "@/modules/core/translations/de/import.json";
 import error_de from "@/modules/core/translations/de/error.json";

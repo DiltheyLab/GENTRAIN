@@ -46,6 +46,8 @@ export interface DataManagementState {
     resetSampleUpload: () => void;
     failedSampleImports: string[];
     setFailedSampleImports: (fastaId: string[]) => void;
+    scrollToSample: string | null;
+    setScrollToSample: (fastaId: string) => void;
     // contact import
     contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
     changeContactImport: (key: string, value: any) => void;
@@ -168,6 +170,10 @@ export const useDataManagementStore = create<DataManagementState>((set, get) => 
     failedSampleImports: [],
     setFailedSampleImports: (fastaIds: string[]) => {
         set({ failedSampleImports: fastaIds });
+    },
+    scrollToSample: null,
+    setScrollToSample: (fastaId: string) => {
+        set({ scrollToSample: fastaId });
     },
     // contact import
     contactImports: {},

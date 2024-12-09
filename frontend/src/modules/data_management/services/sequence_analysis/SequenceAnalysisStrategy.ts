@@ -171,6 +171,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         this.finishedFastaIds.push(fastaId);
         if (this.finishedFastaIds.length % 10 === 0) {
+            useDataManagementStore.getState().setScrollToSample(fastaId);
             this.initNextSequenceAnalyses();
         }
         const session = useCoreStore.getState().session;
@@ -203,18 +204,6 @@ export abstract class SequenceAnalysisStrategy {
         });
         this.finishedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
         this.continueIfAllAnalysesAreDone();
-    }
-
-    private async handleSingleAnalysisResult(data: {
-        sequence_identifier: string;
-        result: any;
-        sequence_length: number;
-    }) {
-        const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
-        this.finishedFastaIds.push(fastaId);
-        await this.createSampleAndSequenceAnalysis(fastaId, data.result, data.sequence_length);
-        useDataManagementStore.getState().changeSampleImport(fastaId, { status: "finished" });
-        db.sequence_identifiers.delete(data.sequence_identifier);
     }
 
     private continueIfAllAnalysesAreDone() {

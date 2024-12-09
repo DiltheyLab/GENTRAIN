@@ -1,14 +1,15 @@
 import { create } from "zustand";
-import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
 import { Step } from "react-joyride";
 import { tutorialSteps } from "../components/tutorial/tutorialSteps";
 import { gentrainWebsocket } from "../main";
+import { SessionSchema } from "../models/sessions";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
-    session: SessionsSchema | undefined | null;
+    session: SessionSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
     tutorialIsRunning: boolean;
     tutorialSteps: Step[];
