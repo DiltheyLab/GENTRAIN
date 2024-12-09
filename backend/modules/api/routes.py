@@ -22,7 +22,6 @@ def get_results_for_session_and_pathogen(session_id: str, pathogen_id: int):
     ):
         result = redis_connection.hgetall(key)
         all_keys = list(result.keys())
-        print(key, *all_keys)
         redis_connection.hdel(key, *all_keys)
         result["result"] = json.loads(result["result"])
         result["sequence_length"] = int(result["sequence_length"])
