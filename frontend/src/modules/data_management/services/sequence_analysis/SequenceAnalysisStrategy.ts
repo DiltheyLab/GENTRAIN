@@ -105,7 +105,11 @@ export abstract class SequenceAnalysisStrategy {
             if (sampleCase) {
                 const uniqueSequenceIdentifier = uuidv4();
                 this.fastaIdsToAnalyse[uniqueSequenceIdentifier] = fastaId;
-                db.sequence_identifiers.add({ id: uniqueSequenceIdentifier, fasta_id: fastaId });
+                db.sequence_identifiers.add({
+                    id: uniqueSequenceIdentifier,
+                    fasta_id: fastaId,
+                    pathogen_id: this.pathogen.id,
+                });
             }
         }
         this.initNextSequenceAnalyses();

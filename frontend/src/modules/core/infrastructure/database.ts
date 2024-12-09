@@ -12,16 +12,8 @@ import { Pathogen, PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
 import { gentrainApi } from "../main";
-export interface SessionsSchema {
-    id: string;
-    created_at?: Date;
-    updated_at?: Date;
-}
-
-export interface SequenceIdentifierSchema {
-    id: string;
-    fasta_id: string;
-}
+import { SessionSchema } from "../models/sessions";
+import { SequenceIdentifierSchema } from "../models/sequence_identifiers";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -36,7 +28,7 @@ const db = new Dexie("gentrain") as Dexie & {
     categories: EntityTable<CategorySchema, "id">;
     analyses: EntityTable<AnalysisSchema, "id">;
     outbreaks: EntityTable<OutbreakSchema, "id">;
-    sessions: EntityTable<SessionsSchema, "id">;
+    sessions: EntityTable<SessionSchema, "id">;
     sequence_identifiers: EntityTable<SequenceIdentifierSchema, "id">;
 };
 
@@ -58,7 +50,7 @@ db.version(1).stores({
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
     outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
     sessions: "id, created_at, updated_at",
-    sequence_identifiers: "id, fasta_id",
+    sequence_identifiers: "id, fasta_id, pathogen_id",
 });
 
 db.on("populate", async () => {
