@@ -14,6 +14,7 @@ import {
 import { gentrainApi, gentrainWebsocket } from "@/modules/core/main";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 
+const FAILED_ANALYSES_THRESHOLD = 10;
 export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
     protected sampleData: {
@@ -21,6 +22,7 @@ export abstract class SequenceAnalysisStrategy {
     } = {};
     protected fastaIdsToAnalyse: { [sequenceIdentifier: string]: string };
     protected finishedFastaIds: string[];
+    protected failedFastaIds: string[];
     protected roomName: string;
 
     public abstract createSampleAndSequenceAnalysis(
@@ -35,6 +37,7 @@ export abstract class SequenceAnalysisStrategy {
         this.pathogen = pathogen;
         this.fastaIdsToAnalyse = {};
         this.finishedFastaIds = [];
+        this.failedFastaIds = [];
         this.roomName = "";
     }
 
@@ -48,7 +51,7 @@ export abstract class SequenceAnalysisStrategy {
         this.sampleData = sampleData;
     };
 
-    public execute = async () => {
+    public execute = () => {
         if (!this.sampleData) {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
@@ -101,15 +104,11 @@ export abstract class SequenceAnalysisStrategy {
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
                 const uniqueSequenceIdentifier = uuidv4();
-                gentrainWebsocket.emitSequenceAnalysis(
-                    this.pathogen.id,
-                    uniqueSequenceIdentifier,
-                    sample.imported.sequence
-                );
                 this.fastaIdsToAnalyse[uniqueSequenceIdentifier] = fastaId;
                 db.sequence_identifiers.add({ id: uniqueSequenceIdentifier, fasta_id: fastaId });
             }
         }
+        this.initNextSequenceAnalyses();
     };
 
     private handleAnalysisEvents = () => {
@@ -127,8 +126,58 @@ export abstract class SequenceAnalysisStrategy {
         );
     };
 
+    private initNextSequenceAnalyses = async () => {
+        // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
+        // depending on which value is lower
+        const socketMessageLimit = Math.min(
+            this.finishedFastaIds.length + 10,
+            Object.keys(this.fastaIdsToAnalyse).length
+        );
+        // always send max. 10 message via websockt channel to regulate user inputs
+        for (let i = this.finishedFastaIds.length; i < socketMessageLimit; i++) {
+            const fastaIdToAnalyse = this.fastaIdsToAnalyse[Object.keys(this.fastaIdsToAnalyse)[i]];
+            gentrainWebsocket.emitSequenceAnalysis(
+                this.pathogen.id,
+                Object.keys(this.fastaIdsToAnalyse)[i],
+                this.sampleData[fastaIdToAnalyse].imported.sequence
+            );
+        }
+    };
+
+    private handleSuccessfulAnalysis = async (fastaId: string, result: any, sequence_length: number) => {
+        await this.createSampleAndSequenceAnalysis(fastaId, result, sequence_length);
+        useDataManagementStore.getState().changeSampleImport(fastaId, { status: "finished" });
+    };
+
+    private handleUnsuccessfulAnalysis = (fastaId: string) => {
+        useDataManagementStore.getState().changeSampleImport(fastaId, {
+            status: "failed",
+        });
+        this.failedFastaIds.push(fastaId);
+        this.interruptIfFailedAnalysesThresholdExceeded();
+    };
+
     private async sequenceAnalysisResponseActions(data: any) {
-        await this.handleSingleAnalysisResult(data);
+        const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
+        if (data.status === "success") {
+            await this.handleSuccessfulAnalysis(fastaId, data.result, data.sequence_length);
+        }
+        if (data.status === "error") {
+            this.handleUnsuccessfulAnalysis(fastaId);
+        }
+        this.finishedFastaIds.push(fastaId);
+        if (this.finishedFastaIds.length % 10 === 0) {
+            this.initNextSequenceAnalyses();
+        }
+        const session = useCoreStore.getState().session;
+        if (!session) {
+            throw new GentrainException("");
+        }
+        gentrainApi.deleteSequenceAnalysisResultForPathogenAndSession(
+            session?.id,
+            this.pathogen.id,
+            data.sequence_identifier
+        );
         this.continueIfAllAnalysesAreDone();
     }
 
@@ -157,36 +206,38 @@ export abstract class SequenceAnalysisStrategy {
         result: any;
         sequence_length: number;
     }) {
-        const session = useCoreStore.getState().session;
         const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
         this.finishedFastaIds.push(fastaId);
         await this.createSampleAndSequenceAnalysis(fastaId, data.result, data.sequence_length);
         useDataManagementStore.getState().changeSampleImport(fastaId, { status: "finished" });
-        if (!session) {
-            throw new GentrainException("");
-        }
-        gentrainApi.deleteSequenceAnalysisResultForPathogenAndSession(
-            session?.id,
-            this.pathogen.id,
-            data.sequence_identifier
-        );
         db.sequence_identifiers.delete(data.sequence_identifier);
     }
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === Object.keys(this.fastaIdsToAnalyse).length) {
-            useDataManagementStore.getState().setSequenceAnalysisRunning(false);
-            useCoreStore.getState().updateCasesWithRelationships();
-            this.initDistanceCalculation();
-            gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
-            gentrainWebsocket.stopListenForSequenceAnalysisFailed();
-            gentrainWebsocket.stopListenForSequenceAnalysisStarted();
-            gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
-            if (!this.pathogen.pathogen_type) {
-                throw new GentrainException("InvalidPathogenSelection");
-            }
-            gentrainWebsocket.leaveRoom(this.pathogen.pathogen_type?.name);
+            this.continue();
         }
+    }
+
+    private interruptIfFailedAnalysesThresholdExceeded() {
+        if (this.failedFastaIds.length > FAILED_ANALYSES_THRESHOLD) {
+            this.continue();
+            throw new GentrainException("FailedAnalysesThresholdExceeded");
+        }
+    }
+
+    private continue() {
+        useDataManagementStore.getState().setSequenceAnalysisRunning(false);
+        useCoreStore.getState().updateCasesWithRelationships();
+        this.initDistanceCalculation();
+        gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
+        gentrainWebsocket.stopListenForSequenceAnalysisFailed();
+        gentrainWebsocket.stopListenForSequenceAnalysisStarted();
+        gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
+        if (!this.pathogen.pathogen_type) {
+            throw new GentrainException("InvalidPathogenSelection");
+        }
+        gentrainWebsocket.leaveRoom(this.pathogen.pathogen_type?.name);
     }
 
     public initDistanceCalculation = async () => {

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { socket } from "@/modules/core/helpers/socket";
 import { useGetSequenceIdentifierCount } from "@/modules/core/hooks/database/sequence_identifiers/useGetSequenceIdentifierCount";
 
 export const useHandlePersistedSessionResults = () => {
@@ -14,11 +13,11 @@ export const useHandlePersistedSessionResults = () => {
         sequenceAnalysisStrategy?.handlePersistedResults();
     };
     useEffect(() => {
-        if (session && socket && activePathogen && sequenceIdentifierCount > 0) {
+        if (session && activePathogen && sequenceIdentifierCount > 0) {
             if (!effectRan.current) {
                 getStrategyAndHandlePersistedResults();
             }
             effectRan.current = true;
         }
-    }, [session, socket, activePathogen]);
+    }, [session, activePathogen]);
 };

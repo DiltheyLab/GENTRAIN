@@ -9,13 +9,17 @@ export class SamplesPersistence extends PersistenceStrategy {
         this.dataManagementState = useDataManagementStore.getState();
     }
     protected persist = async () => {
-        const samples = useDataManagementStore.getState().sampleImports;
-        // analyse sample depending on pathogen type to receive variants for distance calculations
-        this.dataManagementState.setSampleSelectionActive(false);
-        const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
-        if (!sequenceAnalysisStrategy) return;
-        sequenceAnalysisStrategy.setSampleData(samples);
-        sequenceAnalysisStrategy.execute();
+        try {
+            const samples = useDataManagementStore.getState().sampleImports;
+            // analyse sample depending on pathogen type to receive variants for distance calculations
+            this.dataManagementState.setSampleSelectionActive(false);
+            const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
+            if (!sequenceAnalysisStrategy) return;
+            sequenceAnalysisStrategy.setSampleData(samples);
+            sequenceAnalysisStrategy.execute();
+        } catch (error) {
+            throw error;
+        }
     };
 
     protected update = async () => {};

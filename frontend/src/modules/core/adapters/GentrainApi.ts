@@ -48,7 +48,9 @@ export class GentrainApi {
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
-            return response.json();
+            if (response.ok) {
+                return response.json();
+            }
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
             return null;
@@ -61,7 +63,9 @@ export class GentrainApi {
                 method: "DELETE",
                 headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
-            return response.json();
+            if (response.ok) {
+                return response.json();
+            }
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
             return null;

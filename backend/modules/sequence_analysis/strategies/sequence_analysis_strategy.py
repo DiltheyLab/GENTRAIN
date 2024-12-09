@@ -87,6 +87,7 @@ class SequenceAnalysisStrategy(ABC):
             sio.emit(
                 "sequence_analysis_response",
                 {
+                    "status": "success",
                     "result": response,
                     "sequence_identifier": self.sequence_identifier,
                     "sequence_length": len(self.sequence),
@@ -97,15 +98,21 @@ class SequenceAnalysisStrategy(ABC):
         except SequenceAnalysisFailedException as e:
             logging.exception(e)
             sio.emit(
-                "sequence_analysis_failed",
-                self.sequence_identifier,
+                "sequence_analysis_response",
+                {
+                    "status": "error",
+                    "sequence_identifier": self.sequence_identifier,
+                },
                 to=f"{self.type}_{self.socket_id}",
             )
         except Exception as e:
             logging.exception(e)
             sio.emit(
-                "sequence_analysis_failed",
-                self.sequence_identifier,
+                "sequence_analysis_response",
+                {
+                    "status": "error",
+                    "sequence_identifier": self.sequence_identifier,
+                },
                 to=f"{self.type}_{self.socket_id}",
             )
 
