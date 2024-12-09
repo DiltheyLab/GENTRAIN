@@ -12,12 +12,17 @@ import error_de from "@/modules/core/translations/de/error.json";
 import { Toaster } from "@/modules/core/components/ui/Toaster.tsx";
 import { OutbreakAnalysisOverview } from "@/modules/outbreak_analysis/pages/OutbreakAnalysisOverview";
 import { OutbreakAnalysis } from "@/modules/outbreak_analysis/pages/OutbreakAnalysis.tsx";
-import { Root } from "./Root";
-import { Impress } from "./pages/Impress";
-import { Contact } from "./pages/Contact";
-import { DataPrivacy } from "./pages/DataPrivacy";
+import { Root } from "@/modules/core/Root";
+import { Impress } from "@/modules/core/pages/Impress";
+import { Contact } from "@/modules/core/pages/Contact";
+import { DataPrivacy } from "@/modules/core/pages/DataPrivacy";
 import { PostHogProvider } from "posthog-js/react";
 import { PostHogConfig } from "posthog-js";
+import { GentrainWebsocket } from "@/modules/core/adapters/GentrainWebsocket";
+import { GentrainApi } from "@/modules/core/adapters/GentrainApi";
+
+export const gentrainApi = new GentrainApi();
+export const gentrainWebsocket = new GentrainWebsocket();
 
 const postHogProviderOptions: Partial<PostHogConfig> = {
     api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,

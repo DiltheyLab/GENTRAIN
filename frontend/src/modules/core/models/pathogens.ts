@@ -5,6 +5,7 @@ import { getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
+import { gentrainApi } from "../main";
 
 export type Pathogen = {
     id: number;
@@ -28,8 +29,7 @@ export interface PathogenWithRelationships extends PathogenSchema {
 }
 
 export const fetchPathogensFromServer = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_HOST}/pathogens`);
-    const pathogens: Pathogen[] = await response.json();
+    const pathogens: Pathogen[] = await gentrainApi.getPathogens();
     return pathogens;
 };
 
@@ -52,6 +52,7 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
             db.cases,
             db.samples,
             db.sequence_analyses,
+            db.sequence_identifiers,
             db.contacts,
             db.cases,
             db.distances,
@@ -84,6 +85,7 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
                 deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
                 deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
             }
+            deletions.push(await db.sequence_identifiers.where({ pathogen_id: pathogen_id }).delete());
             deletions.push(deleteOutbreaksByPathogenId(pathogen_id));
             deletions.push(deleteCategoriesByPathogenId(pathogen_id));
             deletions.push(deleteGroupsByPathogenId(pathogen_id));

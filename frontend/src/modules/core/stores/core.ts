@@ -1,14 +1,15 @@
 import { create } from "zustand";
-import { db, SessionsSchema } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/infrastructure/database";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
-import { socket } from "@/modules/core/helpers/socket";
 import { Step } from "react-joyride";
 import { tutorialSteps } from "../components/tutorial/tutorialSteps";
+import { gentrainWebsocket } from "../main";
+import { SessionSchema } from "../models/sessions";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
-    session: SessionsSchema | undefined | null;
+    session: SessionSchema | undefined | null;
     casesWithRelationships: CaseWithRelationships[];
     tutorialIsRunning: boolean;
     tutorialSteps: Step[];
@@ -48,9 +49,7 @@ export const useCoreStore = create<CoreState>((set, get) => {
         initSession: async () => {
             const sessionId = await db.sessions.add({});
             set({ session: { id: sessionId } });
-            if (socket) {
-                socket.emit("init_gentrain_session", sessionId);
-            }
+            gentrainWebsocket.initSession(sessionId);
         },
         updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
             if (!pathogen) {

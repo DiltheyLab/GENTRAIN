@@ -5,12 +5,15 @@ import { Check, CircleAlert, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/sequence_analysis/DistanceCalculationProgress";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 import { getSampleStatusColorClassNames } from "../../helpers/samples";
+import { useScrollToFastaIdElement } from "../../hooks/useScrollToFastaIdElement";
 
 export function SequenceAnalysisStatus() {
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
+    const scrollAreaRef = useScrollToFastaIdElement();
+
     return (
         <>
             {sequenceAnalysisRunning && (
@@ -25,12 +28,12 @@ export function SequenceAnalysisStatus() {
                             Sequenzen werden auf Mutationen in Relation zu ihrem Referenzgenom untersucht.
                         </small>
                     )}
-                    <ScrollArea>
+                    <ScrollArea ref={scrollAreaRef}>
                         <div className="w-full flex flex-wrap max-h-[300px]">
                             {Object.keys(sampleImports).map((fastaId) => {
                                 if (!sampleImports[fastaId].import) return;
                                 return (
-                                    <div key={fastaId} className="w-full sm:w-1/3 p-1">
+                                    <div key={fastaId} data-fasta_id={fastaId} className="w-full sm:w-1/3 p-1">
                                         <div
                                             className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
                                                 sampleImports[fastaId].status

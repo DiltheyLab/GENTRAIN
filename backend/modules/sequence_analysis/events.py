@@ -68,8 +68,11 @@ def sequence_analysis_request(
     genetic_errors = get_genetic_errors(sequence_chunk)
     if len(genetic_errors) > 0:
         sio.emit(
-            event="sequence_analysis_failed",
-            data=sequence_identifier,
+            "sequence_analysis_response",
+            {
+                "status": "error",
+                "sequence_identifier": sequence_identifier,
+            },
             to=f"{pathogen.type}_{socket_id}",
         )
         return
@@ -92,46 +95,6 @@ def sequence_analysis_request(
     strategy.enqueue_analysis(
         queue_viral if strategy.type == "viral" else queue_bacterial
     )
-
-
-@sio.event
-def gentrain_session_results_remove_request(
-    gentrain_session_id, pathogen_type, sequence_identifier
-):
-    all_keys = list(
-        redis_connection.hgetall(
-            f"client:results:{gentrain_session_id}:{pathogen_type}:{sequence_identifier}"
-        ).keys()
-    )
-    redis_connection.hdel(
-        f"client:results:{gentrain_session_id}:{pathogen_type}:{sequence_identifier}",
-        *all_keys,
-    )
-
-
-@sio.event
-def gentrain_session_results_request(gentrain_session_id, pathogen_type):
-    socket_id = request.sid
-    join_room(socket_id, f"{pathogen_type}_{socket_id}")
-    results = []
-    for key in redis_connection.scan_iter(
-        f"client:results:{gentrain_session_id}:{pathogen_type}:*"
-    ):
-        result = redis_connection.hgetall(key)
-        all_keys = list(redis_connection.hgetall(key).keys())
-        redis_connection.hdel(key, *all_keys)
-        result["result"] = json.loads(result["result"])
-        result["sequence_length"] = int(result["sequence_length"])
-        results.append(result)
-    # emit websocket messsage only in case results were found
-    if len(results) > 0:
-        sio.emit(
-            event=f"results_{gentrain_session_id}",
-            data=results,
-            to=f"{pathogen_type}_{socket_id}",
-        )
-    leave_room(socket_id, f"{pathogen_type}_{socket_id}")
-
 
 def get_genetic_errors(sequence_chunk):
     """Validate genetic data."""

@@ -21,6 +21,7 @@ export const Root = () => {
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
     useHandlePersistedSessionResults();
+
     const posthog = usePostHog();
 
     useEffect(() => {

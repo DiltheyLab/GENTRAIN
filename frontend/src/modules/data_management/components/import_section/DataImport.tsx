@@ -1,19 +1,19 @@
-import {useToast} from "@/modules/core/components/ui/UseToast";
-import {GentrainException} from "@/modules/core/exceptions/GentrainException";
-import {getToastDescription} from "@/modules/core/helpers/errors";
-import {useTranslation} from "react-i18next";
-import {ZodError} from "zod";
-import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/modules/core/components/ui/Dialog";
-import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
-import {Button} from "@/modules/core/components/ui/Button";
-import {FileDropzone} from "./FileDropzone";
-import {ValidationStrategy} from "../../services/data_import/validation/ValidationStrategy";
-import {PersistenceStrategy} from "../../services/data_import/persistence/PersistenceStrategy";
-import {CaseImport, CaseSchema} from "@/modules/core/models/cases";
-import {SampleImport, SampleSchema} from "@/modules/core/models/samples";
-import {ContactImport, ContactSchema} from "@/modules/core/models/contacts";
-import {useState} from "react";
-import {renderHtmlFromTranslation} from "@/modules/core/helpers/translations";
+import { useToast } from "@/modules/core/components/ui/UseToast";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { getToastDescription } from "@/modules/core/helpers/errors";
+import { useTranslation } from "react-i18next";
+import { ZodError } from "zod";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/modules/core/components/ui/Dialog";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { Button } from "@/modules/core/components/ui/Button";
+import { FileDropzone } from "./FileDropzone";
+import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
+import { PersistenceStrategy } from "../../services/data_import/persistence/PersistenceStrategy";
+import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
+import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
+import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
+import { useState } from "react";
+import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 
 type DataImportParameters = {
     children: JSX.Element;
@@ -38,18 +38,18 @@ type ImportData = {
 };
 
 export const DataImport = ({
-                               children,
-                               data,
-                               persistenceStrategy,
-                               validationStrategy,
-                               actions,
-                               dialog = false,
-                               type,
-                               icon = null,
-                               disable = false,
-                           }: DataImportParameters) => {
-    const {toast} = useToast();
-    const {t} = useTranslation();
+    children,
+    data,
+    persistenceStrategy,
+    validationStrategy,
+    actions,
+    dialog = false,
+    type,
+    icon = null,
+    disable = false,
+}: DataImportParameters) => {
+    const { toast } = useToast();
+    const { t } = useTranslation();
     const clearImports = useDataManagementStore((state) => state.clearImports);
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
@@ -58,38 +58,41 @@ export const DataImport = ({
     const renderDataSelection = () => {
         if (Object.keys(data).length === 0) return;
         if (dialog) {
-            return !showImportAssistent ? <Dialog
-                onOpenChange={(open) => {
-                    setOpenDialog(false);
-                    if (!open) {
-                        clearImports();
-                    }
-                }}
-                open={openDialog}
-            >
-                <DialogContent
-                    className="max-w-[1000px] w-[calc(100vw-50px)]"
-                    onInteractOutside={(e) => e.preventDefault()}
+            return !showImportAssistent ? (
+                <Dialog
+                    onOpenChange={(open) => {
+                        setOpenDialog(false);
+                        if (!open) {
+                            clearImports();
+                        }
+                    }}
+                    open={openDialog}
                 >
-                    <DialogTitle>{t(`import:titles.${type}_selection`)}</DialogTitle>
-                    <DialogDescription></DialogDescription>
-                    {renderHtmlFromTranslation(`import:${type}_selection.shared`)}
-                    {children}
-                    <div className="flex justify-end">
-                        {actions}
-                        <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
-                    </div>
-                </DialogContent>
-            </Dialog> : null;
+                    <DialogContent
+                        className="max-w-[1000px] w-[calc(100vw-50px)]"
+                        onInteractOutside={(e) => e.preventDefault()}
+                    >
+                        <DialogTitle>{t(`import:titles.${type}_selection`)}</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                        {renderHtmlFromTranslation(`import:${type}_selection.shared`)}
+                        {children}
+                        <div className="flex justify-end">
+                            {actions}
+                            <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+            ) : null;
         }
-        return (showImportAssistent && Object.keys(data).length > 0) ?
+        return showImportAssistent && Object.keys(data).length > 0 ? (
             <>
                 {children}
                 <div className="flex justify-end gap-4">
                     {actions}
                     <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
                 </div>
-            </> : null
+            </>
+        ) : null;
     };
 
     const handleSubmit = async () => {
@@ -114,7 +117,9 @@ export const DataImport = ({
 
     return (
         <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
-            {(!showImportAssistent || (dialog && showImportAssistent) || (!dialog && Object.keys(data).length === 0)) &&
+            {(!showImportAssistent ||
+                (dialog && showImportAssistent) ||
+                (!dialog && Object.keys(data).length === 0)) && (
                 <div className={`flex flex-col gap-3 h-full`}>
                     <div className="flex flex-col items-end gap-3 h-full">
                         <FileDropzone
@@ -125,7 +130,7 @@ export const DataImport = ({
                         />
                     </div>
                 </div>
-            }
+            )}
             {renderDataSelection()}
         </div>
     );
