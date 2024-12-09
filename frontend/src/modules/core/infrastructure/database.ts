@@ -11,9 +11,9 @@ import { PathogenTypeSchema, PathogenTypeName } from "@/modules/core/models/path
 import { Pathogen, PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { SequenceAnalysisSchema } from "../models/sequence_analyses";
-import { gentrainApi } from "../main";
 import { SessionSchema } from "../models/sessions";
 import { SequenceIdentifierSchema } from "../models/sequence_identifiers";
+import gentrainApiInstance from "../adapters/GentrainApi";
 
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
@@ -64,7 +64,7 @@ db.on("populate", async () => {
         persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
     }
 
-    const pathogens: Pathogen[] = await gentrainApi.getPathogens();
+    const pathogens: Pathogen[] = await gentrainApiInstance.getPathogens();
     for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen

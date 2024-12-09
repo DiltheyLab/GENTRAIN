@@ -88,3 +88,6 @@ export class GentrainWebsocket {
         this.client.off(event);
     }
 }
+
+const gentrainWebsocketInstance = new GentrainWebsocket();
+export default gentrainWebsocketInstance;

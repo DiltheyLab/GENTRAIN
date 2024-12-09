@@ -18,11 +18,6 @@ import { Contact } from "@/modules/core/pages/Contact";
 import { DataPrivacy } from "@/modules/core/pages/DataPrivacy";
 import { PostHogProvider } from "posthog-js/react";
 import { PostHogConfig } from "posthog-js";
-import { GentrainWebsocket } from "@/modules/core/adapters/GentrainWebsocket";
-import { GentrainApi } from "@/modules/core/adapters/GentrainApi";
-
-export const gentrainApi = new GentrainApi();
-export const gentrainWebsocket = new GentrainWebsocket();
 
 const postHogProviderOptions: Partial<PostHogConfig> = {
     api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,

@@ -5,7 +5,6 @@ import { getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
-import { gentrainApi } from "../main";
 
 export type Pathogen = {
     id: number;

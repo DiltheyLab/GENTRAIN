@@ -73,3 +73,6 @@ export class GentrainApi {
         }
     }
 }
+
+const gentrainApiInstance = new GentrainApi();
+export default gentrainApiInstance;

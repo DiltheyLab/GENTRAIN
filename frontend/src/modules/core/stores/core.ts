@@ -4,8 +4,8 @@ import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
 import { Step } from "react-joyride";
 import { tutorialSteps } from "../components/tutorial/tutorialSteps";
-import { gentrainWebsocket } from "../main";
 import { SessionSchema } from "../models/sessions";
+import gentrainWebsocketInstance from "../adapters/GentrainWebsocket";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
@@ -49,7 +49,7 @@ export const useCoreStore = create<CoreState>((set, get) => {
         initSession: async () => {
             const sessionId = await db.sessions.add({});
             set({ session: { id: sessionId } });
-            gentrainWebsocket.initSession(sessionId);
+            gentrainWebsocketInstance.initSession(sessionId);
         },
         updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
             if (!pathogen) {

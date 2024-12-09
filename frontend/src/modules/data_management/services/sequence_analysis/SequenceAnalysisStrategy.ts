@@ -11,8 +11,9 @@ import {
     SampleSchema,
     ViralQualityParameters,
 } from "@/modules/core/models/samples";
-import { gentrainApi, gentrainWebsocket } from "@/modules/core/main";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
+import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket";
 
 const FAILED_ANALYSES_THRESHOLD = 10;
 export abstract class SequenceAnalysisStrategy {
@@ -66,7 +67,7 @@ export abstract class SequenceAnalysisStrategy {
         if (!session) {
             throw new GentrainException("InvalidSession");
         }
-        const results = await gentrainApi.getPersistedSequenceAnalysisResults(session.id, this.pathogen.id);
+        const results = await gentrainApiInstance.getPersistedSequenceAnalysisResults(session.id, this.pathogen.id);
         if (results.length > 0) {
             await this.syncPersistedResultsWithDb(results);
             useCoreStore.getState().updateCasesWithRelationships();
@@ -78,7 +79,7 @@ export abstract class SequenceAnalysisStrategy {
         if (!this.pathogen.pathogen_type) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        await gentrainWebsocket.joinRoom(this.pathogen.pathogen_type?.name, async (roomName) => {
+        await gentrainWebsocketInstance.joinRoom(this.pathogen.pathogen_type?.name, async (roomName) => {
             this.setRoomName(roomName);
             await this.runAnalysis();
         });
@@ -116,15 +117,15 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     private handleAnalysisEvents = () => {
-        gentrainWebsocket.listenForEvent(
+        gentrainWebsocketInstance.listenForEvent(
             "sequence_analysis_response",
             async (data) => await this.sequenceAnalysisResponseActions(data)
         );
-        gentrainWebsocket.listenForEvent(
+        gentrainWebsocketInstance.listenForEvent(
             "sequence_analysis_enqueued",
             async (data) => await this.sequenceAnalysisEnqueuedActions(data)
         );
-        gentrainWebsocket.listenForEvent(
+        gentrainWebsocketInstance.listenForEvent(
             "sequence_analysis_started",
             async (data) => await this.sequenceAnalysisStartedActions(data)
         );
@@ -140,7 +141,7 @@ export abstract class SequenceAnalysisStrategy {
         // always send max. 10 message via websockt channel to regulate user inputs
         for (let i = this.finishedFastaIds.length; i < socketMessageLimit; i++) {
             const fastaIdToAnalyse = this.fastaIdsToAnalyse[Object.keys(this.fastaIdsToAnalyse)[i]];
-            gentrainWebsocket.emitSequenceAnalysis(
+            gentrainWebsocketInstance.emitSequenceAnalysis(
                 this.pathogen.id,
                 Object.keys(this.fastaIdsToAnalyse)[i],
                 this.sampleData[fastaIdToAnalyse].imported.sequence
@@ -165,7 +166,7 @@ export abstract class SequenceAnalysisStrategy {
         if (!session) {
             throw new GentrainException("");
         }
-        gentrainApi.deleteSequenceAnalysisResultForPathogenAndSession(
+        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(
             session?.id,
             this.pathogen.id,
             data.sequence_identifier
@@ -215,13 +216,13 @@ export abstract class SequenceAnalysisStrategy {
         useDataManagementStore.getState().setSequenceAnalysisRunning(false);
         useCoreStore.getState().updateCasesWithRelationships();
         this.initDistanceCalculation();
-        gentrainWebsocket.stopListenForEvent("sequence_analysis_response");
-        gentrainWebsocket.stopListenForEvent("sequence_analysis_enqueued");
-        gentrainWebsocket.stopListenForEvent("sequence_analysis_started");
+        gentrainWebsocketInstance.stopListenForEvent("sequence_analysis_response");
+        gentrainWebsocketInstance.stopListenForEvent("sequence_analysis_enqueued");
+        gentrainWebsocketInstance.stopListenForEvent("sequence_analysis_started");
         if (!this.pathogen.pathogen_type) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        gentrainWebsocket.leaveRoom(this.pathogen.pathogen_type?.name);
+        gentrainWebsocketInstance.leaveRoom(this.pathogen.pathogen_type?.name);
     }
 
     public initDistanceCalculation = async () => {
