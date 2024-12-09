@@ -48,7 +48,7 @@ class SequenceAnalysisStrategy(ABC):
             f"client:gentrain_session:{self.socket_id}"
         )
         redis_connection.hmset(
-            f"client:results:{gentrain_session_id}:{self.type}:{self.sequence_identifier}",
+            f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.sequence_identifier}",
             {
                 "result": json.dumps(response),
                 "sequence_identifier": self.sequence_identifier,
@@ -56,7 +56,7 @@ class SequenceAnalysisStrategy(ABC):
             },
         )
         redis_connection.expire(
-            name=f"client:results:{gentrain_session_id}:{self.type}:{self.sequence_identifier}",
+            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.sequence_identifier}",
             time=1800,
         )
 

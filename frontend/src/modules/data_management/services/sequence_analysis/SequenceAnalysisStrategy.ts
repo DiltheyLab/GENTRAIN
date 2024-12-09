@@ -1,7 +1,6 @@
 import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
-import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { socket } from "@/modules/core/helpers/socket";
-import { CoreState, useCoreStore } from "@/modules/core/stores/core";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 import { db } from "@/modules/core/infrastructure/database";
 import { v4 as uuidv4 } from "uuid";
@@ -12,10 +11,10 @@ import {
     SampleSchema,
     ViralQualityParameters,
 } from "@/modules/core/models/samples";
+import { gentrainApi, gentrainWebsocket } from "@/modules/core/main";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 
 export abstract class SequenceAnalysisStrategy {
-    protected coreState: CoreState;
-    protected dataManagementState: DataManagementState;
     protected pathogen: PathogenWithRelationships;
     protected sampleData: {
         [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean };
@@ -33,12 +32,14 @@ export abstract class SequenceAnalysisStrategy {
     public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
 
     constructor(pathogen: PathogenWithRelationships) {
-        this.coreState = useCoreStore.getState();
-        this.dataManagementState = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.fastaIdsToAnalyse = {};
         this.finishedFastaIds = [];
         this.roomName = "";
+    }
+
+    public setRoomName(roomName: string) {
+        this.roomName = roomName;
     }
 
     public setSampleData = (sampleData: {
@@ -52,42 +53,32 @@ export abstract class SequenceAnalysisStrategy {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
-        this.dataManagementState.setSequenceAnalysisRunning(true);
+        useDataManagementStore.getState().setSequenceAnalysisRunning(true);
         this.joinRoomAndRunAnalysis();
         this.handleAnalysisEvents();
     };
 
     public handlePersistedResults = async () => {
-        if (socket) {
-            socket.emit(
-                "gentrain_session_results_request",
-                this.coreState.session?.id,
-                this.pathogen.pathogen_type?.name
-            );
-            socket.once(`results_${this.coreState.session?.id}`, async (results) => {
-                for (const result of results) {
-                    if ((await db.samples.where({ fasta_id: result["sequence_identifier"] }).count()) > 0) continue;
-                    await this.createSampleAndSequenceAnalysis(
-                        result["fasta_id"],
-                        result["result"],
-                        result["sequence_length"]
-                    );
-                }
-                this.coreState.updateCasesWithRelationships();
-                this.initDistanceCalculation();
-            });
+        const session = useCoreStore.getState().session;
+        if (!session) {
+            throw new GentrainException("");
+        }
+        const results = await gentrainApi.getSequenceAnalysisResultsForSessionAndPathogen(session.id, this.pathogen.id);
+        if (results.length > 0) {
+            await this.syncPersistedResultsWithDb(results);
+            useCoreStore.getState().updateCasesWithRelationships();
+            this.initDistanceCalculation();
         }
     };
 
-    private joinRoomAndRunAnalysis = () => {
-        if (socket) {
-            socket.emit(`join_${this.pathogen.pathogen_type?.name}`, this.coreState.session?.id);
-            socket.once(`${this.pathogen.pathogen_type?.name}_room_created`, async (roomName: string) => {
-                this.roomName = roomName;
-                console.log(`Room ${this.roomName} was joined.`);
-                await this.runAnalysis();
-            });
+    private joinRoomAndRunAnalysis = async () => {
+        if (!this.pathogen.pathogen_type) {
+            throw new GentrainException("InvalidPathogenSelection");
         }
+        await gentrainWebsocket.joinRoom(this.pathogen.pathogen_type?.name, async (roomName) => {
+            this.setRoomName(roomName);
+            await this.runAnalysis();
+        });
     };
 
     private runAnalysis = async () => {
@@ -101,7 +92,7 @@ export abstract class SequenceAnalysisStrategy {
                 continue;
             }
             // skip sample if it was excluded from uploads
-            if (!Object.keys(this.dataManagementState.sampleImports).includes(fastaId)) {
+            if (!Object.keys(useDataManagementStore.getState().sampleImports).includes(fastaId)) {
                 continue;
             }
             // found case (only import if case exists)
@@ -110,93 +101,91 @@ export abstract class SequenceAnalysisStrategy {
             // otherwise we would maximize the necessary amount of variant calculations
             if (sampleCase) {
                 const uniqueSequenceIdentifier = uuidv4();
-                await this.emitSequenceAnalysisMessage({
-                    sequenceIdentifier: uniqueSequenceIdentifier,
-                    sequence: sample.imported.sequence,
-                });
+                gentrainWebsocket.emitSequenceAnalysis(
+                    this.pathogen.id,
+                    uniqueSequenceIdentifier,
+                    sample.imported.sequence
+                );
                 this.fastaIdsToAnalyse[uniqueSequenceIdentifier] = fastaId;
+                db.sequence_identifiers.add({ id: uniqueSequenceIdentifier, fasta_id: fastaId });
             }
         }
     };
 
     private handleAnalysisEvents = () => {
-        if (socket) {
-            socket.on("sequence_analysis_response", async (data: any) => {
-                await this.handleSingleAnalysisResult(data);
-                this.continueIfAllAnalysesAreDone();
-            });
-            socket.on("sequence_analysis_enqueued", (sequence_identifier: string) => {
-                this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
-                    status: "enqueued",
-                });
-            });
-            socket.on("sequence_analysis_failed", (sequence_identifier: string) => {
-                this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
-                    status: "failed",
-                });
-                this.finishedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
-                this.continueIfAllAnalysesAreDone();
-            });
-            socket.on("sequence_analysis_started", (sequence_identifier: string) => {
-                this.dataManagementState.changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
-                    status: "started",
-                });
-            });
-        }
+        gentrainWebsocket.listenForSequenceAnalysisResponse(
+            async (data) => await this.sequenceAnalysisResponseActions(data)
+        );
+        gentrainWebsocket.listenForSequenceAnalysisEnqueued(
+            async (data) => await this.sequenceAnalysisEnqueuedActions(data)
+        );
+        gentrainWebsocket.listenForSequenceAnalysisFailed(
+            async (data) => await this.sequenceAnalysisFailedActions(data)
+        );
+        gentrainWebsocket.listenForSequenceAnalysisStarted(
+            async (data) => await this.sequenceAnalysisStartedActions(data)
+        );
     };
 
-    private emitSequenceAnalysisMessage = async ({
-        sequenceIdentifier,
-        sequence,
-    }: {
-        sequenceIdentifier: string;
-        sequence: string;
-    }) => {
-        const sequenceChunks = sequence.match(/(.|[\r\n]){1,500000}/g);
+    private async sequenceAnalysisResponseActions(data: any) {
+        await this.handleSingleAnalysisResult(data);
+        this.continueIfAllAnalysesAreDone();
+    }
 
-        for (const index in sequenceChunks!) {
-            if (socket) {
-                socket.emit("sequence_analysis_request", this.pathogen.id, sequenceIdentifier, sequenceChunks[index], {
-                    total: sequenceChunks.length,
-                    index: index,
-                });
-            }
-        }
-    };
+    private async sequenceAnalysisEnqueuedActions(sequence_identifier: string) {
+        useDataManagementStore.getState().changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
+            status: "enqueued",
+        });
+    }
 
-    public async handleSingleAnalysisResult(data: {
+    private async sequenceAnalysisStartedActions(sequence_identifier: string) {
+        useDataManagementStore.getState().changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
+            status: "started",
+        });
+    }
+
+    private async sequenceAnalysisFailedActions(sequence_identifier: string) {
+        useDataManagementStore.getState().changeSampleImport(this.fastaIdsToAnalyse[sequence_identifier], {
+            status: "failed",
+        });
+        this.finishedFastaIds.push(this.fastaIdsToAnalyse[sequence_identifier]);
+        this.continueIfAllAnalysesAreDone();
+    }
+
+    private async handleSingleAnalysisResult(data: {
         sequence_identifier: string;
         result: any;
         sequence_length: number;
     }) {
+        const session = useCoreStore.getState().session;
         const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
         this.finishedFastaIds.push(fastaId);
         await this.createSampleAndSequenceAnalysis(fastaId, data.result, data.sequence_length);
-        this.dataManagementState.changeSampleImport(fastaId, { status: "finished" });
-        this.removePersistedResultFromRedis(data.sequence_identifier);
-    }
-
-    private removePersistedResultFromRedis = (sequenceIdentifier: string) => {
-        if (socket) {
-            socket.emit(
-                `gentrain_session_results_remove_request`,
-                this.coreState.session?.id,
-                this.pathogen.pathogen_type?.name,
-                sequenceIdentifier
-            );
+        useDataManagementStore.getState().changeSampleImport(fastaId, { status: "finished" });
+        if (!session) {
+            throw new GentrainException("");
         }
-    };
+        gentrainApi.deleteSequenceAnalysisResultForPathogenAndSession(
+            session?.id,
+            this.pathogen.id,
+            data.sequence_identifier
+        );
+        db.sequence_identifiers.delete(data.sequence_identifier);
+    }
 
     private continueIfAllAnalysesAreDone() {
         if (this.finishedFastaIds.length === Object.keys(this.fastaIdsToAnalyse).length) {
-            this.dataManagementState.setSequenceAnalysisRunning(false);
-            this.coreState.updateCasesWithRelationships();
+            useDataManagementStore.getState().setSequenceAnalysisRunning(false);
+            useCoreStore.getState().updateCasesWithRelationships();
             this.initDistanceCalculation();
-            if (socket) {
-                console.log(`Room ${this.roomName} was left.`);
-                socket.emit(`leave_${this.pathogen.pathogen_type?.name}`);
-                socket.off("sequence_analysis_response");
+            gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
+            gentrainWebsocket.stopListenForSequenceAnalysisFailed();
+            gentrainWebsocket.stopListenForSequenceAnalysisStarted();
+            gentrainWebsocket.stopListenForSequenceAnalysisEnqueued();
+            if (!this.pathogen.pathogen_type) {
+                throw new GentrainException("InvalidPathogenSelection");
             }
+            gentrainWebsocket.leaveRoom(this.pathogen.pathogen_type?.name);
         }
     }
 
@@ -204,5 +193,23 @@ export abstract class SequenceAnalysisStrategy {
         const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy(this.pathogen);
         if (!distanceCalculationStrategy) return;
         await distanceCalculationStrategy.execute();
+    };
+
+    private syncPersistedResultsWithDb = async (
+        results: { result: object; sequence_identifier: string; sequence_length: number }[]
+    ) => {
+        for (const result of results) {
+            const sequenceIdentifier = await db.sequence_identifiers.get(result.sequence_identifier);
+            if (!sequenceIdentifier) {
+                continue;
+            }
+            if ((await db.samples.where({ fasta_id: sequenceIdentifier.fasta_id }).count()) > 0) continue;
+            await this.createSampleAndSequenceAnalysis(
+                sequenceIdentifier.fasta_id,
+                result.result,
+                result.sequence_length
+            );
+            db.sequence_identifiers.delete(result.sequence_identifier);
+        }
     };
 }

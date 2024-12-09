@@ -29,7 +29,7 @@ export interface PathogenWithRelationships extends PathogenSchema {
 }
 
 export const fetchPathogensFromServer = async () => {
-    const pathogens: Pathogen[] = await gentrainApi.getAllPathogens();
+    const pathogens: Pathogen[] = await gentrainApi.getPathogens();
     return pathogens;
 };
 

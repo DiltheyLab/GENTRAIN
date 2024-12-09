@@ -18,6 +18,11 @@ export interface SessionsSchema {
     updated_at?: Date;
 }
 
+export interface SequenceIdentifierSchema {
+    id: string;
+    fasta_id: string;
+}
+
 const db = new Dexie("gentrain") as Dexie & {
     samples: EntityTable<SampleSchema, "id">;
     sequence_analyses: EntityTable<SequenceAnalysisSchema, "id">;
@@ -32,6 +37,7 @@ const db = new Dexie("gentrain") as Dexie & {
     analyses: EntityTable<AnalysisSchema, "id">;
     outbreaks: EntityTable<OutbreakSchema, "id">;
     sessions: EntityTable<SessionsSchema, "id">;
+    sequence_identifiers: EntityTable<SequenceIdentifierSchema, "id">;
 };
 
 // define the database tables (https://dexie.org/)
@@ -52,6 +58,7 @@ db.version(1).stores({
     analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
     outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
     sessions: "id, created_at, updated_at",
+    sequence_identifiers: "id, fasta_id",
 });
 
 db.on("populate", async () => {
@@ -65,7 +72,7 @@ db.on("populate", async () => {
         persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
     }
 
-    const pathogens: Pathogen[] = await gentrainApi.getAllPathogens();
+    const pathogens: Pathogen[] = await gentrainApi.getPathogens();
     for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen

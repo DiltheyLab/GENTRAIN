@@ -11,10 +11,39 @@ export class GentrainApi {
         Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
     };
 
-    public async getAllPathogens() {
+    // Pathogens
+
+    public async getPathogens() {
         const pathogens: Pathogen[] = await this.getRequest(`${import.meta.env.VITE_API_HOST}/pathogens`);
         return pathogens ?? [];
     }
+
+    // Sequence Analyses
+
+    public async getSequenceAnalysisResultsForSessionAndPathogen(
+        sessionId: string,
+        pathogenId: number
+    ): Promise<{ fasta_id: string; result: object; sequence_identifier: string; sequence_length: number }[]> {
+        const sequenceAnalysisResults = await this.getRequest(
+            `${import.meta.env.VITE_API_HOST}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
+        );
+        return sequenceAnalysisResults ?? [];
+    }
+
+    public async deleteSequenceAnalysisResultForPathogenAndSession(
+        sessionId: string,
+        pathogenId: number,
+        sequenceIdentifier: string
+    ) {
+        const response = await this.deleteRequest(
+            `${
+                import.meta.env.VITE_API_HOST
+            }/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
+        );
+        return response;
+    }
+
+    // Infrastructure
 
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
@@ -26,16 +55,10 @@ export class GentrainApi {
         }
     }
 
-    /*
-    private async postRequest(
-        url: string,
-        headerParameters?: { [key: string]: string },
-        bodyParameters?: { [key: string]: any }
-    ) {
+    private async deleteRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, {
-                method: "POST",
-                body: JSON.stringify(bodyParameters),
+                method: "DELETE",
                 headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
             return response.json();
@@ -44,5 +67,4 @@ export class GentrainApi {
             return null;
         }
     }
-    */
 }
