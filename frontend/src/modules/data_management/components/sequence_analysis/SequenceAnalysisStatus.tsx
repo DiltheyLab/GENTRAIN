@@ -5,20 +5,14 @@ import { Check, CircleAlert, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/sequence_analysis/DistanceCalculationProgress";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 import { getSampleStatusColorClassNames } from "../../helpers/samples";
-import { useEffect, useRef } from "react";
+import { useScrollToFastaIdElement } from "../../hooks/useScrollToFastaIdElement";
 
 export function SequenceAnalysisStatus() {
     const sampleImports = useDataManagementStore((state) => state.sampleImports);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
-    const scrollToSample = useDataManagementStore((state) => state.scrollToSample);
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const fastaIdElement = document.querySelector(`[data-fasta_id=${scrollToSample}]`);
-        fastaIdElement?.scrollIntoView({ behavior: "smooth" });
-    }, [scrollToSample]);
+    const scrollAreaRef = useScrollToFastaIdElement();
 
     return (
         <>
