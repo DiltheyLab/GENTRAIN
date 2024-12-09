@@ -4,6 +4,8 @@ import { GentrainException } from "../exceptions/GentrainException";
 
 export class GentrainWebsocket {
     private client;
+    protected username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
+    protected password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
     constructor() {
         this.client =
@@ -11,9 +13,7 @@ export class GentrainWebsocket {
             io(import.meta.env.VITE_API_HOST, {
                 transports: ["websocket"],
                 extraHeaders: {
-                    Authorization:
-                        "Basic " +
-                        btoa(`${import.meta.env.VITE_HTBASIC_USERNAME}:${import.meta.env.VITE_HTBASIC_PASSWORD}`),
+                    Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
                 },
             });
     }
