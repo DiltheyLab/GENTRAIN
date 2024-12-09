@@ -3,7 +3,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const useGetOutbreaksForActivePathogen = () => {
-    const activePathogen = useCoreStore.getState().activePathogen;
+    const activePathogen = useCoreStore((state) => state.activePathogen);
     return useLiveQuery(() => {
         if (!activePathogen) {
             return;

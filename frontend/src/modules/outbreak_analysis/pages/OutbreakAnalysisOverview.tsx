@@ -1,6 +1,6 @@
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { analysesTableFilter } from "@/modules/outbreak_analysis/helpers/analysesTableFilter";
+import { analysesTableFilter } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableFilter";
 import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
 import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableColumns";
 import { AnalysisSchema } from "@/modules/core/models/analyses";

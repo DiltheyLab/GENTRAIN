@@ -12,10 +12,10 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { Label } from "@/modules/core/components/ui/Label";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { cn } from "@/modules/core/helpers/cn";
-import { handleOutbreakAnalysisError } from "@/modules/core/helpers/errors";
+import { handleError } from "@/modules/core/helpers/errors";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { AnalysisSchema, updateAnalysisName } from "@/modules/core/models/analyses";
-import { validateAnalysisName } from "@/modules/outbreak_analysis/helpers/analysisNameValidation";
+import { validateName } from "@/modules/core/helpers/validateName";
 import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { forwardRef, useState } from "react";
@@ -29,7 +29,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
     const [analysisName, setAnalysisName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const analyses = useGetOutbreakAnalysesForActivePathogen();
-    const { analyseNameIsValid, isUniqueName } = validateAnalysisName(
+    const { isNameValid, isUniqueName } = validateName(
         analyses?.filter((analysis) => analysis.name !== row.original.name),
         analysisName
     );
@@ -42,7 +42,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                 throw new GentrainException("AnalysisIdIsNotInDB");
             }
         } catch (error) {
-            handleOutbreakAnalysisError(error);
+            handleError(error, "outbreakAnalysis");
         } finally {
             setIsOpen(false);
         }
@@ -85,12 +85,7 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
                     </p>
                 )}
                 <DialogFooter>
-                    <Button
-                        type="submit"
-                        disabled={!analyseNameIsValid()}
-                        onClick={updateAnalysis}
-                        title="Analyse bearbeiten"
-                    >
+                    <Button type="submit" disabled={!isNameValid()} onClick={updateAnalysis} title="Analyse bearbeiten">
                         Änderungen speichern
                     </Button>
                 </DialogFooter>

@@ -4,7 +4,7 @@ import { ArrowUpDown } from "lucide-react";
 import { GroupSchema } from "@/modules/core/models/groups";
 import { GroupEditDialog } from "./GroupEditDialog";
 
-export const uploadedGroupColumns: ColumnDef<GroupSchema>[] = [
+export const groupTableColumns: ColumnDef<GroupSchema>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => {

@@ -16,8 +16,9 @@ import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
+import i18next from "i18next";
 
-export const uploadedCaseColumns: ColumnDef<CaseWithRelationships>[] = [
+export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -113,8 +114,7 @@ export const uploadedCaseColumns: ColumnDef<CaseWithRelationships>[] = [
         },
         cell: ({ row }) => {
             const outbreak = row.original.outbreak;
-            if (!outbreak) return;
-            return <>{outbreak ? outbreak.name : ""}</>;
+            return <>{outbreak?.name ?? i18next.t("clusterTypes.noOutbreakAssigned")}</>;
         },
     },
     {

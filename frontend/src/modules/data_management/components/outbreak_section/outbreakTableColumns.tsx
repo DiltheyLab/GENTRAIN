@@ -4,7 +4,7 @@ import { ArrowUpDown } from "lucide-react";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { OutbreakEditDialog } from "./OutbreakEditDialog";
 
-export const uploadedOutbreakColumns: ColumnDef<OutbreakSchema>[] = [
+export const outbreakTableColumns: ColumnDef<OutbreakSchema>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => {
