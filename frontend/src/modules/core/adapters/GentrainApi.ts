@@ -1,4 +1,6 @@
-import { Pathogen } from "../models/pathogens";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { Pathogen } from "@/modules/core/models/pathogens";
+import { PersistedSequenceAnalysisResult } from "@/modules/core/types/api";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
@@ -20,11 +22,8 @@ export class GentrainApi {
 
     // Sequence Analyses
 
-    public async getSequenceAnalysisResultsForSessionAndPathogen(
-        sessionId: string,
-        pathogenId: number
-    ): Promise<{ fasta_id: string; result: object; sequence_identifier: string; sequence_length: number }[]> {
-        const sequenceAnalysisResults = await this.getRequest(
+    public async getPersistedSequenceAnalysisResults(sessionId: string, pathogenId: number) {
+        const sequenceAnalysisResults: PersistedSequenceAnalysisResult[] = await this.getRequest(
             `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
         );
         return sequenceAnalysisResults ?? [];
@@ -46,9 +45,11 @@ export class GentrainApi {
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
-            if (response.ok) {
-                return response.json();
+            if (!response.ok) {
+                throw new GentrainException("ApiError");
             }
+            const data = await response.json();
+            return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
             return null;
@@ -61,9 +62,11 @@ export class GentrainApi {
                 method: "DELETE",
                 headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
-            if (response.ok) {
-                return response.json();
+            if (!response.ok) {
+                throw new GentrainException("ApiError");
             }
+            const data = await response.json();
+            return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
             return null;

@@ -2,6 +2,8 @@ import { io } from "socket.io-client";
 import { useCoreStore } from "../stores/core";
 import { GentrainException } from "../exceptions/GentrainException";
 
+type WebsocketEvent = "sequence_analysis_response" | "sequence_analysis_enqueued" | "sequence_analysis_started";
+
 export class GentrainWebsocket {
     private client;
     private username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
@@ -72,59 +74,17 @@ export class GentrainWebsocket {
 
     // Listener Management
 
-    public async listenForSequenceAnalysisResponse(callback: (data: any) => void) {
+    public async listenForEvent(event: WebsocketEvent, callback: (data: any) => void) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
-        this.client.on("sequence_analysis_response", (data) => callback(data));
+        this.client.on(event, (data) => callback(data));
     }
 
-    public async listenForSequenceAnalysisEnqueued(callback: (data: any) => void) {
+    public stopListenForEvent(event: WebsocketEvent) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
-        this.client.on("sequence_analysis_enqueued", (data) => callback(data));
-    }
-
-    public async listenForSequenceAnalysisFailed(callback: (data: any) => void) {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.on("sequence_analysis_failed", (data) => callback(data));
-    }
-
-    public async listenForSequenceAnalysisStarted(callback: (data: any) => void) {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.on("sequence_analysis_started", (data) => callback(data));
-    }
-
-    public stopListenForSequenceAnalysisResponse() {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.off("sequence_analysis_response");
-    }
-
-    public stopListenForSequenceAnalysisEnqueued() {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.off("sequence_analysis_enqueued");
-    }
-
-    public stopListenForSequenceAnalysisFailed() {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.off("sequence_analysis_failed");
-    }
-
-    public stopListenForSequenceAnalysisStarted() {
-        if (!this.client) {
-            throw new GentrainException("InvalidWebsocketClient");
-        }
-        this.client.off("sequence_analysis_started");
+        this.client.off(event);
     }
 }

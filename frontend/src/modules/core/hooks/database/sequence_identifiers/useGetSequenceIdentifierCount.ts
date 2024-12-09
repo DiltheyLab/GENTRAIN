@@ -2,7 +2,7 @@ import { db } from "@/modules/core/infrastructure/database";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const useGetSequenceIdentifierCount = (): number | undefined => {
+export const useGetSequenceIdentifierCount = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     return useLiveQuery(() => {
         if (!activePathogen) {
