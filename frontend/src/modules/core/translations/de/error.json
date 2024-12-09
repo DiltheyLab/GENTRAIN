@@ -1,4 +1,8 @@
 {
+    "sequenceAnalysis": {
+        "InvalidSession": "Es besteht keine aktive Session.",
+        "InvalidWebsocketClient": "Es existiert kein Websocket Client."
+    },
     "upload": {
         "title": "Fehlerhafter Upload",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",

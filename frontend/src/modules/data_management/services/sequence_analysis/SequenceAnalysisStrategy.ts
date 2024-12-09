@@ -61,7 +61,7 @@ export abstract class SequenceAnalysisStrategy {
     public handlePersistedResults = async () => {
         const session = useCoreStore.getState().session;
         if (!session) {
-            throw new GentrainException("");
+            throw new GentrainException("InvalidSession");
         }
         const results = await gentrainApi.getSequenceAnalysisResultsForSessionAndPathogen(session.id, this.pathogen.id);
         if (results.length > 0) {
