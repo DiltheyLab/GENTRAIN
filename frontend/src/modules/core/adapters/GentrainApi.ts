@@ -1,9 +1,9 @@
 import { Pathogen } from "../models/pathogens";
 
 export class GentrainApi {
-    protected url: string = `${import.meta.env.VITE_API_HOST}`;
-    protected username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
-    protected password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
+    private url: string = `${import.meta.env.VITE_API_HOST}`;
+    private username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
+    private password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
     private defaultHeaderParameters = {
         Accept: "application/json",
@@ -25,7 +25,7 @@ export class GentrainApi {
         pathogenId: number
     ): Promise<{ fasta_id: string; result: object; sequence_identifier: string; sequence_length: number }[]> {
         const sequenceAnalysisResults = await this.getRequest(
-            `${import.meta.env.VITE_API_HOST}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
+            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
         );
         return sequenceAnalysisResults ?? [];
     }
@@ -36,9 +36,7 @@ export class GentrainApi {
         sequenceIdentifier: string
     ) {
         const response = await this.deleteRequest(
-            `${
-                import.meta.env.VITE_API_HOST
-            }/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
+            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
         );
         return response;
     }
