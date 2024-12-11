@@ -133,7 +133,12 @@ export const Settings = () => {
                 >
                     <Dialog open={showPdfExportDialog} onOpenChange={(value) => setShowPdfExportDialog(value)}>
                         <DialogTrigger data-tutorial-tour-step="outbreak-analysis-report-export" asChild>
-                            <Button className="text-wrap w-full" variant="outline" type="button">
+                            <Button
+                                className="text-wrap w-full"
+                                variant="outline"
+                                type="button"
+                                disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                            >
                                 Ausbruchsanalyse-Report exportieren
                             </Button>
                         </DialogTrigger>
