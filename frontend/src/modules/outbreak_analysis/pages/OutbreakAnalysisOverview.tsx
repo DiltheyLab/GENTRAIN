@@ -1,11 +1,11 @@
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { DataTable } from "@/modules/core/components/tables/DataTable";
 import { analysesTableFilter } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableFilter";
-import { AnalysisCreation } from "@/modules/outbreak_analysis/components/analysis_selection/AnalysisCreation";
+import { CreateAnalysisDialog } from "@/modules/outbreak_analysis/components/analysis_selection/CreateAnalysisDialog";
 import { analysesTableColumns } from "@/modules/outbreak_analysis/components/analysis_selection/tables/analysesTableColumns";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
-import { SelectedAnalysesDeleteDialog } from "../components/analysis_selection/tables/SelectedAnalysesDeleteAlertDialog";
+import { DeleteSelectedAnalysesDialog } from "../components/analysis_selection/tables/DeleteSelectedAnalysesDialog";
 
 export const OutbreakAnalysisOverview = () => {
     const analyses = useGetOutbreakAnalysesForActivePathogen();
@@ -27,8 +27,8 @@ export const OutbreakAnalysisOverview = () => {
 
                         return (
                             <>
-                                <AnalysisCreation />
-                                <SelectedAnalysesDeleteDialog
+                                <CreateAnalysisDialog />
+                                <DeleteSelectedAnalysesDialog
                                     selectedAnalyses={selectedAnalyses}
                                     disabled={selectedAnalyses.length === 0}
                                 />
