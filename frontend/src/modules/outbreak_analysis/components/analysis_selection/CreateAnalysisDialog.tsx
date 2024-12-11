@@ -81,8 +81,8 @@ export const CreateAnalysisDialog = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Analyse anlegen</DialogTitle>
-                    <DialogDescription>Hier können Sie eine neue Analyse erstellen.</DialogDescription>
+                    <DialogTitle>Ausbruchsanalyse anlegen</DialogTitle>
+                    <DialogDescription>Hier können Sie eine neue Ausbruchsanalyse erstellen.</DialogDescription>
                 </DialogHeader>
                 <div className="flex gap-5 items-center mt-4">
                     <Label htmlFor="name" className="font-normal">
