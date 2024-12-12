@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { CaseWithRelationships } from "./cases";
 
 export interface ContactSchema {

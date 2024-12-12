@@ -1,7 +1,7 @@
 import { Button } from "@/modules/core/components/ui/Button";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { useToast } from "@/modules/core/components/ui/UseToast";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { useNavigate } from "react-router-dom";
 
 export const DatabaseDeletion = () => {
@@ -10,6 +10,7 @@ export const DatabaseDeletion = () => {
     const deleteDatabase = async () => {
         try {
             await db.delete();
+            localStorage.removeItem("session");
             navigate("/");
             location.reload();
         } catch (error) {

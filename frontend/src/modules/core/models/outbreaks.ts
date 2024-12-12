@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 
 export interface OutbreakSchema {
     id: number;

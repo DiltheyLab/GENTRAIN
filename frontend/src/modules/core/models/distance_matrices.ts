@@ -1,4 +1,4 @@
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { DistanceMatrix } from "@/modules/core/services/distance_matrix/DistanceMatrix";
 
 export interface DistanceMatricesSchema {

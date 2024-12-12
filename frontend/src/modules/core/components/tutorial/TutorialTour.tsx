@@ -7,6 +7,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { dbManager } from "../../services/database/DatabaseManager";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
@@ -28,6 +29,8 @@ export const TutorialTour = () => {
         changeTutorialTourIsActive(false);
         navigate("/");
         window.scrollTo(0, 0);
+        dbManager.switchDatabase("gentrain");
+        window.location.reload();
     };
 
     const scrollWindowToTopAndChangeIndex = (nextStepIndex: number) => {

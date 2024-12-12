@@ -1,4 +1,4 @@
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 
 export enum PathogenTypeName {

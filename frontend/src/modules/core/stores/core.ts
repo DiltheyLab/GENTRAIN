@@ -1,15 +1,15 @@
 import { create } from "zustand";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
 import { Step } from "react-joyride";
 import { tutorialSteps } from "../components/tutorial/tutorialSteps";
-import { SessionSchema } from "../models/sessions";
 import gentrainWebsocketInstance from "../adapters/GentrainWebsocket";
+import { createSessionId } from "../helpers/session";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
-    session: SessionSchema | undefined | null;
+    sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
     tutorialIsRunning: boolean;
     tutorialSteps: Step[];
@@ -27,7 +27,7 @@ export interface CoreState {
 export const useCoreStore = create<CoreState>((set, get) => {
     return {
         activePathogen: null,
-        session: undefined,
+        sessionId: undefined,
         casesWithRelationships: [],
         tutorialStepIndex: 0,
         tutorialTourIsActive: false,
@@ -43,12 +43,13 @@ export const useCoreStore = create<CoreState>((set, get) => {
             set({ casesWithRelationships });
         },
         fetchSession: async () => {
-            const session = (await db.sessions.toCollection().first()) ?? null;
-            set({ session });
+            const session = localStorage.getItem("session");
+            set({ sessionId: session });
         },
         initSession: async () => {
-            const sessionId = await db.sessions.add({});
-            set({ session: { id: sessionId } });
+            const sessionId = createSessionId();
+            localStorage.setItem("session", sessionId);
+            set({ sessionId: sessionId });
             gentrainWebsocketInstance.initSession(sessionId);
         },
         updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {

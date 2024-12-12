@@ -12,11 +12,11 @@ import {
 import { Onboarding } from "./pages/Onboarding";
 import { useCoreStore } from "./stores/core";
 import { Layout } from "./components/layout/Layout";
-import { db } from "@/modules/core/infrastructure/database.ts";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { usePostHog } from "posthog-js/react";
 
 export const Root = () => {
-    const session = useCoreStore((state) => state.session);
+    const sessionId = useCoreStore((state) => state.sessionId);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
@@ -29,11 +29,11 @@ export const Root = () => {
     }, []);
 
     useEffect(() => {
-        if (!session?.id) return;
+        if (!sessionId) return;
 
-        posthog?.identify(session.id, { sessionID: session.id });
+        posthog?.identify(sessionId, { sessionID: sessionId });
         console.log("Posthog User-ID:", posthog.get_distinct_id());
-    }, [posthog, session?.id]);
+    }, [posthog, sessionId]);
 
     useEffect(() => {
         fetchPathogensFromServer().then((pathogensServerStorage: Pathogen[]) => {
@@ -80,11 +80,11 @@ export const Root = () => {
         });
     }, []);
 
-    if (session === undefined) {
+    if (sessionId === undefined) {
         return <RefreshLoader />;
     }
 
-    if (session === null) {
+    if (sessionId === null) {
         return <Onboarding />;
     }
 

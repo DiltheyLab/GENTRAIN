@@ -1,5 +1,5 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { ValidationStrategy } from "./ValidationStrategy";
 import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";

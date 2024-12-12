@@ -1,5 +1,5 @@
 import Aioli from "@biowasm/aioli";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { getCasesForPathogenWithSample } from "@/modules/core/models/cases";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "@/modules/core/models/distance_matrices";
 import { deleteDistancesByPathogenId } from "@/modules/core/models/distances";
