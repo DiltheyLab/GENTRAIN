@@ -72,6 +72,7 @@ db.on("populate", async () => {
             db.pathogens.add({
                 id: pathogen.id,
                 name: pathogen.name,
+                example_data_path: pathogen.example_data_path,
                 genetic_distance_threshold: pathogen.genetic_distance_threshold,
                 pathogen_type_id: persistedPathogenTypes[pathogen.type],
                 activated_at: null,

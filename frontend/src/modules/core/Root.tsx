@@ -50,6 +50,7 @@ export const Root = () => {
                     if (pathogenExistsInClientStorage) {
                         db.pathogens.update(pathogenServer.id, {
                             name: pathogenServer.name,
+                            example_data_path: pathogenServer.example_data_path,
                             genetic_distance_threshold: pathogenServer.genetic_distance_threshold,
                             pathogen_type_id: pathogenType.id,
                         });
@@ -57,6 +58,7 @@ export const Root = () => {
                         db.pathogens.add({
                             id: pathogenServer.id,
                             name: pathogenServer.name,
+                            example_data_path: pathogenServer.example_data_path,
                             genetic_distance_threshold: pathogenServer.genetic_distance_threshold,
                             pathogen_type_id: pathogenType.id,
                             activated_at: null,

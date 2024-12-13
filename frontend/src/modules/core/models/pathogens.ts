@@ -10,6 +10,7 @@ import gentrainApiInstance from "../adapters/GentrainApi";
 export type Pathogen = {
     id: number;
     name: string;
+    example_data_path: string | null;
     type: PathogenTypeName;
     genetic_distance_threshold: number;
 };
@@ -19,6 +20,7 @@ export interface PathogenSchema {
     name: string;
     genetic_distance_threshold: number;
     pathogen_type_id: number;
+    example_data_path: string | null;
     activated_at: string | null;
     created_at?: Date;
     updated_at?: Date;

@@ -71,7 +71,7 @@ class UserView(AuthModelView):
 
 class PathogenView(AuthModelView):
     schemes_root = f"{get_project_path()}/modules/sequence_analysis/schemes"
-    example_data_root = f"{get_project_path()}/modules/sequence_analysis/example_data"
+    example_data_root = f"{get_project_path()}/static/pathogen_example_data/"
 
     def is_accessible(self):
         return (
