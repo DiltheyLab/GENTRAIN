@@ -9,6 +9,7 @@ import { createSessionId } from "../helpers/session";
 
 export interface CoreState {
     activePathogen: PathogenWithRelationships | null;
+    pathogenIsLoading: boolean;
     sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
     tutorialIsRunning: boolean;
@@ -22,11 +23,13 @@ export interface CoreState {
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
     updateActivePathogen: (pathogen: PathogenSchema | null) => void;
+    setPathogenIsLoading: (pathogenIsLoading: boolean) => void;
 }
 
 export const useCoreStore = create<CoreState>((set, get) => {
     return {
         activePathogen: null,
+        pathogenIsLoading: false,
         sessionId: undefined,
         casesWithRelationships: [],
         tutorialStepIndex: 0,
@@ -66,6 +69,9 @@ export const useCoreStore = create<CoreState>((set, get) => {
             }
             set({ activePathogen: pathogen });
             get().updateCasesWithRelationships();
+        },
+        setPathogenIsLoading: (pathogenIsLoading) => {
+            set({ pathogenIsLoading: pathogenIsLoading });
         },
     };
 });

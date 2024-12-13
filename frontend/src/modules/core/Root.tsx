@@ -14,12 +14,15 @@ import { useCoreStore } from "./stores/core";
 import { Layout } from "./components/layout/Layout";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { usePostHog } from "posthog-js/react";
+import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
+    const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
+
     useHandlePersistedSessionResults();
 
     const posthog = usePostHog();
@@ -36,6 +39,7 @@ export const Root = () => {
     }, [posthog, sessionId]);
 
     useEffect(() => {
+        setPathogenIsLoading(true);
         fetchPathogensFromServer().then((pathogensServerStorage: Pathogen[]) => {
             getAllPathogensWithRelationships().then(async (pathogensClientStorage) => {
                 let pathogensToDelete = pathogensClientStorage;
@@ -76,6 +80,7 @@ export const Root = () => {
                 );
 
                 updateActivePathogen(activelyPersistedPathogen ?? null);
+                setPathogenIsLoading(false);
             });
         });
     }, []);
@@ -90,6 +95,7 @@ export const Root = () => {
 
     return (
         <>
+            <PathogenSelectionDialog />
             {tutorialTourIsActive && <TutorialTour />}
             <Layout>
                 <Outlet />

@@ -8,15 +8,21 @@ export default function InitExampleButton() {
     const initSession = useCoreStore((state) => state.initSession);
     const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
     const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
+    const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
 
     return (
         <Button
-            onClick={() => {
+            onClick={async () => {
                 dbManager.switchDatabase("gentrain_example");
-                importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
-                initSession();
-                changeTutorialIsRunning(true);
-                changeTutorialTourIsActive(true);
+                setPathogenIsLoading(true);
+                try {
+                    await importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
+                    await initSession();
+                    changeTutorialIsRunning(true);
+                    changeTutorialTourIsActive(true);
+                } finally {
+                    setPathogenIsLoading(false);
+                }
             }}
         >
             Beispielszenario starten

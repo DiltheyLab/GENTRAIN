@@ -1,4 +1,4 @@
-import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS } from "react-joyride";
+import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, STATUS } from "react-joyride";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDisableScrollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
