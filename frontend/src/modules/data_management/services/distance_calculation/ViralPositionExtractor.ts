@@ -33,6 +33,7 @@ export class ViralPositionExtractor {
             return;
         }
         for (const mutation of this.sequenceAnalysisResult.mutations["insertions"]) {
+            // insertions can precede the reference genome if the genome is not treated as a whole
             if (mutation["pos"] < 0) {
                 continue;
             }
