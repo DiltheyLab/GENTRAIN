@@ -161,10 +161,13 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         additions2: string,
         refChar: string
     ) => {
-        console.log(mutations1.pos, mutations2.pos);
         const insertion1 = mutations1.ins;
         const insertion2 = mutations2.ins;
         const alignedSequences = await gentrainApiInstance.alignSequences(insertion1, insertion2);
+        if (!alignedSequences) {
+            console.error("Sequences could not be aligned.");
+            return [additions1, additions2];
+        }
         const alignedInsertion1 = alignedSequences["aligned_sequence_1"];
         const alignedInsertion2 = alignedSequences["aligned_sequence_2"];
         additions1 += Object.keys(mutations1).length > 1 ? alignedInsertion1 : refChar + additions1 + alignedInsertion1;
