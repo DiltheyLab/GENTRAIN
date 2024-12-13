@@ -81,6 +81,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         return ViralSequenceAnalysisResponseModel(
             nextclade_version=nextclade_version,
             lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
+            analysis_schema=self.pathogen.scheme_name,
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],
             deletions=result["deletions"],

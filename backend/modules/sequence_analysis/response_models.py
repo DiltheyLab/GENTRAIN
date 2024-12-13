@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class ViralSequenceAnalysisResponseModel(BaseModel):
     nextclade_version: str
+    analysis_schema: str
     lineage: str
     n_count: int
     substitutions: list[object]
