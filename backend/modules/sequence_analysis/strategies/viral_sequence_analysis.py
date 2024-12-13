@@ -3,9 +3,16 @@ import pathlib
 import re
 import subprocess
 import tempfile
-from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
+from os import popen
+
+from backend.modules.core.exceptions import (
+    SequenceAnalysisFailedException,
+    GenomicErrorException,
+)
 from backend.config import get_project_path
-from backend.modules.sequence_analysis.response_models import ViralSequenceAnalysisResponseModel
+from backend.modules.sequence_analysis.response_models import (
+    ViralSequenceAnalysisResponseModel,
+)
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
@@ -68,9 +75,12 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
+        # retrieve the installed nextclade version (gentrain-worker and gentrain-backend versions are synced)
+        # Nextclade_pango does only exist for sequences of SARS-CoV-2
+        nextclade_version = popen("nextclade -V").read().replace("nextclade", "").replace("\n", "").strip()
         return ViralSequenceAnalysisResponseModel(
-            nextclade_version="3.8.2",
-            lineage=f"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}",
+            nextclade_version=nextclade_version,
+            lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],
             deletions=result["deletions"],
