@@ -3,9 +3,14 @@ import pathlib
 import re
 import subprocess
 import tempfile
-from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
+from backend.modules.core.exceptions import (
+    SequenceAnalysisFailedException,
+    GenomicErrorException,
+)
 from backend.config import get_project_path
-from backend.modules.sequence_analysis.response_models import ViralSequenceAnalysisResponseModel
+from backend.modules.sequence_analysis.response_models import (
+    ViralSequenceAnalysisResponseModel,
+)
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
 )
@@ -68,7 +73,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
-        print(result)
         return ViralSequenceAnalysisResponseModel(
             nextclade_version="3.8.2",
             lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
