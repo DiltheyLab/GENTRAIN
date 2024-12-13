@@ -14,6 +14,7 @@ import { SampleSchema } from "@/modules/core/models/samples";
 import { SequenceAnalysisSchema } from "@/modules/core/models/sequence_analyses";
 import { SequenceIdentifierSchema } from "@/modules/core/models/sequence_identifiers";
 import { gentrainExampleDB } from "@/modules/core/infrastructure/gentrain_example_db";
+import { handleError } from "../../helpers/errors";
 
 type DatabaseName = "gentrain" | "gentrain_example";
 
@@ -48,12 +49,13 @@ class DatabaseManager {
     }
 
     public switchDatabase(dbName: DatabaseName) {
-        console.log("before switch", this.currentDB);
-
-        if (!this.databases[dbName]) throw new Error(`No database with name ${dbName} found`);
-        this.currentDB = this.databases[dbName];
-        localStorage.setItem("selectedDB", dbName);
-        console.log("after switch", this.currentDB);
+        try {
+            if (!this.databases[dbName]) throw new Error(`No database with name ${dbName} found`);
+            this.currentDB = this.databases[dbName];
+            localStorage.setItem("selectedDB", dbName);
+        } catch (error) {
+            handleError(error, "database");
+        }
     }
 
     public getCurrentDB() {

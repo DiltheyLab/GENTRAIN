@@ -3,7 +3,13 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { t } from "i18next";
 import { ZodError } from "zod";
 
-export type ToastErrorType = "outbreakAnalysis" | "outbreakAnalysis" | "outbreak" | "group" | "caseAssignment";
+export type ToastErrorType =
+    | "outbreakAnalysis"
+    | "outbreakAnalysis"
+    | "outbreak"
+    | "group"
+    | "caseAssignment"
+    | "database";
 
 export const getToastDescription = (error: GentrainException | ZodError | Error, category = "upload") => {
     let description = null;

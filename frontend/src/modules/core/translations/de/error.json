@@ -34,5 +34,8 @@
     },
     "caseAssignment": {
         "title": "Fehler beim Speichern der Zuweisung"
+    },
+    "database": {
+        "title": "Fehler in der Datenbank"
     }
 }

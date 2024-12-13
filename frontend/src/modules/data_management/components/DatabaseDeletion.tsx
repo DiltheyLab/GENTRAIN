@@ -11,6 +11,7 @@ export const DatabaseDeletion = () => {
         try {
             await db.delete();
             localStorage.removeItem("session");
+            localStorage.removeItem("selectedDB");
             navigate("/");
             location.reload();
         } catch (error) {
