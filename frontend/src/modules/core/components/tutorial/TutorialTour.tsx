@@ -47,7 +47,7 @@ export const TutorialTour = () => {
         }, delay);
     };
 
-    const handleCallback = ({ action, index, step, type, status, origin }: CallBackProps) => {
+    const handleCallback = ({ action, index, step, type, status }: CallBackProps) => {
         const nextStep = action === ACTIONS.NEXT;
         const prevStep = action === ACTIONS.PREV;
         const nextStepIndex = index + (prevStep ? -1 : 1);
@@ -91,11 +91,8 @@ export const TutorialTour = () => {
             }
         };
 
-        // Closes tutorial on pressing ESC-button or if tour is over
-        if (
-            (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) ||
-            ([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)
-        ) {
+        // Closes tutorial if tour is over
+        if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
             closeTutorial();
             return;
         }
