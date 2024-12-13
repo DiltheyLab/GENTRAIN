@@ -3,6 +3,8 @@ import pathlib
 import re
 import subprocess
 import tempfile
+from os import popen
+
 from backend.modules.core.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
@@ -73,8 +75,11 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
+        # retrieve the installed nextclade version (gentrain-worker and gentrain-backend versions are synced)
+        # Nextclade_pango does only exist for sequences of SARS-CoV-2
+        nextclade_version = popen("nextclade -V").read().replace("nextclade", "").replace("\n", "").strip()
         return ViralSequenceAnalysisResponseModel(
-            nextclade_version="3.8.2",
+            nextclade_version=nextclade_version,
             lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],

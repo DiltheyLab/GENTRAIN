@@ -3,6 +3,7 @@ import time
 import pathlib
 import tempfile
 import sys
+from os import popen
 from subprocess import Popen
 from backend.modules.core.exceptions import SequenceAnalysisFailedException
 from backend.config import get_project_path
@@ -130,8 +131,10 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
+        # retrieve the installed chewBBACA version (gentrain-worker and gentrain-backend versions are synced)
+        chewBBACCA_version = popen("chewBBACA.py -v").read().replace("chewBBACA version:", "").replace("\n", "").strip()
         return BacterialSequenceAnalysisResponseModel(
-            chewBACCA_version="3.3.9",
+            chewBACCA_version=chewBBACCA_version,
             analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
             allele_ids=result["allele_ids"],
             allele_hashes=result["allele_hashes"],
