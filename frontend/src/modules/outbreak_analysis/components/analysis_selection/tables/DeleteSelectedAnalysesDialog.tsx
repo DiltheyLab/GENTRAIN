@@ -12,7 +12,7 @@ type SelectedAnalysesDeleteDialogProps = {
     disabled: boolean;
 };
 
-export const SelectedAnalysesDeleteDialog = forwardRef<HTMLButtonElement, SelectedAnalysesDeleteDialogProps>(
+export const DeleteSelectedAnalysesDialog = forwardRef<HTMLButtonElement, SelectedAnalysesDeleteDialogProps>(
     ({ selectedAnalyses, disabled }, ref) => {
         const deleteSelectedAnalyses = async () => {
             try {
@@ -52,4 +52,4 @@ export const SelectedAnalysesDeleteDialog = forwardRef<HTMLButtonElement, Select
     }
 );
 
-SelectedAnalysesDeleteDialog.displayName = "SelectedAnalysesDeleteDialog";
+DeleteSelectedAnalysesDialog.displayName = "SelectedAnalysesDeleteDialog";
