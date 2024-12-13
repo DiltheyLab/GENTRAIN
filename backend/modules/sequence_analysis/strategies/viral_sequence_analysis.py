@@ -68,9 +68,10 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def get_response(self, result):
         """Return a response model for viral analysises."""
+        print(result)
         return ViralSequenceAnalysisResponseModel(
             nextclade_version="3.8.2",
-            lineage=f"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}",
+            lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],
             deletions=result["deletions"],
