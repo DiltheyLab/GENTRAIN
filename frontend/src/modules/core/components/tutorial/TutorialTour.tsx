@@ -1,13 +1,12 @@
 import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS } from "react-joyride";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 import { useDisableScrollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { dbManager } from "../../services/database/DatabaseManager";
+import { dbManager } from "@/modules/core/services/database/DatabaseManager";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
