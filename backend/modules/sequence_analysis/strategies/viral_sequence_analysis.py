@@ -70,6 +70,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         """Return a response model for viral analysises."""
         return ViralSequenceAnalysisResponseModel(
             nextclade_version="3.8.2",
+            analysis_scheme="",
             lineage=f"{result['clade']}, {result['customNodeAttributes']['Nextclade_pango']}",
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],
