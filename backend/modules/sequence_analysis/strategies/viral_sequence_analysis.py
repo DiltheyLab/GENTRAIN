@@ -64,7 +64,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
             with open(file=self.output, mode="r", encoding="utf-8") as json_file:
                 # check for script errors
                 content = json.load(json_file)
-                print("error", content["errors"])
                 if content["errors"] and len(content["errors"]) > 0:
                     raise GenomicErrorException
 
