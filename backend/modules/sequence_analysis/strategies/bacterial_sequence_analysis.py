@@ -135,7 +135,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         chewBBACCA_version = popen("chewBBACA.py -v").read().replace("chewBBACA version:", "").replace("\n", "").strip()
         return BacterialSequenceAnalysisResponseModel(
             chewBACCA_version=chewBBACCA_version,
-            analysis_schema="Enterococcus_faecium-cgMLST-04.07.2024",
+            analysis_schema=self.pathogen.scheme_name,
             allele_ids=result["allele_ids"],
             allele_hashes=result["allele_hashes"],
             undeterminable_gen_count=result["undeterminable_gen_count"],
