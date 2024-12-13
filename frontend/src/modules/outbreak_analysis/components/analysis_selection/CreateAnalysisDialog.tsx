@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/modules/core/components/ui/Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetOutbreakAnalysesForActivePathogen } from "@/modules/core/hooks/database/outbreakAnalyses/useGetOutbreakAnalysesForActivePathogen";
 import { createAnalysis } from "@/modules/core/models/analyses";
 import { useCoreStore } from "@/modules/core/stores/core";
@@ -26,7 +26,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { handleError } from "@/modules/core/helpers/errors";
 import { validateName } from "../../../core/helpers/validateName";
 
-export const AnalysisCreation = () => {
+export const CreateAnalysisDialog = () => {
     const [analysisName, setAnalysisName] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isTouched, setIsTouched] = useState(false);
@@ -35,6 +35,14 @@ export const AnalysisCreation = () => {
     const navigate = useNavigate();
     const updateWholeAnalysis = useOutbreakAnalysisStore((state) => state.updateWholeAnalysis);
     const { isNameValid, isUniqueName } = validateName(analyses, analysisName);
+
+    useEffect(() => {
+        if (analyses && analyses.length === 0) {
+            setIsOpen(true);
+        } else {
+            setIsOpen(false);
+        }
+    }, [analyses]);
 
     const createAndNavigateToNewAnalysis = async () => {
         try {
@@ -73,8 +81,8 @@ export const AnalysisCreation = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Analyse anlegen</DialogTitle>
-                    <DialogDescription>Hier können Sie eine neue Analyse erstellen.</DialogDescription>
+                    <DialogTitle>Ausbruchsanalyse anlegen</DialogTitle>
+                    <DialogDescription>Hier können Sie eine neue Ausbruchsanalyse erstellen.</DialogDescription>
                 </DialogHeader>
                 <div className="flex gap-5 items-center mt-4">
                     <Label htmlFor="name" className="font-normal">

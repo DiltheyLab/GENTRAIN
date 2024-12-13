@@ -20,11 +20,11 @@ import { Row } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import { forwardRef, useState } from "react";
 
-type AnalysisEditDialogProps = {
+type EditAnalysisDialogProps = {
     row: Row<AnalysisSchema>;
 };
 
-export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDialogProps>(({ row }, ref) => {
+export const EditAnalysisDialog = forwardRef<HTMLButtonElement, EditAnalysisDialogProps>(({ row }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [analysisName, setAnalysisName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
@@ -94,4 +94,4 @@ export const AnalysisEditDialog = forwardRef<HTMLButtonElement, AnalysisEditDial
     );
 });
 
-AnalysisEditDialog.displayName = "AnalysisEditDialog";
+EditAnalysisDialog.displayName = "AnalysisEditDialog";

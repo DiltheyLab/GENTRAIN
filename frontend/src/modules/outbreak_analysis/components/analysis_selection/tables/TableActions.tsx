@@ -3,9 +3,9 @@ import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
 import { Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AnalysisEditDialog } from "./AnalysisEditDialog";
+import { EditAnalysisDialog } from "./EditAnalysisDialog";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { AnalysisDeleteAlertDialog } from "./AnalysisDeleteAlertDialog";
+import { DeleteAnalysisDialog } from "./DeleteAnalysisDialog";
 
 type TableActionsProps = {
     row: Row<AnalysisSchema>;
@@ -27,8 +27,8 @@ export const TableActions = ({ row }: TableActionsProps) => {
                 <Button variant={"secondary"} onClick={startAnalysis}>
                     <Play size={15} className="mr-2" /> Analyse starten
                 </Button>
-                <AnalysisEditDialog row={row} />
-                <AnalysisDeleteAlertDialog row={row} />
+                <EditAnalysisDialog row={row} />
+                <DeleteAnalysisDialog row={row} />
             </div>
         </div>
     );
