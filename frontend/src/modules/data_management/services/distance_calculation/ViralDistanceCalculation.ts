@@ -1,4 +1,5 @@
 import { referenceString } from "@/data/referenceString";
+import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
@@ -160,18 +161,12 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         additions2: string,
         refChar: string
     ) => {
+        console.log(mutations1.pos, mutations2.pos);
         const insertion1 = mutations1.ins;
         const insertion2 = mutations2.ins;
-        const fasta_string = `>1\n${insertion1}\n>2\n${insertion2}`;
-        let result = await this.cli.mount({
-            name: "distance_input.fa",
-            data: fasta_string,
-        });
-        result = await this.cli.exec("kalign distance_input.fa -f fasta -o distance_result.fasta");
-        result = await this.cli.cat("distance_result.fasta");
-        result = result.split(/[\r\n]+/);
-        const alignedInsertion1 = result[1];
-        const alignedInsertion2 = result[3];
+        const alignedSequences = await gentrainApiInstance.alignSequences(insertion1, insertion2);
+        const alignedInsertion1 = alignedSequences["aligned_sequence_1"];
+        const alignedInsertion2 = alignedSequences["aligned_sequence_2"];
         additions1 += Object.keys(mutations1).length > 1 ? alignedInsertion1 : refChar + additions1 + alignedInsertion1;
         additions2 += Object.keys(mutations2).length > 1 ? alignedInsertion2 : refChar + additions2 + alignedInsertion2;
         return [additions1, additions2];

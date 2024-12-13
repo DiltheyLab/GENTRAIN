@@ -33,6 +33,9 @@ export class ViralPositionExtractor {
             return;
         }
         for (const mutation of this.sequenceAnalysisResult.mutations["insertions"]) {
+            if (mutation["pos"] < 0) {
+                continue;
+            }
             this.addInsertionToPositions(mutation["ins"], mutation["pos"]);
         }
     };
