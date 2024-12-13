@@ -11,6 +11,7 @@ import time
 import shutil
 
 from backend.app import db, basic_auth
+from backend.modules.admin.validation import validate_example_data_upload
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
@@ -107,6 +108,10 @@ class PathogenView(AuthModelView):
     def update_model(self, form, model):
         self.prior_scheme_name = model.scheme_name
         return super().update_model(form, model)
+
+    def on_model_change(self, form, model, is_created):
+        valid = validate_example_data_upload(form["example_data_path"].data)
+        print(valid)
 
     def after_model_change(self, form, model, is_created):
         if self.scheme_added(model.scheme_path):
