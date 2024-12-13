@@ -15,6 +15,8 @@ import { SequenceAnalysisSchema } from "@/modules/core/models/sequence_analyses"
 import { SequenceIdentifierSchema } from "@/modules/core/models/sequence_identifiers";
 import { gentrainExampleDB } from "@/modules/core/infrastructure/gentrain_example_db";
 
+type DatabaseName = "gentrain" | "gentrain_example";
+
 export type DatabaseSchema = Dexie & {
     samples: EntityTable<SampleSchema, "id">;
     sequence_analyses: EntityTable<SequenceAnalysisSchema, "id">;
@@ -30,16 +32,11 @@ export type DatabaseSchema = Dexie & {
     outbreaks: EntityTable<OutbreakSchema, "id">;
     sequence_identifiers: EntityTable<SequenceIdentifierSchema, "id">;
 };
-
-type DatabaseName = "gentrain" | "gentrain_example";
-
 class DatabaseManager {
-    private static instance: DatabaseManager;
     private databases: Record<DatabaseName, DatabaseSchema>;
     private currentDB: DatabaseSchema;
 
     constructor() {
-        // Initilize databases
         this.databases = {
             gentrain: gentrainDB,
             gentrain_example: gentrainExampleDB,
@@ -50,38 +47,24 @@ class DatabaseManager {
         this.currentDB = this.databases[savedDB];
     }
 
-    public static getInstance(): DatabaseManager {
-        if (!DatabaseManager.instance) {
-            DatabaseManager.instance = new DatabaseManager();
-        }
-        return DatabaseManager.instance;
+    public switchDatabase(dbName: DatabaseName) {
+        console.log("before switch", this.currentDB);
+
+        if (!this.databases[dbName]) throw new Error(`No database with name ${dbName} found`);
+        this.currentDB = this.databases[dbName];
+        localStorage.setItem("selectedDB", dbName);
+        console.log("after switch", this.currentDB);
     }
 
-    public getCurrentDatabase() {
-        console.log("this", this.currentDB);
-
-        return this.currentDB;
-    }
-
-    // Change Database
-    public switchDatabase(dbName: DatabaseName): void {
-        if (this.databases[dbName]) {
-            this.currentDB = this.databases[dbName];
-            localStorage.setItem("selectedDB", dbName);
-        } else {
-            throw new Error(`Database "${dbName}" does not exist.`);
-        }
-        console.log("inside switch", this.currentDB.name);
-    }
-
-    public getReactiveDatabase() {
+    public getCurrentDB() {
+        const manager = this;
         return new Proxy({} as DatabaseSchema, {
-            get: (target, prop) => {
-                return this.currentDB[prop as keyof DatabaseSchema];
+            get(_target, key) {
+                return manager.currentDB[key as keyof DatabaseSchema];
             },
         });
     }
 }
 
-export const dbManager = DatabaseManager.getInstance();
-export const db = dbManager.getReactiveDatabase();
+export const dbManager = new DatabaseManager();
+export const db = dbManager.getCurrentDB();
