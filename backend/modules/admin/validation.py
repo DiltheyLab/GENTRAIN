@@ -1,13 +1,14 @@
 import csv
 import re
 from io import TextIOWrapper
+from os import path
 from zipfile import ZipFile
 
 from Bio import SeqIO
 from werkzeug.datastructures import FileStorage
 
 
-def validate_example_data_upload(file: FileStorage):
+def validate_example_data_upload(file: FileStorage, target_directory: str):
     with ZipFile(file.stream, "r") as zip:
         # unparsable files are handled as invalid
         try:
@@ -17,7 +18,18 @@ def validate_example_data_upload(file: FileStorage):
         except:
             return False
 
-        return cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
+        zip_valid = validate_zip(zip, target_directory) and cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
+
+        return zip_valid
+
+
+def validate_zip(zip: ZipFile, target_directory):
+    # prevent malicious inner zip files starting with "../" or other filenames manipulating the extraction destination
+    for file_name in zip.namelist():
+        target_path = path.abspath(path.join(target_directory, file_name))
+        if not target_path.startswith(path.abspath(target_directory)):
+            return False
+    return True
 
 
 def validate_cases_csv(zip):

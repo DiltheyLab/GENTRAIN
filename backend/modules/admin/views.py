@@ -112,7 +112,7 @@ class PathogenView(AuthModelView):
         return super().update_model(form, model)
 
     def on_model_change(self, form, model, is_created):
-        valid = validate_example_data_upload(form["example_data_path"].data)
+        valid = validate_example_data_upload(form["example_data_path"].data, self.example_data_root)
         if not valid:
             raise Exception("Provided example data in invalid.")
 
