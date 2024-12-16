@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Step } from "react-joyride";
-import { tutorialSteps } from "../components/tutorial/tutorialSteps";
+import { tutorialSteps } from "../components/tutorialSteps";
 import { persist } from "zustand/middleware";
 
 type TutorialStoreState = {

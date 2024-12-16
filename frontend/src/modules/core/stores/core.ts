@@ -5,19 +5,24 @@ import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "
 import gentrainWebsocketInstance from "../adapters/GentrainWebsocket";
 import { createSessionId } from "../helpers/session";
 
-export interface CoreState {
+type CoreStoreState = {
     activePathogen: PathogenWithRelationships | null;
     pathogenIsLoading: boolean;
     sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
+};
+
+type CoreStoreActions = {
     updateCasesWithRelationships: () => Promise<void>;
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
     updateActivePathogen: (pathogen: PathogenSchema | null) => void;
     setPathogenIsLoading: (pathogenIsLoading: boolean) => void;
-}
+};
 
-export const useCoreStore = create<CoreState>((set, get) => {
+export type CoreStore = CoreStoreState & CoreStoreActions;
+
+export const useCoreStore = create<CoreStore>((set, get) => {
     return {
         activePathogen: null,
         pathogenIsLoading: false,

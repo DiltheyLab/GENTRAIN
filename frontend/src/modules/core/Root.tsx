@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useHandlePersistedSessionResults } from "../data_management/hooks/useHandlePersistedSessionResults";
-import { TutorialTour } from "./components/tutorial/TutorialTour";
+import { TutorialTour } from "../tutorial/components/TutorialTour";
 import { RefreshLoader } from "./components/ui/RefreshLoader";
 import {
     fetchPathogensFromServer,
@@ -15,7 +15,7 @@ import { Layout } from "./components/layout/Layout";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { usePostHog } from "posthog-js/react";
 import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
-import { useTutorialStore } from "./stores/tutorial";
+import { useTutorialStore } from "../tutorial/stores/tutorial";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);

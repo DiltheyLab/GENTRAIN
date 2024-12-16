@@ -6,7 +6,7 @@ import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { dbManager } from "@/modules/core/services/database/DatabaseManager";
-import { useTutorialStore } from "../../stores/tutorial";
+import { useTutorialStore } from "../stores/tutorial";
 
 export const TutorialTour = () => {
     const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
@@ -19,8 +19,6 @@ export const TutorialTour = () => {
     const updateOutbreakAnalysisAccordion = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
     useDisableScrollOnComponentMount([tutorialTourIsActive]);
     const navigate = useNavigate();
-
-    console.log(stepIndex);
 
     if (!tutorialTourIsActive) return null;
 

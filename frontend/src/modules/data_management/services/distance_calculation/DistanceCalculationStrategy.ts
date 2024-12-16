@@ -6,11 +6,11 @@ import { deleteDistancesByPathogenId } from "@/modules/core/models/distances";
 import { PathogenSchema } from "@/modules/core/models/pathogens";
 import { SampleSchema } from "@/modules/core/models/samples";
 import { extractSamplesFromCases } from "@/modules/data_management/helpers/samples";
-import { DataManagementState, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { DataManagementStore, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { toast } from "@/modules/core/components/ui/UseToast";
 
 export abstract class DistanceCalculationStrategy {
-    protected dataManagementState: DataManagementState;
+    protected dataManagementStore: DataManagementStore;
     protected pathogen: PathogenSchema;
     protected cli: any;
     protected distanceMatrixId: number | undefined;
@@ -22,13 +22,13 @@ export abstract class DistanceCalculationStrategy {
     ): Promise<number> | number;
 
     constructor(pathogen: PathogenSchema) {
-        this.dataManagementState = useDataManagementStore.getState();
+        this.dataManagementStore = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.samples = [];
     }
 
     public execute = async () => {
-        this.dataManagementState.setDistanceCalculationRunning(true);
+        this.dataManagementStore.setDistanceCalculationRunning(true);
         if (!this.cli || !this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();

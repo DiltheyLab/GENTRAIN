@@ -3,7 +3,7 @@ import { importDataFromJson } from "@/modules/core/helpers/database";
 import { dbManager } from "@/modules/core/services/database/DatabaseManager";
 import { useNavigate } from "react-router-dom";
 import ExampleImport from "@/data/gentrain_example.json";
-import { useTutorialStore } from "@/modules/core/stores/tutorial";
+import { useTutorialStore } from "@/modules/tutorial/stores/tutorial";
 
 export const Tutorial = () => {
     const changeTutorialTourIsActive = useTutorialStore((state) => state.changeTutorialTourIsActive);
