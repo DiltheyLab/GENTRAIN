@@ -16,6 +16,7 @@ from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
 
+
 class AuthModelView(sqla.ModelView):
     def is_accessible(self):
         if environ.get('APP_ENV') != "development" and not basic_auth.authenticate():
@@ -111,7 +112,8 @@ class PathogenView(AuthModelView):
 
     def on_model_change(self, form, model, is_created):
         valid = validate_example_data_upload(form["example_data_path"].data)
-        print(valid)
+        if not valid:
+            raise Exception("Provided example data in invalid.")
 
     def after_model_change(self, form, model, is_created):
         if self.scheme_added(model.scheme_path):
