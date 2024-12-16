@@ -91,6 +91,18 @@ export const TutorialTour = () => {
             }
         };
 
+        // Set stepIndex to the last step if target is not mounted after reload
+        if (type === EVENTS.TOUR_START) {
+            const target = typeof step.target === "string" ? step.target : step.target.toString();
+            const targetElement = document.querySelector(target);
+
+            if (!targetElement) {
+                const previousIndex = Math.max(0, index - 1);
+                changeTutorialStepIndex(previousIndex);
+                return;
+            }
+        }
+
         // Closes tutorial if tour is over
         if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
             closeTutorial();
