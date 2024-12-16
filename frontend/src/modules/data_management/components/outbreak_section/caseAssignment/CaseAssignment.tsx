@@ -20,7 +20,7 @@ type CaseAssigmentProps = {
     registerCaseForDatabaseUpdate: (caseData: CaseWithRelationships, selectedOutbreakTable: string) => void;
 };
 
-export const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentProps) => {
+const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentProps) => {
     const noOutbreakAssignedId = "0";
     const cases = useGetAllCasesForActivePathogenWithRelationships();
     const outbreaks = useGetOutbreaksForActivePathogen();
@@ -333,3 +333,5 @@ export const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentP
         </div>
     );
 };
+
+export default CaseAssignment;
