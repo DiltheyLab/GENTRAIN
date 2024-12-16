@@ -51,6 +51,7 @@ export const TutorialTour = () => {
         const nextStep = action === ACTIONS.NEXT;
         const prevStep = action === ACTIONS.PREV;
         const nextStepIndex = index + (prevStep ? -1 : 1);
+        console.log(type);
 
         const manageTutorialStep = () => {
             switch (step.target) {
@@ -91,16 +92,31 @@ export const TutorialTour = () => {
             }
         };
 
-        // Set stepIndex to the last step if target is not mounted after reload
+        // Check if element is mounted after tour started and wait for it.
+        // If it is not ready which happens if you reload the page try it again for 100 sec
         if (type === EVENTS.TOUR_START) {
-            const target = typeof step.target === "string" ? step.target : step.target.toString();
-            const targetElement = document.querySelector(target);
+            changeTutorialIsRunning(false);
 
-            if (!targetElement) {
-                const previousIndex = Math.max(0, index - 1);
-                changeTutorialStepIndex(previousIndex);
-                return;
-            }
+            let attempts = 0;
+            const maxAttempts = 100; // 10 seconds maximum (100 * 100ms)
+
+            const waitForElement = () => {
+                const target = typeof step.target === "string" ? step.target : step.target.toString();
+                const element = document.querySelector(target);
+
+                if (element) {
+                    changeTutorialIsRunning(true);
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    setTimeout(waitForElement, 100);
+                } else {
+                    console.warn("Tutorial target element not found after maximum attempts");
+                    changeTutorialStepIndex(index - 1); // Fallback if element never appears
+                }
+            };
+
+            waitForElement();
+            return;
         }
 
         // Closes tutorial if tour is over
