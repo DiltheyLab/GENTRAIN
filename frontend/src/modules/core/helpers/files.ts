@@ -13,6 +13,19 @@ export const downloadFile = (blob: Blob, name: string) => {
 };
 
 /**
+ * Create a download anchor tag to download a file. Removes it afterwards.
+ * @param blob
+ * @param name
+ */
+export const downloadFileFromUrl = (url: string) => {
+    const tempLink = document.createElement("a");
+    tempLink.href = url;
+    tempLink.setAttribute("download", url);
+    tempLink.click();
+    tempLink.remove();
+};
+
+/**
  * This function reads a file as text
  * @param file - the file to read
  * @returns a promise that resolves with the file's text content

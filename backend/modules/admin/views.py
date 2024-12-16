@@ -71,6 +71,7 @@ class UserView(AuthModelView):
 
 class PathogenView(AuthModelView):
     schemes_root = f"{get_project_path()}/modules/sequence_analysis/schemes"
+    example_data_root = f"{get_project_path()}/static/pathogen_example_data/"
 
     def is_accessible(self):
         return (
@@ -87,11 +88,17 @@ class PathogenView(AuthModelView):
             ("viral", "Viral"),
         ]
     }
-    form_overrides = {"scheme_path": FileUploadField}
+    form_overrides = {"scheme_path": FileUploadField, "example_data_path": FileUploadField}
     form_args = {
         "scheme_path": {
             "label": "File",
             "base_path": schemes_root,
+            "allow_overwrite": True,
+            "allowed_extensions": ["zip"]
+        },
+        "example_data_path": {
+            "label": "File",
+            "base_path": example_data_root,
             "allow_overwrite": True,
             "allowed_extensions": ["zip"]
         }
