@@ -12,6 +12,7 @@ import { ContactsValidation } from "../../services/data_import/validation/Contac
 import { ContactSelection } from "./tables/ContactSelection";
 import { ContactRound, Dna, UsersRound } from "lucide-react";
 import { Button } from "@/modules/core/components/ui/Button";
+import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 
 export const ImportSection = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
@@ -25,15 +26,31 @@ export const ImportSection = () => {
         <div data-tutorial-tour-step="data-management-import" className="bg-white rounded-lg p-3">
             <div className="mb-4 flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Daten importieren</h2>
+                    <h2 className="text-2xl font-bold tracking-tight">Daten für {activePathogen?.name} importieren</h2>
                     <p className="text-muted-foreground">
                         Fügen Sie hier Falldaten zu {activePathogen?.name} hinzu. Zu jedem importierten Fall können
                         Sequenz- sowie Kontaktdaten hinterlegt werden.
                     </p>
                 </div>
-                <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
-                    Import-Assistent starten
-                </Button>
+                <div className="flex gap-4">
+                    {activePathogen?.example_data_path && (
+                        <Button
+                            variant="secondary"
+                            onClick={() =>
+                                downloadFileFromUrl(
+                                    `${import.meta.env.VITE_API_HOST}/static/pathogen_example_data/${
+                                        activePathogen?.example_data_path
+                                    }`
+                                )
+                            }
+                        >
+                            Beispieldaten herunterladen
+                        </Button>
+                    )}
+                    <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
+                        Import-Assistent starten
+                    </Button>
+                </div>
             </div>
             <div className="flex gap-8">
                 <div className="w-1/3">

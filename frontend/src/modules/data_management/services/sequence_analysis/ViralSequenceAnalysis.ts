@@ -8,6 +8,7 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         sequenceLength: number
     ) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
+            schema: sequenceAnalysisResult["analysis_schema"],
             nextclade_version: sequenceAnalysisResult["nextclade_version"],
             result: {
                 mutations: {

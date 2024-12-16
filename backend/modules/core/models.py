@@ -39,6 +39,7 @@ class Pathogen(db.Model):
     type = db.Column(db.String, nullable=False)
     scheme_name = db.Column(db.String, nullable=False)
     scheme_path = db.Column(db.String, nullable=False)
+    example_data_path = db.Column(db.String, nullable=True)
 
     def serialize(self):
         return {
@@ -46,5 +47,6 @@ class Pathogen(db.Model):
             "name": self.name,
             "genetic_distance_threshold": self.genetic_distance_threshold,
             "type": self.type,
-            "scheme_name": self.scheme_name
+            "scheme_name": self.scheme_name,
+            "example_data_path": self.example_data_path
         }

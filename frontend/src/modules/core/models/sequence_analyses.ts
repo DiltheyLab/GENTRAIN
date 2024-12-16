@@ -19,7 +19,7 @@ interface ViralAnalysisResult {
 interface SequenceAnalysisSchema {
     id: number;
     result: ViralAnalysisResult | BacterialAnalysisResult;
-    schema?: string;
+    schema: string;
     chewbbaca_version?: string;
     nextclade_version?: string;
     created_at?: Date;
