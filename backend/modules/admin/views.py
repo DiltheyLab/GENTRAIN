@@ -102,7 +102,8 @@ class PathogenView(AuthModelView):
             "label": "File",
             "base_path": example_data_root,
             "allow_overwrite": True,
-            "allowed_extensions": ["zip"]
+            "allowed_extensions": ["zip"],
+            "description": "<b>Zip file must contain following files.</b><br/><ul><li>falldaten.csv</li><li>sequenzdaten.fasta</li><li>kontaktdaten.csv</li></ul>"
         }
     }
 
