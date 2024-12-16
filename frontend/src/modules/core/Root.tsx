@@ -15,12 +15,13 @@ import { Layout } from "./components/layout/Layout";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { usePostHog } from "posthog-js/react";
 import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
+import { useTutorialStore } from "./stores/tutorial";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
     const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
-    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
+    const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
     const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
 
     useHandlePersistedSessionResults();

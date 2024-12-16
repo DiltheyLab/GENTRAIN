@@ -2,8 +2,6 @@ import { create } from "zustand";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
-import { Step } from "react-joyride";
-import { tutorialSteps } from "../components/tutorial/tutorialSteps";
 import gentrainWebsocketInstance from "../adapters/GentrainWebsocket";
 import { createSessionId } from "../helpers/session";
 
@@ -12,13 +10,6 @@ export interface CoreState {
     pathogenIsLoading: boolean;
     sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
-    tutorialIsRunning: boolean;
-    tutorialSteps: Step[];
-    tutorialStepIndex: number;
-    tutorialTourIsActive: boolean;
-    changeTutorialStepIndex: (index: number) => void;
-    changeTutorialTourIsActive: (isActive: boolean) => void;
-    changeTutorialIsRunning: (tutorialIsRunnung: boolean) => void;
     updateCasesWithRelationships: () => Promise<void>;
     fetchSession: () => Promise<void>;
     initSession: () => Promise<void>;
@@ -32,13 +23,6 @@ export const useCoreStore = create<CoreState>((set, get) => {
         pathogenIsLoading: false,
         sessionId: undefined,
         casesWithRelationships: [],
-        tutorialStepIndex: 0,
-        tutorialTourIsActive: false,
-        tutorialIsRunning: false,
-        tutorialSteps: tutorialSteps,
-        changeTutorialStepIndex: (index) => set(() => ({ tutorialStepIndex: index })),
-        changeTutorialIsRunning: (tutorialIsRunnung) => set(() => ({ tutorialIsRunning: tutorialIsRunnung })),
-        changeTutorialTourIsActive: (isActive) => set(() => ({ tutorialTourIsActive: isActive })),
         updateCasesWithRelationships: async () => {
             const activePathogenId = get().activePathogen?.id;
             if (!activePathogenId) return;

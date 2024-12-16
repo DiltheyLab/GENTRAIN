@@ -2,23 +2,25 @@ import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, STATUS } from "react-j
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDisableScrollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
-import { useCoreStore } from "@/modules/core/stores/core";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { dbManager } from "@/modules/core/services/database/DatabaseManager";
+import { useTutorialStore } from "../../stores/tutorial";
 
 export const TutorialTour = () => {
-    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
-    const tutorialIsRunning = useCoreStore((state) => state.tutorialIsRunning);
-    const steps = useCoreStore((state) => state.tutorialSteps);
-    const stepIndex = useCoreStore((state) => state.tutorialStepIndex);
-    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
-    const changeTutorialStepIndex = useCoreStore((state) => state.changeTutorialStepIndex);
+    const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
+    const tutorialIsRunning = useTutorialStore((state) => state.tutorialIsRunning);
+    const steps = useTutorialStore((state) => state.tutorialSteps);
+    const stepIndex = useTutorialStore((state) => state.tutorialStepIndex);
+    const changeTutorialTourIsActive = useTutorialStore((state) => state.changeTutorialTourIsActive);
+    const changeTutorialIsRunning = useTutorialStore((state) => state.changeTutorialIsRunning);
+    const changeTutorialStepIndex = useTutorialStore((state) => state.changeTutorialStepIndex);
     const updateOutbreakAnalysisAccordion = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
     useDisableScrollOnComponentMount([tutorialTourIsActive]);
     const navigate = useNavigate();
+
+    console.log(stepIndex);
 
     if (!tutorialTourIsActive) return null;
 

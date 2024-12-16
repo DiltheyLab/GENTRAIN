@@ -3,11 +3,12 @@ import { Button } from "@/modules/core/components/ui/Button";
 import ExampleImport from "@/data/gentrain_example.json";
 import { importDataFromJson } from "@/modules/core/helpers/database";
 import { dbManager } from "../../services/database/DatabaseManager";
+import { useTutorialStore } from "../../stores/tutorial";
 
 export default function InitExampleButton() {
     const initSession = useCoreStore((state) => state.initSession);
-    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
+    const changeTutorialTourIsActive = useTutorialStore((state) => state.changeTutorialTourIsActive);
+    const changeTutorialIsRunning = useTutorialStore((state) => state.changeTutorialIsRunning);
     const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
 
     return (

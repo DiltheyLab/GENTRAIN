@@ -4,6 +4,8 @@ import { TooltipRenderProps } from "react-joyride";
 import MouseCursor from "./MouseCursor";
 
 export function CustomTutorialTourTooltip(props: TooltipRenderProps) {
+    console.log(props);
+
     const { backProps, index, primaryProps, step, tooltipProps, isLastStep, size } = props;
 
     const getNextButtonText = () => {

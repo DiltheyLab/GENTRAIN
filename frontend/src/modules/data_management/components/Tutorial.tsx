@@ -1,13 +1,13 @@
 import { Button } from "@/modules/core/components/ui/Button";
 import { importDataFromJson } from "@/modules/core/helpers/database";
 import { dbManager } from "@/modules/core/services/database/DatabaseManager";
-import { useCoreStore } from "@/modules/core/stores/core";
 import { useNavigate } from "react-router-dom";
 import ExampleImport from "@/data/gentrain_example.json";
+import { useTutorialStore } from "@/modules/core/stores/tutorial";
 
 export const Tutorial = () => {
-    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
+    const changeTutorialTourIsActive = useTutorialStore((state) => state.changeTutorialTourIsActive);
+    const changeTutorialIsRunning = useTutorialStore((state) => state.changeTutorialIsRunning);
 
     const navigate = useNavigate();
 
