@@ -6,6 +6,9 @@ from zipfile import ZipFile
 
 from Bio import SeqIO
 from werkzeug.datastructures import FileStorage
+import clamd
+
+clamd = clamd.ClamdUnixSocket()
 
 
 def validate_example_data_upload(file: FileStorage, target_directory: str):
@@ -18,16 +21,28 @@ def validate_example_data_upload(file: FileStorage, target_directory: str):
         except:
             return False
 
-        zip_valid = validate_zip(zip, target_directory) and cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
+        zip_valid = validate_zip(zip,
+                                 target_directory) and cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
 
         return zip_valid
+
+
+def file_is_malicious(file):
+    scan_result = clamd.instream(file)
+    if scan_result['stream'][0] != 'OK':
+        return True
+    return False
 
 
 def validate_zip(zip: ZipFile, target_directory):
     # prevent malicious inner zip files starting with "../" or other filenames manipulating the extraction destination
     for file_name in zip.namelist():
+        file = zip.open(file_name)
         target_path = path.abspath(path.join(target_directory, file_name))
         if not target_path.startswith(path.abspath(target_directory)):
+            return False
+        # scan file for known vulnerabilities using clamd
+        if file_is_malicious(file):
             return False
     return True
 
