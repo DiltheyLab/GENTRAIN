@@ -48,7 +48,7 @@ def validate_contacts_csv(zip):
     if not {"Fall ID 1", "Fall ID 2", "Typ", "Kontext"} <= set(column_names):
         return False
     for row in contacts_csv:
-        if not validate_contacts_csv_row(row, column_names):
+        if not validate_contacts_csv_row(row):
             return False
     return True
 
@@ -78,7 +78,6 @@ def read_fasta_file_from_zip(filename: str, zip: ZipFile):
     return reader
 
 
-
 def validate_cases_csv_row(row, column_names):
     case_id = row['Fall ID']
     sequence_id = row['Sequenz ID']
@@ -93,7 +92,7 @@ def validate_cases_csv_row(row, column_names):
     return True
 
 
-def validate_contacts_csv_row(row, column_names):
+def validate_contacts_csv_row(row):
     case_id_1 = row['Fall ID 1']
     case_id_2 = row['Fall ID 2']
     type = row['Typ']
@@ -108,8 +107,9 @@ def valid_case_id(string):
 
 
 def valid_sequence_id_in_csv(string):
-    # fasta ids might be empty (*) for unsequenced cases
+    # fasta ids might be empty (*) for cases that are not sequenced
     return re.compile(r"^[A-Za-z0-9-]*$").match(string)
+
 
 def valid_sequence_id_in_fasta(string):
     # fasta ids must be set
