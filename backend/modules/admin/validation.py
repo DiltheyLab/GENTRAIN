@@ -1,50 +1,55 @@
 import csv
+import io
 import re
 from io import TextIOWrapper
 from os import path
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from Bio import SeqIO
-from werkzeug.datastructures import FileStorage
-import clamd
+from werkzeug.utils import secure_filename
+from wtforms.validators import ValidationError
 
-clamd = clamd.ClamdUnixSocket()
-
-
-def validate_example_data_upload(file: FileStorage, target_directory: str):
-    with ZipFile(file.stream, "r") as zip:
-        # unparsable files are handled as invalid
-        try:
-            cases_csv_valid = validate_cases_csv(zip)
-            sequence_fasta_valid = validate_sequences_fasta(zip)
-            contacts_csv_valid = validate_contacts_csv(zip)
-        except:
-            return False
-
-        zip_valid = validate_zip(zip,
-                                 target_directory) and cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
-
-        return zip_valid
+from backend.config import get_project_path
+from backend.modules.core.helpers import slugify
 
 
-def file_is_malicious(file):
-    scan_result = clamd.instream(file)
-    if scan_result['stream'][0] != 'OK':
-        return True
-    return False
+def validate_example_data_upload(form, field):
+    # unparsable files are handled as invalid
+    file = field.data
+    zip_in = ZipFile(file.stream, "r")
+    if not validate_zip(zip_in):
+        raise ValidationError("Example data upload is not valid.")
+
+    # create a new zip file container only files expected for example data uploads
+    zip_out = create_clean_example_date_zip(f"{form.name.data}_beispieldaten", zip_in)
+
+    field.data = zip_out
 
 
-def validate_zip(zip: ZipFile, target_directory):
+def create_clean_example_date_zip(name, zip_in):
+    new_zip_filename = path.join(f"{get_project_path()}/static/pathogen_example_data/",
+                                 secure_filename(f"{slugify(name)}.zip"))
+    zip_out = ZipFile(new_zip_filename, 'w')
+    zip_out.writestr("falldaten.csv", zip_in.read("falldaten.csv"))
+    zip_out.writestr("sequenzdaten.fasta", zip_in.read("sequenzdaten.fasta"))
+    zip_out.writestr("kontaktdaten.csv", zip_in.read("kontaktdaten.csv"))
+    return zip_out
+
+
+def validate_zip(zip: ZipFile):
+    example_data_root = f"{get_project_path()}/static/pathogen_example_data/"
+    try:
+        cases_csv_valid = validate_cases_csv(zip)
+        sequence_fasta_valid = validate_sequences_fasta(zip)
+        contacts_csv_valid = validate_contacts_csv(zip)
+    except:
+        raise ValidationError("Example data upload is not valid.")
     # prevent malicious inner zip files starting with "../" or other filenames manipulating the extraction destination
     for file_name in zip.namelist():
-        file = zip.open(file_name)
-        target_path = path.abspath(path.join(target_directory, file_name))
-        if not target_path.startswith(path.abspath(target_directory)):
+        target_path = path.abspath(path.join(example_data_root, file_name))
+        if not target_path.startswith(path.abspath(example_data_root)):
             return False
-        # scan file for known vulnerabilities using clamd
-        if file_is_malicious(file):
-            return False
-    return True
+    return cases_csv_valid and sequence_fasta_valid and contacts_csv_valid
 
 
 def validate_cases_csv(zip):

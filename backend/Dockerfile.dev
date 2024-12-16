@@ -4,12 +4,6 @@ FROM --platform=linux/amd64 continuumio/miniconda3:latest
 # Set working directory in the container
 WORKDIR /backend
 
-# install clamav and init clamav-database for file validations
-RUN apt-get update && apt-get install -y \
-    clamav clamav-daemon clamav-freshclam \
-    && rm -rf /var/lib/apt/lists/*
-RUN freshclam
-RUN mkdir /var/run/clamav
 # Copy the 'environment.yml' file into the container
 COPY environment.yaml .
 

@@ -10,6 +10,8 @@ from zipfile import ZipFile
 import time
 import shutil
 
+from wtforms import validators
+
 from backend.app import db, basic_auth
 from backend.modules.admin.validation import validate_example_data_upload
 from backend.modules.core.exceptions import AuthException
@@ -70,7 +72,6 @@ class UserView(AuthModelView):
         )
         db.session.commit()
 
-
 class PathogenView(AuthModelView):
     schemes_root = f"{get_project_path()}/modules/sequence_analysis/schemes"
     example_data_root = f"{get_project_path()}/static/pathogen_example_data/"
@@ -93,17 +94,18 @@ class PathogenView(AuthModelView):
     form_overrides = {"scheme_path": FileUploadField, "example_data_path": FileUploadField}
     form_args = {
         "scheme_path": {
-            "label": "File",
+            "label": "Scheme Zip",
             "base_path": schemes_root,
             "allow_overwrite": True,
             "allowed_extensions": ["zip"]
         },
         "example_data_path": {
-            "label": "File",
+            "label": "Example Data Zip",
             "base_path": example_data_root,
             "allow_overwrite": True,
             "allowed_extensions": ["zip"],
-            "description": "<b>Zip file must contain following files.</b><br/><ul><li>falldaten.csv</li><li>sequenzdaten.fasta</li><li>kontaktdaten.csv</li></ul>"
+            "description": "<b>Zip file must contain following files.</b><br/><ul><li>falldaten.csv</li><li>sequenzdaten.fasta</li><li>kontaktdaten.csv</li></ul>",
+            "validators": [validate_example_data_upload]
         }
     }
 
@@ -111,10 +113,6 @@ class PathogenView(AuthModelView):
         self.prior_scheme_name = model.scheme_name
         return super().update_model(form, model)
 
-    def on_model_change(self, form, model, is_created):
-        valid = validate_example_data_upload(form["example_data_path"].data, self.example_data_root)
-        if not valid:
-            raise Exception("Provided example data in invalid.")
 
     def after_model_change(self, form, model, is_created):
         if self.scheme_added(model.scheme_path):
