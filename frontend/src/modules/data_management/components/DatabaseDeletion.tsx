@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 export const DatabaseDeletion = () => {
     const { toast } = useToast();
     const navigate = useNavigate();
+
     const deleteDatabase = async () => {
         try {
             await db.delete();
-            localStorage.removeItem("session");
+            localStorage.removeItem("core");
             localStorage.removeItem("selectedDB");
             navigate("/");
             location.reload();

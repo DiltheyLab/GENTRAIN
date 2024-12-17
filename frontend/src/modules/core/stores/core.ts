@@ -15,8 +15,7 @@ type CoreStoreState = {
 
 type CoreStoreActions = {
     updateCasesWithRelationships: () => Promise<void>;
-    fetchSession: () => Promise<void>;
-    initSession: () => Promise<void>;
+    initSession: () => void;
     updateActivePathogen: (pathogen: PathogenSchema | null) => void;
     setPathogenIsLoading: (pathogenIsLoading: boolean) => void;
 };
@@ -36,13 +35,8 @@ export const useCoreStore = create<CoreStore>()(
                 const casesWithRelationships = await getAllCasesForPathogenWithRelationships(activePathogenId);
                 set({ casesWithRelationships });
             },
-            fetchSession: async () => {
-                const session = localStorage.getItem("session");
-                set({ sessionId: session });
-            },
-            initSession: async () => {
+            initSession: () => {
                 const sessionId = createSessionId();
-                localStorage.setItem("session", sessionId);
                 set({ sessionId: sessionId });
                 gentrainWebsocketInstance.initSession(sessionId);
             },
@@ -66,9 +60,10 @@ export const useCoreStore = create<CoreStore>()(
             },
         }),
         {
-            name: "active-pathogen",
+            name: "core",
             partialize: (state) => ({
                 activePathogen: state.activePathogen,
+                sessionId: state.sessionId,
             }),
             onRehydrateStorage: () => (state) => {
                 // When store is rehydrated, if there's an active pathogen, load its cases

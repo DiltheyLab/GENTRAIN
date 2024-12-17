@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useHandlePersistedSessionResults } from "../data_management/hooks/useHandlePersistedSessionResults";
 import { TutorialTour } from "../tutorial/components/TutorialTour";
-import { RefreshLoader } from "./components/ui/RefreshLoader";
 import {
     fetchPathogensFromServer,
     getAllPathogensWithRelationships,
@@ -19,7 +18,6 @@ import { useTutorialStore } from "../tutorial/stores/tutorial";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
-    const fetchSession = useCoreStore((state) => state.fetchSession);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
     const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
@@ -27,10 +25,6 @@ export const Root = () => {
     useHandlePersistedSessionResults();
 
     const posthog = usePostHog();
-
-    useEffect(() => {
-        fetchSession();
-    }, []);
 
     useEffect(() => {
         if (!sessionId) return;
@@ -89,11 +83,7 @@ export const Root = () => {
         });
     }, []);
 
-    if (sessionId === undefined) {
-        return <RefreshLoader />;
-    }
-
-    if (sessionId === null) {
+    if (!sessionId) {
         return <Onboarding />;
     }
 

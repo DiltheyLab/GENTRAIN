@@ -20,7 +20,7 @@ export default function InitExampleButton() {
                 setPathogenIsLoading(true);
                 try {
                     await importDataFromJson(new Blob([JSON.stringify(ExampleImport)], { type: "application/json" }));
-                    await initSession();
+                    initSession();
                     changeTutorialIsRunning(true);
                     changeTutorialTourIsActive(true);
                     navigate("/");
