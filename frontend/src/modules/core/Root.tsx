@@ -40,6 +40,7 @@ export const Root = () => {
     }, [posthog, sessionId]);
 
     useEffect(() => {
+        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
         setPathogenIsLoading(true);
         fetchPathogensFromServer().then((pathogensServerStorage: Pathogen[]) => {
             getAllPathogensWithRelationships().then(async (pathogensClientStorage) => {
