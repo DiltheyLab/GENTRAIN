@@ -1,21 +1,21 @@
-import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, ORIGIN, STATUS } from "react-joyride";
+import Joyride, { ACTIONS, CallBackProps, Events, EVENTS, STATUS } from "react-joyride";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 import { useDisableScrollOnComponentMount } from "@/modules/core/hooks/useDisableScrollOnComponentMount";
-import { useCoreStore } from "@/modules/core/stores/core";
 import { CustomTutorialTourTooltip } from "./CustomTutorialTourTooltip";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useOutbreakAnalysisStore } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
+import { dbManager } from "@/modules/core/services/database/DatabaseManager";
+import { useTutorialStore } from "../stores/tutorial";
 
 export const TutorialTour = () => {
-    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
-    const tutorialIsRunning = useCoreStore((state) => state.tutorialIsRunning);
-    const steps = useCoreStore((state) => state.tutorialSteps);
-    const stepIndex = useCoreStore((state) => state.tutorialStepIndex);
-    const changeTutorialTourIsActive = useCoreStore((state) => state.changeTutorialTourIsActive);
-    const changeTutorialIsRunning = useCoreStore((state) => state.changeTutorialIsRunning);
-    const changeTutorialStepIndex = useCoreStore((state) => state.changeTutorialStepIndex);
+    const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
+    const tutorialIsRunning = useTutorialStore((state) => state.tutorialIsRunning);
+    const steps = useTutorialStore((state) => state.tutorialSteps);
+    const stepIndex = useTutorialStore((state) => state.tutorialStepIndex);
+    const changeTutorialTourIsActive = useTutorialStore((state) => state.changeTutorialTourIsActive);
+    const changeTutorialIsRunning = useTutorialStore((state) => state.changeTutorialIsRunning);
+    const changeTutorialStepIndex = useTutorialStore((state) => state.changeTutorialStepIndex);
     const updateOutbreakAnalysisAccordion = useOutbreakAnalysisStore((state) => state.updateGeneralSettings);
     useDisableScrollOnComponentMount([tutorialTourIsActive]);
     const navigate = useNavigate();
@@ -28,6 +28,8 @@ export const TutorialTour = () => {
         changeTutorialTourIsActive(false);
         navigate("/");
         window.scrollTo(0, 0);
+        dbManager.switchDatabase("gentrain");
+        window.location.reload();
     };
 
     const scrollWindowToTopAndChangeIndex = (nextStepIndex: number) => {
@@ -45,10 +47,11 @@ export const TutorialTour = () => {
         }, delay);
     };
 
-    const handleCallback = ({ action, index, step, type, status, origin }: CallBackProps) => {
+    const handleCallback = ({ action, index, step, type, status }: CallBackProps) => {
         const nextStep = action === ACTIONS.NEXT;
         const prevStep = action === ACTIONS.PREV;
         const nextStepIndex = index + (prevStep ? -1 : 1);
+        console.log(type);
 
         const manageTutorialStep = () => {
             switch (step.target) {
@@ -89,11 +92,35 @@ export const TutorialTour = () => {
             }
         };
 
-        // Closes tutorial on pressing ESC-button or if tour is over
-        if (
-            (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) ||
-            ([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)
-        ) {
+        // Check if element is mounted after tour started and wait for it.
+        // If it is not ready which happens if you reload the page try it again for 100 sec
+        if (type === EVENTS.TOUR_START) {
+            changeTutorialIsRunning(false);
+
+            let attempts = 0;
+            const maxAttempts = 100; // 10 seconds maximum (100 * 100ms)
+
+            const waitForElement = () => {
+                const target = typeof step.target === "string" ? step.target : step.target.toString();
+                const element = document.querySelector(target);
+
+                if (element) {
+                    changeTutorialIsRunning(true);
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    setTimeout(waitForElement, 100);
+                } else {
+                    console.warn("Tutorial target element not found after maximum attempts");
+                    changeTutorialStepIndex(index - 1); // Fallback if element never appears
+                }
+            };
+
+            waitForElement();
+            return;
+        }
+
+        // Closes tutorial if tour is over
+        if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
             closeTutorial();
             return;
         }
@@ -133,6 +160,7 @@ export const TutorialTour = () => {
                     },
                 }}
                 scrollOffset={70}
+                disableCloseOnEsc={true}
             />
             <Button className="text-lg fixed right-5 bottom-5 z-[1001]" onClick={closeTutorial}>
                 Tutorial beenden

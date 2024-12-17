@@ -17,7 +17,7 @@ import { cn } from "@/modules/core/helpers/cn";
 import { handleError } from "@/modules/core/helpers/errors";
 import { validateName } from "@/modules/core/helpers/validateName";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { bulkUpdateCases, CaseToUpdate, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";

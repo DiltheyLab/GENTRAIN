@@ -2,7 +2,7 @@ import { PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -63,11 +63,11 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     public handlePersistedResults = async () => {
-        const session = useCoreStore.getState().session;
-        if (!session) {
+        const sessionId = useCoreStore.getState().sessionId;
+        if (!sessionId) {
             throw new GentrainException("InvalidSession");
         }
-        const results = await gentrainApiInstance.getPersistedSequenceAnalysisResults(session.id, this.pathogen.id);
+        const results = await gentrainApiInstance.getPersistedSequenceAnalysisResults(sessionId, this.pathogen.id);
         if (results.length > 0) {
             await this.syncPersistedResultsWithDb(results);
             useCoreStore.getState().updateCasesWithRelationships();
@@ -162,12 +162,12 @@ export abstract class SequenceAnalysisStrategy {
             useDataManagementStore.getState().setScrollToSample(fastaId);
             this.initNextSequenceAnalyses();
         }
-        const session = useCoreStore.getState().session;
-        if (!session) {
+        const sessionId = useCoreStore.getState().sessionId;
+        if (!sessionId) {
             throw new GentrainException("");
         }
         gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(
-            session?.id,
+            sessionId,
             this.pathogen.id,
             data.sequence_identifier
         );

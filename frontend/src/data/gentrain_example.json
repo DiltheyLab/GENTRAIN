@@ -2,7 +2,7 @@
     "formatName": "dexie",
     "formatVersion": 1,
     "data": {
-        "databaseName": "gentrain",
+        "databaseName": "gentrain_example",
         "databaseVersion": 1,
         "tables": [
             {

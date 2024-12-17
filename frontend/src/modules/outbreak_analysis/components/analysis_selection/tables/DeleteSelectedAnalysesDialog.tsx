@@ -1,7 +1,7 @@
 import { Button } from "@/modules/core/components/ui/Button";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { toast } from "@/modules/core/components/ui/UseToast";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { AnalysisSchema } from "@/modules/core/models/analyses";
 import { Row } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";

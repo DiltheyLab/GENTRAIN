@@ -3,6 +3,19 @@ import { Step } from "react-joyride";
 export const tutorialSteps: Step[] = [
     // ------------------------------DASHBOARD--------------------------------
     {
+        target: "[data-tutorial-tour-step='tutorial-start']",
+        title: <p className="text-2xl text-primary"> Willkommen bei GENTRAIN!</p>,
+        content: (
+            <p>
+                Dieses Tutorial führt Sie durch die wichtigsten Funktionen der Software und zeigt Ihnen, wie Sie{" "}
+                <strong>GENTRAIN</strong> effektiv nutzen können. Sie können das Tutorial jederzeit beenden, indem Sie
+                auf den Button in der unteren rechten Ecke klicken.
+            </p>
+        ),
+        disableBeacon: true,
+        placement: "center",
+    },
+    {
         target: "[data-tutorial-tour-step='dashboard-nav']",
         title: "Das Dashboard.",
         content: (
@@ -339,6 +352,26 @@ export const tutorialSteps: Step[] = [
         },
     },
     {
+        target: "[data-tutorial-tour-step='data-management-tutorial']",
+        title: "Das Tutorial.",
+        content: <p>Sie können das Tutorial zu jeder Zeit wiederholen, falls Sie erneut Hilfe brauchen.</p>,
+        disableBeacon: true,
+        spotlightClicks: false,
+        styles: {
+            spotlight: {
+                cursor: "not-allowed",
+            },
+        },
+        disableScrolling: false,
+        floaterProps: {
+            options: {
+                preventOverflow: {
+                    boundariesElement: "viewport",
+                },
+            },
+        },
+    },
+    {
         target: "[data-tutorial-tour-step='data-management-delete-data-section']",
         title: "Alle Daten löschen.",
         content: (
@@ -592,10 +625,8 @@ export const tutorialSteps: Step[] = [
         title: "Das Tutorial ist beendet.",
         content: (
             <p>
-                Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Sie können die Anwendung weiter mit
-                den Beispieldaten erkunden oder diese löschen und eigene Daten hochladen.{" "}
-                {/* Unter dem Reiter{" "}
-                <strong>Hilfe</strong> können Sie das Tutorial jederzeit erneut starten.{" "} */}
+                Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Sie können nun eigene Daten in die
+                Anwendung laden oder unsere Beispieldaten verwenden, um weiter mit der Anwendung zu arbeiten.
                 <strong>Wir wünschen Ihnen viel Erfolg bei der Arbeit mit Gentrain!</strong>
             </p>
         ),

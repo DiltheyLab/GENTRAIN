@@ -5,69 +5,85 @@ import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { CaseImports } from "../types/import";
 
-export interface DataManagementState {
-    clearImports: () => void;
+type DataManagementStoreState = {
     // case import
     caseImports: CaseImports;
+    caseSelectionActive: boolean;
+
+    // sample import
+    sampleImports: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
+    };
+    sampleSelectionActive: boolean;
+    showSampleUploadStatus: boolean;
+    hideSampleUploadContent: boolean;
+    sequenceAnalysisRunning: boolean;
+    distanceCalculationRunning: boolean;
+    isUploading: boolean;
+    distanceCalculationCount: number;
+    distanceCalculationSum: number;
+    failedSampleImports: string[];
+    scrollToSample: string | null;
+
+    // contact import
+    contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
+    contactSelectionActive: boolean;
+
+    // initial upload modal
+    importAssistentStep: string | null;
+    showImportAssistent: boolean;
+};
+
+type DataManagementStoreActions = {
+    clearImports: () => void;
+
+    // case import
     changeCaseImport: (key: string, value: any) => void;
     removeCaseImport: (key: string) => void;
     setCaseImports: (caseImports: {
         [id: string]: { imported: CaseImport; persisted: CaseSchema | null; import: boolean };
     }) => void;
     clearCaseImports: () => void;
-    caseSelectionActive: boolean;
     setCaseSelectionActive: (value: boolean) => void;
+
     // sample import
-    sampleImports: {
-        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
-    };
     changeSampleImport: (key: string, value: any) => void;
     removeSampleImport: (key: string) => void;
     setSampleImports: (imports: {
         [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
     }) => void;
     clearSampleImports: () => void;
-    sampleSelectionActive: boolean;
     setSampleSelectionActive: (value: boolean) => void;
-    showSampleUploadStatus: boolean;
     setShowSampleUploadStatus: (value: boolean) => void;
-    hideSampleUploadContent: boolean;
     setHideSampleUploadContent: (value: boolean) => void;
-    sequenceAnalysisRunning: boolean;
     setSequenceAnalysisRunning: (value: boolean) => void;
-    distanceCalculationRunning: boolean;
     setDistanceCalculationRunning: (value: boolean) => void;
-    isUploading: boolean;
     setIsUploading: (value: boolean) => void;
-    distanceCalculationCount: number;
     incrementDistanceCalculationCount: () => void;
-    distanceCalculationSum: number;
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
-    failedSampleImports: string[];
     setFailedSampleImports: (fastaId: string[]) => void;
-    scrollToSample: string | null;
     setScrollToSample: (fastaId: string) => void;
+
     // contact import
-    contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
     changeContactImport: (key: string, value: any) => void;
     removeContactImport: (key: string) => void;
     setContactImports: (contactImports: {
         [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
     }) => void;
     clearContactImports: () => void;
-    contactSelectionActive: boolean;
     setContactSelectionActive: (value: boolean) => void;
+
     // initial upload modal
-    importAssistentStep: string | null;
     previousImportAssistentStep: () => void;
     nextImportAssistentStep: () => void;
-    showImportAssistent: boolean;
     setShowImportAssistent: (value: boolean) => void;
     resetImportAssistent: (triggerSuccessToast?: boolean) => void;
-}
+};
 
-export const useDataManagementStore = create<DataManagementState>((set, get) => ({
+export type DataManagementStore = DataManagementStoreState & DataManagementStoreActions;
+
+export const useDataManagementStore = create<DataManagementStore>((set, get) => ({
     clearImports: () => {
         set({ caseImports: {}, sampleImports: {}, contactImports: {} });
     },

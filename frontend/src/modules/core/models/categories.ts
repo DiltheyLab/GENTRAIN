@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { getGroupCaseCount, getGroupSequencedCaseCount, GroupSchema } from "./groups";
 import { useCoreStore } from "../stores/core";
 import { ObjectRelationalMapper } from "../services/database/ObjectRelationalMapper";
@@ -48,11 +48,13 @@ export const getCategoriesWithGroupsAndCaseCountForActivePathogen = async (patho
         // retrieve groups schema object
         const groups = await db.groups.where({ category_id: categories[key].id }).toArray();
         // calculate case counts per group for current category
-        categoriesWithGroups[key].groups = await Promise.all(groups.map(async (group) => {
-            group.case_count = await getGroupCaseCount(group.id);
-            group.sequenced_case_count = await getGroupSequencedCaseCount(group.id);
-            return group;
-        }));
+        categoriesWithGroups[key].groups = await Promise.all(
+            groups.map(async (group) => {
+                group.case_count = await getGroupCaseCount(group.id);
+                group.sequenced_case_count = await getGroupSequencedCaseCount(group.id);
+                return group;
+            })
+        );
     }
     return categoriesWithGroups;
 };

@@ -9,11 +9,15 @@ import {
     DialogTrigger,
 } from "@/modules/core/components/ui/Dialog";
 import { handleError } from "@/modules/core/helpers/errors";
-import { useState } from "react";
-import { CaseAssignment } from "./CaseAssignment";
+import { lazy, Suspense, useState } from "react";
 import { bulkUpdateCases, CaseToUpdate, CaseWithRelationships } from "@/modules/core/models/cases";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { LoadingSpinner } from "@/modules/core/components/ui/LoadingSpinner";
+
+const CaseAssignment = lazy(
+    () => import("@/modules/data_management/components/outbreak_section/caseAssignment/CaseAssignment")
+);
 
 export const AssignCasesToOutbreakDialog = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -69,7 +73,16 @@ export const AssignCasesToOutbreakDialog = () => {
                         enstsprechenden Fall in die jeweilige Tabelle.
                     </DialogDescription>
                 </DialogHeader>
-                <CaseAssignment registerCaseForDatabaseUpdate={registerCaseForDatabaseUpdate} />
+                <Suspense
+                    fallback={
+                        <div className="flex h-full w-full justify-center items-center">
+                            <LoadingSpinner />
+                        </div>
+                    }
+                >
+                    <CaseAssignment registerCaseForDatabaseUpdate={registerCaseForDatabaseUpdate} />
+                </Suspense>
+
                 <DialogFooter>
                     <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>
                         Abbrechen

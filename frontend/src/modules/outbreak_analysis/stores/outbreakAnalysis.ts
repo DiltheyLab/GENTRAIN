@@ -54,30 +54,6 @@ export type AnalysisReport = {
     conclusion: string | null;
 };
 
-export interface OutbreakAnalysisStore {
-    id: number | null;
-    name: string | null;
-    graphData: GraphData;
-    analysisSettings: AnalysisSettings;
-    graphSettings: GraphSettings;
-    generalSettings: GeneralSettings;
-    analysisReport: AnalysisReport;
-    updateId: (newId: number) => void;
-    updateName: (newName: string) => void;
-    updateAnalysisReport: (newAnalysisReport: Partial<AnalysisReport>) => void;
-    updateGraphData: (newGraphData: GraphData) => void;
-    updateAnalysisSettings: (newAnalysisSettings: Partial<AnalysisSettings>) => void;
-    updateGraphSettings: (newGraphSettings: Partial<GraphSettings>) => void;
-    updateGeneralSettings: (newGeneralSettings: Partial<GeneralSettings>) => void;
-    updateWholeAnalysis: (
-        newId: number,
-        newName: string,
-        newAnalysisSettings: AnalysisSettings,
-        newGraphSettings: GraphSettings,
-        newGeneralSettings: GeneralSettings
-    ) => void;
-}
-
 export const defaultGraphSettings: GraphSettings = {
     showNodeLabel: false,
     linkDistance: 70,
@@ -109,6 +85,35 @@ export const getDefaultAnalysisSettings = (): AnalysisSettings => {
         clusteringThreshold: geneticDistanceThreshold ?? 0,
     };
 };
+
+type OutbreakAnalysisStoreState = {
+    id: number | null;
+    name: string | null;
+    graphData: GraphData;
+    analysisSettings: AnalysisSettings;
+    graphSettings: GraphSettings;
+    generalSettings: GeneralSettings;
+    analysisReport: AnalysisReport;
+};
+
+type OutbreakAnalysisStoreActions = {
+    updateId: (newId: number) => void;
+    updateName: (newName: string) => void;
+    updateAnalysisReport: (newAnalysisReport: Partial<AnalysisReport>) => void;
+    updateGraphData: (newGraphData: GraphData) => void;
+    updateAnalysisSettings: (newAnalysisSettings: Partial<AnalysisSettings>) => void;
+    updateGraphSettings: (newGraphSettings: Partial<GraphSettings>) => void;
+    updateGeneralSettings: (newGeneralSettings: Partial<GeneralSettings>) => void;
+    updateWholeAnalysis: (
+        newId: number,
+        newName: string,
+        newAnalysisSettings: AnalysisSettings,
+        newGraphSettings: GraphSettings,
+        newGeneralSettings: GeneralSettings
+    ) => void;
+};
+
+export type OutbreakAnalysisStore = OutbreakAnalysisStoreState & OutbreakAnalysisStoreActions;
 
 export const useOutbreakAnalysisStore = create<OutbreakAnalysisStore>((set) => {
     // Initialize the settings with the default settings and variables from add store

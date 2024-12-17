@@ -1,4 +1,4 @@
-import { db } from "../infrastructure/database";
+import { db } from "../services/database/DatabaseManager";
 
 interface BacterialAnalysisResult {
     allele_ids: { [gen_id: string]: string };

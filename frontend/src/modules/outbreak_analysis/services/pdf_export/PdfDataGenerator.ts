@@ -1,16 +1,16 @@
-import {CoreState, useCoreStore} from "@/modules/core/stores/core";
-import {OutbreakAnalysisStore, useOutbreakAnalysisStore} from "../../stores/outbreakAnalysis";
-import {CaseWithRelationships} from "@/modules/core/models/cases";
-import {ClusterAnalyser} from "@/modules/core/services/graph/ClusterAnalyser";
-import {CustomNode, GraphData} from "@/modules/core/types/graph";
+import { CoreStore, useCoreStore } from "@/modules/core/stores/core";
+import { OutbreakAnalysisStore, useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
+import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import html2canvas from "html2canvas";
-import {PathogenTypeName} from "@/modules/core/models/pathogen_types";
-import {getSelectedClusters} from "@/modules/core/helpers/graphs";
-import {t} from "i18next";
-import {concat} from "lodash";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { getSelectedClusters } from "@/modules/core/helpers/graphs";
+import { t } from "i18next";
+import { concat } from "lodash";
 
 export class PdfDataGenerator {
-    protected coreState: CoreState;
+    protected coreStore: CoreStore;
     protected outbreakAnalysisState: OutbreakAnalysisStore;
     protected graphData: GraphData;
 
@@ -20,7 +20,7 @@ export class PdfDataGenerator {
     protected clustersContainingCasesOfSelectedOutbreak: number;
 
     constructor() {
-        this.coreState = useCoreStore.getState();
+        this.coreStore = useCoreStore.getState();
         this.outbreakAnalysisState = useOutbreakAnalysisStore.getState();
         this.graphData = this.collectGraphData();
         this.allCases = [];
@@ -40,8 +40,8 @@ export class PdfDataGenerator {
         ).length;
 
         const summary = `Der analysierte Datensatz umfasst Falldaten des ${
-            this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"
-        } Pathogens ${this.coreState.activePathogen?.name}.\n\n`;
+            this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"
+        } Pathogens ${this.coreStore.activePathogen?.name}.\n\n`;
 
         return `${summary}${this.getSummaryPhraseForSelectedOutbreakCases()}${this.getSummaryPhraseForOtherOutbreakCases(
             selectedClusters.selectedBackground,
@@ -66,7 +66,7 @@ export class PdfDataGenerator {
             (link) => link.type !== t(`linkTypes.geneticDistance`)
         );
         return `Abbildung 1: Minimum Spanning Tree (MST) der analysierten Fälle. Jeder Knoten im MST repräsentiert einen gemeldeten Fall; Knoten-Farben zeigen den Falltyp an (Umgebungsproben oder als potentiellen Ausbruch gekennzeichnete Proben). Genetische Abstände zwischen den sequenzierten ${
-            this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"
+            this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral ? "viralen" : "bakteriellen"
         } Genomen werden über graue Kanten zwischen Punkten visualisiert, die mit dem jeweiligen genetischen Abstand beschriftet sind. ${
             allContactTracingLinks.length > 0 && " Kontakte zwischen Fällen sind durch farbliche Kanten repräsentiert."
         } Zahlen in den Knoten beziehen sich auf die Spalte "Fall-Nummer im MST" in Tabelle 1.`;
@@ -77,7 +77,10 @@ export class PdfDataGenerator {
         const mergedClusterCases = concat(...this.clusters).map((customNode) => customNode?.caseData.case_id);
 
         this.distantCasesOfSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter((customNode) => {
-            return customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id && !mergedClusterCases.includes(customNode.caseData.case_id);
+            return (
+                customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id &&
+                !mergedClusterCases.includes(customNode.caseData.case_id)
+            );
         });
 
         for (const index in this.clusters) {
@@ -105,10 +108,10 @@ export class PdfDataGenerator {
 
     getCaseDataTableColumns = () => {
         const columns = ["Fall-Nummer im MST", "Sequenz-ID", "Vermuteter Ausbruch"];
-        if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
+        if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
             columns.push("Ns", "IUPAC Ambiguity Characters", "Abstammung");
         }
-        if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
+        if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
             columns.push("Contigs", "Länge erster Contig", "Unbestimmbare Gene");
         }
         return columns;
@@ -122,14 +125,14 @@ export class PdfDataGenerator {
                 node.caseData.sample?.fasta_id ?? "-",
                 node.caseData.outbreak?.name ?? "-",
             ];
-            if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
+            if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
                 cells.push(
                     node.caseData.sample?.n_count ?? 0,
                     node.caseData.sample?.ambiguity_character_count ?? 0,
                     node.caseData.sample?.lineage ?? "-"
                 );
             }
-            if (this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
+            if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
                 cells.push(
                     node.caseData.sample?.contig_count ?? 0,
                     node.caseData.sample?.first_contig_length ?? 0,
@@ -155,7 +158,7 @@ export class PdfDataGenerator {
         const clusterAnalyses = new ClusterAnalyser(
             this.graphData.nodes,
             this.graphData.links,
-            this.coreState.activePathogen?.genetic_distance_threshold!
+            this.coreStore.activePathogen?.genetic_distance_threshold!
         );
         return clusterAnalyses.getClusters();
     };
@@ -196,8 +199,8 @@ export class PdfDataGenerator {
         return `${
             caseCountWithoutOutbreak > 0
                 ? ` sowie ${caseCountWithoutOutbreak} ${
-                    caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
-                } aus der Umgebung ohne Ausbruchszuweisung.`
+                      caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
+                  } aus der Umgebung ohne Ausbruchszuweisung.`
                 : "."
         }`;
     };
@@ -210,7 +213,7 @@ export class PdfDataGenerator {
         return `\n\nFür ${samples.length} von ${
             this.outbreakAnalysisState.graphData.nodes.length
         } Fällen liegen genetische Sequenzdaten vor${
-            this.coreState.activePathogen?.pathogen_type?.name === PathogenTypeName.viral
+            this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral
                 ? `, wobei ${samplesWithLowAmountOfNs.length} von ${samples.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`
                 : ""
         }.`;
@@ -241,7 +244,7 @@ export class PdfDataGenerator {
                 " und$1"
             )} des untersuchten vermuteten Ausbruchs bilden ein Cluster und sind untereinander genetisch identisch bzw. nah verwandt ${
             clusterIndex === 0
-                ? `(minimaler paarweiser genetischer Abstand von ≤ ${this.coreState.activePathogen?.genetic_distance_threshold})`
+                ? `(minimaler paarweiser genetischer Abstand von ≤ ${this.coreStore.activePathogen?.genetic_distance_threshold})`
                 : ""
         }.${" "}`;
     };
@@ -291,9 +294,9 @@ export class PdfDataGenerator {
             cases.length === 0
                 ? "."
                 : `und mit ${cases
-                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
-                    .join(", ")
-                    .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
+                      .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                      .join(", ")
+                      .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
         }`;
     };
 
@@ -310,7 +313,7 @@ export class PdfDataGenerator {
             .replace(/,([^,]*)$/, " und$1")} des untersuchten vermuteten Ausbruchs ${
             this.distantCasesOfSelectedOutbreak.length > 1 ? "weisen jeweils" : "weist"
         } eine genetische Distanz von > ${
-            this.coreState.activePathogen?.genetic_distance_threshold
+            this.coreStore.activePathogen?.genetic_distance_threshold
         } zu allen anderen untersuchten Ausbruchsproben auf, weshalb sie genetisch nicht nah verwandt mit diesen ${
             this.distantCasesOfSelectedOutbreak.length > 1 ? "sind" : "ist"
         }.`;

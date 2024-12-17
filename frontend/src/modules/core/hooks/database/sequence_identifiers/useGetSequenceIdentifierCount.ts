@@ -1,4 +1,4 @@
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { useLiveQuery } from "dexie-react-hooks";
 

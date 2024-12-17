@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CaseImport } from "@/modules/core/models/cases";
 import { CategorySchema, persistCategoryIfNotExist } from "@/modules/core/models/categories";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema } from "./pathogens";
 
 export interface GroupSchema {
@@ -63,7 +63,9 @@ export const deleteGroupsByPathogenId = async (pathogen_id: number) => {
 };
 
 export const createGroupIfNotExist = async (groupName: string, categoryId: number, pathogenId: number) => {
-    const existingGroupForName = await db.groups.where({ name: groupName, category_id: categoryId, pathogen_id: pathogenId}).first();
+    const existingGroupForName = await db.groups
+        .where({ name: groupName, category_id: categoryId, pathogen_id: pathogenId })
+        .first();
     const data = {
         name: groupName,
         category_id: categoryId,

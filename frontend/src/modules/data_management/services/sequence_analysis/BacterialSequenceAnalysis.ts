@@ -1,4 +1,4 @@
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
 export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
