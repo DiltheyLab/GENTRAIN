@@ -10,10 +10,8 @@ from zipfile import ZipFile
 import time
 import shutil
 
-from wtforms import validators
-
 from backend.app import db, basic_auth
-from backend.modules.admin.validation import validate_example_data_upload
+from backend.modules.admin.validators.example_data import example_data_validator
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
@@ -105,7 +103,7 @@ class PathogenView(AuthModelView):
             "allow_overwrite": True,
             "allowed_extensions": ["zip"],
             "description": "<b>Zip file must contain following files.</b><br/><ul><li>falldaten.csv</li><li>sequenzdaten.fasta</li><li>kontaktdaten.csv</li></ul>",
-            "validators": [validate_example_data_upload]
+            "validators": [example_data_validator]
         }
     }
 
