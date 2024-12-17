@@ -1,4 +1,5 @@
-from os import path, listdir, remove, rename, environ
+import json
+from os import path, listdir, remove, rename, environ, makedirs
 
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
@@ -12,6 +13,7 @@ import shutil
 
 from backend.app import db, basic_auth
 from backend.modules.admin.validators.example_data import example_data_validator
+from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
@@ -70,6 +72,7 @@ class UserView(AuthModelView):
         )
         db.session.commit()
 
+
 class PathogenView(AuthModelView):
     schemes_root = f"{get_project_path()}/modules/sequence_analysis/schemes"
     example_data_root = f"{get_project_path()}/static/pathogen_example_data/"
@@ -95,7 +98,8 @@ class PathogenView(AuthModelView):
             "label": "Scheme Zip",
             "base_path": schemes_root,
             "allow_overwrite": True,
-            "allowed_extensions": ["zip"]
+            "allowed_extensions": ["zip"],
+            "validators": [scheme_validator],
         },
         "example_data_path": {
             "label": "Example Data Zip",
@@ -111,7 +115,6 @@ class PathogenView(AuthModelView):
         self.prior_scheme_name = model.scheme_name
         return super().update_model(form, model)
 
-
     def after_model_change(self, form, model, is_created):
         if self.scheme_added(model.scheme_path):
             with ZipFile(
@@ -121,12 +124,22 @@ class PathogenView(AuthModelView):
                 extract_path = path.join(
                     self.schemes_root, directory_name
                 )
-                archive.extractall(path=extract_path)
-                content = listdir(
-                    path.join(
-                        self.schemes_root, directory_name
-                    )
-                )
+
+                if not path.isdir(extract_path):
+                    makedirs(extract_path)
+                # only keep intended file keys in pathogen.json
+                dictfilt = lambda x, y: dict([(i, x[i]) for i in x if i in set(y)])
+                pathogenJson = json.loads(archive.open("pathogen.json").read())
+                wanted_keys = ("pathogenJson", "treeJson", "reference")
+                pathogenJson["files"] = dictfilt(pathogenJson["files"], wanted_keys)
+                pathogenJsonFile = open(f"{extract_path}/pathogen.json", "w")
+                pathogenJsonFile.write(json.dumps(pathogenJson))
+                pathogenJsonFile.close()
+
+                archive.extract("tree.json", path=extract_path)
+                archive.extract("reference.fasta", path=extract_path)
+                content = listdir(extract_path)
+
                 if len(content) == 1:
                     sub_path = path.join(
                         self.schemes_root,

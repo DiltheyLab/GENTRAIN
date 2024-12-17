@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # Create in-memory database
 SQLALCHEMY_DATABASE_URI = f"{os.environ.get('DATABASE_DRIVER')}://{os.environ.get('DATABASE_USER')}:{os.environ.get('DATABASE_PASSWORD')}@{os.environ.get('DATABASE_HOST')}:{os.environ.get('DATABASE_PORT')}/{os.environ.get('DATABASE_NAME')}"
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 
 # Flask-Security config
 SECURITY_URL_PREFIX = "/admin"

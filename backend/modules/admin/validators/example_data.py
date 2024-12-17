@@ -2,6 +2,7 @@ import csv
 import re
 from io import TextIOWrapper
 from os import path
+from types import NoneType
 from zipfile import ZipFile
 
 from Bio import SeqIO
@@ -13,7 +14,7 @@ from backend.modules.core.helpers import slugify
 
 
 def example_data_validator(form, field):
-    if type(field.data) == str:
+    if type(field.data) == str or type(field.data) == NoneType:
         return
     zip_in = ZipFile(field.data.stream, "r")
     validate_zip(zip_in, form.type.data)
