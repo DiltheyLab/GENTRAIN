@@ -51,7 +51,6 @@ export const TutorialTour = () => {
         const nextStep = action === ACTIONS.NEXT;
         const prevStep = action === ACTIONS.PREV;
         const nextStepIndex = index + (prevStep ? -1 : 1);
-        console.log(type);
 
         const manageTutorialStep = () => {
             switch (step.target) {
