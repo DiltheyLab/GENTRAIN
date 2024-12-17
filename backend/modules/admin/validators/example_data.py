@@ -1,5 +1,4 @@
 import csv
-import io
 import re
 from io import TextIOWrapper
 from os import path
