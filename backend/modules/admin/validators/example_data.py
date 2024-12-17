@@ -11,6 +11,8 @@ from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
 from backend.modules.core.helpers import slugify
+from backend.modules.core.validation_rules import valid_case_id, valid_text, valid_sequence_id_in_csv, valid_date, \
+    valid_sequence, valid_sequence_id_in_fasta
 
 
 def example_data_validator(form, field):
@@ -181,28 +183,3 @@ def validate_contacts_csv_row(index, row):
     if not valid_case_id(case_id_1) or not valid_case_id(case_id_2) or not valid_text(type) or not valid_text(context):
         raise ValidationError(f"Contact in row {index + 2} is invalid.")
 
-
-def valid_case_id(string):
-    return re.compile(r"^[A-Za-z0-9-]+$").match(string)
-
-
-def valid_sequence_id_in_csv(string):
-    # fasta ids might be empty (*) for cases that are not sequenced
-    return re.compile(r"^[A-Za-z0-9-_]*$").match(string)
-
-
-def valid_sequence_id_in_fasta(string):
-    # fasta ids must be set
-    return re.compile(r"^[A-Za-z0-9-_]+$").match(string)
-
-
-def valid_date(string):
-    return re.compile(r"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$").match(string)
-
-
-def valid_text(string):
-    return re.compile(r"^[A-Za-z0-9äöüÄÖÜß,() ]*$").match(string)
-
-
-def valid_sequence(string):
-    return re.compile(r"^[ATGCRYSWKMBDHVNXU\n>]+$").match(string)
