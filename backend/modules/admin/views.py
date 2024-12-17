@@ -1,5 +1,4 @@
-import json
-from os import path, listdir, remove, rename, environ, makedirs
+from os import path, environ
 
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
@@ -7,11 +6,11 @@ from flask_admin.form.upload import FileUploadField
 from flask_login import current_user
 from flask_security import hash_password, SQLAlchemyUserDatastore
 
-from zipfile import ZipFile
-import time
 import shutil
 
 from backend.app import db, basic_auth
+from backend.modules.admin.strategies.bacterial_scheme_processor import BacterialSchemeProcessor
+from backend.modules.admin.strategies.viral_scheme_processor import ViralSchemeProcessor
 from backend.modules.admin.validators.example_data import example_data_validator
 from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
@@ -116,66 +115,16 @@ class PathogenView(AuthModelView):
         return super().update_model(form, model)
 
     def after_model_change(self, form, model, is_created):
-        if self.scheme_added(model.scheme_path):
-            with ZipFile(
-                    path.join(self.schemes_root, model.scheme_path), "r"
-            ) as archive:
-                directory_name = f"{model.scheme_name}_{round(time.time() * 1000)}"
-                extract_path = path.join(
-                    self.schemes_root, directory_name
-                )
-
-                if not path.isdir(extract_path):
-                    makedirs(extract_path)
-                # only keep intended file keys in pathogen.json
-                dictfilt = lambda x, y: dict([(i, x[i]) for i in x if i in set(y)])
-                pathogenJson = json.loads(archive.open("pathogen.json").read())
-                wanted_keys = ("pathogenJson", "treeJson", "reference")
-                pathogenJson["files"] = dictfilt(pathogenJson["files"], wanted_keys)
-                pathogenJsonFile = open(f"{extract_path}/pathogen.json", "w")
-                pathogenJsonFile.write(json.dumps(pathogenJson))
-                pathogenJsonFile.close()
-
-                archive.extract("tree.json", path=extract_path)
-                archive.extract("reference.fasta", path=extract_path)
-                content = listdir(extract_path)
-
-                if len(content) == 1:
-                    sub_path = path.join(
-                        self.schemes_root,
-                        f"{directory_name}/{content[0]}",
-                    )
-                    elements = listdir(sub_path)
-                    for element in elements:
-                        shutil.move(path.join(sub_path, element), extract_path)
-                    shutil.rmtree(sub_path)
-                if self.scheme_exists(self.prior_scheme_name):
-                    shutil.rmtree(path.join(self.schemes_root, self.prior_scheme_name))
-                shutil.move(
-                    path.join(
-                        self.schemes_root,
-                        directory_name,
-                    ),
-                    path.join(
-                        self.schemes_root,
-                        model.scheme_name,
-                    ),
-                )
-            remove(path.join(self.schemes_root, model.scheme_path))
-        if is_created is False and model.scheme_name and model.scheme_name != self.prior_scheme_name:
-            rename(path.join(self.schemes_root, self.prior_scheme_name),
-                   path.join(self.schemes_root, model.scheme_name))
+        scheme_processor = ViralSchemeProcessor(model,
+                                                self.prior_scheme_name) if model.type == "viral" else BacterialSchemeProcessor(
+            model, self.prior_scheme_name)
+        scheme_processor.extract_scheme()
+        if is_created is False:
+            scheme_processor.rename_scheme_directory_on_name_change()
 
     def after_model_delete(self, model):
         if path.isdir(path.join(self.schemes_root, model.scheme_name)):
             shutil.rmtree(path.join(self.schemes_root, model.scheme_name))
-
-    def scheme_exists(self, scheme_name):
-        return scheme_name and path.isdir(
-            path.join(self.schemes_root, scheme_name))
-
-    def scheme_added(self, scheme_path):
-        return path.isfile(path.join(self.schemes_root, scheme_path))
 
 
 class PathogenIndexView(PathogenView):

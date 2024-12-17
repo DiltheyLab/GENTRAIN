@@ -1,13 +1,10 @@
-import json
 import re
 from flask import request
 from flask_socketio import leave_room, join_room
 
 from backend.modules.core.models import Pathogen
+from backend.modules.sequence_analysis.strategies import ViralSequenceAnalysis, BacterialSequenceAnalysis
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
-from backend.modules.sequence_analysis.strategies.pathogen_strategy_manager import (
-    PathogenStrategyManager,
-)
 
 
 @sio.event
@@ -58,7 +55,7 @@ def leave_bacterial():
 
 @sio.event
 def sequence_analysis_request(
-    pathogen_id, sequence_identifier, sequence_chunk, chunk_information
+        pathogen_id, sequence_identifier, sequence_chunk, chunk_information
 ):
     pathogen = Pathogen.query.get(pathogen_id)
     socket_id = request.sid
@@ -86,7 +83,12 @@ def sequence_analysis_request(
     for key in chunk_keys:
         sequence += redis_connection.get(key)
         redis_connection.delete(key)
-    strategy = PathogenStrategyManager.get_sequence_analysis_strategy(
+    strategy = ViralSequenceAnalysis(
+        pathogen=pathogen,
+        sequence_identifier=sequence_identifier,
+        sequence=sequence,
+        socket_id=socket_id,
+    ) if pathogen.type == "viral" else BacterialSequenceAnalysis(
         pathogen=pathogen,
         sequence_identifier=sequence_identifier,
         sequence=sequence,
@@ -96,13 +98,14 @@ def sequence_analysis_request(
         queue_viral if strategy.type == "viral" else queue_bacterial
     )
 
+
 def get_genetic_errors(sequence_chunk):
     """Validate genetic data."""
     return re.findall(r"[^ATGCRYSWKMBDHVNXU\n\>]+", sequence_chunk)
 
 
 def persist_sequence_chunk(
-    sequence_chunk, chunk_information, socket_id, sequence_identifier
+        sequence_chunk, chunk_information, socket_id, sequence_identifier
 ):
     redis_connection.set(
         name=f"chunks:{socket_id}:{sequence_identifier}:{chunk_information['index']}",
