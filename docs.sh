@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd documentation
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
