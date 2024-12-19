@@ -1,4 +1,4 @@
-site_name: Gentrain Docs
+site_name: GENTRAIN Docs
 nav:
   - Application:
       - application/dashboard.md
