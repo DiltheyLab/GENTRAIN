@@ -42,7 +42,7 @@ architecture-beta
 
 ## Containerization
 
-The deployment includes the following docker containers.
+The project architecture is technically implemented in the following Docker containers.
 
 | Container         | Description                                                                                       | Locally accessible via |
 |-------------------|---------------------------------------------------------------------------------------------------|------------------------|

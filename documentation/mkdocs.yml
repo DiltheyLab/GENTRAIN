@@ -10,7 +10,8 @@ nav:
   - Developers:
       - developers/getting_started.md
       - developers/project_architecture.md
-      - developers/automated_testing.md
+      - developers/deployment.md
+      - developers/testing.md
       - developers/data_management.md
 
 extra_css:
