@@ -1,8 +1,4 @@
-# Developers
-
-You can find the Gentrain Github Repository at https://github.com/DiltheyLab/GENTRAIN.
-
-## Code Annotation Examples
+# Code Annotation Examples
 
 This is some `inline code`.
 

@@ -1,8 +1,24 @@
 site_name: Gentrain Docs
+nav:
+  - Application:
+      - application/dashboard.md
+      - application/data_management.md
+      - application/outbreak_analysis.md
+  - Admin:
+        - admin/users.md
+        - admin/pathogens.md
+  - Developers:
+      - developers/getting_started.md
+      - developers/project_architecture.md
+      - developers/automated_testing.md
+      - developers/data_management.md
+
 extra_css:
   - stylesheets/extra.css
 theme:
   name: material
+  logo: assets/img/gentrain-icon.png
+  favicon: assets/img/gentrain-favicon.ico
   custom_dir: overrides
   features:
     - navigation.tabs
@@ -41,8 +57,10 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.mark
   - attr_list
-  - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 copyright:
   © 2024 Universitätsklinikum Düsseldorf
