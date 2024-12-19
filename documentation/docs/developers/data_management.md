@@ -75,36 +75,36 @@ allele sets of two sequences.
 ```mermaid
 sequenceDiagram
     participant IndexedDB
-    participant React
-    participant Flask
+    participant Frontend
+    participant Backend
     participant Viral Queue
     participant Bacterial Queue
     participant NextcladeCLI
     participant chewBACCA
-    React->>React: init session
-    React->>Flask: message: join viral room
-    Flask->>React: message: confirm viral room joined
+    Frontend->>Frontend: init session
+    Frontend->>Backend: message: join viral room
+    Backend->>Frontend: message: confirm viral room joined
     loop for all sequences
-        React->>React: create pseudonym for sequence
-        React->>Flask: message: sequence analysis request
+        Frontend->>Frontend: create pseudonym for sequence
+        Frontend->>Backend: message: sequence analysis request
         alt Viral Sequence
-            Flask->>Viral Queue: enqueue: sequence analysis job
+            Backend->>Viral Queue: enqueue: sequence analysis job
             Viral Queue->>NextcladeCLI: execute: sequence analysis job
             activate NextcladeCLI
             NextcladeCLI-->>Viral Queue: sequence analysis result
             deactivate NextcladeCLI
-            Viral Queue->>React: message: sequence analysis result
+            Viral Queue->>Frontend: message: sequence analysis result
         else Bacterial Sequence
-            Flask->>Bacterial Queue: enqueue: sequence analysis job
+            Backend->>Bacterial Queue: enqueue: sequence analysis job
             Bacterial Queue->>chewBACCA: execute: sequence analysis job
             activate chewBACCA
             chewBACCA-->>Bacterial Queue: sequence analysis result
             deactivate chewBACCA 
-            Bacterial Queue->>React: message: sequence analysis result
+            Bacterial Queue->>Frontend: message: sequence analysis result
         end  
-        React->>IndexedDB: persist: sample and sequence analysis result
+        Frontend->>IndexedDB: persist: sample and sequence analysis result
     end
-    React->>Flask: message: close viral room
+    Frontend->>Backend: message: close viral room
 ```
 
 ## Distance Calculation
