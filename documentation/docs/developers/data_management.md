@@ -25,14 +25,17 @@ Samples provide mappings between cases and the corresponding sequenced genome. I
 has to be sequenced, as Gentrain can also provide valuable inferences based on contact tracing information. However, it
 is the genetic information that makes gentrain what it is!
 
-To import samples a fasta-file is required which holds the sequences identifiered by so called fasta ids.
+A fasta file containing the sequences identified by so-called fasta IDs is required to import samples.
+Genetic distances are calculated between all samples, which are then assembled in a distance matrix. This distance matrix enables
+to create a minimum spanning tree for the cases based on the genetic distance. The procedure is slightly different for viral and bacterial samples.
 
 ```mermaid
 graph LR
-A[<b>UserInput</b><br/>Fasta File Upload]-->B[<b>Sequence Analysis</b><br/>Viral and Bacterial]
-B -->C[<b>Distance Calculation</b><br/>Viral and Bacterial]
-C -->D[<b>Distance Matrix Assembling</b>]
+A[<b>User Input</b>]-->B[<b><a href='#sequence-analysis' style="text-decoration: none;">Sequence Analysis</a></b>]
+B -->C[<b><a href='#distance-calculation' style="text-decoration: none;">Distance Calculation</a></b>]
+C -->D[<b><a href='#distance-matrix' style="text-decoration: none;">Distance Matrix</a></b>]
 ```
+
 ### Contacts
 
 WIP
@@ -54,15 +57,11 @@ Nextclade CLI</a>.
 Nextclade provides mutation objects consisting of snps, insertions, deletions, Ns and nonACGTN-characters.
 These mutation objects enable us to calculate genetic distances without persisting whole sequences.
 
-#### Message Flow
-
-![Viral Sequence Analysis](img/data_management/viral_sequence_analysis.png)
-
 ### Bacterial Sequence Analysis
 
 #### Allele Calling
 
-Bacterial sequences are analyses using chewBACCA. According to its own docs "chewBBACA is a software suite for the
+Bacterial sequences are analysed using chewBACCA. According to its own docs "chewBBACA is a software suite for the
 creation and evaluation of core genome and whole genome MultiLocus Sequence Typing (cg/wgMLST) schemas and results". For
 Gentrain, we use <a href="https://chewbbaca.readthedocs.io/en/latest/user/modules/AlleleCall.html" target="_blank">
 chewBACCA's AlleleCall
@@ -71,6 +70,47 @@ which provides mappings between each gene and the corresponding
 allele in the sequences. Based on these mappings, we then calculate genetic distances by differentiating between the
 allele sets of two sequences.
 
-#### Message Flow
+### UML Sequence Diagram
 
-![Bacterial Sequence Analysis](img/data_management/bacterial_sequence_analysis.png)
+```mermaid
+sequenceDiagram
+    participant IndexedDB
+    participant React
+    participant Flask
+    participant Viral Queue
+    participant Bacterial Queue
+    participant NextcladeCLI
+    participant chewBACCA
+    React->>React: init session
+    React->>Flask: message: join viral room
+    Flask->>React: message: confirm viral room joined
+    loop for all sequences
+        React->>React: create pseudonym for sequence
+        React->>Flask: message: sequence analysis request
+        alt Viral Sequence
+            Flask->>Viral Queue: enqueue: sequence analysis job
+            Viral Queue->>NextcladeCLI: execute: sequence analysis job
+            activate NextcladeCLI
+            NextcladeCLI-->>Viral Queue: sequence analysis result
+            deactivate NextcladeCLI
+            Viral Queue->>React: message: sequence analysis result
+        else Bacterial Sequence
+            Flask->>Bacterial Queue: enqueue: sequence analysis job
+            Bacterial Queue->>chewBACCA: execute: sequence analysis job
+            activate chewBACCA
+            chewBACCA-->>Bacterial Queue: sequence analysis result
+            deactivate chewBACCA 
+            Bacterial Queue->>React: message: sequence analysis result
+        end  
+        React->>IndexedDB: persist: sample and sequence analysis result
+    end
+    React->>Flask: message: close viral room
+```
+
+## Distance Calculation
+
+WIP
+
+## Distance Matrix
+
+WIP
