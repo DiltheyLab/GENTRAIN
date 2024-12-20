@@ -20,7 +20,7 @@ jobs:
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}/documentation
-            python -m venv venv
+            python3 -m venv venv
             source venv/bin/activate
       - name: Install pip dependencies
         uses: appleboy/ssh-action@v1.0.3
