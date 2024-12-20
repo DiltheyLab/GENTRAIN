@@ -19,7 +19,9 @@ class ViralSchemeProcessor(SchemeProcessorStrategy):
     def build_and_save_pathogen_json(self, zip_file):
         # only keep intended file keys in pathogen.json
         dict_filt = lambda x, y: dict([(i, x[i]) for i in x if i in set(y)])
-        pathogen_json = json.loads(zip_file.open("pathogen.json").read())
+        pathogen_json_file = zip_file.open("pathogen.json")
+        pathogen_json = json.loads(pathogen_json_file.read())
+        pathogen_json_file.close()
         intended_keys = ("pathogenJson", "treeJson", "reference")
         pathogen_json["files"] = dict_filt(pathogen_json["files"], intended_keys)
         pathogen_json_file = open(f"{self.extract_path}/pathogen.json", "w")

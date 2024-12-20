@@ -1,17 +1,33 @@
 from os import path
+from types import NoneType
 from zipfile import ZipFile
+
+from werkzeug.utils import secure_filename
 from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
-from backend.modules.core.helpers import read_fasta_file_from_zip
+from backend.modules.core.helpers import read_fasta_file_from_zip, slugify
 from backend.modules.core.validation_rules import valid_sequence_id_in_fasta
 
 
 def scheme_validator(form, field):
-    print(field.data)
-    zip = ZipFile(field.data.stream, "r")
-    #validate_zip(zip, form.type.data)
-    print(field.data)
+    if type(field.data) == str or type(field.data) == NoneType:
+        return
+
+    zip_in = ZipFile(field.data.stream, 'r')
+    new_filename = path.join(f"{get_project_path()}/modules/sequence_analysis/schemes",
+                             secure_filename(f"{slugify(form.scheme_name.data)}.zip"))
+    zip_out = create_clean_example_date_zip(new_filename, zip_in)
+    zip_in.close()
+    field.data = zip_out
+
+def create_clean_example_date_zip(name, zip_in):
+    zip_out = ZipFile(name, 'w')
+    zip_out.writestr("pathogen.json", zip_in.read("pathogen.json"))
+    zip_out.writestr("reference.fasta", zip_in.read("reference.fasta"))
+    zip_out.writestr("tree.json", zip_in.read("tree.json"))
+    zip_out.close()
+    return zip_out
 
 
 def validate_zip(zip: ZipFile, pathogen_type: str):

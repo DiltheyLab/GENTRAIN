@@ -18,6 +18,8 @@ def example_data_validator(form, field):
     validate_zip(zip_in, form.type.data)
     # create a new zip file container only files expected for example data uploads
     zip_out = create_clean_example_date_zip(f"{form.name.data}_beispieldaten", form.type.data, zip_in)
+    zip_in.close()
+    zip_out.close()
     field.data = zip_out
 
 

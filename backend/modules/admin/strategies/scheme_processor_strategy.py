@@ -4,7 +4,10 @@ from abc import ABC, abstractmethod
 from os import path, makedirs, rename, listdir, remove
 from zipfile import ZipFile
 
+from werkzeug.utils import secure_filename
+
 from backend.config import get_project_path
+from backend.modules.core.helpers import slugify
 
 
 class SchemeProcessorStrategy(ABC):
@@ -22,20 +25,17 @@ class SchemeProcessorStrategy(ABC):
 
     def extract_scheme(self):
         """Template method to extract scheme from zip to extraction directory."""
-        if not self.scheme_added(self.pathogen.scheme_path):
+        if not self.scheme_added():
             return
-        print(self.schemes_root, self.pathogen.scheme_path)
-        zip_file = ZipFile(
-            path.join(self.schemes_root, self.pathogen.scheme_path), "r"
-        )
-        print(zip_file)
-
-        directory_name = self.create_extraction_directory()
-        self.extract_files(zip_file)
-        self.move_files_to_root_for_nested_zips(directory_name)
-        self.remove_prior_scheme_directory()
-        self.activate_temp_scheme_directory(directory_name)
-        remove(path.join(self.schemes_root, self.pathogen.scheme_path))
+        file_path = path.join(self.schemes_root, secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip"))
+        print(file_path)
+        with ZipFile(file_path, "r") as zip_file:
+            directory_name = self.create_extraction_directory()
+            self.extract_files(zip_file)
+            self.move_files_to_root_for_nested_zips(directory_name)
+            self.remove_prior_scheme_directory()
+            self.activate_temp_scheme_directory(directory_name)
+            remove(file_path)
 
     def create_extraction_directory(self):
         directory_name = f"{self.pathogen.scheme_name}_{round(time.time() * 1000)}"
@@ -80,5 +80,5 @@ class SchemeProcessorStrategy(ABC):
         return scheme_name and path.isdir(
             path.join(self.schemes_root, scheme_name))
 
-    def scheme_added(self, scheme_path):
-        return path.isfile(path.join(self.schemes_root, scheme_path))
+    def scheme_added(self):
+        return path.isfile(path.join(self.schemes_root, secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip")))

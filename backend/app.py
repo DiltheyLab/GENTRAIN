@@ -1,5 +1,4 @@
 import os
-import subprocess
 from os import environ
 
 from flask_cors import CORS
