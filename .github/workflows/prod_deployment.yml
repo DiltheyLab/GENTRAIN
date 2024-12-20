@@ -15,8 +15,7 @@ jobs:
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PROD_SERVER }}
-          port: ${{ vars.SSH_PORT_PROD_SERVER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
             cd ${{ vars.GENTRAIN_DIR }}/documentation
@@ -29,8 +28,7 @@ jobs:
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PROD_SERVER }}
-          port: ${{ vars.SSH_PORT_PROD_SERVER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
             rm -rf ${{ vars.GENTRAIN_DIR }}/backend/static/docs
