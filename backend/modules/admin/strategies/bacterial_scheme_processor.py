@@ -11,7 +11,7 @@ class BacterialSchemeProcessor(SchemeProcessorStrategy):
         """Concrete method to extract viral scheme files."""
         zip_file.extract(".genes_list", path=self.extract_path)
         zip_file.extract(".schema_config", path=self.extract_path)
-        zip_file.extract("loci_modes", path=self.extract_path)
+        #zip_file.extract("loci_modes", path=self.extract_path)
         for filename in zip_file.namelist():
             # extract all gen-allele-fasta-files and short-fasta-files
             if ".fasta" in filename:

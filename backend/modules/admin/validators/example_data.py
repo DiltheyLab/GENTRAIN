@@ -1,16 +1,12 @@
-import csv
-import re
-from io import TextIOWrapper
 from os import path
 from types import NoneType
 from zipfile import ZipFile
 
-from Bio import SeqIO
 from werkzeug.utils import secure_filename
 from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
-from backend.modules.core.helpers import slugify
+from backend.modules.core.helpers import slugify, read_fasta_file_from_zip, read_csv_file_from_zip
 from backend.modules.core.validation_rules import valid_case_id, valid_text, valid_sequence_id_in_csv, valid_date, \
     valid_sequence, valid_sequence_id_in_fasta
 
@@ -142,24 +138,6 @@ def validate_bacterial_assemblies(zip):
                 print(row.id)
                 if not valid_sequence(str(row.seq)):
                     raise ValidationError(f"Assembly for {row['Sequenz ID']} contains invalid sequences.")
-
-
-def read_csv_file_from_zip(filename: str, zip: ZipFile):
-    try:
-        file = zip.open(filename, "r")
-        reader = csv.DictReader(TextIOWrapper(file), delimiter=";")
-    except:
-        raise ValidationError(f"File {filename} is not readable.")
-    return reader
-
-
-def read_fasta_file_from_zip(filename: str, zip: ZipFile):
-    try:
-        file = zip.open(filename, "r")
-        reader = SeqIO.parse(TextIOWrapper(file), "fasta")
-    except:
-        raise ValidationError(f"File {filename} is not readable.")
-    return reader
 
 
 def validate_cases_csv_row(index, row, column_names):

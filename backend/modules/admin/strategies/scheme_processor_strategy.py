@@ -24,9 +24,12 @@ class SchemeProcessorStrategy(ABC):
         """Template method to extract scheme from zip to extraction directory."""
         if not self.scheme_added(self.pathogen.scheme_path):
             return
+        print(self.schemes_root, self.pathogen.scheme_path)
         zip_file = ZipFile(
             path.join(self.schemes_root, self.pathogen.scheme_path), "r"
         )
+        print(zip_file)
+
         directory_name = self.create_extraction_directory()
         self.extract_files(zip_file)
         self.move_files_to_root_for_nested_zips(directory_name)

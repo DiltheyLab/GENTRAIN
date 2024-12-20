@@ -1,4 +1,10 @@
+import csv
 import re
+from io import TextIOWrapper
+from zipfile import ZipFile
+
+from Bio import SeqIO
+from wtforms.validators import ValidationError
 
 
 def slugify(s):
@@ -8,3 +14,20 @@ def slugify(s):
     s = re.sub(r'^-+|-+$', '', s)
     return s
 
+
+def read_csv_file_from_zip(filename: str, zip: ZipFile):
+    try:
+        file = zip.open(filename, "r")
+        reader = csv.DictReader(TextIOWrapper(file), delimiter=";")
+    except:
+        raise ValidationError(f"File {filename} is not readable.")
+    return reader
+
+
+def read_fasta_file_from_zip(filename: str, zip: ZipFile):
+    try:
+        file = zip.open(filename, "r")
+        reader = SeqIO.parse(TextIOWrapper(file), "fasta")
+    except:
+        raise ValidationError(f"File {filename} is not readable.")
+    return reader
