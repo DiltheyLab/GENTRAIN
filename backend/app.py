@@ -1,11 +1,11 @@
 import os
+import subprocess
 from os import environ
 
 from flask_cors import CORS
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_basicauth import BasicAuth
-
 app = Flask(__name__)
 if environ.get("APP_ENV") == "development":
     CORS(app)

@@ -15,7 +15,6 @@ services:
     image: redis/redisinsight:latest
     ports:
       - "5540:5540"
-
   db:
     container_name: gentrain-db
     image: postgres
@@ -40,7 +39,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-
   backend:
     container_name: gentrain-backend
     image: gentrain-backend
@@ -72,8 +70,6 @@ services:
     links:
       - redis
     env_file: ".env"
-
-
 volumes:
   postgres_data:
   pgadmin_data:
