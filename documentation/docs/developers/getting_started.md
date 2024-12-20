@@ -15,3 +15,7 @@ sh docs.sh
 ```console
 cmd /c docs.bat
 ```
+
+## Necessary packages on server-side
+- Docker
+- Python (> 3)
