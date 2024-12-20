@@ -1,5 +1,5 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { CaseSchema } from "@/modules/core/models/cases";
 import { ValidationStrategy } from "./ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";

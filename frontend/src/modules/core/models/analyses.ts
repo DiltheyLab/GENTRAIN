@@ -1,5 +1,5 @@
 import { AnalysisSettings, GeneralSettings, GraphSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { getOutbreakMapForPathogenId } from "./outbreaks";
 import { GroupWithCategory } from "./groups";
 import { getCategoriesForActivePathogen } from "./categories";

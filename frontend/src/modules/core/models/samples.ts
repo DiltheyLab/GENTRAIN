@@ -1,4 +1,4 @@
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { SequenceAnalysisSchema } from "./sequence_analyses";
 
 interface SampleSchema {

@@ -1,6 +1,6 @@
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { CaseSchema, caseRules } from "@/modules/core/models/cases";
 import { persistGroupsForCategories } from "@/modules/core/models/groups";
 import { getOrPersistOutbreak } from "@/modules/core/models/outbreaks";

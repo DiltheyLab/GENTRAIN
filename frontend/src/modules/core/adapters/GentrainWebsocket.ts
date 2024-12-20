@@ -36,7 +36,7 @@ export class GentrainWebsocket {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
-        this.client.emit(`join_${pathogenTypeName}`, useCoreStore.getState().session?.id);
+        this.client.emit(`join_${pathogenTypeName}`, useCoreStore.getState().sessionId);
         this.client.once(`${pathogenTypeName}_room_created`, async (roomName: string) => {
             console.log(`Room ${roomName} was joined.`);
             callback(roomName);

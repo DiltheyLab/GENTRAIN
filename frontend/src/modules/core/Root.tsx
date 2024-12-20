@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useHandlePersistedSessionResults } from "../data_management/hooks/useHandlePersistedSessionResults";
-import { TutorialTour } from "./components/tutorial/TutorialTour";
-import { RefreshLoader } from "./components/ui/RefreshLoader";
+import { TutorialTour } from "../tutorial/components/TutorialTour";
 import {
     fetchPathogensFromServer,
     getAllPathogensWithRelationships,
@@ -12,30 +11,31 @@ import {
 import { Onboarding } from "./pages/Onboarding";
 import { useCoreStore } from "./stores/core";
 import { Layout } from "./components/layout/Layout";
-import { db } from "@/modules/core/infrastructure/database.ts";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { usePostHog } from "posthog-js/react";
+import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
+import { useTutorialStore } from "../tutorial/stores/tutorial";
 
 export const Root = () => {
-    const session = useCoreStore((state) => state.session);
-    const fetchSession = useCoreStore((state) => state.fetchSession);
+    const sessionId = useCoreStore((state) => state.sessionId);
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
-    const tutorialTourIsActive = useCoreStore((state) => state.tutorialTourIsActive);
+    const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
+    const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
+
     useHandlePersistedSessionResults();
 
     const posthog = usePostHog();
 
     useEffect(() => {
-        fetchSession();
-    }, []);
+        if (!sessionId) return;
 
-    useEffect(() => {
-        if (!session?.id) return;
-
-        posthog?.identify(session.id, { sessionID: session.id });
+        posthog?.identify(sessionId, { sessionID: sessionId });
         console.log("Posthog User-ID:", posthog.get_distinct_id());
-    }, [posthog, session?.id]);
+    }, [posthog, sessionId]);
 
     useEffect(() => {
+        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
+        setPathogenIsLoading(true);
         fetchPathogensFromServer().then((pathogensServerStorage: Pathogen[]) => {
             getAllPathogensWithRelationships().then(async (pathogensClientStorage) => {
                 let pathogensToDelete = pathogensClientStorage;
@@ -78,20 +78,18 @@ export const Root = () => {
                 );
 
                 updateActivePathogen(activelyPersistedPathogen ?? null);
+                setPathogenIsLoading(false);
             });
         });
     }, []);
 
-    if (session === undefined) {
-        return <RefreshLoader />;
-    }
-
-    if (session === null) {
+    if (!sessionId) {
         return <Onboarding />;
     }
 
     return (
         <>
+            <PathogenSelectionDialog />
             {tutorialTourIsActive && <TutorialTour />}
             <Layout>
                 <Outlet />

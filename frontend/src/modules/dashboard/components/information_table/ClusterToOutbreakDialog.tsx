@@ -17,13 +17,13 @@ import { cn } from "@/modules/core/helpers/cn";
 import { handleError } from "@/modules/core/helpers/errors";
 import { validateName } from "@/modules/core/helpers/validateName";
 import { useGetOutbreaksForActivePathogen } from "@/modules/core/hooks/database/outbreaks/useGetOutbreaksForActivePathogen";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { bulkUpdateCases, CaseToUpdate, CaseWithRelationships } from "@/modules/core/models/cases";
 import { createOutbreak } from "@/modules/core/models/outbreaks";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ColorMap, CustomNode } from "@/modules/core/types/graph";
 import { AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type ClusterToOutbreakDialogProps = {
     cluster: Array<CustomNode | undefined>;
@@ -40,6 +40,8 @@ export const ClusterToOutbreakDialog = ({ cluster, clusterName, colorMap }: Clus
     const { isNameValid, isUniqueName } = validateName(outbreaks, outbreakName);
     const { toast } = useToast();
     const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
+
+    const hasOutbreak = useMemo(() => cluster.some((node) => node?.caseData.outbreak), [cluster]);
 
     const handleClusterToOutbreakAssignment = async () => {
         try {
@@ -123,13 +125,17 @@ export const ClusterToOutbreakDialog = ({ cluster, clusterName, colorMap }: Clus
                         Der Name des Ausbruchs ist bereits vergeben. Bitte wählen Sie einen anderen.
                     </p>
                 )}
-                <div className="flex p-2 bg-gray-100 rounded-lg shadow-md  items-center justify-between space-x-3">
-                    <AlertTriangle size={72} />
-                    <p className="text-sm font-semibold">
-                        Allen Fällen aus dem ausgewählten Cluster wird nach diesem Vorgang der neu erstellte Ausbruch
-                        zugewiesen. Diese Operation kann nicht rückgängig gemacht werden.
-                    </p>
-                </div>
+
+                {hasOutbreak && (
+                    <div className="flex p-2 bg-gray-100 rounded-lg shadow-md  items-center justify-between space-x-3">
+                        <AlertTriangle size={72} />
+                        <p className="text-sm font-semibold">
+                            Allen Fällen aus dem ausgewählten Cluster wird nach diesem Vorgang der neu erstellte
+                            Ausbruch zugewiesen. Diese Operation kann nicht rückgängig gemacht werden.
+                        </p>
+                    </div>
+                )}
+
                 <DialogFooter>
                     <Button type="button" disabled={!isNameValid()} onClick={handleClusterToOutbreakAssignment}>
                         Speichern

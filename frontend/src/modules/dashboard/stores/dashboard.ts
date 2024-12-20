@@ -32,16 +32,22 @@ export const getDefaultSettings = (): AnalysisSettings => {
     };
 };
 
-export interface DashboardStore {
+type DashboardStoreState = {
     graphData: GraphData;
     settings: AnalysisSettings;
     graphSettings: GraphSettings;
     clusters: (CustomNode | undefined)[][] | undefined;
+};
+
+type DashboardStoreActions = {
     updateClusters: (clusters: (CustomNode | undefined)[][]) => void;
     updateGraphData: (newGraphData: GraphData) => void;
     updateSettings: (newSettings: Partial<AnalysisSettings>) => void;
     updateGraphSettings: (newSettings: Partial<GraphSettings>) => void;
-}
+};
+
+type DashboardStore = DashboardStoreState & DashboardStoreActions;
+
 export const useDashboardStore = create<DashboardStore>((set) => {
     // Initialize the settings with the default settings and variables from add store
     const initializedSettings = getDefaultSettings();

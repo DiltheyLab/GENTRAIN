@@ -34,7 +34,6 @@ To ensure proper functionality of the CI/CD pipeline, the following GitHub Actio
 - `PRODUCTION_BRANCH`: The branch name for production deployments (e.g., "prod")
 - `HTBASIC_USERNAME`: The username for HTTP basic authentication
 - `API_HOST`: The URL of your API (e.g., https://api.yourdomain.com)
-- `ENABLE_WEBSOCKETS`: Set to "true" to enable WebSocket connections
 - `APP_ENV`: The runtime environment (e.g., "production")
 - `FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE`: The HTTP status code for Pydantic validation errors (e.g., 422)
 - `REDIS_URL`: The URL for the Redis connection
@@ -91,7 +90,7 @@ Environment variables for both frontend and backend are securely managed through
 After successful deployment:
 
 - The frontend is accessible via HTTPS (port 443)
-- The backend API is available on port 8080
+- The backend API is available on port 4000
 - Redis Insight can be accessed on port 5540
 
 ### Monitoring
@@ -251,9 +250,9 @@ For more details on the testing workflow, refer to the `.github/workflows/test_d
 
 ### Sequence Analysis
 
-![Viral Sample Analysis](doc/images/viral_sequence_analysis.png)
+![Viral Sequence Analysis](doc/images/viral_sequence_analysis.png)
 
-![Bacterial Sample Analysis](doc/images/bacterial_sequence_analysis.png)
+![Bacterial Sequence Analysis](doc/images/bacterial_sequence_analysis.png)
 
 ### Distance Calculation
 

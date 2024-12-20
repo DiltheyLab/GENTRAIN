@@ -1,5 +1,5 @@
 import { exportDB, importInto } from "dexie-export-import";
-import { db } from "@/modules/core/infrastructure/database";
+import { db } from "@/modules/core/services/database/DatabaseManager";
 import { downloadFile } from "@/modules/core/helpers/files";
 import { useCoreStore } from "../stores/core";
 import { PathogenSchema } from "../models/pathogens";

@@ -5,6 +5,58 @@ on:
   workflow_dispatch:
 
 jobs:
+  documentation_build:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create and activate virtual environment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}/documentation
+            python -m venv venv
+            source venv/bin/activate
+      - name: Install pip dependencies
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}/documentation
+            pip install -r requirements.txt
+      - name: Build documentation
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}/documentation
+            mkdocs build
+      - name: Clear docs static files and move new build
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            rm -rf ${{ vars.GENTRAIN_DIR }}/backend/static/docs
+            mkdir ${{ vars.GENTRAIN_DIR }}/backend/static/docs
+            mv ${{ vars.GENTRAIN_DIR }}/documentation/site/* ${{ vars.GENTRAIN_DIR }}/backend/static/docs
+            
   frontend_build:
     name: Frontend Build
     runs-on: ubuntu-latest

@@ -2,14 +2,18 @@ import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/core/components/ui/Popover";
 import { useState } from "react";
-import { useGetAllPathogenTypes } from "@/modules/core/hooks/database/pathogen_types/useGetAllPathogenTypes";
+import { useGetAllPathogenTypesWithPathogens } from "@/modules/core/hooks/database/pathogen_types/useGetAllPathogenTypes";
 import { useTranslation } from "react-i18next";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeWithRelationships } from "@/modules/core/models/pathogen_types";
+import { cn } from "../../helpers/cn";
 
-export function PathogenSwitch() {
+type PathogenSwitchProps = {
+    className?: string;
+};
+export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
     const [open, setOpen] = useState(false);
-    const pathogenTypes = useGetAllPathogenTypes();
+    const pathogenTypes = useGetAllPathogenTypesWithPathogens();
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const { t } = useTranslation();
@@ -44,14 +48,19 @@ export function PathogenSwitch() {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className={cn("w-[200px] justify-between", className)}
+                >
                     {activePathogen ? activePathogen.name : "Pathogen auswählen"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] px-0 py-2">
+            <PopoverContent className={cn("w-[200px] px-0 py-2", className)}>
                 {pathogenTypes?.map((pathogenType) => renderPathogenOptionsForPathogenType(pathogenType))}
             </PopoverContent>
         </Popover>
     );
-}
+};
