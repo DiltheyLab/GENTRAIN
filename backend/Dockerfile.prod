@@ -32,7 +32,4 @@ COPY --chown=gentrain . .
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run database migrations
-RUN alembic upgrade head
-
 CMD ["gunicorn", "--chdir", "/home", "--workers", "1", "--threads", "100", "--bind", ":8080", "backend.server:app"]

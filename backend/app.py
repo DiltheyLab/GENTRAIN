@@ -1,6 +1,6 @@
+import os
 from os import environ
 
-from alembic import context
 from flask_cors import CORS
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -12,3 +12,4 @@ if environ.get("APP_ENV") == "development":
 app.config.from_pyfile("config.py")
 basic_auth = BasicAuth(app)
 db = SQLAlchemy(app)
+os.system("alembic upgrade head")
