@@ -2,7 +2,7 @@ from backend.modules.admin.strategies.scheme_processor_strategy import SchemePro
 
 
 class BacterialSchemeProcessor(SchemeProcessorStrategy):
-    """Concrete analysis strategy for bacterial scheme processing."""
+    """Concrete scheme processor strategy for bacterial scheme processing."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

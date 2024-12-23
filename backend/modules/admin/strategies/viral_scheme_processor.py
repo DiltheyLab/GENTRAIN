@@ -6,7 +6,7 @@ from backend.modules.admin.strategies.scheme_processor_strategy import SchemePro
 
 
 class ViralSchemeProcessor(SchemeProcessorStrategy):
-    """Concrete analysis strategy for viral scheme processing."""
+    """Concrete scheme processor strategy for viral scheme processing."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

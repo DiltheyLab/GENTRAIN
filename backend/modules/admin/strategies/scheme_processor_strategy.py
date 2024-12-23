@@ -33,7 +33,6 @@ class SchemeProcessorStrategy(ABC):
             directory_name = self.create_extraction_directory()
             self.extract_files(zip_file)
             self.move_files_to_root_for_nested_zips(directory_name)
-            self.remove_prior_scheme_directory()
             self.activate_temp_scheme_directory(directory_name)
             remove(file_path)
 

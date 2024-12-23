@@ -15,15 +15,15 @@ def example_data_validator(form, field):
     if type(field.data) == str or type(field.data) == NoneType:
         return
     zip_in = ZipFile(field.data.stream, "r")
-    validate_zip(zip_in, form.type.data)
+    validate_zip(zip_in, form)
     # create a new zip file container only files expected for example data uploads
-    zip_out = create_clean_example_date_zip(f"{form.name.data}_beispieldaten", form.type.data, zip_in)
+    zip_out = create_clean_example_data_zip(f"{form.name.data}_beispieldaten", form.type.data, zip_in)
     zip_in.close()
     zip_out.close()
     field.data = zip_out
 
 
-def create_clean_example_date_zip(name, type, zip_in):
+def create_clean_example_data_zip(name, type, zip_in):
     new_zip_filename = path.join(f"{get_project_path()}/static/pathogen_example_data/",
                                  secure_filename(f"{slugify(name)}.zip"))
     zip_out = ZipFile(new_zip_filename, 'w')
