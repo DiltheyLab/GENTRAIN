@@ -34,7 +34,7 @@ class SchemeProcessorStrategy(ABC):
             self.extract_files(zip_file)
             self.move_files_to_root_for_nested_zips(directory_name)
             self.activate_temp_scheme_directory(directory_name)
-            remove(file_path)
+            #remove(file_path)
 
     def create_extraction_directory(self):
         directory_name = f"{self.pathogen.scheme_name}_{round(time.time() * 1000)}"
