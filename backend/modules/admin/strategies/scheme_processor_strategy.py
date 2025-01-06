@@ -12,6 +12,7 @@ from backend.modules.core.helpers import slugify
 
 class SchemeProcessorStrategy(ABC):
     """Scheme Processor Strategy Class."""
+
     schemes_root: str = f"{get_project_path()}/modules/sequence_analysis/schemes"
     extract_path = None
 
@@ -27,28 +28,33 @@ class SchemeProcessorStrategy(ABC):
         """Template method to extract scheme from zip to extraction directory."""
         if not self.scheme_added():
             return
-        file_path = path.join(self.schemes_root, secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip"))
-        print(file_path)
+        file_path = path.join(
+            self.schemes_root,
+            secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip"),
+        )
         with ZipFile(file_path, "r") as zip_file:
             directory_name = self.create_extraction_directory()
             self.extract_files(zip_file)
             self.move_files_to_root_for_nested_zips(directory_name)
             self.activate_temp_scheme_directory(directory_name)
-            #remove(file_path)
+            # remove(file_path)
 
     def create_extraction_directory(self):
         directory_name = f"{self.pathogen.scheme_name}_{round(time.time() * 1000)}"
-        self.extract_path = path.join(
-            self.schemes_root, directory_name
-        )
+        self.extract_path = path.join(self.schemes_root, directory_name)
         if not path.isdir(self.extract_path):
             makedirs(self.extract_path)
         return directory_name
 
     def rename_scheme_directory_on_name_change(self):
-        if self.pathogen.scheme_name and self.pathogen.scheme_name != self.prior_scheme_name:
-            rename(path.join(self.schemes_root, self.prior_scheme_name),
-                   path.join(self.schemes_root, self.pathogen.scheme_name))
+        if (
+            self.pathogen.scheme_name
+            and self.pathogen.scheme_name != self.prior_scheme_name
+        ):
+            rename(
+                path.join(self.schemes_root, self.prior_scheme_name),
+                path.join(self.schemes_root, self.pathogen.scheme_name),
+            )
 
     def remove_prior_scheme_directory(self):
         if self.scheme_exists(self.prior_scheme_name):
@@ -76,8 +82,12 @@ class SchemeProcessorStrategy(ABC):
             shutil.rmtree(sub_path)
 
     def scheme_exists(self, scheme_name):
-        return scheme_name and path.isdir(
-            path.join(self.schemes_root, scheme_name))
+        return scheme_name and path.isdir(path.join(self.schemes_root, scheme_name))
 
     def scheme_added(self):
-        return path.isfile(path.join(self.schemes_root, secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip")))
+        return path.isfile(
+            path.join(
+                self.schemes_root,
+                secure_filename(f"{slugify(self.pathogen.scheme_name)}.zip"),
+            )
+        )
