@@ -626,7 +626,7 @@ export const tutorialSteps: Step[] = [
         content: (
             <p>
                 Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Sie können nun eigene Daten in die
-                Anwendung laden oder unsere Beispieldaten verwenden, um weiter mit der Anwendung zu arbeiten.
+                Anwendung laden oder unsere Beispieldaten verwenden, um weiter mit der Anwendung zu arbeiten.{" "}
                 <strong>Wir wünschen Ihnen viel Erfolg bei der Arbeit mit Gentrain!</strong>
             </p>
         ),
