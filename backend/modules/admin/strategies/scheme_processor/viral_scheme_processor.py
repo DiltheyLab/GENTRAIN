@@ -39,12 +39,3 @@ class ViralSchemeProcessor(SchemeProcessorStrategy):
         # filename might differ and is retrieved from pathogen.json
         if "reference" in pathogen_json["files"]:
             zip_file.extract(pathogen_json["files"]["reference"], path=self.extract_path)
-
-    def activate_temp_scheme_directory(self, directory_name: str):
-        shutil.move(
-            path.join(
-                self.schemes_root,
-                directory_name,
-            ),
-            path.join(self.schemes_root, self.pathogen.scheme_name),
-        )

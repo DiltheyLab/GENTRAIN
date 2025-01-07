@@ -51,6 +51,7 @@ class SchemeProcessorStrategy(ABC):
         if (
             self.pathogen.scheme_name
             and self.pathogen.scheme_name != self.prior_scheme_name
+            and self.scheme_exists(self.prior_scheme_name)
         ):
             rename(
                 path.join(self.schemes_root, self.prior_scheme_name),
@@ -62,6 +63,11 @@ class SchemeProcessorStrategy(ABC):
             shutil.rmtree(path.join(self.schemes_root, self.prior_scheme_name))
 
     def activate_temp_scheme_directory(self, directory_name: str):
+        # remove the existing scheme directory and rename temp directory to scheme_name
+        if self.scheme_exists(self.prior_scheme_name):
+            shutil.rmtree(path.join(self.schemes_root, self.prior_scheme_name))
+        if self.scheme_exists(self.pathogen.scheme_name):
+            shutil.rmtree(path.join(self.schemes_root, self.pathogen.scheme_name))
         shutil.move(
             path.join(
                 self.schemes_root,

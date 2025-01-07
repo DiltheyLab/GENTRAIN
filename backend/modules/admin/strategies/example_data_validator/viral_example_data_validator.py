@@ -16,9 +16,5 @@ class ViralExampleDataValidator(ExampleDataValidatorStrategy):
         if (data.mimetype != "application/octet-stream" and not any(
                 extension in data.filename for extension in [".fa", ".mpfa", ".fna", ".fsa", ".fasta"])):
             raise ValidationError("File does not have an approved extension: fa, mpfa, fna, fsa or fasta")
-        sequences_fasta = get_fasta_reader(data)
-        for row in sequences_fasta:
-            if not valid_sequence_id_in_fasta(row.id):
-                raise ValidationError(f"Sequence Id {row.id} is invalid.")
-            if not valid_sequence(str(row.seq)):
-                raise ValidationError(f"Sequence {row.id} is invalid.")
+        fasta_sequences = get_fasta_reader(data.stream)
+        self.validate_fasta(fasta_sequences)

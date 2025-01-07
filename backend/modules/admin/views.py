@@ -119,8 +119,6 @@ class PathogenView(AuthModelView):
         scheme_processor.extract_scheme()
         if is_created is False:
             scheme_processor.rename_scheme_directory_on_name_change()
-        else:
-            scheme_processor.remove_prior_scheme_directory()
 
     def after_model_delete(self, model):
         if path.isdir(path.join(self.schemes_root, model.scheme_name)):

@@ -33,7 +33,7 @@ def read_fasta_file_from_zip(filename: str, zip: ZipFile):
     return reader
 
 def get_csv_reader(file):
-    return csv.DictReader(file.stream.read().decode('utf-8').splitlines(), delimiter=";")
+    return csv.DictReader(file.read().decode('utf-8').splitlines(), delimiter=";")
 
 def get_fasta_reader(file):
-    return SeqIO.parse(StringIO(file.stream.read().decode()), "fasta")
+    return SeqIO.parse(StringIO(file.read().decode()), "fasta")
