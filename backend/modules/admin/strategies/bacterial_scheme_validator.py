@@ -1,4 +1,5 @@
 import re
+from zipfile import ZipFile
 
 from wtforms.validators import ValidationError
 
@@ -36,7 +37,8 @@ class BacterialSchemeValidator(SchemeValidatorStrategy):
         decoded = self.zip_file.read(".schema_config").decode('utf-8', errors='ignore')
 
 
-    def fill_clean_zip(self, filename, zip_out):
+    def fill_clean_zip(self, filename):
+        zip_out = ZipFile(filename, "w")
         zip_filenames = self.zip_file.namelist()
         for filename in zip_filenames:
             if ".schema_config" in filename or ".genes_list" in filename:

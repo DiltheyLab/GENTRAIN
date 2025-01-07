@@ -8,10 +8,12 @@ from flask_security import hash_password, SQLAlchemyUserDatastore
 
 import shutil
 
+from flask_wtf.file import FileField, FileAllowed
+
 from backend.app import db, basic_auth
 from backend.modules.admin.strategies.bacterial_scheme_processor import BacterialSchemeProcessor
 from backend.modules.admin.strategies.viral_scheme_processor import ViralSchemeProcessor
-from backend.modules.admin.validators.example_data import example_data_validator
+from backend.modules.admin.validators.example_data import example_data_validator, cases_example_validator
 from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
@@ -91,23 +93,12 @@ class PathogenView(AuthModelView):
             ("viral", "Viral"),
         ]
     }
-    form_overrides = {"scheme_path": FileUploadField, "example_data_path": FileUploadField}
-    form_args = {
-        "scheme_path": {
-            "label": "Scheme Zip",
-            "base_path": schemes_root,
-            "allow_overwrite": True,
-            "allowed_extensions": ["zip"],
-            "validators": [scheme_validator],
-        },
-        "example_data_path": {
-            "label": "Example Data Zip",
-            "base_path": example_data_root,
-            "allow_overwrite": True,
-            "allowed_extensions": ["zip"],
-            "description": "<b>Zip file must contain following files.</b><br/><ul><li>falldaten.csv</li><li>sequenzdaten.fasta</li><li>kontaktdaten.csv</li></ul>",
-            "validators": [example_data_validator]
-        }
+    form_extra_fields = {
+        'scheme': FileField('Schema', validators=[FileAllowed(['zip']), scheme_validator]),
+        'cases_example': FileField('Cases Example', validators=[FileAllowed(['csv']), cases_example_validator]),
+        'sequences_example': FileField('Sequences Example', validators=[FileAllowed(['fasta', 'zip']), cases_example_validator]),
+        'contacts_example': FileField('Contacts Example', validators=[FileAllowed(['csv']), cases_example_validator])
+
     }
 
     def update_model(self, form, model):

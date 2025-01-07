@@ -22,6 +22,10 @@ def example_data_validator(form, field):
     zip_out.close()
     field.data = zip_out
 
+def cases_example_validator(form, field):
+    if type(field.data) == str or type(field.data) == NoneType:
+        return
+    print(field.data)
 
 def create_clean_example_data_zip(name, type, zip_in):
     new_zip_filename = path.join(f"{get_project_path()}/static/pathogen_example_data/",

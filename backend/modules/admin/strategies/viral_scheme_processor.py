@@ -25,6 +25,7 @@ class ViralSchemeProcessor(SchemeProcessorStrategy):
         intended_keys = ("pathogenJson", "treeJson", "reference")
         pathogen_json["files"] = dict_filt(pathogen_json["files"], intended_keys)
         pathogen_json_file = open(f"{self.extract_path}/pathogen.json", "w")
+        # add pathogen.json to validated zip file
         pathogen_json_file.write(json.dumps(pathogen_json))
         pathogen_json_file.close()
         return pathogen_json

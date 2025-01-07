@@ -2,6 +2,7 @@ import shutil
 import time
 from abc import ABC, abstractmethod
 from os import path, makedirs, rename, listdir, remove
+from os.path import isdir
 from zipfile import ZipFile
 
 from werkzeug.utils import secure_filename
@@ -37,7 +38,7 @@ class SchemeProcessorStrategy(ABC):
             self.extract_files(zip_file)
             self.move_files_to_root_for_nested_zips(directory_name)
             self.activate_temp_scheme_directory(directory_name)
-            # remove(file_path)
+            remove(file_path)
 
     def create_extraction_directory(self):
         directory_name = f"{self.pathogen.scheme_name}_{round(time.time() * 1000)}"
@@ -71,7 +72,7 @@ class SchemeProcessorStrategy(ABC):
 
     def move_files_to_root_for_nested_zips(self, directory_name: str):
         content = listdir(self.extract_path)
-        if len(content) == 1:
+        if len(content) == 1 and isdir(content[0]):
             sub_path = path.join(
                 self.schemes_root,
                 f"{directory_name}/{content[0]}",

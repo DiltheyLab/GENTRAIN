@@ -24,7 +24,7 @@ class SchemeValidatorStrategy(ABC):
         """Abstract template method for scheme validation."""
 
     @abstractmethod
-    def fill_clean_zip(self, filename, zip_out):
+    def fill_clean_zip(self, filename):
         """Abstract template method to add files to clean zip."""
 
     def validate(self):
@@ -36,8 +36,7 @@ class SchemeValidatorStrategy(ABC):
         self.zip_file = ZipFile(self.stream, 'r')
         filename = path.join(f"{get_project_path()}/modules/sequence_analysis/schemes",
                                  secure_filename(f"{slugify(self.form.scheme_name.data)}.zip"))
-        zip_out = ZipFile(filename, 'w')
-        self.fill_clean_zip(filename, zip_out)
+        zip_out = self.fill_clean_zip(filename)
         self.zip_file.close()
         zip_out.close()
         return zip_out

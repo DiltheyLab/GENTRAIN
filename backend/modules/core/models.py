@@ -34,12 +34,10 @@ class User(db.Model, UserMixin):
 
 class Pathogen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False, unique=True)
     genetic_distance_threshold = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String, nullable=False)
-    scheme_name = db.Column(db.String, nullable=False)
-    scheme_path = db.Column(db.String, nullable=True)
-    example_data_path = db.Column(db.String, nullable=True)
+    scheme_name = db.Column(db.String, nullable=False, unique=True)
 
     def serialize(self):
         return {
@@ -48,5 +46,4 @@ class Pathogen(db.Model):
             "genetic_distance_threshold": self.genetic_distance_threshold,
             "type": self.type,
             "scheme_name": self.scheme_name,
-            "example_data_path": self.example_data_path
         }

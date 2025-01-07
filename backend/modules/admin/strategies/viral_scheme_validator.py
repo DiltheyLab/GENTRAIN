@@ -1,3 +1,6 @@
+import json
+from zipfile import ZipFile
+
 from wtforms.validators import ValidationError
 
 from backend.modules.admin.strategies.scheme_validator_strategy import SchemeValidatorStrategy
@@ -27,8 +30,16 @@ class ViralSchemeValidator(SchemeValidatorStrategy):
         if not valid_json(content):
             raise ValidationError("pathogen.json is invalid")
 
-    def fill_clean_zip(self, filename, zip_out):
-        zip_out.writestr("pathogen.json", self.zip_file.read("pathogen.json"))
-        zip_out.writestr("reference.fasta", self.zip_file.read("reference.fasta"))
-        zip_out.writestr("tree.json", self.zip_file.read("tree.json"))
+    def fill_clean_zip(self, filename):
+        zip_out = ZipFile(filename, 'w')
+        pathogen_json_file = self.zip_file.read("pathogen.json")
+        pathogen_json = json.loads(pathogen_json_file)
+        zip_out.writestr("pathogen.json",
+                         pathogen_json_file)
+        if "treeJson" in pathogen_json["files"]:
+            zip_out.writestr(pathogen_json["files"]["treeJson"],
+            self.zip_file.read(pathogen_json["files"]["treeJson"]))
+        if "reference" in pathogen_json["files"]:
+            zip_out.writestr(pathogen_json["files"]["reference"],
+                self.zip_file.read(pathogen_json["files"]["reference"]))
         return zip_out
