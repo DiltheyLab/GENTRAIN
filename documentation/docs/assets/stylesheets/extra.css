@@ -1,79 +1,91 @@
 :root {
-    --md-primary-fg-color: #F87315;
-    --md-accent-fg-color: #F87315;
-    --md-accent-fg-color--transparent: #FFFFFF;
-    --md-text-font: "Merriweather";
+  --md-primary-fg-color: #f87315;
+  --md-accent-fg-color: #f87315;
+  --md-accent-fg-color--transparent: #ffffff;
+  --md-text-font: "Merriweather";
 }
 
-[data-md-color-scheme=slate] {
-    --md-accent-fg-color--transparent: #252525;
+[data-md-color-scheme="slate"] {
+  --md-accent-fg-color--transparent: #252525;
 }
 
-[dir=ltr] .md-header__title {
-    margin-left: 0;
-    font-size: 1rem;
+[dir="ltr"] .md-header__title {
+  margin-left: 0;
+  font-size: 1rem;
 }
 
 .md-nav__title {
-    font-weight: 300;
+  font-weight: 300;
 }
 
 .md-nav--secondary {
-    font-weight: 200;
+  font-weight: 200;
+}
+
+p,
+li {
+  font-weight: 200;
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 200;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-Light.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-Light.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-Regular.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-Regular.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-Light.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-Light.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-Medium.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-Medium.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-SemiBold.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-Bold.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-Bold.ttf")
+    format("truetype");
 }
 
 @font-face {
-    font-family: "Merriweather";
-    font-style: normal;
-    font-weight: 800;
-    font-display: swap;
-    src: url("../font/Merriweather_Sans/MerriweatherSans-ExtraBold.ttf") format("truetype");
+  font-family: "Merriweather";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../font/Merriweather_Sans/MerriweatherSans-ExtraBold.ttf")
+    format("truetype");
 }

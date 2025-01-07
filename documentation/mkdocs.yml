@@ -5,14 +5,15 @@ nav:
       - application/data_management.md
       - application/outbreak_analysis.md
   - Admin:
-        - admin/users.md
-        - admin/pathogens.md
+      - admin/users.md
+      - admin/pathogens.md
   - Developers:
       - developers/getting_started.md
       - developers/project_architecture.md
       - developers/deployment.md
       - developers/testing.md
       - developers/data_management.md
+      - developers/security_and_data_privacy.md
 
 extra_css:
   - assets/stylesheets/extra.css
@@ -63,5 +64,4 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-copyright:
-  © 2024 Universitätsklinikum Düsseldorf
+copyright: © 2024 Universitätsklinikum Düsseldorf

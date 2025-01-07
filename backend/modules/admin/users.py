@@ -1,6 +1,6 @@
 from os import environ
 
-from flask_security import SQLAlchemyUserDatastore, hash_password
+from flask_security import SQLAlchemyUserDatastore
 from backend.app import app, db
 from backend.modules.core.models import User, Role
 
