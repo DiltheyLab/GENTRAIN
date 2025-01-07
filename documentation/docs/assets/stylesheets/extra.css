@@ -23,7 +23,8 @@
 }
 
 p,
-li {
+li,
+td {
   font-weight: 200;
 }
 
