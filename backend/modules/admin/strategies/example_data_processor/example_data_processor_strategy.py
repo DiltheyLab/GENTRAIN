@@ -36,15 +36,9 @@ class ExampleDataProcessor(ABC):
         file_path = path.join(self.example_data_root, self.pathogen.name, "falldaten.csv")
         file_data.save(file_path)
 
+    @abstractmethod
     def store_sequences_example_data(self, field):
-        if not field.data:
-            return
-        file_data = field.data
-        file_data.stream.seek(0)
-        if not isdir(path.join(self.example_data_root, self.pathogen.name)):
-            makedirs(path.join(self.example_data_root, self.pathogen.name))
-        file_path = path.join(self.example_data_root, self.pathogen.name, "sequenzdaten.fasta")
-        file_data.save(file_path)
+        """Abstract method for storing sequences example data"""
 
     def store_contacts_example_data(self, field):
         if not field.data:

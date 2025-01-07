@@ -4,19 +4,19 @@ from backend.modules.admin.strategies.example_data_validator.viral_example_data_
     ViralExampleDataValidator
 
 
-def validate_cases_example(form, field):
+def cases_example_validator(form, field):
     if not field.data:
         return
     validator = ViralExampleDataValidator() if form.type.data == "viral" else BacterialExampleDataValidator()
     validator.validate_cases_example(field.data)
 
-def validate_contacts_example(form, field):
+def contacts_example_validator(form, field):
     if not field.data:
         return
     validator = ViralExampleDataValidator() if form.type.data == "viral" else BacterialExampleDataValidator()
     validator.validate_contacts_example(field.data)
 
-def validate_sequences_example(form, field):
+def sequences_example_validator(form, field):
     if not field.data:
         return
     validator = ViralExampleDataValidator() if form.type.data == "viral" else BacterialExampleDataValidator()

@@ -14,12 +14,10 @@ from backend.modules.admin.strategies.example_data_processor.bacterial_example_d
     BacterialExampleDataProcessor
 from backend.modules.admin.strategies.example_data_processor.viral_example_data_processor import \
     ViralExampleDataProcessor
-from backend.modules.admin.strategies.example_data_validator.bacterial_example_data_validator import \
-    BacterialExampleDataValidator
 from backend.modules.admin.strategies.scheme_processor.bacterial_scheme_processor import BacterialSchemeProcessor
 from backend.modules.admin.strategies.scheme_processor.viral_scheme_processor import ViralSchemeProcessor
-from backend.modules.admin.validators.example_data import validate_cases_example, validate_contacts_example, \
-    validate_sequences_example
+from backend.modules.admin.validators.example_data import cases_example_validator, sequences_example_validator, \
+    contacts_example_validator
 from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
@@ -101,10 +99,10 @@ class PathogenView(AuthModelView):
     }
     form_extra_fields = {
         'scheme': FileField('Schema', validators=[FileAllowed(['zip']), scheme_validator]),
-        'cases_example': FileField('Cases Example', validators=[FileAllowed(['csv']), validate_cases_example]),
+        'cases_example': FileField('Cases Example', validators=[FileAllowed(['csv']), cases_example_validator]),
         'sequences_example': FileField('Sequences Example',
-                                       validators=[FileAllowed(['fasta', 'zip']), validate_sequences_example]),
-        'contacts_example': FileField('Contacts Example', validators=[FileAllowed(['csv']), validate_contacts_example])
+                                       validators=[sequences_example_validator]),
+        'contacts_example': FileField('Contacts Example', validators=[FileAllowed(['csv']), contacts_example_validator])
     }
 
     def update_model(self, form, model):
