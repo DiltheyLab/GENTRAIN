@@ -1,7 +1,7 @@
 from types import NoneType
 
-from backend.modules.admin.strategies.bacterial_scheme_validator import BacterialSchemeValidator
-from backend.modules.admin.strategies.viral_scheme_validator import ViralSchemeValidator
+from backend.modules.admin.strategies.scheme_validator.bacterial_scheme_validator import BacterialSchemeValidator
+from backend.modules.admin.strategies.scheme_validator.viral_scheme_validator import ViralSchemeValidator
 
 
 def scheme_validator(form, field):

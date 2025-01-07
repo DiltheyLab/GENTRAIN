@@ -1,4 +1,4 @@
-from backend.modules.admin.strategies.scheme_processor_strategy import SchemeProcessorStrategy
+from backend.modules.admin.strategies.scheme_processor.scheme_processor_strategy import SchemeProcessorStrategy
 
 
 class BacterialSchemeProcessor(SchemeProcessorStrategy):

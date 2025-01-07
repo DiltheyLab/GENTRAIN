@@ -1,6 +1,6 @@
 import csv
 import re
-from io import TextIOWrapper
+from io import TextIOWrapper, StringIO
 from zipfile import ZipFile
 
 from Bio import SeqIO
@@ -31,3 +31,9 @@ def read_fasta_file_from_zip(filename: str, zip: ZipFile):
     except:
         raise ValidationError(f"File {filename} is not readable.")
     return reader
+
+def get_csv_reader(file):
+    return csv.DictReader(file.stream.read().decode('utf-8').splitlines(), delimiter=";")
+
+def get_fasta_reader(file):
+    return SeqIO.parse(StringIO(file.stream.read().decode()), "fasta")

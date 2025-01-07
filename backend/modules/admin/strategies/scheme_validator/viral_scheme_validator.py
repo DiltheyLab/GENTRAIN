@@ -3,7 +3,7 @@ from zipfile import ZipFile
 
 from wtforms.validators import ValidationError
 
-from backend.modules.admin.strategies.scheme_validator_strategy import SchemeValidatorStrategy
+from backend.modules.admin.strategies.scheme_validator.scheme_validator_strategy import SchemeValidatorStrategy
 from backend.modules.core.validation_rules import valid_json
 
 
