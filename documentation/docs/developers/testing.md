@@ -11,6 +11,8 @@ environment.
 
 ## Port Forwarding Configuration
 
+!!! info "This section only applies when hosting in de.NBI Cloud."
+
 To facilitate testing while maintaining security, we use a port forwarding mechanism from the main production instance
 to the testing instance. This setup allows us to access the testing environment through specific ports on the production
 server and save floating IP-Adresses.
@@ -24,7 +26,7 @@ performs the following tasks:
 2. Sets up port mapping rules:
 3. Overrides Docker's default FORWARD policy to ACCEPT
 
-``` sh
+```sh
 #!/bin/bash
 function check_service {
   /bin/nc -z ${1} ${2} 2>/dev/null
@@ -88,12 +90,12 @@ To ensure a secure, SSL-encrypted connection to the test server with a valid cer
 1. The production instance automatically generates SSL certificates using Caddy.
 2. These certificates are stored in specific folders on the production server.
 3. To use these certificates for the test server:
-    - Copy the certificate files (.crt and .key) from the production instance to the corresponding folders on the test
-      instance.
-    - The paths for these certificates are defined in the Caddyfile. We have created an example file (
-      `Caddyfile.test.example`) where you can see the structure:
-        - For the API: `/data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
-        - For the frontend: `/data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
+   - Copy the certificate files (.crt and .key) from the production instance to the corresponding folders on the test
+     instance.
+   - The paths for these certificates are defined in the Caddyfile. We have created an example file (
+     `Caddyfile.test.example`) where you can see the structure:
+     - For the API: `/data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
+     - For the frontend: `/data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
 
 By copying these certificates, you ensure that the test server uses the same valid SSL certificates as the production
 server, allowing for secure, encrypted connections during testing.
