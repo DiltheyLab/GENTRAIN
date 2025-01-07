@@ -12,6 +12,7 @@ class ExampleDataValidatorStrategy(ABC):
 
     example_data_root: str = f"{get_project_path()}/static/pathogen_example_data"
     extract_path = None
+    fasta_extensions = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"]
 
     @abstractmethod
     def validate_sequences_example(self, data):

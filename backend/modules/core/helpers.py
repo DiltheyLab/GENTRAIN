@@ -36,4 +36,4 @@ def get_csv_reader(file):
     return csv.DictReader(file.read().decode('utf-8').splitlines(), delimiter=";")
 
 def get_fasta_reader(file):
-    return SeqIO.parse(StringIO(file.read().decode()), "fasta")
+    return SeqIO.parse(StringIO(file.read().decode('utf-8')), "fasta")
