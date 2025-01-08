@@ -20,7 +20,6 @@ export abstract class FileReadingStrategy {
     private checkAcceptedMimeTypes(files: FileList, importType: string) {
         Array.from(files).map((file: File) => {
             const extension = file.name.substring(file.name.indexOf("."), file.name.length);
-            console.log(extension);
             if (!this.getAcceptedMimeType(importType).includes(extension)) {
                 throw new GentrainException("InvalidMimeTypeError", [this.getAcceptedMimeType(importType).join(", ")]);
             }
