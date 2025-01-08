@@ -17,7 +17,7 @@ export const tooltipCaseFilter = (
         <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 mb-2 ">
             <div className="space-y-2">
                 <p>
-                    <strong>Nicht sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische Sequenzen
+                    <strong>Nicht-sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische Sequenzen
                     aus.
                 </p>
                 <p>

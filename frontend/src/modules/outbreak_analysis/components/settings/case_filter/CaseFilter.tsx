@@ -31,7 +31,7 @@ export const CaseFilter = ({ disabled = false }: CaseFilterProps) => {
                     onCheckedChange={(value) => handleExcludeCasesWithoutSequence(value)}
                 />
                 <Label htmlFor="excludeCasesWithoutSequence" className="text-md leading-5">
-                    Nicht sequenzierte Fälle ausschließen
+                    Nicht-sequenzierte Fälle ausschließen
                 </Label>
             </div>
             <div className="flex flex-row items-center gap-3">
