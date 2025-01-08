@@ -17,11 +17,13 @@ class ExampleDataProcessor(ABC):
     example_data_root: str = f"{get_project_path()}/static/pathogen_example_data"
     extract_path = None
 
-    def __init__(self, pathogen, form):
+    def __init__(self, pathogen, form = None):
         self.pathogen = pathogen
         self.form = form
 
     def store_example_data(self):
+        if not self.form:
+            return
         self.store_cases_example_data(self.form.cases_example)
         self.store_sequences_example_data(self.form.sequences_example)
         self.store_contacts_example_data(self.form.contacts_example)
@@ -31,9 +33,9 @@ class ExampleDataProcessor(ABC):
             return
         file_data = field.data
         file_data.stream.seek(0)
-        if not isdir(path.join(self.example_data_root, self.pathogen.name)):
-            makedirs(path.join(self.example_data_root, self.pathogen.name))
-        file_path = path.join(self.example_data_root, self.pathogen.name, "falldaten.csv")
+        if not isdir(self.get_directory()):
+            makedirs(self.get_directory())
+        file_path = path.join(self.get_directory(), "falldaten.csv")
         file_data.save(file_path)
 
     @abstractmethod
@@ -45,7 +47,10 @@ class ExampleDataProcessor(ABC):
             return
         file_data = field.data
         file_data.stream.seek(0)
-        if not isdir(path.join(self.example_data_root, self.pathogen.name)):
-            makedirs(path.join(self.example_data_root, self.pathogen.name))
-        file_path = path.join(self.example_data_root, self.pathogen.name, "kontaktdaten.csv")
+        if not isdir(self.get_directory()):
+            makedirs(self.get_directory())
+        file_path = path.join(self.get_directory(), "kontaktdaten.csv")
         file_data.save(file_path)
+
+    def get_directory(self):
+        return path.join(self.example_data_root, secure_filename(self.pathogen.name))

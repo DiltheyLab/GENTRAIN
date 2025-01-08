@@ -121,8 +121,9 @@ class PathogenView(AuthModelView):
             scheme_processor.rename_scheme_directory_on_name_change()
 
     def after_model_delete(self, model):
-        if path.isdir(path.join(self.schemes_root, model.scheme_name)):
-            shutil.rmtree(path.join(self.schemes_root, model.scheme_name))
+        scheme_processor = ViralSchemeProcessor(model) if model.type == "viral" else BacterialSchemeProcessor(model)
+        if path.isdir(scheme_processor.get_scheme_name_directory()):
+            shutil.rmtree(scheme_processor.get_scheme_name_directory())
 
 
 class PathogenIndexView(PathogenView):

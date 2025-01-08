@@ -15,7 +15,7 @@ class BacterialExampleDataProcessor(ExampleDataProcessor):
             return
         file_data = field.data
         file_data.stream.seek(0)
-        if not isdir(path.join(self.example_data_root, self.pathogen.name)):
-            makedirs(path.join(self.example_data_root, self.pathogen.name))
-        file_path = path.join(self.example_data_root, self.pathogen.name, "sequenzdaten.zip")
+        if not isdir(self.get_directory()):
+            makedirs(self.get_directory())
+        file_path = path.join(self.get_directory(), "sequenzdaten.zip")
         file_data.save(file_path)

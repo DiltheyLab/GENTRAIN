@@ -35,7 +35,7 @@ class SchemeValidatorStrategy(ABC):
     def clean_zip(self):
         self.zip_file = ZipFile(self.stream, 'r')
         filename = path.join(f"{get_project_path()}/modules/sequence_analysis/schemes",
-                                 secure_filename(f"{slugify(self.form.scheme_name.data)}.zip"))
+                                 secure_filename(f"{self.form.scheme_name.data}.zip"))
         zip_out = self.fill_clean_zip(filename)
         self.zip_file.close()
         zip_out.close()
