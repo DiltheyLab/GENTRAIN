@@ -18,6 +18,7 @@ import { NodeColorMapGenerator } from "@/modules/core/services/graph/NodeColorMa
 import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
 import { CustomNode } from "@/modules/core/types/graph";
 import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
+import { ZoomToFitIcon } from "@/modules/core/components/graph/ZoomToFitIcon";
 
 export const DashboardVisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -107,6 +108,10 @@ export const DashboardVisualizationPanel = () => {
                 selectedNode={selectedNode}
                 updateSelectedNode={(selectedNode) => setSelectedNode(selectedNode)}
             />
+            <ZoomToFitIcon
+                zoomToFitToggle={dashboardStore.graphSettings.zoomToFitToggle}
+                updateGraphSettings={dashboardStore.updateGraphSettings}
+            />
             <GraphSettings
                 showGraphSettings={showGraphSettings}
                 updateShowGraphSettings={(showGraphSettings) => setShowGraphSettings(showGraphSettings)}
@@ -135,6 +140,7 @@ export const DashboardVisualizationPanel = () => {
                     dashboardStore.settings.showContactTracingLinks,
                 ]}
                 geneticDistanceThreshold={geneticDistanceThreshold}
+                zoomToFitToggle={dashboardStore.graphSettings.zoomToFitToggle}
             />
         </div>
     );
