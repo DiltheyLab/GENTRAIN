@@ -20,8 +20,9 @@ export abstract class FileReadingStrategy {
     private checkAcceptedMimeTypes(files: FileList, importType: string) {
         Array.from(files).map((file: File) => {
             const extension = file.name.substring(file.name.indexOf("."), file.name.length);
-            if (!this.getAcceptedMimeType(importType).split(",").includes(extension)) {
-                throw new GentrainException("InvalidMimeTypeError", [this.getAcceptedMimeType(importType)]);
+            console.log(extension);
+            if (!this.getAcceptedMimeType(importType).includes(extension)) {
+                throw new GentrainException("InvalidMimeTypeError", [this.getAcceptedMimeType(importType).join(", ")]);
             }
         });
     }
@@ -31,10 +32,10 @@ export abstract class FileReadingStrategy {
         switch (importType) {
             case "sequence":
                 return activePathogen?.pathogen_type?.name === PathogenTypeName.viral
-                    ? ".fasta, .fn, .fa"
-                    : ".fasta, .fn, .fa, .zip";
+                    ? [".fasta", ".fn", ".fa"]
+                    : [".fasta", ".fn", ".fa", ".zip"];
             default:
-                return ".csv";
+                return [".csv"];
         }
     }
 }
