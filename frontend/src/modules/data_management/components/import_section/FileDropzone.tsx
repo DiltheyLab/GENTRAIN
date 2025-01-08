@@ -91,7 +91,7 @@ export const FileDropzone = ({
                 {fileReadingStrategy && (
                     <input
                         {...getInputProps()}
-                        accept={fileReadingStrategy.getAcceptedMimeType(type)}
+                        accept={fileReadingStrategy.getAcceptedMimeType(type).join(",")}
                         multiple={fileReadingStrategy.allowMultifile()}
                         onChange={(e) => {
                             handleFileUpload(e.target.files);
