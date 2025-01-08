@@ -5,6 +5,8 @@ import subprocess
 import tempfile
 from os import popen
 
+from werkzeug.utils import secure_filename
+
 from backend.modules.core.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
@@ -52,7 +54,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 f"{get_project_path()}/modules/sequence_analysis/scripts/viral.sh",
                 self.input,
                 self.output,
-                f"{get_project_path()}/modules/sequence_analysis/schemes/{self.pathogen.scheme_name}",
+                f"{get_project_path()}/modules/sequence_analysis/schemes/{secure_filename(self.pathogen.scheme_name)}",
             ],
             check=False,
         )

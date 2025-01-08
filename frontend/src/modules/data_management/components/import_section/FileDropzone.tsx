@@ -41,7 +41,7 @@ export const FileDropzone = ({
         }
 
         try {
-            const fileReaderResult = await fileReadingStrategy.execute(files);
+            const fileReaderResult = await fileReadingStrategy.execute(files, type);
             if (!fileReaderResult) return;
 
             // format the file content into an array
@@ -76,7 +76,9 @@ export const FileDropzone = ({
         }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileUpload });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: handleFileUpload,
+    });
 
     return (
         <>
