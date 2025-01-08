@@ -1,13 +1,17 @@
+from os import path
+from os.path import exists
+
 from flask_security import RoleMixin, UserMixin
 
 from backend.app import db
-
+from backend.config import get_project_path
 
 roles_users = db.Table(
     "roles_users",
     db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
     db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
 )
+
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
@@ -39,6 +43,9 @@ class Pathogen(db.Model):
     type = db.Column(db.String, nullable=False)
     scheme_name = db.Column(db.String, nullable=False, unique=True)
 
+
+
+
     def serialize(self):
         return {
             "id": self.id,
@@ -46,4 +53,16 @@ class Pathogen(db.Model):
             "genetic_distance_threshold": self.genetic_distance_threshold,
             "type": self.type,
             "scheme_name": self.scheme_name,
+            "cases_example": self.get_example_data_path("cases"),
+            "sequences_example": self.get_example_data_path("sequences"),
+            "contacts_example": self.get_example_data_path("contacts")
         }
+
+    def get_example_data_path(self, file_type):
+        example_data_mappings = {
+            "cases": {"extension": "csv", "filename": "falldaten"},
+            "sequences": {"extension": "fasta" if self.type == "viral" else "zip", "filename": "sequenzdaten"},
+            "contacts": {"extension": "csv", "filename": "kontaktdaten"},
+        }
+        file_path = f"static/pathogen_example_data/{self.name}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"
+        return file_path if exists(f"{get_project_path()}/{file_path}") else None

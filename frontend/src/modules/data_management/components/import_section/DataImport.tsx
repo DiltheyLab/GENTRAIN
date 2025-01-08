@@ -14,6 +14,8 @@ import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { useState } from "react";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
+import { downloadFileFromUrl } from "@/modules/core/helpers/files";
+import { FileDown } from "lucide-react";
 
 type DataImportParameters = {
     children: JSX.Element;
@@ -25,6 +27,7 @@ type DataImportParameters = {
     dialog?: boolean;
     type: string;
     icon?: JSX.Element | null;
+    exampleDataPath?: string | null;
     disable?: boolean;
 };
 
@@ -46,6 +49,7 @@ export const DataImport = ({
     dialog = false,
     type,
     icon = null,
+    exampleDataPath = null,
     disable = false,
 }: DataImportParameters) => {
     const { toast } = useToast();
@@ -116,22 +120,33 @@ export const DataImport = ({
     };
 
     return (
-        <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
-            {(!showImportAssistent ||
-                (dialog && showImportAssistent) ||
-                (!dialog && Object.keys(data).length === 0)) && (
-                <div className={`flex flex-col gap-3 h-full`}>
-                    <div className="flex flex-col items-end gap-3 h-full">
-                        <FileDropzone
-                            type={type}
-                            icon={icon}
-                            validationStrategy={validationStrategy}
-                            onFileUpload={() => setOpenDialog(true)}
-                        />
+        <div className="flex flex-col items-end gap-1">
+            <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
+                {(!showImportAssistent ||
+                    (dialog && showImportAssistent) ||
+                    (!dialog && Object.keys(data).length === 0)) && (
+                    <div className={`flex flex-col gap-3 h-full`}>
+                        <div className="flex flex-col items-center gap-3 h-full">
+                            <FileDropzone
+                                type={type}
+                                icon={icon}
+                                validationStrategy={validationStrategy}
+                                onFileUpload={() => setOpenDialog(true)}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
+                {renderDataSelection()}
+            </div>
+            {exampleDataPath && (
+                <Button
+                    variant="link"
+                    className="hover:text-primary hover:no-underline"
+                    onClick={() => downloadFileFromUrl(`${import.meta.env.VITE_API_HOST}/${exampleDataPath}`)}
+                >
+                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-2" />
+                </Button>
             )}
-            {renderDataSelection()}
         </div>
     );
 };

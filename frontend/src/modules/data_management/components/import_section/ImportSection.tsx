@@ -33,20 +33,6 @@ export const ImportSection = () => {
                     </p>
                 </div>
                 <div className="flex gap-4">
-                    {activePathogen?.example_data_path && (
-                        <Button
-                            variant="secondary"
-                            onClick={() =>
-                                downloadFileFromUrl(
-                                    `${import.meta.env.VITE_API_HOST}/static/pathogen_example_data/${
-                                        activePathogen?.example_data_path
-                                    }`
-                                )
-                            }
-                        >
-                            Beispieldaten herunterladen
-                        </Button>
-                    )}
                     <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
                         Import-Assistent starten
                     </Button>
@@ -61,6 +47,7 @@ export const ImportSection = () => {
                         dialog
                         type="case"
                         icon={<ContactRound />}
+                        exampleDataPath={activePathogen?.cases_example}
                     >
                         <CaseSelection />
                     </DataImport>
@@ -73,6 +60,7 @@ export const ImportSection = () => {
                         dialog
                         type="sequence"
                         icon={<Dna />}
+                        exampleDataPath={activePathogen?.sequences_example}
                         disable={casesForActivePathogen.length === 0}
                     >
                         <SequenceSelection />
@@ -86,6 +74,7 @@ export const ImportSection = () => {
                         dialog
                         type="contact"
                         icon={<UsersRound />}
+                        exampleDataPath={activePathogen?.contacts_example}
                         disable={casesForActivePathogen.length === 0}
                     >
                         <ContactSelection />
