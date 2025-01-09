@@ -20,6 +20,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.drop_column('pathogen', 'example_data_path')
+    op.drop_column('pathogen', 'scheme_path')
 
 def downgrade() -> None:
     op.add_column('pathogen', sa.Column('example_data_path', sa.String(), nullable=True))
+    op.add_column('pathogen', sa.Column('scheme_path', sa.String(), nullable=True))
