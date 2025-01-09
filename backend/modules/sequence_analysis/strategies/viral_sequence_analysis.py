@@ -82,7 +82,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         nextclade_version = popen("nextclade -V").read().replace("nextclade", "").replace("\n", "").strip()
         return ViralSequenceAnalysisResponseModel(
             nextclade_version=nextclade_version,
-            lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else '' }",
+            lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else ''}" if "clade" in result else None,
             analysis_schema=self.pathogen.scheme_name,
             n_count=result["totalMissing"],
             substitutions=result["substitutions"],

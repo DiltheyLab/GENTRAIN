@@ -13,7 +13,7 @@ def valid_sequence_id_in_csv(string):
 
 def valid_sequence_id_in_fasta(string):
     # fasta ids must be set
-    return re.compile(r"^[A-Za-z0-9-_]+$").match(string)
+    return re.compile(r"^[A-Za-z0-9-_.]+$").match(string)
 
 
 def valid_date(string):

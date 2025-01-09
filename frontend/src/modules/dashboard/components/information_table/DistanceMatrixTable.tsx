@@ -2,12 +2,40 @@ import { Table, TableBody, TableCell, TableRow } from "@/modules/core/components
 import { useGetDistanceMatrixAssembly } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrixAssembly";
 import { useGetDistanceMatrix } from "@/modules/core/hooks/database/distance_matrices/useGetDistanceMatrix";
 import { useState } from "react";
+import { Button } from "@/modules/core/components/ui/Button";
+import { downloadFile } from "@/modules/core/helpers/files";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export function DistanceMatrixTable() {
     const [hoveredRow, setHoveredRow] = useState<number | undefined>();
     const [hoveredColumn, setHoveredColumn] = useState<number | undefined>();
     const distanceMatrix = useGetDistanceMatrix();
     const distanceMatrixAssembly = useGetDistanceMatrixAssembly();
+    const activePathogen = useCoreStore.getState().activePathogen;
+
+    const exportDistanceMatrixAsCsv = () => {
+        const entries = Object.entries(distanceMatrixAssembly as object).sort();
+        let distanceMatrixCsvContent = `;${entries.map((entry) => entry[0]).join(";")}\r\n`;
+        for (const index in entries) {
+            const fastaId = entries[index][0];
+            const distances = entries[index][1];
+            // sort distance array to sorted fasta ids
+            const sortedDistances = Object.keys(distances)
+                .sort()
+                .reduce((obj: any, key) => {
+                    obj[key] = distances[key];
+                    return obj;
+                }, {});
+            const distancesArray = Object.values(sortedDistances);
+            // add "-" for identic row / column pair
+            distancesArray.splice(parseInt(index), 0, "-");
+            distanceMatrixCsvContent += `${fastaId};${distancesArray.join(";")}\r\n`;
+        }
+        downloadFile(
+            new Blob([distanceMatrixCsvContent], { type: "text/csv" }),
+            `${activePathogen?.name.replace(" ", "-").toLowerCase()}_gentrain_distanzmatrix.csv`
+        );
+    };
 
     const renderRow = (rowKey: string, rowIndex: number) => {
         if (distanceMatrixAssembly) {
@@ -54,7 +82,12 @@ export function DistanceMatrixTable() {
         <>
             {distanceMatrix && distanceMatrixAssembly && (
                 <>
-                    <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
+                    <div className="flex justify-between items-center">
+                        <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
+                        <Button onClick={exportDistanceMatrixAsCsv} variant="secondary">
+                            Distanzmatrix exportieren
+                        </Button>
+                    </div>
                     <div className="mt-4 border-[1px] border-muted rounded-xl relative w-full overflow-auto max-h-[50rem]">
                         <Table>
                             <TableBody>

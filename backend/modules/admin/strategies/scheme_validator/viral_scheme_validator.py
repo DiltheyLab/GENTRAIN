@@ -38,8 +38,6 @@ class ViralSchemeValidator(SchemeValidatorStrategy):
     def get_tree_json(self):
         if "treeJson" in self.pathogen_json_dump["files"]:
             self.tree_json = self.zip_file.read(self.pathogen_json_dump["files"]["treeJson"])
-        else:
-            raise ValidationError("tree.json is missing")
 
     def get_reference_fasta(self):
         if "reference" in self.pathogen_json_dump["files"]:
@@ -48,6 +46,8 @@ class ViralSchemeValidator(SchemeValidatorStrategy):
             raise ValidationError("reference.fasta is missing")
 
     def validate_tree_json(self):
+        if not self.tree_json:
+            return
         if not valid_json(self.tree_json):
             raise ValidationError("tree.json is invalid")
 
@@ -59,8 +59,9 @@ class ViralSchemeValidator(SchemeValidatorStrategy):
         zip_out = ZipFile(filename, 'w')
         zip_out.writestr("pathogen.json",
                          self.pathogen_json)
-        zip_out.writestr(self.pathogen_json_dump["files"]["treeJson"],
-                         self.tree_json)
+        if self.tree_json:
+            zip_out.writestr(self.pathogen_json_dump["files"]["treeJson"],
+                             self.tree_json)
         zip_out.writestr(self.pathogen_json_dump["files"]["reference"],
                          self.reference_fasta)
         return zip_out

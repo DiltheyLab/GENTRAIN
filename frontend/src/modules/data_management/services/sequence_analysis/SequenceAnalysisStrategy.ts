@@ -15,7 +15,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket";
 
-const FAILED_ANALYSES_THRESHOLD = 10;
+const FAILED_ANALYSES_THRESHOLD = 100;
 export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
     protected sampleData: {
