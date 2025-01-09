@@ -34,7 +34,7 @@ export const downloadFileFromUrl = (url: string) => {
  * @param file - the file to read
  * @returns a promise that resolves with the file's text content
  */
-export const readFileAsText = (file: File): Promise<string> => {
+export const readFileAsText = (file: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsText(file);

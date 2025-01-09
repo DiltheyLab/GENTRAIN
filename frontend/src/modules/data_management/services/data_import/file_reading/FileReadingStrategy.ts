@@ -42,4 +42,8 @@ export abstract class FileReadingStrategy {
                 return [".csv"];
         }
     }
+
+    public setFiles(files: File[]) {
+        this.files = files;
+    }
 }

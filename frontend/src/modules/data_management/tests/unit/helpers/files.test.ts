@@ -7,7 +7,6 @@ import {
     readFileAsText,
     readFilesAsText,
 } from "@/modules/core/helpers/files";
-import { mockFileList } from "@/modules/core/tests/mocks/files";
 
 describe("FilesHelper", () => {
     afterEach(() => {
@@ -38,7 +37,7 @@ describe("FilesHelper", () => {
     describe("readFilesAsText", async () => {
         it("should read single file content as text", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
-            const files = mockFileList([new File([new Blob([fileBuffer1])], ":file_name_1:")]);
+            const files = [new File([new Blob([fileBuffer1])], ":file_name_1:")];
             const result = await readFilesAsText(files);
 
             expect(result).toEqual(["test1"]);
@@ -46,11 +45,8 @@ describe("FilesHelper", () => {
         it("should read multiple file content as text", async () => {
             let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             let fileBuffer2 = fs.readFileSync(`${__dirname}/../../fixtures/files/test2.txt`);
-            const files = mockFileList([
-                new File([new Blob([fileBuffer1])], ":file_name_1:"),
-                new File([new Blob([fileBuffer2])], ":file_name_2:"),
-            ]);
-            const result = await readFilesAsText(files);
+            const files = [new Blob([fileBuffer1]), new Blob([fileBuffer2])];
+            const result = await readFilesAsText(files as File[]);
 
             expect(result).toEqual(["test1", "test2"]);
         });
