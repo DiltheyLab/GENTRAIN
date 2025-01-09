@@ -46,6 +46,7 @@ export function ActionArea() {
                                     Zurück
                                 </Button>
                             }
+                            inlineSelection
                             icon={<ContactRound />}
                         >
                             <CaseSelection />
@@ -76,6 +77,7 @@ export function ActionArea() {
                                     Zurück
                                 </Button>
                             }
+                            inlineSelection
                             icon={<Dna />}
                         >
                             <SequenceSelection />
@@ -127,6 +129,7 @@ export function ActionArea() {
                                     Zurück
                                 </Button>
                             }
+                            inlineSelection
                             icon={<UsersRound />}
                         >
                             <ContactSelection />

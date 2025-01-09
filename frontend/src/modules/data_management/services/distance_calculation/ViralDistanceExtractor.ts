@@ -47,7 +47,6 @@ export class ViralDistanceExtractor {
     };
 
     public calculateDistance = (sequence1: string, sequence2: string) => {
-        console.log(sequence1, sequence2);
         for (let i = 0; i < sequence1.length; i++) {
             this.currentChar1 = sequence1[i];
             this.currentChar2 = sequence2[i];

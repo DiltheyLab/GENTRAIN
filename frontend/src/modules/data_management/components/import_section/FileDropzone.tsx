@@ -9,17 +9,14 @@ import { ValidationStrategy } from "../../services/data_import/validation/Valida
 import { Button } from "@/modules/core/components/ui/Button";
 import { useDataManagementStore } from "../../stores/dataManagement";
 
-export const FileDropzone = ({
-    type,
-    validationStrategy,
-    icon,
-    onFileUpload,
-}: {
+type FileDropzoneProps = {
     type: string;
     validationStrategy: ValidationStrategy;
     icon?: JSX.Element | null;
     onFileUpload: () => void;
-}) => {
+};
+
+export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: FileDropzoneProps) => {
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
@@ -80,6 +77,8 @@ export const FileDropzone = ({
         onDrop: handleFileUpload,
     });
 
+    if (!fileReadingStrategy) return;
+
     return (
         <>
             <div
@@ -88,23 +87,20 @@ export const FileDropzone = ({
                     isDragActive ? "border-muted-foreground/30" : ""
                 }`}
             >
-                {fileReadingStrategy && (
-                    <input
-                        {...getInputProps()}
-                        accept={fileReadingStrategy.getAcceptedMimeType(type).join(",")}
-                        multiple={fileReadingStrategy.allowMultifile()}
-                        onChange={(e) => {
-                            handleFileUpload(e.target.files);
-                        }}
-                    />
-                )}
+                <input
+                    {...getInputProps()}
+                    accept={fileReadingStrategy.getAcceptedMimeType(type).join(",")}
+                    multiple={fileReadingStrategy.allowMultifile()}
+                    onChange={(e) => {
+                        handleFileUpload(e.target.files);
+                    }}
+                />
                 {!showImportAssistent && (
                     <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
                 )}
                 <div className="relative">
                     <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
-                        {icon && <>{icon}</>}
-                        {!icon && <File />}
+                        {icon ? <>{icon}</> : <File />}
                     </div>
 
                     <CirclePlus
@@ -123,9 +119,8 @@ export const FileDropzone = ({
                         </small>
                     ) : (
                         <small>
-                            Ziehen Sie{" "}
-                            {fileReadingStrategy && fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in
-                            die Fläche oder klicken Sie auf die Fläche um {t(`import:labels.${type}`)} auszuwählen.
+                            Ziehen Sie {fileReadingStrategy.allowMultifile() ? "Dateien" : "eine Datei"} in die Fläche
+                            oder klicken Sie auf die Fläche um {t(`import:labels.${type}`)} auszuwählen.
                         </small>
                     )}
                 </div>
