@@ -12,7 +12,6 @@ import { ContactsValidation } from "../../services/data_import/validation/Contac
 import { ContactSelection } from "./tables/ContactSelection";
 import { ContactRound, Dna, UsersRound } from "lucide-react";
 import { Button } from "@/modules/core/components/ui/Button";
-import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 
 export const ImportSection = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
@@ -33,20 +32,6 @@ export const ImportSection = () => {
                     </p>
                 </div>
                 <div className="flex gap-4">
-                    {activePathogen?.example_data_path && (
-                        <Button
-                            variant="secondary"
-                            onClick={() =>
-                                downloadFileFromUrl(
-                                    `${import.meta.env.VITE_API_HOST}/static/pathogen_example_data/${
-                                        activePathogen?.example_data_path
-                                    }`
-                                )
-                            }
-                        >
-                            Beispieldaten herunterladen
-                        </Button>
-                    )}
                     <Button variant="secondary" onClick={() => setShowImportAssistent(true)}>
                         Import-Assistent starten
                     </Button>
@@ -58,9 +43,9 @@ export const ImportSection = () => {
                         data={caseImports}
                         persistenceStrategy={new CasesPersistence()}
                         validationStrategy={new CasesValidation()}
-                        dialog
                         type="case"
                         icon={<ContactRound />}
+                        exampleDataPath={activePathogen?.cases_example}
                     >
                         <CaseSelection />
                     </DataImport>
@@ -70,9 +55,9 @@ export const ImportSection = () => {
                         data={sampleImports}
                         persistenceStrategy={new SamplesPersistence()}
                         validationStrategy={new SamplesValidation()}
-                        dialog
                         type="sequence"
                         icon={<Dna />}
+                        exampleDataPath={activePathogen?.sequences_example}
                         disable={casesForActivePathogen.length === 0}
                     >
                         <SequenceSelection />
@@ -83,9 +68,9 @@ export const ImportSection = () => {
                         data={contactImports}
                         persistenceStrategy={new ContactsPersistence()}
                         validationStrategy={new ContactsValidation()}
-                        dialog
                         type="contact"
                         icon={<UsersRound />}
+                        exampleDataPath={activePathogen?.contacts_example}
                         disable={casesForActivePathogen.length === 0}
                     >
                         <ContactSelection />

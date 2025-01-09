@@ -50,7 +50,6 @@ export class ViralDistanceExtractor {
         for (let i = 0; i < sequence1.length; i++) {
             this.currentChar1 = sequence1[i];
             this.currentChar2 = sequence2[i];
-
             if (this.atleastOneCharIsN()) {
                 continue;
             }

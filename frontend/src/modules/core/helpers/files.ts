@@ -1,3 +1,7 @@
+import JSZip from "jszip";
+
+export const FASTA_EXTENSIONS = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"];
+
 /**
  * Create a download anchor tag to download a file. Removes it afterwards.
  * @param blob
@@ -44,9 +48,25 @@ export const readFileAsText = (file: File): Promise<string> => {
  * @param files - the files to read
  * @returns a promise that resolves with an array of the files' text content
  */
-export const readFilesAsText = (files: FileList): Promise<string[]> => {
-    const filePromises = Array.from(files).map((file) => readFileAsText(file));
+export const readFilesAsText = (files: File[]): Promise<string[]> => {
+    const filePromises = files.map((file) => readFileAsText(file));
     return Promise.all(filePromises);
+};
+
+export const extractZip = async (file: File) => {
+    const zip = await JSZip.loadAsync(file);
+    const files = await Promise.all(
+        Object.keys(zip.files).map((filename: string) =>
+            zip.files[filename].async("blob").then(function (file) {
+                return new File([file], filename);
+            })
+        )
+    );
+    return files;
+};
+
+export const extractFileExtension = (file: File) => {
+    return file.name.substring(file.name.indexOf(".") + 1, file.name.length);
 };
 
 export const formatInArray = (

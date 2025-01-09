@@ -1,13 +1,13 @@
-import { CoreStore, useCoreStore } from "@/modules/core/stores/core";
-import { OutbreakAnalysisStore, useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
-import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
-import { CustomNode, GraphData } from "@/modules/core/types/graph";
+import {CoreStore, useCoreStore} from "@/modules/core/stores/core";
+import {OutbreakAnalysisStore, useOutbreakAnalysisStore} from "../../stores/outbreakAnalysis";
+import {CaseWithRelationships} from "@/modules/core/models/cases";
+import {ClusterAnalyser} from "@/modules/core/services/graph/ClusterAnalyser";
+import {CustomNode, GraphData} from "@/modules/core/types/graph";
 import html2canvas from "html2canvas";
-import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { getSelectedClusters } from "@/modules/core/helpers/graphs";
-import { t } from "i18next";
-import { concat } from "lodash";
+import {PathogenTypeName} from "@/modules/core/models/pathogen_types";
+import {getSelectedClusters} from "@/modules/core/helpers/graphs";
+import {t} from "i18next";
+import {concat} from "lodash";
 
 export class PdfDataGenerator {
     protected coreStore: CoreStore;
@@ -79,7 +79,8 @@ export class PdfDataGenerator {
         this.distantCasesOfSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter((customNode) => {
             return (
                 customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id &&
-                !mergedClusterCases.includes(customNode.caseData.case_id)
+                !mergedClusterCases.includes(customNode.caseData.case_id) &&
+                customNode.caseData.fasta_id
             );
         });
 
@@ -199,8 +200,8 @@ export class PdfDataGenerator {
         return `${
             caseCountWithoutOutbreak > 0
                 ? ` sowie ${caseCountWithoutOutbreak} ${
-                      caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
-                  } aus der Umgebung ohne Ausbruchszuweisung.`
+                    caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
+                } aus der Umgebung ohne Ausbruchszuweisung.`
                 : "."
         }`;
     };
@@ -294,9 +295,9 @@ export class PdfDataGenerator {
             cases.length === 0
                 ? "."
                 : `und mit ${cases
-                      .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
-                      .join(", ")
-                      .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
+                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                    .join(", ")
+                    .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
         }`;
     };
 

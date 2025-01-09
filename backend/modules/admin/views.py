@@ -1,19 +1,28 @@
-from os import path, listdir, remove, rename, environ
+from os import path, environ
 
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
-from flask_admin.form.upload import FileUploadField
 from flask_login import current_user
 from flask_security import hash_password, SQLAlchemyUserDatastore
 
-from zipfile import ZipFile
-import time
 import shutil
 
+from flask_wtf.file import FileField, FileAllowed
+
 from backend.app import db, basic_auth
+from backend.modules.admin.strategies.example_data_processor.bacterial_example_data_processor import \
+    BacterialExampleDataProcessor
+from backend.modules.admin.strategies.example_data_processor.viral_example_data_processor import \
+    ViralExampleDataProcessor
+from backend.modules.admin.strategies.scheme_processor.bacterial_scheme_processor import BacterialSchemeProcessor
+from backend.modules.admin.strategies.scheme_processor.viral_scheme_processor import ViralSchemeProcessor
+from backend.modules.admin.validators.example_data import cases_example_validator, sequences_example_validator, \
+    contacts_example_validator
+from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
 from backend.modules.core.models import User, Role
 from backend.config import get_project_path
+
 
 class AuthModelView(sqla.ModelView):
     def is_accessible(self):
@@ -88,20 +97,12 @@ class PathogenView(AuthModelView):
             ("viral", "Viral"),
         ]
     }
-    form_overrides = {"scheme_path": FileUploadField, "example_data_path": FileUploadField}
-    form_args = {
-        "scheme_path": {
-            "label": "File",
-            "base_path": schemes_root,
-            "allow_overwrite": True,
-            "allowed_extensions": ["zip"]
-        },
-        "example_data_path": {
-            "label": "File",
-            "base_path": example_data_root,
-            "allow_overwrite": True,
-            "allowed_extensions": ["zip"]
-        }
+    form_extra_fields = {
+        'scheme': FileField('Schema', validators=[FileAllowed(['zip']), scheme_validator]),
+        'cases_example': FileField('Cases Example', validators=[FileAllowed(['csv']), cases_example_validator]),
+        'sequences_example': FileField('Sequences Example',
+                                       validators=[sequences_example_validator]),
+        'contacts_example': FileField('Contacts Example', validators=[FileAllowed(['csv']), contacts_example_validator])
     }
 
     def update_model(self, form, model):
@@ -109,56 +110,20 @@ class PathogenView(AuthModelView):
         return super().update_model(form, model)
 
     def after_model_change(self, form, model, is_created):
-        if self.scheme_added(model.scheme_path):
-            with ZipFile(
-                    path.join(self.schemes_root, model.scheme_path), "r"
-            ) as archive:
-                directory_name = f"{model.scheme_name}_{round(time.time() * 1000)}"
-                extract_path = path.join(
-                    self.schemes_root, directory_name
-                )
-                archive.extractall(path=extract_path)
-                content = listdir(
-                    path.join(
-                        self.schemes_root, directory_name
-                    )
-                )
-                if len(content) == 1:
-                    sub_path = path.join(
-                        self.schemes_root,
-                        f"{directory_name}/{content[0]}",
-                    )
-                    elements = listdir(sub_path)
-                    for element in elements:
-                        shutil.move(path.join(sub_path, element), extract_path)
-                    shutil.rmtree(sub_path)
-                if self.scheme_exists(self.prior_scheme_name):
-                    shutil.rmtree(path.join(self.schemes_root, self.prior_scheme_name))
-                shutil.move(
-                    path.join(
-                        self.schemes_root,
-                        directory_name,
-                    ),
-                    path.join(
-                        self.schemes_root,
-                        model.scheme_name,
-                    ),
-                )
-            remove(path.join(self.schemes_root, model.scheme_path))
-        if is_created is False and model.scheme_name and model.scheme_name != self.prior_scheme_name:
-            rename(path.join(self.schemes_root, self.prior_scheme_name),
-                   path.join(self.schemes_root, model.scheme_name))
+        example_data_processor = ViralExampleDataProcessor(model, form) if model.type == "viral" else BacterialExampleDataProcessor(model, form)
+        example_data_processor.store_example_data()
+
+        scheme_processor = ViralSchemeProcessor(model,
+                                                self.prior_scheme_name) if model.type == "viral" else BacterialSchemeProcessor(
+            model, self.prior_scheme_name)
+        scheme_processor.extract_scheme()
+        if is_created is False:
+            scheme_processor.rename_scheme_directory_on_name_change()
 
     def after_model_delete(self, model):
-        if path.isdir(path.join(self.schemes_root, model.scheme_name)):
-            shutil.rmtree(path.join(self.schemes_root, model.scheme_name))
-
-    def scheme_exists(self, scheme_name):
-        return scheme_name and path.isdir(
-            path.join(self.schemes_root, scheme_name))
-
-    def scheme_added(self, scheme_path):
-        return path.isfile(path.join(self.schemes_root, scheme_path))
+        scheme_processor = ViralSchemeProcessor(model, self.prior_scheme_name) if model.type == "viral" else BacterialSchemeProcessor(model, self.prior_scheme_name)
+        if path.isdir(scheme_processor.get_scheme_name_directory()):
+            shutil.rmtree(scheme_processor.get_scheme_name_directory())
 
 
 class PathogenIndexView(PathogenView):

@@ -45,7 +45,9 @@ gentrainExampleDB.on("populate", async () => {
             gentrainExampleDB.pathogens.add({
                 id: pathogen.id,
                 name: pathogen.name,
-                example_data_path: pathogen.example_data_path,
+                cases_example: pathogen.cases_example,
+                sequences_example: pathogen.sequences_example,
+                contacts_example: pathogen.contacts_example,
                 genetic_distance_threshold: pathogen.genetic_distance_threshold,
                 pathogen_type_id: persistedPathogenTypes[pathogen.type],
                 activated_at: null,

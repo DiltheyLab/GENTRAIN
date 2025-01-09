@@ -36,6 +36,7 @@ export const Root = () => {
     useEffect(() => {
         if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
         setPathogenIsLoading(true);
+        // TODO: replace with optimized implementation
         fetchPathogensFromServer().then((pathogensServerStorage: Pathogen[]) => {
             getAllPathogensWithRelationships().then(async (pathogensClientStorage) => {
                 let pathogensToDelete = pathogensClientStorage;
@@ -50,7 +51,9 @@ export const Root = () => {
                     if (pathogenExistsInClientStorage) {
                         db.pathogens.update(pathogenServer.id, {
                             name: pathogenServer.name,
-                            example_data_path: pathogenServer.example_data_path,
+                            cases_example: pathogenServer.cases_example,
+                            sequences_example: pathogenServer.sequences_example,
+                            contacts_example: pathogenServer.contacts_example,
                             genetic_distance_threshold: pathogenServer.genetic_distance_threshold,
                             pathogen_type_id: pathogenType.id,
                         });
@@ -58,7 +61,9 @@ export const Root = () => {
                         db.pathogens.add({
                             id: pathogenServer.id,
                             name: pathogenServer.name,
-                            example_data_path: pathogenServer.example_data_path,
+                            cases_example: pathogenServer.cases_example,
+                            sequences_example: pathogenServer.sequences_example,
+                            contacts_example: pathogenServer.contacts_example,
                             genetic_distance_threshold: pathogenServer.genetic_distance_threshold,
                             pathogen_type_id: pathogenType.id,
                             activated_at: null,

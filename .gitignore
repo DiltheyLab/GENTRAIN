@@ -8,3 +8,4 @@ Caddyfile
 .idea/*
 redis/redis.conf
 redis/tls
+**/.DS_Store

@@ -5,6 +5,9 @@ import tempfile
 import sys
 from os import popen
 from subprocess import Popen
+
+from werkzeug.utils import secure_filename
+
 from backend.modules.core.exceptions import SequenceAnalysisFailedException
 from backend.config import get_project_path
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
@@ -84,7 +87,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/modules/sequence_analysis/schemes/{self.pathogen.scheme_name}",
+                f"{get_project_path()}/modules/sequence_analysis/schemes/{secure_filename(self.pathogen.scheme_name)}",
                 "-output",
                 self.output,
             ],

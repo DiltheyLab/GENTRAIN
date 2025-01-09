@@ -6,7 +6,7 @@ export const useScrollToFastaIdElement = () => {
     const scrollToSample = useDataManagementStore((state) => state.scrollToSample);
 
     useEffect(() => {
-        const fastaIdElement = document.querySelector(`[data-fasta_id=${scrollToSample}]`);
+        const fastaIdElement = document.querySelector(`[data-fasta_id="${scrollToSample}"]`);
         fastaIdElement?.scrollIntoView({ behavior: "smooth" });
     }, [scrollToSample]);
 

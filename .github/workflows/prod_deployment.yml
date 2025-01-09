@@ -145,7 +145,7 @@ jobs:
             cd redis
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S sh gen-certs.sh
             cd ..
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --no-cache --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
       - name: Notify Slack Action Success

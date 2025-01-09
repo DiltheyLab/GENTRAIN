@@ -6,6 +6,7 @@
     "upload": {
         "title": "Fehlerhafter Import",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",
+        "InvalidMimeTypeError": "Der Dateityp wird nicht unterstützt. Es werden folgende Dateiendungen unterstützt: {{data}}.",
         "InvalidPathogenSelection": "Sie müssen zunächst das behandelte Pathogen festlegen.",
         "CasesAlreadyExist": "Für folgende Fälle existiert bereits ein Eintrag in der Datenbank: {{data}}.",
         "EmptyCaseId1": "Es gibt mindestens ein leeres Feld in der Spalte case_id_1. Ein Kontakt benötigt immer zwei Cases.",

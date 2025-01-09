@@ -14,17 +14,20 @@ import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { useState } from "react";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
+import { downloadFileFromUrl } from "@/modules/core/helpers/files";
+import { FileDown } from "lucide-react";
 
-type DataImportParameters = {
+type DataImportProps = {
     children: JSX.Element;
     data: ImportData;
     persistenceStrategy: PersistenceStrategy;
     validationStrategy: ValidationStrategy;
     actions?: JSX.Element | JSX.Element[];
     buttonText?: string;
-    dialog?: boolean;
+    inlineSelection?: boolean;
     type: string;
     icon?: JSX.Element | null;
+    exampleDataPath?: string | null;
     disable?: boolean;
 };
 
@@ -43,11 +46,12 @@ export const DataImport = ({
     persistenceStrategy,
     validationStrategy,
     actions,
-    dialog = false,
+    inlineSelection = false,
     type,
     icon = null,
+    exampleDataPath = null,
     disable = false,
-}: DataImportParameters) => {
+}: DataImportProps) => {
     const { toast } = useToast();
     const { t } = useTranslation();
     const clearImports = useDataManagementStore((state) => state.clearImports);
@@ -55,10 +59,40 @@ export const DataImport = ({
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
     const [openDialog, setOpenDialog] = useState(false);
 
+    const renderDropzone = () => {
+        // hide dropzone for inline selection if data was uploaded
+        if (inlineSelection && Object.keys(data).length > 0) return;
+        return (
+            <div className={`flex flex-col gap-3 h-full`}>
+                <div className="flex flex-col items-center gap-3 h-full">
+                    <FileDropzone
+                        type={type}
+                        icon={icon}
+                        validationStrategy={validationStrategy}
+                        onFileUpload={() => setOpenDialog(true)}
+                    />
+                </div>
+            </div>
+        );
+    };
+
     const renderDataSelection = () => {
         if (Object.keys(data).length === 0) return;
-        if (dialog) {
-            return !showImportAssistent ? (
+        // render inline version if assistent is active and correspending data was uploaded
+        if (inlineSelection && showImportAssistent) {
+            return (
+                <>
+                    {children}
+                    <div className="flex justify-end gap-4">
+                        {actions}
+                        <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
+                    </div>
+                </>
+            );
+        }
+        // always render dialog version if assistent is inactive
+        if (!showImportAssistent) {
+            return (
                 <Dialog
                     onOpenChange={(open) => {
                         setOpenDialog(false);
@@ -82,17 +116,8 @@ export const DataImport = ({
                         </div>
                     </DialogContent>
                 </Dialog>
-            ) : null;
+            );
         }
-        return showImportAssistent && Object.keys(data).length > 0 ? (
-            <>
-                {children}
-                <div className="flex justify-end gap-4">
-                    {actions}
-                    <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>
-                </div>
-            </>
-        ) : null;
     };
 
     const handleSubmit = async () => {
@@ -116,22 +141,20 @@ export const DataImport = ({
     };
 
     return (
-        <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
-            {(!showImportAssistent ||
-                (dialog && showImportAssistent) ||
-                (!dialog && Object.keys(data).length === 0)) && (
-                <div className={`flex flex-col gap-3 h-full`}>
-                    <div className="flex flex-col items-end gap-3 h-full">
-                        <FileDropzone
-                            type={type}
-                            icon={icon}
-                            validationStrategy={validationStrategy}
-                            onFileUpload={() => setOpenDialog(true)}
-                        />
-                    </div>
-                </div>
+        <div className="flex flex-col items-center gap-1">
+            <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
+                {renderDropzone()}
+                {renderDataSelection()}
+            </div>
+            {exampleDataPath && (
+                <Button
+                    variant="link"
+                    className="hover:text-primary hover:no-underline"
+                    onClick={() => downloadFileFromUrl(`${import.meta.env.VITE_API_HOST}/${exampleDataPath}`)}
+                >
+                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
+                </Button>
             )}
-            {renderDataSelection()}
         </div>
     );
 };
