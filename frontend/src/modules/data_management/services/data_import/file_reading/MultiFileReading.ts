@@ -17,8 +17,7 @@ export class MultiFileReading extends FileReadingStrategy {
     ): ({ filename: string; content: string; mimetype: string } | undefined)[] | undefined {
         if (!this.content) return;
         return this.content?.map((text, i) => {
-            const extension = files[i].name.substring(files[i].name.indexOf(".") + 1, files[i].name.length);
-            console.log(extension);
+            const extension = this.extractFileExtension(files[i]);
             return {
                 filename: files[i].name,
                 content: text,

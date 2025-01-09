@@ -18,11 +18,14 @@ export abstract class FileReadingStrategy {
         return this.collectFileObject(files);
     }
 
+    protected extractFileExtension(file: File) {
+        return file.name.substring(file.name.indexOf(".") + 1, file.name.length);
+    }
+
     private checkAcceptedMimeTypes(files: FileList, importType: string) {
         Array.from(files).map((file: File) => {
-            const extension = file.name.substring(file.name.indexOf("."), file.name.length);
-            console.log(extension, this.getAcceptedMimeType(importType));
-            if (!this.getAcceptedMimeType(importType).includes(extension)) {
+            const extension = this.extractFileExtension(file);
+            if (!this.getAcceptedMimeType(importType).includes(`.${extension}`)) {
                 throw new GentrainException("InvalidMimeTypeError", [this.getAcceptedMimeType(importType).join(", ")]);
             }
         });
