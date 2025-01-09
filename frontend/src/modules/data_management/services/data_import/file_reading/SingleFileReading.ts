@@ -4,16 +4,16 @@ import { FileReadingStrategy } from "./FileReadingStrategy";
 export class SingleFileReading extends FileReadingStrategy {
     protected content: string | null = null;
 
-    protected async readContent(files: FileList) {
-        this.content = await readFileAsText(files[0]);
+    protected async readContent() {
+        this.content = await readFileAsText(this.files[0]);
     }
 
     public allowMultifile() {
         return false;
     }
 
-    protected collectFileObject(files: FileList): { [filename: string]: string; mimetype: string } | undefined {
+    protected collectFileObject(): { [filename: string]: string; mimetype: string } | undefined {
         if (!this.content) return;
-        return { [files[0].name]: this.content, mimetype: files[0].type.includes("csv") ? "csv" : "fasta" };
+        return { [this.files[0].name]: this.content, mimetype: this.files[0].type.includes("csv") ? "csv" : "fasta" };
     }
 }
