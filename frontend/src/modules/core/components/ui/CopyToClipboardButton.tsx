@@ -25,7 +25,7 @@ export const CopyToClipboardButton = ({ description }: CopyToClipboardButtonProp
                         type="button"
                         size="icon"
                         variant="ghost"
-                        className="w-4 h-4 hover:bg-slate-200"
+                        className="w-4 h-4 hover:bg-slate-200 hover:text-primary"
                         onClick={handleClick}
                     >
                         <ClipboardCopy size={18} />

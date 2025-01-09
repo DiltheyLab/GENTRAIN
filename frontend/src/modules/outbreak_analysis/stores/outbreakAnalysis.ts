@@ -47,6 +47,7 @@ export type GraphSettings = {
     nodeSize: number;
     linkWidth: number;
     charge: number;
+    zoomToFitToggle: boolean;
 };
 
 export type AnalysisReport = {
@@ -62,6 +63,7 @@ export const defaultGraphSettings: GraphSettings = {
     nodeSize: 6,
     linkWidth: 2.5,
     charge: -80,
+    zoomToFitToggle: false,
 };
 export const defaultGeneralSettings: GeneralSettings = {
     autoSave: true,

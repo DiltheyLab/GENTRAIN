@@ -510,7 +510,7 @@ export const tutorialSteps: Step[] = [
                 <div className="p-4 bg-gray-100 rounded-lg shadow-md mt-4 ">
                     <div className="space-y-2">
                         <p>
-                            <strong>Nicht sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische
+                            <strong>Nicht-sequenzierte Fälle ausschließen:</strong> Blendet alle Fälle ohne genetische
                             Sequenzen aus.
                         </p>
                         <p>
@@ -626,7 +626,7 @@ export const tutorialSteps: Step[] = [
         content: (
             <p>
                 Sie haben nun alle wichtigen Funktionen von Gentrain kennengelernt. Sie können nun eigene Daten in die
-                Anwendung laden oder unsere Beispieldaten verwenden, um weiter mit der Anwendung zu arbeiten.
+                Anwendung laden oder unsere Beispieldaten verwenden, um weiter mit der Anwendung zu arbeiten.{" "}
                 <strong>Wir wünschen Ihnen viel Erfolg bei der Arbeit mit Gentrain!</strong>
             </p>
         ),

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { Loader2 } from "lucide-react";
@@ -11,6 +11,7 @@ import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
 import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
 import { usePostHog } from "posthog-js/react";
+import { useManualZoomToFit } from "../../hooks/graph/useManualZoomToFit";
 
 type Graph2DProps = {
     data: GraphData;
@@ -33,6 +34,7 @@ type Graph2DProps = {
     linksBelowGeneticDistanceThreshold?: CustomLink[];
     zoomToFitTriggers?: Array<any>;
     geneticDistanceThreshold?: number;
+    zoomToFitToggle?: boolean;
 };
 
 export const Graph2D = ({
@@ -56,13 +58,14 @@ export const Graph2D = ({
     coolDownTicks = 120,
     initialZoomToFit = false,
     zoomToFitTriggers = [],
+    zoomToFitToggle = false,
 }: Graph2DProps) => {
-    const [zoomToFit, setZoomToFit] = useState(initialZoomToFit);
+    const [zoomToFit, setZoomToFit] = useZoomToFit(initialZoomToFit, zoomToFitTriggers);
+    useManualZoomToFit(zoomToFitToggle, () => handleZoomToFit());
     const forceRef = useRef<ForceGraphMethods>();
     const navigate = useNavigate();
     const posthog = usePostHog();
     useCanvasClick([() => updateSelectedNode(null), () => posthog?.capture("graph_canvas_clicked")]);
-    useZoomToFit(zoomToFitTriggers, () => setZoomToFit(true));
 
     // custom d3 force setup
     useEffect(() => {
@@ -79,11 +82,15 @@ export const Graph2D = ({
         return map;
     }, [data.nodes]);
 
-    // zoom out once after engine stops
+    // zoom out once after engine stops to show the whole graph
     const handleEngineStop = () => {
         if (zoomToFit === false) return;
-        forceRef.current?.zoomToFit(100);
+        handleZoomToFit();
         setZoomToFit(false);
+    };
+
+    const handleZoomToFit = () => {
+        forceRef.current?.zoomToFit(100);
     };
 
     const createCustomNodeCanvas = (node: CustomNode & NodeObject, ctx: CanvasRenderingContext2D) => {

@@ -14,16 +14,16 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
     if (!selectedNode) return null;
 
     return (
-        <fieldset className="absolute z-10 right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/80 pointer-events-none">
+        <fieldset className="absolute z-[11] right-2 bottom-2 rounded-lg border p-4 max-w-[35%] bg-muted/90 pointer-events-none">
             <legend className="-ml-1 px-1 text-sm font-medium">Informationen</legend>
             <Button
-                className="absolute -top-[17px] right-1 hover:bg-inherit hover:text-primary bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
+                className="absolute -top-[17px] right-1 hover:bg-inherit bg-inherit rounded-full h-4 -px-1 pointer-events-auto"
                 type="button"
                 size="sm"
                 variant={"ghost"}
                 onClick={() => updateSelectedNode(null)}
             >
-                <X size={23} className="text-slate-700" />
+                <X size={23} className="text-slate-700 hover:text-primary " />
             </Button>
             <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedNode.caseData.case_id} copyToClipboard />

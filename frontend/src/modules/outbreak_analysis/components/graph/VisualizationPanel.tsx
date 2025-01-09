@@ -13,6 +13,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { CustomNode } from "@/modules/core/types/graph";
 import { useLinksBelowGeneticDistanceThreshold } from "@/modules/core/hooks/graph/useLinksBelowGeneticDistanceThreshold";
 import { AnalysisInfo } from "./AnalysisInfo";
+import { ZoomToFitIcon } from "@/modules/core/components/graph/ZoomToFitIcon";
 
 export const VisualizationPanel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +70,10 @@ export const VisualizationPanel = () => {
                         autoSave={outbreakAnalysisStore.generalSettings.autoSave}
                         onAutoSaveChange={(value) => outbreakAnalysisStore.updateGeneralSettings({ autoSave: value })}
                     />
+                    <ZoomToFitIcon
+                        zoomToFitToggle={outbreakAnalysisStore.graphSettings.zoomToFitToggle}
+                        updateGraphSettings={outbreakAnalysisStore.updateGraphSettings}
+                    />
                     <Legend
                         nodes={outbreakAnalysisStore.graphData.nodes}
                         links={outbreakAnalysisStore.graphData.links}
@@ -114,6 +119,7 @@ export const VisualizationPanel = () => {
                             outbreakAnalysisStore.analysisSettings.excludeCasesWithoutSequence,
                             outbreakAnalysisStore.analysisSettings.excludeCasesAboveGeneticDistanceThreshold,
                         ]}
+                        zoomToFitToggle={outbreakAnalysisStore.graphSettings.zoomToFitToggle}
                     />
                 </>
             ) : (

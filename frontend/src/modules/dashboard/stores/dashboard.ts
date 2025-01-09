@@ -12,6 +12,7 @@ export const defaultGraphSettings: GraphSettings = {
     coloringMode: "outbreaks",
     charge: -80,
     linkDistance: 60,
+    zoomToFitToggle: false,
 };
 
 export const getDefaultSettings = (): AnalysisSettings => {
