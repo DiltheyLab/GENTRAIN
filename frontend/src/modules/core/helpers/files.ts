@@ -1,3 +1,5 @@
+export const FASTA_EXTENSIONS = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"];
+
 /**
  * Create a download anchor tag to download a file. Removes it afterwards.
  * @param blob

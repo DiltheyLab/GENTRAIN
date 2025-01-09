@@ -1,4 +1,5 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { FASTA_EXTENSIONS } from "@/modules/core/helpers/files";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { useCoreStore } from "@/modules/core/stores/core";
 
@@ -20,6 +21,7 @@ export abstract class FileReadingStrategy {
     private checkAcceptedMimeTypes(files: FileList, importType: string) {
         Array.from(files).map((file: File) => {
             const extension = file.name.substring(file.name.indexOf("."), file.name.length);
+            console.log(extension, this.getAcceptedMimeType(importType));
             if (!this.getAcceptedMimeType(importType).includes(extension)) {
                 throw new GentrainException("InvalidMimeTypeError", [this.getAcceptedMimeType(importType).join(", ")]);
             }
@@ -31,8 +33,8 @@ export abstract class FileReadingStrategy {
         switch (importType) {
             case "sequence":
                 return activePathogen?.pathogen_type?.name === PathogenTypeName.viral
-                    ? [".fasta", ".fn", ".fa"]
-                    : [".fasta", ".fn", ".fa", ".zip"];
+                    ? FASTA_EXTENSIONS
+                    : FASTA_EXTENSIONS.concat([".zip"]);
             default:
                 return [".csv"];
         }
