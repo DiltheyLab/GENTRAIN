@@ -43,9 +43,7 @@ export function DistanceMatrixTable() {
                 <TableRow key={rowKey}>
                     <TableCell
                         key={rowKey}
-                        className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs w-[100px] ${
-                            hoveredRow === rowIndex ? "bg-muted font-bold" : "bg-muted/50"
-                        }`}
+                        className={`sticky left-0 [&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs bg-muted`}
                     >
                         {rowKey}
                     </TableCell>
@@ -55,7 +53,7 @@ export function DistanceMatrixTable() {
                             return (
                                 <TableCell
                                     key={colKey}
-                                    className={`[&:not(:last-child)]:border-r-[1px] border-muted font-medium p-2 text-center text-xs hover:font-bold ${
+                                    className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 text-center text-xs hover:font-bold select-none ${
                                         hoveredRow === rowIndex || hoveredColumn === colIndex
                                             ? "bg-muted"
                                             : "bg-muted/20"
@@ -91,17 +89,15 @@ export function DistanceMatrixTable() {
                     <div className="mt-4 border-[1px] border-muted rounded-xl relative w-full overflow-auto max-h-[50rem]">
                         <Table>
                             <TableBody>
-                                <TableRow className="border-muted p-2">
-                                    <TableCell className="border-r-[1px] border-muted font-medium"></TableCell>
+                                <TableRow className="border-muted p-2 sticky top-0 z-10 bg-muted">
+                                    <TableCell className="border-r-[1px] border-muted font-medium bg-white sticky left-0 top-0 z-10"></TableCell>
                                     {Object.keys(distanceMatrixAssembly)
                                         .sort()
-                                        .map((key, index) => (
+                                        .map((key) => (
                                             <TableCell
                                                 key={key}
                                                 style={{ writingMode: "vertical-rl" }}
-                                                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 h-[100px] ${
-                                                    hoveredColumn === index ? "bg-muted font-bold" : "bg-muted/50"
-                                                }`}
+                                                className={`[&:not(:last-child)]:border-r-[1px] border-muted p-2 font-medium text-center text-xs rotate-180 bg-muted`}
                                             >
                                                 {key}
                                             </TableCell>
