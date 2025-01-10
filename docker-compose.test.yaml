@@ -93,6 +93,9 @@ services:
       - type: bind
         source: ./backend/modules/sequence_analysis/schemes
         target: /home/backend/modules/sequence_analysis/schemes
+      - type: bind
+        source: ./backend/static/pathogen_example_data
+        target: /home/backend/static/pathogen_example_data
     build:
       context: ./backend
       dockerfile: Dockerfile.prod

@@ -2,6 +2,7 @@ from os import path
 from os.path import exists
 
 from flask_security import RoleMixin, UserMixin
+from werkzeug.utils import secure_filename
 
 from backend.app import db
 from backend.config import get_project_path
@@ -43,9 +44,6 @@ class Pathogen(db.Model):
     type = db.Column(db.String, nullable=False)
     scheme_name = db.Column(db.String, nullable=False, unique=True)
 
-
-
-
     def serialize(self):
         return {
             "id": self.id,
@@ -64,5 +62,5 @@ class Pathogen(db.Model):
             "sequences": {"extension": "fasta" if self.type == "viral" else "zip", "filename": "sequenzdaten"},
             "contacts": {"extension": "csv", "filename": "kontaktdaten"},
         }
-        file_path = f"static/pathogen_example_data/{self.name}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"
+        file_path = f"static/pathogen_example_data/{secure_filename(self.name)}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"
         return file_path if exists(f"{get_project_path()}/{file_path}") else None
