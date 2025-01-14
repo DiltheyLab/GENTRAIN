@@ -8,7 +8,6 @@ from zipfile import ZipFile
 from werkzeug.utils import secure_filename
 
 from backend.config import get_project_path
-from backend.modules.core.helpers import slugify
 
 
 class SchemeProcessorStrategy(ABC):

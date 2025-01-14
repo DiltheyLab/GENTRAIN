@@ -30,18 +30,18 @@ class ViralSchemeValidator(SchemeValidatorStrategy):
 
     def get_pathogen_json(self):
         try:
-            self.pathogen_json = self.zip_file.read("pathogen.json")
+            self.pathogen_json = self.zip_file.read(self.get_common_subdirectory_filename("pathogen.json"))
             self.pathogen_json_dump = json.loads(self.pathogen_json)
         except KeyError:
             raise ValidationError("pathogen.json is missing")
 
     def get_tree_json(self):
         if "treeJson" in self.pathogen_json_dump["files"]:
-            self.tree_json = self.zip_file.read(self.pathogen_json_dump["files"]["treeJson"])
+            self.tree_json = self.zip_file.read(self.get_common_subdirectory_filename(self.pathogen_json_dump["files"]["treeJson"]))
 
     def get_reference_fasta(self):
         if "reference" in self.pathogen_json_dump["files"]:
-            self.reference_fasta = self.zip_file.read(self.pathogen_json_dump["files"]["reference"])
+            self.reference_fasta = self.zip_file.read(self.get_common_subdirectory_filename(self.pathogen_json_dump["files"]["reference"]))
         else:
             raise ValidationError("reference.fasta is missing")
 
