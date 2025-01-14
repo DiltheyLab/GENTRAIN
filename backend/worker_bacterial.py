@@ -7,5 +7,5 @@ redis_conn = redis.from_url(f"rediss://{environ.get('REDIS_USERNAME')}:{environ.
 
 if __name__ == "__main__":
     with Connection(redis_conn):
-        worker = Worker([Queue("bacterial")])
+        worker = Worker([Queue("bacterial", default_timeout=300)])
         worker.work()
