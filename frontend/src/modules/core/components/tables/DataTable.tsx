@@ -98,9 +98,9 @@ export const DataTable = ({
     }, []);
 
     return (
-        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 -mt-2", className)}>
+        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 flex flex-col", className)}>
             {(enableSearch || actions) && (
-                <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
+                <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4 mt-2">
                     {enableSearch && (
                         <Input
                             placeholder={filterPlaceholder}
@@ -114,7 +114,7 @@ export const DataTable = ({
                     {actions && <div className="flex flex-wrap">{actions(table)}</div>}
                 </div>
             )}
-            <div className="rounded-md border bg-white relative">
+            <div className="rounded-md border bg-white">
                 <Table className="w-full">
                     <TableHeader className="bg-white">
                         {table.getHeaderGroups().map((headerGroup) => (
