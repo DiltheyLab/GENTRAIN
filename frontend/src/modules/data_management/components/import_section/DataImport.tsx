@@ -110,16 +110,18 @@ export const DataImport = ({
                     open={openDialog}
                 >
                     <DialogContent
-                        className="max-w-[1000px] w-[calc(100vw-50px)] max-h-[90%] h-full flex flex-col justify-around"
+                        className="max-w-[1000px] w-[calc(100vw-50px)] overflow-y-scroll max-h-[90%]"
                         onInteractOutside={(e) => e.preventDefault()}
                     >
-                        <DialogHeader className="py-4">
+                        <DialogHeader className="text-left">
                             <DialogTitle>{t(`import:titles.${type}_selection`)}</DialogTitle>
                             <DialogDescription></DialogDescription>
                         </DialogHeader>
-                        {renderHtmlFromTranslation(`import:${type}_selection.shared`)}
+                        <div className="hidden sm:block">
+                            {renderHtmlFromTranslation(`import:${type}_selection.shared`)}
+                        </div>
                         {children}
-                        <DialogFooter className="flex items-center py-4">
+                        <DialogFooter>
                             <div className="flex justify-end">
                                 {actions}
                                 <Button onClick={handleSubmit}>{t(`import:labels.${type}`)} hinzufügen</Button>

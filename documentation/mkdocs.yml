@@ -4,6 +4,7 @@ nav:
       - application/dashboard.md
       - application/data_management.md
       - application/outbreak_analysis.md
+      - application/export.md
   - Admin:
       - admin/users.md
       - admin/pathogens.md
