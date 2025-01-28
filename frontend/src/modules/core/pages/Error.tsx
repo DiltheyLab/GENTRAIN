@@ -3,14 +3,21 @@ import { Layout } from "@/modules/core/components/layout/Layout";
 
 export function Error() {
     const error = useRouteError();
+
     if (isRouteErrorResponse(error)) {
         return (
             <Layout>
-                <div>
-                    <h1>Oops!</h1>
-                    <h2>{error.status}</h2>
-                    <p>{error.statusText}</p>
-                    {error.data?.message && <p>{error.data.message}</p>}
+                <div className="w-full p-10 md:p-20 lg:p-40 flex flex-col">
+                    <h1 className="text-[5rem] font-bold text-primary mb-8">Oops!</h1>
+
+                    {error.status === 404 ? (
+                        <p className="text-xl">
+                            Die von Ihnen angefragte Seite existiert nicht. <a href="/">Hier</a> gelangen Sie zum
+                            Dashboard.
+                        </p>
+                    ) : (
+                        <p className="text-xl">Es ist ein interner Fehler aufgetreten.</p>
+                    )}
                 </div>
             </Layout>
         );

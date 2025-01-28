@@ -117,7 +117,7 @@ class SequenceAnalysisStrategy(ABC):
             )
 
     def enqueue_analysis(self, queue):
-        queue.enqueue(self.execute, result_ttl=0)
+        queue.enqueue(self.execute, result_ttl=0, job_timeout=600)
         sio.emit(
             "sequence_analysis_enqueued",
             self.sequence_identifier,

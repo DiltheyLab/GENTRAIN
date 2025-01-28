@@ -98,9 +98,9 @@ export const DataTable = ({
     }, []);
 
     return (
-        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 pt-2 -mt-2", className)}>
+        <div className={cn("w-full overflow-x-auto pl-2 -ml-2 flex flex-col", className)}>
             {(enableSearch || actions) && (
-                <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4">
+                <div className="pb-4 flex flex-wrap justify-between items-center gap-y-4 mt-2">
                     {enableSearch && (
                         <Input
                             placeholder={filterPlaceholder}
@@ -116,7 +116,7 @@ export const DataTable = ({
             )}
             <div className="rounded-md border bg-white">
                 <Table className="w-full">
-                    <TableHeader>
+                    <TableHeader className="bg-white">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
@@ -131,7 +131,7 @@ export const DataTable = ({
                             </TableRow>
                         ))}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="overflow-scroll">
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => {
                                 return (

@@ -11,7 +11,6 @@ export const useResizeContainer = (container: HTMLDivElement | null) => {
 
     useEffect(() => {
         if (!container) return;
-
         adjustWidthAndHeight();
         window.addEventListener("resize", adjustWidthAndHeight);
         return () => {

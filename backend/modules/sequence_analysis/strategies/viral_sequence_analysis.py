@@ -80,6 +80,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         # retrieve the installed nextclade version (gentrain-worker and gentrain-backend versions are synced)
         # Nextclade_pango does only exist for sequences of SARS-CoV-2
         nextclade_version = popen("nextclade -V").read().replace("nextclade", "").replace("\n", "").strip()
+        print(result)
         return ViralSequenceAnalysisResponseModel(
             nextclade_version=nextclade_version,
             lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else ''}" if "clade" in result else None,
