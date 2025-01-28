@@ -88,14 +88,14 @@ The setup of the test instance in de.NBI Cloud follows this tutorial:
 To ensure a secure, SSL-encrypted connection to the test server with a valid certificate, follow these steps:
 
 1. The production instance automatically generates SSL certificates using Caddy.
-2. These certificates are stored in specific folders on the production server.
+2. These certificates are stored in under /var/lib/docker/volumes/gentrain_caddy_data/\_data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/
 3. To use these certificates for the test server:
    - Copy the certificate files (.crt and .key) from the production instance to the corresponding folders on the test
      instance.
    - The paths for these certificates are defined in the Caddyfile. We have created an example file (
      `Caddyfile.test.example`) where you can see the structure:
-     - For the API: `/data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
-     - For the frontend: `/data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
+     - For the API: `/var/lib/docker/volumes/gentrain_caddy_data/_data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
+     - For the frontend: `/var/lib/docker/volumes/gentrain_caddy_data/_data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
 
 By copying these certificates, you ensure that the test server uses the same valid SSL certificates as the production
 server, allowing for secure, encrypted connections during testing.
