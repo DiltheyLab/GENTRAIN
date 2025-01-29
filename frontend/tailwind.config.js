@@ -67,6 +67,10 @@ export default {
                 xs: "0.82rem",
                 md: "0.95rem",
             },
+            screens: {
+                tall: { raw: "(min-height: 880px)" },
+                short: { raw: "(max-height: 880px)" },
+            },
         },
     },
 
