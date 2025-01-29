@@ -109,21 +109,21 @@ export const formatInArray = (
  * @returns
  */
 export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
-    let fastaSequencesArray = [];
-    for (let sequence of fastaSequences) {
-        let sequenceArray = sequence.split("\n");
+    const fastaSequencesArray = [];
+    for (const sequence of fastaSequences) {
+        const sequenceArray = sequence.split("\n");
         let fastaId = null;
-        let genom = "";
-        for (let element of sequenceArray) {
+        let genome = "";
+        for (const element of sequenceArray) {
             if (element[0] === ">") {
                 fastaId = element.slice(1).split(/\s+/)[0];
             } else {
-                genom += element.trim();
+                genome += element.trim();
             }
         }
 
         if (fastaId) {
-            fastaSequencesArray.push({ fastaId: fastaId, sequence: genom });
+            fastaSequencesArray.push({ fastaId: fastaId, sequence: genome });
         }
     }
     return fastaSequencesArray;
