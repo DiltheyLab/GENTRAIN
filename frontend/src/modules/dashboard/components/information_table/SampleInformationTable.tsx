@@ -37,7 +37,7 @@ export function SampleInformationTable() {
     };
 
     const renderRows = () => {
-        return casesWithSamples.map((caseData) => {
+        return casesWithRelationships.map((caseData) => {
             return (
                 <TableRow key={caseData.id} className="border-muted">
                     <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
@@ -87,17 +87,16 @@ export function SampleInformationTable() {
 
     return (
         <>
-            {casesWithSamples.length > 0 && (
-                <>
-                    <small>Es sind {casesWithSamples.length} sequenzierte Fälle im Datensatz.</small>
-                    <div className="mt-4 border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                        <Table className="rounded-xl">
-                            <TableHeader>{renderHeadRow()}</TableHeader>
-                            <TableBody>{renderRows()}</TableBody>
-                        </Table>
-                    </div>
-                </>
-            )}
+            <small>
+                Es sind {casesWithRelationships.length} Fälle im Datensatz. Zu {casesWithSamples.length} Fällen liegen
+                Sequenzen vor.
+            </small>
+            <div className="mt-4 border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                <Table className="rounded-xl">
+                    <TableHeader>{renderHeadRow()}</TableHeader>
+                    <TableBody>{renderRows()}</TableBody>
+                </Table>
+            </div>
         </>
     );
 }
