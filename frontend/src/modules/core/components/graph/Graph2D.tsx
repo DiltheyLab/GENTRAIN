@@ -60,6 +60,8 @@ export const Graph2D = ({
     zoomToFitTriggers = [],
     zoomToFitToggle = false,
 }: Graph2DProps) => {
+    const hasUnsequencedData = data.nodes.length === 0 && cases && cases.length >= 0;
+    const hasOnlySingleDataPoint = data.links.length === 0 && data.nodes.length === 1;
     const [zoomToFit, setZoomToFit] = useZoomToFit(initialZoomToFit, zoomToFitTriggers);
     useManualZoomToFit(zoomToFitToggle, () => handleZoomToFit());
     const forceRef = useRef<ForceGraphMethods>();
@@ -192,12 +194,12 @@ export const Graph2D = ({
         node.fy = node.y;
     };
 
-    if (isLoading) {
-        return <Loader2 className="h-24 w-h-24 animate-spin" />;
-    } else if (data.nodes.length === 0 && cases && cases.length >= 0) {
+    const renderNoSequencedDataMessage = () => {
         return (
-            <div className="flex justify-center items-center h-full w-full">
-                <p>Es sind keine sequenzierten Daten vorhanden, bitte laden Sie diese in der&nbsp;</p>
+            <div className="flex justify-center items-center">
+                <p>
+                    Es sind <strong>keine sequenzierten Daten vorhanden</strong>, bitte laden Sie diese in der&nbsp;
+                </p>
                 <Button
                     variant="link"
                     className="underline px-0 font-normal text-base"
@@ -208,13 +210,23 @@ export const Graph2D = ({
                 <p>&nbsp; hoch.</p>
             </div>
         );
-    } else if (data.links.length === 0 && data.nodes.length === 1) {
+    };
+
+    const renderSingleDataPointMessage = () => {
         return (
             <div className="flex flex-col p-4 text-center">
                 <h4 className="text-lg font-semibold">Der ausgewählte Ausbruch besteht nur aus einem Datenpunkt.</h4>
                 <p> Bitte fügen Sie weitere Umgebungsdaten hinzu, um den Graph zu erstellen.</p>
             </div>
         );
+    };
+
+    if (isLoading) {
+        return <Loader2 className="h-24 w-h-24 animate-spin" />;
+    } else if (hasUnsequencedData) {
+        return renderNoSequencedDataMessage();
+    } else if (hasOnlySingleDataPoint) {
+        return renderSingleDataPointMessage();
     }
 
     return (
