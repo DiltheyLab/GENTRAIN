@@ -15,10 +15,8 @@ const CasesPerClusterChart = () => {
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
 
     const chartData = useMemo(() => {
-        const nodesWithoutSamples = nodes.filter((node) => node.caseData.sample);
-
         const clusterMap = new Map<string, number>();
-        for (const node of nodesWithoutSamples) {
+        for (const node of nodes) {
             const key = node.cluster;
             if (!clusterMap.has(key)) {
                 clusterMap.set(key, 1);

@@ -20,10 +20,8 @@ const CasesPerDayChart = () => {
     }, [nodes]);
 
     const chartData = useMemo(() => {
-        const nodesWithoutSamples = nodes.filter((node) => node.caseData.sample);
-
         const dateMap = new Map<string, Map<string, number>>();
-        for (const node of nodesWithoutSamples) {
+        for (const node of nodes) {
             const key = node.caseData.registered_at.toLocaleDateString();
             // if there is no date key in the dateMap we create a key with every cluster
             if (!dateMap.has(key)) {
