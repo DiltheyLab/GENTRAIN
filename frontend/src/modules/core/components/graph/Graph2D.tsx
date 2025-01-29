@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from "react-force-graph-2d";
 import { Loader2 } from "lucide-react";
-
 import { ColoringMode, ColorMap, CustomLink, CustomNode, GraphData } from "@/modules/core/types/graph";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { useCanvasClick } from "@/modules/core/hooks/graph/useCanvasClick";
