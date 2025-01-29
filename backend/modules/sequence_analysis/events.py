@@ -11,6 +11,10 @@ from backend.server import sio, redis_connection, queue_viral, queue_bacterial
 def init_gentrain_session(gentrain_session_id):
     socket_id = request.sid
     redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
+    redis_connection.expire(
+        name=f"client:gentrain_session:{socket_id}",
+        time=86400,
+    )
 
 
 @sio.event

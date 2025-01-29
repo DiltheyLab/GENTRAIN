@@ -1,7 +1,23 @@
+import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 
 export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
+    public setSampleData = (sampleData: {
+        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean };
+    }) => {
+        this.sampleData = sampleData;
+        this.pseudonymiseAssemblies();
+    };
+
+    private pseudonymiseAssemblies = () => {
+        for (const fastaId of Object.keys(this.sampleData)) {
+            this.sampleData[fastaId].imported.sequence = this.sampleData[fastaId].imported.sequence
+                .replace("\r", "")
+                .replace(/>(.*?)\n/g, ">\n");
+        }
+    };
+
     public createSampleAndSequenceAnalysis = async (fastaId: string, sequenceAnalysisResult: any) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: sequenceAnalysisResult["analysis_schema"],
