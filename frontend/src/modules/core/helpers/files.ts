@@ -76,7 +76,7 @@ export const formatInArray = (
 ) => {
     if (fileReaderResult instanceof Array) {
         // if the fileReaderResult is an array, we assume that it contains multiple files
-        let fastaSequencesArray = [];
+        const fastaSequencesArray = [];
         for (const file of fileReaderResult) {
             if (file?.mimetype === "fasta") {
                 // for bacterial uploads:
@@ -89,9 +89,9 @@ export const formatInArray = (
     } else {
         if (fileReaderResult.mimetype === "fasta") {
             // fasta header contains fasta id (viral)
-            let fastaSquences = Object.values(fileReaderResult)[0].split(/(?=>)/g);
-            let fastaSquenceArray = collectFastaIdsAndSequences(fastaSquences);
-            return fastaSquenceArray.flat(1);
+            const fastaSequences = Object.values(fileReaderResult)[0].split(/(?=>)/g);
+            const fastaSequenceArray = collectFastaIdsAndSequences(fastaSequences);
+            return fastaSequenceArray.flat(1);
         } else {
             let lines = Object.values(fileReaderResult)[0].split("\n");
             // filter empty lines to prevent empty cells
