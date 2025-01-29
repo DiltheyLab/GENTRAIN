@@ -40,15 +40,10 @@ export const VisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) {
-            outbreakAnalysisStore.updateGraphData({ nodes: [], links: [] });
-            return;
-        }
-
         const graphDataGenerator = new GraphDataGenerator(
             cases,
-            distanceMatrixAssembly,
-            contacts,
+            distanceMatrixAssembly ?? {},
+            contacts ?? [],
             outbreakAnalysisStore.analysisSettings
         );
         graphDataGenerator.execute().then((graphData) => {
@@ -118,6 +113,7 @@ export const VisualizationPanel = () => {
                             outbreakAnalysisStore.analysisSettings.backgroundType,
                             outbreakAnalysisStore.analysisSettings.excludeCasesWithoutSequence,
                             outbreakAnalysisStore.analysisSettings.excludeCasesAboveGeneticDistanceThreshold,
+                            outbreakAnalysisStore.analysisSettings.selectedOutbreak,
                         ]}
                         zoomToFitToggle={outbreakAnalysisStore.graphSettings.zoomToFitToggle}
                     />
