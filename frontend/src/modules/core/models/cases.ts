@@ -1,15 +1,15 @@
-import { z } from "zod";
-import { db } from "@/modules/core/services/database/DatabaseManager";
-import { deleteSampleById, SampleSchema } from "./samples";
-import { PathogenSchema } from "./pathogens";
-import { OutbreakSchema } from "./outbreaks";
-import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
-import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
-import { deleteDistancesBySampleId } from "./distances";
-import { collectContactsForCases, GroupedContacts } from "./contacts";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
-import { Collection } from "dexie";
+import {z} from "zod";
+import {db} from "@/modules/core/services/database/DatabaseManager";
+import {deleteSampleById, SampleSchema} from "./samples";
+import {PathogenSchema} from "./pathogens";
+import {OutbreakSchema} from "./outbreaks";
+import {getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships} from "./groups";
+import {getOrCreateDistanceMatrixIdByPathogenId} from "./distance_matrices";
+import {deleteDistancesBySampleId} from "./distances";
+import {collectContactsForCases, GroupedContacts} from "./contacts";
+import {useCoreStore} from "@/modules/core/stores/core";
+import {deleteSequenceAnalysisById, ViralAnalysisResult} from "./sequence_analyses";
+import {Collection} from "dexie";
 
 export interface CaseSchema {
     id: number;
@@ -59,10 +59,10 @@ export const getWithRelations = async (collection: Collection, includeSequenceAn
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
-            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
+            const sample = await db.samples.where({fasta_id: currentCase.fasta_id}).first();
             if (sample) {
                 caseWithRelationships.sample = sample;
                 if (caseWithRelationships.sample) {
@@ -80,7 +80,7 @@ export const getWithRelations = async (collection: Collection, includeSequenceAn
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
+            const outbreak = await db.outbreaks.where({id: currentCase.outbreak_id}).first();
             if (outbreak) {
                 caseWithRelationships.outbreak = outbreak;
             }
@@ -108,10 +108,10 @@ export const getCasesByConditionWithRelationships = async (
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
-            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
+            const sample = await db.samples.where({fasta_id: currentCase.fasta_id}).first();
             if (sample) {
                 caseWithRelationships.sample = sample;
                 if (caseWithRelationships.sample) {
@@ -129,7 +129,7 @@ export const getCasesByConditionWithRelationships = async (
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
+            const outbreak = await db.outbreaks.where({id: currentCase.outbreak_id}).first();
             if (outbreak) {
                 caseWithRelationships.outbreak = outbreak;
             }
@@ -151,20 +151,20 @@ export const getAllCasesForPathogenWithRelationships = async (
     pathogen_id: number,
     includeSequenceAnalysisResult: boolean = false
 ) => {
-    const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+    const cases = await db.cases.where({pathogen_id: pathogen_id}).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     // retrieve pathogen schema object
-    const pathogen = await db.pathogens.where({ id: pathogen_id }).first();
+    const pathogen = await db.pathogens.where({id: pathogen_id}).first();
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         caseWithRelationships.pathogen = pathogen;
 
         // retrieve sample schema object
         if (currentCase.fasta_id) {
-            const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
+            const sample = await db.samples.where({fasta_id: currentCase.fasta_id}).first();
             if (sample) {
                 caseWithRelationships.sample = sample;
                 if (caseWithRelationships.sample) {
@@ -182,7 +182,7 @@ export const getAllCasesForPathogenWithRelationships = async (
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
-            const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
+            const outbreak = await db.outbreaks.where({id: currentCase.outbreak_id}).first();
             if (outbreak) {
                 caseWithRelationships.outbreak = outbreak;
             }
@@ -201,12 +201,12 @@ export const getAllCasesForPathogenWithRelationships = async (
 };
 
 export const getCaseByCaseId = async (caseId: string) => {
-    const caseByCaseId = await db.cases.where({ case_id: caseId }).first();
+    const caseByCaseId = await db.cases.where({case_id: caseId}).first();
     return caseByCaseId;
 };
 
 export const getCaseByFastaId = async (fastaId: string) => {
-    const caseByFastaId = await db.cases.where({ fasta_id: fastaId }).first();
+    const caseByFastaId = await db.cases.where({fasta_id: fastaId}).first();
     return caseByFastaId;
 };
 
@@ -215,19 +215,19 @@ export const getCaseWithSampleById = async (id: number) => {
     if (!caseById) {
         return;
     }
-    let caseWithRelationships: CaseWithRelationships = caseById;
-    caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
+    const caseWithRelationships: CaseWithRelationships = caseById;
+    caseWithRelationships.sample = await db.samples.where({fasta_id: caseById.fasta_id}).first();
     return caseWithRelationships;
 };
 
 export const getCasesForPathogenWithSample = async (pathogen_id: number) => {
-    const pathogenCases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
+    const pathogenCases = await db.cases.where({pathogen_id: pathogen_id}).toArray();
 
     const casesWithRelationships: CaseWithRelationships[] = [];
     for (const pathogenCase of pathogenCases) {
-        let caseWithRelationships: CaseWithRelationships = pathogenCase;
+        const caseWithRelationships: CaseWithRelationships = pathogenCase;
         if (pathogenCase.fasta_id) {
-            caseWithRelationships.sample = await db.samples.where({ fasta_id: pathogenCase.fasta_id }).first();
+            caseWithRelationships.sample = await db.samples.where({fasta_id: pathogenCase.fasta_id}).first();
             if (caseWithRelationships.sample) {
                 caseWithRelationships.sample.sequence_analysis = await db.sequence_analyses.get(
                     caseWithRelationships.sample.sequence_analysis_id

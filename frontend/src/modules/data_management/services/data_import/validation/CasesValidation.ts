@@ -11,16 +11,15 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { CaseImports } from "@/modules/data_management/types/import";
 
 export class CasesValidation extends ValidationStrategy {
-    protected data: string[][] = [];
+    protected data: {[key: string]: string}[] = [];
     protected header: string[] = [];
     protected outbreaks?: Map<any, OutbreakSchema>;
     protected cases?: Map<string, CaseWithRelationships>;
     protected columnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 
-    public collectData(data: string[][]) {
-        this.header = data[0];
-        // remove header from csv input
-        this.data = data.slice(1, data.length);
+    public collectData(data: {columns: string[], rows: {[key: string]: string}[]}) {
+        this.header = data.columns;
+        this.data = data.rows;
     }
 
     protected async validate() {
@@ -45,9 +44,7 @@ export class CasesValidation extends ValidationStrategy {
             }
         }
 
-        return {
-            data: this.data,
-        };
+        return {data: this.data}
     }
 
     private isCasesHeaderValid() {
@@ -61,7 +58,7 @@ export class CasesValidation extends ValidationStrategy {
             return {};
         }
 
-        const caseIds = this.data.map((row) => row[0]);
+        const caseIds = this.data.map((row) => row["Fall ID"]);
         const cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
         this.cases = ObjectRelationalMapper.arrayToMap(cases, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);
@@ -74,47 +71,22 @@ export class CasesValidation extends ValidationStrategy {
 
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
-            const persistedCase = this.cases?.get(row[0]);
+            const persistedCase = this.cases?.get(row["Fall ID"]);
             const importedCase = {
-                fasta_id: row[1] !== "" ? row[1] : null,
-                groups: this.collectNewGroups(row, persistedCase),
-                outbreak: row[3] !== "" ? row[3] : null,
-                registered_at: parseGermanDateFormat(row[2]),
+                fasta_id: row["Sequenz ID"],
+                groups: [],
+                outbreak: row["Ausbruch"],
+                registered_at: parseGermanDateFormat(row["Registrierungsdatum"]),
             } satisfies CaseImport;
             if (persistedCase) {
                 persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
+                persistedCase.groups = persistedCase.groups ?? [];
 
                 if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
             }
-            casesToUpload[row[0]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
+            casesToUpload[row["Fall ID"]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
         }
-
         return casesToUpload;
-    }
-
-    /**
-     * Detect if groups are remaining or new to the existing case or not.
-     * @param row
-     * @param existingCase
-     * @returns
-     */
-    private collectNewGroups(row: string[], existingCase: CaseWithRelationships | undefined) {
-        const groups: { name: string; category: string; remaining: boolean }[] = [];
-
-        for (let i = 4; i <= 6; i++) {
-            if (row[i] !== "") {
-                const group = { category: this.header[i], name: row[i], remaining: false };
-                const groupExistsForCase = existingCase
-                    ? existingCase.groups?.some((existingGroup) => {
-                          return existingGroup.category?.name === group.category && existingGroup.name === group.name;
-                      })
-                    : false;
-                group.remaining = groupExistsForCase ?? false;
-
-                groups.push(group);
-            }
-        }
-        return groups;
     }
 
     /**

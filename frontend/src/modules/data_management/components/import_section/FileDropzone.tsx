@@ -1,6 +1,6 @@
 import { useDropzone } from "react-dropzone";
 import { CirclePlus, File } from "lucide-react";
-import { formatInArray } from "@/modules/core/helpers/files";
+import {formatData} from "@/modules/core/helpers/files";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { useTranslation } from "react-i18next";
 import { useGetFileReadingStrategy } from "../../hooks/useGetFileReadingStrategy";
@@ -41,11 +41,11 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
             const fileReaderResult = await fileReadingStrategy.execute(files, type);
             if (!fileReaderResult) return;
 
-            // format the file content into an array
-            const fileAsStringArray = formatInArray(fileReaderResult);
+            // format the file content into a proper structure (fasta -> string[], csv -> object[])
+            const formattedData = formatData(fileReaderResult);
 
             // validate the data
-            validationStrategy.collectData(fileAsStringArray);
+            validationStrategy.collectData(formattedData);
             const validationResult = await validationStrategy.execute();
             if (validationResult.warnings) {
                 showWarningToasts(validationResult.warnings);

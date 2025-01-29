@@ -3,7 +3,7 @@ import JSZip from "jszip";
 export const FASTA_EXTENSIONS = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"];
 
 /**
- * Create a download anchor tag to download a file. Removes it afterwards.
+ * Create a download anchor tag to download a file. Removes it afterward.
  * @param blob
  * @param name
  */
@@ -17,7 +17,7 @@ export const downloadFile = (blob: Blob, name: string) => {
 };
 
 /**
- * Create a download anchor tag to download a file. Removes it afterwards.
+ * Create a download anchor tag to download a file. Removes it afterward.
  * @param blob
  * @param name
  */
@@ -69,7 +69,7 @@ export const extractFileExtension = (file: File) => {
     return file.name.substring(file.name.indexOf(".") + 1, file.name.length);
 };
 
-export const formatInArray = (
+export const formatData = (
     fileReaderResult:
         | ({ filename: string; content: string; mimetype: string } | undefined)[]
         | { [filename: string]: string; mimetype: string }
@@ -82,7 +82,7 @@ export const formatInArray = (
                 // for bacterial uploads:
                 // fasta file name contains fasta id
                 // content contains assembly
-                fastaSequencesArray.push({ fastaId: file.filename.split(".")[0], sequence: file.content });
+                fastaSequencesArray.push({fastaId: file.filename.split(".")[0], sequence: file.content});
             }
         }
         return fastaSequencesArray;
@@ -93,12 +93,25 @@ export const formatInArray = (
             const fastaSequenceArray = collectFastaIdsAndSequences(fastaSequences);
             return fastaSequenceArray.flat(1);
         } else {
-            let lines = Object.values(fileReaderResult)[0].split("\n");
+            let rows = Object.values(fileReaderResult)[0].split("\n");
             // filter empty lines to prevent empty cells
-            lines = lines.filter((line) => line !== "");
+            rows = rows.filter((line) => line !== "");
+            const columns: string[] = rows[0].split(";").map((column: string) => column.trim());
             // Split lines into fields and remove leading/trailing whitespaces or
             // line breaks (in windows every line has a \r in the end after splitting by \n)
-            return lines.map((line) => line.split(";").map((cell) => cell.trim()));
+            const rowData = [];
+            for (const index in rows) {
+                if (parseInt(index) === 0) {
+                    continue;
+                }
+                const rowArray = rows[parseInt(index)].replace("\r", "").split(";");
+                const rowObject: { [key: string]: string } = {};
+                rowArray.forEach((cell, index: number) => {
+                    rowObject[columns[index]] = cell.trim();
+                })
+                rowData.push(rowObject);
+            }
+            return {columns: columns, rows: rowData}
         }
     }
 };
@@ -123,7 +136,7 @@ export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
         }
 
         if (fastaId) {
-            fastaSequencesArray.push({ fastaId: fastaId, sequence: genome });
+            fastaSequencesArray.push({fastaId: fastaId, sequence: genome});
         }
     }
     return fastaSequencesArray;

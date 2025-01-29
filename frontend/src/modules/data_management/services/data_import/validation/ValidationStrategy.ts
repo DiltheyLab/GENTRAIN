@@ -1,17 +1,20 @@
 export abstract class ValidationStrategy {
     protected header?: string[];
-    protected data: string[][] | { fastaId: string; sequence: string }[] = [];
+    protected data: string[][] | { [key: string]: string }[] | { fastaId: string; sequence: string }[] = [];
     protected columnNames: string[] = [];
 
     protected abstract validate(): Promise<{
-        data: string[][] | { fastaId: string; sequence: string }[];
+        data: string[][] | {[key: string]: string}[] | { fastaId: string; sequence: string }[];
         warnings?: { title: string; description: string }[];
     }>;
 
-    public abstract collectData(data: string[][] | { fastaId: string; sequence: string }[]): void;
+    public abstract collectData(data: string[][] | { columns: string[], rows: { [key: string]: string }[] } | {
+        fastaId: string;
+        sequence: string
+    }[]): void;
 
     public async execute(): Promise<{
-        data: string[][] | { fastaId: string; sequence: string }[];
+        data: string[][] | {[key: string]: string}[] | { fastaId: string; sequence: string }[];
         warnings?: { title: string; description: string }[];
     }> {
         return this.validate();
