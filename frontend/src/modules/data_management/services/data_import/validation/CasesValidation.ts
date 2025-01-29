@@ -24,7 +24,7 @@ export class CasesValidation extends ValidationStrategy {
 
     protected async validate() {
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
-        if (!this.isCasesHeaderValid()) {
+        if (!this.isHeaderValid()) {
             throw new GentrainException("InvalidHeaderError");
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
@@ -47,10 +47,6 @@ export class CasesValidation extends ValidationStrategy {
         return {data: this.data}
     }
 
-    private isCasesHeaderValid() {
-        // validate if 3 flexible columns were included and execute parent header validation
-        return this.header.length <= this.columnNames.length + 3 && this.isHeaderValid();
-    }
 
     private async collectCaseImports() {
         const activePathogen = useCoreStore.getState().activePathogen;
