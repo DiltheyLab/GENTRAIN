@@ -1,9 +1,9 @@
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { db } from "@/modules/core/services/database/DatabaseManager";
-import { ContactSchema, contactRules } from "@/modules/core/models/contacts";
-import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { PersistenceStrategy } from "./PersistenceStrategy";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {db} from "@/modules/core/services/database/DatabaseManager";
+import {ContactSchema, contactRules} from "@/modules/core/models/contacts";
+import {ObjectRelationalMapper} from "@/modules/core/services/database/ObjectRelationalMapper";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {PersistenceStrategy} from "./PersistenceStrategy";
 
 export class ContactsPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -53,5 +53,6 @@ export class ContactsPersistence extends PersistenceStrategy {
         useDataManagementStore.getState().resetImportAssistent(true);
     };
 
-    protected update = async () => {};
+    protected update = async () => {
+    };
 }
