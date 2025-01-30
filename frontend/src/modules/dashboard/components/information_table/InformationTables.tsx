@@ -3,9 +3,16 @@ import { ClusterInformationTable } from "./ClusterInformationTable";
 import { SampleInformationTable } from "./SampleInformationTable";
 import { useDashboardStore } from "../../stores/dashboard";
 import { DistanceMatrixTable } from "./DistanceMatrixTable";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export const InformationTables = () => {
     const coloringMode = useDashboardStore((state) => state.graphSettings.coloringMode);
+    const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
+
+    if (casesWithRelationships.length === 0) {
+        return null;
+    }
+
     return (
         <Accordion type="multiple" className="mt-4">
             {coloringMode === "clusters" ? (

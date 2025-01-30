@@ -175,25 +175,6 @@ export const tutorialSteps: Step[] = [
         placement: "right",
     },
     {
-        target: "[data-tutorial-tour-step='dashboard-charts']",
-        title: "Die Diagramme.",
-        content: (
-            <p>
-                Im <strong>oberen Diagramm</strong> sehen Sie die Verteilung der täglich aufgetretenen Fälle. Dies
-                ermöglicht es Ihnen, das Infektionsgeschehen zeitlich besser einzuordnen und Auffälligkeiten direkt zu
-                erkennen.
-                <br />
-                <br />
-                Das <strong>untere Diagramm</strong> zeigt die Anzahl aller Fälle pro Cluster oder Ausbruch, abhängig
-                von der gewählten Einfärbung.
-            </p>
-        ),
-        disableBeacon: true,
-        spotlightClicks: true,
-        disableScrolling: false,
-        placement: "right",
-    },
-    {
         target: "[data-tutorial-tour-step='dashboard-state-import']",
         title: "Zustände sichern und importieren.",
         content: (

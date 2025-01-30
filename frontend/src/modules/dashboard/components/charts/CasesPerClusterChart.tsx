@@ -15,10 +15,8 @@ const CasesPerClusterChart = () => {
     const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
 
     const chartData = useMemo(() => {
-        const nodesWithoutSamples = nodes.filter((node) => node.caseData.sample);
-
         const clusterMap = new Map<string, number>();
-        for (const node of nodesWithoutSamples) {
+        for (const node of nodes) {
             const key = node.cluster;
             if (!clusterMap.has(key)) {
                 clusterMap.set(key, 1);
@@ -40,7 +38,7 @@ const CasesPerClusterChart = () => {
     }, [nodes]);
 
     return (
-        <Card>
+        <Card className="hidden tall:block">
             <CardHeader className="px-4 pt-4 pb-0">
                 <CardTitle className="text-xl font-semibold leading-none">Fälle pro Ausbruch/Cluster</CardTitle>
                 <CardDescription>Zeigt die Gesamtanzahl der Fälle verteilt auf die Ausbrüche/Cluster.</CardDescription>

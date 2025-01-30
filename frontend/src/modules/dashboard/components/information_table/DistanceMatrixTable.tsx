@@ -78,7 +78,7 @@ export function DistanceMatrixTable() {
 
     return (
         <>
-            {distanceMatrix && distanceMatrixAssembly && (
+            {distanceMatrix && distanceMatrixAssembly ? (
                 <>
                     <div className="flex justify-between items-center">
                         <small>Letzte Änderung: {distanceMatrix.updated_at?.toLocaleString()}</small>
@@ -110,6 +110,8 @@ export function DistanceMatrixTable() {
                         </Table>
                     </div>
                 </>
+            ) : (
+                <p>Keine sequenzierten Daten vorhanden.</p>
             )}
         </>
     );

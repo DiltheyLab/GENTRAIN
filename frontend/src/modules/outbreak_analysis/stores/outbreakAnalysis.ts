@@ -80,10 +80,10 @@ export const getDefaultAnalysisSettings = (): AnalysisSettings => {
         selectedBackground: null,
         excludeCasesAboveGeneticDistanceThreshold: false,
         excludeCasesOutsideOfDateRange: false,
-        excludeCasesWithoutSequence: true,
+        excludeCasesWithoutSequence: false,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
-        showContactTracingLinks: false,
+        showContactTracingLinks: true,
         clusteringThreshold: geneticDistanceThreshold ?? 0,
     };
 };

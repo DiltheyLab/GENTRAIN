@@ -45,15 +45,13 @@ export const DashboardVisualizationPanel = () => {
     );
 
     useEffect(() => {
-        if (!distanceMatrixAssembly || !cases || !contacts) {
-            dashboardStore.updateGraphData({ nodes: [], links: [] });
-            return;
-        }
-
         // if the pathogen changes, the graph will be updated by the useEffect because the useGetDistanceMatrixAssembly and the cases changed
         // this leads to the scenario that the graph is being updated twice
         // to prevent this, we check if the pathogen_id of the first case is the same as the activePathogenId
-        if (cases?.[0]?.pathogen_id !== activePathogenId) return;
+        if (cases?.[0]?.pathogen_id !== activePathogenId) {
+            dashboardStore.updateGraphData({ nodes: [], links: [] });
+            return;
+        }
 
         const createGraphData = async (
             distanceMatrixAssembly: DistanceMatrixAssembly,
@@ -79,7 +77,7 @@ export const DashboardVisualizationPanel = () => {
             dashboardStore.updateGraphSettings({ colorMap });
         };
 
-        createGraphData(distanceMatrixAssembly, cases, dashboardStore.settings, contacts);
+        createGraphData(distanceMatrixAssembly ?? {}, cases, dashboardStore.settings, contacts ?? []);
     }, [
         cases,
         distanceMatrixAssembly,

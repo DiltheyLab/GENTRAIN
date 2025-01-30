@@ -161,7 +161,7 @@ export const TutorialTour = () => {
                 scrollOffset={70}
                 disableCloseOnEsc={true}
             />
-            <Button className="text-lg fixed right-5 bottom-5 z-[1001]" onClick={closeTutorial}>
+            <Button variant="primary" className="text-lg fixed right-5 bottom-5 z-[1001]" onClick={closeTutorial}>
                 Tutorial beenden
                 <DoorOpen className="ml-2" />
             </Button>
