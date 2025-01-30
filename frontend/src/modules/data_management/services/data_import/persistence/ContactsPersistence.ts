@@ -53,6 +53,80 @@ export class ContactsPersistence extends PersistenceStrategy {
         useDataManagementStore.getState().resetImportAssistent(true);
     };
 
+    public static createInfectedByContactsFromCasesImport(caseIdMap: Map<string, number>, collectedContacts: {
+        case_id_1: string,
+        case_id_2: string
+    }[]) {
+        const contacts = collectedContacts.filter(
+            (contact) => caseIdMap.get(contact.case_id_1) && caseIdMap.get(contact.case_id_2)
+        ).map((contact) => {
+            return {
+                case_id_1: caseIdMap.get(contact.case_id_1)!,
+                case_id_2: caseIdMap.get(contact.case_id_2)!,
+                type: "Angesteckt bei",
+                context: ""
+            }
+        });
+        db.contacts.bulkAdd(contacts)
+    }
+
+    public static async createSameAddressContactsForActivePathogen(pathogenId: number) {
+        const addressMap = new Map<string, number[]>();
+        const cases = await db.cases.where({pathogen_id: pathogenId}).toArray()
+        // map case ids by addresses
+        cases.forEach((currentCase) => {
+                if (!currentCase.zip_code || !currentCase.city || !currentCase.street) return;
+                const key = `${currentCase.zip_code}_${currentCase.city}_${currentCase.street}`.replace(" ", "-");
+                addressMap.set(key, [currentCase.id, ...addressMap.get(key) ?? []])
+            }
+        )
+        const contacts: { case_id_1: number, case_id_2: number, type: string, context: string }[] = [];
+        // create same address contacts if an address is bound to multiple cases
+        addressMap.forEach((caseIdsWithSameAddress) => {
+            if (caseIdsWithSameAddress.length < 2) {
+                return;
+            }
+            for (let index1 = 0; index1 < caseIdsWithSameAddress.length; index1++) {
+                for (let index2 = 0; index2 < index1; index2++) {
+                    contacts.push({
+                        case_id_1: caseIdsWithSameAddress[index1],
+                        case_id_2: caseIdsWithSameAddress[index2],
+                        type: "Identische Adresse",
+                        context: ""
+                    })
+                }
+            }
+        })
+        db.contacts.bulkAdd(contacts);
+    }
+
+    public static async createSameLastnameContactsForActivePathogen(pathogenId: number) {
+        const lastNameMap = new Map<string, number[]>();
+        const cases = await db.cases.where({pathogen_id: pathogenId}).toArray()
+        // map case ids by last names
+        cases.forEach((currentCase) => {
+                if (!currentCase.last_name) return;
+                lastNameMap.set(currentCase.last_name, [currentCase.id, ...lastNameMap.get(currentCase.last_name) ?? []])
+            }
+        )
+        const contacts: { case_id_1: number, case_id_2: number, type: string, context: string }[] = [];
+        // create same last name contacts if a last name is bound to multiple cases
+        lastNameMap.forEach((caseIdsWithSameLastName) => {
+            if (caseIdsWithSameLastName.length < 2) return;
+            for (let index1 = 0; index1 < caseIdsWithSameLastName.length; index1++) {
+                for (let index2 = 0; index2 < index1; index2++) {
+                    contacts.push({
+                        case_id_1: caseIdsWithSameLastName[index1],
+                        case_id_2: caseIdsWithSameLastName[index2],
+                        type: "Identischer Nachname",
+                        context: ""
+                    })
+                }
+            }
+        })
+        db.contacts.bulkAdd(contacts);
+    }
+
     protected update = async () => {
     };
 }
