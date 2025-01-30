@@ -1,30 +1,42 @@
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
-import { db } from "@/modules/core/services/database/DatabaseManager";
-import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
-import { getOutbreaksForPathogenId, OutbreakSchema } from "@/modules/core/models/outbreaks";
-import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { CaseImports } from "@/modules/data_management/types/import";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {GentrainException} from "@/modules/core/exceptions/GentrainException";
+import {formatDate, parseGermanDateFormat} from "@/modules/core/helpers/dates";
+import {db} from "@/modules/core/services/database/DatabaseManager";
+import {CaseImport, CaseWithRelationships, getWithRelations} from "@/modules/core/models/cases";
+import {getOutbreaksForPathogenId, OutbreakSchema} from "@/modules/core/models/outbreaks";
+import {ObjectRelationalMapper} from "@/modules/core/services/database/ObjectRelationalMapper";
+import {useCoreStore} from "@/modules/core/stores/core";
+import {ValidationStrategy} from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {CaseImports} from "@/modules/data_management/types/import";
+
+const COLUMNS = {
+    case_id: {required: true, names: ["Fall ID", "Aktenzeichen"]},
+    registered_at: {required: true, names: ["Registrierungsdatum", "Meldedatum"]},
+    fasta_id: {required: false, names: ["Sequenz ID"]},
+    outbreak: {required: false, names: ["Ausbruch"]},
+    infected_by: {required: false, names: ["Angesteckt bei", "AngestecktBei"]},
+    first_name: {required: false, names: ["Vorname", "PersonVorname"]},
+    last_name: {required: false, names: ["Nachname", "PersonFamilienname"]},
+    city: {required: false, names: ["Ort", "PersonOrt"]},
+    zip_code: {required: false, names: ["PLZ", "PersonPLZ"]},
+    street: {required: false, names: ["Straße", "PersonStrasse"]}
+}
 
 export class CasesValidation extends ValidationStrategy {
-    protected data: {[key: string]: string}[] = [];
+    protected data: { [key: string]: string }[] = [];
     protected header: string[] = [];
     protected outbreaks?: Map<any, OutbreakSchema>;
     protected cases?: Map<string, CaseWithRelationships>;
-    protected columnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 
-    public collectData(data: {columns: string[], rows: {[key: string]: string}[]}) {
+    public collectData(data: { columns: string[], rows: { [key: string]: string }[] }) {
         this.header = data.columns;
         this.data = data.rows;
     }
 
     protected async validate() {
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
-        if (!this.isHeaderValid()) {
+        if (!this.isHeaderValid(COLUMNS)) {
             throw new GentrainException("InvalidHeaderError");
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
@@ -67,12 +79,19 @@ export class CasesValidation extends ValidationStrategy {
 
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
-            const persistedCase = this.cases?.get(row["Fall ID"]);
+            const persistedCase = this.cases?.get(this.getCellValueForColumn(row, COLUMNS.case_id)!);
+            const registeredAt = this.getCellValueForColumn(row, COLUMNS.registered_at);
             const importedCase = {
-                fasta_id: row["Sequenz ID"],
+                fasta_id: this.getCellValueForColumn(row, COLUMNS.fasta_id),
                 groups: [],
-                outbreak: row["Ausbruch"],
-                registered_at: parseGermanDateFormat(row["Registrierungsdatum"]),
+                outbreak: this.getCellValueForColumn(row, COLUMNS.outbreak),
+                infected_by: this.getCellValueForColumn(row, COLUMNS.infected_by),
+                first_name: this.getCellValueForColumn(row, COLUMNS.first_name),
+                last_name: this.getCellValueForColumn(row, COLUMNS.last_name),
+                city: this.getCellValueForColumn(row, COLUMNS.city),
+                zip_code: this.getCellValueForColumn(row, COLUMNS.zip_code),
+                street: this.getCellValueForColumn(row, COLUMNS.street),
+                registered_at: parseGermanDateFormat(registeredAt!),
             } satisfies CaseImport;
             if (persistedCase) {
                 persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
@@ -80,7 +99,7 @@ export class CasesValidation extends ValidationStrategy {
 
                 if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
             }
-            casesToUpload[row["Fall ID"]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
+            casesToUpload[this.getCellValueForColumn(row, COLUMNS.case_id)!] = {imported: importedCase, persisted: persistedCase ?? null, import: true};
         }
         return casesToUpload;
     }
@@ -100,4 +119,21 @@ export class CasesValidation extends ValidationStrategy {
             formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
         );
     }
+
+    private getCellValueForColumn(row: { [key: string]: string }, columnDefinition: {
+        required: boolean;
+        names: string[]
+    }) {
+        for (const name of columnDefinition.names) {
+            if (Object.keys(row).includes(name)) {
+                const cellValue = row[name] != "" ? row[name] : null;
+                if (columnDefinition.required && !cellValue) {
+                    throw new GentrainException(`Die Datei enthält leere Zellen, die für den Import notwendig sind. ${name}`);
+                }
+                return cellValue;
+            }
+        }
+        return null;
+    }
+
 }

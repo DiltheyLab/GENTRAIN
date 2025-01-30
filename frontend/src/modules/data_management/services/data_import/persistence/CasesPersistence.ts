@@ -1,13 +1,13 @@
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { db } from "@/modules/core/services/database/DatabaseManager";
-import { CaseSchema, caseRules } from "@/modules/core/models/cases";
-import { persistGroupsForCategories } from "@/modules/core/models/groups";
-import { getOrPersistOutbreak } from "@/modules/core/models/outbreaks";
-import { useCoreStore } from "@/modules/core/stores/core";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { PersistenceStrategy } from "./PersistenceStrategy";
-import { setInitializedAtForPathogenType } from "@/modules/core/models/pathogen_types";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {GentrainException} from "@/modules/core/exceptions/GentrainException";
+import {db} from "@/modules/core/services/database/DatabaseManager";
+import {CaseSchema, caseRules} from "@/modules/core/models/cases";
+import {persistGroupsForCategories} from "@/modules/core/models/groups";
+import {getOrPersistOutbreak} from "@/modules/core/models/outbreaks";
+import {useCoreStore} from "@/modules/core/stores/core";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {PersistenceStrategy} from "./PersistenceStrategy";
+import {setInitializedAtForPathogenType} from "@/modules/core/models/pathogen_types";
 
 export class CasesPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -36,6 +36,11 @@ export class CasesPersistence extends PersistenceStrategy {
                             : null,
                         group_ids: await persistGroupsForCategories(importedCase, pathogen.id),
                         registered_at: importedCase.registered_at,
+                        street: importedCase.street,
+                        zip_code: importedCase.zip_code,
+                        city: importedCase.city,
+                        first_name: importedCase.first_name,
+                        last_name: importedCase.last_name,
                     } as CaseSchema);
                     db.cases.update(persistedCase, dto);
                 } else {
@@ -48,6 +53,11 @@ export class CasesPersistence extends PersistenceStrategy {
                             : null,
                         group_ids: await persistGroupsForCategories(importedCase, pathogen.id),
                         registered_at: importedCase.registered_at,
+                        street: importedCase.street,
+                        zip_code: importedCase.zip_code,
+                        city: importedCase.city,
+                        first_name: importedCase.first_name,
+                        last_name: importedCase.last_name,
                     } as CaseSchema);
                     db.cases.add(dto);
                 }

@@ -1,8 +1,8 @@
 import Dexie from "dexie";
-import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { Pathogen } from "@/modules/core/models/pathogens";
+import {PathogenTypeName} from "@/modules/core/models/pathogen_types";
+import {Pathogen} from "@/modules/core/models/pathogens";
 import gentrainApiInstance from "../adapters/GentrainApi";
-import { DatabaseSchema } from "../services/database/DatabaseManager";
+import {DatabaseSchema} from "../services/database/DatabaseManager";
 
 const gentrainDB = new Dexie("gentrain") as DatabaseSchema;
 
@@ -15,7 +15,7 @@ gentrainDB.version(1).stores({
     sequence_analyses: "++id, result, schema, version, created_at, updated_at",
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
-    cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
+    cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, first_name, last_name, city, zip_code, street, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at, [name+category_id+pathogen_id]",
     pathogens: "id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
@@ -27,14 +27,13 @@ gentrainDB.version(1).stores({
 });
 
 gentrainDB.on("populate", async () => {
-    let persistedPathogenTypes = {} as Record<string, number>;
+    const persistedPathogenTypes = {} as Record<string, number>;
 
     for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
-        const newPathogenTypeId = await gentrainDB.pathogen_types.add({
+        persistedPathogenTypes[pathogenTypeName] = await gentrainDB.pathogen_types.add({
             name: pathogenTypeName as unknown as PathogenTypeName,
             initialized_at: null,
         });
-        persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
     }
 
     const pathogens: Pathogen[] = await gentrainApiInstance.getPathogens();
@@ -66,4 +65,4 @@ gentrainDB.tables.forEach(function (table) {
         obj.updated_at = new Date();
     });
 });
-export { gentrainDB };
+export {gentrainDB};

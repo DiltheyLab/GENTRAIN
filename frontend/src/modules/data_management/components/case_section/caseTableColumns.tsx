@@ -1,5 +1,5 @@
-import { Button } from "@/modules/core/components/ui/Button";
-import { Checkbox } from "@/modules/core/components/ui/Checkbox";
+import {Button} from "@/modules/core/components/ui/Button";
+import {Checkbox} from "@/modules/core/components/ui/Checkbox";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,27 +8,27 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/modules/core/components/ui/Dropdown-menu";
-import { toast } from "@/modules/core/components/ui/UseToast";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
-import { Separator } from "@/modules/core/components/ui/Separator";
-import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
-import { useCoreStore } from "@/modules/core/stores/core";
+import {toast} from "@/modules/core/components/ui/UseToast";
+import {ColumnDef} from "@tanstack/react-table";
+import {ArrowUpDown, MoreHorizontal} from "lucide-react";
+import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/modules/core/components/ui/HoverCard";
+import {Separator} from "@/modules/core/components/ui/Separator";
+import {formatDate} from "@/modules/core/helpers/dates";
+import {CaseWithRelationships, deleteCaseByIdAndRecalculateDistances} from "@/modules/core/models/cases";
+import {useCoreStore} from "@/modules/core/stores/core";
 import i18next from "i18next";
 
 export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     {
         id: "select",
-        header: ({ table }) => (
+        header: ({table}) => (
             <Checkbox
                 checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
                 onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
-        cell: ({ row }) => (
+        cell: ({row}) => (
             <Checkbox
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -40,7 +40,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "case_id",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <Button
                     variant="ghost"
@@ -48,15 +48,15 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Fall
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             );
         },
-        cell: ({ row }) => <p className="capitalize font-medium">{row.original.case_id}</p>,
+        cell: ({row}) => <p className="capitalize font-medium">{row.original.case_id}</p>,
     },
     {
         accessorKey: "fasta_id",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <Button
                     variant="ghost"
@@ -64,11 +64,11 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Sequenz
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             );
         },
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const sample = row.original.sample;
             if (sample) {
                 return (
@@ -100,7 +100,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "outbreak_id",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <Button
                     variant="ghost"
@@ -108,11 +108,11 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Ausbruch
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             );
         },
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const outbreak = row.original.outbreak;
             return <>{outbreak?.name ?? i18next.t("clusterTypes.noOutbreakAssigned")}</>;
         },
@@ -120,7 +120,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     {
         accessorKey: "contacts",
         header: "Kontakte",
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const contacts = row.original.contacts;
             if (!contacts) return;
             const caseIds = Object.keys(contacts);
@@ -129,7 +129,8 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     {caseIds.map((case_id: string) => (
                         <HoverCard key={case_id} openDelay={50} closeDelay={50}>
                             <HoverCardTrigger asChild>
-                                <div className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
+                                <div
+                                    className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
                                     {case_id}
                                 </div>
                             </HoverCardTrigger>
@@ -138,7 +139,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                                     return (
                                         <div key={index}>
                                             <p>{contact.type}</p>
-                                            {index < contacts[case_id].length - 1 && <Separator />}
+                                            {index < contacts[case_id].length - 1 && <Separator/>}
                                         </div>
                                     );
                                 })}
@@ -150,9 +151,63 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         },
     },
     {
+        accessorKey: "city",
+        header: ({column}) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Ort
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </Button>
+            );
+        },
+        cell: ({row}) => {
+            return <>{row.original.city ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "zip_code",
+        header: ({column}) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    PLZ
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </Button>
+            );
+        },
+        cell: ({row}) => {
+            return <>{row.original.zip_code ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "street",
+        header: ({column}) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Straße
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </Button>
+            );
+        },
+        cell: ({row}) => {
+            return <>{row.original.street ?? ""}</>;
+        },
+    },
+    {
         accessorKey: "groups",
         header: () => <p className="font-medium">Gruppen</p>,
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const groups = row.original.groups;
             return (
                 <div>
@@ -169,7 +224,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     },
     {
         accessorKey: "registered_at",
-        header: ({ column }) => {
+        header: ({column}) => {
             return (
                 <Button
                     variant="ghost"
@@ -177,18 +232,18 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Registrierungsdatum
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             );
         },
-        cell: ({ row }) => {
+        cell: ({row}) => {
             return <p className="capitalize">{formatDate(row.original.registered_at)}</p>;
         },
     },
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
+        cell: ({row}) => {
             const deleteCase = async () => {
                 try {
                     await deleteCaseByIdAndRecalculateDistances(row.original.id);
@@ -205,12 +260,12 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator/>
                         <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
                             Entfernen
                         </DropdownMenuItem>

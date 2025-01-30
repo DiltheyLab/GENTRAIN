@@ -18,6 +18,11 @@ export interface CaseSchema {
     pathogen_id: number;
     outbreak_id: number | null;
     group_ids: Array<number>;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
     registered_at: Date;
     created_at?: Date;
     updated_at?: Date;
@@ -36,6 +41,12 @@ export type CaseImport = {
     fasta_id: string | null;
     groups: { name: string; category: string; remaining?: boolean }[];
     outbreak: string | null;
+    infected_by: string | null;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
     registered_at: Date;
 };
 
@@ -44,7 +55,13 @@ export const caseRules = z.object({
     fasta_id: z.string().min(1).or(z.null()),
     pathogen_id: z.number(),
     outbreak_id: z.number().or(z.null()),
+    infected_by: z.string().min(1).or(z.undefined()).or(z.null()),
     group_ids: z.array(z.number()),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
     registered_at: z.date(),
 });
 
