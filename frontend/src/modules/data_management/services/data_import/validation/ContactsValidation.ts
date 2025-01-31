@@ -63,20 +63,15 @@ export class ContactsValidation extends ValidationStrategy {
         data: { [key: string]: string }[],
         cases: Map<string, CaseSchema>
     ) => {
-        const contactImports: {
-            [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
-        } = {};
         // we use a set to achieve bidirectionally unique contact edges
         const contactSet: Set<string> = new Set();
         for (const index in data) {
             const contact = data[index];
             const case1 = this.getCellValueForColumn(contact, COLUMNS.index_case_id);
             const case2 = this.getCellValueForColumn(contact, COLUMNS.other_case_id);
-
             if (!case1 || !case2) continue;
             const indexCase = cases.get(case1);
             const otherCase = cases.get(case2);
-
             if (!indexCase || !otherCase) continue;
 
             const existingContact = await db.contacts
@@ -84,15 +79,23 @@ export class ContactsValidation extends ValidationStrategy {
                 .equals([indexCase.id, otherCase.id, t("import:contact_types.contact_person")])
                 .first();
 
+            // don't add contact to contact set if a db entry exists already
             if (existingContact) {
                 continue;
             }
+
             // we sort cases alphabetically to add case pairs only once
             contactSet.add(JSON.stringify([case1, case2].sort() as [string, string]));
         }
+        return this.collectContactsFromUniqueSet(contactSet);
+    };
 
-        // iterate over the set and collect contacts to import
+    private collectContactsFromUniqueSet(contactSet: Set<string>) {
+        const contactImports: {
+            [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean };
+        } = {};
         const contacts = Array.from(contactSet);
+        // iterate over the set and collect contacts to import
         for (const index in contacts) {
             const contact = JSON.parse(contacts[index]);
             contactImports[index] = {
@@ -107,7 +110,6 @@ export class ContactsValidation extends ValidationStrategy {
                 import: true,
             };
         }
-
         return contactImports;
-    };
+    }
 }
