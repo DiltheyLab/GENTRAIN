@@ -1,6 +1,11 @@
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { ContactSchema, contactRules } from "@/modules/core/models/contacts";
+import {
+    ContactSchema,
+    contactRules,
+    createContactsFromAddresses,
+    createContactsFromAddressesAndLastNames,
+} from "@/modules/core/models/contacts";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { PersistenceStrategy } from "./PersistenceStrategy";
@@ -76,7 +81,7 @@ export class ContactsPersistence extends PersistenceStrategy {
     }
 
     public static async createSameAddressAndLastnameContactsForActivePathogen(pathogenId: number) {
-        const addressMap = new Map<string, number[]>();
+        const addressAndLastNameMap = new Map<string, number[]>();
         const cases = await db.cases.where({ pathogen_id: pathogenId }).toArray();
         // map case ids by addresses and last names
         cases.forEach((currentCase) => {
@@ -86,68 +91,21 @@ export class ContactsPersistence extends PersistenceStrategy {
                     " ",
                     "-"
                 );
-            addressMap.set(key, [currentCase.id, ...(addressMap.get(key) ?? [])]);
+            addressAndLastNameMap.set(key, [currentCase.id, ...(addressAndLastNameMap.get(key) ?? [])]);
         });
-        const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
-        // create same address contacts if an address is bound to multiple cases
-        addressMap.forEach((caseIdsWithSameAddressAndLastname) => {
-            if (caseIdsWithSameAddressAndLastname.length < 2) {
-                return;
-            }
-            for (let index1 = 0; index1 < caseIdsWithSameAddressAndLastname.length; index1++) {
-                for (let index2 = 0; index2 < index1; index2++) {
-                    const caseId1 = caseIdsWithSameAddressAndLastname[index1];
-                    const caseId2 = caseIdsWithSameAddressAndLastname[index2];
-
-                    contacts.push({
-                        case_id_1: caseId1,
-                        case_id_2: caseId2,
-                        type: t("import:contact_types.same_address_and_last_name"),
-                        context: "",
-                    });
-                }
-            }
-        });
-        db.contacts.bulkAdd(contacts);
+        createContactsFromAddressesAndLastNames(addressAndLastNameMap);
     }
 
     public static async createSameAddressAndDifferentLastnameContactsForActivePathogen(pathogenId: number) {
         const addressMap = new Map<string, number[]>();
         const cases = await db.cases.where({ pathogen_id: pathogenId }).toArray();
-        const caseMap = new Map<number, CaseSchema>();
-        for (const caseData of cases) {
-            caseMap.set(caseData.id, caseData);
-        }
         // map case ids by last names
         cases.forEach((currentCase) => {
             if (!currentCase.zip_code || !currentCase.city || !currentCase.street) return;
             const key = `${currentCase.zip_code}_${currentCase.city}_${currentCase.street}`.replace(" ", "-");
             addressMap.set(key, [currentCase.id, ...(addressMap.get(key) ?? [])]);
         });
-        const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
-        // create same last name contacts if a last name is bound to multiple cases
-        addressMap.forEach((caseIdsWithSameAddress) => {
-            if (caseIdsWithSameAddress.length < 2) return;
-            for (let index1 = 0; index1 < caseIdsWithSameAddress.length; index1++) {
-                for (let index2 = 0; index2 < index1; index2++) {
-                    const caseId1 = caseIdsWithSameAddress[index1];
-                    const case1 = caseMap.get(caseId1);
-                    const caseId2 = caseIdsWithSameAddress[index2];
-                    const case2 = caseMap.get(caseId2);
-
-                    if (case1?.last_name === case2?.last_name) {
-                        continue;
-                    }
-                    contacts.push({
-                        case_id_1: caseId1,
-                        case_id_2: caseId2,
-                        type: t("import:contact_types.same_address"),
-                        context: "",
-                    });
-                }
-            }
-        });
-        db.contacts.bulkAdd(contacts);
+        createContactsFromAddresses(addressMap, ObjectRelationalMapper.arrayToMap(cases) as Map<number, CaseSchema>);
     }
 
     protected update = async () => {};
