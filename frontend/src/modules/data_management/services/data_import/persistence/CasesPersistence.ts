@@ -1,14 +1,14 @@
-import {toast} from "@/modules/core/components/ui/UseToast";
-import {GentrainException} from "@/modules/core/exceptions/GentrainException";
-import {db} from "@/modules/core/services/database/DatabaseManager";
-import {CaseSchema, caseRules} from "@/modules/core/models/cases";
-import {persistGroupsForCategories} from "@/modules/core/models/groups";
-import {getOrPersistOutbreak} from "@/modules/core/models/outbreaks";
-import {useCoreStore} from "@/modules/core/stores/core";
-import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
-import {PersistenceStrategy} from "./PersistenceStrategy";
-import {setInitializedAtForPathogenType} from "@/modules/core/models/pathogen_types";
-import {ContactsPersistence} from "@/modules/data_management/services/data_import/persistence/ContactsPersistence";
+import { toast } from "@/modules/core/components/ui/UseToast";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { db } from "@/modules/core/services/database/DatabaseManager";
+import { CaseSchema, caseRules } from "@/modules/core/models/cases";
+import { persistGroupsForCategories } from "@/modules/core/models/groups";
+import { getOrPersistOutbreak } from "@/modules/core/models/outbreaks";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { PersistenceStrategy } from "./PersistenceStrategy";
+import { setInitializedAtForPathogenType } from "@/modules/core/models/pathogen_types";
+import { ContactsPersistence } from "@/modules/data_management/services/data_import/persistence/ContactsPersistence";
 
 export class CasesPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -21,7 +21,7 @@ export class CasesPersistence extends PersistenceStrategy {
 
         // run db operations in transaction to rollback in error cases
         await db.transaction("rw", [db.cases, db.categories, db.groups, db.outbreaks, db.contacts], async () => {
-            const collectedInfectedByContacts: { case_id_1: string, case_id_2: string }[] = [];
+            const collectedInfectedByContacts: { case_id_1: string; case_id_2: string }[] = [];
             const caseIdMap = new Map<string, number>();
             for (const caseId of Object.keys(caseImports)) {
                 if (!caseImports[caseId].import) {
@@ -70,12 +70,13 @@ export class CasesPersistence extends PersistenceStrategy {
                     collectedInfectedByContacts.push({
                         case_id_1: caseId,
                         case_id_2: importedCase.infected_by,
-                    })
+                    });
                 }
             }
             ContactsPersistence.createInfectedByContactsFromCasesImport(caseIdMap, collectedInfectedByContacts);
-            await ContactsPersistence.createSameAddressContactsForActivePathogen(pathogen.id);
-            await ContactsPersistence.createSameLastnameContactsForActivePathogen(pathogen.id);
+            await ContactsPersistence.createSameAddressAndLastnameContactsForActivePathogen(pathogen.id);
+            await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForActivePathogen(pathogen.id);
+            //await ContactsPersistence.createSameLastnameContactsForActivePathogen(pathogen.id);
         });
 
         useDataManagementStore.getState().setCaseSelectionActive(false);
