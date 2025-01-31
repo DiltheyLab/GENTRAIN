@@ -5,6 +5,7 @@ import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectR
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { PersistenceStrategy } from "./PersistenceStrategy";
 import { CaseSchema } from "@/modules/core/models/cases";
+import { t } from "i18next";
 
 export class ContactsPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -67,7 +68,7 @@ export class ContactsPersistence extends PersistenceStrategy {
                 return {
                     case_id_1: caseIdMap.get(contact.case_id_1)!,
                     case_id_2: caseIdMap.get(contact.case_id_2)!,
-                    type: "Angesteckt bei",
+                    type: t("import:contact_types.infected_by"),
                     context: "",
                 };
             });
@@ -101,7 +102,7 @@ export class ContactsPersistence extends PersistenceStrategy {
                     contacts.push({
                         case_id_1: caseId1,
                         case_id_2: caseId2,
-                        type: "Gleiche Adresse, gleicher Nachname",
+                        type: t("import:contact_types.same_address_and_last_name"),
                         context: "",
                     });
                 }
@@ -140,7 +141,7 @@ export class ContactsPersistence extends PersistenceStrategy {
                     contacts.push({
                         case_id_1: caseId1,
                         case_id_2: caseId2,
-                        type: "Gleiche Adresse, anderer Nachname",
+                        type: t("import:contact_types.same_address"),
                         context: "",
                     });
                 }

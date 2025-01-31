@@ -16,6 +16,12 @@
         "sequence": "Sequenzdaten",
         "contact": "Kontaktpersonendaten"
     },
+    "contact_types": {
+        "contact_person": "Kontaktperson",
+        "infected_by": "Angesteckt bei",
+        "same_address_and_last_name": "Gleiche Adresse, gleicher Nachname",
+        "same_address": "Gleiche Adresse, anderer Nachname"
+    },
     "introduction": {
         "shared": [
             {

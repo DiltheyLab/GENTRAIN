@@ -6,6 +6,7 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { useCoreStore } from "@/modules/core/stores/core";
+import { t } from "i18next";
 
 const COLUMNS = {
     index_case_id: { required: true, names: ["IndexFall_Token", "Fall ID 1"] },
@@ -80,7 +81,7 @@ export class ContactsValidation extends ValidationStrategy {
 
             const existingContact = await db.contacts
                 .where("[case_id_1+case_id_2+type]")
-                .equals([indexCase.id, otherCase.id, "Kontaktperson"])
+                .equals([indexCase.id, otherCase.id, t("import:contact_types.contact_person")])
                 .first();
 
             if (existingContact) {
@@ -99,7 +100,7 @@ export class ContactsValidation extends ValidationStrategy {
                     contact_id: index,
                     case_id_1: contact[0],
                     case_id_2: contact[1],
-                    type: "Kontaktperson",
+                    type: t("import:contact_types.contact_person"),
                     context: "",
                 } as ContactImport,
                 persisted: null,
