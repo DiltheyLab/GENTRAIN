@@ -76,7 +76,6 @@ export class CasesPersistence extends PersistenceStrategy {
             ContactsPersistence.createInfectedByContactsFromCasesImport(caseIdMap, collectedInfectedByContacts);
             await ContactsPersistence.createSameAddressAndLastnameContactsForActivePathogen(pathogen.id);
             await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForActivePathogen(pathogen.id);
-            //await ContactsPersistence.createSameLastnameContactsForActivePathogen(pathogen.id);
         });
 
         useDataManagementStore.getState().setCaseSelectionActive(false);

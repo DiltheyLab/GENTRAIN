@@ -16,7 +16,7 @@ gentrainExampleDB.version(1).stores({
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
     distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
-    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
+    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at, [name+category_id+pathogen_id]",
     pathogens: "id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
     pathogen_types: "++id, name, initialized_at, created_at, updated_at",

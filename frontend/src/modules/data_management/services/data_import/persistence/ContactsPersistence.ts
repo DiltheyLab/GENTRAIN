@@ -149,47 +149,5 @@ export class ContactsPersistence extends PersistenceStrategy {
         db.contacts.bulkAdd(contacts);
     }
 
-    public static async createSameLastnameContactsForActivePathogen(pathogenId: number) {
-        const lastNameMap = new Map<string, number[]>();
-        const cases = await db.cases.where({ pathogen_id: pathogenId }).toArray();
-        const caseMap = new Map<number, CaseSchema>();
-        for (const caseData of cases) {
-            caseMap.set(caseData.id, caseData);
-        }
-        // map case ids by last names
-        cases.forEach((currentCase) => {
-            if (!currentCase.last_name) return;
-            lastNameMap.set(currentCase.last_name, [currentCase.id, ...(lastNameMap.get(currentCase.last_name) ?? [])]);
-        });
-        const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
-        // create same last name contacts if a last name is bound to multiple cases
-        lastNameMap.forEach((caseIdsWithSameLastName) => {
-            if (caseIdsWithSameLastName.length < 2) return;
-            for (let index1 = 0; index1 < caseIdsWithSameLastName.length; index1++) {
-                for (let index2 = 0; index2 < index1; index2++) {
-                    const caseId1 = caseIdsWithSameLastName[index1];
-                    const case1 = caseMap.get(caseId1);
-                    const caseId2 = caseIdsWithSameLastName[index2];
-                    const case2 = caseMap.get(caseId2);
-
-                    if (
-                        case1?.zip_code === case2?.zip_code &&
-                        case1?.city === case2?.city &&
-                        case1?.street === case2?.street
-                    ) {
-                        continue;
-                    }
-                    contacts.push({
-                        case_id_1: caseId1,
-                        case_id_2: caseId2,
-                        type: "Selber Nachname",
-                        context: "",
-                    });
-                }
-            }
-        });
-        db.contacts.bulkAdd(contacts);
-    }
-
     protected update = async () => {};
 }

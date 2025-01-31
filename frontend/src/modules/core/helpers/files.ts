@@ -82,7 +82,7 @@ export const formatData = (
                 // for bacterial uploads:
                 // fasta file name contains fasta id
                 // content contains assembly
-                fastaSequencesArray.push({fastaId: file.filename.split(".")[0], sequence: file.content});
+                fastaSequencesArray.push({ fastaId: file.filename.split(".")[0], sequence: file.content });
             }
         }
         return fastaSequencesArray;
@@ -96,7 +96,10 @@ export const formatData = (
             let rows = Object.values(fileReaderResult)[0].split("\n");
             // filter empty lines to prevent empty cells
             rows = rows.filter((line) => line !== "");
-            const columns: string[] = rows[0].split(";").map((column: string) => column.trim());
+            const columns: string[] = rows[0]
+                .replace(/["'\n]/g, "")
+                .split(";")
+                .map((column: string) => column.trim());
             // Split lines into fields and remove leading/trailing whitespaces or
             // line breaks (in windows every line has a \r in the end after splitting by \n)
             const rowData = [];
@@ -104,14 +107,14 @@ export const formatData = (
                 if (parseInt(index) === 0) {
                     continue;
                 }
-                const rowArray = rows[parseInt(index)].replace("\r", "").split(";");
+                const rowArray = rows[parseInt(index)].replace(/["'\n]/g, "").split(";");
                 const rowObject: { [key: string]: string } = {};
                 rowArray.forEach((cell, index: number) => {
                     rowObject[columns[index]] = cell.trim();
-                })
+                });
                 rowData.push(rowObject);
             }
-            return {columns: columns, rows: rowData}
+            return { columns: columns, rows: rowData };
         }
     }
 };
@@ -136,7 +139,7 @@ export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
         }
 
         if (fastaId) {
-            fastaSequencesArray.push({fastaId: fastaId, sequence: genome});
+            fastaSequencesArray.push({ fastaId: fastaId, sequence: genome });
         }
     }
     return fastaSequencesArray;

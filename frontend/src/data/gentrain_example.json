@@ -28,7 +28,7 @@
             },
             {
                 "name": "contacts",
-                "schema": "++id,case_id_1,case_id_2,type,context,created_at,updated_at,[case_id_1+case_id_2+type+context]",
+                "schema": "++id,case_id_1,case_id_2,type,context,created_at,updated_at,[case_id_1+case_id_2+type]",
                 "rowCount": 301
             },
             {
