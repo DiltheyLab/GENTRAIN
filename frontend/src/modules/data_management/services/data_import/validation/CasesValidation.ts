@@ -115,6 +115,11 @@ export class CasesValidation extends ValidationStrategy {
      */
     private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
+            caseImport.street === existingCase.street &&
+            caseImport.zip_code === existingCase.zip_code &&
+            caseImport.city === existingCase.city &&
+            caseImport.first_name === existingCase.first_name &&
+            caseImport.last_name === existingCase.last_name &&
             ((!caseImport.fasta_id && !existingCase.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
             ((!caseImport.outbreak && !existingCase.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
             caseImport.groups.filter((group) => !group.remaining).length === 0 &&
