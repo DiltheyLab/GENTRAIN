@@ -9,6 +9,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { CaseImports } from "@/modules/data_management/types/import";
+import { GroupWithRelationships } from "@/modules/core/models/groups";
 
 const COLUMNS = {
     case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
@@ -115,16 +116,36 @@ export class CasesValidation extends ValidationStrategy {
      */
     private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
-            caseImport.street === existingCase.street &&
-            caseImport.zip_code === existingCase.zip_code &&
-            caseImport.city === existingCase.city &&
-            caseImport.first_name === existingCase.first_name &&
-            caseImport.last_name === existingCase.last_name &&
-            ((!caseImport.fasta_id && !existingCase.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
-            ((!caseImport.outbreak && !existingCase.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
-            caseImport.groups.filter((group) => !group.remaining).length === 0 &&
-            caseImport.groups.length === existingCase.groups?.length &&
-            formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
+            this.fieldIsEqual(caseImport.street, existingCase.street) &&
+            this.fieldIsEqual(caseImport.zip_code, existingCase.zip_code) &&
+            this.fieldIsEqual(caseImport.city, existingCase.city) &&
+            this.fieldIsEqual(caseImport.first_name, existingCase.first_name) &&
+            this.fieldIsEqual(caseImport.last_name, existingCase.last_name) &&
+            this.fieldIsEqual(caseImport.fasta_id, existingCase.fasta_id) &&
+            this.fieldIsEqual(caseImport.outbreak, existingCase.outbreak?.name) &&
+            this.fieldIsEqual(formatDate(caseImport.registered_at), formatDate(existingCase.registered_at)) &&
+            this.groupsAreEqual(caseImport.groups, existingCase.groups)
         );
+    }
+
+    private groupsAreEqual(
+        importedGroups: {
+            name: string;
+            category: string;
+            remaining?: boolean;
+        }[],
+        existingGroups: GroupWithRelationships[] | null | undefined
+    ) {
+        return (
+            importedGroups.filter((group) => !group.remaining).length === 0 &&
+            importedGroups.length === existingGroups?.length
+        );
+    }
+
+    private fieldIsEqual(
+        importedField: string | number | null | undefined,
+        existingField: string | number | null | undefined
+    ) {
+        return (!importedField && !existingField) || importedField === existingField;
     }
 }

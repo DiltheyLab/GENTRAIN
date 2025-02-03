@@ -34,7 +34,6 @@ export abstract class ValidationStrategy {
         );
         const columnsFound = requiredColumns.map((requiredColumn) => {
             let found = false;
-            console.log(this.header, columnDefinitions[requiredColumn].names);
 
             for (const requiredColumnName of columnDefinitions[requiredColumn].names) {
                 found = this.header!.includes(requiredColumnName);
