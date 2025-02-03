@@ -52,6 +52,7 @@ export class CasesPersistence extends PersistenceStrategy {
                     });
                 }
             }
+            await ContactsPersistence.removeCaseBasedContactsForActivePathogen(caseIdMap, this.pathogen!.id);
             await this.createContacts(caseIdMap, collectedInfectedByContacts);
         });
     }
@@ -82,7 +83,7 @@ export class CasesPersistence extends PersistenceStrategy {
             throw new GentrainException("InvalidPathogenSelection");
         }
 
-        ContactsPersistence.createInfectedByContactsFromCasesImport(caseIdMap, collectedInfectedByContacts);
+        await ContactsPersistence.createInfectedByContactsFromCasesImport(caseIdMap, collectedInfectedByContacts);
         await ContactsPersistence.createSameAddressAndLastnameContactsForActivePathogen(this.pathogen!.id);
         await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForActivePathogen(this.pathogen!.id);
     }

@@ -3,9 +3,11 @@ import { db } from "@/modules/core/services/database/DatabaseManager";
 import {
     ContactImport,
     ContactSchema,
+    contactExistsInContactsOfType,
     contactRules,
     createContactsFromAddresses,
     createContactsFromAddressesAndLastNames,
+    getContactsOfType,
 } from "@/modules/core/models/contacts";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
@@ -42,15 +44,26 @@ export class ContactsPersistence extends PersistenceStrategy {
         useDataManagementStore.getState().resetImportAssistent(true);
     };
 
-    public static createInfectedByContactsFromCasesImport(
+    public static async createInfectedByContactsFromCasesImport(
         caseIdMap: Map<string, number>,
         collectedContacts: {
             case_id_1: string;
             case_id_2: string;
         }[]
     ) {
+        const contactsOfType = await getContactsOfType(t("import:contact_types.infected_by"));
+
         const contacts = collectedContacts
-            .filter((contact) => caseIdMap.get(contact.case_id_1) && caseIdMap.get(contact.case_id_2))
+            .filter(
+                (contact) =>
+                    caseIdMap.get(contact.case_id_1) &&
+                    caseIdMap.get(contact.case_id_2) &&
+                    !contactExistsInContactsOfType(
+                        contactsOfType,
+                        caseIdMap.get(contact.case_id_1)!,
+                        caseIdMap.get(contact.case_id_2)!
+                    )
+            )
             .map((contact) => {
                 return {
                     case_id_1: caseIdMap.get(contact.case_id_1)!,
@@ -59,7 +72,7 @@ export class ContactsPersistence extends PersistenceStrategy {
                     context: "",
                 };
             });
-        db.contacts.bulkAdd(contacts);
+        await db.contacts.bulkAdd(contacts);
     }
 
     public static async createSameAddressAndLastnameContactsForActivePathogen(pathogenId: number) {
@@ -75,7 +88,7 @@ export class ContactsPersistence extends PersistenceStrategy {
                 );
             addressAndLastNameMap.set(key, [currentCase.id, ...(addressAndLastNameMap.get(key) ?? [])]);
         });
-        createContactsFromAddressesAndLastNames(addressAndLastNameMap);
+        await createContactsFromAddressesAndLastNames(addressAndLastNameMap);
     }
 
     public static async createSameAddressAndDifferentLastnameContactsForActivePathogen(pathogenId: number) {
@@ -87,7 +100,31 @@ export class ContactsPersistence extends PersistenceStrategy {
             const key = `${currentCase.zip_code}_${currentCase.city}_${currentCase.street}`.replace(" ", "-");
             addressMap.set(key, [currentCase.id, ...(addressMap.get(key) ?? [])]);
         });
-        createContactsFromAddresses(addressMap, ObjectRelationalMapper.arrayToMap(cases) as Map<number, CaseSchema>);
+        await createContactsFromAddresses(
+            addressMap,
+            ObjectRelationalMapper.arrayToMap(cases) as Map<number, CaseSchema>
+        );
+    }
+
+    public static async removeCaseBasedContactsForActivePathogen(caseIdMap: Map<string, number>, pathogenId: number) {
+        const caseIds = (await db.cases.where({ pathogen_id: pathogenId }).toArray())
+            .filter((currentCase: CaseSchema) => caseIdMap.has(currentCase.case_id))
+            .map((currentCase) => {
+                return currentCase.id;
+            });
+
+        await db.contacts
+            .where("case_id_1")
+            .anyOf(caseIds)
+            .or("case_id_2")
+            .anyOf(caseIds)
+            .and(
+                (contact) =>
+                    contact.type === t("import:contact_types.same_address_and_last_name") ||
+                    contact.type === t("import:contact_types.same_address") ||
+                    contact.type === t("import:contact_types.infected_by")
+            )
+            .delete();
     }
 
     private collectContactImports(

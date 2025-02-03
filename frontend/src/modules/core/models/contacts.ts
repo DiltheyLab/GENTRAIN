@@ -78,9 +78,15 @@ export const collectContactsForCases = async (casesWithRelationships: { [caseId:
     return casesWithRelationships;
 };
 
-export const createContactsFromAddressesAndLastNames = (addressAndLastNameMap: Map<string, number[]>) => {
+export const getContactsOfType = async (type: string) => {
+    const contactsOfType = await db.contacts.where({ type: type }).toArray();
+    return contactsOfType;
+};
+
+export const createContactsFromAddressesAndLastNames = async (addressAndLastNameMap: Map<string, number[]>) => {
     const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
-    addressAndLastNameMap.forEach((caseIdsWithSameAddressAndLastname) => {
+    const contactsOfType = await getContactsOfType(t("import:contact_types.same_address_and_last_name"));
+    addressAndLastNameMap.forEach(async (caseIdsWithSameAddressAndLastname) => {
         if (caseIdsWithSameAddressAndLastname.length < 2) {
             return;
         }
@@ -88,7 +94,7 @@ export const createContactsFromAddressesAndLastNames = (addressAndLastNameMap: M
             for (let index2 = 0; index2 < index1; index2++) {
                 const caseId1 = caseIdsWithSameAddressAndLastname[index1];
                 const caseId2 = caseIdsWithSameAddressAndLastname[index2];
-
+                if (contactExistsInContactsOfType(contactsOfType, caseId1, caseId2)) continue;
                 contacts.push({
                     case_id_1: caseId1,
                     case_id_2: caseId2,
@@ -98,11 +104,15 @@ export const createContactsFromAddressesAndLastNames = (addressAndLastNameMap: M
             }
         }
     });
-    db.contacts.bulkAdd(contacts);
+    await db.contacts.bulkAdd(contacts);
 };
 
-export const createContactsFromAddresses = (addressMap: Map<string, number[]>, caseMap: Map<number, CaseSchema>) => {
+export const createContactsFromAddresses = async (
+    addressMap: Map<string, number[]>,
+    caseMap: Map<number, CaseSchema>
+) => {
     const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
+    const contactsOfType = await getContactsOfType(t("import:contact_types.same_address"));
     // create same last name contacts if a last name is bound to multiple cases
     addressMap.forEach((caseIdsWithSameAddress) => {
         if (caseIdsWithSameAddress.length < 2) return;
@@ -113,9 +123,13 @@ export const createContactsFromAddresses = (addressMap: Map<string, number[]>, c
                 const caseId2 = caseIdsWithSameAddress[index2];
                 const case2 = caseMap.get(caseId2);
 
-                if (case1?.last_name === case2?.last_name) {
+                if (
+                    case1?.last_name === case2?.last_name ||
+                    contactExistsInContactsOfType(contactsOfType, caseId1, caseId2)
+                ) {
                     continue;
                 }
+
                 contacts.push({
                     case_id_1: caseId1,
                     case_id_2: caseId2,
@@ -125,5 +139,19 @@ export const createContactsFromAddresses = (addressMap: Map<string, number[]>, c
             }
         }
     });
-    db.contacts.bulkAdd(contacts);
+    await db.contacts.bulkAdd(contacts);
+};
+
+export const contactExistsInContactsOfType = (
+    contactsOfType: ContactSchema[],
+    case_id_1: number,
+    case_id_2: number
+) => {
+    return (
+        contactsOfType.filter(
+            (contact) =>
+                (contact.case_id_1 === case_id_1 && contact.case_id_2 === case_id_2) ||
+                (contact.case_id_1 === case_id_2 && contact.case_id_2 === case_id_1)
+        ).length > 0
+    );
 };
