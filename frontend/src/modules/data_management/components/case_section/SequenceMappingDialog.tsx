@@ -44,8 +44,7 @@ export const SequenceMappingDialog = () => {
                 <DialogHeader>
                     <DialogTitle>Sequenz ID zuweisen</DialogTitle>
                     <DialogDescription>
-                        Weisen sie dem Fall <i>{sequenceMappingDialogCase?.case_id}</i> eine Sequenz ID zu oder ändern
-                        sie die bereits zugewiesene Sequence ID.
+                        Weisen sie dem Fall <i>{sequenceMappingDialogCase?.case_id}</i> eine Sequenz ID zu.
                     </DialogDescription>
                 </DialogHeader>
                 <Input
