@@ -9,6 +9,8 @@ import { PersistenceStrategy } from "./PersistenceStrategy";
 import { setInitializedAtForPathogenType } from "@/modules/core/models/pathogen_types";
 import { ContactsPersistence } from "@/modules/data_management/services/data_import/persistence/ContactsPersistence";
 import { CaseImports } from "@/modules/data_management/types/import";
+import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
+import { createInfectedByContacts } from "@/modules/core/models/contacts";
 
 export class CasesPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -53,7 +55,7 @@ export class CasesPersistence extends PersistenceStrategy {
                 }
             }
             await ContactsPersistence.removeCaseBasedContactsForActivePathogen(caseIdMap, this.pathogen!.id);
-            await this.createContacts(caseIdMap, collectedInfectedByContacts);
+            await this.createContacts();
         });
     }
 
@@ -72,19 +74,20 @@ export class CasesPersistence extends PersistenceStrategy {
             city: importedCase.city,
             first_name: importedCase.first_name,
             last_name: importedCase.last_name,
+            infected_by: importedCase.infected_by,
         } as CaseSchema);
     }
 
-    private async createContacts(
-        caseIdMap: Map<string, number>,
-        collectedInfectedByContacts: { case_id_1: string; case_id_2: string }[]
-    ) {
+    private async createContacts() {
         if (!this.pathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
+        const cases = await db.cases.where({ pathogen_id: this.pathogen.id }).toArray();
+        const caseIdMapByString = ObjectRelationalMapper.arrayToMap(cases, "case_id");
+        const caseIdMapByNumber = ObjectRelationalMapper.arrayToMap(cases, "id");
 
-        await ContactsPersistence.createInfectedByContactsFromCasesImport(caseIdMap, collectedInfectedByContacts);
-        await ContactsPersistence.createSameAddressAndLastnameContactsForActivePathogen(this.pathogen!.id);
-        await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForActivePathogen(this.pathogen!.id);
+        await createInfectedByContacts(caseIdMapByString);
+        await ContactsPersistence.createSameAddressAndLastnameContactsForCases(caseIdMapByNumber);
+        await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForCases(caseIdMapByNumber);
     }
 }

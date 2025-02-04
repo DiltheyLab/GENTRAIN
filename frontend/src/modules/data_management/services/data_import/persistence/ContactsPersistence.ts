@@ -3,11 +3,9 @@ import { db } from "@/modules/core/services/database/DatabaseManager";
 import {
     ContactImport,
     ContactSchema,
-    contactExistsInContactsOfType,
     contactRules,
     createContactsFromAddresses,
     createContactsFromAddressesAndLastNames,
-    getContactsOfType,
 } from "@/modules/core/models/contacts";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
@@ -44,42 +42,10 @@ export class ContactsPersistence extends PersistenceStrategy {
         useDataManagementStore.getState().resetImportAssistent(true);
     };
 
-    public static async createInfectedByContactsFromCasesImport(
-        caseIdMap: Map<string, number>,
-        collectedContacts: {
-            case_id_1: string;
-            case_id_2: string;
-        }[]
-    ) {
-        const contactsOfType = await getContactsOfType(t("import:contact_types.infected_by"));
-
-        const contacts = collectedContacts
-            .filter(
-                (contact) =>
-                    caseIdMap.get(contact.case_id_1) &&
-                    caseIdMap.get(contact.case_id_2) &&
-                    !contactExistsInContactsOfType(
-                        contactsOfType,
-                        caseIdMap.get(contact.case_id_1)!,
-                        caseIdMap.get(contact.case_id_2)!
-                    )
-            )
-            .map((contact) => {
-                return {
-                    case_id_1: caseIdMap.get(contact.case_id_1)!,
-                    case_id_2: caseIdMap.get(contact.case_id_2)!,
-                    type: t("import:contact_types.infected_by"),
-                    context: "",
-                };
-            });
-        await db.contacts.bulkAdd(contacts);
-    }
-
-    public static async createSameAddressAndLastnameContactsForActivePathogen(pathogenId: number) {
+    public static async createSameAddressAndLastnameContactsForCases(caseMap: Map<number, CaseSchema>) {
         const addressAndLastNameMap = new Map<string, number[]>();
-        const cases = await db.cases.where({ pathogen_id: pathogenId }).toArray();
         // map case ids by addresses and last names
-        cases.forEach((currentCase) => {
+        caseMap.forEach((currentCase) => {
             if (!currentCase.zip_code || !currentCase.city || !currentCase.street || !currentCase.last_name) return;
             const key =
                 `${currentCase.zip_code}_${currentCase.city}_${currentCase.street}_${currentCase.last_name}`.replace(
@@ -91,24 +57,20 @@ export class ContactsPersistence extends PersistenceStrategy {
         await createContactsFromAddressesAndLastNames(addressAndLastNameMap);
     }
 
-    public static async createSameAddressAndDifferentLastnameContactsForActivePathogen(pathogenId: number) {
+    public static async createSameAddressAndDifferentLastnameContactsForCases(caseMap: Map<number, CaseSchema>) {
         const addressMap = new Map<string, number[]>();
-        const cases = await db.cases.where({ pathogen_id: pathogenId }).toArray();
         // map case ids by last names
-        cases.forEach((currentCase) => {
+        caseMap.forEach((currentCase) => {
             if (!currentCase.zip_code || !currentCase.city || !currentCase.street) return;
             const key = `${currentCase.zip_code}_${currentCase.city}_${currentCase.street}`.replace(" ", "-");
             addressMap.set(key, [currentCase.id, ...(addressMap.get(key) ?? [])]);
         });
-        await createContactsFromAddresses(
-            addressMap,
-            ObjectRelationalMapper.arrayToMap(cases) as Map<number, CaseSchema>
-        );
+        await createContactsFromAddresses(addressMap, caseMap);
     }
 
-    public static async removeCaseBasedContactsForActivePathogen(caseIdMap: Map<string, number>, pathogenId: number) {
+    public static async removeCaseBasedContactsForActivePathogen(caseMap: Map<string, number>, pathogenId: number) {
         const caseIds = (await db.cases.where({ pathogen_id: pathogenId }).toArray())
-            .filter((currentCase: CaseSchema) => caseIdMap.has(currentCase.case_id))
+            .filter((currentCase: CaseSchema) => caseMap.has(currentCase.case_id))
             .map((currentCase) => {
                 return currentCase.id;
             });

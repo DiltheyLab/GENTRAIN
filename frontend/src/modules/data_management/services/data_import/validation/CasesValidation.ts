@@ -122,6 +122,7 @@ export class CasesValidation extends ValidationStrategy {
             this.fieldIsEqual(caseImport.first_name, existingCase.first_name) &&
             this.fieldIsEqual(caseImport.last_name, existingCase.last_name) &&
             this.fieldIsEqual(caseImport.fasta_id, existingCase.fasta_id) &&
+            this.fieldIsEqual(caseImport.infected_by, existingCase.infected_by) &&
             this.fieldIsEqual(caseImport.outbreak, existingCase.outbreak?.name) &&
             this.fieldIsEqual(formatDate(caseImport.registered_at), formatDate(existingCase.registered_at)) &&
             this.groupsAreEqual(caseImport.groups, existingCase.groups)

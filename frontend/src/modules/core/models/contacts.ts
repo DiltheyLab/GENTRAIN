@@ -83,6 +83,24 @@ export const getContactsOfType = async (type: string) => {
     return contactsOfType;
 };
 
+export const createInfectedByContacts = async (caseIdMap: Map<string, CaseSchema>) => {
+    const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
+    const contactsOfType = await getContactsOfType(t("import:contact_types.infected_by"));
+    caseIdMap.forEach(async (currentCase) => {
+        if (!currentCase.infected_by) return;
+        const caseId1 = currentCase.id;
+        const caseId2 = caseIdMap.get(currentCase.infected_by)?.id;
+        if (!caseId2 || contactExistsInContactsOfType(contactsOfType, currentCase.id, caseId2)) return;
+        contacts.push({
+            case_id_1: caseId1,
+            case_id_2: caseId2,
+            type: t("import:contact_types.infected_by"),
+            context: "",
+        });
+    });
+    await db.contacts.bulkAdd(contacts);
+};
+
 export const createContactsFromAddressesAndLastNames = async (addressAndLastNameMap: Map<string, number[]>) => {
     const contacts: { case_id_1: number; case_id_2: number; type: string; context: string }[] = [];
     const contactsOfType = await getContactsOfType(t("import:contact_types.same_address_and_last_name"));

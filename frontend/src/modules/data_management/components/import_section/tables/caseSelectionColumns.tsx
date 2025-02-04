@@ -112,6 +112,29 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
         ),
     },
     {
+        accessorKey: "infected_by",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Angesteckt bei
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.infected_by !== row.original.infected_by && (
+                    <div className="line-through">{row.original.existingCase.infected_by}</div>
+                )}
+                <div>{row.original.infected_by}</div>
+            </>
+        ),
+    },
+    {
         accessorKey: "last_name",
         header: ({ column }) => {
             return (
