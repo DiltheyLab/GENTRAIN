@@ -36,18 +36,18 @@ export const DataOverview = () => {
                     <h2 className="text-2xl font-bold tracking-tight mb-4">
                         Importierte Daten zu {activePathogen.name}
                     </h2>
-                    <DeleteDialog
-                        deleteAction={deleteData}
-                        dialogTitle="Falldaten löschen"
-                        dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
-                        triggerComponent={
-                            <Button variant="destructive">
-                                {isDeleting ? <LoadingSpinner /> : <>Alle Daten zu {activePathogen.name} löschen</>}
-                            </Button>
-                        }
-                    />
                 </div>
                 <CaseSection />
+                <DeleteDialog
+                    deleteAction={deleteData}
+                    dialogTitle="Falldaten löschen"
+                    dialogDescription={`Möchten sie die Falldaten zu ${activePathogen.name} wirklich löschen?`}
+                    triggerComponent={
+                        <Button variant="destructive">
+                            {isDeleting ? <LoadingSpinner /> : <>Alle Daten zu {activePathogen.name} löschen</>}
+                        </Button>
+                    }
+                />
             </div>
             <OutbreakSection />
             <GroupSection />

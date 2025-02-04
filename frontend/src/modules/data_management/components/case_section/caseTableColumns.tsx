@@ -11,10 +11,8 @@ import {
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
-import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseWithSampleById } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 import i18next from "i18next";
 import { useDataManagementStore } from "../../stores/dataManagement";
@@ -250,7 +248,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const deleteCase = async () => {
                 try {
-                    await deleteCaseByIdAndRecalculateDistances(row.original.id);
+                    await deleteCaseWithSampleById(row.original.id);
                     await useCoreStore.getState().updateCasesWithRelationships();
                 } catch (error) {
                     toast({
@@ -284,7 +282,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                         <DropdownMenuItem className="cursor-pointer" onClick={toggleSequenceIdModal}>
                             Sequenz ID zuweisen
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
+                        <DropdownMenuItem className="cursor-pointer text-red-500" onClick={deleteCase}>
                             Entfernen
                         </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -276,7 +276,7 @@ export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
 };
 
-export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
+export const deleteCaseWithSampleById = async (id: number) => {
     const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction(
