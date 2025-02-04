@@ -285,9 +285,6 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                             Sequenz ID zuweisen
                         </DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
-                            Kontakte verwalten
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
                             Entfernen
                         </DropdownMenuItem>
                     </DropdownMenuContent>

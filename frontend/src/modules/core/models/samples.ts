@@ -43,6 +43,8 @@ export type BacterialQualityParameters = {
 };
 
 export const deleteSampleById = async (id: number) => {
+    await db.sequence_analyses.delete(id);
+    await db.distances.where({ sample_id_1: id }).or("sample_id_2").equals(id).delete();
     await db.samples.delete(id);
 };
 
