@@ -1,6 +1,6 @@
 import { useDropzone } from "react-dropzone";
 import { CirclePlus, File } from "lucide-react";
-import {formatData} from "@/modules/core/helpers/files";
+import { formatData } from "@/modules/core/helpers/files";
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { useTranslation } from "react-i18next";
 import { useGetFileReadingStrategy } from "../../hooks/useGetFileReadingStrategy";
@@ -54,6 +54,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         } catch (error) {
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
+                console.log(error);
                 toast({
                     title: t(`error:upload.title`),
                     description: error.data

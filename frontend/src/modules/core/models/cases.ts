@@ -51,6 +51,19 @@ export type CaseImport = {
     registered_at: Date;
 };
 
+export const caseImportRules = z.object({
+    fasta_id: z.string().min(1).or(z.null()),
+    outbreak: z.string().or(z.null()),
+    infected_by: z.string().min(1).or(z.null()),
+    groups: z.array(z.object({ name: z.string(), category: z.string(), remaining: z.boolean().or(z.undefined()) })),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
+    registered_at: z.date(),
+});
+
 export const caseRules = z.object({
     case_id: z.string().min(1),
     fasta_id: z.string().min(1).or(z.null()),

@@ -2,7 +2,13 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
+import {
+    CaseImport,
+    caseImportRules,
+    caseRules,
+    CaseWithRelationships,
+    getWithRelations,
+} from "@/modules/core/models/cases";
 import { getOutbreaksForPathogenId, OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useCoreStore } from "@/modules/core/stores/core";
@@ -10,6 +16,7 @@ import { ValidationStrategy } from "@/modules/data_management/services/data_impo
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { CaseImports } from "@/modules/data_management/types/import";
 import { GroupWithRelationships } from "@/modules/core/models/groups";
+import { z } from "zod";
 
 const COLUMNS = {
     case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
@@ -76,35 +83,45 @@ export class CasesValidation extends ValidationStrategy {
 
     private collectImportedAndPersistedCases() {
         const casesToUpload: CaseImports = {};
-
+        const failedCaseImports: { [caseId: string]: string[] } = {};
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
             const persistedCase = this.cases?.get(this.getCellValueForColumn(row, COLUMNS.case_id, false)!);
             const registeredAt = this.getCellValueForColumn(row, COLUMNS.registered_at, false);
-            const importedCase = {
-                fasta_id: this.getCellValueForColumn(row, COLUMNS.fasta_id),
-                groups: [],
-                outbreak: this.getCellValueForColumn(row, COLUMNS.outbreak),
-                infected_by: this.getCellValueForColumn(row, COLUMNS.infected_by),
-                first_name: this.getCellValueForColumn(row, COLUMNS.first_name),
-                last_name: this.getCellValueForColumn(row, COLUMNS.last_name),
-                city: this.getCellValueForColumn(row, COLUMNS.city),
-                zip_code: this.getCellValueForColumn(row, COLUMNS.zip_code),
-                street: this.getCellValueForColumn(row, COLUMNS.street),
-                registered_at: parseGermanDateFormat(registeredAt!),
-            } satisfies CaseImport;
-            if (persistedCase) {
-                persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
-                persistedCase.groups = persistedCase.groups ?? [];
+            const caseId = this.getCellValueForColumn(row, COLUMNS.case_id);
+            try {
+                const importedCase = caseImportRules.parse({
+                    fasta_id: this.getCellValueForColumn(row, COLUMNS.fasta_id),
+                    groups: [],
+                    outbreak: this.getCellValueForColumn(row, COLUMNS.outbreak),
+                    infected_by: this.getCellValueForColumn(row, COLUMNS.infected_by),
+                    first_name: this.getCellValueForColumn(row, COLUMNS.first_name),
+                    last_name: this.getCellValueForColumn(row, COLUMNS.last_name),
+                    city: this.getCellValueForColumn(row, COLUMNS.city),
+                    zip_code: this.getCellValueForColumn(row, COLUMNS.zip_code),
+                    street: this.getCellValueForColumn(row, COLUMNS.street),
+                    registered_at: parseGermanDateFormat(registeredAt!),
+                } satisfies CaseImport);
+                if (persistedCase) {
+                    persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
+                    persistedCase.groups = persistedCase.groups ?? [];
 
-                if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
+                    if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
+                }
+                casesToUpload[caseId!] = {
+                    imported: importedCase,
+                    persisted: persistedCase ?? null,
+                    import: true,
+                };
+            } catch (err) {
+                if (err instanceof z.ZodError && caseId) {
+                    const errorPaths = err.errors.map((err) => err.path.join("."));
+                    failedCaseImports[caseId] = errorPaths;
+                }
+                continue;
             }
-            casesToUpload[this.getCellValueForColumn(row, COLUMNS.case_id)!] = {
-                imported: importedCase,
-                persisted: persistedCase ?? null,
-                import: true,
-            };
         }
+        useDataManagementStore.getState().setFailedCaseImports(failedCaseImports);
         return casesToUpload;
     }
 

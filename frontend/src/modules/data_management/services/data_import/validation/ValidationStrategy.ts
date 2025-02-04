@@ -56,9 +56,7 @@ export abstract class ValidationStrategy {
             if (Object.keys(row).includes(name)) {
                 const cellValue = row[name] != "" ? row[name] : null;
                 if (columnDefinition.required && !cellValue && !allowEmptyCells) {
-                    throw new GentrainException(
-                        `Die Datei enthält leere Zellen, die für den Import notwendig sind. ${name}`
-                    );
+                    throw new GentrainException("RequiredCellMissing", [name]);
                 }
                 return cellValue;
             }
