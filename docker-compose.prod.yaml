@@ -39,6 +39,10 @@ services:
         source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
         target: /srv
         read_only: true
+      - type: bind
+        source: ./caddy/certs
+        target: /certs
+        read_only: true
       - type: volume
         source: caddy_data
         target: /data

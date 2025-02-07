@@ -9,3 +9,5 @@ Caddyfile
 redis/redis.conf
 redis/tls
 **/.DS_Store
+certs/
+certs/*
