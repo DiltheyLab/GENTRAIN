@@ -16,7 +16,7 @@ services:
       - sh
       - -c
       - |
-        chown -R 65534:65534 /data /config
+        chown -R 65534:65534 /data /config /certs
   caddy:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
