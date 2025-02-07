@@ -1,6 +1,6 @@
 # Testing
 
-GenTrain employs a comprehensive testing strategy that includes a dedicated testing environment in the de.NBI cloud.
+Gentrain employs a comprehensive testing strategy that includes a dedicated testing environment in the de.NBI cloud.
 This setup allows for thorough testing of new features and changes before they are deployed to the production
 environment.
 
@@ -19,7 +19,7 @@ server and save floating IP-Adresses.
 
 ### Port Forwarding Script
 
-A custom script is run on the main production instance to configure iptables and enable port forwarding. This script
+A custom script has to be run on the main production instance to configure iptables and enable port forwarding. This script
 performs the following tasks:
 
 1. Enables IP forwarding
@@ -76,6 +76,18 @@ for ((n=1; n <=254; n++))
 
 # Override Dockers FORWARD Policy and set it back to default
 iptables -P FORWARD ACCEPT
+```
+
+In the next step you have to create this script in your instance and execute it:
+
+```sh
+sudo nano port_forwarding.sh
+```
+
+Zum Ausführen:
+
+```sh
+sudo bash port_forwarding.sh
 ```
 
 The script ensures that the testing environment is accessible through specific ports while maintaining isolation from
@@ -141,3 +153,7 @@ environment deployment.
 **4. Monitoring**:
 
 - Slack notifications are sent for both successful deployments and failures.
+
+```
+
+```
