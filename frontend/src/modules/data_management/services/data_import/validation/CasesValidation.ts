@@ -84,6 +84,7 @@ export class CasesValidation extends ValidationStrategy {
     private collectImportedAndPersistedCases() {
         const casesToUpload: CaseImports = {};
         const failedCaseImports: { [caseId: string]: string[] } = {};
+        const categoryColumnNames = this.getCategoryColumnNames();
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
             const persistedCase = this.cases?.get(this.getCellValueForColumn(row, COLUMNS.case_id, false)!);
@@ -92,7 +93,7 @@ export class CasesValidation extends ValidationStrategy {
             try {
                 const importedCase = caseImportRules.parse({
                     fasta_id: this.getCellValueForColumn(row, COLUMNS.fasta_id),
-                    groups: [],
+                    groups: this.getGroupCellValues(row, categoryColumnNames, persistedCase),
                     outbreak: this.getCellValueForColumn(row, COLUMNS.outbreak),
                     infected_by: this.getCellValueForColumn(row, COLUMNS.infected_by),
                     first_name: this.getCellValueForColumn(row, COLUMNS.first_name),
@@ -158,6 +159,33 @@ export class CasesValidation extends ValidationStrategy {
             importedGroups.filter((group) => !group.remaining).length === 0 &&
             importedGroups.length === existingGroups?.length
         );
+    }
+
+    private getGroupCellValues(
+        row: { [key: string]: string },
+        categoryColumnNames: string[],
+        existingCase: CaseWithRelationships | undefined
+    ) {
+        const groupValues = categoryColumnNames
+            .filter((categoryColumnName) => row[`Kategorie:${categoryColumnName}`])
+            .map((categoryColumnName) => {
+                const groupName = row[`Kategorie:${categoryColumnName}`];
+                const remaining = existingCase
+                    ? existingCase.groups?.some((existingGroup) => {
+                          return (
+                              existingGroup.category?.name === categoryColumnName && existingGroup.name === groupName
+                          );
+                      })
+                    : false;
+                return { name: groupName, category: categoryColumnName, remaining: remaining };
+            });
+        return groupValues;
+    }
+
+    private getCategoryColumnNames() {
+        return this.header
+            .filter((columnName: string) => columnName.includes("Kategorie:"))
+            .map((categoryColumnNames) => categoryColumnNames.replace("Kategorie:", ""));
     }
 
     private fieldIsEqual(
