@@ -11,25 +11,22 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
     if (!selectedNode) return null;
 
     // format name respecting available data
-    const renderCaseName = () => {
-        if (!selectedNode.caseData.first_name && !selectedNode.caseData.last_name) return;
-        const firstAndLastName = [selectedNode.caseData.first_name, selectedNode.caseData.last_name]
+    const formatCaseName = () => {
+        const name = [selectedNode.caseData.first_name, selectedNode.caseData.last_name]
             .filter((addressValue) => addressValue)
             .join(" ");
-        return <CaseInfoItem label="Name" description={firstAndLastName} />;
+        return name;
     };
 
     // format address respecting available data
-    const renderCaseAddress = () => {
-        if (!selectedNode.caseData.city && !selectedNode.caseData.zip_code && !selectedNode.caseData.street) return;
+    const formatCaseAddress = () => {
         const cityAndZipCode = [selectedNode.caseData.zip_code, selectedNode.caseData.city]
             .filter((addressValue) => addressValue)
             .join(" ");
         const address = [cityAndZipCode, selectedNode.caseData.street]
             .filter((addressValue) => addressValue)
             .join(", ");
-
-        return <CaseInfoItem label="Addresse" description={address} />;
+        return address;
     };
 
     return (
@@ -46,30 +43,25 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
             </Button>
             <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedNode.caseData.case_id} copyToClipboard />
-                {selectedNode.caseData.sample?.fasta_id ? (
-                    <CaseInfoItem label="Sequenz ID" description={selectedNode.caseData.sample?.fasta_id} />
-                ) : null}
-                {selectedNode.caseData.outbreak ? (
-                    <CaseInfoItem label="Ausbruch" description={selectedNode.caseData.outbreak.name} />
-                ) : null}
+                <CaseInfoItem label="Sequenz ID" description={selectedNode.caseData.sample?.fasta_id ?? "-"} />
+                <CaseInfoItem label="Ausbruch" description={selectedNode.caseData.outbreak?.name ?? "-"} />
                 <CaseInfoItem
                     label="Registrierungsdatum"
                     description={selectedNode.caseData.registered_at.toLocaleDateString()}
                 />
-                {renderCaseName()}
-                {renderCaseAddress()}
-                {selectedNode.caseData.groups?.map((group) => {
-                    if (!group.category) {
-                        return;
-                    }
-                    return (
-                        <CaseInfoItem
-                            key={`${selectedNode.caseData.case_id}_${group.category}_${group.name}`}
-                            label={group.category.name}
-                            description={group.name}
-                        />
-                    );
-                })}
+                <CaseInfoItem label="Adresse" description={formatCaseAddress()} />
+                <CaseInfoItem label="Name" description={formatCaseName()} />
+                {selectedNode.caseData.groups
+                    ?.filter((group) => group.category)
+                    .map((group) => {
+                        return (
+                            <CaseInfoItem
+                                key={`${selectedNode.caseData.case_id}_${group.category}_${group.name}`}
+                                label={group.category!.name}
+                                description={group.name}
+                            />
+                        );
+                    })}
             </div>
         </fieldset>
     );
