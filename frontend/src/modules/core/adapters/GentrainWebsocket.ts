@@ -38,7 +38,6 @@ export class GentrainWebsocket {
         }
         this.client.emit(`join_${pathogenTypeName}`, useCoreStore.getState().sessionId);
         this.client.once(`${pathogenTypeName}_room_created`, async (roomName: string) => {
-            console.log(`Room ${roomName} was joined.`);
             callback(roomName);
         });
     }
