@@ -21,6 +21,4 @@ export class SamplesPersistence extends PersistenceStrategy {
             throw error;
         }
     };
-
-    protected update = async () => {};
 }

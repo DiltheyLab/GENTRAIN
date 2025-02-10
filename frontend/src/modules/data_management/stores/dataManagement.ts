@@ -9,6 +9,7 @@ type DataManagementStoreState = {
     // case import
     caseImports: CaseImports;
     caseSelectionActive: boolean;
+    failedCaseImports: { [caseId: string]: string[] };
 
     // sample import
     sampleImports: {
@@ -45,6 +46,7 @@ type DataManagementStoreActions = {
     }) => void;
     clearCaseImports: () => void;
     setCaseSelectionActive: (value: boolean) => void;
+    setFailedCaseImports: (failedCaseImports: { [caseId: string]: string[] }) => void;
 
     // sample import
     changeSampleImport: (key: string, value: any) => void;
@@ -114,6 +116,10 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
     },
     clearCaseImports: () => {
         set({ caseImports: {} });
+    },
+    failedCaseImports: {},
+    setFailedCaseImports: (failedCases: { [caseId: string]: string[] }) => {
+        set({ failedCaseImports: failedCases });
     },
     caseSelectionActive: false,
     setCaseSelectionActive: (value: boolean) => {

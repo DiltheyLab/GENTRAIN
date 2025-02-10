@@ -2,30 +2,49 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { CaseImport, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
+import {
+    CaseImport,
+    caseImportRules,
+    caseRules,
+    CaseWithRelationships,
+    getWithRelations,
+} from "@/modules/core/models/cases";
 import { getOutbreaksForPathogenId, OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { ValidationStrategy } from "@/modules/data_management/services/data_import/validation/ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { CaseImports } from "@/modules/data_management/types/import";
+import { GroupWithRelationships } from "@/modules/core/models/groups";
+import { z } from "zod";
+
+const COLUMNS = {
+    case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
+    registered_at: { required: true, names: ["Registrierungsdatum", "Meldedatum"] },
+    fasta_id: { required: false, names: ["Sequenz ID"] },
+    outbreak: { required: false, names: ["Ausbruch"] },
+    infected_by: { required: false, names: ["Angesteckt bei", "AngestecktBei"] },
+    first_name: { required: false, names: ["Vorname", "PersonVorname"] },
+    last_name: { required: false, names: ["Nachname", "PersonFamilienname"] },
+    city: { required: false, names: ["Ort", "PersonOrt"] },
+    zip_code: { required: false, names: ["PLZ", "PersonPLZ"] },
+    street: { required: false, names: ["Straße", "PersonStrasse"] },
+};
 
 export class CasesValidation extends ValidationStrategy {
-    protected data: string[][] = [];
+    protected data: { [key: string]: string }[] = [];
     protected header: string[] = [];
     protected outbreaks?: Map<any, OutbreakSchema>;
     protected cases?: Map<string, CaseWithRelationships>;
-    protected columnNames = ["Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"];
 
-    public collectData(data: string[][]) {
-        this.header = data[0];
-        // remove header from csv input
-        this.data = data.slice(1, data.length);
+    public collectData(data: { columns: string[]; rows: { [key: string]: string }[] }) {
+        this.header = data.columns;
+        this.data = data.rows;
     }
 
     protected async validate() {
         //check if required header columns (additional category columns excluded) is exactly the same as columnNameRequirements
-        if (!this.isCasesHeaderValid()) {
+        if (!this.isHeaderValid(COLUMNS)) {
             throw new GentrainException("InvalidHeaderError");
         }
         // receive ids of cases already persisted in the db to throw an error containing case ids
@@ -45,14 +64,7 @@ export class CasesValidation extends ValidationStrategy {
             }
         }
 
-        return {
-            data: this.data,
-        };
-    }
-
-    private isCasesHeaderValid() {
-        // validate if 3 flexible columns were included and execute parent header validation
-        return this.header.length <= this.columnNames.length + 3 && this.isHeaderValid();
+        return { data: this.data };
     }
 
     private async collectCaseImports() {
@@ -61,7 +73,7 @@ export class CasesValidation extends ValidationStrategy {
             return {};
         }
 
-        const caseIds = this.data.map((row) => row[0]);
+        const caseIds = this.data.map((row) => row["Fall ID"]);
         const cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
         this.cases = ObjectRelationalMapper.arrayToMap(cases, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);
@@ -71,50 +83,47 @@ export class CasesValidation extends ValidationStrategy {
 
     private collectImportedAndPersistedCases() {
         const casesToUpload: CaseImports = {};
-
+        const failedCaseImports: { [caseId: string]: string[] } = {};
+        const categoryColumnNames = this.getCategoryColumnNames();
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
-            const persistedCase = this.cases?.get(row[0]);
-            const importedCase = {
-                fasta_id: row[1] !== "" ? row[1] : null,
-                groups: this.collectNewGroups(row, persistedCase),
-                outbreak: row[3] !== "" ? row[3] : null,
-                registered_at: parseGermanDateFormat(row[2]),
-            } satisfies CaseImport;
-            if (persistedCase) {
-                persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
+            const persistedCase = this.cases?.get(this.getCellValueForColumn(row, COLUMNS.case_id, false)!);
+            const registeredAt = this.getCellValueForColumn(row, COLUMNS.registered_at, false);
+            const caseId = this.getCellValueForColumn(row, COLUMNS.case_id);
+            try {
+                const importedCase = caseImportRules.parse({
+                    fasta_id: this.getCellValueForColumn(row, COLUMNS.fasta_id),
+                    groups: this.getGroupCellValues(row, categoryColumnNames, persistedCase),
+                    outbreak: this.getCellValueForColumn(row, COLUMNS.outbreak),
+                    infected_by: this.getCellValueForColumn(row, COLUMNS.infected_by),
+                    first_name: this.getCellValueForColumn(row, COLUMNS.first_name),
+                    last_name: this.getCellValueForColumn(row, COLUMNS.last_name),
+                    city: this.getCellValueForColumn(row, COLUMNS.city),
+                    zip_code: this.getCellValueForColumn(row, COLUMNS.zip_code),
+                    street: this.getCellValueForColumn(row, COLUMNS.street),
+                    registered_at: parseGermanDateFormat(registeredAt!),
+                } satisfies CaseImport);
+                if (persistedCase) {
+                    persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
+                    persistedCase.groups = persistedCase.groups ?? [];
 
-                if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
+                    if (this.importedCaseEqualsPersistedCase(importedCase, persistedCase)) continue;
+                }
+                casesToUpload[caseId!] = {
+                    imported: importedCase,
+                    persisted: persistedCase ?? null,
+                    import: true,
+                };
+            } catch (err) {
+                if (err instanceof z.ZodError && caseId) {
+                    const errorPaths = err.errors.map((err) => err.path.join("."));
+                    failedCaseImports[caseId] = errorPaths;
+                }
+                continue;
             }
-            casesToUpload[row[0]] = { imported: importedCase, persisted: persistedCase ?? null, import: true };
         }
-
+        useDataManagementStore.getState().setFailedCaseImports(failedCaseImports);
         return casesToUpload;
-    }
-
-    /**
-     * Detect if groups are remaining or new to the existing case or not.
-     * @param row
-     * @param existingCase
-     * @returns
-     */
-    private collectNewGroups(row: string[], existingCase: CaseWithRelationships | undefined) {
-        const groups: { name: string; category: string; remaining: boolean }[] = [];
-
-        for (let i = 4; i <= 6; i++) {
-            if (row[i] !== "") {
-                const group = { category: this.header[i], name: row[i], remaining: false };
-                const groupExistsForCase = existingCase
-                    ? existingCase.groups?.some((existingGroup) => {
-                          return existingGroup.category?.name === group.category && existingGroup.name === group.name;
-                      })
-                    : false;
-                group.remaining = groupExistsForCase ?? false;
-
-                groups.push(group);
-            }
-        }
-        return groups;
     }
 
     /**
@@ -125,11 +134,64 @@ export class CasesValidation extends ValidationStrategy {
      */
     private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
-            ((!caseImport.fasta_id && !existingCase.fasta_id) || caseImport.fasta_id === existingCase.fasta_id) &&
-            ((!caseImport.outbreak && !existingCase.outbreak) || caseImport.outbreak === existingCase.outbreak?.name) &&
-            caseImport.groups.filter((group) => !group.remaining).length === 0 &&
-            caseImport.groups.length === existingCase.groups?.length &&
-            formatDate(caseImport.registered_at) === formatDate(existingCase.registered_at)
+            this.fieldIsEqual(caseImport.street, existingCase.street) &&
+            this.fieldIsEqual(caseImport.zip_code, existingCase.zip_code) &&
+            this.fieldIsEqual(caseImport.city, existingCase.city) &&
+            this.fieldIsEqual(caseImport.first_name, existingCase.first_name) &&
+            this.fieldIsEqual(caseImport.last_name, existingCase.last_name) &&
+            this.fieldIsEqual(caseImport.fasta_id, existingCase.fasta_id) &&
+            this.fieldIsEqual(caseImport.infected_by, existingCase.infected_by) &&
+            this.fieldIsEqual(caseImport.outbreak, existingCase.outbreak?.name) &&
+            this.fieldIsEqual(formatDate(caseImport.registered_at), formatDate(existingCase.registered_at)) &&
+            this.groupsAreEqual(caseImport.groups, existingCase.groups)
         );
+    }
+
+    private groupsAreEqual(
+        importedGroups: {
+            name: string;
+            category: string;
+            remaining?: boolean;
+        }[],
+        existingGroups: GroupWithRelationships[] | null | undefined
+    ) {
+        return (
+            importedGroups.filter((group) => !group.remaining).length === 0 &&
+            importedGroups.length === existingGroups?.length
+        );
+    }
+
+    private getGroupCellValues(
+        row: { [key: string]: string },
+        categoryColumnNames: string[],
+        existingCase: CaseWithRelationships | undefined
+    ) {
+        const groupValues = categoryColumnNames
+            .filter((categoryColumnName) => row[`Kategorie:${categoryColumnName}`])
+            .map((categoryColumnName) => {
+                const groupName = row[`Kategorie:${categoryColumnName}`];
+                const remaining = existingCase
+                    ? existingCase.groups?.some((existingGroup) => {
+                          return (
+                              existingGroup.category?.name === categoryColumnName && existingGroup.name === groupName
+                          );
+                      })
+                    : false;
+                return { name: groupName, category: categoryColumnName, remaining: remaining };
+            });
+        return groupValues;
+    }
+
+    private getCategoryColumnNames() {
+        return this.header
+            .filter((columnName: string) => columnName.includes("Kategorie:"))
+            .map((categoryColumnNames) => categoryColumnNames.replace("Kategorie:", ""));
+    }
+
+    private fieldIsEqual(
+        importedField: string | number | null | undefined,
+        existingField: string | number | null | undefined
+    ) {
+        return (!importedField && !existingField) || importedField === existingField;
     }
 }

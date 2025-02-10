@@ -1,4 +1,3 @@
-import Aioli from "@biowasm/aioli";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { getCasesForPathogenWithSample } from "@/modules/core/models/cases";
 import { getOrCreateDistanceMatrixIdByPathogenId } from "@/modules/core/models/distance_matrices";
@@ -12,7 +11,6 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 export abstract class DistanceCalculationStrategy {
     protected dataManagementStore: DataManagementStore;
     protected pathogen: PathogenSchema;
-    protected cli: any;
     protected distanceMatrixId: number | undefined;
     protected samples: SampleSchema[];
 
@@ -29,21 +27,15 @@ export abstract class DistanceCalculationStrategy {
 
     public execute = async () => {
         this.dataManagementStore.setDistanceCalculationRunning(true);
-        if (!this.cli || !this.distanceMatrixId) await this.init();
+        if (!this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
         await this.calculateSampleDistances();
     };
 
     private init = async () => {
-        this.cli = await this.getCli();
         this.distanceMatrixId = await this.getDistanceMatrixId();
         this.samples = await this.getSamples();
-    };
-
-    private getCli = async () => {
-        const cli = await new Aioli(["kalign/3.3.1"]);
-        return cli;
     };
 
     private getSamples = async () => {

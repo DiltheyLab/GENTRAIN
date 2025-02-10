@@ -18,6 +18,12 @@ export interface CaseSchema {
     pathogen_id: number;
     outbreak_id: number | null;
     group_ids: Array<number>;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    infected_by: string | null;
     registered_at: Date;
     created_at?: Date;
     updated_at?: Date;
@@ -36,15 +42,40 @@ export type CaseImport = {
     fasta_id: string | null;
     groups: { name: string; category: string; remaining?: boolean }[];
     outbreak: string | null;
+    infected_by: string | null;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
     registered_at: Date;
 };
+
+export const caseImportRules = z.object({
+    fasta_id: z.string().min(1).or(z.null()),
+    outbreak: z.string().or(z.null()),
+    infected_by: z.string().min(1).or(z.null()),
+    groups: z.array(z.object({ name: z.string(), category: z.string(), remaining: z.boolean().or(z.undefined()) })),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
+    registered_at: z.date(),
+});
 
 export const caseRules = z.object({
     case_id: z.string().min(1),
     fasta_id: z.string().min(1).or(z.null()),
     pathogen_id: z.number(),
     outbreak_id: z.number().or(z.null()),
+    infected_by: z.string().min(1).or(z.null()),
     group_ids: z.array(z.number()),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
     registered_at: z.date(),
 });
 
@@ -59,7 +90,7 @@ export const getWithRelations = async (collection: Collection, includeSequenceAn
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
@@ -108,7 +139,7 @@ export const getCasesByConditionWithRelationships = async (
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
@@ -159,7 +190,7 @@ export const getAllCasesForPathogenWithRelationships = async (
     const pathogen = await db.pathogens.where({ id: pathogen_id }).first();
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         caseWithRelationships.pathogen = pathogen;
 
         // retrieve sample schema object
@@ -215,7 +246,7 @@ export const getCaseWithSampleById = async (id: number) => {
     if (!caseById) {
         return;
     }
-    let caseWithRelationships: CaseWithRelationships = caseById;
+    const caseWithRelationships: CaseWithRelationships = caseById;
     caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
     return caseWithRelationships;
 };
@@ -225,7 +256,7 @@ export const getCasesForPathogenWithSample = async (pathogen_id: number) => {
 
     const casesWithRelationships: CaseWithRelationships[] = [];
     for (const pathogenCase of pathogenCases) {
-        let caseWithRelationships: CaseWithRelationships = pathogenCase;
+        const caseWithRelationships: CaseWithRelationships = pathogenCase;
         if (pathogenCase.fasta_id) {
             caseWithRelationships.sample = await db.samples.where({ fasta_id: pathogenCase.fasta_id }).first();
             if (caseWithRelationships.sample) {
