@@ -2,37 +2,31 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { X } from "lucide-react";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { CustomNode } from "../../types/graph";
-import { useTranslation } from "react-i18next";
 
 type CaseInfoProps = {
     selectedNode: CustomNode | null;
     updateSelectedNode: (selectedNode: CustomNode | null) => void;
 };
 export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) => {
-    const { t } = useTranslation();
-
     if (!selectedNode) return null;
 
     // format name respecting available data
-    const renderCaseName = () => {
-        if (!selectedNode.caseData.first_name && !selectedNode.caseData.last_name) return;
-        const firstAndLastName = [selectedNode.caseData.first_name, selectedNode.caseData.last_name]
+    const formatCaseName = () => {
+        const name = [selectedNode.caseData.first_name, selectedNode.caseData.last_name]
             .filter((addressValue) => addressValue)
             .join(" ");
-        return <CaseInfoItem label="Name" description={firstAndLastName} />;
+        return name;
     };
 
     // format address respecting available data
     const renderCaseAddress = () => {
-        if (!selectedNode.caseData.city && !selectedNode.caseData.zip_code && !selectedNode.caseData.street) return;
         const cityAndZipCode = [selectedNode.caseData.zip_code, selectedNode.caseData.city]
             .filter((addressValue) => addressValue)
             .join(" ");
         const address = [cityAndZipCode, selectedNode.caseData.street]
             .filter((addressValue) => addressValue)
             .join(", ");
-
-        return <CaseInfoItem label="Addresse" description={address} />;
+        return address;
     };
 
     return (
@@ -55,8 +49,8 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                     label="Registrierungsdatum"
                     description={selectedNode.caseData.registered_at.toLocaleDateString()}
                 />
-                {renderCaseName()}
-                {renderCaseAddress()}
+                <CaseInfoItem label="Adresse" description={renderCaseAddress()} />
+                <CaseInfoItem label="Name" description={formatCaseName()} />
                 {selectedNode.caseData.groups
                     ?.filter((group) => group.category)
                     .map((group) => {

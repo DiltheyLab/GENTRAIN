@@ -3,11 +3,12 @@ import { Label } from "@/modules/core/components/ui/Label";
 
 type CaseInfoItemProps = {
     label: string;
-    description: string;
+    description?: string;
     copyToClipboard?: boolean;
 };
 
 export const CaseInfoItem = ({ label, description, copyToClipboard = false }: CaseInfoItemProps) => {
+    if (!description) return;
     return (
         <div className="flex space-x-1 pointer-events-auto items-baseline">
             <Label htmlFor="nodeLabel" className="font-normal">
