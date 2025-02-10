@@ -2,13 +2,7 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { formatDate, parseGermanDateFormat } from "@/modules/core/helpers/dates";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import {
-    CaseImport,
-    caseImportRules,
-    caseRules,
-    CaseWithRelationships,
-    getWithRelations,
-} from "@/modules/core/models/cases";
+import { CaseImport, caseImportRules, CaseWithRelationships, getWithRelations } from "@/modules/core/models/cases";
 import { getOutbreaksForPathogenId, OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { useCoreStore } from "@/modules/core/stores/core";
