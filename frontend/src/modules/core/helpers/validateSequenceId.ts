@@ -7,7 +7,7 @@ export const validateSequenceId = (entities: CaseSchema[] | undefined, fasta_id:
 
     const sequenceIdPatternIsValid = () => {
         if (fasta_id === "") return true;
-        var pattern = /^[A-Za-z0-9-_.]+$/;
+        const pattern = /^[A-Za-z0-9-_.]+$/;
         return pattern.test(fasta_id);
     };
 
