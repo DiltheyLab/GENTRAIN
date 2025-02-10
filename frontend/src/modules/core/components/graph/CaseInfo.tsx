@@ -19,7 +19,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
     };
 
     // format address respecting available data
-    const renderCaseAddress = () => {
+    const formatCaseAddress = () => {
         const cityAndZipCode = [selectedNode.caseData.zip_code, selectedNode.caseData.city]
             .filter((addressValue) => addressValue)
             .join(" ");
@@ -49,7 +49,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                     label="Registrierungsdatum"
                     description={selectedNode.caseData.registered_at.toLocaleDateString()}
                 />
-                <CaseInfoItem label="Adresse" description={renderCaseAddress()} />
+                <CaseInfoItem label="Adresse" description={formatCaseAddress()} />
                 <CaseInfoItem label="Name" description={formatCaseName()} />
                 {selectedNode.caseData.groups
                     ?.filter((group) => group.category)
