@@ -1,10 +1,11 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/modules/core/components/ui/Sheet";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/modules/core/components/ui/Button";
-import { Menu, Package2, Save, Share2, Upload } from "lucide-react";
+import { Menu, Package2, Save, Upload } from "lucide-react";
 import { exportDatabaseToJson, importDataFromJson } from "@/modules/core/helpers/database";
 import { useRef } from "react";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
+import GentrainLogo from "@/assets/img/gentrain-logo.svg";
 
 export const Header = () => {
     const uploadFileRef = useRef<HTMLInputElement | null>(null);
@@ -17,9 +18,8 @@ export const Header = () => {
         <header className="sticky top-0 flex min-h-[65px] items-center gap-4 border-b bg-background z-[49] px-4 md:px-6">
             <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                 <Link to="/" className="flex items-center gap-2 text-md md:text-base gentrain-logo">
-                    <Share2 className="h-6 w-6 text-primary" />
                     <div className="not-sr-only text-primary text-3xl font-extrabold uppercase">
-                        Gentrain<span className="text-[11px] font-thin leading-[11px]">NRW</span>
+                        <img width={200} src={GentrainLogo} alt="GENTRAIN NRW" />
                     </div>
                 </Link>
                 <Link
