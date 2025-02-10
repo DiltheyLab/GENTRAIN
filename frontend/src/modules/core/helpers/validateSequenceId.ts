@@ -2,7 +2,7 @@ import { CaseSchema } from "../models/cases";
 
 export const validateSequenceId = (entities: CaseSchema[] | undefined, fasta_id: string) => {
     const isUniqueSequenceId = () => {
-        return entities?.find((entity) => entity.fasta_id === fasta_id) === undefined;
+        return !entities?.some((entity) => entity.fasta_id === fasta_id);
     };
 
     const sequenceIdPatternIsValid = () => {
