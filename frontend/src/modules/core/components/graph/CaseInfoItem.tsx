@@ -8,7 +8,7 @@ type CaseInfoItemProps = {
 };
 
 export const CaseInfoItem = ({ label, description, copyToClipboard = false }: CaseInfoItemProps) => {
-    if (!description) return;
+    if (!description) return null;
     return (
         <div className="flex space-x-1 pointer-events-auto items-baseline">
             <Label htmlFor="nodeLabel" className="font-normal">
