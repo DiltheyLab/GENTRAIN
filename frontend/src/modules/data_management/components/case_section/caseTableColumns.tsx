@@ -150,6 +150,96 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         },
     },
     {
+        accessorKey: "last_name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Nachname
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <>{row.original.last_name ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "first_name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Vorname
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <>{row.original.first_name ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "city",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Ort
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <>{row.original.city ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "zip_code",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    PLZ
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <>{row.original.zip_code ?? ""}</>;
+        },
+    },
+    {
+        accessorKey: "street",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Straße
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <>{row.original.street ?? ""}</>;
+        },
+    },
+    {
         accessorKey: "groups",
         header: () => <p className="font-medium">Gruppen</p>,
         cell: ({ row }) => {

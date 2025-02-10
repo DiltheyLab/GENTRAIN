@@ -7,14 +7,20 @@
         "sequence_import": "Import von Sequenzdaten",
         "sequence_selection": "Import von Sequenzdaten",
         "sequence_analysis": "Analyse der Sequenzdaten",
-        "contact_import": "Import von Kontaktdaten",
+        "contact_import": "Import von Kontaktpersonendaten",
         "contact_selection": "Import von Falldaten",
         "conclusion": "Ihr Datenimport war erfolgreich!"
     },
     "labels": {
         "case": "Falldaten",
         "sequence": "Sequenzdaten",
-        "contact": "Kontaktdaten"
+        "contact": "Kontaktpersonendaten"
+    },
+    "contact_types": {
+        "contact_person": "Kontaktperson",
+        "infected_by": "Angesteckt bei",
+        "same_address_and_last_name": "Gleiche Adresse, gleicher Nachname",
+        "same_address": "Gleiche Adresse, anderer Nachname"
     },
     "introduction": {
         "shared": [
