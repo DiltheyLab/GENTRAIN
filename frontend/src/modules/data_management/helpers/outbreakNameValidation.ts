@@ -2,7 +2,7 @@ import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export const validateOutbreakName = (outbreaks: OutbreakSchema[] | undefined, outbreakName: string) => {
     const isUniqueName = () => {
-        return outbreaks?.find((outbreak) => outbreak.name === outbreakName) === undefined;
+        return !outbreaks?.some((outbreak) => outbreak.name === outbreakName);
     };
 
     const nameLengthIsValid = () => {

@@ -11,12 +11,11 @@ import {
 import { toast } from "@/modules/core/components/ui/UseToast";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/modules/core/components/ui/HoverCard";
-import { Separator } from "@/modules/core/components/ui/Separator";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCaseByIdAndRecalculateDistances } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseWithSampleById } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 import i18next from "i18next";
+import { useDataManagementStore } from "../../stores/dataManagement";
 
 export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
     {
@@ -115,38 +114,6 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const outbreak = row.original.outbreak;
             return <>{outbreak?.name ?? i18next.t("clusterTypes.noOutbreakAssigned")}</>;
-        },
-    },
-    {
-        accessorKey: "contacts",
-        header: "Kontakte",
-        cell: ({ row }) => {
-            const contacts = row.original.contacts;
-            if (!contacts) return;
-            const caseIds = Object.keys(contacts);
-            return (
-                <div className="flex flex-wrap max-w-[240px] xl:max-w-[350px] gap-1">
-                    {caseIds.map((case_id: string) => (
-                        <HoverCard key={case_id} openDelay={50} closeDelay={50}>
-                            <HoverCardTrigger asChild>
-                                <div className="inline-block cursor-default border-[1px] border-slate-900 text-black py-1 px-2 rounded-xl">
-                                    {case_id}
-                                </div>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="text-center py-0 px-2 w-auto">
-                                {contacts[case_id].map((contact, index) => {
-                                    return (
-                                        <div key={index}>
-                                            <p>{contact.type}</p>
-                                            {index < contacts[case_id].length - 1 && <Separator />}
-                                        </div>
-                                    );
-                                })}
-                            </HoverCardContent>
-                        </HoverCard>
-                    ))}
-                </div>
-            );
         },
     },
     {
@@ -281,8 +248,19 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const deleteCase = async () => {
                 try {
-                    await deleteCaseByIdAndRecalculateDistances(row.original.id);
+                    await deleteCaseWithSampleById(row.original.id);
                     await useCoreStore.getState().updateCasesWithRelationships();
+                } catch (error) {
+                    toast({
+                        title: "Fall konnte nicht gelöscht werden.",
+                        duration: 10000,
+                        variant: "destructive",
+                    });
+                }
+            };
+            const toggleSequenceIdModal = async () => {
+                try {
+                    await useDataManagementStore.getState().initSequenceMappingDialog(row.original);
                 } catch (error) {
                     toast({
                         title: "Fall konnte nicht gelöscht werden.",
@@ -301,7 +279,10 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aktionen</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer" onClick={deleteCase}>
+                        <DropdownMenuItem className="cursor-pointer" onClick={toggleSequenceIdModal}>
+                            Sequenz ID zuweisen
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer text-red-500" onClick={deleteCase}>
                             Entfernen
                         </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -244,10 +244,12 @@ export const getCaseByFastaId = async (fastaId: string) => {
 export const getCaseWithSampleById = async (id: number) => {
     const caseById = await db.cases.get(id);
     if (!caseById) {
-        return;
+        return null;
     }
     const caseWithRelationships: CaseWithRelationships = caseById;
-    caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
+    if (caseById.fasta_id) {
+        caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
+    }
     return caseWithRelationships;
 };
 
@@ -274,26 +276,18 @@ export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
 };
 
-export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
+export const deleteCaseWithSampleById = async (id: number) => {
     const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction(
             "rw",
             [db.cases, db.samples, db.sequence_analyses, db.distances, db.distance_matrices],
             async () => {
-                const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
                 const caseWithSample = await getCaseWithSampleById(id);
-                if (caseWithSample && distanceMatrixId) {
-                    await deleteCaseById(id);
-                }
+                if (!caseWithSample) return;
+                await deleteCaseById(id);
                 if (caseWithSample?.sample) {
-                    await deleteSampleById(caseWithSample?.sample.id);
-                    if (caseWithSample?.sample.sequence_analysis_id) {
-                        await deleteSequenceAnalysisById(caseWithSample?.sample.id);
-                    }
-                }
-                if (caseWithSample?.sample) {
-                    await deleteDistancesBySampleId(caseWithSample?.sample.id);
+                    await deleteSampleById(caseWithSample.sample.id);
                 }
             }
         );
