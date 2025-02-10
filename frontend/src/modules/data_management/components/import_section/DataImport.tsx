@@ -23,6 +23,7 @@ import { useState } from "react";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 import { FileDown } from "lucide-react";
+import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
 
 type DataImportProps = {
     children: JSX.Element;
@@ -64,6 +65,8 @@ export const DataImport = ({
     const clearImports = useDataManagementStore((state) => state.clearImports);
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
+    const failedCaseImports = useDataManagementStore((state) => state.failedCaseImports);
+
     const [openDialog, setOpenDialog] = useState(false);
 
     const renderDropzone = () => {
@@ -157,7 +160,7 @@ export const DataImport = ({
         <div className="flex flex-col items-center gap-1">
             <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                 {renderDropzone()}
-                {renderDataSelection()}
+                {Object.keys(failedCaseImports).length > 0 ? <FailedCaseImportDialog /> : renderDataSelection()}
             </div>
             {exampleDataPath && (
                 <Button

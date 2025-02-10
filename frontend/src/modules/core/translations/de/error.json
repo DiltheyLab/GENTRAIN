@@ -5,6 +5,7 @@
     },
     "upload": {
         "title": "Fehlerhafter Import",
+        "RequiredCellMissing": "Die Datei enthält leere Zellen, die für den Import notwendig sind: {{data}}.",
         "InvalidHeaderError": "Die Datei hat einen ungültigen Header. Die Spalten weisen eine fehlerhafte Benennung auf.",
         "InvalidMimeTypeError": "Der Dateityp wird nicht unterstützt. Es werden folgende Dateiendungen unterstützt: {{data}}.",
         "InvalidPathogenSelection": "Sie müssen zunächst das behandelte Pathogen festlegen.",
@@ -38,5 +39,16 @@
     },
     "database": {
         "title": "Fehler in der Datenbank"
+    },
+    "case_import": {
+        "case_id": "Ungültige Fall ID",
+        "fasta_id": "Ungültige Sequenz ID",
+        "outbreak": "Ungültiger Ausbruch",
+        "first_name": "Ungültiger Vorname",
+        "last_name": "Ungültiger Nachname",
+        "city": "Ungültiger Ort",
+        "street": "Ungültige Straße",
+        "zip_code": "Ungültige Postleitzahl",
+        "registered_at": "Ungültiges Registrierungsdatum"
     }
 }
