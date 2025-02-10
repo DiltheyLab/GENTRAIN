@@ -4,11 +4,9 @@ import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreaks";
 import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
-import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
-import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
+import { ViralAnalysisResult } from "./sequence_analyses";
 import { Collection } from "dexie";
 
 export interface CaseSchema {
