@@ -43,7 +43,17 @@ export type BacterialQualityParameters = {
 };
 
 export const deleteSampleById = async (id: number) => {
+    await db.sequence_analyses.delete(id);
+    await db.distances.where({ sample_id_1: id }).or("sample_id_2").equals(id).delete();
     await db.samples.delete(id);
+};
+
+export const deleteSampleByFastaId = async (fasta_id: string) => {
+    const sample = await db.samples.where({ fasta_id: fasta_id }).first();
+    if (!sample) return;
+    await db.sequence_analyses.delete(sample.id);
+    await db.distances.where({ sample_id_1: sample.id }).or("sample_id_2").equals(sample.id).delete();
+    await db.samples.delete(sample.id);
 };
 
 export type { SampleSchema };

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
+import { CaseImport, CaseSchema, CaseWithRelationships } from "@/modules/core/models/cases";
 import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
@@ -9,6 +9,7 @@ type DataManagementStoreState = {
     // case import
     caseImports: CaseImports;
     caseSelectionActive: boolean;
+    failedCaseImports: { [caseId: string]: string[] };
 
     // sample import
     sampleImports: {
@@ -32,6 +33,9 @@ type DataManagementStoreState = {
     // initial upload modal
     importAssistentStep: string | null;
     showImportAssistent: boolean;
+
+    // sequence mapping
+    sequenceMappingDialogCase: CaseWithRelationships | null;
 };
 
 type DataManagementStoreActions = {
@@ -45,6 +49,7 @@ type DataManagementStoreActions = {
     }) => void;
     clearCaseImports: () => void;
     setCaseSelectionActive: (value: boolean) => void;
+    setFailedCaseImports: (failedCaseImports: { [caseId: string]: string[] }) => void;
 
     // sample import
     changeSampleImport: (key: string, value: any) => void;
@@ -79,6 +84,10 @@ type DataManagementStoreActions = {
     nextImportAssistentStep: () => void;
     setShowImportAssistent: (value: boolean) => void;
     resetImportAssistent: (triggerSuccessToast?: boolean) => void;
+
+    // sequence mapping
+    initSequenceMappingDialog: (focusedCase: CaseWithRelationships) => void;
+    hideSequenceMappingDialog: () => void;
 };
 
 export type DataManagementStore = DataManagementStoreState & DataManagementStoreActions;
@@ -114,6 +123,10 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
     },
     clearCaseImports: () => {
         set({ caseImports: {} });
+    },
+    failedCaseImports: {},
+    setFailedCaseImports: (failedCases: { [caseId: string]: string[] }) => {
+        set({ failedCaseImports: failedCases });
     },
     caseSelectionActive: false,
     setCaseSelectionActive: (value: boolean) => {
@@ -314,5 +327,13 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
                 variant: "success",
             });
         }
+    },
+    // sequence mapping
+    sequenceMappingDialogCase: null,
+    initSequenceMappingDialog: (focusedCase: CaseWithRelationships) => {
+        set({ sequenceMappingDialogCase: focusedCase });
+    },
+    hideSequenceMappingDialog: () => {
+        set({ sequenceMappingDialogCase: null });
     },
 }));

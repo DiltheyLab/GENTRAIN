@@ -3,23 +3,6 @@
         "viral": "Viren",
         "bacterial": "Bakterien"
     },
-    "upload": {
-        "label": {
-            "cases": "Falldaten",
-            "samples": "Sequenzdaten",
-            "contacts": "Kontaktdaten"
-        },
-        "info": {
-            "cases": null,
-            "samples": "Laden Sie hier ihre Fasta-Datei mit Sequenzdaten hoch. Es werden nur Sequenzen erfasst zu denen bereits Falldaten verfügbar sind.",
-            "contacts": null
-        },
-        "help": {
-            "cases": "Laden Sie <a href='/upload_templates/MAGS/Falldaten.csv'>hier</a> Beispieldaten herunter.",
-            "samples": "Laden Sie <a href='/upload_templates/MAGS/Sequenzdaten.fasta'>hier</a> Beispieldaten herunter.",
-            "contacts": "Laden Sie <a href='/upload_templates/MAGS/Kontaktdaten.csv'>hier</a> Beispieldaten herunter."
-        }
-    },
     "linkTypes": {
         "geneticDistance": "Genetische Distanz"
     },

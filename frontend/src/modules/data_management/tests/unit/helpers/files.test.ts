@@ -3,7 +3,7 @@ import fs from "fs";
 import {
     collectFastaIdsAndSequences,
     downloadFile,
-    formatInArray,
+    formatData,
     readFileAsText,
     readFilesAsText,
 } from "@/modules/core/helpers/files";
@@ -69,9 +69,9 @@ describe("FilesHelper", () => {
         });
     });
 
-    describe("formatInArray", async () => {
+    describe("formatData", async () => {
         it("should collect all fasta ids and sequences from fasta string", async () => {
-            const result = formatInArray({
+            const result = formatData({
                 ":file_name": ">:fasta_id_1:\n:sequence_1:\n>:fasta_id_2:\n:sequence_2:\n>:fasta_id_3:\n:sequence_3:",
                 mimetype: "fasta",
             });
@@ -84,21 +84,31 @@ describe("FilesHelper", () => {
         });
 
         it("should collect all rows from csv string", async () => {
-            const result = formatInArray({
+            const result = formatData({
                 ":file_name:":
                     ":column_1:;:column_2:;:column_3:\n:column_1_row_1:;:column_2_row_1:;:column_3_row_1:\n:column_1_row_2:;:column_2_row_2:;:column_3_row_2:",
                 mimetype: "csv",
             });
 
-            expect(result).toEqual([
-                [":column_1:", ":column_2:", ":column_3:"],
-                [":column_1_row_1:", ":column_2_row_1:", ":column_3_row_1:"],
-                [":column_1_row_2:", ":column_2_row_2:", ":column_3_row_2:"],
-            ]);
+            expect(result).toEqual({
+                columns: [":column_1:", ":column_2:", ":column_3:"],
+                rows: [
+                    {
+                        ":column_1:": ":column_1_row_1:",
+                        ":column_2:": ":column_2_row_1:",
+                        ":column_3:": ":column_3_row_1:",
+                    },
+                    {
+                        ":column_1:": ":column_1_row_2:",
+                        ":column_2:": ":column_2_row_2:",
+                        ":column_3:": ":column_3_row_2:",
+                    },
+                ],
+            });
         });
 
         it("should collect all rows from multiple fasta string", async () => {
-            const result = formatInArray([
+            const result = formatData([
                 {
                     filename: ":fasta_id_1:",
                     content:

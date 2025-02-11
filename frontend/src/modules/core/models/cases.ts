@@ -4,11 +4,9 @@ import { deleteSampleById, SampleSchema } from "./samples";
 import { PathogenSchema } from "./pathogens";
 import { OutbreakSchema } from "./outbreaks";
 import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } from "./groups";
-import { getOrCreateDistanceMatrixIdByPathogenId } from "./distance_matrices";
-import { deleteDistancesBySampleId } from "./distances";
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSequenceAnalysisById, ViralAnalysisResult } from "./sequence_analyses";
+import { ViralAnalysisResult } from "./sequence_analyses";
 import { Collection } from "dexie";
 
 export interface CaseSchema {
@@ -18,6 +16,12 @@ export interface CaseSchema {
     pathogen_id: number;
     outbreak_id: number | null;
     group_ids: Array<number>;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    infected_by: string | null;
     registered_at: Date;
     created_at?: Date;
     updated_at?: Date;
@@ -36,15 +40,40 @@ export type CaseImport = {
     fasta_id: string | null;
     groups: { name: string; category: string; remaining?: boolean }[];
     outbreak: string | null;
+    infected_by: string | null;
+    street: string | null;
+    zip_code: string | null;
+    city: string | null;
+    first_name: string | null;
+    last_name: string | null;
     registered_at: Date;
 };
+
+export const caseImportRules = z.object({
+    fasta_id: z.string().min(1).or(z.null()),
+    outbreak: z.string().or(z.null()),
+    infected_by: z.string().min(1).or(z.null()),
+    groups: z.array(z.object({ name: z.string(), category: z.string(), remaining: z.boolean().or(z.undefined()) })),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
+    registered_at: z.date(),
+});
 
 export const caseRules = z.object({
     case_id: z.string().min(1),
     fasta_id: z.string().min(1).or(z.null()),
     pathogen_id: z.number(),
     outbreak_id: z.number().or(z.null()),
+    infected_by: z.string().min(1).or(z.null()),
     group_ids: z.array(z.number()),
+    street: z.string().or(z.null()),
+    zip_code: z.string().min(5).max(5).or(z.null()),
+    city: z.string().or(z.null()),
+    first_name: z.string().or(z.null()),
+    last_name: z.string().or(z.null()),
     registered_at: z.date(),
 });
 
@@ -59,7 +88,7 @@ export const getWithRelations = async (collection: Collection, includeSequenceAn
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
@@ -108,7 +137,7 @@ export const getCasesByConditionWithRelationships = async (
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         // retrieve sample schema object
         if (currentCase.fasta_id) {
             const sample = await db.samples.where({ fasta_id: currentCase.fasta_id }).first();
@@ -159,7 +188,7 @@ export const getAllCasesForPathogenWithRelationships = async (
     const pathogen = await db.pathogens.where({ id: pathogen_id }).first();
 
     for (const currentCase of cases) {
-        let caseWithRelationships: CaseWithRelationships = currentCase;
+        const caseWithRelationships: CaseWithRelationships = currentCase;
         caseWithRelationships.pathogen = pathogen;
 
         // retrieve sample schema object
@@ -213,10 +242,12 @@ export const getCaseByFastaId = async (fastaId: string) => {
 export const getCaseWithSampleById = async (id: number) => {
     const caseById = await db.cases.get(id);
     if (!caseById) {
-        return;
+        return null;
     }
-    let caseWithRelationships: CaseWithRelationships = caseById;
-    caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
+    const caseWithRelationships: CaseWithRelationships = caseById;
+    if (caseById.fasta_id) {
+        caseWithRelationships.sample = await db.samples.where({ fasta_id: caseById.fasta_id }).first();
+    }
     return caseWithRelationships;
 };
 
@@ -225,7 +256,7 @@ export const getCasesForPathogenWithSample = async (pathogen_id: number) => {
 
     const casesWithRelationships: CaseWithRelationships[] = [];
     for (const pathogenCase of pathogenCases) {
-        let caseWithRelationships: CaseWithRelationships = pathogenCase;
+        const caseWithRelationships: CaseWithRelationships = pathogenCase;
         if (pathogenCase.fasta_id) {
             caseWithRelationships.sample = await db.samples.where({ fasta_id: pathogenCase.fasta_id }).first();
             if (caseWithRelationships.sample) {
@@ -243,26 +274,18 @@ export const deleteCaseById = async (id: number) => {
     await db.cases.delete(id);
 };
 
-export const deleteCaseByIdAndRecalculateDistances = async (id: number) => {
+export const deleteCaseWithSampleById = async (id: number) => {
     const activePathogen = useCoreStore.getState().activePathogen;
     if (activePathogen) {
         await db.transaction(
             "rw",
             [db.cases, db.samples, db.sequence_analyses, db.distances, db.distance_matrices],
             async () => {
-                const distanceMatrixId = await getOrCreateDistanceMatrixIdByPathogenId(activePathogen.id);
                 const caseWithSample = await getCaseWithSampleById(id);
-                if (caseWithSample && distanceMatrixId) {
-                    await deleteCaseById(id);
-                }
+                if (!caseWithSample) return;
+                await deleteCaseById(id);
                 if (caseWithSample?.sample) {
-                    await deleteSampleById(caseWithSample?.sample.id);
-                    if (caseWithSample?.sample.sequence_analysis_id) {
-                        await deleteSequenceAnalysisById(caseWithSample?.sample.id);
-                    }
-                }
-                if (caseWithSample?.sample) {
-                    await deleteDistancesBySampleId(caseWithSample?.sample.id);
+                    await deleteSampleById(caseWithSample.sample.id);
                 }
             }
         );

@@ -50,7 +50,7 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
                 </Button>
             );
         },
-        cell: ({ row }) => <>{row.getValue("case_id")}</>,
+        cell: ({ row }) => row.getValue("case_id"),
     },
     {
         accessorKey: "fasta_id",
@@ -95,6 +95,157 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
                     <div className="line-through">{row.original.existingCase.outbreak?.name}</div>
                 )}
                 <div>{row.original.outbreak}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "registered_at",
+        header: "Registrierungsdatum",
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase &&
+                    formatDate(row.original.existingCase.registered_at) !== formatDate(row.original.registered_at) && (
+                        <div className="line-through">{formatDate(row.original.existingCase.registered_at)}</div>
+                    )}
+                <div>{formatDate(row.original.registered_at)}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "infected_by",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Angesteckt bei
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.infected_by !== row.original.infected_by && (
+                    <div className="line-through">{row.original.existingCase.infected_by}</div>
+                )}
+                <div>{row.original.infected_by}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "last_name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Nachname
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.last_name !== row.original.last_name && (
+                    <div className="line-through">{row.original.existingCase.last_name}</div>
+                )}
+                <div>{row.original.last_name}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "first_name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Vorname
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.first_name !== row.original.first_name && (
+                    <div className="line-through">{row.original.existingCase.first_name}</div>
+                )}
+                <div>{row.original.first_name}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "city",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Ort
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.city !== row.original.city && (
+                    <div className="line-through">{row.original.existingCase.city}</div>
+                )}
+                <div>{row.original.city}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "zip_code",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    PLZ
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.zip_code !== row.original.zip_code && (
+                    <div className="line-through">{row.original.existingCase.zip_code}</div>
+                )}
+                <div>{row.original.zip_code}</div>
+            </>
+        ),
+    },
+    {
+        accessorKey: "street",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="px-0"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Straße
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <>
+                {row.original.existingCase && row.original.existingCase.street !== row.original.street && (
+                    <div className="line-through">{row.original.existingCase.street}</div>
+                )}
+                <div>{row.original.street}</div>
             </>
         ),
     },
@@ -146,18 +297,5 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
                 </>
             );
         },
-    },
-    {
-        accessorKey: "registered_at",
-        header: "Registrierungsdatum",
-        cell: ({ row }) => (
-            <>
-                {row.original.existingCase &&
-                    formatDate(row.original.existingCase.registered_at) !== formatDate(row.original.registered_at) && (
-                        <div className="line-through">{formatDate(row.original.existingCase.registered_at)}</div>
-                    )}
-                <div>{formatDate(row.original.registered_at)}</div>
-            </>
-        ),
     },
 ];
