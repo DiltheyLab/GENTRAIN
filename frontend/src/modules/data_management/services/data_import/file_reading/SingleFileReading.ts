@@ -1,4 +1,4 @@
-import { readFileAsText } from "@/modules/core/helpers/files";
+import {extractFileExtension, readFileAsText} from "@/modules/core/helpers/files";
 import { FileReadingStrategy } from "./FileReadingStrategy";
 
 export class SingleFileReading extends FileReadingStrategy {
@@ -14,6 +14,6 @@ export class SingleFileReading extends FileReadingStrategy {
 
     protected collectFileObject(): { [filename: string]: string; mimetype: string } | undefined {
         if (!this.content) return;
-        return { [this.files[0].name]: this.content, mimetype: this.files[0].type.includes("csv") ? "csv" : "fasta" };
+        return { [this.files[0].name]: this.content, mimetype: extractFileExtension(this.files[0]) };
     }
 }
