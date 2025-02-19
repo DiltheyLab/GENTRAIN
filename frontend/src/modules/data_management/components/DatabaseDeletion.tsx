@@ -2,18 +2,15 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
 import { useToast } from "@/modules/core/components/ui/UseToast";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { useNavigate } from "react-router-dom";
 
 export const DatabaseDeletion = () => {
     const { toast } = useToast();
-    const navigate = useNavigate();
 
     const deleteDatabase = async () => {
         try {
             await db.delete();
             localStorage.removeItem("core");
             localStorage.removeItem("selectedDB");
-            navigate("/");
             location.reload();
         } catch (error) {
             toast({
