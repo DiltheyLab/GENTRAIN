@@ -17,7 +17,7 @@ def valid_sequence_id_in_fasta(string):
 
 
 def valid_date(string):
-    return re.compile(r"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$").match(string)
+    return re.compile(r"^(0[1-9]|[1-9]|[12][0-9]|3[01])\.(0[1-9]|[1-9]|1[0-2])\.(\d{4})$").match(string)
 
 
 def valid_text(string):
