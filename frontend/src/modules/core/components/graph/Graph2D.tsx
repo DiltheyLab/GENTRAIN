@@ -10,6 +10,7 @@ import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
 import { Button } from "../ui/Button";
 import { useZoomToFit } from "../../hooks/graph/useZoomToFit";
 import { useManualZoomToFit } from "../../hooks/graph/useManualZoomToFit";
+import { usePostHog } from "posthog-js/react";
 
 type Graph2DProps = {
     data: GraphData;
@@ -64,7 +65,8 @@ export const Graph2D = ({
     useManualZoomToFit(zoomToFitToggle, () => handleZoomToFit());
     const forceRef = useRef<ForceGraphMethods>();
     const navigate = useNavigate();
-    useCanvasClick([() => updateSelectedNode(null)]);
+    const posthog = usePostHog();
+    useCanvasClick([() => updateSelectedNode(null), () => posthog?.capture("graph_canvas_clicked")]);
 
     // custom d3 force setup
     useEffect(() => {
@@ -250,10 +252,16 @@ export const Graph2D = ({
             }}
             onNodeClick={(node, _event) => {
                 updateSelectedNode(node as CustomNode & NodeObject);
+                posthog?.capture("graph_node_clicked", {
+                    node: node,
+                });
             }}
             onNodeDrag={handleNodeDrag}
             onNodeDragEnd={(node) => {
                 handleNodeDrag(node);
+                posthog?.capture("graph_node_draged", {
+                    node: node,
+                });
             }}
             onRenderFramePost={(ctx, _globalScale) => {
                 if (selectedNode) {

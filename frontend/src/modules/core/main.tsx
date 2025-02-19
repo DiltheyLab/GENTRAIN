@@ -16,6 +16,15 @@ import { Root } from "@/modules/core/Root";
 import { Impress } from "@/modules/core/pages/Impress";
 import { Contact } from "@/modules/core/pages/Contact";
 import { DataPrivacy } from "@/modules/core/pages/DataPrivacy";
+import { PostHogProvider } from "posthog-js/react";
+import { PostHogConfig } from "posthog-js";
+
+const postHogProviderOptions: Partial<PostHogConfig> = {
+    api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
+    session_recording: {
+        maskAllInputs: false,
+    },
+};
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -45,6 +54,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <I18nextProvider i18n={i18next}>
         <Toaster />
+        <PostHogProvider apiKey={import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY} options={postHogProviderOptions} />
         <RouterProvider router={router} />
     </I18nextProvider>
 );
