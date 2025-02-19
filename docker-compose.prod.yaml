@@ -10,13 +10,16 @@ services:
       - type: volume
         source: caddy_config
         target: /config
+      - type: bind
+        source: ./caddy/certs
+        target: /certs
     networks:
       - caddy
     entrypoint:
       - sh
       - -c
       - |
-        chown -R 65534:65534 /data /config
+        chown -R 65534:65534 /data /config /certs
   caddy:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
@@ -38,6 +41,10 @@ services:
       - type: bind
         source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
         target: /srv
+        read_only: true
+      - type: bind
+        source: ./caddy/certs
+        target: /certs
         read_only: true
       - type: volume
         source: caddy_data

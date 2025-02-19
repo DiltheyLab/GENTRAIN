@@ -25,19 +25,15 @@ class ExampleDataValidatorStrategy(ABC):
         """
         cases_csv = get_csv_reader(data.stream)
         column_names = cases_csv.fieldnames
-        if not {"Fall ID", "Sequenz ID", "Registrierungsdatum", "Ausbruch"} <= set(column_names) or len(
-                column_names) != 7:
+        if not {"Fall ID", "Registrierungsdatum"} <= set(column_names):
             raise ValidationError("Cases csv header is invalid.")
-        for flexible_column_name in column_names[4:7]:
-            if not valid_text(flexible_column_name):
-                raise ValidationError("Cases csv contains invalid flexible column values.")
         for index, row in enumerate(cases_csv):
             self.validate_cases_csv_row(index, row, column_names)
 
     def validate_contacts_example(self, data):
         contacts_csv = get_csv_reader(data.stream)
         column_names = contacts_csv.fieldnames
-        if not {"Fall ID 1", "Fall ID 2", "Typ", "Kontext"} <= set(column_names):
+        if not {"Fall ID 1", "Fall ID 2"} <= set(column_names):
             raise ValidationError("Contacts csv header is invalid.")
         for index, row in enumerate(contacts_csv):
             self.validate_contacts_csv_row(index, row)
@@ -48,11 +44,8 @@ class ExampleDataValidatorStrategy(ABC):
         sequence_id = row['Sequenz ID']
         registered_at = row['Registrierungsdatum']
         outbreak_name = row['Ausbruch']
-        flexible_column_names = column_names[4:7]
         if not valid_case_id(case_id) or not valid_sequence_id_in_csv(sequence_id) or not valid_date(
-                registered_at) or not valid_text(outbreak_name) or not valid_text(
-            row[flexible_column_names[0]]) or not valid_text(row[flexible_column_names[1]]) or not valid_text(
-            row[flexible_column_names[2]]):
+                registered_at) or not valid_text(outbreak_name):
             raise ValidationError(f"Case in row {index + 2} is invalid.")
 
     @staticmethod
