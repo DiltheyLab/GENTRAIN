@@ -14,7 +14,6 @@ import { Layout } from "./components/layout/Layout";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
 import { useTutorialStore } from "../tutorial/stores/tutorial";
-import { usePostHog } from "posthog-js/react";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
@@ -23,15 +22,6 @@ export const Root = () => {
     const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
 
     useHandlePersistedSessionResults();
-
-    const posthog = usePostHog();
-
-    useEffect(() => {
-        if (!sessionId) return;
-
-        posthog?.identify(sessionId, { sessionID: sessionId });
-        console.log("Posthog User-ID:", posthog.get_distinct_id());
-    }, [posthog, sessionId]);
 
     useEffect(() => {
         if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
