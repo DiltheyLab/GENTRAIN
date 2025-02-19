@@ -58,7 +58,7 @@ export class GraphCaseCollector {
         // filter cases which have a distance above the genetic distance threshold
         if (excludeCasesAboveGeneticDistanceThreshold && selectedOutbreak) {
             // get cases with genetic distance below threshold which are connected to a case in the selected outbreak
-            this.removeCasesBelowGeneticDistanceThreshold(selectedOutbreak, geneticDistanceThreshold);
+            await this.removeCasesBelowGeneticDistanceThreshold(selectedOutbreak, geneticDistanceThreshold);
         }
 
         // filter out cases which are not in the selected time range
