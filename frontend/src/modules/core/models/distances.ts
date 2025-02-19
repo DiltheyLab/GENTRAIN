@@ -66,12 +66,22 @@ export const deleteDistancesBySampleId = async (sample_id: number) => {
     await db.distances.where({ sample_id_1: sample_id }).or("sample_id_2").equals(sample_id).delete();
 };
 
+/* 
 export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[], threshold: number) => {
-    return await db.distances
+    return db.distances
         .where("sample_id_1")
         .anyOf(sampleIds)
         .or("sample_id_2")
         .anyOf(sampleIds)
         .and((distance) => distance.value <= threshold)
         .toArray();
+};
+ */
+
+export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[], threshold: number) => {
+    const distances = await db.distances.toArray();
+    return distances.filter((distance) => {
+        const { sample_id_1, sample_id_2, value } = distance;
+        return (sampleIds.includes(sample_id_1) || sampleIds.includes(sample_id_2)) && value <= threshold;
+    });
 };
