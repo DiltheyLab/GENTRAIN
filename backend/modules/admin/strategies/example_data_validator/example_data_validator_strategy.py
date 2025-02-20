@@ -4,8 +4,7 @@ from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
 from backend.modules.core.helpers import get_csv_reader
-from backend.modules.core.validation_rules import valid_text, valid_case_id, valid_sequence_id_in_csv, valid_date, \
-    valid_sequence_id_in_fasta, valid_sequence
+from backend.modules.core.validation_rules import valid_sequence_id_in_fasta, valid_sequence
 
 
 class ExampleDataValidatorStrategy(ABC):
