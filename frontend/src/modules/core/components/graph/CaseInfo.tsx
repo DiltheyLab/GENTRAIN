@@ -2,6 +2,7 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { X } from "lucide-react";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { CustomNode } from "../../types/graph";
+import {formatDate} from "@/modules/core/helpers/dates.ts";
 
 type CaseInfoProps = {
     selectedNode: CustomNode | null;
@@ -47,7 +48,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                 <CaseInfoItem label="Ausbruch" description={selectedNode.caseData.outbreak?.name ?? "-"} />
                 <CaseInfoItem
                     label="Registrierungsdatum"
-                    description={selectedNode.caseData.registered_at.toLocaleDateString()}
+                    description={formatDate(selectedNode.caseData.registered_at)}
                 />
                 <CaseInfoItem label="Adresse" description={formatCaseAddress()} />
                 <CaseInfoItem label="Name" description={formatCaseName()} />
