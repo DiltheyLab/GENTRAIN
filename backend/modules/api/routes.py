@@ -5,7 +5,6 @@ from backend.modules.core.models import Pathogen
 from backend.app import app
 from backend.server import redis_connection
 
-
 # Pathogens
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():
@@ -15,7 +14,6 @@ def get_all_pathogens():
 @app.route("/pathogens/<int:pathogen_id>", methods=["GET"])
 def get_pathogens(pathogen_id: int):
     return jsonify(Pathogen.query.get(pathogen_id).serialize())
-
 
 # Sequence Analyses
 @app.route(
