@@ -1,68 +1,57 @@
 cases_example_data_fields = {
-        "case_id": {
+        "Fall ID": {
             "required": True,
             "flexible": False,
-            "name": "Fall ID",
-            "pattern": r"^[A-Za-z0-9-]+$"
+            "pattern": r"^[A-Za-z0-9\-]+$"
         },
-        "registered_at": {
+        "Registrierungsdatum": {
             "required": True,
             "flexible": False,
-            "name": "Registrierungsdatum",
             "pattern": r"^(0[1-9]|[1-9]|[12][0-9]|3[01])\.(0[1-9]|[1-9]|1[0-2])\.(\d{4})$"
         },
-        "sequence_id": {
+        "Sequenz ID": {
             "required": False,
             "flexible": False,
-            "name": "Sequenz ID",
-            "pattern": r"^[A-Za-z0-9-_]*$"
+            "pattern": r"^[A-Za-z0-9\-\_]*$"
         },
-        "outbreak": {
+        "Ausbruch": {
             "required": False,
             "flexible": False,
-            "name": "Ausbruch",
-            "pattern": r"^[A-Za-z0-9äöüÄÖÜß,() ]*$"
+            "pattern": r"^[A-Za-z0-9äöüÄÖÜß\,\(\)\s]*$"
         },
-        "first_name": {
+        "Vorname": {
             "required": False,
             "flexible": False,
-            "name": "Vorname",
-            "pattern": r"^[A-Za-z]*$"
+            "pattern": r"^[A-Za-zäöüÄÖÜß\-\s]*$"
         },
-        "last_name": {
+        "Nachname": {
             "required": False,
             "flexible": False,
-            "name": "Nachname",
-            "pattern": r"^[A-Za-z]*$"
+            "pattern": r"^[A-Za-zäöüÄÖÜß\-\s]*$"
         },
-        "zip_code": {
+        "PLZ": {
             "required": False,
             "flexible": False,
-            "name": "PLZ",
             "pattern": r"^\d{5}$"
         },
-        "city": {
+        "Ort": {
             "required": False,
             "flexible": False,
-            "name": "Ort",
-            "pattern": r"^[A-Za-z- ]*$"
+            "pattern": r"^[A-Za-zäöüÄÖÜß\-\s]*$"
         },
-        "street": {
+        "Straße": {
             "required": False,
             "flexible": False,
-            "name": "Straße",
-            "pattern": r"^[0-9A-Za-z.- ]*$"
+            "pattern": r"^[0-9A-Za-zäöüÄÖÜß\.\-\s]*$"
         },
-        "infected_by": {
+        "Angesteckt bei": {
             "required": False,
             "flexible": False,
-            "name": "Angesteckt bei",
-            "pattern": r"^[A-Za-z0-9-]*$"
+            "pattern": r"^[A-Za-z0-9\-]*$"
         },
-        "category": {
+        "Kategorie": {
             "required": False,
             "flexible": True,
-            "name": "Kategorie",
-            "pattern": r"^[A-Za-z0-9- ]*$"
+            "pattern": r"^[A-Za-z0-9äöüÄÖÜß\-\s]*$"
         },
     }
