@@ -8,6 +8,7 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { LinkColorMapGenerator } from "./LinkColorMapGenerator";
+import {formatDate} from "@/modules/core/helpers/dates.ts";
 
 export const CONTACT_LINK_VALUE = -1;
 
@@ -85,7 +86,7 @@ export class GraphDataGenerator {
                 id: caseData.id,
                 caseData: caseData,
                 cluster: caseData.outbreak ? caseData.outbreak.name : i18next.t("clusterTypes.noOutbreakAssigned"),
-                registeredAt: caseData.registered_at.toLocaleDateString(),
+                registeredAt: formatDate(caseData.registered_at),
             } satisfies CustomNode;
         });
     };

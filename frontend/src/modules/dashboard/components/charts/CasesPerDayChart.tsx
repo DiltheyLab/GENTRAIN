@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/modules/cor
 import { useMemo } from "react";
 import { useDashboardStore } from "../../stores/dashboard";
 import { getUniqueClustersOfNodes, moveNoOutbreakAssignedToEnd } from "@/modules/core/helpers/graphs";
+import {formatDate} from "@/modules/core/helpers/dates.ts";
 
 type ChartData = {
     day: string;
@@ -22,7 +23,7 @@ const CasesPerDayChart = () => {
     const chartData = useMemo(() => {
         const dateMap = new Map<string, Map<string, number>>();
         for (const node of nodes) {
-            const key = node.caseData.registered_at.toLocaleDateString();
+            const key = formatDate(node.caseData.registered_at);
             // if there is no date key in the dateMap we create a key with every cluster
             if (!dateMap.has(key)) {
                 dateMap.set(key, new Map());
@@ -54,11 +55,6 @@ const CasesPerDayChart = () => {
         return chartData;
     }, [nodes]);
 
-    const formatDate = (value: string) => {
-        //eg. formats 22.8.2024 -> 22.08.24
-        return value.slice(0, value.length - 4) + value.slice(value.length - 2, value.length);
-    };
-
     return (
         <Card className="z-10">
             <CardHeader className="p-4">
@@ -75,7 +71,7 @@ const CasesPerDayChart = () => {
                                 tickLine={false}
                                 axisLine={false}
                                 tickMargin={5}
-                                tickFormatter={(value) => formatDate(value)}
+                                tickFormatter={(value) => value}
                             />
                             <YAxis tickLine={false} axisLine={false} tickMargin={5} />
                             <ChartTooltip
