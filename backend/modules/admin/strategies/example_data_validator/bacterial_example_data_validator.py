@@ -13,7 +13,7 @@ class BacterialExampleDataValidator(ExampleDataValidatorStrategy):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def validate_sequences_example(self, data):
+    def validate_sequences_example_data_fasta(self, data):
         if data.mimetype != "application/zip":
             raise ValidationError("File does not have an approved extension: zip")
         zip = ZipFile(data, "r")

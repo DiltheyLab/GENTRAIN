@@ -6,7 +6,6 @@ from backend.config import get_project_path
 from backend.modules.core.helpers import get_csv_reader
 from backend.modules.core.validation_rules import valid_text, valid_case_id, valid_sequence_id_in_csv, valid_date, \
     valid_sequence_id_in_fasta, valid_sequence
-from backend.modules.admin.validators.fields.cases_example_data import cases_example_data_fields
 
 
 class ExampleDataValidatorStrategy(ABC):
@@ -17,7 +16,7 @@ class ExampleDataValidatorStrategy(ABC):
     fasta_extensions = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"]
 
     @abstractmethod
-    def validate_sequences_example(self, data):
+    def validate_sequences_example_data_fasta(self, data):
         """Abstract method for sequence input validation."""
 
     def validate_example_data_csv(self, fields, data):

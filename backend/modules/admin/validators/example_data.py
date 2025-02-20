@@ -24,4 +24,4 @@ def sequences_example_validator(form, field):
     if not field.data:
         return
     validator = ViralExampleDataValidator() if form.type.data == "viral" else BacterialExampleDataValidator()
-    validator.validate_sequences_example(field.data)
+    validator.validate_sequences_example_data_fasta(field.data)
