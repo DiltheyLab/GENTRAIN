@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from wtforms.validators import ValidationError
 
@@ -5,6 +6,7 @@ from backend.config import get_project_path
 from backend.modules.core.helpers import get_csv_reader
 from backend.modules.core.validation_rules import valid_text, valid_case_id, valid_sequence_id_in_csv, valid_date, \
     valid_sequence_id_in_fasta, valid_sequence
+from backend.modules.admin.validators.fields.cases_example_data import cases_example_data_fields
 
 
 class ExampleDataValidatorStrategy(ABC):
@@ -18,6 +20,7 @@ class ExampleDataValidatorStrategy(ABC):
     def validate_sequences_example(self, data):
         """Abstract method for sequence input validation."""
 
+
     def validate_cases_example(self, data):
         """
         Validate cases csv file. Header must contain static column names and flexible column names (4-6) must be valid text strings.
@@ -25,8 +28,19 @@ class ExampleDataValidatorStrategy(ABC):
         """
         cases_csv = get_csv_reader(data.stream)
         column_names = cases_csv.fieldnames
-        if not {"Fall ID", "Registrierungsdatum"} <= set(column_names):
-            raise ValidationError("Cases csv header is invalid.")
+        required_column_names = {value["name"] for key, value in cases_example_data_fields.items() if value["required"]}
+        if not required_column_names <= set(column_names):
+            raise ValidationError(f"Following columns are required: {','.join(required_column_names)}")
+        allowed_static_columns = [value["name"] for key, value in cases_example_data_fields.items() if
+                                  not value["flexible"]]
+        allowed_flexible_columns = [value["name"] for key, value in cases_example_data_fields.items() if
+                                    value["flexible"]]
+        invalid_static_columns = [column_name for column_name in column_names if column_name not in allowed_static_columns]
+        invalid_columns = [column_name for column_name in invalid_static_columns if not self.validate_flexible_column_name(column_name, allowed_flexible_columns)]
+        print(invalid_columns)
+
+        if invalid_columns:
+            raise ValidationError(f"Following columns are invalid: {','.join(invalid_columns)}")
         for index, row in enumerate(cases_csv):
             self.validate_cases_csv_row(index, row, column_names)
 
@@ -65,3 +79,7 @@ class ExampleDataValidatorStrategy(ABC):
                 raise ValidationError(f"Sequence Id {row.id} is invalid.")
             if not valid_sequence(str(row.seq)):
                 raise ValidationError(f"Sequence {row.id} is invalid.")
+
+    @staticmethod
+    def validate_flexible_column_name(column_to_test, flexible_column_names):
+        return any(re.match(f"^{flexible_column_name}:[a-zA-Z0-9-]+$", column_to_test) for flexible_column_name in flexible_column_names)
