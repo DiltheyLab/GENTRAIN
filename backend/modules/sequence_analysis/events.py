@@ -58,7 +58,37 @@ def leave_bacterial():
 
 
 @sio.event
-def sequence_analysis_request(
+def viral_sequence_analysis_request(
+        pathogen_id, batch_identifier, fasta_chunk, sequence_identifiers, chunk_information
+):
+    pathogen = Pathogen.query.get(pathogen_id)
+    socket_id = request.sid
+    # validate sequence before persisting
+    fasta_chunk = fasta_chunk.replace("\r", "")
+    persist_sequence_chunk(
+        fasta_chunk, chunk_information, socket_id, batch_identifier
+    )
+    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, batch_identifier)
+    if chunk_information["total"] > len(chunk_keys):
+        return
+    fasta_content = ""
+    for key in chunk_keys:
+        fasta_content += redis_connection.get(key)
+        redis_connection.delete(key)
+    strategy = ViralSequenceAnalysis(
+        pathogen=pathogen,
+        identifier=batch_identifier,
+        sequence_identifiers=sequence_identifiers,
+        fasta_content=fasta_content,
+        socket_id=socket_id,
+    )
+    strategy.enqueue_analysis(
+        queue_viral
+    )
+
+
+@sio.event
+def bacterial_sequence_analysis_request(
         pathogen_id, sequence_identifier, sequence_chunk, chunk_information
 ):
     pathogen = Pathogen.query.get(pathogen_id)
@@ -83,23 +113,18 @@ def sequence_analysis_request(
     chunk_keys = get_persisted_sequence_chunk_keys(socket_id, sequence_identifier)
     if chunk_information["total"] > len(chunk_keys):
         return
-    sequence = ""
+    fasta_content = ""
     for key in chunk_keys:
-        sequence += redis_connection.get(key)
+        fasta_content += redis_connection.get(key)
         redis_connection.delete(key)
-    strategy = ViralSequenceAnalysis(
+    strategy = BacterialSequenceAnalysis(
         pathogen=pathogen,
-        sequence_identifier=sequence_identifier,
-        sequence=sequence,
-        socket_id=socket_id,
-    ) if pathogen.type == "viral" else BacterialSequenceAnalysis(
-        pathogen=pathogen,
-        sequence_identifier=sequence_identifier,
-        sequence=sequence,
+        identifier=sequence_identifier,
+        fasta_content=fasta_content,
         socket_id=socket_id,
     )
     strategy.enqueue_analysis(
-        queue_viral if strategy.type == "viral" else queue_bacterial
+        queue_bacterial
     )
 
 

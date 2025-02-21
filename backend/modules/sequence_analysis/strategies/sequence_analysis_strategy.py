@@ -27,9 +27,9 @@ sio = SocketIO(
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
 
-    def __init__(self, pathogen, sequence_identifier, sequence, socket_id):
-        self.sequence_identifier = sequence_identifier
-        self.sequence = sequence
+    def __init__(self, pathogen, identifier, fasta_content, socket_id):
+        self.identifier = identifier
+        self.fasta_content = fasta_content
         self.pathogen = pathogen
         self.socket_id = socket_id
         self.type = None
@@ -41,8 +41,24 @@ class SequenceAnalysisStrategy(ABC):
         """Create input and output for script based on pathogen type."""
 
     @abstractmethod
+    def emit_enqueued_event(self):
+        """Send enqueued event based on pathogen type. Viral strategy handles multiple sequences the bacterial strategy only send one event."""
+
+    @abstractmethod
+    def emit_started_event(self):
+        """Send started event based on pathogen type. Viral strategy handles multiple sequences the bacterial strategy only send one event."""
+
+    @abstractmethod
+    def emit_failed_event(self):
+        """Send failed event based on pathogen type. Viral strategy handles multiple sequences the bacterial strategy only send one event."""
+
+    @abstractmethod
     def get_response(self, result):
         """Get pydantic response model based on strategy."""
+
+    @abstractmethod
+    def persist_and_emit_response(self, result):
+        """Send analysis results to client based on pathogen type and persist in redis cache."""
 
     @abstractmethod
     def find_genomic_validation_errors(self):
@@ -57,69 +73,36 @@ class SequenceAnalysisStrategy(ABC):
             f"client:gentrain_session:{self.socket_id}"
         )
         redis_connection.hmset(
-            f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.sequence_identifier}",
+            f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
             {
                 "result": json.dumps(response),
-                "sequence_identifier": self.sequence_identifier,
-                "sequence_length": len(self.sequence),
+                "sequence_identifier": self.identifier,
+                "sequence_length": len(self.fasta_content),
             },
         )
         redis_connection.expire(
-            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.sequence_identifier}",
+            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
             time=1800,
         )
 
     def execute(self):
         """Run strategy actions."""
         try:
-            sio.emit(
-                "sequence_analysis_started",
-                self.sequence_identifier,
-                to=f"{self.type}_{self.socket_id}",
-            )
+            self.emit_started_event()
             genomic_errors = self.find_genomic_validation_errors()
             if genomic_errors and len(genomic_errors) > 0:
                 raise GenomicErrorException
             self.create_input_and_output_files()
             result = self.run_analysis()
-            response = self.get_response(result)
-            self.persist_result(response)
-            sio.emit(
-                "sequence_analysis_response",
-                {
-                    "status": "success",
-                    "result": response,
-                    "sequence_identifier": self.sequence_identifier,
-                    "sequence_length": len(self.sequence),
-                },
-                to=f"{self.type}_{self.socket_id}",
-            )
+            self.persist_and_emit_response(result)
             return result
         except SequenceAnalysisFailedException as e:
             logging.exception(e)
-            sio.emit(
-                "sequence_analysis_response",
-                {
-                    "status": "error",
-                    "sequence_identifier": self.sequence_identifier,
-                },
-                to=f"{self.type}_{self.socket_id}",
-            )
+            self.emit_failed_event()
         except Exception as e:
             logging.exception(e)
-            sio.emit(
-                "sequence_analysis_response",
-                {
-                    "status": "error",
-                    "sequence_identifier": self.sequence_identifier,
-                },
-                to=f"{self.type}_{self.socket_id}",
-            )
+            self.emit_failed_event()
 
     def enqueue_analysis(self, queue):
         queue.enqueue(self.execute, result_ttl=0, job_timeout=600)
-        sio.emit(
-            "sequence_analysis_enqueued",
-            self.sequence_identifier,
-            to=f"{self.type}_{self.socket_id}",
-        )
+        self.emit_enqueued_event()

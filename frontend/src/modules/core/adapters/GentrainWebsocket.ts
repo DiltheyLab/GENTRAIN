@@ -1,6 +1,6 @@
-import { io } from "socket.io-client";
-import { useCoreStore } from "../stores/core";
-import { GentrainException } from "../exceptions/GentrainException";
+import {io} from "socket.io-client";
+import {useCoreStore} from "../stores/core";
+import {GentrainException} from "../exceptions/GentrainException";
 
 type WebsocketEvent = "sequence_analysis_response" | "sequence_analysis_enqueued" | "sequence_analysis_started";
 
@@ -49,9 +49,7 @@ export class GentrainWebsocket {
         this.client.emit(`leave_${pathogenTypeName}`);
     }
 
-    // Message Emit Management
-
-    public async emitSequenceAnalysis(pathogenId: number, sequenceIdentifier: string, sequence: string) {
+    public bacterialSequenceAnalysisEmit(pathogenId: number, sequenceIdentifier: string, sequence: string) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
@@ -61,8 +59,9 @@ export class GentrainWebsocket {
                 total: sequenceChunks.length,
                 index: parseInt(index),
             };
+
             this.client.emit(
-                "sequence_analysis_request",
+                "bacterial_sequence_analysis_request",
                 pathogenId,
                 sequenceIdentifier,
                 sequenceChunks[index],
@@ -71,8 +70,28 @@ export class GentrainWebsocket {
         }
     }
 
-    // Listener Management
+    public viralSequenceAnalysisEmit(pathogenId: number, batchIdentifier: string, fastaString: string, sequenceIdentifiers: string[]) {
+        if (!this.client) {
+            throw new GentrainException("InvalidWebsocketClient");
+        }
+        const fastaChunks = fastaString.match(/(.|[\r\n]){1,500000}/g) ?? [];
+        for (const index in fastaChunks) {
+            const chunkInformation = {
+                total: fastaChunks.length,
+                index: parseInt(index),
+            };
+            this.client.emit(
+                "viral_sequence_analysis_request",
+                pathogenId,
+                batchIdentifier,
+                fastaChunks[index],
+                sequenceIdentifiers,
+                chunkInformation
+            );
+        }
+    }
 
+    // Listener Management
     public async listenForEvent(event: WebsocketEvent, callback: (data: any) => void) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
