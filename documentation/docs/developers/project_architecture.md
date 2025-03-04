@@ -22,8 +22,8 @@ architecture-beta
     service worker(server)[Worker] in denbi
     service admin(internet)[Admin] in denbi
     service db(database)[PostgreSQL Database] in denbi
-    service viral_queue(server)[Viral Queue] in denbi
-    service bacterial_queue(server)[Bacterial Queue] in denbi
+    service viral_queue(server)[Viral Redis Queue] in denbi
+    service bacterial_queue(server)[Bacterial Redis Queue] in denbi
 
     group browser(internet)[Local Browser]
     service indexed_db(database)[IndexedDB] in browser
