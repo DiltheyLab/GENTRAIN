@@ -91,16 +91,16 @@ def init_sequence_analysis_job(socket_id, pathogen, identifier, fasta_content, s
         sequence_identifiers -- List of sequence identifiers in case of viral analyses
     """
     strategy = ViralSequenceAnalysis(
-        pathogen,
-        identifier,
-        sequence_identifiers,
-        fasta_content,
-        socket_id,
+        pathogen=pathogen,
+        identifier=identifier,
+        sequence_identifiers=sequence_identifiers,
+        fasta_content=fasta_content,
+        socket_id=socket_id,
     ) if pathogen.type == "viral" else BacterialSequenceAnalysis(
-        pathogen,
-        identifier,
-        fasta_content,
-        socket_id,
+        pathogen=pathogen,
+        identifier=identifier,
+        fasta_content=fasta_content,
+        socket_id=socket_id,
     )
     strategy.enqueue_analysis(
         queue_viral if pathogen.type == "viral" else queue_bacterial,
