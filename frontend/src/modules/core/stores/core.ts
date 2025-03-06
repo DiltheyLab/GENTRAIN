@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
-import gentrainWebsocketInstance from "../adapters/GentrainWebsocket";
 import { createSessionId } from "../helpers/session";
 import { persist } from "zustand/middleware";
 
