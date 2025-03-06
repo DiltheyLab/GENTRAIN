@@ -38,7 +38,6 @@ export const useCoreStore = create<CoreStore>()(
             initSession: () => {
                 const sessionId = createSessionId();
                 set({ sessionId: sessionId });
-                gentrainWebsocketInstance.initSession(sessionId);
             },
             updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
                 if (!pathogen) {
