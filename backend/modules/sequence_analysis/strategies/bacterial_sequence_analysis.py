@@ -1,3 +1,4 @@
+import json
 import shutil
 import time
 import pathlib
@@ -141,7 +142,6 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "status": "success",
                 "result": response,
                 "sequence_identifier": self.identifier,
-                "sequence_length": len(self.fasta_content),
             },
             to=f"{self.type}_{self.socket_id}",
         )

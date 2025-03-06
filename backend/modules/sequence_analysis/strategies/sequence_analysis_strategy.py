@@ -26,6 +26,8 @@ sio = SocketIO(
 
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
+    redis_connection = redis_connection
+    sio = sio
 
     def __init__(self, pathogen, identifier, fasta_content, socket_id):
         self.identifier = identifier
@@ -35,6 +37,7 @@ class SequenceAnalysisStrategy(ABC):
         self.type = None
         self.input = None
         self.output = None
+        self.sequences = {}
 
     @abstractmethod
     def create_input_and_output_files(self):
@@ -69,18 +72,17 @@ class SequenceAnalysisStrategy(ABC):
         """Runs the sequence analysing script based on the pathogen."""
 
     def persist_result(self, response):
-        gentrain_session_id = redis_connection.get(
+        gentrain_session_id = self.redis_connection.get(
             f"client:gentrain_session:{self.socket_id}"
         )
-        redis_connection.hmset(
+        self.redis_connection.hmset(
             f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
             {
                 "result": json.dumps(response),
-                "sequence_identifier": self.identifier,
-                "sequence_length": len(self.fasta_content),
-            },
+                "identifier": self.identifier,
+            }
         )
-        redis_connection.expire(
+        self.redis_connection.expire(
             name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
             time=1800,
         )

@@ -31,7 +31,6 @@ export abstract class SequenceAnalysisStrategy {
     public abstract createSampleAndSequenceAnalysis(
         fastaId: string,
         sequenceAnalysisResult: object,
-        sequenceLength?: number
     ): Promise<void>;
 
     public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
@@ -138,7 +137,7 @@ export abstract class SequenceAnalysisStrategy {
     protected async sequenceAnalysisResponseActions(data: any) {
         const fastaId = this.fastaIdsToAnalyse[data.sequence_identifier];
         if (data.status === "success") {
-            await this.handleSuccessfulAnalysis(fastaId, data.result, data.sequence_length);
+            await this.handleSuccessfulAnalysis(fastaId, data.result);
         }
         if (data.status === "error") {
             this.handleUnsuccessfulAnalysis(fastaId);
@@ -160,8 +159,8 @@ export abstract class SequenceAnalysisStrategy {
         this.continueIfAllAnalysesAreDone();
     }
 
-    private handleSuccessfulAnalysis = async (fastaId: string, result: any, sequence_length: number) => {
-        await this.createSampleAndSequenceAnalysis(fastaId, result, sequence_length);
+    private handleSuccessfulAnalysis = async (fastaId: string, result: any) => {
+        await this.createSampleAndSequenceAnalysis(fastaId, result);
         useDataManagementStore.getState().changeSampleImport(fastaId, {status: "finished"});
     };
 
@@ -218,10 +217,10 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     private syncPersistedResultsWithDb = async (
-        results: { result: object; sequence_identifier: string; sequence_length: number }[]
+        results: { result: object; identifier: string; sequence_length: number }[]
     ) => {
         for (const result of results) {
-            const sequenceIdentifier = await db.sequence_identifiers.get(result.sequence_identifier);
+            const sequenceIdentifier = await db.sequence_identifiers.get(result.identifier);
             if (!sequenceIdentifier) {
                 continue;
             }
@@ -229,9 +228,8 @@ export abstract class SequenceAnalysisStrategy {
             await this.createSampleAndSequenceAnalysis(
                 sequenceIdentifier.fasta_id,
                 result.result,
-                result.sequence_length
             );
-            db.sequence_identifiers.delete(result.sequence_identifier);
+            db.sequence_identifiers.delete(result.identifier);
         }
     };
 }

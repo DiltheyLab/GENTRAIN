@@ -20,7 +20,6 @@ from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy imp
     SequenceAnalysisStrategy, sio,
 )
 
-
 class ViralSequenceAnalysis(SequenceAnalysisStrategy):
     """Concrete analysis strategy for viral sequences."""
 
@@ -33,10 +32,10 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""
         try:
-            sequences = [str(entry.seq) for entry in SeqIO.parse(StringIO(self.fasta_content), "fasta")]
+            self.sequences = {entry.id: str(entry.seq) for entry in SeqIO.parse(StringIO(self.fasta_content), "fasta")}
             illegal_characters = []
-            for sequence in sequences:
-                illegal_characters = illegal_characters + re.findall("[^ATGCRYSWKMBDHVNXU]+", sequence)
+            for key in self.sequences:
+                illegal_characters = illegal_characters + re.findall("[^ATGCRYSWKMBDHVNXU]+", self.sequences[key])
             return illegal_characters
         except Exception as e:
             for sequence_identifier in self.sequence_identifiers:
@@ -93,6 +92,23 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 pathlib.Path(self.output).unlink(missing_ok=True)
                 return content
 
+    def persist_result(self, response):
+        gentrain_session_id = self.redis_connection.get(
+            f"client:gentrain_session:{self.socket_id}"
+        )
+        self.redis_connection.hmset(
+            f"client:results:{gentrain_session_id}:{self.pathogen.id}:{response['sequence_identifier']}",
+            {
+                "result": json.dumps(response),
+                "identifier": response["sequence_identifier"],
+            }
+        )
+        self.redis_connection.expire(
+            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
+            time=1800,
+        )
+
+
     def persist_and_emit_response(self, result):
         for index, sequence_result in enumerate(result):
             response = self.get_response(sequence_result)
@@ -102,8 +118,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 {
                     "status": "success",
                     "result": response,
-                    "sequence_identifier": sequence_result["seqName"],
-                    "sequence_length": len(self.fasta_content),
+                    "sequence_identifier": response["sequence_identifier"],
                 },
                 to=f"{self.type}_{self.socket_id}",
             )
@@ -114,6 +129,8 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         # Nextclade_pango does only exist for sequences of SARS-CoV-2
         nextclade_version = popen("nextclade -V").read().replace("nextclade", "").replace("\n", "").strip()
         return ViralSequenceAnalysisResponseModel(
+            sequence_identifier=result["seqName"],
+            sequence_length=len(self.sequences[result["seqName"]]),
             nextclade_version=nextclade_version,
             lineage=f"{result['clade']}{', ' + result['customNodeAttributes']['Nextclade_pango'] if 'Nextclade_pango' in result['customNodeAttributes'] else ''}" if "clade" in result else None,
             analysis_schema=self.pathogen.scheme_name,

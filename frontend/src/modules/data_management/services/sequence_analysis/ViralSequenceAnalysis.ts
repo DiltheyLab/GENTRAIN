@@ -4,12 +4,11 @@ import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket
 import {v4 as uuidv4} from "uuid";
 
 export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
-    protected parallelAnalysesThreshold = 10000;
+    protected parallelAnalysesThreshold = 100;
 
     public createSampleAndSequenceAnalysis = async (
         fastaId: string,
         sequenceAnalysisResult: any,
-        sequenceLength: number
     ) => {
         const sequenceAnalysisId = await db.sequence_analyses.add({
             schema: sequenceAnalysisResult["analysis_schema"],
@@ -27,7 +26,7 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         });
         await db.samples.add({
             fasta_id: fastaId,
-            sequence_length: sequenceLength,
+            sequence_length: sequenceAnalysisResult["sequence_length"],
             lineage: sequenceAnalysisResult["lineage"],
             n_count: sequenceAnalysisResult["n_count"],
             sequence_analysis_id: sequenceAnalysisId,

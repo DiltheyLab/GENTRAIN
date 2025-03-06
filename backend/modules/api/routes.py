@@ -5,6 +5,7 @@ from backend.modules.core.models import Pathogen
 from backend.app import app
 from backend.server import redis_connection
 
+
 # Pathogens
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():
@@ -15,6 +16,7 @@ def get_all_pathogens():
 def get_pathogens(pathogen_id: int):
     return jsonify(Pathogen.query.get(pathogen_id).serialize())
 
+
 # Sequence Analyses
 @app.route(
     "/sequence_analyses/sessions/<string:session_id>/pathogens/<int:pathogen_id>",
@@ -23,13 +25,14 @@ def get_pathogens(pathogen_id: int):
 def get_results_for_session_and_pathogen(session_id: str, pathogen_id: int):
     results = []
     for key in redis_connection.scan_iter(
-        f"client:results:{session_id}:{pathogen_id}:*"
+            f"client:results:{session_id}:{pathogen_id}:*"
     ):
         result = redis_connection.hgetall(key)
         all_keys = list(result.keys())
         redis_connection.hdel(key, *all_keys)
         result["result"] = json.loads(result["result"])
-        result["sequence_length"] = int(result["sequence_length"])
+        if "sequence_length" in result["result"]:
+            result["sequence_length"] = int(result["result"]["sequence_length"])
         results.append(result)
     return jsonify(results)
 
@@ -39,7 +42,7 @@ def get_results_for_session_and_pathogen(session_id: str, pathogen_id: int):
     methods=["DELETE"],
 )
 def delete_sequence_result_for_session_and_pathogen(
-    session_id: str, pathogen_id: int, sequence_identifier: str
+        session_id: str, pathogen_id: int, sequence_identifier: str
 ):
     all_keys = list(
         redis_connection.hgetall(
