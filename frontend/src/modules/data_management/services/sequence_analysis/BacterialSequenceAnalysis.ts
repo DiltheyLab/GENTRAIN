@@ -27,7 +27,7 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
             this.finishedFastaIds.length + this.parallelAnalysesThreshold,
             Object.keys(this.fastaIdsToAnalyse).length
         );
-        // always send max. 10 message via websockt channel to regulate user inputs
+        // always send max. 10 message via websocket channel to regulate user inputs
         for (let i = this.finishedFastaIds.length; i < socketMessageLimit; i++) {
             const fastaIdToAnalyse = this.fastaIdsToAnalyse[Object.keys(this.fastaIdsToAnalyse)[i]];
             gentrainWebsocketInstance.bacterialSequenceAnalysisEmit(

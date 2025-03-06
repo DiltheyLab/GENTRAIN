@@ -1,0 +1,82 @@
+from backend.server import redis_connection
+
+
+def persist_fasta_chunk(
+        fasta_chunk, chunk_information, socket_id, identifier
+):
+    """
+    Write a fasta chunk into the redis cache.
+
+    Parameters:
+        fasta_chunk -- Chunk of a fasta file in case viral analyses and a chunk of a sequence in case of bacterial analyses
+        chunk_information -- Dictionary containing information about the index of the transferred chunk
+            and the total amount of chunks relating to the current analysis
+        socket_id -- Id of the websocket connection
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+    """
+    redis_connection.set(
+        name=f"chunks:{socket_id}:{identifier}:{chunk_information['index']}",
+        value=fasta_chunk,
+    )
+    redis_connection.expire(
+        name=f"chunks:{socket_id}:{identifier}:{chunk_information['index']}",
+        time=60,
+    )
+
+
+def get_persisted_fasta_chunk_keys(socket_id, identifier):
+    """
+    Get all keys of persisted fasta chunks for the provided identifier.
+
+    Parameters:
+        socket_id --  Id of the websocket connection
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+    """
+    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{identifier}:*")
+    chunk_keys.sort()
+    return chunk_keys
+
+
+def remember_session_id(socket_id, gentrain_session_id):
+    """
+    Map the provided session id to a socket id.
+
+    Parameters:
+        socket_id --  Id of the websocket connection
+        gentrain_session_id -- Session id created in frontend and used to retrieve cached results in case of a connection
+            interruption
+    """
+    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
+    redis_connection.expire(
+        name=f"client:gentrain_session:{socket_id}",
+        time=3600,
+    )
+
+
+def get_merged_fasta_content_if_complete(socket_id, identifier, chunk_information):
+    """
+   Merge entire fasta file content into a string if all chunks were successfully transferred.
+
+    Parameters:
+        socket_id -- Id of the websocket connection
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+        chunk_information -- Dictionary containing information about the index of the transferred chunk
+            and the total amount of chunks relating to the current analysis
+    """
+    chunk_keys = get_persisted_fasta_chunk_keys(socket_id, identifier)
+    if chunk_information["total"] > len(chunk_keys):
+        return
+    fasta_content = ""
+    for index, key in enumerate(chunk_keys):
+        fasta_chunk = redis_connection.get(key)
+        # if messages arrive simultaneously two processes might try to retrieve the entire fasta content from redis cache
+        # in this case we interrupt the latter one
+        if not fasta_chunk:
+            return
+        # delete the key allocated to the fasta chunk from redis
+        redis_connection.delete(key)
+        fasta_content += fasta_chunk
+    return fasta_content

@@ -1,4 +1,5 @@
 import json
+import re
 import shutil
 import time
 import pathlib
@@ -9,7 +10,7 @@ from subprocess import Popen
 
 from werkzeug.utils import secure_filename
 
-from backend.modules.core.exceptions import SequenceAnalysisFailedException
+from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
 from backend.config import get_project_path
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy, sio,
@@ -26,7 +27,20 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""
-        return []
+        try:
+            illegal_characters = []
+            illegal_characters = illegal_characters + re.findall("[^ATGCRYSWKMBDHVNXU>\n]+", self.fasta_content)
+            return illegal_characters
+        except Exception as e:
+            sio.emit(
+                "sequence_analysis_response",
+                {
+                    "status": "error",
+                    "sequence_identifier": self.identifier,
+                },
+                to=f"{self.type}_{self.socket_id}",
+            )
+            raise GenomicErrorException
 
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
@@ -150,7 +164,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         """Return a response model for bacterial analysises."""
         # retrieve the installed chewBBACA version (gentrain-worker and gentrain-backend versions are synced)
         chewBBACCA_version = popen("chewBBACA.py -v").read().replace("chewBBACA version:", "").replace("\n", "").strip()
-        return [BacterialSequenceAnalysisResponseModel(
+        return BacterialSequenceAnalysisResponseModel(
             chewBACCA_version=chewBBACCA_version,
             analysis_schema=self.pathogen.scheme_name,
             allele_ids=result["allele_ids"],
@@ -158,7 +172,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             undeterminable_gen_count=result["undeterminable_gen_count"],
             contig_count=result["contig_count"],
             first_contig_length=result["first_contig_length"],
-        ).model_dump()]
+        ).model_dump()
 
     def emit_enqueued_event(self):
         sio.emit(

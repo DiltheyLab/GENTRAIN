@@ -55,13 +55,13 @@ export abstract class SequenceAnalysisStrategy {
         this.sampleData = sampleData;
     };
 
-    public execute = () => {
+    public execute = async () => {
         if (!this.sampleData) {
             console.error("No sample data was provided. Run setSampleData(<sample_data>) first.");
             return;
         }
         useDataManagementStore.getState().setSequenceAnalysisRunning(true);
-        this.joinRoomAndRunAnalysis();
+        await this.joinRoomAndRunAnalysis();
         this.handleAnalysisEvents();
     };
 
