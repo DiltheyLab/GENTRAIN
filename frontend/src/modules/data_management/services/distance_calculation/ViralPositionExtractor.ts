@@ -1,9 +1,10 @@
-import { referenceString } from "@/data/referenceString";
-import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
+import {referenceString} from "@/data/referenceString";
+import {ViralAnalysisResult} from "@/modules/core/models/sequence_analyses";
 
 export interface MutationsSchema {
     [type: string]: string;
 }
+
 export interface PositionsSchema {
     [position: number]: MutationsSchema;
 }

@@ -1,9 +1,11 @@
-import { referenceString } from "@/data/referenceString";
+import {referenceString} from "@/data/referenceString";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
-import { SampleSchema } from "@/modules/core/models/samples";
-import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
-import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
-import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
+import {SampleSchema} from "@/modules/core/models/samples";
+import {ViralAnalysisResult} from "@/modules/core/models/sequence_analyses";
+import {
+    DistanceCalculationStrategy
+} from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
+import {ViralDistanceExtractor} from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
 import {
     ViralPositionExtractor,
     MutationsSchema,
@@ -24,8 +26,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         let sequence2 = "";
         for (let baseIndex = 0; baseIndex < referenceString.length; baseIndex++) {
             const refChar = referenceString[baseIndex];
-            let mutations1 = positionsSample1[baseIndex];
-            let mutations2 = positionsSample2[baseIndex];
+            const mutations1 = positionsSample1[baseIndex];
+            const mutations2 = positionsSample2[baseIndex];
             let additions1 = "";
             let additions2 = "";
             // the current reference char is added if no mutations for the current position exist
@@ -45,15 +47,16 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                     additions2,
                     refChar
                 );
+            } else {
+                [additions1, additions2] = this.handleInsertionsWithoutAlignment(
+                    mutations1,
+                    mutations2,
+                    additions1,
+                    additions2,
+                    refChar
+                );
             }
-            // if mutations do not contain differing insertions we can safely handle insertions without aligning them
-            [additions1, additions2] = this.handleInsertionsWithoutAlignment(
-                mutations1,
-                mutations2,
-                additions1,
-                additions2,
-                refChar
-            );
+
 
             // all collected additions are concatenated to the current sequence states
             sequence1 += additions1;
@@ -197,8 +200,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
             return [additions1, additions2];
         }
         if (mutations1 && mutations2 && "ins" in mutations1 && "ins" in mutations2) {
-            let insertion1 = mutations1.ins;
-            let insertion2 = mutations2.ins;
+            const insertion1 = mutations1.ins;
+            const insertion2 = mutations2.ins;
             additions1 += Object.keys(mutations1).length > 1 ? insertion1 : refChar + additions1 + insertion1;
             additions2 += Object.keys(mutations2).length > 1 ? insertion2 : refChar + additions2 + insertion2;
             return [additions1, additions2];

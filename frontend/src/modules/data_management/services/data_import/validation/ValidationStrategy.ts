@@ -37,6 +37,7 @@ export abstract class ValidationStrategy {
 
             for (const requiredColumnName of columnDefinitions[requiredColumn].names) {
                 found = this.header!.includes(requiredColumnName);
+
                 if (found) break;
             }
             return found;

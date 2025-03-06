@@ -3,125 +3,105 @@ from flask import request
 from flask_socketio import leave_room, join_room
 
 from backend.modules.core.models import Pathogen
+from backend.modules.sequence_analysis.redis import get_merged_fasta_content_if_complete, persist_fasta_chunk, \
+    remember_session_id
 from backend.modules.sequence_analysis.strategies import ViralSequenceAnalysis, BacterialSequenceAnalysis
 from backend.server import sio, redis_connection, queue_viral, queue_bacterial
 
 
 @sio.event
-def init_gentrain_session(gentrain_session_id):
-    socket_id = request.sid
-    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
-    redis_connection.expire(
-        name=f"client:gentrain_session:{socket_id}",
-        time=86400,
-    )
+def join_sequence_analysis_room(gentrain_session_id, pathogen_type):
+    """
+    Join a sequence analysis room and remember the session id by mapping it to the connections socket id.
 
-
-@sio.event
-def join_viral(gentrain_session_id):
+    gentrain_session_id: Session id created in frontend and used to retrieve cached results in case of a connection
+        interruption
+    pathogen_type: Type of the selected pathogen (viral | bacterial)
+    """
     socket_id = request.sid
-    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
-    join_room(f"viral_{socket_id}")
+    remember_session_id(socket_id, gentrain_session_id)
+    join_room(f"{pathogen_type}_{socket_id}")
     sio.emit(
-        "viral_room_created",
-        f"viral_{socket_id}",
-        to=f"viral_{socket_id}",
+        f"{pathogen_type}_room_created",
+        f"{pathogen_type}_{socket_id}",
+        to=f"{pathogen_type}_{socket_id}",
     )
-    print(f"viral_{socket_id} created")
 
 
 @sio.event
-def join_bacterial(gentrain_session_id):
+def leave_sequence_analysis_room(pathogen_type):
+    """
+    Leave a sequence analysis room.
+    Parameters:
+        pathogen_type -- Type of the selected pathogen (viral | bacterial)
+    """
     socket_id = request.sid
-    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
-    join_room(f"bacterial_{socket_id}")
-    sio.emit(
-        "bacterial_room_created",
-        f"bacterial_{socket_id}",
-        to=f"bacterial_{socket_id}",
-    )
-    print(f"bacterial_{socket_id} created")
+    leave_room(f"{pathogen_type}_{socket_id}")
+    # delete socket-session-mapping from redis
+    redis_connection.delete(f"client:gentrain_session:{socket_id}")
 
 
 @sio.event
-def leave_viral():
-    socket_id = request.sid
-    leave_room(f"viral_{socket_id}")
-    print(f"viral_{socket_id} closed")
-
-
-@sio.event
-def leave_bacterial():
-    socket_id = request.sid
-    leave_room(f"bacterial_{socket_id}")
-    print(f"bacterial_{socket_id} closed")
-
-
-@sio.event
-def sequence_analysis_request(
-        pathogen_id, sequence_identifier, sequence_chunk, chunk_information
+def sequence_analysis(
+        pathogen_id, identifier, fasta_chunk, chunk_information, sequence_identifiers=None,
 ):
+    """
+    Collect fasta chunks for sequence analysis and init the analysis when all chunks were successfully transferred.
+
+    Parameters:
+        pathogen_id -- Postgres db id of the selected pathogen
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+        fasta_chunk -- Chunk of a fasta file in case viral analyses and a chunk of a sequence in case of bacterial analyses
+        chunk_information -- Dictionary containing information about the index of the transferred chunk
+            and the total amount of chunks relating to the current analysis
+        sequence_identifiers -- List of sequence identifiers in case of viral analyses
+    """
     pathogen = Pathogen.query.get(pathogen_id)
     socket_id = request.sid
-    # validate sequence before persisting
-    sequence_chunk = sequence_chunk.replace("\r", "")
-    sequence_chunk = re.sub(r"\>(.*?)\n", ">\n", sequence_chunk)
-    genetic_errors = get_genetic_errors(sequence_chunk)
-    if len(genetic_errors) > 0:
-        sio.emit(
-            "sequence_analysis_response",
-            {
-                "status": "error",
-                "sequence_identifier": sequence_identifier,
-            },
-            to=f"{pathogen.type}_{socket_id}",
-        )
-        return
-    persist_sequence_chunk(
-        sequence_chunk, chunk_information, socket_id, sequence_identifier
+    fasta_chunk = fasta_chunk.replace("\r", "")
+
+    # ensure pseudonymization of bacterial fasta assemblies by removing potentially included ids in headers
+    if pathogen.type == "bacterial":
+        fasta_chunk = re.sub(r"\>(.*?)\n", ">\n", fasta_chunk)
+    persist_fasta_chunk(
+        fasta_chunk, chunk_information, socket_id, identifier
     )
-    chunk_keys = get_persisted_sequence_chunk_keys(socket_id, sequence_identifier)
-    if chunk_information["total"] > len(chunk_keys):
+
+    fasta_content = get_merged_fasta_content_if_complete(socket_id, identifier, chunk_information)
+
+    # prevent initialization of sequence analysis job in case the fasta content is not yet complete
+    if not fasta_content:
         return
-    sequence = ""
-    for key in chunk_keys:
-        sequence += redis_connection.get(key)
-        redis_connection.delete(key)
+
+    init_sequence_analysis_job(socket_id, pathogen, identifier, fasta_content, sequence_identifiers)
+
+
+def init_sequence_analysis_job(socket_id, pathogen, identifier, fasta_content, sequence_identifiers=None):
+    """
+    Instantiate a sequence analysis strategy depending on the type of the selected pathogen and enqueue a job.
+
+    Parameters:
+        socket_id -- Id of the websocket connection
+        pathogen -- Selected pathogen
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+        fasta_content -- Complete fasta content containing multiple sequences for viral analyses
+            and a single sequence assembly for bacterial analyses
+        sequence_identifiers -- List of sequence identifiers in case of viral analyses
+    """
     strategy = ViralSequenceAnalysis(
-        pathogen=pathogen,
-        sequence_identifier=sequence_identifier,
-        sequence=sequence,
-        socket_id=socket_id,
+        pathogen,
+        identifier,
+        sequence_identifiers,
+        fasta_content,
+        socket_id,
     ) if pathogen.type == "viral" else BacterialSequenceAnalysis(
-        pathogen=pathogen,
-        sequence_identifier=sequence_identifier,
-        sequence=sequence,
-        socket_id=socket_id,
+        pathogen,
+        identifier,
+        fasta_content,
+        socket_id,
     )
     strategy.enqueue_analysis(
-        queue_viral if strategy.type == "viral" else queue_bacterial
+        queue_viral if pathogen.type == "viral" else queue_bacterial,
     )
-
-
-def get_genetic_errors(sequence_chunk):
-    """Validate genetic data."""
-    return re.findall(r"[^ATGCRYSWKMBDHVNXU\n\>]+", sequence_chunk)
-
-
-def persist_sequence_chunk(
-        sequence_chunk, chunk_information, socket_id, sequence_identifier
-):
-    redis_connection.set(
-        name=f"chunks:{socket_id}:{sequence_identifier}:{chunk_information['index']}",
-        value=sequence_chunk,
-    )
-    redis_connection.expire(
-        name=f"chunks:{socket_id}:{sequence_identifier}:{chunk_information['index']}",
-        time=60,
-    )
-
-
-def get_persisted_sequence_chunk_keys(socket_id, sequence_identifier):
-    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{sequence_identifier}:*")
-    chunk_keys.sort()
-    return chunk_keys
