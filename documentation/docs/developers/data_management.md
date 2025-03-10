@@ -74,6 +74,49 @@ Nextclade CLI</a>.
 Nextclade provides mutation objects consisting of snps, insertions, deletions, Ns and nonACGTN-characters.
 These mutation objects enable us to calculate genetic distances without persisting whole sequences.
 
+#### Viral Results
+
+NextClade provides a range of information about each analyzed sample. This information can be stored in different file formats, in our case we receive a JSON object. This object contains information about the recognised clade, quality measures of the sequences and mutation information.
+
+Recognised substitutions, insertions, deletions, missings and nonACGTNs of the sequence are stored in the browser of the user. This information enables us to reconstruct sequences without obtaining the entire character string, taking into account the alignment of the sequences.
+
+```json title="Example Viral Result"
+{
+    substitutions: [
+        {pos: 209, refNuc: 'G', qryNuc: 'T'},
+        {pos: 240, refNuc: 'C', qryNuc: 'T'},
+        {pos: 3036, refNuc: 'C', qryNuc: 'T'},
+        ...
+        {pos: 29741, refNuc: 'G', qryNuc: 'T'}
+    ],
+    insertions: [
+        {pos: 18099, qryNuc: 'TCG'},
+        {pos: 29741, qryNuc: 'ACGT'}
+    ],
+    deletions: [
+        {
+            range: {begin: 28247, end: 28253}
+        }
+    ],
+    missings: [
+        {
+            character: 'N',
+            range: {begin: 0, end: 54}
+        },
+        {
+            character: 'N',
+            range: {begin: 6839, end: 6840}
+        }
+    ],
+    nonACGTNs: [
+        {
+            character: 'Y',
+            range: {begin: 4504, end: 4505}
+        },
+    ]
+}
+```
+
 ### Bacterial Sequence Analysis
 
 #### Allele Calling
@@ -86,6 +129,20 @@ service</a>
 which provides mappings between each gene and the corresponding
 allele in the sequences. Based on these mappings, we then calculate genetic distances by differentiating between the
 allele sets of two sequences.
+
+#### Results
+
+Bacterial sequence analyses result in mappings between genes and allele sequences of the corresponding sample (Gene Id: Allele Sequence). In addition, these allele sequences are hashed to minify sequence length and ensure scheme independence.
+
+```json title="Example Bacterial Result"
+{
+    SAUR0001: "d3627b0e335350fc61d130d50e6516b2",
+    SAUR0002: "34d94e7230113031e160b5880f0ed5af",
+    SAUR0003: "ddf68eaae82c14021c4f44f73ac0789f",
+    ...
+    SAUR3016: "e25053695fa8a872d478c73aba78c26a"
+}
+```
 
 ### UML Sequence Diagram
 
@@ -126,7 +183,35 @@ sequenceDiagram
 
 ## Distance Calculation
 
-WIP
+This step aims to determine a distance between the individual samples of the imported data.
+
+### Bacterial Distance Calculation
+
+For bacterial samples, this process is quite trivial, as only the allele hashes per gene need to be compared. Different allele hashes lead to a distance increment of 1, while the distance value is not increased if the allele of one sample could not be determined by chewBACCA.
+
+```mermaid
+flowchart LR
+    A[distance=0] --> B
+
+    B[i=0] --> C{i < alleleHashes.length}
+
+    C -->|Yes| D{one allele is undetermined}
+    D -->|Yes| G
+    D -->|No| E{alleles are equal}
+    E -->|Yes| G
+    E -->|No| F[distance++]
+    F --> G
+    G[i++] --> C
+    C -->|No| H@{ shape: lean-r, label: "distance" }
+
+```
+
+### Bacterial Distance Calculation
+
+The viral distance for two results of the viral sequence analysis is calculated in two steps.
+
+1. Sequences must be reconstructed. These reconstructions differ depending on the sequence with which the individual sequences are compared.
+2. Reconstructed sequences are compared against each other and a distance is obtained.
 
 ## Distance Matrix
 
