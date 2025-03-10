@@ -5,37 +5,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  documentation_build:
-    name: Documentation Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create, activate virtual environment and build mkdocs
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
-          port: ${{ vars.SSH_PORT_TEST_SERVER }}
-          script_stop: true
-          script: |
-            cd ${{ vars.GENTRAIN_DIR }}/documentation
-            python3 -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            mkdocs build
-      - name: Clear docs static files and move new build
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
-          port: ${{ vars.SSH_PORT_TEST_SERVER }}
-          script_stop: true
-          script: |
-            rm -rf ${{ vars.GENTRAIN_DIR }}/backend/static/docs
-            mkdir ${{ vars.GENTRAIN_DIR }}/backend/static/docs
-            mv ${{ vars.GENTRAIN_DIR }}/documentation/site/* ${{ vars.GENTRAIN_DIR }}/backend/static/docs
 
   frontend_build:
     name: Frontend Build
@@ -105,6 +74,39 @@ jobs:
           notify_when: "failure"
           notification_title: "Pull Testing State"
           icon_failure: 💥
+
+  documentation_build:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+    needs: pull_testing_state
+
+    steps:
+      - name: Create, activate virtual environment and build mkdocs
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}/documentation
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            mkdocs build
+      - name: Clear docs static files and move new build
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST_SERVER }}
+          port: ${{ vars.SSH_PORT_TEST_SERVER }}
+          script_stop: true
+          script: |
+            rm -rf ${{ vars.GENTRAIN_DIR }}/backend/static/docs
+            mkdir ${{ vars.GENTRAIN_DIR }}/backend/static/docs
+            mv ${{ vars.GENTRAIN_DIR }}/documentation/site/* ${{ vars.GENTRAIN_DIR }}/backend/static/docs
 
   restart_docker_containers:
     name: Restart Docker Containers
