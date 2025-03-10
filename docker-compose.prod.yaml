@@ -46,7 +46,7 @@ services:
         source: ./caddy/certs
         target: /certs
         read_only: true
-      - type: volume
+      - type: bind
         source: caddy_data
         target: /data
       - type: volume
@@ -147,6 +147,7 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
+
 
 networks:
   # Docker network for Caddy
