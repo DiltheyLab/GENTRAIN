@@ -101,8 +101,8 @@ sequenceDiagram
     Frontend->>Frontend: init session
     Frontend->>Backend: message: join room
     Backend->>Frontend: message: confirm room joined
-    loop for all sequences
-        Frontend->>Frontend: create pseudonym for sequence
+    loop for all fasta files
+        Frontend->>Frontend: create pseudonym for sequence(s)
         Frontend->>Backend: message: sequence analysis request
         alt Viral Sequence
             Backend->>Viral Queue: enqueue: sequence analysis job
@@ -119,7 +119,7 @@ sequenceDiagram
             deactivate chewBACCA
             Bacterial Queue->>Frontend: message: sequence analysis result
         end
-        Frontend->>IndexedDB: persist: sample and sequence analysis result
+        Frontend->>IndexedDB: persist: sample(s) and sequence analysis result(s)
     end
     Frontend->>Backend: message: close room
 ```
@@ -134,6 +134,7 @@ For bacterial samples, this process is quite trivial, as only the allele hashes 
 
 ```mermaid
 flowchart LR
+    Input@{ shape: lean-r, label: "alleleHashes" } --> A
     A["`distance=0
     i=0`"] --> B{i < alleleHashes.length}
 
@@ -150,7 +151,39 @@ flowchart LR
 
 ### Viral Distance Calculation
 
-The viral distance for two results of the viral sequence analysis is calculated in two steps.
+The viral distance for two results of the viral sequence analysis is calculated in three steps.
+
+```mermaid
+graph LR
+A[<b>NextClade Results</b>]-->B[<b><a href='/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Position Mutation Extraction</a></b>]
+B -->C[<b><a href='/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Pairwise Sequence Reconstruction</a></b>]
+C -->D[<b><a href='/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Extraction</a></b>]
+```
+
+#### Position Mutation Extraction
+
+This process aims to translate the NextClade result format into a mapping of reference sequence positions and occurring mutations, which is the input for pairwise sequence reconstruction.
+
+```json title="Example Position Mutation Mapping"
+{
+    "0": {"snp": "N"},
+    "1": {"snp": "N"},
+    "2": {"snp": "N"},
+    ...
+    "2030": {"snp": "A"},
+    ...
+    "10030": {"del": "-"},
+    "10031": {"del": "-"},
+    "10032": {"del": "-"},
+    "10033": {"del": "-"},
+    ...
+    "22045": {"ins": "ACGGT"},
+    ...
+    "29780": {"snp": "N"},
+    "29781": {"snp": "N"},
+    "29782": {"snp": "N"}
+}
+```
 
 #### Pairwise Sequence Reconstruction
 
@@ -162,18 +195,16 @@ Sequences must be reconstructed using the NextClade results. The sequences are r
 <div class="description">Returns two sequences of the same length, taking into account all mutations of the original sequences. This output enables the calculation of a distance between both sequences.</div>
 ```mermaid
 flowchart TB
-   Input@{ shape: lean-r, label: "sample1, sample2" } --> A
-   A["`mutations1 = getMutationPositions(sample1)
-        mutations2 = getMutationPositions(sample2)
-        sequence1 = ''
+   Input@{ shape: lean-r, label: "mutations1, mutations2" } --> A
+   A["`sequence1 = ''
         sequence2 = ''`"] --> B
     B[i=0] --> C{i < refSequence.length} -->|Yes| D
     D["`refChar = refSequence[i]
     additions1 = ''
     additions2 = ''`"] --> E
     D --> F
-    E{"`mutations1[i] is empty`"} -->|Yes| G
-    F{"`mutations2[i] is empty`"} -->|Yes| H
+    E{"`!mutations1[i]`"} -->|Yes| G
+    F{"`!mutations2[i]`"} -->|Yes| H
     E -->|No| I
     F -->|No| J
     G[additions1 = refChar + additions1] --> I
@@ -259,6 +290,136 @@ flowchart LR
 
 Reconstructed sequences are compared against each other and a distance is obtained.
 
+<div class="flex-charts">
+<div>
+<div class="title">calculateDistance</div>
+```mermaid
+flowchart TB
+    Input@{ shape: lean-r, label: "sequence1, sequence2" } --> A
+    A["`distance=0
+    properThreshold = 20
+    properCharsSeen1 = 0
+    properCharsSeen2 = 0
+    activeGap1 = false
+    activeGap2 = false`"] --> B{i < sequence1.length} -->|Yes| C
+    C["`currentChar1 = sequence1[i]
+    currentChar2 = sequence2[i]`"] --> D
+    D{"`currentChar1 == 'N' || currentChar2 == 'N'`"} -->|Yes| X
+    D -->|No| E{currentChar1 == '-'}
+    D -->|No| G{currentChar2 == '-'}
+    E -->|No| F["`properCharsSeen1++`"] --> I
+    E -->|Yes| I
+    G -->|No| H["`properCharsSeen2++`"] --> I
+    G -->|Yes| I
+    I{"`properThresholdNotReached(properCharsSeen1, properCharsSeen2) && currentChar1 == currentChar2`"} -->|Yes| X
+    I -->|No| J{"`currentChar1 == '-'`"} -->|Yes| K{"`!activeGap1`"} --> L["`distance++`"] --> N
+    J -->|No| N
+    N["`activeGap1 = true
+    activeGap2 = false`"] --> U
+    I -->|No| O{"`currentChar2 == '-'`"} -->|Yes| P{"`!activeGap2`"} --> Q["`distance++`"] --> T
+    O -->|No| T
+    T["`activeGap1 = false
+    activeGap2 = true`"] --> U
+    U{"`currentChar != '-' && currentChar2 != '-' && ambiguousCharsOverlap(currentChar1, currentChar2)`"} -->|Yes| V["`distance++
+    activeGap1 = false
+    activeGap2 = false`"] --> X
+    U -->|No| X
+    X[i++] --> B
+    B -->|No| Y
+    Y@{ shape: lean-r, label: "distance" }
+```
+</div>
+<div>
+<div class="title">properThresholdNotReached</div>
+<div class="description">The distance is only increased if an appropriate number of nucleotide characters have been read in to ensure that the distances are obtained from the qualitative sequence of the nucleotides.</div>
+```mermaid
+flowchart LR
+       A@{ shape: lean-r, label: "properCharsSeen1, properCharsSeen2" } --> B
+    B["`propCharAmount1 = sequence1.length - nCountSequence1
+    propCharAmount2 = sequence2.length - nCountSequence2`"] --> C
+    C{"`properCharsSeen1 < properThreshold || properCharsSeen2 < properThreshold || properCharAmount1 - properCharsSeen1 < properThreshold || properCharAmount2 - properCharsSeen2 < properThreshold`"} -->|Yes| D@{ shape: lean-r, label: "true" }
+    C -->|No| E@{ shape: lean-r, label: "false" }
+```
+<div class="title">ambiguousCharsOverlap</div>
+<div class="description">We do not want to increase the distance if the currently focussed different characters are part of the possible options for an ambiguous nucleotide in the other sequence.</div>
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "currentChar1, currentChar2" } --> B
+    B{"`ambiguousChars[currentChar1].includes(currentChar2) || ambiguousChars[currentChar2].includes(currentChars1)`"} -->|Yes| C@{ shape: lean-r, label: "true" }
+    B -->|No| D@{ shape: lean-r, label: "false" }
+```
+<div class="description">
+```js title="ambiguousChars"
+{
+  "A": ["A"],
+  "C": ["C"],
+  "G": ["G"],
+  "T": ["T"],
+  "U": ["U"],
+  "M": ["A", "C"],
+  "R": ["A", "G"],
+  "S": ["C", "G"],
+  "W": ["A", "T"],
+  "Y": ["C", "T"],
+  "K": ["G", "T"],
+  "V": ["A", "C", "G"],
+  "H": ["A", "C", "T"],
+  "D": ["A", "G", "T"],
+  "B": ["C", "G", "T"],
+  "N": ["A", "C", "G", "T"],
+  "X": ["A", "C", "G", "T"]
+}
+```
+</div>
+</div>
+</div>
+
 ## Distance Matrix Assembling
 
-WIP
+<div class="title">calculateSampleDistances</div>
+<div class="description">Firstly, the distance between all samples in the dataset is calculated and persisted in the IndexedDB. By calculating the distance between two samples only once, we minimize the calculation time. The complete distance matrix will be assembeled in the subsequent step.
+
+</div>
+
+```mermaid
+flowchart LR
+    Input@{ shape: lean-r, label: "samples" } --> A
+    A[i=0] --> B{i < samples.length}
+    B --> C["`previousSamples = samples.slice(0, index + 1)`"]
+    C --> D[j=0]
+    D --> E{"`j < previousSamples.length`"}
+    E -->|No| F
+    F["`distance = calculateSampleDistanceForTwoSamples(samples1, samples2)`"] --> G
+    G[Persist distance in IndexedDB] --> H
+    H[j++] --> E
+    E -->|Yes| X
+    X[i++] --> B
+```
+
+|        | s1  | s2             | s3             | s4             |
+| ------ | --- | -------------- | -------------- | -------------- |
+| **s1** | -   | d<sub>21</sub> | d<sub>31</sub> | d<sub>41</sub> |
+| **s2** | -   | -              | d<sub>32</sub> | d<sub>42</sub> |
+| **s3** | -   | -              | -              | d<sub>43</sub> |
+| **s4** | -   | -              | -              | -              |
+
+<div class="title">assembleDistanceMatrix</div>
+<div class="description">A complete distance matrix (NxN) is assembeled using the previously persisted distances. This distance matrix is then used to visualize minimum spanning tress for outbreak analyses.</div>
+
+```mermaid
+flowchart LR
+    Input@{ shape: lean-r, label: "distances" } --> A
+    A["`matrix = []
+    i=0`"] --> B{i < distances.length} -->|Yes| C
+    C["`matrix[distance.fasta_id_1][distance.fasta_id_2] = distance.value`"] --> D["`matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value`"]
+    D --> X
+    B -->|No| Output@{ shape: lean-r, label: "matrix" }
+    X[i++] --> B
+```
+
+|        | s1             | s2             | s3             | s4             |
+| ------ | -------------- | -------------- | -------------- | -------------- |
+| **s1** | -              | d<sub>21</sub> | d<sub>31</sub> | d<sub>41</sub> |
+| **s2** | d<sub>21</sub> | -              | d<sub>32</sub> | d<sub>42</sub> |
+| **s3** | d<sub>23</sub> | d<sub>21</sub> | -              | d<sub>43</sub> |
+| **s4** | d<sub>24</sub> | d<sub>24</sub> | d<sub>34</sub> | -              |

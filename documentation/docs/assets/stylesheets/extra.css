@@ -31,7 +31,6 @@ td {
 .flex-charts {
   display: flex;
   justify-content: space-around;
-  align-items: center;
 }
 
 .flex-charts > div {

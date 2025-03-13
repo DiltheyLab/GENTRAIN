@@ -1,4 +1,4 @@
-import {SampleSchema} from "@/modules/core/models/samples";
+import { SampleSchema } from "@/modules/core/models/samples";
 
 const ambiguousChars: { [base: string]: string[] } = {
     A: ["A"],
