@@ -16,7 +16,7 @@ const COLUMNS = {
     case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
     registered_at: { required: true, names: ["Registrierungsdatum", "Meldedatum"] },
     fasta_id: { required: false, names: ["Sequenz ID"] },
-    outbreak: { required: false, names: ["Ausbruch", "AusbruchInfo_InternalName"] },
+    outbreak: { required: false, names: ["Ausbruch", "AusbruchInfo_InternalName", "AusbruchInfo_NameGA", "AusbruchInfo_NameLS", "AusbruchInfo_NameRKI", "AusbruchInfo_GuidRecord", "AusbruchInfo_InterneRef"] },
     infected_by: { required: false, names: ["Angesteckt bei", "AngestecktBei"] },
     first_name: { required: false, names: ["Vorname", "PersonVorname"] },
     last_name: { required: false, names: ["Nachname", "PersonFamilienname"] },

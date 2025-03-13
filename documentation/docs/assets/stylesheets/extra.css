@@ -28,6 +28,29 @@ td {
   font-weight: 200;
 }
 
+.flex-charts {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-charts > div {
+  padding: 10px;
+  width: 50%;
+}
+
+@media (max-width: 800px) {
+  .flex-charts {
+    flex-direction: column;
+  }
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-size: 0.5rem;
+}
+
 @font-face {
   font-family: "Merriweather";
   font-style: normal;

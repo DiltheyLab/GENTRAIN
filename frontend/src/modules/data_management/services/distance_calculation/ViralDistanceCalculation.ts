@@ -1,11 +1,9 @@
-import {referenceString} from "@/data/referenceString";
+import { referenceString } from "@/data/referenceString";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
-import {SampleSchema} from "@/modules/core/models/samples";
-import {ViralAnalysisResult} from "@/modules/core/models/sequence_analyses";
-import {
-    DistanceCalculationStrategy
-} from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
-import {ViralDistanceExtractor} from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
+import { SampleSchema } from "@/modules/core/models/samples";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
+import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
+import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
 import {
     ViralPositionExtractor,
     MutationsSchema,
@@ -56,7 +54,6 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
                     refChar
                 );
             }
-
 
             // all collected additions are concatenated to the current sequence states
             sequence1 += additions1;

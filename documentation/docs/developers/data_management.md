@@ -191,27 +191,96 @@ For bacterial samples, this process is quite trivial, as only the allele hashes 
 
 ```mermaid
 flowchart LR
-    A[distance=0] --> B
+    A["`distance=0
+    i=0`"] --> B{i < alleleHashes.length}
 
-    B[i=0] --> C{i < alleleHashes.length}
-
-    C -->|Yes| D{one allele is undetermined}
-    D -->|Yes| G
-    D -->|No| E{alleles are equal}
-    E -->|Yes| G
-    E -->|No| F[distance++]
-    F --> G
-    G[i++] --> C
-    C -->|No| H@{ shape: lean-r, label: "distance" }
+    B -->|Yes| C{one allele is undetermined}
+    C -->|Yes| F
+    C -->|No| D{alleles are equal}
+    D -->|Yes| F
+    D -->|No| E[distance++]
+    E --> F
+    F[i++] --> B
+    B -->|No| H@{ shape: lean-r, label: "distance" }
 
 ```
 
-### Bacterial Distance Calculation
+### Viral Distance Calculation
 
 The viral distance for two results of the viral sequence analysis is calculated in two steps.
 
-1. Sequences must be reconstructed. These reconstructions differ depending on the sequence with which the individual sequences are compared.
-2. Reconstructed sequences are compared against each other and a distance is obtained.
+#### Pairwise Sequence Reconstruction
+
+Sequences must be reconstructed using the NextClade results. The sequences are reconstructed in pairs to take into account the alignment of the individual sequences. The reference sequence is iterated nucleotide by nucleotide, and mutations affect the resulting sequences at each iteration. The reconstructions differ depending on the sequence to which the individual sequences are compared, as insertions can influence the overall length of a sequence.
+
+<div class="flex-charts">
+<div>
+<div class="title">alignSamples</div>
+```mermaid
+flowchart TB
+   Input@{ shape: lean-r, label: "sample1, sample2" } --> A
+   A["`mutations1 = getMutationPositions(sample1)
+        mutations2 = getMutationPositions(sample2)
+        sequence1 = ''
+        sequence2 = ''`"] --> B
+    B[i=0] --> C{i < refSequence.length} -->|Yes| D
+    D["`refChar = refSequence[i]
+    additions1 = ''
+    additions2 = ''`"] --> E
+    D --> F
+    E{"`mutations1[i] is empty`"} --> G
+    F{"`mutations2[i] is empty`"} --> H
+    G[additions1 = refChar + additions1] --> I
+    H[additions2 = refChar + additions2] --> J
+    I["`additions1 += handleSnp(mutations1[i], additions1)`"] --> K
+    J["`additions2 += handleSnp(mutations2[i], additions2)`"] --> K
+    K["`additions1, additions2 = handleDeletions(mutations1[i], mutations2[i])`"] --> X
+    X[i++] --> B
+    B -->|No| Output@{ shape: lean-r, label: "distance" }
+```
+</div>
+<div>
+<div class="title">handleSnp</div>
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "mutations, additions" } --> B
+    B{"`mutations['snp']`"} --> C
+    C["`additions += mutations['snp']`"] --> D@{ shape: lean-r, label: "additions" }
+```
+<div class="title">handleDeletions</div>
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "mutations1, mutation2, additions1, additions2" } --> B
+    B{"`(mutations1['del'] && mutations2['del']) ||<br/>(!mutations1['del'] && !mutations['del'])`"} -->|Yes| X
+    B -->|No| C
+    B -->|No| D
+    C{"`mutations1['del']`"} --> E
+    E["`additions1 += '-'`"] --> X
+    D{"`mutations2['del']`"} --> F
+    F["`additions2 += '-'`"] --> X
+    X@{ shape: lean-r, label: "additions1, additions2" }
+```
+
+<div class="title">handleInsertionsWithAlignment</div>
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "mutations, additions" } --> B
+    B{"`'snp' in mutations`"} --> C
+    C["`additions += mutations['snp']`"] --> D@{ shape: lean-r, label: "additions" }
+```
+
+<div class="title">handleInsertionsWithoutAlignment</div>
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "mutations, additions" } --> B
+    B{"`'snp' in mutations`"} --> C
+    C["`additions += mutations['snp']`"] --> D@{ shape: lean-r, label: "additions" }
+```
+</div>
+</div>
+#### Distance Extraction
+
+Reconstructed sequences are compared against each other and a distance is obtained.
 
 ## Distance Matrix
 
