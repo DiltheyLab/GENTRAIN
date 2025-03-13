@@ -118,10 +118,7 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
         additions1: string,
         additions2: string
     ) => {
-        if (
-            (mutations1 && mutations2 && !("del" in mutations1) && !("del" in mutations2)) ||
-            (mutations1 && mutations2 && "del" in mutations1 && "del" in mutations2)
-        ) {
+        if (mutations1 && mutations2 && "del" in mutations1 && "del" in mutations2) {
             return [additions1, additions2];
         }
         if (mutations1 && "del" in mutations1) {

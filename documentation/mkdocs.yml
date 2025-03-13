@@ -14,6 +14,7 @@ nav:
       - developers/deployment.md
       - developers/testing.md
       - developers/data_management.md
+      - developers/genomic_operations.md
       - developers/security_and_data_privacy.md
 
 extra_css:
