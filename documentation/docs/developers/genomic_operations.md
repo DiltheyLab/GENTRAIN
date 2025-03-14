@@ -15,7 +15,37 @@ For viral sequences we determine mutations based on the corresponding reference 
 <a href="https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/index.html" target="_blank">
 Nextclade CLI</a>.
 Nextclade provides mutation objects consisting of snps, insertions, deletions, Ns and nonACGTN-characters.
-These mutation objects enable us to calculate genetic distances without persisting whole sequences.
+These mutation objects enable us to calculate genetic distances without persisting whole sequences. All sequences of a Fasta file are analysed simultaneously in a single job.
+
+```mermaid
+sequenceDiagram
+    participant IndexedDB
+    participant Frontend
+    participant Backend
+    participant Viral Queue
+    participant Bacterial Queue
+    participant NextcladeCLI
+    participant chewBACCA
+    Frontend->>Frontend: init session
+    Frontend->>Backend: message: join viral room
+    Backend->>Frontend: message: confirm viral room joined
+    loop for n sequences
+        Frontend->>Frontend: create pseudonym mapping for fasta id
+    end
+    Frontend->>Frontend: pseudonymize fasta content<br/>(create fasta headers with pseudonyms instead of fasta ids)
+    Frontend->>Backend: message: sequence analysis request (n sequences)
+    Backend->>Viral Queue: enqueue: sequence analysis job
+    Viral Queue->>NextcladeCLI: execute: sequence analysis job
+    activate NextcladeCLI
+    NextcladeCLI-->>Viral Queue: sequence analysis result
+    deactivate NextcladeCLI
+    loop for n sequences
+        Viral Queue->>Frontend: message: sequence analysis result
+        Frontend->>Frontend: look up fasta id for pseudonym mapping
+        Frontend->>IndexedDB: persist sample and sequence analysis result
+    end
+    Frontend->>Backend: message: close viral room
+```
 
 #### Viral Results
 
@@ -73,22 +103,6 @@ which provides mappings between each gene and the corresponding
 allele in the sequences. Based on these mappings, we then calculate genetic distances by differentiating between the
 allele sets of two sequences.
 
-#### Results
-
-Bacterial sequence analyses result in mappings between genes and allele sequences of the corresponding sample (Gene Id: Allele Sequence). In addition, these allele sequences are hashed to minify sequence length and ensure scheme independence.
-
-```json title="Example Bacterial Result"
-{
-    SAUR0001: "d3627b0e335350fc61d130d50e6516b2",
-    SAUR0002: "34d94e7230113031e160b5880f0ed5af",
-    SAUR0003: "ddf68eaae82c14021c4f44f73ac0789f",
-    ...
-    SAUR3016: "e25053695fa8a872d478c73aba78c26a"
-}
-```
-
-### UML Sequence Diagram
-
 ```mermaid
 sequenceDiagram
     participant IndexedDB
@@ -102,26 +116,33 @@ sequenceDiagram
     Frontend->>Backend: message: join room
     Backend->>Frontend: message: confirm room joined
     loop for all fasta files
-        Frontend->>Frontend: create pseudonym for sequence(s)
+        Frontend->>Frontend: create pseudonym mapping for fasta id
+        Frontend->>Frontend: anonymize fasta content<br/>(trim fasta headers)
         Frontend->>Backend: message: sequence analysis request
-        alt Viral Sequence
-            Backend->>Viral Queue: enqueue: sequence analysis job
-            Viral Queue->>NextcladeCLI: execute: sequence analysis job
-            activate NextcladeCLI
-            NextcladeCLI-->>Viral Queue: sequence analysis result
-            deactivate NextcladeCLI
-            Viral Queue->>Frontend: message: sequence analysis result
-        else Bacterial Sequence
-            Backend->>Bacterial Queue: enqueue: sequence analysis job
-            Bacterial Queue->>chewBACCA: execute: sequence analysis job
-            activate chewBACCA
-            chewBACCA-->>Bacterial Queue: sequence analysis result
-            deactivate chewBACCA
-            Bacterial Queue->>Frontend: message: sequence analysis result
-        end
-        Frontend->>IndexedDB: persist: sample(s) and sequence analysis result(s)
+        Backend->>Bacterial Queue: enqueue: sequence analysis job
+        Bacterial Queue->>chewBACCA: execute: sequence analysis job
+        activate chewBACCA
+        chewBACCA-->>Bacterial Queue: sequence analysis result
+        deactivate chewBACCA
+        Bacterial Queue->>Frontend: message: sequence analysis result
+        Frontend->>Frontend: look up fasta id for pseudonym mapping
+        Frontend->>IndexedDB: persist sample and sequence analysis result
     end
     Frontend->>Backend: message: close room
+```
+
+#### Results
+
+Bacterial sequence analyses result in mappings between genes and allele sequences of the corresponding sample (Gene Id: Allele Sequence). In addition, these allele sequences are hashed to minify sequence length and ensure scheme independence.
+
+```json title="Example Bacterial Result"
+{
+    SAUR0001: "d3627b0e335350fc61d130d50e6516b2",
+    SAUR0002: "34d94e7230113031e160b5880f0ed5af",
+    SAUR0003: "ddf68eaae82c14021c4f44f73ac0789f",
+    ...
+    SAUR3016: "e25053695fa8a872d478c73aba78c26a"
+}
 ```
 
 ## Distance Calculation
