@@ -235,7 +235,7 @@ flowchart TB
     L -->|No| N["`additions1, additions2 = handleInsertionsWithoutAlignment(mutations1, mutations2, additions1, additions2, refChar)`"] --> O
     O["`sequence1 += additions1
     sequence2 += additions2`"] --> X
-    X[i++] --> B
+    X[i++] --> C
     C -->|No| Output@{ shape: lean-r, label: "sequence1, sequence2" }
 ```
 </div>
