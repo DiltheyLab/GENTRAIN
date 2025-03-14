@@ -39,7 +39,40 @@ is the genetic information that makes gentrain what it is!
 
 Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values ([RFC9562](https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value){:target="\_blank"}).
 
-A fasta file containing the sequences identified by so-called fasta IDs is required to import samples.
+#### Fasta File Format
+
+##### Viral Fasta Format
+
+A fasta file containing the sequences identified by so-called fasta ids is required to import samples. Each fasta file contains several sequences that can be imported simultaneously. The upload of multiple files is not supported for virus samples.
+
+```title="sequences.fasta"
+    >{fasta_id_1}
+    {sequence_1}
+    >{fasta_id_2}
+    {sequence_2}
+    ...
+    >{fasta_id_n}
+    {sequence_n}
+
+```
+
+##### Bacterial Fasta Format
+
+Bacterial genomes are provided in the form of assemblies since they consist of a genome sequence as well as a plasmid sequence. In addition, it is not a trivial task to assemble coherent bacterial sequences, which results in several contigs that combine to form the entire sequence. Each contig is characterised by an individual header whose information is not of interest for our use case. For bacterial samples, the fasta id must be represented by the name of the fasta file. The upload of multiple files is supported for bacterial samples.
+
+```title="{fasta_id}.fasta"
+    >{assembly_contig_header_1}
+    {assembly_contig_sequence_1}
+    >{assembly_contig_header_2}
+    {assembly_contig_sequence_2}
+    ...
+    >{assembly_contig_header_n}
+    {assembly_contig_sequence_n}
+
+```
+
+#### Sequence Processing
+
 Genetic distances are calculated between all samples, which are then assembled in a distance matrix. This distance
 matrix enables
 to create a minimum spanning tree for the cases based on the genetic distance. The procedure is slightly different for
@@ -47,9 +80,9 @@ viral and bacterial samples.
 
 ```mermaid
 graph LR
-A[<b>User Input</b>]-->B[<b><a href='/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Sequence Analysis</a></b>]
-B -->C[<b><a href='/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Distance Calculation</a></b>]
-C -->D[<b><a href='/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Matrix Assembling</a></b>]
+A[<b>User Input</b>]-->B[<b><a href='/docs/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Sequence Analysis</a></b>]
+B -->C[<b><a href='/docs/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Distance Calculation</a></b>]
+C -->D[<b><a href='/docs/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Matrix Assembling</a></b>]
 ```
 
 ### Contact Person Processes

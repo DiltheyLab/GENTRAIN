@@ -174,9 +174,9 @@ The viral distance for two results of the viral sequence analysis is calculated 
 
 ```mermaid
 graph LR
-A[<b>Nextclade Results</b>]-->B[<b><a href='/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Position Mutation Extraction</a></b>]
-B -->C[<b><a href='/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Pairwise Sequence Reconstruction</a></b>]
-C -->D[<b><a href='/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Extraction</a></b>]
+A[<b>Nextclade Results</b>]-->B[<b><a href='/docs/developers/genomic_operations#position-mutation-extraction' style="text-decoration: none;">Position Mutation Extraction</a></b>]
+B -->C[<b><a href='/docs/developers/genomic_operations#pairwise-sequence-reconstruction' style="text-decoration: none;">Pairwise Sequence Reconstruction</a></b>]
+C -->D[<b><a href='/docs/developers/genomic_operations#distance-extraction' style="text-decoration: none;">Distance Extraction</a></b>]
 ```
 
 #### Position Mutation Extraction
