@@ -4,7 +4,7 @@
 
 In order to calculate genetic distances between viral and bacterial genome we analyse genetic sequences against their
 reference genome. This way we manage to persist a minified data structure without significant information loss. Since
-viral sequences are generally available in their entirety and bacterial sequences are usually sequenced in assemblies,
+viral sequences are generally available in their entirety and bacterial sequences are usually processed into assemblies,
 different analysis techniques are applied.
 
 ### Viral Sequence Analysis
@@ -97,11 +97,11 @@ creation and evaluation of core genome and whole genome MultiLocus Sequence Typi
 Gentrain, we use <a href="https://chewbbaca.readthedocs.io/en/latest/user/modules/AlleleCall.html" target="_blank">
 chewBACCA's AlleleCall
 service</a>
-which provides mappings between each gene and the corresponding
+which provides mappings between each reference gene and the corresponding
 allele in the sequences. Based on these mappings, we then calculate genetic distances by differentiating between the
 allele sets of two sequences.
 
-Each bacterial sequence assembly is provided in a seperate fasta file. Therefore the bacterial sequence import allows the simultaneous upload of multiple files. File names must correspond to fasta ids that are linked to the uploaded case data. These fasta ids a pseudonymized before ever communicating with the server and exclusively persisted on the client side.
+Each bacterial sequence assembly is provided in a seperate fasta file. Therefore the bacterial sequence import allows the simultaneous upload of multiple files. File names must correspond to fasta ids that are linked to the uploaded case data. These fasta ids are pseudonymized before ever communicating with the server and exclusively persisted on the client side.
 
 ```mermaid
 sequenceDiagram
@@ -131,7 +131,7 @@ sequenceDiagram
 
 #### Results
 
-Bacterial sequence analyses result in mappings between genes and allele sequences of the corresponding sample (Gene Id: Allele Sequence). In addition, these allele sequences are hashed to minify sequence length and ensure scheme independence.
+Bacterial sequence analyses result in mappings between reference genes and allele sequences of the corresponding sample (Gene Id: Allele Sequence). In addition, these allele sequences are hashed to minify sequence length and ensure scheme independence.
 
 ```json title="Example Bacterial Result"
 {
