@@ -15,7 +15,7 @@ For viral sequences we determine mutations based on the corresponding reference 
 <a href="https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/index.html" target="_blank">
 Nextclade CLI</a>.
 Nextclade provides mutation objects consisting of snps, insertions, deletions, Ns and nonACGTN-characters.
-These mutation objects enable us to calculate genetic distances without persisting whole sequences. All sequences of a Fasta file are analysed simultaneously in a single job.
+These mutation objects enable us to calculate genetic distances without persisting whole sequences. All sequences of a fasta file are analyzed simultaneously in a single job. The fasta content is pseudonymized before sending it to the sever, by replacing fasta ids with corresponding random pseudonyms.
 
 ```mermaid
 sequenceDiagram
@@ -31,7 +31,7 @@ sequenceDiagram
         Frontend->>Frontend: create pseudonym mapping for fasta id
     end
     Frontend->>Frontend: pseudonymize fasta content<br/>(create fasta headers with pseudonyms instead of fasta ids)
-    Frontend->>Backend: message: sequence analysis request (n sequences)
+    Frontend->>Backend: message: sequence analysis (n sequences)
     Backend->>Viral Queue: enqueue: sequence analysis job
     Viral Queue->>NextcladeCLI: execute: sequence analysis job
     activate NextcladeCLI
@@ -101,6 +101,8 @@ which provides mappings between each gene and the corresponding
 allele in the sequences. Based on these mappings, we then calculate genetic distances by differentiating between the
 allele sets of two sequences.
 
+Each bacterial sequence assembly is provided in a seperate fasta file. Therefore the bacterial sequence import allows the simultaneous upload of multiple files. File names must correspond to fasta ids that are linked to the uploaded case data. These fasta ids a pseudonymized before ever communicating with the server and exclusively persisted on the client side.
+
 ```mermaid
 sequenceDiagram
     participant IndexedDB
@@ -114,7 +116,7 @@ sequenceDiagram
     loop for all fasta files
         Frontend->>Frontend: create pseudonym mapping for fasta id
         Frontend->>Frontend: anonymize fasta content<br/>(trim fasta headers)
-        Frontend->>Backend: message: sequence analysis request
+        Frontend->>Backend: message: sequence analysis
         Backend->>Bacterial Queue: enqueue: sequence analysis job
         Bacterial Queue->>chewBACCA: execute: sequence analysis job
         activate chewBACCA

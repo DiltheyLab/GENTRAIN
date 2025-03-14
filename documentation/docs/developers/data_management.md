@@ -12,7 +12,9 @@ contact information.
 
 Cases are registered infection reports from the health authorities.
 These are recorded using the <a href="https://www.rki.de/DE/Content/Infekt/IfSG/Software/software_inhalt.html" target="_
-blank">SurvNet software</a> developed by the RKI. To import case data from the SurvNet a CSV structure with relevant
+blank">SurvNet software</a> developed by the RKI. Personal data is exclusively handled and persisted on the client side.
+
+To import case data from the SurvNet a CSV structure with relevant
 fields was constructed:
 
 | Field             | Naming options                        | Description                                                       | Required |
@@ -34,6 +36,8 @@ fields was constructed:
 Samples provide mappings between cases and the corresponding sequenced genome. It is worth noting that not every case
 has to be sequenced, as Gentrain can also provide valuable inferences based on contact tracing information. However, it
 is the genetic information that makes gentrain what it is!
+
+Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values ([RFC9562](https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value){:target="\_blank"}).
 
 A fasta file containing the sequences identified by so-called fasta IDs is required to import samples.
 Genetic distances are calculated between all samples, which are then assembled in a distance matrix. This distance
