@@ -25,9 +25,7 @@ class Role(db.Model, RoleMixin):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(255))
-    last_name = db.Column(db.String(255))
-    email = db.Column(db.String(255), unique=True)
+    email = db.Column(db.String(255))
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
@@ -53,13 +51,16 @@ class Pathogen(db.Model):
             "scheme_name": self.scheme_name,
             "cases_example": self.get_example_data_path("cases"),
             "sequences_example": self.get_example_data_path("sequences"),
-            "contacts_example": self.get_example_data_path("contacts")
+            "contacts_example": self.get_example_data_path("contacts"),
         }
 
     def get_example_data_path(self, file_type):
         example_data_mappings = {
             "cases": {"extension": "csv", "filename": "falldaten"},
-            "sequences": {"extension": "fasta" if self.type == "viral" else "zip", "filename": "sequenzdaten"},
+            "sequences": {
+                "extension": "fasta" if self.type == "viral" else "zip",
+                "filename": "sequenzdaten",
+            },
             "contacts": {"extension": "csv", "filename": "kontaktdaten"},
         }
         file_path = f"static/pathogen_example_data/{secure_filename(self.name)}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"

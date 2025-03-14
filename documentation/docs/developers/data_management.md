@@ -60,3 +60,167 @@ Contact person processes provide information about which cases were in contact w
 | --------- | -------------- | ---------------------------------------------------------- | -------- |
 | Case id 1 | `Fall ID 1`    | Unique ID of the first case of the contact person process  | ✅       |
 | Case id 2 | `Fall ID 2`    | Unique ID of the second case of the contact person process | ✅       |
+
+## Entity Relationship Models
+
+### Client Side (IndexedDB)
+
+```mermaid
+erDiagram
+    Analysis {
+        int id
+        string name
+        object settings
+        datetime created_at
+        datetime updated_at
+    }
+    Analysis }o--|| Pathogen : ""
+
+    Case {
+        int id
+        string case_id
+        string fasta_id
+        datatime registered_at
+        string city
+        string zip_code
+        string street
+        string last_name
+        string first_name
+        datetime created_at
+        datetime updated_at
+    }
+    Case }o--|| Pathogen : ""
+    Case ||--o{ Group : ""
+
+    Category {
+        int id
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+    Category }o--|| Pathogen : ""
+
+    Contact {
+        int id
+        int case_id_1
+        int case_id_2
+        string type
+        string context
+        datetime created_at
+        datetime updated_at
+    }
+    Contact ||--o| Case : ""
+
+    "Distance Matrix" {
+        int id
+        datetime created_at
+        datetime updated_at
+    }
+    "Distance Matrix" ||--|| Pathogen : ""
+
+    Distance {
+        int id
+        int sample_id_1
+        int sample_id_2
+        int value
+        datetime created_at
+        datetime updated_at
+    }
+    Distance |o--|| "Distance Matrix" : ""
+
+    Group {
+        int id
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+    Group }o--|| Category : ""
+
+    Outbreak {
+        int id
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+    Outbreak }o--|| Pathogen : ""
+
+    "Pathogen Type" {
+        int id
+        string name
+        datetime initialized_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    Pathogen {
+        int id
+        string name
+        int genetic_distance_threshold
+        int pathogen_type_id
+        datetime created_at
+        datetime updated_at
+    }
+    Pathogen }o--|| "Pathogen Type" : ""
+
+    Sample {
+        int id
+        string fasta_id
+        int n_count
+        int sequence_length
+        string lineage
+        datetime created_at
+        datetime updated_at
+    }
+    Sample ||--|| Case : ""
+    Sample ||--|| "Sequence Analysis" : ""
+
+    "Sequence Analysis" {
+        int id
+        object result
+        string schema
+        string version
+        datetime created_at
+        datetime updated_at
+    }
+
+    "Sequence Identifiers" {
+        uuidv4 id
+        string fasta_id
+        datetime created_at
+        datetime updated_at
+    }
+    "Sequence Identifiers" }o--|| Pathogen : ""
+```
+
+### Server Side (ProstgreSQL)
+
+```mermaid
+erDiagram
+    Pathogen {
+        int id
+        string name
+        int genetic_distance_threshold
+        string type
+        string scheme_name
+        datetime created_at
+        datetime updated_at
+    }
+
+    Role {
+        int id
+        string name
+        string description
+    }
+
+    User {
+        int id
+        string email
+        string password
+        boolean active
+        datetime confirmed
+        string fs_uniquifier
+        datetime created_at
+        datetime updated_at
+    }
+    User ||--o{ Role : ""
+```

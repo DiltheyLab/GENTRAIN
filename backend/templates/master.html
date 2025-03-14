@@ -42,11 +42,7 @@
                             </svg>
                         </div>
                         <div class="user-name">
-                            {% if current_user.first_name -%}
-                                {{ current_user.first_name }} {% if current_user.last_name -%} {{ current_user.last_name }} {%- endif %}
-                            {% else -%}
-                                {{ current_user.email }}
-                            {%- endif %}
+                            {{ current_user.email }}
                         </div>
                         <div class="user-menu">
                             <ul>

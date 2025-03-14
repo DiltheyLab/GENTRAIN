@@ -63,17 +63,15 @@ class UserView(AuthModelView):
                 and current_user.has_role("superuser")
         )
 
-    column_list = ["id", "email", "first_name", "last_name"]
-    form_create_rules = ('roles', 'email', 'first_name', "last_name", "password")
-    form_edit_rules = ('roles', 'email', 'first_name', "last_name")
+    column_list = ["id", "email"]
+    form_create_rules = ('roles', 'email', "password")
+    form_edit_rules = ('roles', 'email')
     edit_template = 'admin/edit.html'
     create_template = 'admin/create.html'
 
     def create_model(self, form):
         user_datastore = SQLAlchemyUserDatastore(db, User, Role)
         user_datastore.create_user(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
             email=form.email.data,
             password=hash_password(form.password.data),
             roles=form.roles.data,

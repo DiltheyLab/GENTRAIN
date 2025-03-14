@@ -17,8 +17,6 @@ with app.app_context():
     user_count = User.query.count()
     if user_count == 0:
         user_datastore.create_user(
-            first_name="Super",
-            last_name="Admin",
             email=environ.get("ADMIN_EMAIL"),
             password=environ.get("ADMIN_PASSWORD"),
             roles=[super_user_role],

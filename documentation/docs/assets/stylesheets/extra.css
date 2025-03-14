@@ -42,6 +42,9 @@ td {
   .flex-charts {
     flex-direction: column;
   }
+  .flex-charts > div {
+    width: 100%;
+  }
 }
 
 .title {
