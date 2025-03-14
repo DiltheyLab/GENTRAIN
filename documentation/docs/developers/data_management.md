@@ -123,7 +123,7 @@ erDiagram
         datetime updated_at
     }
     Case }o--|| Pathogen : ""
-    Case ||--o{ Group : ""
+    Case }o--o{ Group : ""
 
     Category {
         int id
@@ -142,7 +142,7 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    Contact ||--o| Case : ""
+    Contact }o--o| Case : ""
 
     "Distance Matrix" {
         int id
@@ -159,7 +159,7 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    Distance |o--|| "Distance Matrix" : ""
+    Distance }o--|| "Distance Matrix" : ""
 
     Group {
         int id
