@@ -23,9 +23,7 @@ sequenceDiagram
     participant Frontend
     participant Backend
     participant Viral Queue
-    participant Bacterial Queue
     participant NextcladeCLI
-    participant chewBACCA
     Frontend->>Frontend: init session
     Frontend->>Backend: message: join viral room
     Backend->>Frontend: message: confirm viral room joined
@@ -49,7 +47,7 @@ sequenceDiagram
 
 #### Viral Results
 
-NextClade provides a range of information about each analyzed sample. This information can be stored in different file formats, in our case we receive a JSON object. This object contains information about the recognised clade, quality measures of the sequences and mutation information.
+Nextclade provides a range of information about each analyzed sample. This information can be stored in different file formats, in our case we receive a JSON object. This object contains information about the recognised clade, quality measures of the sequences and mutation information.
 
 Recognised substitutions, insertions, deletions, missings and nonACGTNs of the sequence are stored in the browser of the user. This information enables us to reconstruct sequences without obtaining the entire character string, taking into account the alignment of the sequences.
 
@@ -108,9 +106,7 @@ sequenceDiagram
     participant IndexedDB
     participant Frontend
     participant Backend
-    participant Viral Queue
     participant Bacterial Queue
-    participant NextcladeCLI
     participant chewBACCA
     Frontend->>Frontend: init session
     Frontend->>Backend: message: join room
@@ -176,14 +172,14 @@ The viral distance for two results of the viral sequence analysis is calculated 
 
 ```mermaid
 graph LR
-A[<b>NextClade Results</b>]-->B[<b><a href='/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Position Mutation Extraction</a></b>]
+A[<b>Nextclade Results</b>]-->B[<b><a href='/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Position Mutation Extraction</a></b>]
 B -->C[<b><a href='/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Pairwise Sequence Reconstruction</a></b>]
 C -->D[<b><a href='/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Extraction</a></b>]
 ```
 
 #### Position Mutation Extraction
 
-This process aims to translate the NextClade result format into a mapping of reference sequence positions and occurring mutations, which is the input for pairwise sequence reconstruction.
+This process aims to translate the Nextclade result format into a mapping of reference sequence positions and occurring mutations, which is the input for pairwise sequence reconstruction.
 
 ```json title="Example Position Mutation Mapping"
 {
@@ -208,7 +204,7 @@ This process aims to translate the NextClade result format into a mapping of ref
 
 #### Pairwise Sequence Reconstruction
 
-Sequences must be reconstructed using the NextClade results. The sequences are reconstructed in pairs to take into account the alignment of the individual sequences. The reference sequence is iterated nucleotide by nucleotide, and mutations affect the resulting sequences at each iteration. The reconstructions differ depending on the sequence to which the individual sequences are compared, as insertions can influence the overall length of a sequence.
+Sequences must be reconstructed using the Nextclade results. The sequences are reconstructed in pairs to take into account the alignment of the individual sequences. The reference sequence is iterated nucleotide by nucleotide, and mutations affect the resulting sequences at each iteration. The reconstructions differ depending on the sequence to which the individual sequences are compared, as insertions can influence the overall length of a sequence.
 
 <div class="flex-charts">
 <div>
