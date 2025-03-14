@@ -25,7 +25,6 @@ export class CasesPersistence extends PersistenceStrategy {
         useDataManagementStore.getState().setCaseSelectionActive(false);
         useDataManagementStore.getState().clearCaseImports();
         setInitializedAtForPathogenType(this.pathogen.pathogen_type_id);
-
         toast({
             title: "Datei wurde erfolgreich hochgeladen",
             duration: 5000,

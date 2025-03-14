@@ -25,12 +25,12 @@ export function FailedCaseImportDialog() {
                     </span>
                     {Object.keys(failedCaseImports).map((caseId) => {
                         return (
-                            <span key={`${caseId}_error`}>
+                            <div key={`${caseId}_error`}>
                                 <span className="font-bold">{caseId}: </span>
                                 {failedCaseImports[caseId]
                                     .map((errorPath) => t(`error:case_import:${errorPath}`))
                                     .join(", ")}
-                            </span>
+                            </div>
                         );
                     })}
                 </AlertDialogDescription>

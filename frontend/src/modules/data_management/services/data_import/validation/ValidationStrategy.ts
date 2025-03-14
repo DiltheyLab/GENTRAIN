@@ -53,15 +53,21 @@ export abstract class ValidationStrategy {
         },
         allowEmptyCells = true
     ) {
+        let cellValue = null;
+        // iterate over all possible names for a specific column since multiple column names might be available
         for (const name of columnDefinition.names) {
             if (Object.keys(row).includes(name)) {
-                const cellValue = row[name] != "" ? row[name] : null;
+                cellValue = row[name] != "" ? row[name] : null;
                 if (columnDefinition.required && !cellValue && !allowEmptyCells) {
                     throw new GentrainException("RequiredCellMissing", [name]);
                 }
+            }
+            // if a value for the column was found we return this only already, since mutliple column names
+            // are possible and the first one is handled as the most relevent one
+            if (cellValue) {
                 return cellValue;
             }
         }
-        return null;
+        return cellValue;
     }
 }

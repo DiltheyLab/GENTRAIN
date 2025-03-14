@@ -16,7 +16,18 @@ const COLUMNS = {
     case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
     registered_at: { required: true, names: ["Registrierungsdatum", "Meldedatum"] },
     fasta_id: { required: false, names: ["Sequenz ID"] },
-    outbreak: { required: false, names: ["Ausbruch", "AusbruchInfo_InternalName", "AusbruchInfo_NameGA", "AusbruchInfo_NameLS", "AusbruchInfo_NameRKI", "AusbruchInfo_GuidRecord", "AusbruchInfo_InterneRef"] },
+    outbreak: {
+        required: false,
+        names: [
+            "Ausbruch",
+            "AusbruchInfo_InternalName",
+            "AusbruchInfo_NameGA",
+            "AusbruchInfo_NameLS",
+            "AusbruchInfo_NameRKI",
+            "AusbruchInfo_GuidRecord",
+            "AusbruchInfo_InterneRef",
+        ],
+    },
     infected_by: { required: false, names: ["Angesteckt bei", "AngestecktBei"] },
     first_name: { required: false, names: ["Vorname", "PersonVorname"] },
     last_name: { required: false, names: ["Nachname", "PersonFamilienname"] },
@@ -67,7 +78,19 @@ export class CasesValidation extends ValidationStrategy {
             return {};
         }
 
-        const caseIds = this.data.map((row) => row["Fall ID"]);
+        const caseIds = this.data.map((row) => {
+            // find the case id by iterating over all possible case id column names
+            // since the column is required it is not possible that this field is empty
+            let caseId = "";
+            for (const caseIdColumnName of COLUMNS.case_id.names) {
+                if (row[caseIdColumnName] && row[caseIdColumnName] !== "") {
+                    caseId = row[caseIdColumnName];
+                    break;
+                }
+            }
+            return caseId;
+        });
+
         const cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
         this.cases = ObjectRelationalMapper.arrayToMap(cases, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);

@@ -17,19 +17,19 @@ blank">SurvNet software</a> developed by the RKI. Personal data is exclusively h
 To import case data from the SurvNet a CSV structure with relevant
 fields was constructed:
 
-| Field             | Naming options                        | Description                                                       | Required |
-| ----------------- | ------------------------------------- | ----------------------------------------------------------------- | -------- |
-| Case id           | `Fall ID, Aktenzeichen`               | Unique ID of the case                                             | ✅       |
-| Registration date | `Registrierungsdatum, Meldedatum`     | Date of registration in SurvNets                                  | ✅       |
-| Sequence id       | `Sequenz ID`                          | Fasta ID of the corresponding sequence                            |          |
-| Outbreak          | `Ausbruch, AusbruchInfo_InternalName` | Suspected outbreak association                                    |          |
-| Infected by       | `Angesteckt bei, AngestecktBei`       | Unique ID of a case that was given as the origin of the infection |          |
-| Firstname         | `Vorname, PersonVorname`              | First name of the person associated with the case                 |          |
-| Lastname          | `Nachname, PersonFamilienname`        | Last name of the person associated with the case                  |          |
-| City              | `Ort, PersonOrt`                      | Place of residence of the person associated with the case         |          |
-| Zip code          | `PLZ, PersonPLZ`                      | Zip code of the person associated with the case                   |          |
-| Street            | `Straße, PersonStrasse`               | Street of the person associated with the case                     |          |
-| Flexible category | `Kategorie:{category_name}`           | Flexible category for further differentiation                     |          |
+| Field             | Naming options                                                                                                                                                                                  | Description                                                       | Required |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------- |
+| Case id           | `Fall ID`, `Aktenzeichen`                                                                                                                                                                       | Unique ID of the case                                             | ✅       |
+| Registration date | `Registrierungsdatum`, `Meldedatum`                                                                                                                                                             | Date of registration in SurvNets                                  | ✅       |
+| Sequence id       | `Sequenz ID`                                                                                                                                                                                    | Fasta ID of the corresponding sequence                            |          |
+| Outbreak          | `Ausbruch`, `AusbruchInfo_InternalName`, `AusbruchInfo_NameGA`, `AusbruchInfo_NameLS`, `AusbruchInfo_NameRKI`,`AusbruchInfo_GuidRecord`, `AusbruchInfo_Aktenzeichen`, `AusbruchInfo_InterneRef` | Suspected outbreak association                                    |          |
+| Infected by       | `Angesteckt bei`, `AngestecktBei`                                                                                                                                                               | Unique ID of a case that was given as the origin of the infection |          |
+| Firstname         | `Vorname`, `PersonVorname`                                                                                                                                                                      | First name of the person associated with the case                 |          |
+| Lastname          | `Nachname`, `PersonFamilienname`                                                                                                                                                                | Last name of the person associated with the case                  |          |
+| City              | `Ort`, `PersonOrt`                                                                                                                                                                              | Place of residence of the person associated with the case         |          |
+| Zip code          | `PLZ`, `PersonPLZ`                                                                                                                                                                              | Zip code of the person associated with the case                   |          |
+| Street            | `Straße`, `PersonStrasse`                                                                                                                                                                       | Street of the person associated with the case                     |          |
+| Flexible category | `Kategorie:{category_name}`                                                                                                                                                                     | Flexible category for further differentiation                     |          |
 
 ### Samples (Sequences)
 
