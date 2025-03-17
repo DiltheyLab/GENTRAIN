@@ -14,7 +14,7 @@ Cases are registered infection reports from the health authorities.
 These are recorded using the <a href="https://www.rki.de/DE/Content/Infekt/IfSG/Software/software_inhalt.html" target="_
 blank">SurvNet software</a> developed by the RKI. Personal data is exclusively handled and persisted on the client side. Addresses and names are used to create contact edges between cases, as it is valuable information if cases live at the same address (flat shares, retirement homes, ...) or have the same lastname (potential family members).
 
-To import case data from the SurvNet a CSV structure with relevant
+To import case data from the SurvNet a csv structure with relevant
 fields was constructed:
 
 | Field             | Naming options                                                                                                                                                                                  | Description                                                       | Required |
@@ -30,6 +30,43 @@ fields was constructed:
 | Zip code          | `PLZ`, `PersonPLZ`                                                                                                                                                                              | Zip code of the person associated with the case                   |          |
 | Street            | `Straße`, `PersonStrasse`                                                                                                                                                                       | Street of the person associated with the case                     |          |
 | Flexible category | `Kategorie:{category_name}`                                                                                                                                                                     | Flexible category for further differentiation                     |          |
+
+#### Case Data Flow
+
+```mermaid
+flowchart TB
+    A@{ shape: lean-r, label: "Csv file<br/><small>Case id, Sequence id, Outbreak, Registered at, Zip code, City, Street, Firstname, Lastname, Infected by, Flexible categories and groups</small>" }-->B[Validate csv header<br/><small>Required column names</small>]--> PERSIST_CASES_AND_CONTACTS
+    subgraph PERSIST_CASES_AND_CONTACTS["Persist cases and contacts"]
+        direction LR
+        Input_CREATE_CASES@{ shape: lean-r, label: "Csv rows"}-->D
+        D[Create / update cases]--> CREATE_CASE --> F
+        subgraph CREATE_CASE["Create / update case"]
+            direction TB
+            Input_CREATE_CASE@{ shape: lean-r, label: "Case id, Sequence id, Outbreak, Registered at, Zip code, City, Street, Firstname, Lastname, Flexible categories and groups" }-->A0
+            A0[Sanitize and create case data object] --> FIND_OR_CREATE_OUTBREAK
+            subgraph FIND_OR_CREATE_OUTBREAK["Find or create outbreak"]
+                O0{Outbreak exists?} -->|Yes| O1@{ shape: lean-r, label: "Outbreak id" }
+                O0 -->|No| O2[Create outbreak in IndexedDB] --> O1
+            end
+            FIND_OR_CREATE_OUTBREAK-->FIND_OR_CREATE_CATEGORIES_AND_GROUPS
+            subgraph FIND_OR_CREATE_CATEGORIES_AND_GROUPS["Find or create categories and groups"]
+                C0{Category exists?} -->|Yes| C1[Create group for category] --> C3
+                C0 -->|No| C2[Create category in IndexedDB] --> C1
+                C3@{ shape: lean-r, label: "Group id" }
+            end
+            FIND_OR_CREATE_CATEGORIES_AND_GROUPS-->A1
+            A1{Case exists in IndexedDB?}-->|Yes| A2["Update existing case in IndexedDB<br/><small>Case id, Sequence id, Outbreak id, Registered at, Zip code, City, Street, Firstname, Lastname, Group ids</small>"] --> Output_CREATE_CASE
+            A1-->|No| A3["Create new case in IndexedDB<br/><small>Case id, Sequence id, Outbreak id, Registered at, Zip code, City, Street, Firstname, Lastname, Group ids</small>"]--> Output_CREATE_CASE
+            Output_CREATE_CASE@{ shape: lean-r, label: "Case id" }
+        end
+        F[Delete existing contacts for uploaded cases] --> CREATE_CONTACTS
+        subgraph CREATE_CONTACTS["Create contacts for uploaded cases"]
+            direction TB
+            Input_CREATE_CONTACT@{ shape: lean-r, label: "Infected by, Street, Zip code, City, Lastname" }-->B0
+            B0[Create contacts of type 'infected_by'] --> B1[Create contacts of type 'same_address_and_last_name'] --> B2[Create contacts of type 'same_address']
+        end
+    end
+```
 
 ### Samples (Sequences)
 
@@ -80,9 +117,10 @@ viral and bacterial samples.
 
 ```mermaid
 graph LR
-A[<b>User Input</b>]-->B[<b><a href='/docs/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Sequence Analysis</a></b>]
-B -->C[<b><a href='/docs/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Distance Calculation</a></b>]
-C -->D[<b><a href='/docs/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance Matrix Assembling</a></b>]
+A@{ shape: lean-r, label: "<b>Fasta file(s)</b>"}-->B[<b><a href='/docs/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Sequence analysis</a></b>]
+B -->C[<b><a href='/docs/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Distance calculation</a></b>]
+C -->D[<b><a href='/docs/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance matrix assembling</a></b>]-->E@{ shape: lean-r, label: "<b>Distance matrix</b>"}
+E --> F[<b>Minimum spanning tree generation</b>]-->G@{ shape: lean-r, label: "<b>Minimum spanning tree</b>"}
 ```
 
 ### Contact Person Processes
@@ -124,6 +162,7 @@ erDiagram
     }
     Case }o--|| Pathogen : ""
     Case }o--o{ Group : ""
+    Case }o--|| Outbreak : ""
 
     Category {
         int id
