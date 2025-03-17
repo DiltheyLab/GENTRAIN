@@ -12,7 +12,7 @@ contact information.
 
 Cases are registered infection reports from the health authorities.
 These are recorded using the <a href="https://www.rki.de/DE/Content/Infekt/IfSG/Software/software_inhalt.html" target="_
-blank">SurvNet software</a> developed by the RKI. Personal data is exclusively handled and persisted on the client side.
+blank">SurvNet software</a> developed by the RKI. Personal data is exclusively handled and persisted on the client side. Addresses and names are used to create contact edges between cases, as it is valuable information if cases live at the same address (flat shares, retirement homes, ...) or have the same lastname (potential family members).
 
 To import case data from the SurvNet a CSV structure with relevant
 fields was constructed:
