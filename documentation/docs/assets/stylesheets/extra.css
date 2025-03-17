@@ -1,8 +1,10 @@
-:root {
+:root,
+[data-md-color-scheme="default"] {
   --md-primary-fg-color: #f87315;
   --md-accent-fg-color: #f87315;
   --md-accent-fg-color--transparent: #ffffff;
   --md-text-font: "Merriweather";
+  --md-default-fg-color--lightest: #ffffff;
 }
 
 [data-md-color-scheme="slate"] {
