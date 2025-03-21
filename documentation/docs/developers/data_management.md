@@ -31,7 +31,7 @@ fields was constructed:
 | Street            | `Straße`, `PersonStrasse`                                                                                                                                                                       | Street of the person associated with the case                     |          |
 | Flexible category | `Kategorie:{category_name}`                                                                                                                                                                     | Flexible category for further differentiation                     |          |
 
-#### Case Data Flow
+#### Case Persistence and Contact Extraction
 
 ```mermaid
 flowchart TB
@@ -117,10 +117,13 @@ viral and bacterial samples.
 
 ```mermaid
 graph LR
-A@{ shape: lean-r, label: "<b>Fasta file(s)</b>"}-->B[<b><a href='/docs/developers/genomic_operations#sequence-analysis' style="text-decoration: none;">Sequence analysis</a></b>]
-B -->C[<b><a href='/docs/developers/genomic_operations#distance-calculation' style="text-decoration: none;">Distance calculation</a></b>]
-C -->D[<b><a href='/docs/developers/genomic_operations#distance-matrix-assembling' style="text-decoration: none;">Distance matrix assembling</a></b>]-->E@{ shape: lean-r, label: "<b>Distance matrix</b>"}
-E --> F[<b>Minimum spanning tree generation</b>]-->G@{ shape: lean-r, label: "<b>Minimum spanning tree</b>"}
+A@{ shape: lean-r, label: "Fasta file(s)"}-->B[<a href="../genomic_operations#sequence-analysis" target="_blank">Sequence analysis</a>]-->X@{ shape: lean-r, label: "Sequence Analysis Results"}
+X -->C[<a href="../genomic_operations#distance-calculation" target="_blank">Distance calculation</a>]
+C -->D[<a href="../genomic_operations#distance-matrix-assembling" target="_blank">Distance matrix assembling</a>]-->E@{ shape: lean-r, label: "Distance matrix"}
+E --> F[Minimum spanning tree generation]-->G@{ shape: lean-r, label: "Minimum spanning tree"}-->H[<a href="https://gentrain.bi.denbi.de" target="_blank">Dashboard</a>]
+G --> I[<a href="https://gentrain.bi.denbi.de/outbreak-analysis" target="_blank">Outbreak Analysis</a>]
+E --> H
+X --> Y[<a href="https://gentrain.bi.denbi.de/data-management" target="_blank">Data Management</a>]
 ```
 
 ### Contact Person Processes

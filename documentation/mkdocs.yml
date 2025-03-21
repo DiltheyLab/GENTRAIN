@@ -66,4 +66,8 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+plugins:
+  - panzoom:
+      always_show_hint:
+      full_screen: True
 copyright: © 2024 Universitätsklinikum Düsseldorf
