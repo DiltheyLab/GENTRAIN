@@ -145,30 +145,30 @@ User@{ shape: circle, label: "User" }-->Input_Contacts
 Input_Cases@{ shape: lean-r, label: "Cases Csv File"}-->Data_Management--Cases-->Validation
 Input_Samples@{ shape: lean-r, label: "Sequences Fasta File(s)"}-->Data_Management--Sequences-->Validation
 Input_Contacts@{ shape: lean-r, label: "Contact Persons Csv File"}-->Data_Management--Contacts-->Validation
-Input_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}-->State_Import@{ shape: lin-rect, label: "State Import" }-->IndexedDB
+Input_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}-->State_Import@{ shape: lin-rect, label: "IndexedDB Import" }-->IndexedDB
 API--"*HTTPS*<br/>Pathogens"-->IndexedDB
-Validation@{ shape: lin-rect, label: "Validation" }--Sequences-->Pseudonymization--"Pseudonymized Sequences"-->Sequence_Chunking@{ shape: lin-rect, label: "Sequence Chunking" }
+Validation@{ shape: lin-rect, label: "Validation" }--"Fasta Content<br/>(Sequences / Assemblies)"-->Pseudonymization--"Pseudonymized Fasta Content"-->Fasta_Chunking@{ shape: lin-rect, label: "Fasta Chunking" }
 Validation--Contacts-->IndexedDB
 Validation--Cases-->IndexedDB
-Sequence_Chunking-->Websocket_Client[Websocket Client]--"*WSS*<br/>Pseudonymized Sequences"-->Chunk_Validation
+Fasta_Chunking--Pseudonymized Fasta Chunks-->Websocket_Client[Websocket Client]--"*WSS*<br/>Pseudonymized Fasta Chunks"-->Chunk_Validation
 subgraph Server
     Chunk_Validation
-    Redis--Chunks-->Sequence_Reassembling
-    Chunk_Validation@{ shape: lin-rect, label: "Chunk Validation" }-->Sequence_Reassembling@{ shape: lin-rect, label: "Sequence Reassembling" }-->Sequence_Analysis@{ shape: lin-rect, label: "Sequence Analysis" }--Results-->Redis[(Redis Cache)]
+    Redis--Chunks-->Fasta_Content_Reassembling
+    Chunk_Validation@{ shape: lin-rect, label: "Chunk Validation" }-->Fasta_Content_Reassembling@{ shape: lin-rect, label: "Fasta Content Reassembling" }-->Sequence_Analysis@{ shape: lin-rect, label: "Sequence Analysis" }--Results-->Redis[(Redis Cache)]
     Chunk_Validation--Chunk-->Redis
     File_Storage--"Pathogen Schemes"-->Sequence_Analysis
     Flask_Admin--"Pathogen Schemes"-->File_Storage@{ shape: win-pane, label: "File Storage" }
     Flask_Admin[Flask Admin]--Pathogens,Users-->PostgreSQL
     PostgreSQL[(PostgreSQL)]--Pathogens-->API[Flask API]
 end
-Sequence_Analysis--"*WSS*<br/>Analysis Results"-->Websocket_Client[Websocket Client]-->Distance_Calculation@{ shape: lin-rect, label: "Distance Calculation" }--"Analysis Results,Distances"-->IndexedDB
+Sequence_Analysis--"*WSS*<br/>Analysis Results"-->Websocket_Client[Websocket Client]-->Distance_Calculation@{ shape: lin-rect, label: "Distance Calculation" }--"Distances"-->IndexedDB
 IndexedDB[(IndexedDB)]--Cases,Distances,Contacts-->Dashboard(Dashboard)
 Websocket_Client[Websocket Client]--"Sequence Analysis Results"-->IndexedDB
-IndexedDB-->State_Export@{ shape: lin-rect, label: "State Export" }-->Output_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}
+IndexedDB-->State_Export@{ shape: lin-rect, label: "IndexedDB Export" }-->Output_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}
 Dashboard-->DM_Export@{ shape: lin-rect, label: "Distance Matrix Export" }-->Distance_Matrix_Csv@{ shape: lean-r, label: "Distance Matrix Csv File"}
-Outbreak_Analysis--"Analysis State"-->
-IndexedDB[(IndexedDB)]--"Cases,Distances,Contacts,Analysis State"-->Outbreak_Analysis(Outbreak Analysis)
-IndexedDB[(IndexedDB)]-->Data_Management(Data Management)-->Data_Deletion@{ shape: lin-rect, label: "Data Deletion" }-->IndexedDB
+Outbreak_Analysis--"Outbreak Analysis State"-->
+IndexedDB[(IndexedDB)]--"Cases,Distances,Contacts,Outbreak Analysis State"-->Outbreak_Analysis(Outbreak Analysis)
+IndexedDB[(IndexedDB)]-->Data_Management(Data Management)-->Data_Deletion@{ shape: lin-rect, label: "Data Deletion<br/><i>All or pathogen-specific Data</i>" }-->IndexedDB
 Outbreak_Analysis-->Pdf_Export@{ shape: lin-rect, label: "Pdf Export" }-->Pdf_Report@{ shape: lean-r, label: "Analysis Report Pdf File"}
 ```
 
