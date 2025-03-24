@@ -22,6 +22,7 @@ sequenceDiagram
     participant IndexedDB
     participant Frontend
     participant Backend
+    participant Redis
     participant Viral Queue
     participant NextcladeCLI
     Frontend->>Frontend: init session
@@ -31,16 +32,26 @@ sequenceDiagram
         Frontend->>Frontend: create pseudonym mapping for fasta id
     end
     Frontend->>Frontend: pseudonymize fasta content<br/>(create fasta headers with pseudonyms instead of fasta ids)
-    Frontend->>Backend: message: sequence analysis (n sequences)
-    Backend->>Viral Queue: enqueue: sequence analysis job
-    Viral Queue->>NextcladeCLI: execute: sequence analysis job
-    activate NextcladeCLI
-    NextcladeCLI-->>Viral Queue: sequence analysis result
-    deactivate NextcladeCLI
-    loop for n sequences
-        Viral Queue->>Frontend: message: sequence analysis result
-        Frontend->>Frontend: look up fasta id for pseudonym mapping
-        Frontend->>IndexedDB: persist sample and sequence analysis result
+    Frontend->>Frontend: create fasta content chunks
+    loop for n chunks
+        Frontend->>Backend: message: sequence analysis
+        Backend->>Redis: message: cache fasta content chunk
+    end
+    alt all fasta content chunks transmitted
+        Backend->>Backend: reassemble fasta content from fasta content chunks
+        Backend->>Viral Queue: enqueue: sequence analysis job
+        Viral Queue->>NextcladeCLI: execute: sequence analysis job
+        activate NextcladeCLI
+        NextcladeCLI-->>Viral Queue: sequence analysis result
+        deactivate NextcladeCLI
+        loop for n sequences
+            Viral Queue->>Redis: persist pseudonymized sequence analysis result (TTL 30 minutes)
+            Viral Queue->>Frontend: message: sequence analysis result
+            Frontend->>Frontend: look up fasta id for pseudonym mapping
+            Frontend->>IndexedDB: persist sample and sequence analysis result
+            Frontend->>Backend: API request to delete persisted sequence analysis result
+            Backend->>Redis: delete persisted sequence analysis result
+        end
     end
     Frontend->>Backend: message: close viral room
 ```
@@ -108,6 +119,7 @@ sequenceDiagram
     participant IndexedDB
     participant Frontend
     participant Backend
+    participant Redis
     participant Bacterial Queue
     participant chewBACCA
     Frontend->>Frontend: init session
@@ -116,15 +128,25 @@ sequenceDiagram
     loop for all fasta files
         Frontend->>Frontend: create pseudonym mapping for fasta id
         Frontend->>Frontend: anonymize fasta content<br/>(trim fasta headers)
-        Frontend->>Backend: message: sequence analysis
-        Backend->>Bacterial Queue: enqueue: sequence analysis job
-        Bacterial Queue->>chewBACCA: execute: sequence analysis job
-        activate chewBACCA
-        chewBACCA-->>Bacterial Queue: sequence analysis result
-        deactivate chewBACCA
-        Bacterial Queue->>Frontend: message: sequence analysis result
-        Frontend->>Frontend: look up fasta id for pseudonym mapping
-        Frontend->>IndexedDB: persist sample and sequence analysis result
+        Frontend->>Frontend: create fasta content chunks
+        loop for n chunks
+            Frontend->>Backend: message: sequence analysis
+            Backend->>Redis: message: cache fasta content chunk
+        end
+        alt all fasta content chunks transmitted
+            Backend->>Backend: reassemble fasta content from fasta content chunks
+            Backend->>Bacterial Queue: enqueue: sequence analysis job
+            Bacterial Queue->>chewBACCA: execute: sequence analysis job
+            activate chewBACCA
+            chewBACCA-->>Bacterial Queue: sequence analysis result
+            deactivate chewBACCA
+            Bacterial Queue->>Redis: persist pseudonymized sequence analysis result (TTL 30 minutes)
+            Bacterial Queue->>Frontend: message: sequence analysis result
+            Frontend->>Frontend: look up fasta id for pseudonym mapping
+            Frontend->>IndexedDB: persist sample and sequence analysis result
+            Frontend->>Backend: API request to delete persisted sequence analysis result
+            Backend->>Redis: delete persisted sequence analysis result
+        end
     end
     Frontend->>Backend: message: close room
 ```
