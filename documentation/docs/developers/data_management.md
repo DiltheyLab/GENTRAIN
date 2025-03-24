@@ -147,10 +147,10 @@ Input_Samples@{ shape: lean-r, label: "Sequences Fasta File(s)"}-->Data_Manageme
 Input_Contacts@{ shape: lean-r, label: "Contact Persons Csv File"}-->Data_Management--Contacts-->Validation
 Input_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}-->State_Import@{ shape: lin-rect, label: "State Import" }-->IndexedDB
 API--"*HTTPS*<br/>Pathogens"-->IndexedDB
-Validation@{ shape: lin-rect, label: "Validation" }--Sequences-->Sequence_Chunking@{ shape: lin-rect, label: "Sequence Chunking" }
+Validation@{ shape: lin-rect, label: "Validation" }--Sequences-->Pseudonymization--"Pseudonymized Sequences"-->Sequence_Chunking@{ shape: lin-rect, label: "Sequence Chunking" }
 Validation--Contacts-->IndexedDB
 Validation--Cases-->IndexedDB
-Sequence_Chunking-->Websocket_Client[Websocket Client]--*WSS*-->Chunk_Validation
+Sequence_Chunking-->Websocket_Client[Websocket Client]--"*WSS*<br/>Pseudonymized Sequences"-->Chunk_Validation
 subgraph Server
     Chunk_Validation
     Redis--Chunks-->Sequence_Reassembling
