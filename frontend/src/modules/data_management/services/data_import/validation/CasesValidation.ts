@@ -20,8 +20,8 @@ const COLUMNS = {
         required: false,
         names: [
             "Ausbruch",
-            "AusbruchInfo_InternalName",
             "AusbruchInfo_NameGA",
+            "AusbruchInfo_InternalName",
             "AusbruchInfo_NameLS",
             "AusbruchInfo_NameRKI",
             "AusbruchInfo_GuidRecord",
