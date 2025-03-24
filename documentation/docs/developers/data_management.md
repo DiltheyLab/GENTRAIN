@@ -158,7 +158,7 @@ subgraph Server
     Chunk_Validation--Chunk-->Redis
     File_Storage--"Pathogen Schemes"-->Sequence_Analysis
     Flask_Admin--"Pathogen Schemes"-->File_Storage@{ shape: win-pane, label: "File Storage" }
-    Flask_Admin[Flask Admin]--Pathogens-->PostgreSQL
+    Flask_Admin[Flask Admin]--Pathogens,Users-->PostgreSQL
     PostgreSQL[(PostgreSQL)]--Pathogens-->API[Flask API]
 end
 Sequence_Analysis--"*WSS*<br/>Analysis Results"-->Websocket_Client[Websocket Client]-->Distance_Calculation@{ shape: lin-rect, label: "Distance Calculation" }--"Analysis Results,Distances"-->IndexedDB
@@ -167,7 +167,7 @@ Websocket_Client[Websocket Client]--"Sequence Analysis Results"-->IndexedDB
 IndexedDB-->State_Export@{ shape: lin-rect, label: "State Export" }-->Output_JSON@{ shape: lean-r, label: "IndexedDB JSON File"}
 Dashboard-->DM_Export@{ shape: lin-rect, label: "Distance Matrix Export" }-->Distance_Matrix_Csv@{ shape: lean-r, label: "Distance Matrix Csv File"}
 Outbreak_Analysis--"Analysis State"-->
-IndexedDB[(IndexedDB)]--Cases,Distances,Contacts-->Outbreak_Analysis(Outbreak Analysis)
+IndexedDB[(IndexedDB)]--"Cases,Distances,Contacts,Analysis State"-->Outbreak_Analysis(Outbreak Analysis)
 IndexedDB[(IndexedDB)]-->Data_Management(Data Management)-->Data_Deletion@{ shape: lin-rect, label: "Data Deletion" }-->IndexedDB
 Outbreak_Analysis-->Pdf_Export@{ shape: lin-rect, label: "Pdf Export" }-->Pdf_Report@{ shape: lean-r, label: "Analysis Report Pdf File"}
 ```

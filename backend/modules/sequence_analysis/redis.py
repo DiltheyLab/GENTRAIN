@@ -51,7 +51,7 @@ def remember_session_id(socket_id, gentrain_session_id):
     redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
     redis_connection.expire(
         name=f"client:gentrain_session:{socket_id}",
-        time=3600,
+        time=1800,
     )
 
 
