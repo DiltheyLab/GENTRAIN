@@ -1,7 +1,7 @@
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenSwitch } from "@/modules/core/components/ui/PathogenSwitch";
 import { Button } from "@/modules/core/components/ui/Button";
-import { Dna, GraduationCap, Share2 } from "lucide-react";
+import { Dna, GraduationCap } from "lucide-react";
 import { PartnerLogos } from "@/modules/core/components/layout/PartnerLogos";
 import { lazy, Suspense } from "react";
 import GentrainLogo from "@/assets/img/gentrain-logo.svg";
