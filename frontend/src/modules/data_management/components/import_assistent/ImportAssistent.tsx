@@ -48,11 +48,11 @@ export function ImportAssistent() {
                     </DialogTitle>
                     <DialogDescription></DialogDescription>
                 </DialogHeader>
-
                 {i18n.exists(`import:${importAssistentStep}.shared`) &&
                     renderHtmlFromTranslation(`import:${importAssistentStep}.shared`)}
                 {i18n.exists(`import:${importAssistentStep}.${activePathogen?.pathogen_type?.name}`) &&
                     renderHtmlFromTranslation(`import:${importAssistentStep}.${activePathogen?.pathogen_type?.name}`)}
+
                 <ActionArea />
             </DialogContent>
         </Dialog>

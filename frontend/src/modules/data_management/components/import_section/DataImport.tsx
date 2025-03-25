@@ -89,6 +89,7 @@ export const DataImport = ({
     const renderDataSelection = () => {
         if (Object.keys(data).length === 0) return;
         // render inline version if assistent is active and correspending data was uploaded
+        if (Object.keys(failedCaseImports).length > 0) return <FailedCaseImportDialog />;
         if (inlineSelection && showImportAssistent) {
             return (
                 <>
@@ -156,11 +157,10 @@ export const DataImport = ({
         }
     };
 
-    return (
+    return Object.keys(data).length === 0 ? (
         <div className="flex flex-col items-center gap-1">
             <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                 {renderDropzone()}
-                {Object.keys(failedCaseImports).length > 0 ? <FailedCaseImportDialog /> : renderDataSelection()}
             </div>
             {exampleDataPath && (
                 <Button
@@ -172,5 +172,7 @@ export const DataImport = ({
                 </Button>
             )}
         </div>
+    ) : (
+        renderDataSelection()
     );
 };
