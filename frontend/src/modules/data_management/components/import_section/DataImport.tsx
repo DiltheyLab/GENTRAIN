@@ -157,10 +157,11 @@ export const DataImport = ({
         }
     };
 
-    return Object.keys(data).length === 0 ? (
+    return !showImportAssistent ? (
         <div className="flex flex-col items-center gap-1">
             <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                 {renderDropzone()}
+                {renderDataSelection()}
             </div>
             {exampleDataPath && (
                 <Button
@@ -173,6 +174,26 @@ export const DataImport = ({
             )}
         </div>
     ) : (
-        renderDataSelection()
+        <>
+            {Object.keys(data).length === 0 ? (
+                <div className="flex flex-col items-center gap-1">
+                    <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
+                        {renderDropzone()}
+                    </div>
+                    {exampleDataPath && (
+                        <Button
+                            variant="link"
+                            className="hover:text-primary hover:no-underline"
+                            onClick={() => downloadFileFromUrl(`${import.meta.env.VITE_API_HOST}/${exampleDataPath}`)}
+                        >
+                            Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
+                            <FileDown className="h-5 w-5 ml-1" />
+                        </Button>
+                    )}
+                </div>
+            ) : (
+                renderDataSelection()
+            )}
+        </>
     );
 };
