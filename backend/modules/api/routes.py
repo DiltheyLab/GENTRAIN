@@ -44,13 +44,7 @@ def get_results_for_session_and_pathogen(session_id: str, pathogen_id: int):
 def delete_sequence_result_for_session_and_pathogen(
         session_id: str, pathogen_id: int, sequence_identifier: str
 ):
-    all_keys = list(
-        redis_connection.hgetall(
-            f"client:results:{session_id}:{pathogen_id}:{sequence_identifier}"
-        ).keys()
-    )
-    for key in all_keys:
-        redis_connection.delete(f"client:results:{session_id}:{pathogen_id}:{sequence_identifier}:{key}")
+    redis_connection.delete(f"client:results:{session_id}:{pathogen_id}:{sequence_identifier}")
     return jsonify([])
 
 

@@ -151,11 +151,11 @@ export abstract class SequenceAnalysisStrategy {
         if (!sessionId) {
             throw new GentrainException("");
         }
-        /*gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(
+        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(
             sessionId,
             this.pathogen.id,
             data.sequence_identifier
-        );*/
+        );
         this.continueIfAllAnalysesAreDone();
     }
 

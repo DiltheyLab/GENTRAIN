@@ -104,7 +104,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
             }
         )
         self.redis_connection.expire(
-            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
+            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{response['sequence_identifier']}",
             time=1800,
         )
 
