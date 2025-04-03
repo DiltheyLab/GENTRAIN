@@ -10,7 +10,6 @@ services:
     volumes:
       - ./redis/tls:/usr/local/etc/redis/tls
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command:
   redis-insight:
     container_name: gentrain-redis-insight
     image: redis/redisinsight:latest
@@ -73,4 +72,5 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+
 

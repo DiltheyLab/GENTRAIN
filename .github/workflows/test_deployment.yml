@@ -138,8 +138,6 @@ jobs:
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
             echo -e "REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}}" >> .env
-            echo -e "ADMIN_EMAIL=${{vars.ADMIN_EMAIL}}" >> .env
-            echo -e "ADMIN_PASSWORD=${{secrets.ADMIN_PASSWORD}}" >> .env
             echo -e "DATABASE_DRIVER=${{vars.DATABASE_DRIVER}}" >> .env
             echo -e "DATABASE_NAME=${{vars.DATABASE_NAME}}" >> .env
             echo -e "DATABASE_HOST=${{vars.DATABASE_HOST}}" >> .env

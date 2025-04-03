@@ -1,7 +1,6 @@
-from os import path, environ, listdir
-from os.path import isfile
+from os import path, environ
 
-from flask import request, url_for, redirect, abort, current_app
+from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
 from flask_login import current_user
 from flask_security import hash_password, SQLAlchemyUserDatastore
@@ -9,7 +8,6 @@ from flask_security import hash_password, SQLAlchemyUserDatastore
 import shutil
 
 from flask_wtf.file import FileField, FileAllowed
-from pydantic.v1.utils import path_types
 from werkzeug.utils import secure_filename
 
 from backend.app import db, basic_auth
@@ -45,7 +43,6 @@ class AuthModelView(sqla.ModelView):
         Override builtin _handle_view in order to redirect users when a view is not
         accessible.
         """
-
         if not current_user.is_authenticated:
             return redirect(url_for("security.login", next=request.url))
 
@@ -63,16 +60,16 @@ class UserView(AuthModelView):
                 and current_user.has_role("superuser")
         )
 
-    column_list = ["id", "email"]
-    form_create_rules = ('roles', 'email', "password")
-    form_edit_rules = ('roles', 'email')
+    column_list = ["id", "username"]
+    form_create_rules = ('roles', 'username', "password")
+    form_edit_rules = ('roles', 'username')
     edit_template = 'admin/edit.html'
     create_template = 'admin/create.html'
 
     def create_model(self, form):
         user_datastore = SQLAlchemyUserDatastore(db, User, Role)
         user_datastore.create_user(
-            email=form.email.data,
+            username=form.username.data,
             password=hash_password(form.password.data),
             roles=form.roles.data,
         )

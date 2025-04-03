@@ -14,11 +14,4 @@ with app.app_context():
         db.session.add(user_role)
         super_user_role = Role(name="superuser")
         db.session.add(super_user_role)
-    user_count = User.query.count()
-    if user_count == 0:
-        user_datastore.create_user(
-            email=environ.get("ADMIN_EMAIL"),
-            password=environ.get("ADMIN_PASSWORD"),
-            roles=[super_user_role],
-        )
     db.session.commit()
