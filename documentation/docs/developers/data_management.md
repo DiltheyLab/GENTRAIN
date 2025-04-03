@@ -135,6 +135,13 @@ Contact person processes provide information about which cases were in contact w
 | Case id 1 | `Fall ID 1`    | Unique ID of the first case of the contact person process  | ✅       |
 | Case id 2 | `Fall ID 2`    | Unique ID of the second case of the contact person process | ✅       |
 
+```mermaid
+flowchart LR
+    A@{ shape: lean-r, label: "Csv file<br/><small>Case id 1, Case id 2</small>" }
+    A --> B[Validate csv header] --> C[Filter already existing contacts] --> D[Create a contact of type <i>contact_person</i> for each pair of case ids]
+```
+
+
 ## Data Processing
 
 ```mermaid
