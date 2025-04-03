@@ -28,7 +28,7 @@ def upgrade() -> None:
     session = Session(bind=bind)
 
     for user in session.execute(sa.text('SELECT  "user".id,  "user".email FROM "user"')).fetchall():
-        username = user.email.split('@')[0] if user.email else f"user{user.id}"
+        username = user.email.split('@')[0].replace(".", "") if user.email else f"user{user.id}"
         session.execute(sa.text('UPDATE "user" SET username = :username WHERE id = :id'),
                         {'username': username, 'id': user.id})
     session.commit()
