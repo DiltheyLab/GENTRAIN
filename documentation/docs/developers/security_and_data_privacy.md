@@ -55,13 +55,33 @@ The <a href="https://redis.io/docs/latest/operate/oss_and_stack/management/secur
 
 ### Authentication
 
-To access the Gentrain Admin Panel, users must authenticate themselves. In addition, various roles have been implemented to grant authorisation for user administration only to certain users.
+To access the GENTRAIN Admin Panel, users must authenticate themselves. In addition, various roles have been implemented to grant authorisation for user administration only to certain users.
 
 Admin passwords must be set on first login and follow following rules:
 
 - at least 8 characters
 - at least 1 number
 - at least 1 special character ($, #, @, !, \*, .)
+
+### Registration Process
+
+The admin panel is not connected to a mail server. Therefore, users are created by users with the superuser role and passwords are changed at the first login, which also serves as account confirmation.
+```mermaid
+sequenceDiagram
+    participant Super User
+    participant User
+    participant Admin Panel
+    Super User->>Admin Panel: create user with username and password
+    Super User->>User: send username and password to the user
+    User->>Admin Panel: login with provided password
+    Admin Panel->>Admin Panel: check if user is confirmed
+    alt user is not confirmed
+        Admin Panel->>User: redirect to password change form because user is not confirmed
+        User->>Admin Panel: change password
+    end
+    Admin Panel->>User: redirect to pathogen view
+
+```
 
 ### File uploads
 
