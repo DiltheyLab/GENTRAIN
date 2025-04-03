@@ -326,7 +326,7 @@ erDiagram
 
     User {
         int id
-        string email
+        string username
         string password
         boolean active
         datetime confirmed
