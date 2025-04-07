@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 import { CaseWithRelationships, getAllCasesForPathogenWithRelationships } from "@/modules/core/models/cases";
-import { createSessionId } from "../helpers/session";
 import { persist } from "zustand/middleware";
+import { v4 as uuidv4 } from "uuid";
 
 type CoreStoreState = {
     activePathogen: PathogenWithRelationships | null;
@@ -35,7 +35,7 @@ export const useCoreStore = create<CoreStore>()(
                 set({ casesWithRelationships });
             },
             initSession: () => {
-                const sessionId = createSessionId();
+                const sessionId = uuidv4();
                 set({ sessionId: sessionId });
             },
             updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
