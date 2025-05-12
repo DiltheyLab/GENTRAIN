@@ -52,19 +52,20 @@ export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className={cn("w-full lg:min-w-[200px] justify-between", className)}
+                    className={cn("w-full sm:w-fit md:min-w-[200px] justify-between", className)}
                 >
-                    {activePathogen ? activePathogen.name : "Pathogen auswählen"}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <span className="truncate pr-2">{activePathogen ? activePathogen.name : "Pathogen auswählen"}</span>
+                    <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                className={cn(
-                    "w-[calc(100%+44px)] -ml-[22px] lg:-ml-0 lg:w-full lg:min-w-[200px] px-0 py-2",
-                    className
-                )}
+                className={cn("w-[var(--radix-popover-trigger-width)] p-0")}
+                align="start"
+                sideOffset={5} // Distance between the trigger and the popover
             >
-                {pathogenTypes?.map((pathogenType) => renderPathogenOptionsForPathogenType(pathogenType))}
+                <div className="py-2">
+                    {pathogenTypes?.map((pathogenType) => renderPathogenOptionsForPathogenType(pathogenType))}
+                </div>
             </PopoverContent>
         </Popover>
     );
