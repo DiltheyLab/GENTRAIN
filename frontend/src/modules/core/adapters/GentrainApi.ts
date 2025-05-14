@@ -11,7 +11,6 @@ export class GentrainApi {
     };
 
     // Pathogens
-
     public async getPathogens() {
         const pathogens: Pathogen[] = await this.getRequest(`${import.meta.env.VITE_API_HOST}/pathogens`);
         return pathogens ?? [];
@@ -39,7 +38,6 @@ export class GentrainApi {
     }
 
     // Infrastructure
-
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });

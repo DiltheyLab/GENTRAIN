@@ -7,22 +7,14 @@ type WebsocketEvent = "sequence_analysis_response" | "sequence_analysis_enqueued
 
 export class GentrainWebsocket {
     private client;
-    private username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
-    private password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
     constructor() {
-        this.client =
-            import.meta.env.VITE_ENABLE_WEBSOCKETS === "true" &&
-            io(import.meta.env.VITE_API_HOST, {
-                transports: ["websocket"],
-                extraHeaders: {
-                    Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
-                },
-            });
+        this.client = io(import.meta.env.VITE_API_HOST, {
+            transports: ["websocket"],
+        });
     }
 
     // Room Management
-
     public async joinRoom(pathogenTypeName: string, callback: (roomName: string) => void) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
