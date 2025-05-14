@@ -1,17 +1,13 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { Pathogen } from "@/modules/core/models/pathogens";
 import { PersistedSequenceAnalysis } from "@/modules/core/types/api";
-import { db } from "../services/database/DatabaseManager";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
-    private username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
-    private password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
     private defaultHeaderParameters = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
     };
 
     // Pathogens
