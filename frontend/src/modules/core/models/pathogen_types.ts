@@ -45,3 +45,5 @@ export const setInitializedAtForPathogenType = async (pathogenTypeId: number) =>
         initialized_at: new Date(),
     });
 };
+
+export const getAllPathogenTypes = async () => await db.pathogen_types.toArray();
