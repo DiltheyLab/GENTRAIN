@@ -11,14 +11,12 @@ export class GentrainApi {
     };
 
     // Pathogens
-
     public async getPathogens() {
         const pathogens: Pathogen[] = await this.getRequest(`${import.meta.env.VITE_API_HOST}/pathogens`);
         return pathogens ?? [];
     }
 
     // Sequence Analyses
-
     public async getPersistedSequenceAnalysisResults(sessionId: string, pathogenId: number) {
         const sequenceAnalysisResults: PersistedSequenceAnalysisResult[] = await this.getRequest(
             `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
@@ -31,8 +29,6 @@ export class GentrainApi {
         pathogenId: number,
         sequenceIdentifier: string
     ) {
-        console.log(sessionId, pathogenId, sequenceIdentifier);
-
         const response = await this.deleteRequest(
             `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
         );
@@ -48,7 +44,6 @@ export class GentrainApi {
     }
 
     // Infrastructure
-
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
