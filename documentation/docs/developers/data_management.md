@@ -141,7 +141,6 @@ flowchart LR
     A --> B[Validate csv header] --> C[Filter already existing contacts] --> D[Create a contact of type <i>contact_person</i> for each pair of case ids]
 ```
 
-
 ## Data Processing
 
 ```mermaid
@@ -196,7 +195,7 @@ erDiagram
 
     Case {
         int id
-        string case_id
+        string ref_id
         string fasta_id
         datatime registered_at
         string city
@@ -210,6 +209,7 @@ erDiagram
     Case }o--|| Pathogen : ""
     Case }o--o{ Group : ""
     Case }o--|| Outbreak : ""
+    Case ||--o{ "Sequence Analysis Cases" : ""
 
     Category {
         int id
@@ -239,13 +239,14 @@ erDiagram
 
     Distance {
         int id
-        int sample_id_1
-        int sample_id_2
+        int case_id_1
+        int case_id_2
         int value
         datetime created_at
         datetime updated_at
     }
     Distance }o--|| "Distance Matrix" : ""
+    Distance ||--|{ Case : ""
 
     Group {
         int id
@@ -281,34 +282,23 @@ erDiagram
     }
     Pathogen }o--|| "Pathogen Type" : ""
 
-    Sample {
-        int id
+    "Sequence Analysis Cases" {
+        string sequence_analysis_id
         string fasta_id
-        int n_count
-        int sequence_length
-        string lineage
         datetime created_at
         datetime updated_at
     }
-    Sample ||--|| Case : ""
-    Sample ||--|| "Sequence Analysis" : ""
 
     "Sequence Analysis" {
         int id
+        string hash
         object result
         string schema
         string version
         datetime created_at
         datetime updated_at
     }
-
-    "Sequence Identifiers" {
-        uuidv4 id
-        string fasta_id
-        datetime created_at
-        datetime updated_at
-    }
-    "Sequence Identifiers" }o--|| Pathogen : ""
+    "Sequence Analysis" ||--|{ "Sequence Analysis Cases" : ""
 ```
 
 ### Server Side (ProstgreSQL)
