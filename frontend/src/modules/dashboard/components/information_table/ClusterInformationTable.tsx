@@ -86,9 +86,14 @@ export const ClusterInformationTable = () => {
                         <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs max-w-60">
-                        <p>
-                            {node.caseData.groups?.map((group) => group.name).join(", ") ?? "Keiner Gruppe zugewiesen"}
-                        </p>
+                        <div>
+                            {node.caseData.groups?.map((group) => (
+                                <p>
+                                    <span className="font-medium">{group.category?.name}: </span>
+                                    {group.name}
+                                </p>
+                            )) ?? <p>Keiner Gruppe zugewiesen</p>}
+                        </div>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
                         <p>{formatDate(node.caseData.registered_at)}</p>
