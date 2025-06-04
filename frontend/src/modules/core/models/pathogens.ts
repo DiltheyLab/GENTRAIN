@@ -6,6 +6,7 @@ import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
 import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
 import gentrainApiInstance from "../adapters/GentrainApi";
+import { getSequenceAnalysis } from "./cases";
 
 export type Pathogen = {
     id: number;
@@ -56,9 +57,8 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
         "rw",
         [
             db.cases,
-            db.samples,
             db.sequence_analyses,
-            db.sequence_identifiers,
+            db.sequence_analyses_cases,
             db.contacts,
             db.cases,
             db.distances,
@@ -74,13 +74,11 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
             const deletions = [];
             for (const caseData of cases) {
                 if (caseData.fasta_id) {
-                    const sampleCollection = db.samples.where({ fasta_id: caseData.fasta_id });
-                    sampleCollection.each((sample) => {
-                        if (sample.sequence_analysis_id) {
-                            deletions.push(db.sequence_analyses.where({ id: sample.sequence_analysis_id }).delete());
-                        }
-                    });
-                    deletions.push(sampleCollection.delete());
+                    const sequence_analysis = await getSequenceAnalysis(caseData.fasta_id);
+                    if (sequence_analysis) {
+                        deletions.push(db.sequence_analyses.where({ id: sequence_analysis.id }).delete());
+                    }
+                    deletions.push(await db.sequence_analyses_cases.where({ fasta_id: caseData.fasta_id }).delete());
                 }
                 deletions.push(
                     db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete()
@@ -91,7 +89,6 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
                 deletions.push(db.distances.where({ distance_matrix_id: distanceMatrix.id }).delete());
                 deletions.push(db.distance_matrices.where({ id: distanceMatrix.id }).delete());
             }
-            deletions.push(await db.sequence_identifiers.where({ pathogen_id: pathogen_id }).delete());
             deletions.push(deleteOutbreaksByPathogenId(pathogen_id));
             deletions.push(deleteCategoriesByPathogenId(pathogen_id));
             deletions.push(deleteGroupsByPathogenId(pathogen_id));

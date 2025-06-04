@@ -80,7 +80,7 @@ export const getAllCases = async () => {
     return cases;
 };
 
-const getSequenceAnalysisResult = async (fastaId: string) => {
+export const getSequenceAnalysis = async (fastaId: string) => {
     const sequenceAnalysisMapping = await db.sequence_analyses_cases.where({ fasta_id: fastaId }).first();
     if (!sequenceAnalysisMapping) return null;
     const sequenceAnalysis = await db.sequence_analyses
@@ -96,9 +96,9 @@ export const getWithRelations = async (collection: Collection, includeSequenceAn
 
     for (const currentCase of cases) {
         const caseWithRelationships: CaseWithRelationships = currentCase;
-        // retrieve sample schema object
+        // retrieve sequence analysis schema object
         if (includeSequenceAnalysisResult && currentCase.fasta_id) {
-            caseWithRelationships.sequence_analysis = await getSequenceAnalysisResult(currentCase.fasta_id);
+            caseWithRelationships.sequence_analysis = await getSequenceAnalysis(currentCase.fasta_id);
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
@@ -131,9 +131,9 @@ export const getCasesByConditionWithRelationships = async (
 
     for (const currentCase of cases) {
         const caseWithRelationships: CaseWithRelationships = currentCase;
-        // retrieve sample schema object
+        // retrieve sequence analysis schema object
         if (includeSequenceAnalysisResult && currentCase.fasta_id) {
-            caseWithRelationships.sequence_analysis = await getSequenceAnalysisResult(currentCase.fasta_id);
+            caseWithRelationships.sequence_analysis = await getSequenceAnalysis(currentCase.fasta_id);
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
@@ -169,9 +169,9 @@ export const getAllCasesForPathogenWithRelationships = async (
     for (const currentCase of cases) {
         const caseWithRelationships: CaseWithRelationships = currentCase;
         caseWithRelationships.pathogen = pathogen;
-        // retrieve sample schema object
+        // retrieve sequence analysis schema object
         if (includeSequenceAnalysisResult && currentCase.fasta_id) {
-            caseWithRelationships.sequence_analysis = await getSequenceAnalysisResult(currentCase.fasta_id);
+            caseWithRelationships.sequence_analysis = await getSequenceAnalysis(currentCase.fasta_id);
         }
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
@@ -203,18 +203,6 @@ export const getCaseByFastaId = async (fastaId: string) => {
     return caseByFastaId;
 };
 
-export const getCaseWithSampleById = async (id: number) => {
-    const caseById = await db.cases.get(id);
-    if (!caseById) {
-        return null;
-    }
-    const caseWithRelationships: CaseWithRelationships = caseById;
-    if (caseById.fasta_id) {
-        caseWithRelationships.sequence_analysis = await getSequenceAnalysisResult(caseById.fasta_id);
-    }
-    return caseWithRelationships;
-};
-
 export const getCasesForPathogenWithSequenceAnalysis = async (pathogen_id: number) => {
     const pathogenCases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
@@ -223,7 +211,7 @@ export const getCasesForPathogenWithSequenceAnalysis = async (pathogen_id: numbe
         const caseWithRelationships: CaseWithRelationships = pathogenCase;
         if (pathogenCase.fasta_id) {
             if (pathogenCase.fasta_id) {
-                caseWithRelationships.sequence_analysis = await getSequenceAnalysisResult(pathogenCase.fasta_id);
+                caseWithRelationships.sequence_analysis = await getSequenceAnalysis(pathogenCase.fasta_id);
             }
             casesWithRelationships.push(caseWithRelationships);
         }

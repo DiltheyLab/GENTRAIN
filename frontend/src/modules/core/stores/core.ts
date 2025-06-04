@@ -31,7 +31,7 @@ export const useCoreStore = create<CoreStore>()(
             updateCasesWithRelationships: async () => {
                 const activePathogenId = get().activePathogen?.id;
                 if (!activePathogenId) return;
-                const casesWithRelationships = await getAllCasesForPathogenWithRelationships(activePathogenId, true);
+                const casesWithRelationships = await getAllCasesForPathogenWithRelationships(activePathogenId);
                 set({ casesWithRelationships });
             },
             initSession: () => {
