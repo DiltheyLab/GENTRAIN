@@ -30,7 +30,6 @@ export abstract class DistanceCalculationStrategy {
     public execute = async () => {
         this.dataManagementStore.setDistanceCalculationRunning(true);
         if (!this.distanceMatrixId) await this.init();
-        console.log(this.cases);
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();
         await this.calculateSampleDistances();

@@ -39,6 +39,9 @@ export type BacterialQualityParameters = {
 interface BacterialAnalysisResult {
     allele_ids: { [gen_id: string]: string };
     allele_hashes: { [gen_id: string]: string };
+    contig_count: number;
+    first_contig_length: number;
+    undeterminable_gen_count: number;
 }
 
 interface ViralAnalysisResult {
@@ -50,6 +53,8 @@ interface ViralAnalysisResult {
     alignmentRange: { begin: number; end: number };
     sequence_length: number;
     n_count: number;
+    ambiguity_character_count: number;
+    lineage: string;
 }
 
 interface SequenceAnalysisSchema {

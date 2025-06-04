@@ -1,25 +1,15 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/modules/core/components/ui/Table";
-import { useDashboardStore } from "../../stores/dashboard";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
-import { CustomNode } from "@/modules/core/types/graph";
-import { ColorCircle } from "@/modules/core/components/graph/ColorCircle";
-import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { useCoreStore } from "@/modules/core/stores/core";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { t } from "i18next";
-import { ClusterToOutbreakDialog } from "./ClusterToOutbreakDialog";
-import { Card, CardContent } from "@/modules/core/components/ui/Card";
-import { BacterialAnalysisResult, ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { BacterialAnalysisResult, ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
+import { useCoreStore } from "@/modules/core/stores/core";
+import { t } from "i18next";
 
-export const ClusterInformationTable = () => {
-    const clusters = useDashboardStore((state) => state.clusters);
-    const colorMap = useDashboardStore((state) => state.graphSettings.colorMap);
+export function CaseInformationTable() {
+    const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
+    const casesWithSamples = casesWithRelationships.filter((caseData) => caseData.sequence_analysis);
     const activePathogen = useCoreStore((state) => state.activePathogen);
-    const noClusterAssigned = useDashboardStore((state) => state.graphData.nodes).filter(
-        (node) => node.cluster === t("clusterTypes.noClusterAssigned")
-    );
-
     const renderHeadRow = () => {
         return (
             <TableRow className="bg-muted font-medium">
@@ -45,6 +35,7 @@ export const ClusterInformationTable = () => {
             </TableRow>
         );
     };
+
     const renderQualityParameterCells = (caseData: CaseWithRelationships) => {
         if (activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
             return (
@@ -133,21 +124,19 @@ export const ClusterInformationTable = () => {
         );
     };
 
-    const renderRows = (nodes: (CustomNode | undefined)[]) => {
-        return nodes.map((node) => {
-            if (!node) return null;
-
+    const renderRows = () => {
+        return casesWithRelationships.map((caseData) => {
             return (
-                <TableRow key={node.caseData.id} className="border-muted">
-                    <TableCell className="p-2 text-xs  font-medium ">{node.caseData.case_id}</TableCell>
-                    {renderQualityParameterCells(node.caseData)}
+                <TableRow key={caseData.id} className="border-muted">
+                    <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
+                    {renderQualityParameterCells(caseData)}
                     <TableCell className="p-2 text-xs">
-                        <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
+                        <p>{caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs max-w-60">
                         <div>
-                            {node.caseData.groups?.map((group) => (
-                                <p>
+                            {caseData.groups?.map((group) => (
+                                <p key={`${caseData.id}_${group.id}`}>
                                     <span className="font-medium">{group.category?.name}: </span>
                                     {group.name}
                                 </p>
@@ -155,7 +144,7 @@ export const ClusterInformationTable = () => {
                         </div>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
-                        <p>{formatDate(node.caseData.registered_at)}</p>
+                        <p>{formatDate(caseData.registered_at)}</p>
                     </TableCell>
                 </TableRow>
             );
@@ -163,73 +152,17 @@ export const ClusterInformationTable = () => {
     };
 
     return (
-        <Card>
-            <CardContent>
-                <Accordion type="multiple" className="px-0 rounded-lg">
-                    {clusters?.map((cluster, index) => {
-                        return (
-                            <AccordionItem key={index} value={`${index}`} className="mt-2">
-                                <div className="flex justify-between items-center">
-                                    <AccordionTrigger className="font-semibold py-3 w-full space-x-1">
-                                        <div className="flex items-center gap-2">
-                                            <ColorCircle colorMap={colorMap} cluster={`Cluster ${index + 1}`} />
-                                            <h4 className="text-base">Cluster {index + 1}</h4>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <ClusterToOutbreakDialog
-                                        cluster={cluster}
-                                        clusterName={`Cluster ${index + 1}`}
-                                        colorMap={colorMap}
-                                    />
-                                </div>
-                                <AccordionContent>
-                                    <small>
-                                        Es sind {cluster.length} sequenzierte Fälle im Cluster {index + 1}.
-                                    </small>
-                                    <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                                        <Table className="rounded-xl">
-                                            <TableHeader>{renderHeadRow()}</TableHeader>
-                                            <TableBody>{renderRows(cluster)}</TableBody>
-                                        </Table>
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                        );
-                    })}
-                    {noClusterAssigned.length > 0 && (
-                        <AccordionItem value={`noOutbreakAssigned`} className="mt-2">
-                            <div className="flex justify-between items-center">
-                                <AccordionTrigger className="font-semibold py-3 w-full space-x-1">
-                                    <div className="flex items-center gap-2">
-                                        <ColorCircle
-                                            colorMap={colorMap}
-                                            cluster={t("clusterTypes.noClusterAssigned")}
-                                        />
-                                        <h4 className="text-base">{t("clusterTypes.noClusterAssigned")}</h4>
-                                    </div>
-                                </AccordionTrigger>
-                                <ClusterToOutbreakDialog
-                                    cluster={noClusterAssigned}
-                                    clusterName={t("clusterTypes.noClusterAssigned")}
-                                    colorMap={colorMap}
-                                />
-                            </div>
-                            <AccordionContent>
-                                <small>
-                                    Es sind {noClusterAssigned.length} sequenzierte Fälle die keinem Cluster zugewiesen
-                                    wurden.
-                                </small>
-                                <div className="border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
-                                    <Table className="rounded-xl">
-                                        <TableHeader>{renderHeadRow()}</TableHeader>
-                                        <TableBody>{renderRows(noClusterAssigned)}</TableBody>
-                                    </Table>
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    )}
-                </Accordion>
-            </CardContent>
-        </Card>
+        <>
+            <small>
+                Es sind {casesWithRelationships.length} Fälle im Datensatz. Zu {casesWithSamples.length} Fällen liegen
+                Sequenzen vor.
+            </small>
+            <div className="mt-4 border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
+                <Table className="rounded-xl">
+                    <TableHeader>{renderHeadRow()}</TableHeader>
+                    <TableBody>{renderRows()}</TableBody>
+                </Table>
+            </div>
+        </>
     );
-};
+}
