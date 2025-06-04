@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useHandlePersistedSessionResults } from "../data_management/hooks/useHandlePersistedSessionResults";
+import { useHandlePersistedSequenceAnalysisResults } from "../data_management/hooks/useHandlePersistedSequenceAnalysisResults";
 import { TutorialTour } from "../tutorial/components/TutorialTour";
 import {
     fetchPathogensFromServer,
@@ -21,7 +21,7 @@ export const Root = () => {
     const tutorialTourIsActive = useTutorialStore((state) => state.tutorialTourIsActive);
     const setPathogenIsLoading = useCoreStore((state) => state.setPathogenIsLoading);
 
-    useHandlePersistedSessionResults();
+    useHandlePersistedSequenceAnalysisResults();
 
     useEffect(() => {
         if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode

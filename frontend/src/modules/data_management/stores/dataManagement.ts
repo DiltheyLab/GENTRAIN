@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { CaseImport, CaseSchema, CaseWithRelationships } from "@/modules/core/models/cases";
-import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { toast } from "@/modules/core/components/ui/UseToast";
-import { CaseImports } from "../types/import";
+import { CaseImports, SequenceImports } from "../types/import";
+import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 
 type DataManagementStoreState = {
     // case import
@@ -11,10 +11,8 @@ type DataManagementStoreState = {
     caseSelectionActive: boolean;
     failedCaseImports: { [caseId: string]: string[] };
 
-    // sample import
-    sampleImports: {
-        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
-    };
+    // sequence import
+    sequenceImports: SequenceImports;
     sampleSelectionActive: boolean;
     showSampleUploadStatus: boolean;
     hideSampleUploadContent: boolean;
@@ -52,12 +50,10 @@ type DataManagementStoreActions = {
     setFailedCaseImports: (failedCaseImports: { [caseId: string]: string[] }) => void;
 
     // sample import
-    changeSampleImport: (key: string, value: any) => void;
-    removeSampleImport: (key: string) => void;
-    setSampleImports: (imports: {
-        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
-    }) => void;
-    clearSampleImports: () => void;
+    changeSequenceImport: (key: string, value: any) => void;
+    removeSequenceImport: (key: string) => void;
+    setSequenceImports: (imports: { [sequenceHash: string]: SequenceImport }) => void;
+    clearSequenceImports: () => void;
     setSampleSelectionActive: (value: boolean) => void;
     setShowSampleUploadStatus: (value: boolean) => void;
     setHideSampleUploadContent: (value: boolean) => void;
@@ -67,7 +63,7 @@ type DataManagementStoreActions = {
     incrementDistanceCalculationCount: () => void;
     setDistanceCalculationSum: (sum: number) => void;
     resetSampleUpload: () => void;
-    setFailedSampleImports: (fastaId: string[]) => void;
+    setFailedSampleImports: (sequenceHash: string[]) => void;
     setScrollToSample: (fastaId: string) => void;
 
     // contact import
@@ -94,7 +90,7 @@ export type DataManagementStore = DataManagementStoreState & DataManagementStore
 
 export const useDataManagementStore = create<DataManagementStore>((set, get) => ({
     clearImports: () => {
-        set({ caseImports: {}, sampleImports: {}, contactImports: {} });
+        set({ caseImports: {}, sequenceImports: {}, contactImports: {} });
     },
     // case import
     caseImports: {},
@@ -132,26 +128,24 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
     setCaseSelectionActive: (value: boolean) => {
         set({ caseSelectionActive: value });
     },
-    // sample import
-    sampleImports: {},
-    changeSampleImport: (fastaId: string, changes: any) => {
-        const updatedSampleImports = structuredClone(get().sampleImports);
-        const sampleImport = { ...updatedSampleImports[fastaId], ...changes };
-        updatedSampleImports[fastaId] = sampleImport;
-        set({ sampleImports: updatedSampleImports });
+    // sequence import
+    sequenceImports: {},
+    changeSequenceImport: (fastaId: string, changes: any) => {
+        const updatedSequenceImports = structuredClone(get().sequenceImports);
+        const sequenceImport = { ...updatedSequenceImports[fastaId], ...changes };
+        updatedSequenceImports[fastaId] = sequenceImport;
+        set({ sequenceImports: updatedSequenceImports });
     },
-    setSampleImports: (imports: {
-        [id: string]: { imported: SampleImport; persisted: SampleSchema | null; import: boolean; status: string };
-    }) => {
-        set({ sampleImports: imports });
+    setSequenceImports: (imports: { [fastaId: string]: SequenceImport }) => {
+        set({ sequenceImports: imports });
     },
-    removeSampleImport: (fastaId: string) => {
-        const updatedSampleImports = structuredClone(get().sampleImports);
-        delete updatedSampleImports[fastaId];
-        set({ sampleImports: updatedSampleImports });
+    removeSequenceImport: (fastaId: string) => {
+        const updatedSequenceImports = structuredClone(get().sequenceImports);
+        delete updatedSequenceImports[fastaId];
+        set({ sequenceImports: updatedSequenceImports });
     },
-    clearSampleImports: () => {
-        set({ sampleImports: {} });
+    clearSequenceImports: () => {
+        set({ sequenceImports: {} });
     },
     sampleSelectionActive: false,
     setSampleSelectionActive: (value: boolean) => {
@@ -193,7 +187,7 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
             isUploading: false,
             showSampleUploadStatus: false,
             hideSampleUploadContent: false,
-            sampleImports: {},
+            sequenceImports: {},
         });
     },
     failedSampleImports: [],
@@ -247,7 +241,7 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
                 set({ importAssistentStep: "sequence_introduction" });
                 break;
             case "sequence_selection":
-                set({ importAssistentStep: "sequence_import", sampleImports: {} });
+                set({ importAssistentStep: "sequence_import", sequenceImports: {} });
                 break;
             case "sequence_analysis":
                 set({ importAssistentStep: "case_import" });
@@ -290,7 +284,7 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
                 set({ importAssistentStep: "sequence_import" });
                 break;
             case "sequence_import":
-                if (Object.keys(get().sampleImports).length === 0) {
+                if (Object.keys(get().sequenceImports).length === 0) {
                     set({ importAssistentStep: "contact_import" });
                     break;
                 }

@@ -17,13 +17,13 @@ import { FileDropzone } from "./FileDropzone";
 import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
 import { PersistenceStrategy } from "../../services/data_import/persistence/PersistenceStrategy";
 import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
-import { SampleImport, SampleSchema } from "@/modules/core/models/samples";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { useState } from "react";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 import { FileDown } from "lucide-react";
 import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
+import { SequenceImport, SequenceSchema } from "@/modules/core/models/sequence_analyses";
 
 type DataImportProps = {
     children: JSX.Element;
@@ -40,12 +40,14 @@ type DataImportProps = {
 };
 
 type ImportData = {
-    [id: string]: {
-        imported: CaseImport | SampleImport | ContactImport;
-        persisted: CaseSchema | SampleSchema | ContactSchema | null;
-        import: boolean;
-        status?: string;
-    };
+    [id: string]:
+        | {
+              imported: CaseImport | ContactImport;
+              persisted?: CaseSchema | ContactSchema | null;
+              import: boolean;
+              status?: string;
+          }
+        | SequenceImport;
 };
 
 export const DataImport = ({

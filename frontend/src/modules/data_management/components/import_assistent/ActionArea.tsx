@@ -21,7 +21,7 @@ export function ActionArea() {
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const resetImportAssistent = useDataManagementStore((state) => state.resetImportAssistent);
     const caseImports = useDataManagementStore((state) => state.caseImports);
-    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const sequenceImports = useDataManagementStore((state) => state.sequenceImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
 
     const getImportComponentBasedOnInitalUploadStep = () => {
@@ -68,7 +68,7 @@ export function ActionArea() {
                 return (
                     <>
                         <DataImport
-                            data={sampleImports}
+                            data={sequenceImports}
                             persistenceStrategy={new SamplesPersistence()}
                             validationStrategy={new SamplesValidation()}
                             type="sequence"
@@ -82,7 +82,7 @@ export function ActionArea() {
                         >
                             <SequenceSelection />
                         </DataImport>
-                        {Object.keys(sampleImports).length === 0 && (
+                        {Object.keys(sequenceImports).length === 0 && (
                             <div className="flex justify-end gap-4">
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück

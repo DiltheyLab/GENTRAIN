@@ -1,13 +1,13 @@
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { DataTable } from "@/modules/core/components/tables/DataTable";
-import { useGetSampleTableData } from "@/modules/data_management/hooks/useGetSampleTableData";
+import { useGetSequenceTableData } from "@/modules/data_management/hooks/useGetSequenceTableData";
 import { sampleImportFilterFn } from "@/modules/data_management/helpers/dataTable";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { bacterialColumns, sampleSelectionColumns, viralColumns } from "./sequenceSelectionColumns";
 
 export function SequenceSelection() {
-    const sampleTableData = useGetSampleTableData();
+    const sampleTableData = useGetSequenceTableData();
     const changeSampleImport = useDataManagementStore((state) => state.changeSampleImport);
     const activePathogen = useCoreStore((state) => state.activePathogen);
 

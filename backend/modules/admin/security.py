@@ -7,7 +7,6 @@ from backend.modules.admin.users import user_datastore
 
 security = Security(app, user_datastore)
 
-
 # define a context processor for merging flask-admin's template context into the
 # flask-security views.
 @security.context_processor

@@ -1,6 +1,4 @@
-export type PersistedSequenceAnalysisResult = {
-    fasta_id: string;
+export type PersistedSequenceAnalysis = {
+    sequence_hash: string;
     result: object;
-    identifier: string;
-    sequence_length: number;
 };

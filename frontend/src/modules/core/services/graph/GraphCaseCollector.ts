@@ -93,15 +93,15 @@ export class GraphCaseCollector {
         geneticDistanceThreshold: number
     ) => {
         const casesOfSelectedOutbreak = this.filterCasesByOutbreak(selectedOutbreak);
-        const sampleIdsOfCasesInSelectedOutbreak = casesOfSelectedOutbreak.map((caseData) => caseData.sample?.id ?? -1);
+        const caseIdsInSelectedOutbreak = casesOfSelectedOutbreak.map((caseData) => caseData.id);
 
         const distancesBelowThreshold = await getDistancesFromSampleIdsBelowThreshold(
-            sampleIdsOfCasesInSelectedOutbreak,
+            caseIdsInSelectedOutbreak,
             geneticDistanceThreshold
         );
 
         const sampleIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
-            acc.push(distance.sample_id_1, distance.sample_id_2);
+            acc.push(distance.case_id_1, distance.case_id_2);
             return acc;
         }, [] as number[]);
 

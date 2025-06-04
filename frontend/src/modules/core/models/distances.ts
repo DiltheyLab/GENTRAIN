@@ -1,55 +1,55 @@
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { SampleSchema } from "./samples";
+import { CaseWithRelationships } from "./cases";
 export interface DistancesSchema {
     id: number;
-    sample_id_1: number;
-    sample_id_2: number;
+    case_id_1: number;
+    case_id_2: number;
     distance_matrix_id: number;
     value: number;
     created_at?: Date;
     updated_at?: Date;
 }
 
-export interface DistanceWithFastaId {
-    fasta_id_1: string;
-    fasta_id_2: string;
+export interface DistanceWithCaseReferences {
+    case_reference_1: string;
+    case_reference_2: string;
     value: number;
 }
 
-export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatrixId: number) => {
+export const getAllDistancesForDistanceMatrixWithCaseReferences = async (distanceMatrixId: number) => {
     const distances = await db.distances.where({ distance_matrix_id: distanceMatrixId }).toArray();
     let distancesWithFastaIds = [];
 
-    const sampleId = new Set<number>();
+    const caseReferences = new Set<number>();
     for (const distance of distances) {
-        sampleId.add(distance.sample_id_1);
-        sampleId.add(distance.sample_id_2);
+        caseReferences.add(distance.case_id_1);
+        caseReferences.add(distance.case_id_2);
     }
 
-    const samples = await db.samples.bulkGet(Array.from(sampleId));
+    const cases = await db.cases.bulkGet(Array.from(caseReferences));
 
-    const sampleMap = new Map<number, SampleSchema>();
+    const caseMap = new Map<number, CaseWithRelationships>();
 
-    for (const sample of samples) {
-        if (!sample) continue;
-        sampleMap.set(sample.id, sample);
+    for (const currentCase of cases) {
+        if (!currentCase) continue;
+        caseMap.set(currentCase.id, currentCase);
     }
 
     for (const distance of distances) {
-        const sample1 = sampleMap.get(distance.sample_id_1);
-        const sample2 = sampleMap.get(distance.sample_id_2);
+        const case1 = caseMap.get(distance.case_id_1);
+        const case2 = caseMap.get(distance.case_id_2);
 
-        if (!sample1 || !sample2) {
+        if (!case1 || !case2) {
             return;
         }
 
-        const distanceWithFastaId: DistanceWithFastaId = {
-            fasta_id_1: sample1.fasta_id,
-            fasta_id_2: sample2.fasta_id,
+        const distanceWithCaseReferences: DistanceWithCaseReferences = {
+            case_reference_1: case1.case_id,
+            case_reference_2: case2.case_id,
             value: distance.value,
         };
 
-        distancesWithFastaIds.push(distanceWithFastaId);
+        distancesWithFastaIds.push(distanceWithCaseReferences);
     }
 
     return distancesWithFastaIds;
@@ -66,22 +66,10 @@ export const deleteDistancesBySampleId = async (sample_id: number) => {
     await db.distances.where({ sample_id_1: sample_id }).or("sample_id_2").equals(sample_id).delete();
 };
 
-/* 
-export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[], threshold: number) => {
-    return db.distances
-        .where("sample_id_1")
-        .anyOf(sampleIds)
-        .or("sample_id_2")
-        .anyOf(sampleIds)
-        .and((distance) => distance.value <= threshold)
-        .toArray();
-};
- */
-
-export const getDistancesFromSampleIdsBelowThreshold = async (sampleIds: number[], threshold: number) => {
+export const getDistancesFromSampleIdsBelowThreshold = async (caseIds: number[], threshold: number) => {
     const distances = await db.distances.toArray();
     return distances.filter((distance) => {
-        const { sample_id_1, sample_id_2, value } = distance;
-        return (sampleIds.includes(sample_id_1) || sampleIds.includes(sample_id_2)) && value <= threshold;
+        const { case_id_1, case_id_2, value } = distance;
+        return (caseIds.includes(case_id_1) || caseIds.includes(case_id_2)) && value <= threshold;
     });
 };

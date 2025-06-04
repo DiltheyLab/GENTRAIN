@@ -17,7 +17,7 @@ export const ImportSection = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const casesForActivePathogen = useCoreStore((state) => state.casesWithRelationships);
     const caseImports = useDataManagementStore((state) => state.caseImports);
-    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const sequenceImports = useDataManagementStore((state) => state.sequenceImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
     const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
 
@@ -52,7 +52,7 @@ export const ImportSection = () => {
                 </div>
                 <div className="w-1/3">
                     <DataImport
-                        data={sampleImports}
+                        data={sequenceImports}
                         persistenceStrategy={new SamplesPersistence()}
                         validationStrategy={new SamplesValidation()}
                         type="sequence"

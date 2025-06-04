@@ -56,7 +56,7 @@ export class ClusterAnalyser {
         return clusters;
     };
 
-    private buildAdjacencyList = (): void => {
+    private buildAdjacencyList =  (): void => {
         const linksBelowThreshold = this.links.filter(
             (link) => link.value !== CONTACT_LINK_VALUE && link.value <= this.clusteringThreshold
         );

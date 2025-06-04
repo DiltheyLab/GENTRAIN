@@ -12,7 +12,6 @@ import { Input } from "@/modules/core/components/ui/Input";
 import { useState } from "react";
 import { db } from "@/modules/core/services/database/DatabaseManager";
 import { useCoreStore } from "@/modules/core/stores/core";
-import { deleteSampleByFastaId } from "@/modules/core/models/samples";
 import { validateSequenceId } from "@/modules/core/helpers/validateSequenceId";
 import { useGetAllCases } from "@/modules/core/hooks/database/cases/useGetAllCases";
 import { cn } from "@/modules/core/helpers/cn";

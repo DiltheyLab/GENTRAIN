@@ -1,8 +1,5 @@
 import os
 
-from flask_security import uia_username_mapper
-
-
 def get_project_path():
     """Retrieve the directory path for the project root."""
     return os.path.dirname(os.path.realpath(__file__))
@@ -32,11 +29,8 @@ SECURITY_POST_REGISTER_VIEW = "/admin/"
 # Flask-Security features
 SECURITY_REGISTERABLE = False
 SECURITY_CHANGEABLE = True
-SECURITY_SEND_REGISTER_EMAIL = False
+SECURITY_SEND_REGISTER_EMAIL = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SECURITY_USERNAME_ENABLE = True
-SECURITY_USERNAME_REQUIRED = True
-SECURITY_USER_IDENTITY_ATTRIBUTES = [{"username": {"mapper": uia_username_mapper, "case_insensitive": True}}]
 
 BASIC_AUTH_USERNAME = os.environ.get("ADMIN_HTBASIC_USERNAME")
 BASIC_AUTH_PASSWORD = os.environ.get("ADMIN_HTBASIC_PASSWORD")

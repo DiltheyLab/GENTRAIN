@@ -1,6 +1,6 @@
-import {GentrainException} from "@/modules/core/exceptions/GentrainException";
-import {Pathogen} from "@/modules/core/models/pathogens";
-import {PersistedSequenceAnalysisResult} from "@/modules/core/types/api";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { Pathogen } from "@/modules/core/models/pathogens";
+import { PersistedSequenceAnalysis } from "@/modules/core/types/api";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
@@ -21,12 +21,11 @@ export class GentrainApi {
     }
 
     // Sequence Analyses
-
-    public async getPersistedSequenceAnalysisResults(sessionId: string, pathogenId: number) {
-        const sequenceAnalysisResults: PersistedSequenceAnalysisResult[] = await this.getRequest(
+    public async getPersistedSequenceAnalyses(sessionId: string, pathogenId: number) {
+        const sequenceAnalyses: PersistedSequenceAnalysis[] = await this.getRequest(
             `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
         );
-        return sequenceAnalysisResults ?? [];
+        return sequenceAnalyses ?? [];
     }
 
     public async deleteSequenceAnalysisResultForPathogenAndSession(
@@ -34,11 +33,6 @@ export class GentrainApi {
         pathogenId: number,
         sequenceIdentifier: string
     ) {
-        console.log(sessionId,
-            pathogenId,
-            sequenceIdentifier
-        )
-
         const response = await this.deleteRequest(
             `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
         );
@@ -57,7 +51,7 @@ export class GentrainApi {
 
     private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
         try {
-            const response = await fetch(url, {headers: {...this.defaultHeaderParameters, ...headerParameters}});
+            const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
             if (!response.ok) {
                 throw new GentrainException("ApiError");
             }
@@ -78,7 +72,7 @@ export class GentrainApi {
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify(bodyParameters),
-                headers: {...this.defaultHeaderParameters, ...headerParameters},
+                headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
             if (!response.ok) {
                 throw new GentrainException("ApiError");
@@ -95,7 +89,7 @@ export class GentrainApi {
         try {
             const response = await fetch(url, {
                 method: "DELETE",
-                headers: {...this.defaultHeaderParameters, ...headerParameters},
+                headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
             if (!response.ok) {
                 throw new GentrainException("ApiError");

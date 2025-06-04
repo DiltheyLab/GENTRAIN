@@ -7,11 +7,15 @@ from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
 from backend.modules.core.helpers import read_fasta_file_from_zip, slugify
-from backend.modules.core.validation_rules import valid_sequence_id_in_fasta, valid_sequence
+from backend.modules.core.validation_rules import (
+    valid_sequence_id_in_fasta,
+    valid_sequence,
+)
 
 
 class SchemeValidatorStrategy(ABC):
     """Scheme Validator Strategy Class."""
+
     schemes_root: str = f"{get_project_path()}/modules/sequence_analysis/schemes"
     zip_file = None
     common_subdirectory = ""
@@ -29,16 +33,18 @@ class SchemeValidatorStrategy(ABC):
         """Abstract template method to add files to clean zip."""
 
     def validate(self):
-        self.zip_file = ZipFile(self.stream, 'r')
+        self.zip_file = ZipFile(self.stream, "r")
         self.get_common_subdirectory()
         self.validate_zip()
         self.zip_file.close()
 
     def clean_zip(self):
-        self.zip_file = ZipFile(self.stream, 'r')
+        self.zip_file = ZipFile(self.stream, "r")
         self.get_common_subdirectory()
-        filename = path.join(f"{get_project_path()}/modules/sequence_analysis/schemes",
-                                 secure_filename(f"{self.form.scheme_name.data}.zip"))
+        filename = path.join(
+            f"{get_project_path()}/modules/sequence_analysis/schemes",
+            secure_filename(f"{self.form.scheme_name.data}.zip"),
+        )
         zip_out = self.fill_clean_zip(filename)
         self.zip_file.close()
         zip_out.close()
@@ -51,7 +57,7 @@ class SchemeValidatorStrategy(ABC):
         except ValidationError as e:
             raise e
         except:
-            raise ValidationError("Example data upload is not valid.")
+            raise ValidationError("Scheme upload is not valid.")
         # prevent malicious inner zip files starting with "../" or other filenames manipulating the extraction destination
         for file_name in self.zip_file.namelist():
             target_path = path.abspath(path.join(scheme_root, file_name))
@@ -71,7 +77,13 @@ class SchemeValidatorStrategy(ABC):
                         raise ValidationError(f"Sequence {row.id} is invalid.")
 
     def get_common_subdirectory(self):
-        file_paths = [name for name in self.zip_file.namelist() if not name.endswith('/') and "__MACOSX" not in name and ".DS_Store" not in name]
+        file_paths = [
+            name
+            for name in self.zip_file.namelist()
+            if not name.endswith("/")
+            and "__MACOSX" not in name
+            and ".DS_Store" not in name
+        ]
         if not file_paths:
             return
         common_prefix = path.commonprefix(file_paths)

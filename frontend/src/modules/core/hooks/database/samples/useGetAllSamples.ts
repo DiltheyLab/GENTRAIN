@@ -1,7 +1,7 @@
+import { SequenceAnalysisSchema } from "@/modules/core/models/sequence_analyses";
 import { db } from "@/modules/core/services/database/DatabaseManager";
-import { SampleSchema } from "@/modules/core/models/samples";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const useGetAllSamples = (): SampleSchema[] | undefined => {
-    return useLiveQuery(() => db.samples.toArray());
+export const useGetAllSequenceAnalyses = (): SequenceAnalysisSchema[] | undefined => {
+    return useLiveQuery(() => db.sequence_analyses.toArray());
 };

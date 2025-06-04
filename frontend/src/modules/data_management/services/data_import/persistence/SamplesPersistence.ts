@@ -10,12 +10,12 @@ export class SamplesPersistence extends PersistenceStrategy {
     }
     protected persist = async () => {
         try {
-            const samples = useDataManagementStore.getState().sampleImports;
+            const sequenceImports = useDataManagementStore.getState().sequenceImports;
             // analyse sample depending on pathogen type to receive variants for distance calculations
             this.dataManagementStore.setSampleSelectionActive(false);
             const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
             if (!sequenceAnalysisStrategy) return;
-            sequenceAnalysisStrategy.setSampleData(samples);
+            sequenceAnalysisStrategy.setSequenceImports(sequenceImports);
             sequenceAnalysisStrategy.execute();
         } catch (error) {
             throw error;
