@@ -48,18 +48,16 @@ def leave_sequence_analysis_room(pathogen_type):
 
 
 @sio.event
-def sequence_analysis(fasta_chunk, chunk_information, pathogen_id):
+def sequence_analysis(fasta_chunk, chunk_information, pathogen_id, fasta_hash=None):
     """
     Collect fasta chunks for sequence analysis and init the analysis when all chunks were successfully transferred.
 
     Parameters:
-        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
-            and a pseudonymized sequence identifier in case of bacterial analyses
         fasta_chunk -- Chunk of a fasta file in case viral analyses and a chunk of a sequence in case of bacterial analyses
         chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
             and the total amount of chunks relating to the current analysis
-        sequence_identifiers -- List of sequence identifiers in case of viral analyses
         pathogen_id -- Postgres db id of the selected pathogen
+        fasta_hash -- Hashed fasta content
     """
     pathogen = Pathogen.query.get(pathogen_id)
     socket_id = request.sid
@@ -75,14 +73,10 @@ def sequence_analysis(fasta_chunk, chunk_information, pathogen_id):
     if not fasta_content:
         return
 
-    init_sequence_analysis_job(
-        socket_id, pathogen, fasta_content
-    )
+    init_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash)
 
 
-def init_sequence_analysis_job(
-    socket_id, pathogen, fasta_content
-):
+def init_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=None):
     """
     Instantiate a sequence analysis strategy depending on the type of the selected pathogen and enqueue a job.
 
@@ -93,17 +87,20 @@ def init_sequence_analysis_job(
             and a pseudonymized sequence identifier in case of bacterial analyses
         fasta_content -- Complete fasta content containing multiple sequences for viral analyses
             and a single sequence assembly for bacterial analyses
+        fasta_hash -- Hashed fasta content
     """
     strategy = (
         ViralSequenceAnalysis(
             pathogen=pathogen,
             fasta_content=fasta_content,
             socket_id=socket_id,
-        ) if pathogen.type == "viral"
+        )
+        if pathogen.type == "viral"
         else BacterialSequenceAnalysis(
             pathogen=pathogen,
             fasta_content=fasta_content,
             socket_id=socket_id,
+            fasta_hash=fasta_hash,
         )
     )
     strategy.enqueue_analysis(

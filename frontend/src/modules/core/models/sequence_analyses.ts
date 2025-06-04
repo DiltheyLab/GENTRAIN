@@ -59,7 +59,7 @@ interface ViralAnalysisResult {
 
 interface SequenceAnalysisSchema {
     id: number;
-    sequence_hash: string;
+    fasta_hash: string;
     pathogen_id: number;
     result?: ViralAnalysisResult | BacterialAnalysisResult;
     schema?: string;

@@ -1,4 +1,4 @@
 export type PersistedSequenceAnalysis = {
-    sequence_hash: string;
+    fasta_hash: string;
     result: object;
 };

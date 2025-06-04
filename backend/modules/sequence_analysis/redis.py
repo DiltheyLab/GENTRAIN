@@ -1,9 +1,7 @@
 from backend.server import redis_connection
 
 
-def persist_fasta_chunk(
-        fasta_chunk, socket_id, chunk_information
-):
+def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
     """
     Write a fasta chunk into the redis cache.
 
@@ -33,7 +31,9 @@ def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
         chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
             and the total amount of chunks relating to the current analysis
     """
-    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{chunk_information['id']}:*")
+    chunk_keys = redis_connection.keys(
+        f"chunks:{socket_id}:{chunk_information['id']}:*"
+    )
     chunk_keys.sort()
     return chunk_keys
 
@@ -56,12 +56,12 @@ def remember_session_id(socket_id, gentrain_session_id):
 
 def get_merged_fasta_content_if_complete(socket_id, chunk_information):
     """
-   Merge entire fasta file content into a string if all chunks were successfully transferred.
+    Merge entire fasta file content into a string if all chunks were successfully transferred.
 
-    Parameters:
-        socket_id -- Id of the websocket connection
-        chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
-            and the total amount of chunks relating to the current analysis
+     Parameters:
+         socket_id -- Id of the websocket connection
+         chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
+             and the total amount of chunks relating to the current analysis
     """
     chunk_keys = get_persisted_fasta_chunk_keys(socket_id, chunk_information)
     if chunk_information["total"] > len(chunk_keys):

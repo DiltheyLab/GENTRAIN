@@ -4,20 +4,20 @@ import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
     protected parallelAnalysesThreshold = 100;
 
-    public setSequenceImports(sequenceImports: { [sequenceHash: string]: SequenceImport }) {
+    public setSequenceImports(sequenceImports: { [fastaHash: string]: SequenceImport }) {
         this.sequenceImports = sequenceImports;
     }
 
     protected emitSequenceAnalysis = () => {
         const finishedSequenceAnalyses = Object.keys(this.sequenceImports).filter(
-            (sequenceHash) =>
-                this.sequenceImports[sequenceHash].status === "success" ||
-                this.sequenceImports[sequenceHash].status === "error"
+            (fastaHash) =>
+                this.sequenceImports[fastaHash].status === "success" ||
+                this.sequenceImports[fastaHash].status === "error"
         );
         const pendingSequenceAnalyses = Object.keys(this.sequenceImports).filter(
-            (sequenceHash) =>
-                this.sequenceImports[sequenceHash].status !== "success" &&
-                this.sequenceImports[sequenceHash].status !== "error"
+            (fastaHash) =>
+                this.sequenceImports[fastaHash].status !== "success" &&
+                this.sequenceImports[fastaHash].status !== "error"
         );
 
         // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
