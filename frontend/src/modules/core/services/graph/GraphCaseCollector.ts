@@ -1,7 +1,7 @@
 import { AnalysisSettings, SelectedBackground } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { DateRange } from "react-day-picker";
 import { CaseWithRelationships } from "@/modules/core/models/cases";
-import { getDistancesFromSampleIdsBelowThreshold } from "@/modules/core/models/distances";
+import { getDistancesFromSequenceAnalysisIdsBelowThreshold } from "@/modules/core/models/distances";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 
 export class GraphCaseCollector {
@@ -52,7 +52,7 @@ export class GraphCaseCollector {
 
         // filter cases which have no sequence
         if (excludeCasesWithoutSequence) {
-            this.removeCasesWithoutSample();
+            this.removeCasesWithoutSequenceAnalysis();
         }
 
         // filter cases which have a distance above the genetic distance threshold
@@ -95,20 +95,20 @@ export class GraphCaseCollector {
         const casesOfSelectedOutbreak = this.filterCasesByOutbreak(selectedOutbreak);
         const caseIdsInSelectedOutbreak = casesOfSelectedOutbreak.map((caseData) => caseData.id);
 
-        const distancesBelowThreshold = await getDistancesFromSampleIdsBelowThreshold(
+        const distancesBelowThreshold = await getDistancesFromSequenceAnalysisIdsBelowThreshold(
             caseIdsInSelectedOutbreak,
             geneticDistanceThreshold
         );
 
-        const sampleIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
+        const SequenceAnalysisIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
             acc.push(distance.case_id_1, distance.case_id_2);
             return acc;
         }, [] as number[]);
 
-        const sampleIdsWithoutDuplicates = Array.from(new Set(sampleIdsBelowThreshold));
+        const SequenceAnalysisIdsWithoutDuplicates = Array.from(new Set(SequenceAnalysisIdsBelowThreshold));
 
         const casesInGraphWithLowGeneticDistance = this.casesInGraph.filter((caseData) =>
-            sampleIdsWithoutDuplicates.includes(caseData.sample?.id ?? -1)
+            SequenceAnalysisIdsWithoutDuplicates.includes(caseData.sequence_analysis?.id ?? -1)
         );
 
         return casesInGraphWithLowGeneticDistance;
@@ -123,8 +123,8 @@ export class GraphCaseCollector {
         });
     };
 
-    private filterCasesWithoutSample = (cases: CaseWithRelationships[]) => {
-        return cases.filter((caseData) => caseData.sample);
+    private filterCasesWithoutSequenceAnalysis = (cases: CaseWithRelationships[]) => {
+        return cases.filter((caseData) => caseData.sequence_analysis);
     };
 
     private removeDuplicateCases() {
@@ -149,7 +149,7 @@ export class GraphCaseCollector {
         );
 
         // get contact cases which are left in casesInGraph
-        const contactCases = this.casesInGraph.filter((caseData) => !caseData.sample);
+        const contactCases = this.casesInGraph.filter((caseData) => !caseData.sequence_analysis);
 
         // add cases with low genetic distance to the cases in the outbreak
         this.casesInGraph = this.casesInOutbreak.concat(casesInGraphWithLowGeneticDistance);
@@ -158,9 +158,9 @@ export class GraphCaseCollector {
         this.casesInGraph = this.casesInGraph.concat(contactCases);
     }
 
-    private removeCasesWithoutSample() {
-        this.casesInGraph = this.filterCasesWithoutSample(this.casesInGraph);
-        this.casesInOutbreak = this.filterCasesWithoutSample(this.casesInOutbreak);
+    private removeCasesWithoutSequenceAnalysis() {
+        this.casesInGraph = this.filterCasesWithoutSequenceAnalysis(this.casesInGraph);
+        this.casesInOutbreak = this.filterCasesWithoutSequenceAnalysis(this.casesInOutbreak);
     }
 
     private addCasesFromBackground(selectedBackground: SelectedBackground) {

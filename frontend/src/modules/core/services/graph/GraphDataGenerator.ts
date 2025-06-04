@@ -65,8 +65,7 @@ export class GraphDataGenerator {
 
             for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
                 const columnCase = this.graphCases[columnIndex];
-
-                if (!rowCase.sample || !columnCase.sample) continue;
+                if (!rowCase.sequence_analysis || !columnCase.sequence_analysis) continue;
                 this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,

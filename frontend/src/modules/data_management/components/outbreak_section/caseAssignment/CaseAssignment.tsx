@@ -22,7 +22,7 @@ type CaseAssigmentProps = {
 
 const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentProps) => {
     const noOutbreakAssignedId = "0";
-    const cases = useGetAllCasesForActivePathogenWithRelationships();
+    const cases = useGetAllCasesForActivePathogenWithRelationships(true);
     const outbreaks = useGetOutbreaksForActivePathogen();
     const noOutbreakIsAssigned = cases?.some((caseData) => !caseData.outbreak);
     const [casesInTable1, setCasesInTable1] = useState<CaseWithRelationships[]>([]);

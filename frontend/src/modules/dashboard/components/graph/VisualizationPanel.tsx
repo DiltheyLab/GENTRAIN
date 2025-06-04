@@ -45,6 +45,7 @@ export const DashboardVisualizationPanel = () => {
     );
 
     useEffect(() => {
+        console.log(cases);
         // if the pathogen changes, the graph will be updated by the useEffect because the useGetDistanceMatrixAssembly and the cases changed
         // this leads to the scenario that the graph is being updated twice
         // to prevent this, we check if the pathogen_id of the first case is the same as the activePathogenId
@@ -63,7 +64,6 @@ export const DashboardVisualizationPanel = () => {
             let graphData = await graphDataGenerator.execute();
             const allLinks = graphDataGenerator.getAllLinks();
             setAllLinks(allLinks);
-
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
                 // create clusters and assign them to the nodes based on all links (not only the MSTLinks) below the clustering threshold
                 const clusterAnalyser = new ClusterAnalyser(graphData.nodes, allLinks, settings.clusteringThreshold);

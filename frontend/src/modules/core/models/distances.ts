@@ -66,7 +66,7 @@ export const deleteDistancesBySampleId = async (sample_id: number) => {
     await db.distances.where({ sample_id_1: sample_id }).or("sample_id_2").equals(sample_id).delete();
 };
 
-export const getDistancesFromSampleIdsBelowThreshold = async (caseIds: number[], threshold: number) => {
+export const getDistancesFromSequenceAnalysisIdsBelowThreshold = async (caseIds: number[], threshold: number) => {
     const distances = await db.distances.toArray();
     return distances.filter((distance) => {
         const { case_id_1, case_id_2, value } = distance;

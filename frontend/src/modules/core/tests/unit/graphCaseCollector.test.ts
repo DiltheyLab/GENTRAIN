@@ -233,7 +233,7 @@ describe("GraphCaseCollector", () => {
 
         // mocks the function which access the indexedDB
         vi.mock("@/modules/core/models/distances", () => ({
-            getDistancesFromSampleIdsBelowThreshold: vi.fn(() => {
+            getDistancesFromSequenceAnalysisIdsBelowThreshold: vi.fn(() => {
                 //create mock distance
                 const distance1 = createDistance({ sample_id_1: 1, sample_id_2: 2 });
                 return [distance1];
