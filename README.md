@@ -1,8 +1,88 @@
-# GenTrain Dashboard
+# GENTRAIN
 
-_About the Project_
+GENTRAIN is an **innovative software designed for genetic-based infection chain tracing**. It was developed at the University Hospital Düsseldorf as part of a research project commissioned by the Ministry of Labor, Health and Social Affairs of North Rhine-Westphalia, Germany, and funded by the European Union (NextGenerationEU). The primary goal is to assist public health authorities in **better understanding infection chains in outbreak scenarios and the general population**. This significantly contributes to infection control and simultaneously promotes a sustainable increase in the digital maturity of the public health authorities, especially in the dimensions of software, data, and interoperability.
 
 ## Installation
+
+To set up GENTRAIN locally for development or to run a demonstration instance, follow these steps. This setup uses Docker Compose to manage all necessary services.
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed on your system:
+
+- **Git**: For cloning the repository.
+- **Docker Desktop** (or Docker Engine and Docker Compose): GENTRAIN is containerized, so Docker is essential.
+
+### Steps to Install
+
+1.  **Clone the Repository**:
+    First, clone the GENTRAIN repository to your local machine:
+
+    ```bash
+    git clone [https://github.com/DiltheyLab/GENTRAIN.git](https://github.com/DiltheyLab/GENTRAIN.git)
+    cd gentrain
+    ```
+
+2.  **Configure Environment Variables**:
+    GENTRAIN uses environment variables for configuration. Create a `.env` file in the root directory of the cloned project. This file will hold settings for both the frontend and backend services. Here's an example of the essential variables you'll need for a local setup (you can also find this in the `example.env` file):
+
+    ```ini
+    # .env - Example for Local Development
+    # BACKEND VARIABLES
+      APP_ENV=development
+      DATABASE_DRIVER=postgresql
+      DATABASE_NAME=gentrain_db
+      DATABASE_HOST=gentrain-db
+      DATABASE_PORT=5432
+      DATABASE_USER=admin
+      DATABASE_PASSWORD=admin
+      REDIS_HOST=gentrain-redis
+      REDIS_PORT=6379
+      REDIS_USERNAME=default
+      REDIS_PASSWORD=secret
+      PYTHONUNBUFFERED=1
+      SECRET_KEY=secret
+      ADMIN_EMAIL=admin@gentrain.com
+      ADMIN_PASSWORD=admin
+      REACT_DEV_PORT=3000
+      REACT_BUILD_PORT=4173
+
+      # FRONTEND VARIABLES
+      VITE_API_HOST=http://localhost:4000
+      VITE_API_BASIC_USERNAME=
+      VITE_API_BASIC_PASSWORD=
+    ```
+
+    - **`RQ_SECRET`**: It's crucial to replace `your_super_secret_key_for_redis_queue` with a strong, unique secret key for security.
+    - **`SLACK_WEBHOOK_URL`**: This can be left empty if you don't need Slack notifications for local development.
+
+3.  **Build and Run Docker Containers**:
+    Once your `.env` file is configured, you can build and start all GENTRAIN services using Docker Compose:
+
+    ```bash
+    docker compose up --build -d
+    ```
+
+    - `docker compose up`: Starts the services defined in `docker-compose.yml`.
+    - `--build`: Forces a rebuild of the Docker images. This is important for the initial setup.
+    - `-d`: Runs the containers in detached mode (in the background).
+
+4.  **Verify Installation**:
+    After the containers have started, you can access the GENTRAIN application:
+
+    - **Frontend**: Open your web browser and navigate to `http://localhost:3000`.
+    - **Backend API**: The API will be available at `http://localhost:4000`.
+    - **Redis Insight**: For monitoring Redis, access `http://localhost:5540`.
+
+    You can check the status of your running containers with `docker compose ps`.
+
+### Stopping GENTRAIN
+
+To stop all running GENTRAIN containers and remove the networks created by Docker Compose, use:
+
+```bash
+docker compose down
+```
 
 ## Deployment
 
@@ -121,24 +201,28 @@ A custom script is run on the main production instance to configure iptables and
 3. Overrides Docker's default FORWARD policy to ACCEPT
 
 ```
+
 #!/bin/bash
 function check_service {
-  /bin/nc -z ${1} ${2} 2>/dev/null
+/bin/nc -z ${1} ${2} 2>/dev/null
   while test $? -eq 1; do
     echo "wait 10s for service available at ${1}:${2}"
-    sleep 10
-    /bin/nc -z ${1} ${2}  2>/dev/null
-  done
+sleep 10
+/bin/nc -z ${1} ${2} 2>/dev/null
+done
 }
 
 # redirect ouput to /var/log/userdata/log
+
 exec > /var/log/userdata.log
 exec 2>&1
 
 # wait until meta data server is available
+
 check_service 169.254.169.254 80
 
 # get local ip from meta data server
+
 LOCALIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 LOCALNET=$( echo ${LOCALIP} | cut -f 1-3 -d".")
 
@@ -146,17 +230,21 @@ LOCALNET=$( echo ${LOCALIP} | cut -f 1-3 -d".")
 echo "1" > /proc/sys/net/ipv4/ip_forward
 
 # Map port number to local ip-address
+
 # 30000+x -> LOCALNET.0+x:22
+
 # 31000+x -> LOCALNET.0+x:80
+
 # 32000+x -> LOCALNET.0+x:443
+
 # x > 0 and x < 255
 
 #ip forwarding rules
 for ((n=1; n <=254; n++))
-        {
-        SSH_PORT=$((30000+$n))
-        HTTP_PORT=$((31000+$n))
-        HTTPS_PORT=$((32000+$n))
+{
+SSH_PORT=$((30000+$n))
+HTTP_PORT=$((31000+$n))
+HTTPS_PORT=$((32000+$n))
 
         iptables -t nat -A PREROUTING -i ens3 -p tcp -m tcp --dport ${SSH_PORT} -j DNAT --to-destination ${LOCALNET}.${n}:22
         iptables -t nat -A POSTROUTING -d ${LOCALNET}.${n}/32 -p tcp -m tcp --dport 22 -j SNAT --to-source ${LOCALIP}
@@ -169,7 +257,9 @@ for ((n=1; n <=254; n++))
         }
 
 # Override Dockers FORWARD Policy and set it back to default
+
 iptables -P FORWARD ACCEPT
+
 ```
 
 The script ensures that the testing environment is accessible through specific ports while maintaining isolation from the production environment.
@@ -259,3 +349,7 @@ For more details on the testing workflow, refer to the `.github/workflows/test_d
 ### Distance Matrix Assembling
 
 _Made with :orange_heart: in Düsseldorf by Dilthey Lab_
+
+```
+
+```
