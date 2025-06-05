@@ -3,13 +3,14 @@ from os import path, environ
 from flask import request, url_for, redirect, abort
 from flask_admin.contrib import sqla
 from flask_login import current_user
+from flask_security import hash_password, SQLAlchemyUserDatastore
 
 import shutil
 
 from flask_wtf.file import FileField, FileAllowed
 from werkzeug.utils import secure_filename
 
-from backend.app import basic_auth
+from backend.app import db, basic_auth
 from backend.modules.admin.strategies.example_data_processor.bacterial_example_data_processor import \
     BacterialExampleDataProcessor
 from backend.modules.admin.strategies.example_data_processor.viral_example_data_processor import \
@@ -20,6 +21,7 @@ from backend.modules.admin.validators.example_data import cases_example_validato
     contacts_example_validator
 from backend.modules.admin.validators.scheme import scheme_validator
 from backend.modules.core.exceptions import AuthException
+from backend.modules.core.models import User, Role
 from backend.config import get_project_path
 
 
@@ -55,12 +57,23 @@ class UserView(AuthModelView):
     def is_accessible(self):
         return (
                 super().is_accessible()
-                and current_user.has_role("super_admin")
+                and current_user.has_role("superuser")
         )
 
-    column_list = ["id", "email"]
-    form_create_rules = ('roles', 'email', "password", "active", "fs_uniquifier")
-    form_edit_rules = ('roles', 'email', 'active', "fs_uniquifier")
+    column_list = ["id", "username"]
+    form_create_rules = ('roles', 'username', "password")
+    form_edit_rules = ('roles', 'username')
+    edit_template = 'admin/edit.html'
+    create_template = 'admin/create.html'
+
+    def create_model(self, form):
+        user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+        user_datastore.create_user(
+            username=form.username.data,
+            password=hash_password(form.password.data),
+            roles=form.roles.data,
+        )
+        db.session.commit()
 
 
 class PathogenView(AuthModelView):
@@ -70,7 +83,7 @@ class PathogenView(AuthModelView):
     def is_accessible(self):
         return (
                 super().is_accessible()
-                and (current_user.has_role("admin") or current_user.has_role("super_admin"))
+                and (current_user.has_role("user") or current_user.has_role("superuser"))
         )
 
     edit_template = 'admin/edit.html'
