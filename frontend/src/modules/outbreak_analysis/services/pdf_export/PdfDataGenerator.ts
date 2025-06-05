@@ -1,13 +1,13 @@
-import {CoreStore, useCoreStore} from "@/modules/core/stores/core";
-import {OutbreakAnalysisStore, useOutbreakAnalysisStore} from "../../stores/outbreakAnalysis";
-import {CaseWithRelationships} from "@/modules/core/models/cases";
-import {ClusterAnalyser} from "@/modules/core/services/graph/ClusterAnalyser";
-import {CustomNode, GraphData} from "@/modules/core/types/graph";
+import { CoreStore, useCoreStore } from "@/modules/core/stores/core";
+import { OutbreakAnalysisStore, useOutbreakAnalysisStore } from "../../stores/outbreakAnalysis";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
+import { ClusterAnalyser } from "@/modules/core/services/graph/ClusterAnalyser";
+import { CustomNode, GraphData } from "@/modules/core/types/graph";
 import html2canvas from "html2canvas";
-import {PathogenTypeName} from "@/modules/core/models/pathogen_types";
-import {getSelectedClusters} from "@/modules/core/helpers/graphs";
-import {t} from "i18next";
-import {concat} from "lodash";
+import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
+import { getSelectedClusters } from "@/modules/core/helpers/graphs";
+import { t } from "i18next";
+import { concat } from "lodash";
 
 export class PdfDataGenerator {
     protected coreStore: CoreStore;
@@ -54,10 +54,7 @@ export class PdfDataGenerator {
     public generateGraphImage = async () => {
         const graphElement = document.querySelector(".pdf-graph") as HTMLDivElement;
         const graphCanvasElement = await html2canvas(graphElement);
-        const graphImageDataURL = graphCanvasElement.toDataURL("#ffffff", {
-            type: "image/jpeg",
-            encoderOptions: 1.0,
-        });
+        const graphImageDataURL = graphCanvasElement.toDataURL("image/jpeg", 1);
         return graphImageDataURL;
     };
 
@@ -159,7 +156,7 @@ export class PdfDataGenerator {
         const clusterAnalyses = new ClusterAnalyser(
             this.graphData.nodes,
             this.graphData.links,
-            this.coreStore.activePathogen?.genetic_distance_threshold!
+            this.coreStore.activePathogen?.genetic_distance_threshold ?? 0
         );
         return clusterAnalyses.getClusters();
     };
@@ -200,8 +197,8 @@ export class PdfDataGenerator {
         return `${
             caseCountWithoutOutbreak > 0
                 ? ` sowie ${caseCountWithoutOutbreak} ${
-                    caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
-                } aus der Umgebung ohne Ausbruchszuweisung.`
+                      caseCountWithoutOutbreak > 1 ? "Fälle" : "Fall"
+                  } aus der Umgebung ohne Ausbruchszuweisung.`
                 : "."
         }`;
     };
@@ -295,9 +292,9 @@ export class PdfDataGenerator {
             cases.length === 0
                 ? "."
                 : `und mit ${cases
-                    .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
-                    .join(", ")
-                    .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
+                      .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
+                      .join(", ")
+                      .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung.`
         }`;
     };
 
