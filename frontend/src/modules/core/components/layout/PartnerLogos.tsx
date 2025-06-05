@@ -1,6 +1,6 @@
-import EuropeanUnionBanner from "@/assets/img/DE_Finanziert_von_der_Europaeischen_Union_POS.png";
+import EuropeanUnionBanner from "@/assets/img/DE_Finanziert_von_der_Europaeischen_Union_POS.webp";
 import UKDLogo from "@/assets/img/ukd_logo.png";
-import BielefeldMedLogo from "@/assets/img/bielefeld_med.png";
+import BielefeldMedLogo from "@/assets/img/bielefeld_med.webp";
 import { Separator } from "@/modules/core/components/ui/Separator";
 
 export const PartnerLogos = () => {
