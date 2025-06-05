@@ -1,5 +1,5 @@
-import {referenceString} from "@/data/referenceString";
-import {ViralAnalysisResult} from "@/modules/core/models/sequence_analyses";
+import { referenceString } from "@/data/referenceString";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 export interface MutationsSchema {
     [type: string]: string;
@@ -61,9 +61,9 @@ export class ViralPositionExtractor {
         // Ns
         for (const mutation of this.sequenceAnalysisResult.mutations["missing"]) {
             // { begin: 28881, end: 28883, character: "N" }
-            let start = mutation["range"]["begin"];
-            let end = mutation["range"]["end"];
-            let char = mutation["character"];
+            const start = mutation["range"]["begin"];
+            const end = mutation["range"]["end"];
+            const char = mutation["character"];
 
             // add each position of a N block separately
             for (let j = start; j < end; j++) {
@@ -74,9 +74,9 @@ export class ViralPositionExtractor {
         // other ambious characters
         for (const mutation of this.sequenceAnalysisResult.mutations["nonACGTNs"]) {
             // { begin: 60, end: 61, character: "Y" }
-            let start = mutation["range"]["begin"];
-            let end = mutation["range"]["end"];
-            let char = mutation["character"];
+            const start = mutation["range"]["begin"];
+            const end = mutation["range"]["end"];
+            const char = mutation["character"];
 
             // add each position of a ambig char block separately
             for (let j = start; j < end; j++) {
@@ -91,8 +91,8 @@ export class ViralPositionExtractor {
         }
         // Deletions
         for (const mutation of this.sequenceAnalysisResult.mutations["deletions"]) {
-            let start = mutation["range"]["begin"];
-            let end = mutation["range"]["end"];
+            const start = mutation["range"]["begin"];
+            const end = mutation["range"]["end"];
 
             // add each position of a deletion on its own
             for (let j = start; j < end; j++) {

@@ -18,7 +18,7 @@ export class SamplesPersistence extends PersistenceStrategy {
             sequenceAnalysisStrategy.setSampleData(samples);
             sequenceAnalysisStrategy.execute();
         } catch (error) {
-            throw error;
+            console.error(error);
         }
     };
 }

@@ -15,7 +15,7 @@ describe("FilesHelper", () => {
 
     describe("readFileAsText", () => {
         it("should read txt content as text", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
+            const fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             const result = await readFileAsText(new File([new Blob([fileBuffer1])], ":file_name_1:"));
 
             expect(result).toEqual("test1");
@@ -36,15 +36,15 @@ describe("FilesHelper", () => {
 
     describe("readFilesAsText", async () => {
         it("should read single file content as text", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
+            const fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             const files = [new File([new Blob([fileBuffer1])], ":file_name_1:")];
             const result = await readFilesAsText(files);
 
             expect(result).toEqual(["test1"]);
         });
         it("should read multiple file content as text", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
-            let fileBuffer2 = fs.readFileSync(`${__dirname}/../../fixtures/files/test2.txt`);
+            const fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
+            const fileBuffer2 = fs.readFileSync(`${__dirname}/../../fixtures/files/test2.txt`);
             const files = [new Blob([fileBuffer1]), new Blob([fileBuffer2])];
             const result = await readFilesAsText(files as File[]);
 
@@ -140,7 +140,7 @@ describe("FilesHelper", () => {
 
     describe("downloadFile", async () => {
         it("should create an anchor element with correct file name and object url as parameters which is clicked once to download the file", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
+            const fileBuffer1 = fs.readFileSync(`${__dirname}/../../fixtures/files/test1.txt`);
             const blob = new Blob([fileBuffer1]);
             const link = document.createElement("a");
             window.URL.createObjectURL = vi.fn(() => ":object_url:");

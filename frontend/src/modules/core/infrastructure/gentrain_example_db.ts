@@ -43,7 +43,7 @@ gentrainExampleDB.version(1.1).stores({
 });
 
 gentrainExampleDB.on("populate", async () => {
-    let persistedPathogenTypes = {} as Record<string, number>;
+    const persistedPathogenTypes = {} as Record<string, number>;
 
     for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
         const newPathogenTypeId = await gentrainExampleDB.pathogen_types.add({

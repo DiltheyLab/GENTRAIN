@@ -25,7 +25,7 @@ export const getOutbreaksForPathogenId = async (pathogenId: number) => {
 };
 
 export const getOutbreaksWithCaseCountForPathogenId = async (pathogenId: number) => {
-    let outbreaksForPathogen = await db.outbreaks
+    const outbreaksForPathogen = await db.outbreaks
         .where({ pathogen_id: pathogenId })
         .toArray()
         .then((outbreaks) => outbreaks.sort((a, b) => a.name.localeCompare(b.name)));

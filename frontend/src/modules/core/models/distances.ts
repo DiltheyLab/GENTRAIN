@@ -18,7 +18,7 @@ export interface DistanceWithFastaId {
 
 export const getAllDistancesForDistanceMatrixWithFastaIds = async (distanceMatrixId: number) => {
     const distances = await db.distances.where({ distance_matrix_id: distanceMatrixId }).toArray();
-    let distancesWithFastaIds = [];
+    const distancesWithFastaIds = [];
 
     const sampleId = new Set<number>();
     for (const distance of distances) {

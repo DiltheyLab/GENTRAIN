@@ -88,7 +88,7 @@ export class CasesPersistence extends PersistenceStrategy {
                 infected_by: importedCase.infected_by,
             } as CaseSchema);
         } catch (err) {
-            throw err;
+            console.error(err);
         }
     }
 

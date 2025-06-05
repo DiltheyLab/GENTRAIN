@@ -1,1 +1,1 @@
-export type TestSequenceAnalysis = {};
+export type TestSequenceAnalysis = object;
