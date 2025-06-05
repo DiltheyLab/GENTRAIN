@@ -1,6 +1,7 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { Pathogen } from "@/modules/core/models/pathogens";
 import { PersistedSequenceAnalysis } from "@/modules/core/types/api";
+import { db } from "../services/database/DatabaseManager";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
@@ -21,21 +22,15 @@ export class GentrainApi {
     }
 
     // Sequence Analyses
-    public async getPersistedSequenceAnalyses(sessionId: string, pathogenId: number) {
-        const sequenceAnalyses: PersistedSequenceAnalysis[] = await this.getRequest(
-            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
+    public async getPersistedSequenceAnalysisResult(fastaHash: string) {
+        const sequenceAnalysesResult: PersistedSequenceAnalysis = await this.getRequest(
+            `${this.url}/sequence_analyses/${fastaHash}`
         );
-        return sequenceAnalyses ?? [];
+        return sequenceAnalysesResult;
     }
 
-    public async deleteSequenceAnalysisResultForPathogenAndSession(
-        sessionId: string,
-        pathogenId: number,
-        sequenceIdentifier: string
-    ) {
-        const response = await this.deleteRequest(
-            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
-        );
+    public async deleteSequenceAnalysisResultForPathogenAndSession(fastaHash: string) {
+        const response = await this.deleteRequest(`${this.url}/sequence_analyses/${fastaHash}`);
         return response;
     }
 
@@ -59,7 +54,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            throw error;
         }
     }
 
@@ -81,7 +76,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            throw error;
         }
     }
 
@@ -98,7 +93,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            throw error;
         }
     }
 }

@@ -71,6 +71,18 @@ class SequenceAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
+    def persist_result(self, fasta_hash, result_object):
+        self.redis_connection.hmset(
+            f"client:results:{fasta_hash}",
+            {
+                "result": json.dumps(result_object),
+            },
+        )
+        self.redis_connection.expire(
+            name=f"client:results:{fasta_hash}",
+            time=1800,
+        )
+
     def execute(self):
         """Run strategy actions."""
         try:

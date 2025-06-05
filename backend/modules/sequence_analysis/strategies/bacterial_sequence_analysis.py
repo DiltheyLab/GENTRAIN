@@ -1,4 +1,3 @@
-import json
 import re
 import shutil
 import time
@@ -15,6 +14,7 @@ from backend.modules.core.exceptions import (
     GenomicErrorException,
 )
 from backend.config import get_project_path
+from backend.modules.core.helpers import tsv_to_json
 from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
@@ -27,12 +27,7 @@ from backend.modules.sequence_analysis.response_models import (
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     """Concrete analysis strategy for bacterial sequences."""
 
-    def __init__(
-        self,
-        fasta_hash,
-        *args,
-        **kwargs,
-    ):
+    def __init__(self, fasta_hash, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.type = "bacterial"
         self.fasta_hash = fasta_hash
@@ -83,30 +78,6 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 result += char
         self.fasta_content = result
 
-    def tsv2json(self, file):
-        arr = []
-        a = file.readline()
-
-        # The first line consist of headings of the record
-        # so we will store it in an array and move to
-        # next line in input_file.
-        titles = [t.strip() for t in a.split("\t")]
-        for line in file:
-            d = {}
-            for t, f in zip(titles, line.split("\t")):
-                if t == "FILE":
-                    continue
-                # Convert each row into dictionary with keys as titles
-                d[t] = f.strip()
-
-            # we will use strip to remove '\n'.
-            arr.append(d)
-
-            # we will append all the individual dictionaires into list
-            # and dump into file.
-            result = arr[0]
-        return result
-
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
         process = Popen(
@@ -133,13 +104,13 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                results["allele_hashes"] = self.tsv2json(tsv_file)
+                results["allele_hashes"] = tsv_to_json(tsv_file)
             with open(
                 file=f"{self.output}/results_alleles.tsv",
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                results["allele_ids"] = self.tsv2json(tsv_file)
+                results["allele_ids"] = tsv_to_json(tsv_file)
 
             # collect parameters for quality classification of the assembley
             results["undeterminable_gen_count"] = sum(
@@ -163,7 +134,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def persist_and_emit_response(self, result):
         response = self.get_response(result)
-        self.persist_result(response)
+        self.persist_result(self.fasta_hash, response)
         sio.emit(
             "sequence_analysis_response",
             {

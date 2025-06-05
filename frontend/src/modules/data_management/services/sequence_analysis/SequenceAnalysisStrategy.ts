@@ -6,11 +6,7 @@ import { db } from "@/modules/core/services/database/DatabaseManager";
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket";
-import {
-    BacterialQualityParameters,
-    SequenceImport,
-    ViralQualityParameters,
-} from "@/modules/core/models/sequence_analyses";
+import { BacterialQualityParameters, ViralQualityParameters } from "@/modules/core/models/sequence_analyses";
 
 export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
@@ -19,7 +15,6 @@ export abstract class SequenceAnalysisStrategy {
 
     public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
     protected abstract emitSequenceAnalysis(): void;
-    protected abstract setSequenceImports(sequenceImports: { [fastaHash: string]: SequenceImport }): void;
 
     constructor(pathogen: PathogenWithRelationships) {
         this.pathogen = pathogen;
@@ -37,11 +32,14 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     public handlePersistedResults = async () => {
-        const sessionId = useCoreStore.getState().sessionId;
-        if (!sessionId) {
-            throw new GentrainException("InvalidSession");
+        const sequenceAnalysesWithoutResult = await db.sequence_analyses
+            .filter((sequenceAnalysis) => !sequenceAnalysis.result)
+            .toArray();
+        const results: { result: object; fasta_hash: string }[] = [];
+        for (const sequenceAnalysis of sequenceAnalysesWithoutResult) {
+            const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis.fasta_hash);
+            results.push({ result: result, fasta_hash: sequenceAnalysis.fasta_hash });
         }
-        const results = await gentrainApiInstance.getPersistedSequenceAnalyses(sessionId, this.pathogen.id);
         if (results.length > 0) {
             await this.syncPersistedResultsWithDb(results);
             useCoreStore.getState().updateCasesWithRelationships();
@@ -126,11 +124,7 @@ export abstract class SequenceAnalysisStrategy {
         if (!sessionId) {
             throw new GentrainException("");
         }
-        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(
-            sessionId,
-            this.pathogen.id,
-            data.fasta_hash
-        );
+        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(data.fasta_hash);
         this.continueIfAllAnalysesAreDone();
     }
 

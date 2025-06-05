@@ -5,7 +5,7 @@ import { Separator } from "@/modules/core/components/ui/Separator";
 import { SequenceAnalysisStatus } from "./SequenceAnalysisStatus";
 
 export function SequenceAnalysisModal() {
-    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const sequenceImports = useDataManagementStore((state) => state.sequenceImports);
     const setHideSampleUploadContent = useDataManagementStore((state) => state.setHideSampleUploadContent);
     const hideSampleUploadContent = useDataManagementStore((state) => state.hideSampleUploadContent);
     const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
@@ -40,15 +40,14 @@ export function SequenceAnalysisModal() {
                                             <span>
                                                 (
                                                 {
-                                                    Object.keys(sampleImports).filter(
-                                                        (key: string) => sampleImports[key].status === "finished"
+                                                    Object.keys(sequenceImports).filter(
+                                                        (key: string) => sequenceImports[key].status === "finished"
                                                     ).length
                                                 }{" "}
                                                 von{" "}
                                                 {
-                                                    Object.keys(sampleImports).filter(
-                                                        (key) => sampleImports[key].import
-                                                    ).length
+                                                    Object.keys(sequenceImports).filter((key) => sequenceImports[key])
+                                                        .length
                                                 }{" "}
                                                 abgeschlossen)
                                             </span>

@@ -40,7 +40,7 @@ export class GentrainWebsocket {
         this.client.emit("leave_sequence_analysis_room", pathogenTypeName);
     }
 
-    public sequenceAnalysisEmit(pathogenId: number, fastaString: string) {
+    public sequenceAnalysisEmit(pathogenId: number, fastaString: string, fastaHash: string | null = null) {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
@@ -52,7 +52,7 @@ export class GentrainWebsocket {
                 total: fastaChunks.length,
                 index: parseInt(index),
             };
-            this.client.emit("sequence_analysis", fastaChunks[index], chunkInformation, pathogenId);
+            this.client.emit("sequence_analysis", fastaChunks[index], chunkInformation, pathogenId, fastaHash);
         }
     }
 

@@ -6,7 +6,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 import { sha256 } from "js-sha256";
 
-export class SamplesValidation extends ValidationStrategy {
+export class SequencesValidation extends ValidationStrategy {
     protected data: { fastaId: string; sequence: string }[] = [];
 
     public collectData(data: { fastaId: string; sequence: string }[]) {

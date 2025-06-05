@@ -4,8 +4,8 @@ import { CasesPersistence } from "../../services/data_import/persistence/CasesPe
 import { CasesValidation } from "../../services/data_import/validation/CasesValidation";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { CaseSelection } from "./tables/CaseSelection";
-import { SamplesPersistence } from "../../services/data_import/persistence/SamplesPersistence";
-import { SamplesValidation } from "../../services/data_import/validation/SamplesValidation";
+import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
+import { SequencesValidation } from "../../services/data_import/validation/SequencesValidation";
 import { SequenceSelection } from "./tables/SequenceSelection";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
@@ -53,8 +53,8 @@ export const ImportSection = () => {
                 <div className="w-1/3">
                     <DataImport
                         data={sequenceImports}
-                        persistenceStrategy={new SamplesPersistence()}
-                        validationStrategy={new SamplesValidation()}
+                        persistenceStrategy={new SequenceAnalysesPersistence()}
+                        validationStrategy={new SequencesValidation()}
                         type="sequence"
                         icon={<Dna />}
                         exampleDataPath={activePathogen?.sequences_example}

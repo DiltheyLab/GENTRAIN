@@ -1,37 +1,40 @@
 import { SequenceAnalysisStrategy } from "@/modules/data_management/services/sequence_analysis/SequenceAnalysisStrategy";
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket.ts";
-import { SequenceImport } from "@/modules/core/models/sequence_analyses";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
     protected parallelAnalysesThreshold = 10;
 
-    public setSequenceImports(sequenceImports: { [sequenceHash: string]: SequenceImport }) {
-        for (let sequenceHash in sequenceImports) {
-            sequenceImports[sequenceHash].sequence = this.getAnonymizedSequence(sequenceImports[sequenceHash].sequence);
-        }
-        this.sequenceImports = sequenceImports;
-    }
-
-    private getAnonymizedSequence = (sequence: string) => {
-        return sequence.replace("\r", "").replace(/>(.*?)\n/g, ">\n");
-    };
-
     protected emitSequenceAnalysis = () => {
+        const sequenceImports = useDataManagementStore.getState().sequenceImports;
+        const finishedSequenceAnalyses = Object.keys(sequenceImports).filter(
+            (fastaHash) =>
+                sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error"
+        );
+        const pendingSequenceAnalyses = Object.keys(sequenceImports).filter(
+            (fastaHash) =>
+                sequenceImports[fastaHash].status !== "success" && sequenceImports[fastaHash].status !== "error"
+        );
+
         // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
         // depending on which value is lower
         const socketMessageLimit = Math.min(
-            this.finishedFastaIds.length + this.parallelAnalysesThreshold,
-            Object.keys(this.fastaIdsToAnalyse).length
+            finishedSequenceAnalyses.length + this.parallelAnalysesThreshold,
+            pendingSequenceAnalyses.length
         );
-        // always send max. 10 message via websocket channel to regulate user inputs
-        for (let i = this.finishedFastaIds.length; i < socketMessageLimit; i++) {
-            const fastaIdToAnalyse = this.fastaIdsToAnalyse[Object.keys(this.fastaIdsToAnalyse)[i]];
-            gentrainWebsocketInstance.bacterialSequenceAnalysisEmit(
+        // always send max. 10 message via websockt channel to regulate user inputs
+        for (let i = finishedSequenceAnalyses.length; i < socketMessageLimit; i++) {
+            const fastaHash = Object.keys(sequenceImports)[i];
+            gentrainWebsocketInstance.sequenceAnalysisEmit(
                 this.pathogen.id,
-                Object.keys(this.fastaIdsToAnalyse)[i],
-                this.sampleData[fastaIdToAnalyse].imported.sequence
+                this.getAnonymizedSequence(sequenceImports[fastaHash].sequence),
+                fastaHash
             );
         }
+    };
+
+    private getAnonymizedSequence = (sequence: string) => {
+        return sequence.replace("\r", "").replace(/>(.*?)\n/g, ">\n");
     };
 
     public getQualityParameters = (sequence: string) => {

@@ -2,8 +2,7 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { SequenceAnalysisStatus } from "../sequence_analysis/SequenceAnalysisStatus";
 import { CasesPersistence } from "../../services/data_import/persistence/CasesPersistence";
 import { CasesValidation } from "../../services/data_import/validation/CasesValidation";
-import { SamplesPersistence } from "../../services/data_import/persistence/SamplesPersistence";
-import { SamplesValidation } from "../../services/data_import/validation/SamplesValidation";
+import { SequencesValidation } from "../../services/data_import/validation/SequencesValidation";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
 import { Button } from "@/modules/core/components/ui/Button";
@@ -13,6 +12,7 @@ import { CaseSelection } from "../import_section/tables/CaseSelection";
 import { DataImport } from "../import_section/DataImport";
 import { SequenceSelection } from "../import_section/tables/SequenceSelection";
 import { ContactSelection } from "../import_section/tables/ContactSelection";
+import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
 
 export function ActionArea() {
     const persistedCasesForPathogen = useCoreStore((state) => state.casesWithRelationships);
@@ -69,8 +69,8 @@ export function ActionArea() {
                     <>
                         <DataImport
                             data={sequenceImports}
-                            persistenceStrategy={new SamplesPersistence()}
-                            validationStrategy={new SamplesValidation()}
+                            persistenceStrategy={new SequenceAnalysesPersistence()}
+                            validationStrategy={new SequencesValidation()}
                             type="sequence"
                             actions={
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>

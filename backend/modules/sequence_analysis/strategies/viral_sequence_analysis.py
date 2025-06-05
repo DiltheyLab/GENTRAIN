@@ -99,18 +99,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 pathlib.Path(self.output).unlink(missing_ok=True)
                 return content
 
-    def persist_result(self, fasta_hash, result_object):
-        self.redis_connection.hmset(
-            f"client:results:{self.pathogen.id}:{fasta_hash}",
-            {
-                "result": json.dumps(result_object),
-            },
-        )
-        self.redis_connection.expire(
-            name=f"client:results:{self.pathogen.id}:{fasta_hash}",
-            time=1800,
-        )
-
     def persist_and_emit_response(self, results):
         for result_per_sequence in results:
             response = self.get_response(result_per_sequence)
@@ -164,28 +152,28 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         )
 
     def emit_enqueued_event(self):
-        for sequence_hash in self.sequences.keys():
+        for fasta_hash in self.sequences.keys():
             sio.emit(
                 "sequence_analysis_enqueued",
-                sequence_hash,
+                fasta_hash,
                 to=f"{self.type}_{self.socket_id}",
             )
 
     def emit_started_event(self):
-        for sequence_hash in self.sequences.keys():
+        for fasta_hash in self.sequences.keys():
             sio.emit(
                 "sequence_analysis_started",
-                sequence_hash,
+                fasta_hash,
                 to=f"{self.type}_{self.socket_id}",
             )
 
     def emit_failed_event(self):
-        for sequence_hash in self.sequences.keys():
+        for fasta_hash in self.sequences.keys():
             sio.emit(
                 "sequence_analysis_response",
                 {
                     "status": "error",
-                    "sequence_hash": sequence_hash,
+                    "fasta_hash": fasta_hash,
                 },
                 to=f"{self.type}_{self.socket_id}",
             )

@@ -1,6 +1,6 @@
 import json
 from Bio import Align
-from flask import Response, jsonify, request
+from flask import Response, jsonify, request, abort
 from backend.modules.core.models import Pathogen
 from backend.app import app
 from backend.server import redis_connection
@@ -19,32 +19,22 @@ def get_pathogens(pathogen_id: int):
 
 # Sequence Analyses
 @app.route(
-    "/sequence_analyses/sessions/<string:session_id>/pathogens/<int:pathogen_id>",
+    "/sequence_analyses/<string:fasta_hash>",
     methods=["GET"],
 )
-def get_results_for_session_and_pathogen(session_id: str, pathogen_id: int):
-    results = []
-    for key in redis_connection.scan_iter(
-            f"client:results:{session_id}:{pathogen_id}:*"
-    ):
-        result = redis_connection.hgetall(key)
-        all_keys = list(result.keys())
-        redis_connection.hdel(key, *all_keys)
-        result["result"] = json.loads(result["result"])
-        if "sequence_length" in result["result"]:
-            result["sequence_length"] = int(result["result"]["sequence_length"])
-        results.append(result)
-    return jsonify(results)
+def get_sequence_analysis_result(fasta_hash: str):
+    result = redis_connection.hgetall(f"client:results:{fasta_hash}")
+    if not result:
+        abort(404)
+    return jsonify(json.loads(result["result"]))
 
 
 @app.route(
-    "/sequence_analyses/sessions/<string:session_id>/pathogens/<int:pathogen_id>/sequences/<string:sequence_identifier>",
+    "/sequence_analyses/<string:fasta_hash>",
     methods=["DELETE"],
 )
-def delete_sequence_result_for_session_and_pathogen(
-        session_id: str, pathogen_id: int, sequence_identifier: str
-):
-    redis_connection.delete(f"client:results:{session_id}:{pathogen_id}:{sequence_identifier}")
+def delete_sequence_analysis_result(fasta_hash: str):
+    redis_connection.delete(f"client:results:{fasta_hash}")
     return jsonify([])
 
 
@@ -53,7 +43,9 @@ def align_sequences():
     data = request.get_json()
 
     if "sequence_1" not in data or "sequence_2" not in data:
-        return Response("Invalid request body.", status=422, mimetype="application/json")
+        return Response(
+            "Invalid request body.", status=422, mimetype="application/json"
+        )
     sequence_1 = data["sequence_1"]
     sequence_2 = data["sequence_2"]
 
