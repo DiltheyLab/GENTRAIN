@@ -100,15 +100,15 @@ export class GraphCaseCollector {
             geneticDistanceThreshold
         );
 
-        const SequenceAnalysisIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
+        const sequenceAnalysisIdsBelowThreshold = distancesBelowThreshold.reduce((acc, distance) => {
             acc.push(distance.case_id_1, distance.case_id_2);
             return acc;
         }, [] as number[]);
 
-        const SequenceAnalysisIdsWithoutDuplicates = Array.from(new Set(SequenceAnalysisIdsBelowThreshold));
+        const sequenceAnalysisIdsWithoutDuplicates = Array.from(new Set(sequenceAnalysisIdsBelowThreshold));
 
         const casesInGraphWithLowGeneticDistance = this.casesInGraph.filter((caseData) =>
-            SequenceAnalysisIdsWithoutDuplicates.includes(caseData.sequence_analysis?.id ?? -1)
+            sequenceAnalysisIdsWithoutDuplicates.includes(caseData.sequence_analysis?.id ?? -1)
         );
 
         return casesInGraphWithLowGeneticDistance;
