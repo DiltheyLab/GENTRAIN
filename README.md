@@ -24,7 +24,7 @@ Before you begin, ensure you have the following installed on your system:
     ```
 
 2.  **Configure Environment Variables**:
-    GENTRAIN uses environment variables for configuration. Create a `.env` file in the root directory of the cloned project. This file will hold settings for both the frontend and backend services. Here's an example of the essential variables you'll need for a local setup (you can also find this in the `example.env` file):
+    GENTRAIN uses environment variables for configuration. Create a `.env` file in the root directory of the cloned project. This file will hold settings for both the frontend and backend services. Here's an example of the essential variables you'll need for a local setup (you can also find this in the `env.example` file):
 
     ```ini
     # .env - Example for Local Development
@@ -49,23 +49,19 @@ Before you begin, ensure you have the following installed on your system:
 
       # FRONTEND VARIABLES
       VITE_API_HOST=http://localhost:4000
-      VITE_API_BASIC_USERNAME=
-      VITE_API_BASIC_PASSWORD=
+      VITE_API_BASIC_USERNAME=YourUsername
+      VITE_API_BASIC_PASSWORD=YourPassword
     ```
-
-    - **`RQ_SECRET`**: It's crucial to replace `your_super_secret_key_for_redis_queue` with a strong, unique secret key for security.
-    - **`SLACK_WEBHOOK_URL`**: This can be left empty if you don't need Slack notifications for local development.
 
 3.  **Build and Run Docker Containers**:
     Once your `.env` file is configured, you can build and start all GENTRAIN services using Docker Compose:
 
     ```bash
-    docker compose up --build -d
+    docker compose -f .\docker-compose.dev.yaml up --build
     ```
 
-    - `docker compose up`: Starts the services defined in `docker-compose.yml`.
+    - `docker compose -f .\docker-compose.dev.yaml up`: Starts the services defined in `docker-compose.dev.yml`.
     - `--build`: Forces a rebuild of the Docker images. This is important for the initial setup.
-    - `-d`: Runs the containers in detached mode (in the background).
 
 4.  **Verify Installation**:
     After the containers have started, you can access the GENTRAIN application:
