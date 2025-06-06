@@ -41,41 +41,15 @@ export function CaseInformationTable() {
             return (
                 <>
                     <TableCell className="p-2 text-xs">
-                        {caseData.sequence_analysis ? (
-                            <>
-                                <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult).contig_count}</p>
-                            </>
-                        ) : (
-                            <></>
-                        )}
+                        <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.contig_count}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
-                        {caseData.sequence_analysis ? (
-                            <>
-                                <p>
-                                    {
-                                        (caseData.sequence_analysis?.result as BacterialAnalysisResult)
-                                            .first_contig_length
-                                    }
-                                </p>
-                            </>
-                        ) : (
-                            <></>
-                        )}
+                        <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.first_contig_length}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs">
-                        {caseData.sequence_analysis ? (
-                            <>
-                                <p>
-                                    {
-                                        (caseData.sequence_analysis?.result as BacterialAnalysisResult)
-                                            .undeterminable_gen_count
-                                    }
-                                </p>
-                            </>
-                        ) : (
-                            <></>
-                        )}
+                        <p>
+                            {(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.undeterminable_gen_count}
+                        </p>
                     </TableCell>
                 </>
             );
@@ -83,42 +57,16 @@ export function CaseInformationTable() {
         return (
             <>
                 <TableCell className="p-2 text-xs">
-                    {caseData.sequence_analysis ? (
-                        <>
-                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).n_count}</p>
-                        </>
-                    ) : (
-                        <></>
-                    )}
+                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.n_count}</p>
                 </TableCell>
                 <TableCell className="p-2 text-xs">
-                    {caseData.sequence_analysis ? (
-                        <>
-                            <p>
-                                {(caseData.sequence_analysis?.result as ViralAnalysisResult).ambiguity_character_count}
-                            </p>
-                        </>
-                    ) : (
-                        <></>
-                    )}
+                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.ambiguity_character_count}</p>
                 </TableCell>
                 <TableCell className="p-2 text-xs">
-                    {caseData.sequence_analysis ? (
-                        <>
-                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).lineage}</p>
-                        </>
-                    ) : (
-                        <></>
-                    )}
+                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.lineage}</p>
                 </TableCell>
                 <TableCell className="p-2 text-xs">
-                    {caseData.sequence_analysis ? (
-                        <>
-                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).sequence_length}</p>
-                        </>
-                    ) : (
-                        <></>
-                    )}
+                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.sequence_length}</p>
                 </TableCell>
             </>
         );
