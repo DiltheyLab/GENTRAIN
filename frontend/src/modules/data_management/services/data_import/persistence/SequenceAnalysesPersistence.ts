@@ -11,7 +11,7 @@ export class SequenceAnalysesPersistence extends PersistenceStrategy {
     protected persist = async () => {
         try {
             // analyse sample depending on pathogen type to receive variants for distance calculations
-            this.dataManagementStore.setSampleSelectionActive(false);
+            this.dataManagementStore.setSequenceSelectionActive(false);
             const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
             if (!sequenceAnalysisStrategy) return;
             sequenceAnalysisStrategy.execute();

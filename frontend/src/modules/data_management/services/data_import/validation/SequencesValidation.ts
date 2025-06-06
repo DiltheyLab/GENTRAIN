@@ -36,7 +36,7 @@ export class SequencesValidation extends ValidationStrategy {
         useDataManagementStore.getState().setSequenceImports(sequenceImports);
 
         if (this.data.length > 0) {
-            useDataManagementStore.getState().setSampleSelectionActive(true);
+            useDataManagementStore.getState().setSequenceSelectionActive(true);
         }
 
         if (useDataManagementStore.getState().showImportAssistent) {

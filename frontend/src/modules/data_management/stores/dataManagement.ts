@@ -13,16 +13,16 @@ type DataManagementStoreState = {
 
     // sequence import
     sequenceImports: SequenceImports;
-    sampleSelectionActive: boolean;
-    showSampleUploadStatus: boolean;
-    hideSampleUploadContent: boolean;
+    sequenceSelectionActive: boolean;
+    showSequenceUploadStatus: boolean;
+    hideSequenceUploadContent: boolean;
     sequenceAnalysisRunning: boolean;
     distanceCalculationRunning: boolean;
     isUploading: boolean;
     distanceCalculationCount: number;
     distanceCalculationSum: number;
-    failedSampleImports: string[];
-    scrollToSample: string | null;
+    failedSequenceImports: string[];
+    scrollToSequence: string | null;
 
     // contact import
     contactImports: { [id: string]: { imported: ContactImport; persisted: ContactSchema | null; import: boolean } };
@@ -49,22 +49,22 @@ type DataManagementStoreActions = {
     setCaseSelectionActive: (value: boolean) => void;
     setFailedCaseImports: (failedCaseImports: { [caseId: string]: string[] }) => void;
 
-    // sample import
+    // sequence import
     changeSequenceImport: (key: string, value: any) => void;
     removeSequenceImport: (key: string) => void;
     setSequenceImports: (imports: { [sequenceHash: string]: SequenceImport }) => void;
     clearSequenceImports: () => void;
-    setSampleSelectionActive: (value: boolean) => void;
-    setShowSampleUploadStatus: (value: boolean) => void;
-    setHideSampleUploadContent: (value: boolean) => void;
+    setSequenceSelectionActive: (value: boolean) => void;
+    setShowSequenceUploadStatus: (value: boolean) => void;
+    setHideSequenceUploadContent: (value: boolean) => void;
     setSequenceAnalysisRunning: (value: boolean) => void;
     setDistanceCalculationRunning: (value: boolean) => void;
     setIsUploading: (value: boolean) => void;
     incrementDistanceCalculationCount: () => void;
     setDistanceCalculationSum: (sum: number) => void;
-    resetSampleUpload: () => void;
-    setFailedSampleImports: (sequenceHash: string[]) => void;
-    setScrollToSample: (fastaId: string) => void;
+    resetSequenceUpload: () => void;
+    setFailedSequenceImports: (sequenceHash: string[]) => void;
+    setScrollToSequence: (fastaId: string) => void;
 
     // contact import
     changeContactImport: (key: string, value: any) => void;
@@ -147,17 +147,17 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
     clearSequenceImports: () => {
         set({ sequenceImports: {} });
     },
-    sampleSelectionActive: false,
-    setSampleSelectionActive: (value: boolean) => {
-        set({ sampleSelectionActive: value });
+    sequenceSelectionActive: false,
+    setSequenceSelectionActive: (value: boolean) => {
+        set({ sequenceSelectionActive: value });
     },
-    showSampleUploadStatus: false,
-    setShowSampleUploadStatus: (value: boolean) => {
-        set({ showSampleUploadStatus: value });
+    showSequenceUploadStatus: false,
+    setShowSequenceUploadStatus: (value: boolean) => {
+        set({ showSequenceUploadStatus: value });
     },
-    hideSampleUploadContent: false,
-    setHideSampleUploadContent: (value: boolean) => {
-        set({ hideSampleUploadContent: value });
+    hideSequenceUploadContent: false,
+    setHideSequenceUploadContent: (value: boolean) => {
+        set({ hideSequenceUploadContent: value });
     },
     sequenceAnalysisRunning: false,
     setSequenceAnalysisRunning: (value: boolean) => {
@@ -180,23 +180,23 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
     setDistanceCalculationSum: (sum: number) => {
         set({ distanceCalculationSum: sum });
     },
-    resetSampleUpload: () => {
+    resetSequenceUpload: () => {
         set({
             distanceCalculationCount: 0,
             distanceCalculationSum: 0,
             isUploading: false,
-            showSampleUploadStatus: false,
-            hideSampleUploadContent: false,
+            showSequenceUploadStatus: false,
+            hideSequenceUploadContent: false,
             sequenceImports: {},
         });
     },
-    failedSampleImports: [],
-    setFailedSampleImports: (fastaIds: string[]) => {
-        set({ failedSampleImports: fastaIds });
+    failedSequenceImports: [],
+    setFailedSequenceImports: (fastaIds: string[]) => {
+        set({ failedSequenceImports: fastaIds });
     },
-    scrollToSample: null,
-    setScrollToSample: (fastaId: string) => {
-        set({ scrollToSample: fastaId });
+    scrollToSequence: null,
+    setScrollToSequence: (fastaId: string) => {
+        set({ scrollToSequence: fastaId });
     },
     // contact import
     contactImports: {},

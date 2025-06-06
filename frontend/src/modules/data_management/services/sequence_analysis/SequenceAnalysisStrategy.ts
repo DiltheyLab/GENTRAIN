@@ -117,7 +117,7 @@ export abstract class SequenceAnalysisStrategy {
         }
 
         if (this.parallelAnalysesThreshold && sentSequenceAnalysesCount % this.parallelAnalysesThreshold === 0) {
-            useDataManagementStore.getState().setScrollToSample(sequenceImports[data.fasta_hash].fasta_id);
+            useDataManagementStore.getState().setScrollToSequence(sequenceImports[data.fasta_hash].fasta_id);
             this.emitSequenceAnalysis();
         }
         const sessionId = useCoreStore.getState().sessionId;
