@@ -155,10 +155,7 @@ export const getCasesByConditionWithRelationships = async (
     return Object.values(casesWithRelationships);
 };
 
-export const getAllCasesForPathogenWithRelationships = async (
-    pathogen_id: number,
-    includeSequenceAnalysisResult: boolean = false
-) => {
+export const getAllCasesForPathogenWithRelationships = async (pathogen_id: number) => {
     const cases = await db.cases.where({ pathogen_id: pathogen_id }).toArray();
 
     let casesWithRelationships: { [caseId: number]: CaseWithRelationships } = {};
@@ -170,9 +167,10 @@ export const getAllCasesForPathogenWithRelationships = async (
         const caseWithRelationships: CaseWithRelationships = currentCase;
         caseWithRelationships.pathogen = pathogen;
         // retrieve sequence analysis schema object
-        if (includeSequenceAnalysisResult && currentCase.fasta_id) {
+        if (currentCase.fasta_id) {
             caseWithRelationships.sequence_analysis = await getSequenceAnalysis(currentCase.fasta_id);
         }
+
         // retrieve outbreak schema object
         if (currentCase.outbreak_id) {
             const outbreak = await db.outbreaks.where({ id: currentCase.outbreak_id }).first();
