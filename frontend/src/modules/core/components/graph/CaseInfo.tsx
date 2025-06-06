@@ -2,7 +2,7 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { X } from "lucide-react";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { CustomNode } from "../../types/graph";
-import {formatDate} from "@/modules/core/helpers/dates.ts";
+import { formatDate } from "@/modules/core/helpers/dates.ts";
 
 type CaseInfoProps = {
     selectedNode: CustomNode | null;
@@ -55,13 +55,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                 {selectedNode.caseData.groups
                     ?.filter((group) => group.category)
                     .map((group) => {
-                        return (
-                            <CaseInfoItem
-                                key={`${selectedNode.caseData.case_id}_${group.category}_${group.name}`}
-                                label={group.category!.name}
-                                description={group.name}
-                            />
-                        );
+                        return <CaseInfoItem key={group.id} label={group.category!.name} description={group.name} />;
                     })}
             </div>
         </fieldset>
