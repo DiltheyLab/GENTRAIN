@@ -8,7 +8,7 @@ import { bacterialColumns, sampleSelectionColumns, viralColumns } from "./sequen
 
 export function SequenceSelection() {
     const sampleTableData = useGetSequenceTableData();
-    const changeSampleImport = useDataManagementStore((state) => state.changeSampleImport);
+    const changeSequenceImport = useDataManagementStore((state) => state.changeSequenceImport);
     const activePathogen = useCoreStore((state) => state.activePathogen);
 
     return (
@@ -23,7 +23,7 @@ export function SequenceSelection() {
                     filterFn={sampleImportFilterFn}
                     onRowClick={(row: any) => {
                         if (!row.original.fasta_id) return;
-                        changeSampleImport(row.original.fasta_id!, { import: !row.getIsSelected() });
+                        changeSequenceImport(row.original.fasta_id!, { import: !row.getIsSelected() });
                         row.toggleSelected(!row.getIsSelected());
                     }}
                     preselectRows

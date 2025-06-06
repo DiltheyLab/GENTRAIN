@@ -8,7 +8,7 @@ import { t } from "i18next";
 
 export function CaseInformationTable() {
     const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
-    const casesWithSamples = casesWithRelationships.filter((caseData) => caseData.sequence_analysis);
+    const casesWithSequenceAnalysis = casesWithRelationships.filter((caseData) => caseData.sequence_analysis);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const renderHeadRow = () => {
         return (
@@ -102,8 +102,8 @@ export function CaseInformationTable() {
     return (
         <>
             <small>
-                Es sind {casesWithRelationships.length} Fälle im Datensatz. Zu {casesWithSamples.length} Fällen liegen
-                Sequenzen vor.
+                Es sind {casesWithRelationships.length} Fälle im Datensatz. Zu {casesWithSequenceAnalysis.length} Fällen
+                liegen Sequenzen vor.
             </small>
             <div className="mt-4 border-[1px] border-muted rounded-xl max-h-96 overflow-auto">
                 <Table className="rounded-xl">
