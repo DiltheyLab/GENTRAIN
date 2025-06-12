@@ -84,7 +84,7 @@ export const useSyncPathogensBetweenServerAndClient = () => {
                 }
 
                 // Re-fetch the data to get the correct state after changes
-                const updatedClientPathogens = await db.pathogens.toArray();
+                const updatedClientPathogens = await getAllPathogensWithRelationships();
 
                 const activelyPersistedPathogen = updatedClientPathogens.find(
                     (pathogen: PathogenWithRelationships) => pathogen.activated_at
