@@ -35,11 +35,6 @@ export interface PathogenWithRelationships extends PathogenSchema {
     pathogen_type?: PathogenTypeSchema | null;
 }
 
-export const fetchPathogensFromServer = async () => {
-    const pathogens: Pathogen[] = await gentrainApiInstance.getPathogens();
-    return pathogens;
-};
-
 export const getAllPathogensWithRelationships = async () => {
     const pathogens = await db.pathogens.toArray();
     let pathogensWithRelationships: PathogenWithRelationships[] = [];

@@ -38,6 +38,7 @@ export abstract class SequenceAnalysisStrategy {
         const results: { result: object; fasta_hash: string }[] = [];
         for (const sequenceAnalysis of sequenceAnalysesWithoutResult) {
             const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis.fasta_hash);
+            if (!result) continue;
             results.push({ result: result, fasta_hash: sequenceAnalysis.fasta_hash });
         }
         if (results.length > 0) {

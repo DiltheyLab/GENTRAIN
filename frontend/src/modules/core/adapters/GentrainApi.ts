@@ -11,14 +11,14 @@ export class GentrainApi {
     };
 
     // Pathogens
-    public async getPathogens() {
-        const pathogens: Pathogen[] = await this.getRequest(`${this.url}/pathogens`);
+    public async getPathogensFromServer() {
+        const pathogens = await this.getRequest<Pathogen[]>(`${this.url}/pathogens`);
         return pathogens;
     }
 
     // Sequence Analyses
     public async getPersistedSequenceAnalysisResult(fastaHash: string) {
-        const sequenceAnalysesResult: PersistedSequenceAnalysis = await this.getRequest(
+        const sequenceAnalysesResult = await this.getRequest<PersistedSequenceAnalysis>(
             `${this.url}/sequence_analyses/${fastaHash}`
         );
         return sequenceAnalysesResult;
@@ -38,21 +38,21 @@ export class GentrainApi {
     }
 
     // Infrastructure
-    private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
+    private async getRequest<T>(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            throw error;
+            return;
         }
     }
 
-    private async postRequest(
+    private async postRequest<T>(
         url: string,
         bodyParameters: { [key: string]: any },
         headerParameters?: { [key: string]: string }
@@ -63,31 +63,50 @@ export class GentrainApi {
                 body: JSON.stringify(bodyParameters),
                 headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
+
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
+
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            throw error;
+            return;
         }
     }
 
-    private async deleteRequest(url: string, headerParameters?: { [key: string]: string }) {
+    private async deleteRequest<T>(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, {
                 method: "DELETE",
                 headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            throw error;
+            return;
+        }
+    }
+
+    private handleException(response: Response) {
+        switch (response.status) {
+            case 400:
+                throw new GentrainException("BadRequest: The request was invalid.");
+            case 401:
+                throw new GentrainException("Unauthorized: Authentication failed.");
+            case 403:
+                throw new GentrainException("Forbidden: Access denied.");
+            case 404:
+                throw new GentrainException("NotFound: Resource not found.");
+            case 500:
+                throw new GentrainException("ServerError: Internal server error.");
+            default:
+                throw new GentrainException(`ApiError: ${response.status} ${response.statusText}`);
         }
     }
 }

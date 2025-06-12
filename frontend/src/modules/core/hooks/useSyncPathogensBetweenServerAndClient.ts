@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 import { useCoreStore } from "../stores/core";
-import {
-    fetchPathogensFromServer,
-    getAllPathogensWithRelationships,
-    PathogenWithRelationships,
-} from "../models/pathogens";
+import { getAllPathogensWithRelationships, PathogenWithRelationships } from "../models/pathogens";
 import { getAllPathogenTypes } from "../models/pathogen_types";
 import { db } from "../services/database/DatabaseManager";
 import { useTutorialStore } from "@/modules/tutorial/stores/tutorial";
 import { useToast } from "../components/ui/UseToast";
+import gentrainApiInstance from "../adapters/GentrainApi";
 
 export const useSyncPathogensBetweenServerAndClient = () => {
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
@@ -24,10 +21,15 @@ export const useSyncPathogensBetweenServerAndClient = () => {
             try {
                 // fetch pathogens from the server and client database and pathogen types
                 const [pathogensFromServerDB, pathogensFromClientDB, pathogenTypes] = await Promise.all([
-                    fetchPathogensFromServer(),
+                    gentrainApiInstance.getPathogensFromServer(),
                     getAllPathogensWithRelationships(),
                     getAllPathogenTypes(),
                 ]);
+
+                // if the pathogens could not be fetched, return
+                if (!pathogensFromServerDB) {
+                    return;
+                }
 
                 // check if the server and client databases have the same pathogens
                 const pathogenIDsFromServer = pathogensFromServerDB.map((pathogen) => pathogen.id);
