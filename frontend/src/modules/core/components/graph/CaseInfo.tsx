@@ -54,13 +54,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                 {selectedNode.caseData.groups
                     ?.filter((group) => group.category)
                     .map((group) => {
-                        return (
-                            <CaseInfoItem
-                                key={`${selectedNode.caseData.case_id}_${group.category}_${group.name}`}
-                                label={group.category!.name}
-                                description={group.name}
-                            />
-                        );
+                        return <CaseInfoItem key={group.id} label={group.category!.name} description={group.name} />;
                     })}
             </div>
         </fieldset>
