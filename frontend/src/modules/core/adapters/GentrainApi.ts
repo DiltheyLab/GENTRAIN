@@ -48,6 +48,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
+            throw error;
         }
     }
 
@@ -69,6 +70,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
+            throw error;
         }
     }
 
@@ -85,6 +87,7 @@ export class GentrainApi {
             return data;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
+            throw error;
         }
     }
 }
