@@ -12,8 +12,8 @@ export class GentrainApi {
 
     // Pathogens
     public async getPathogens() {
-        const pathogens: Pathogen[] = await this.getRequest(`${import.meta.env.VITE_API_HOST}/pathogens`);
-        return pathogens ?? [];
+        const pathogens: Pathogen[] = await this.getRequest(`${this.url}/pathogens`);
+        return pathogens;
     }
 
     // Sequence Analyses
