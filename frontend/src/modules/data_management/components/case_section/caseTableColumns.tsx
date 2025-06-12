@@ -205,7 +205,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                 <div>
                     {groups &&
                         groups.map((group) => (
-                            <p key={group.name}>
+                            <p key={group.id}>
                                 <span className="font-medium">{group.category?.name}: </span>
                                 {group.name}
                             </p>
