@@ -1,12 +1,4 @@
-type TestDistance = {
-    id?: number;
-    case_id_1: number;
-    case_id_2: number;
-    value?: number;
-    distance_matrix_id?: number;
-    created_at?: Date;
-    updated_at?: Date;
-};
+import { DistancesSchema } from "../../models/distances";
 
 export const createDistance = ({
     id = 1,
@@ -16,7 +8,7 @@ export const createDistance = ({
     distance_matrix_id = 1,
     created_at = new Date(),
     updated_at = new Date(),
-}: TestDistance) => {
+}: Partial<DistancesSchema>) => {
     return {
         id,
         case_id_1,
@@ -25,5 +17,5 @@ export const createDistance = ({
         distance_matrix_id,
         created_at,
         updated_at,
-    };
+    } as DistancesSchema;
 };

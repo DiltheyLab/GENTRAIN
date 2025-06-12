@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { AnalysisSettings } from "@/modules/outbreak_analysis/stores/outbreakAnalysis";
 import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { createCase } from "../entities/cases";
-import { createSample } from "../entities/samples";
 import { createDistance } from "../entities/distances";
+import { createSequenceAnalysis } from "../entities/sequence_analysis";
 
 describe("GraphCaseCollector", () => {
     let settings: AnalysisSettings;
@@ -39,14 +39,34 @@ describe("GraphCaseCollector", () => {
 
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
-            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 5,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 6, outbreak: outbreak3, outbreak_id: outbreak3.id }),
-            createCase({ id: 7, outbreak: outbreak3, outbreak_id: outbreak3.id, sample: createSample({}) }),
+            createCase({
+                id: 7,
+                outbreak: outbreak3,
+                outbreak_id: outbreak3.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 8 }),
-            createCase({ id: 9, sample: createSample({}) }),
+            createCase({ id: 9, sequence_analysis: createSequenceAnalysis({}) }),
         ];
 
         settings.excludeCasesWithoutSequence = true;
@@ -59,7 +79,7 @@ describe("GraphCaseCollector", () => {
     it("should collect all cases (even without sequence)", async () => {
         const allCases = [
             createCase({ id: 1 }),
-            createCase({ id: 2, sample: createSample({}) }),
+            createCase({ id: 2, sequence_analysis: createSequenceAnalysis({}) }),
             createCase({ id: 3 }),
         ];
 
@@ -76,10 +96,25 @@ describe("GraphCaseCollector", () => {
 
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
-            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 5,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
         ];
 
         settings.selectedOutbreak = outbreak1;
@@ -97,10 +132,25 @@ describe("GraphCaseCollector", () => {
 
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4, outbreak: outbreak2, outbreak_id: outbreak2.id }),
-            createCase({ id: 5, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 5,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
         ];
 
         settings.selectedOutbreak = outbreak1;
@@ -118,10 +168,20 @@ describe("GraphCaseCollector", () => {
 
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4 }),
-            createCase({ id: 5, sample: createSample({}) }),
+            createCase({ id: 5, sequence_analysis: createSequenceAnalysis({}) }),
         ];
 
         settings.selectedOutbreak = outbreak1;
@@ -145,10 +205,20 @@ describe("GraphCaseCollector", () => {
 
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4 }),
-            createCase({ id: 5, sample: createSample({}) }),
+            createCase({ id: 5, sequence_analysis: createSequenceAnalysis({}) }),
             createCase({ id: 6, outbreak: outbreak3, outbreak_id: outbreak3.id }),
         ];
 
@@ -177,11 +247,21 @@ describe("GraphCaseCollector", () => {
         };
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({}) }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
             createCase({ id: 4 }),
-            createCase({ id: 5, sample: createSample({}) }),
-            createCase({ id: 6, group_ids: [group1.id], sample: createSample({}) }),
+            createCase({ id: 5, sequence_analysis: createSequenceAnalysis({}) }),
+            createCase({ id: 6, group_ids: [group1.id], sequence_analysis: createSequenceAnalysis({}) }),
         ];
 
         settings.selectedOutbreak = outbreak1;
@@ -226,16 +306,31 @@ describe("GraphCaseCollector", () => {
         const outbreak2 = { id: 2, name: ":outbreakName2:" };
 
         const allCases = [
-            createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({ id: 1 }) }),
-            createCase({ id: 2, outbreak: outbreak1, outbreak_id: outbreak1.id, sample: createSample({}) }),
-            createCase({ id: 3, outbreak: outbreak2, outbreak_id: outbreak2.id, sample: createSample({ id: 2 }) }),
+            createCase({
+                id: 1,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({ id: 1 }),
+            }),
+            createCase({
+                id: 2,
+                outbreak: outbreak1,
+                outbreak_id: outbreak1.id,
+                sequence_analysis: createSequenceAnalysis({}),
+            }),
+            createCase({
+                id: 3,
+                outbreak: outbreak2,
+                outbreak_id: outbreak2.id,
+                sequence_analysis: createSequenceAnalysis({ id: 2 }),
+            }),
         ];
 
         // mocks the function which access the indexedDB
         vi.mock("@/modules/core/models/distances", () => ({
-            getDistancesFromSequenceAnalysisIdsBelowThreshold: vi.fn(() => {
-                //create mock distance
-                const distance1 = createDistance({ sample_id_1: 1, sample_id_2: 2 });
+            getDistancesFromCaseIdsBelowThreshold: vi.fn(() => {
+                //create mock distance below the threshold
+                const distance1 = createDistance({ case_id_1: 1, case_id_2: 3, value: 2 });
                 return [distance1];
             }),
         }));
