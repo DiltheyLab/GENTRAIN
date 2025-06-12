@@ -10,6 +10,7 @@ export function CaseInformationTable() {
     const casesWithRelationships = useCoreStore((state) => state.casesWithRelationships);
     const casesWithSequenceAnalysis = casesWithRelationships.filter((caseData) => caseData.sequence_analysis);
     const activePathogen = useCoreStore((state) => state.activePathogen);
+
     const renderHeadRow = () => {
         return (
             <TableRow className="bg-muted font-medium">
@@ -36,55 +37,22 @@ export function CaseInformationTable() {
         );
     };
 
-    const renderQualityParameterCells = (caseData: CaseWithRelationships) => {
-        if (activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
-            return (
-                <>
-                    <TableCell className="p-2 text-xs">
-                        <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.contig_count}</p>
-                    </TableCell>
-                    <TableCell className="p-2 text-xs">
-                        <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.first_contig_length}</p>
-                    </TableCell>
-                    <TableCell className="p-2 text-xs">
-                        <p>
-                            {(caseData.sequence_analysis?.result as BacterialAnalysisResult)?.undeterminable_gen_count}
-                        </p>
-                    </TableCell>
-                </>
-            );
-        }
-        return (
-            <>
-                <TableCell className="p-2 text-xs">
-                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.n_count}</p>
-                </TableCell>
-                <TableCell className="p-2 text-xs">
-                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.ambiguity_character_count}</p>
-                </TableCell>
-                <TableCell className="p-2 text-xs">
-                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.lineage}</p>
-                </TableCell>
-                <TableCell className="p-2 text-xs">
-                    <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult)?.sequence_length}</p>
-                </TableCell>
-            </>
-        );
-    };
-
     const renderRows = () => {
         return casesWithRelationships.map((caseData) => {
             return (
                 <TableRow key={caseData.id} className="border-muted">
                     <TableCell className="p-2 text-xs font-medium">{caseData.case_id}</TableCell>
-                    {renderQualityParameterCells(caseData)}
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral &&
+                        renderViralQualityParamCells(caseData)}
+                    {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial &&
+                        renderBacterialQualityParamCells(caseData)}
                     <TableCell className="p-2 text-xs">
                         <p>{caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>
                     <TableCell className="p-2 text-xs max-w-60">
                         <div>
                             {caseData.groups?.map((group) => (
-                                <p key={`${caseData.id}_${group.id}`}>
+                                <p key={group.id}>
                                     <span className="font-medium">{group.category?.name}: </span>
                                     {group.name}
                                 </p>
@@ -97,6 +65,43 @@ export function CaseInformationTable() {
                 </TableRow>
             );
         });
+    };
+
+    const renderViralQualityParamCells = (caseData: CaseWithRelationships) => {
+        const viralSequenceAnalysisResult = caseData.sequence_analysis?.result as ViralAnalysisResult;
+        return (
+            <>
+                <TableCell className="p-2 text-xs">
+                    <p>{viralSequenceAnalysisResult?.n_count}</p>
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    <p>{viralSequenceAnalysisResult?.ambiguity_character_count}</p>
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    <p>{viralSequenceAnalysisResult?.lineage}</p>
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    <p>{viralSequenceAnalysisResult?.sequence_length}</p>
+                </TableCell>
+            </>
+        );
+    };
+
+    const renderBacterialQualityParamCells = (caseData: CaseWithRelationships) => {
+        const bacterialSequenceAnalysisResult = caseData.sequence_analysis?.result as BacterialAnalysisResult;
+        return (
+            <>
+                <TableCell className="p-2 text-xs">
+                    <p>{bacterialSequenceAnalysisResult?.contig_count}</p>
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    <p>{bacterialSequenceAnalysisResult?.first_contig_length}</p>
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    <p>{bacterialSequenceAnalysisResult?.undeterminable_gen_count}</p>
+                </TableCell>
+            </>
+        );
     };
 
     return (
