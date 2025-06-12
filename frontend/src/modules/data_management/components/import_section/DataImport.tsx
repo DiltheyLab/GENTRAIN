@@ -23,7 +23,7 @@ import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
 import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 import { FileDown } from "lucide-react";
 import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
-import { SequenceImport, SequenceSchema } from "@/modules/core/models/sequence_analyses";
+import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 
 type DataImportProps = {
     children: JSX.Element;
