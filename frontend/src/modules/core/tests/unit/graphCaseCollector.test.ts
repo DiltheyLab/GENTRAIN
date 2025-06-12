@@ -90,7 +90,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual(allCases);
     });
 
-    it("should only include cases of the selected outbreak (with sample and without sample)", async () => {
+    it("should only include cases of the selected outbreak (with sequence and without sequence)", async () => {
         const outbreak1 = { id: 1, name: ":outbreakName1:" };
         const outbreak2 = { id: 2, name: ":outbreakName2:" };
 
@@ -126,7 +126,7 @@ describe("GraphCaseCollector", () => {
         expect(result).toEqual([1, 2, 3]);
     });
 
-    it("should only include cases with sample of the selectedOutbreak", async () => {
+    it("should only include cases with sequence of the selectedOutbreak", async () => {
         const outbreak1 = { id: 1, name: ":outbreakName1:" };
         const outbreak2 = { id: 2, name: ":outbreakName2:" };
 
