@@ -1,6 +1,5 @@
 import Dexie from "dexie";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { Pathogen } from "@/modules/core/models/pathogens";
 import gentrainApiInstance from "../adapters/GentrainApi";
 import { DatabaseSchema } from "../services/database/DatabaseManager";
 
@@ -70,7 +69,8 @@ gentrainDB.on("populate", async () => {
         });
     }
 
-    const pathogens: Pathogen[] = await gentrainApiInstance.getPathogens();
+    const pathogens = (await gentrainApiInstance.getPathogensFromServer()) ?? [];
+
     for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen
