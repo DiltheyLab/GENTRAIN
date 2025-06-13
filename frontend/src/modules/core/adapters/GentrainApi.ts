@@ -1,6 +1,6 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { Pathogen } from "@/modules/core/models/pathogens";
-import { PersistedSequenceAnalysis } from "@/modules/core/types/api";
+import { AlignedSequences, PersistedSequenceAnalysis } from "@/modules/core/types/api";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
@@ -30,7 +30,7 @@ export class GentrainApi {
     }
 
     public async alignSequences(sequence1: string, sequence2: string) {
-        const response = await this.postRequest(`${this.url}/sequences/align`, {
+        const response = await this.postRequest<AlignedSequences>(`${this.url}/sequences/align`, {
             sequence_1: sequence1,
             sequence_2: sequence2,
         });
