@@ -4,7 +4,6 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 import { Check, CircleAlert, CircleDashed } from "lucide-react";
 import { DistanceCalculationProgress } from "@/modules/data_management/components/sequence_analysis/DistanceCalculationProgress";
 import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
-import { getSampleStatusColorClassNames } from "../../helpers/samples";
 import { useScrollToFastaIdElement } from "../../hooks/useScrollToFastaIdElement";
 
 export function SequenceAnalysisStatus() {
@@ -13,6 +12,23 @@ export function SequenceAnalysisStatus() {
     const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
     const scrollAreaRef = useScrollToFastaIdElement();
+
+    const getSampleStatusColorClassNames = (status: string) => {
+        switch (status) {
+            case "sent":
+                return "text-slate-200 border-slate-200";
+            case "enqueued":
+                return "text-slate-700 border-slate-700";
+            case "started":
+                return "text-yellow-600 border-yellow-600";
+            case "finished":
+                return "text-green-600 border-green-600";
+            case "failed":
+                return "text-red-600 border-red-600";
+            default:
+                return "";
+        }
+    };
 
     return (
         <>
