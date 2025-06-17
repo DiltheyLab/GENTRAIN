@@ -1,9 +1,9 @@
 import { Checkbox } from "@/modules/core/components/ui/Checkbox";
-import { SampleImport } from "@/modules/core/models/samples";
+import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
+export const sampleSelectionColumns: ColumnDef<SequenceImport>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -14,7 +14,7 @@ export const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
                     table.getRowModel().rows.forEach((row) => {
                         useDataManagementStore
                             .getState()
-                            .changeSampleImport(row.original.fasta_id!, { import: !!value });
+                            .changeSequenceImport(row.original.fasta_id, { import: !!value });
                     });
                 }}
                 aria-label="Select all"
@@ -28,7 +28,7 @@ export const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
                         row.toggleSelected(!!value);
                         useDataManagementStore
                             .getState()
-                            .changeSampleImport(row.original.fasta_id!, { import: !!value });
+                            .changeSequenceImport(row.original.fasta_id, { import: !!value });
                     }}
                     aria-label="Select row"
                 />
@@ -42,14 +42,9 @@ export const sampleSelectionColumns: ColumnDef<SampleImport>[] = [
         header: "Sequenz",
         cell: ({ row }) => <>{row.original.fasta_id}</>,
     },
-    {
-        accessorKey: "case_id",
-        header: "Fall",
-        cell: ({ row }) => <>{row.original.case_id}</>,
-    },
 ];
 
-export const viralColumns: ColumnDef<SampleImport>[] = [
+export const viralColumns: ColumnDef<SequenceImport>[] = [
     {
         accessorKey: "sequence_length",
         header: "Sequenzlänge",
@@ -67,7 +62,7 @@ export const viralColumns: ColumnDef<SampleImport>[] = [
     },
 ];
 
-export const bacterialColumns: ColumnDef<SampleImport>[] = [
+export const bacterialColumns: ColumnDef<SequenceImport>[] = [
     {
         accessorKey: "contig_count",
         header: "Contigs",
