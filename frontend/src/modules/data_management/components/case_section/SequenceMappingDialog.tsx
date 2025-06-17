@@ -28,11 +28,7 @@ export const SequenceMappingDialog = () => {
     if (!sequenceMappingDialogCase) return;
     const mapSequenceIdToCase = async () => {
         if (sequenceId !== "") {
-            const previousFastaId = sequenceMappingDialogCase.fasta_id;
             await db.cases.update(sequenceMappingDialogCase.id, { fasta_id: sequenceId });
-            if (previousFastaId) {
-                deleteSampleByFastaId(previousFastaId);
-            }
             updateCasesWithRelationships();
         }
         hideSequenceMappingDialog();
