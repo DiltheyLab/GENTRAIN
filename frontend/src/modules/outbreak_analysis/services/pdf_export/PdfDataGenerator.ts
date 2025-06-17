@@ -8,6 +8,7 @@ import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
 import { getSelectedClusters } from "@/modules/core/helpers/graphs";
 import { t } from "i18next";
 import { concat } from "lodash";
+import { BacterialAnalysisResult, ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 export class PdfDataGenerator {
     protected coreStore: CoreStore;
@@ -48,13 +49,13 @@ export class PdfDataGenerator {
             caseCountWithoutOutbreak
         )}${this.getSummaryPhraseForUnassignedCases(
             caseCountWithoutOutbreak
-        )}${this.getSummaryPhraseForSampleQuality()}${this.getSummaryPhraseForContactLinks()}`;
+        )}${this.getSummaryPhraseForSequenceQuality()}${this.getSummaryPhraseForContactLinks()}`;
     };
 
     public generateGraphImage = async () => {
         const graphElement = document.querySelector(".pdf-graph") as HTMLDivElement;
         const graphCanvasElement = await html2canvas(graphElement);
-        const graphImageDataURL = graphCanvasElement.toDataURL("image/jpeg", 1);
+        const graphImageDataURL = graphCanvasElement.toDataURL("image/jpeg", 1.0);
         return graphImageDataURL;
     };
 
@@ -120,21 +121,27 @@ export class PdfDataGenerator {
         this.outbreakAnalysisState.graphData.nodes.map((node) => {
             const cells: (string | number)[] = [
                 node.index ?? "-",
-                node.caseData.sample?.fasta_id ?? "-",
+                node.caseData.fasta_id ?? "-",
                 node.caseData.outbreak?.name ?? "-",
             ];
             if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
+                const viralSequenceAnalysisResult = node.caseData.sequence_analysis?.result as
+                    | ViralAnalysisResult
+                    | undefined;
                 cells.push(
-                    node.caseData.sample?.n_count ?? 0,
-                    node.caseData.sample?.ambiguity_character_count ?? 0,
-                    node.caseData.sample?.lineage ?? "-"
+                    viralSequenceAnalysisResult?.n_count ?? "-",
+                    viralSequenceAnalysisResult?.ambiguity_character_count ?? "-",
+                    viralSequenceAnalysisResult?.lineage ?? "-"
                 );
             }
             if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
+                const bacterialSequenceAnalysisResult = node.caseData.sequence_analysis?.result as
+                    | BacterialAnalysisResult
+                    | undefined;
                 cells.push(
-                    node.caseData.sample?.contig_count ?? 0,
-                    node.caseData.sample?.first_contig_length ?? 0,
-                    node.caseData.sample?.undeterminable_gen_count ?? 0
+                    bacterialSequenceAnalysisResult?.contig_count ?? "-",
+                    bacterialSequenceAnalysisResult?.first_contig_length ?? "-",
+                    bacterialSequenceAnalysisResult?.undeterminable_gen_count ?? "-"
                 );
             }
             rows.push(cells);
@@ -203,16 +210,20 @@ export class PdfDataGenerator {
         }`;
     };
 
-    private getSummaryPhraseForSampleQuality = () => {
-        const samples = this.outbreakAnalysisState.graphData.nodes.filter((node) => node.caseData.sample);
-        const samplesWithLowAmountOfNs = samples.filter(
-            (node) => node.caseData.sample?.n_count && node.caseData.sample?.n_count < 1500
-        );
-        return `\n\nFür ${samples.length} von ${
+    private getSummaryPhraseForSequenceQuality = () => {
+        const sequencedCaseNodes = this.outbreakAnalysisState.graphData.nodes.filter((node) => node.caseData.fasta_id);
+        const sequencedCaseNodesWithLowAmountOfNs = sequencedCaseNodes.filter((node) => {
+            if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
+                const viralSequenceAnalysisResult = node.caseData.sequence_analysis?.result as ViralAnalysisResult;
+                return viralSequenceAnalysisResult?.n_count && viralSequenceAnalysisResult.n_count < 1500;
+            }
+            return false;
+        });
+        return `\n\nFür ${sequencedCaseNodes.length} von ${
             this.outbreakAnalysisState.graphData.nodes.length
         } Fällen liegen genetische Sequenzdaten vor${
             this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral
-                ? `, wobei ${samplesWithLowAmountOfNs.length} von ${samples.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`
+                ? `, wobei ${sequencedCaseNodesWithLowAmountOfNs.length} von ${sequencedCaseNodes.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`
                 : ""
         }.`;
     };

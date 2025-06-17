@@ -44,7 +44,6 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
             </Button>
             <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedNode.caseData.case_id} copyToClipboard />
-                <CaseInfoItem label="Sequenz ID" description={selectedNode.caseData.sample?.fasta_id ?? "-"} />
                 <CaseInfoItem label="Ausbruch" description={selectedNode.caseData.outbreak?.name ?? "-"} />
                 <CaseInfoItem
                     label="Registrierungsdatum"

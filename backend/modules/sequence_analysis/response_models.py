@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class ViralSequenceAnalysisResponseModel(BaseModel):
-    sequence_identifier: str
     sequence_length: int
     nextclade_version: str
     analysis_schema: str

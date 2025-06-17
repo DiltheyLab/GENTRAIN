@@ -9,6 +9,8 @@ import { formatDate } from "@/modules/core/helpers/dates";
 import { t } from "i18next";
 import { ClusterToOutbreakDialog } from "./ClusterToOutbreakDialog";
 import { Card, CardContent } from "@/modules/core/components/ui/Card";
+import { BacterialAnalysisResult, ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 
 export const ClusterInformationTable = () => {
     const clusters = useDashboardStore((state) => state.clusters);
@@ -22,7 +24,6 @@ export const ClusterInformationTable = () => {
         return (
             <TableRow className="bg-muted font-medium">
                 <TableHead className="p-2 text-xs text-black">Fall ID</TableHead>
-                <TableHead className="p-2 text-xs text-black">Sequenz ID</TableHead>
                 {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
                     <>
                         <TableHead className="p-2 text-xs text-black">Ns</TableHead>
@@ -44,6 +45,93 @@ export const ClusterInformationTable = () => {
             </TableRow>
         );
     };
+    const renderQualityParameterCells = (caseData: CaseWithRelationships) => {
+        if (activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial) {
+            return (
+                <>
+                    <TableCell className="p-2 text-xs">
+                        {caseData.sequence_analysis ? (
+                            <>
+                                <p>{(caseData.sequence_analysis?.result as BacterialAnalysisResult).contig_count}</p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </TableCell>
+                    <TableCell className="p-2 text-xs">
+                        {caseData.sequence_analysis ? (
+                            <>
+                                <p>
+                                    {
+                                        (caseData.sequence_analysis?.result as BacterialAnalysisResult)
+                                            .first_contig_length
+                                    }
+                                </p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </TableCell>
+                    <TableCell className="p-2 text-xs">
+                        {caseData.sequence_analysis ? (
+                            <>
+                                <p>
+                                    {
+                                        (caseData.sequence_analysis?.result as BacterialAnalysisResult)
+                                            .undeterminable_gen_count
+                                    }
+                                </p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </TableCell>
+                </>
+            );
+        }
+        return (
+            <>
+                <TableCell className="p-2 text-xs">
+                    {caseData.sequence_analysis ? (
+                        <>
+                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).n_count}</p>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    {caseData.sequence_analysis ? (
+                        <>
+                            <p>
+                                {(caseData.sequence_analysis?.result as ViralAnalysisResult).ambiguity_character_count}
+                            </p>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    {caseData.sequence_analysis ? (
+                        <>
+                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).lineage}</p>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                </TableCell>
+                <TableCell className="p-2 text-xs">
+                    {caseData.sequence_analysis ? (
+                        <>
+                            <p>{(caseData.sequence_analysis?.result as ViralAnalysisResult).sequence_length}</p>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                </TableCell>
+            </>
+        );
+    };
 
     const renderRows = (nodes: (CustomNode | undefined)[]) => {
         return nodes.map((node) => {
@@ -52,36 +140,7 @@ export const ClusterInformationTable = () => {
             return (
                 <TableRow key={node.caseData.id} className="border-muted">
                     <TableCell className="p-2 text-xs  font-medium ">{node.caseData.case_id}</TableCell>
-                    <TableCell className="p-2 text-xs">{node.caseData.sample?.fasta_id}</TableCell>
-                    {activePathogen?.pathogen_type?.name === PathogenTypeName.viral && (
-                        <>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.n_count}</p>
-                            </TableCell>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.ambiguity_character_count}</p>
-                            </TableCell>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.lineage}</p>
-                            </TableCell>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.sequence_length}</p>
-                            </TableCell>
-                        </>
-                    )}
-                    {activePathogen?.pathogen_type?.name === PathogenTypeName.bacterial && (
-                        <>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.contig_count}</p>
-                            </TableCell>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.first_contig_length}</p>
-                            </TableCell>
-                            <TableCell className="p-2 text-xs">
-                                <p>{node.caseData.sample?.undeterminable_gen_count}</p>
-                            </TableCell>
-                        </>
-                    )}
+                    {renderQualityParameterCells(node.caseData)}
                     <TableCell className="p-2 text-xs">
                         <p>{node.caseData.outbreak?.name ?? t("clusterTypes.noOutbreakAssigned")}</p>
                     </TableCell>

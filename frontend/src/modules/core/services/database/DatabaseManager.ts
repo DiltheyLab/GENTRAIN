@@ -10,16 +10,14 @@ import { GroupSchema } from "@/modules/core/models/groups";
 import { OutbreakSchema } from "@/modules/core/models/outbreaks";
 import { PathogenTypeSchema } from "@/modules/core/models/pathogen_types";
 import { PathogenSchema } from "@/modules/core/models/pathogens";
-import { SampleSchema } from "@/modules/core/models/samples";
 import { SequenceAnalysisSchema } from "@/modules/core/models/sequence_analyses";
-import { SequenceIdentifierSchema } from "@/modules/core/models/sequence_identifiers";
 import { gentrainExampleDB } from "@/modules/core/infrastructure/gentrain_example_db";
 import { handleError } from "../../helpers/errors";
+import { SequenceAnalysisCasesSchema } from "../../models/sequence_analyses_cases";
 
 type DatabaseName = "gentrain" | "gentrain_example";
 
 export type DatabaseSchema = Dexie & {
-    samples: EntityTable<SampleSchema, "id">;
     sequence_analyses: EntityTable<SequenceAnalysisSchema, "id">;
     distance_matrices: EntityTable<DistanceMatricesSchema, "id">;
     distances: EntityTable<DistancesSchema, "id">;
@@ -31,7 +29,7 @@ export type DatabaseSchema = Dexie & {
     categories: EntityTable<CategorySchema, "id">;
     analyses: EntityTable<AnalysisSchema, "id">;
     outbreaks: EntityTable<OutbreakSchema, "id">;
-    sequence_identifiers: EntityTable<SequenceIdentifierSchema, "id">;
+    sequence_analyses_cases: EntityTable<SequenceAnalysisCasesSchema, "id">;
 };
 class DatabaseManager {
     private databases: Record<DatabaseName, DatabaseSchema>;

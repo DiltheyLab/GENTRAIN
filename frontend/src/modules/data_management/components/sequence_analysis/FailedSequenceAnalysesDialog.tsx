@@ -10,12 +10,12 @@ import {
 import { useDataManagementStore } from "../../stores/dataManagement";
 
 export function FailedSequenceAnalysesDialog() {
-    const failedSampleImports = useDataManagementStore((state) => state.failedSampleImports);
-    const setFailedSampleImports = useDataManagementStore((state) => state.setFailedSampleImports);
+    const failedSequenceImports = useDataManagementStore((state) => state.failedSequenceImports);
+    const setFailedSequenceImports = useDataManagementStore((state) => state.setFailedSequenceImports);
 
     return (
         <>
-            {failedSampleImports.length > 0 && (
+            {failedSequenceImports.length > 0 && (
                 <AlertDialog open>
                     <AlertDialogContent className="z-[105]">
                         <AlertDialogHeader>
@@ -25,11 +25,13 @@ export function FailedSequenceAnalysesDialog() {
                                     Folgende Sequenzen konnten nicht erfolgreich analysisiert werden. Bitte überprüfen
                                     Sie die importierten FASTA-Dateien:
                                 </p>
-                                <p className="font-bold">{failedSampleImports.map((fastaId) => fastaId).join(", ")}</p>
+                                <p className="font-bold">
+                                    {failedSequenceImports.map((fastaId) => fastaId).join(", ")}
+                                </p>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogAction onClick={() => setFailedSampleImports([])}>Okay</AlertDialogAction>
+                            <AlertDialogAction onClick={() => setFailedSequenceImports([])}>Okay</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

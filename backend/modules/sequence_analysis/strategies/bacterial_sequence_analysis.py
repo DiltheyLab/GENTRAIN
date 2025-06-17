@@ -1,4 +1,3 @@
-import json
 import re
 import shutil
 import time
@@ -10,33 +9,43 @@ from subprocess import Popen
 
 from werkzeug.utils import secure_filename
 
-from backend.modules.core.exceptions import SequenceAnalysisFailedException, GenomicErrorException
-from backend.config import get_project_path
-from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
-    SequenceAnalysisStrategy, sio,
+from backend.modules.core.exceptions import (
+    SequenceAnalysisFailedException,
+    GenomicErrorException,
 )
-from backend.modules.sequence_analysis.response_models import BacterialSequenceAnalysisResponseModel
+from backend.config import get_project_path
+from backend.modules.core.helpers import tsv_to_json
+from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
+    SequenceAnalysisStrategy,
+    sio,
+)
+from backend.modules.sequence_analysis.response_models import (
+    BacterialSequenceAnalysisResponseModel,
+)
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     """Concrete analysis strategy for bacterial sequences."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fasta_hash, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.type = "bacterial"
+        self.fasta_hash = fasta_hash
 
     def find_genomic_validation_errors(self):
         """Check if sequence contains genomic errors."""
         try:
             illegal_characters = []
-            illegal_characters = illegal_characters + re.findall("[^ATGCRYSWKMBDHVNXU>\n]+", self.fasta_content)
+            illegal_characters = illegal_characters + re.findall(
+                "[^ATGCRYSWKMBDHVNXU>\n]+", self.fasta_content
+            )
             return illegal_characters
         except Exception as e:
             sio.emit(
                 "sequence_analysis_response",
                 {
                     "status": "error",
-                    "sequence_identifier": self.identifier,
+                    "fasta_hash": self.fasta_hash,
                 },
                 to=f"{self.type}_{self.socket_id}",
             )
@@ -45,7 +54,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     def create_input_and_output_files(self):
         """Create a fasta input file and a json output file for script."""
         # create directory if not existent
-        self.input = f"{get_project_path()}/temp_data/sequence_analysis/{self.identifier}_{round(time.time() * 1000)}/"
+        self.input = f"{get_project_path()}/temp_data/sequence_analysis/{self.fasta_hash}_{round(time.time() * 1000)}/"
         pathlib.Path(self.input).mkdir(parents=True, exist_ok=True)
 
         # Create a temporary fasta file that is read by the bash script
@@ -56,7 +65,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         self.index_sequences()
         with open(file=input_file, mode="w", encoding="utf-8") as input_file:
             input_file.write(self.fasta_content)
-        self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.identifier}_{round(time.time() * 1000)}"
+        self.output = f"{get_project_path()}/temp_data/sequence_analysis/outputs/{self.fasta_hash}_{round(time.time() * 1000)}"
 
     def index_sequences(self):
         count = 0
@@ -68,30 +77,6 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             else:
                 result += char
         self.fasta_content = result
-
-    def tsv2json(self, file):
-        arr = []
-        a = file.readline()
-
-        # The first line consist of headings of the record
-        # so we will store it in an array and move to
-        # next line in input_file.
-        titles = [t.strip() for t in a.split("\t")]
-        for line in file:
-            d = {}
-            for t, f in zip(titles, line.split("\t")):
-                if t == "FILE":
-                    continue
-                # Convert each row into dictionary with keys as titles
-                d[t] = f.strip()
-
-            # we will use strip to remove '\n'.
-            arr.append(d)
-
-            # we will append all the individual dictionaires into list
-            # and dump into file.
-            result = arr[0]
-        return result
 
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
@@ -115,17 +100,17 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         else:
             results = {}
             with open(
-                    file=f"{self.output}/results_alleles_hashed.tsv",
-                    mode="r",
-                    encoding="utf-8",
+                file=f"{self.output}/results_alleles_hashed.tsv",
+                mode="r",
+                encoding="utf-8",
             ) as tsv_file:
-                results["allele_hashes"] = self.tsv2json(tsv_file)
+                results["allele_hashes"] = tsv_to_json(tsv_file)
             with open(
-                    file=f"{self.output}/results_alleles.tsv",
-                    mode="r",
-                    encoding="utf-8",
+                file=f"{self.output}/results_alleles.tsv",
+                mode="r",
+                encoding="utf-8",
             ) as tsv_file:
-                results["allele_ids"] = self.tsv2json(tsv_file)
+                results["allele_ids"] = tsv_to_json(tsv_file)
 
             # collect parameters for quality classification of the assembley
             results["undeterminable_gen_count"] = sum(
@@ -149,13 +134,13 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def persist_and_emit_response(self, result):
         response = self.get_response(result)
-        self.persist_result(response)
+        self.persist_result(self.fasta_hash, response)
         sio.emit(
             "sequence_analysis_response",
             {
                 "status": "success",
                 "result": response,
-                "sequence_identifier": self.identifier,
+                "fasta_hash": self.fasta_hash,
             },
             to=f"{self.type}_{self.socket_id}",
         )
@@ -163,7 +148,13 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     def get_response(self, result):
         """Return a response model for bacterial analysises."""
         # retrieve the installed chewBBACA version (gentrain-worker and gentrain-backend versions are synced)
-        chewBBACCA_version = popen("chewBBACA.py -v").read().replace("chewBBACA version:", "").replace("\n", "").strip()
+        chewBBACCA_version = (
+            popen("chewBBACA.py -v")
+            .read()
+            .replace("chewBBACA version:", "")
+            .replace("\n", "")
+            .strip()
+        )
         return BacterialSequenceAnalysisResponseModel(
             chewBACCA_version=chewBBACCA_version,
             analysis_schema=self.pathogen.scheme_name,
@@ -177,14 +168,14 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
     def emit_enqueued_event(self):
         sio.emit(
             "sequence_analysis_enqueued",
-            self.identifier,
+            self.fasta_hash,
             to=f"{self.type}_{self.socket_id}",
         )
 
     def emit_started_event(self):
         sio.emit(
             "sequence_analysis_started",
-            self.identifier,
+            self.fasta_hash,
             to=f"{self.type}_{self.socket_id}",
         )
 
@@ -193,7 +184,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             "sequence_analysis_response",
             {
                 "status": "error",
-                "sequence_identifier": self.identifier,
+                "fasta_hash": self.fasta_hash,
             },
             to=f"{self.type}_{self.socket_id}",
         )

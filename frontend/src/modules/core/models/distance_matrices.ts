@@ -9,7 +9,7 @@ export interface DistanceMatricesSchema {
 }
 
 export interface DistanceMatrixAssembly {
-    [row_sample_id: string]: { [col_sample_id: string]: number };
+    [row_case_id: string]: { [col_case_id: string]: number };
 }
 
 export const getDistanceMatrixByPathogenId = async (

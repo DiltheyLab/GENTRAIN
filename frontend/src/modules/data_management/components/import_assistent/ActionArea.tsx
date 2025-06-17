@@ -2,8 +2,7 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { SequenceAnalysisStatus } from "../sequence_analysis/SequenceAnalysisStatus";
 import { CasesPersistence } from "../../services/data_import/persistence/CasesPersistence";
 import { CasesValidation } from "../../services/data_import/validation/CasesValidation";
-import { SamplesPersistence } from "../../services/data_import/persistence/SamplesPersistence";
-import { SamplesValidation } from "../../services/data_import/validation/SamplesValidation";
+import { SequencesValidation } from "../../services/data_import/validation/SequencesValidation";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
 import { Button } from "@/modules/core/components/ui/Button";
@@ -13,6 +12,7 @@ import { CaseSelection } from "../import_section/tables/CaseSelection";
 import { DataImport } from "../import_section/DataImport";
 import { SequenceSelection } from "../import_section/tables/SequenceSelection";
 import { ContactSelection } from "../import_section/tables/ContactSelection";
+import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
 
 export function ActionArea() {
     const persistedCasesForPathogen = useCoreStore((state) => state.casesWithRelationships);
@@ -21,7 +21,7 @@ export function ActionArea() {
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const resetImportAssistent = useDataManagementStore((state) => state.resetImportAssistent);
     const caseImports = useDataManagementStore((state) => state.caseImports);
-    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const sequenceImports = useDataManagementStore((state) => state.sequenceImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
 
     const getImportComponentBasedOnInitalUploadStep = () => {
@@ -68,9 +68,9 @@ export function ActionArea() {
                 return (
                     <>
                         <DataImport
-                            data={sampleImports}
-                            persistenceStrategy={new SamplesPersistence()}
-                            validationStrategy={new SamplesValidation()}
+                            data={sequenceImports}
+                            persistenceStrategy={new SequenceAnalysesPersistence()}
+                            validationStrategy={new SequencesValidation()}
                             type="sequence"
                             actions={
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>
@@ -82,7 +82,7 @@ export function ActionArea() {
                         >
                             <SequenceSelection />
                         </DataImport>
-                        {Object.keys(sampleImports).length === 0 && (
+                        {Object.keys(sequenceImports).length === 0 && (
                             <div className="flex justify-end gap-4">
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>
                                     Zurück
