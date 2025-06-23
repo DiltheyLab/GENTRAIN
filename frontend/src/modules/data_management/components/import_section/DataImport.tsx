@@ -26,10 +26,11 @@ import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 
 type DataImportProps = {
-    children: JSX.Element;
+    children?: JSX.Element;
     data: ImportData;
     persistenceStrategy: PersistenceStrategy;
     validationStrategy: ValidationStrategy;
+    automaticImport?: boolean;
     actions?: JSX.Element | JSX.Element[];
     buttonText?: string;
     inlineSelection?: boolean;
@@ -51,7 +52,7 @@ type ImportData = {
 };
 
 export const DataImport = ({
-    children,
+    children = undefined,
     data,
     persistenceStrategy,
     validationStrategy,
@@ -81,7 +82,8 @@ export const DataImport = ({
                         type={type}
                         icon={icon}
                         validationStrategy={validationStrategy}
-                        onFileUpload={() => setOpenDialog(true)}
+                        // execute persistence if not selection table is provided
+                        onFileUpload={() => (children ? setOpenDialog(true) : persistenceStrategy.execute())}
                     />
                 </div>
             </div>
@@ -92,6 +94,7 @@ export const DataImport = ({
         if (Object.keys(data).length === 0) return;
         // render inline version if assistent is active and correspending data was uploaded
         if (Object.keys(failedCaseImports).length > 0) return <FailedCaseImportDialog />;
+
         if (inlineSelection && showImportAssistent) {
             return (
                 <>
@@ -102,6 +105,10 @@ export const DataImport = ({
                     </div>
                 </>
             );
+        }
+        // automatically import all data if no children was defined for the DataImport component
+        if (!children) {
+            return;
         }
         // always render dialog version if assistent is inactive
         if (!showImportAssistent) {
@@ -163,7 +170,7 @@ export const DataImport = ({
         <div className="flex flex-col items-center gap-1">
             <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                 {renderDropzone()}
-                {renderDataSelection()}
+                {children ? renderDataSelection() : null}
             </div>
             {exampleDataPath && (
                 <Button

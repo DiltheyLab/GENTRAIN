@@ -8,10 +8,11 @@ export const useGetSequenceTableData = () => {
 
     useEffect(() => {
         const sequences: SequenceImport[] = [];
-        for (const fastaId of Object.keys(sequenceImports)) {
-            const sequence = sequenceImports[fastaId];
+        for (const fastaHash of Object.keys(sequenceImports)) {
+            console.log(sequenceImports);
+            const sequence = sequenceImports[fastaHash];
             const currentSequence = {
-                fasta_id: fastaId,
+                fasta_id: sequence.fasta_id,
                 sequence_length: sequence.sequence_length,
                 n_count: sequence.n_count,
                 ambiguity_character_count: sequence.ambiguity_character_count,

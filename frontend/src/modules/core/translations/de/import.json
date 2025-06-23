@@ -5,7 +5,6 @@
         "case_selection": "Import von Falldaten",
         "sequence_introduction": "Import von Sequenzdaten",
         "sequence_import": "Import von Sequenzdaten",
-        "sequence_selection": "Import von Sequenzdaten",
         "sequence_analysis": "Analyse der Sequenzdaten",
         "contact_import": "Import von Kontaktpersonendaten",
         "contact_selection": "Import von Falldaten",
@@ -140,14 +139,6 @@
             {
                 "tag": "p",
                 "content": "Ziehen Sie ihre FASTA-Dateien in die grau hinterlegte Fläche oder klicken Sie auf die Fläche um Dateien auszuwählen."
-            }
-        ]
-    },
-    "sequence_selection": {
-        "shared": [
-            {
-                "tag": "p",
-                "content": "Sie können aus der folgenden Tabelle auswählen, welche Sequenzen Sie importieren möchten. Überprüfen Sie die Liste und wählen Sie die Sequenzen aus, die Sie importieren wollen. Sequenzen, die Sie nicht importieren möchten, können Sie einfach abwählen."
             }
         ]
     },
