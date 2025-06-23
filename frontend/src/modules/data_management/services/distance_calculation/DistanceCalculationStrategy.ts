@@ -7,11 +7,10 @@ import {
 import { getOrCreateDistanceMatrixIdByPathogenId } from "@/modules/core/models/distance_matrices";
 import { deleteDistancesByPathogenId } from "@/modules/core/models/distances";
 import { PathogenSchema } from "@/modules/core/models/pathogens";
-import { DataManagementStore, useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { toast } from "@/modules/core/components/ui/UseToast";
 
 export abstract class DistanceCalculationStrategy {
-    protected dataManagementStore: DataManagementStore;
     protected pathogen: PathogenSchema;
     protected distanceMatrixId: number | undefined;
     protected cases: CaseSchema[];
@@ -22,13 +21,12 @@ export abstract class DistanceCalculationStrategy {
     ): Promise<number | null> | number | null;
 
     constructor(pathogen: PathogenSchema) {
-        this.dataManagementStore = useDataManagementStore.getState();
         this.pathogen = pathogen;
         this.cases = [];
     }
 
     public execute = async () => {
-        this.dataManagementStore.setDistanceCalculationRunning(true);
+        useDataManagementStore.getState().setDistanceCalculationRunning(true);
         if (!this.distanceMatrixId) await this.init();
         await deleteDistancesByPathogenId(this.pathogen.id);
         this.initProgress();

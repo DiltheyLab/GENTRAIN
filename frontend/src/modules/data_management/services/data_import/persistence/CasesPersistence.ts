@@ -12,6 +12,8 @@ import { CaseImports } from "@/modules/data_management/types/import";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { createInfectedByContacts } from "@/modules/core/models/contacts";
 import { z } from "zod";
+import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export class CasesPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -30,6 +32,7 @@ export class CasesPersistence extends PersistenceStrategy {
             duration: 5000,
             variant: "success",
         });
+        this.triggerDistanceCalculation();
     };
 
     private async createOrUpdateCases(caseImports: CaseImports) {
@@ -104,4 +107,12 @@ export class CasesPersistence extends PersistenceStrategy {
         await ContactsPersistence.createSameAddressAndLastnameContactsForCases(caseIdMapByNumber);
         await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForCases(caseIdMapByNumber);
     }
+
+    private triggerDistanceCalculation = async () => {
+        const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy(
+            useCoreStore.getState().activePathogen!
+        );
+        if (!distanceCalculationStrategy) return;
+        await distanceCalculationStrategy.execute();
+    };
 }

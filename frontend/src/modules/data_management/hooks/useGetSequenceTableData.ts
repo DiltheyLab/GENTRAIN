@@ -9,7 +9,6 @@ export const useGetSequenceTableData = () => {
     useEffect(() => {
         const sequences: SequenceImport[] = [];
         for (const fastaHash of Object.keys(sequenceImports)) {
-            console.log(sequenceImports);
             const sequence = sequenceImports[fastaHash];
             const currentSequence = {
                 fasta_id: sequence.fasta_id,
