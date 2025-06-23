@@ -69,7 +69,7 @@ export abstract class SequenceAnalysisStrategy {
             if (existingSequenceAnalysis && existingSequenceAnalysis.result) {
                 // mark sequence analysis as successful if a result for the provided hash already exists
                 useDataManagementStore.getState().changeSequenceImport(fastaHash, {
-                    status: "success",
+                    status: "finished",
                 });
             } else {
                 // create a new sequence analysis object if not result is available for the provided sequence hash
@@ -94,6 +94,7 @@ export abstract class SequenceAnalysisStrategy {
         }
         db.sequence_analyses_cases.bulkAdd(newCaseMappings);
         this.emitSequenceAnalysis();
+        this.continueIfAllAnalysesAreDone();
     };
 
     private handleAnalysisEvents = () => {
