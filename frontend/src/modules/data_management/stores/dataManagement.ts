@@ -288,7 +288,6 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
                 set({ importAssistentStep: "sequence_analysis" });
                 break;
             case "sequence_analysis":
-                console.log("HI");
                 set({ importAssistentStep: "contact_import" });
                 break;
             case "contact_import":
