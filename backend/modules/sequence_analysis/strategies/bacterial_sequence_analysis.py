@@ -171,6 +171,12 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             self.fasta_hash,
             to=f"{self.type}_{self.socket_id}",
         )
+        self.redis_connection.hmset(
+            f"client:sequence_analysis:{self.fasta_hash}",
+            {
+                "enqueued_at": time.time(),
+            },
+        )
 
     def emit_started_event(self):
         sio.emit(

@@ -22,15 +22,19 @@ export class SequencesValidation extends ValidationStrategy {
         }
         const sequenceImports: { [fastaId: string]: SequenceImport } = {};
         for (const sequenceItem of this.data) {
-            const sequenceHash = sha256(sequenceItem.sequence);
-            sequenceImports[sequenceHash] = {
-                ...{
-                    fasta_id: sequenceItem.fastaId,
-                    sequence: sequenceItem.sequence,
-                    status: "sent",
-                },
-                ...sequenceAnalysisStrategy?.getQualityParameters(sequenceItem.sequence),
-            };
+            const fastaHash = sha256(sequenceItem.sequence);
+            if (fastaHash in sequenceImports) {
+                sequenceImports[fastaHash].fasta_ids.push(sequenceItem.fastaId);
+            } else {
+                sequenceImports[fastaHash] = {
+                    ...{
+                        fasta_ids: [sequenceItem.fastaId],
+                        sequence: sequenceItem.sequence,
+                        status: "sent",
+                    },
+                    ...sequenceAnalysisStrategy?.getQualityParameters(sequenceItem.sequence),
+                };
+            }
         }
 
         useDataManagementStore.getState().setSequenceImports(sequenceImports);

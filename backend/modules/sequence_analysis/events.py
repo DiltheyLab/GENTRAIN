@@ -104,5 +104,5 @@ def init_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=No
         )
     )
     strategy.enqueue_analysis(
-        queue_viral if pathogen.type == "viral" else queue_bacterial,
+        queue_viral if pathogen.type == "viral" else queue_bacterial
     )

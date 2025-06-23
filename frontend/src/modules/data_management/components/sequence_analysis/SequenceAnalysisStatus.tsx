@@ -46,21 +46,17 @@ export function SequenceAnalysisStatus() {
                     )}
                     <ScrollArea ref={scrollAreaRef}>
                         <div className="w-full flex flex-wrap max-h-[300px]">
-                            {Object.keys(sequenceImports).map((sequenceHash) => {
-                                const sequenceImport = sequenceImports[sequenceHash];
-                                if (!sequenceImports[sequenceHash]) return;
+                            {Object.keys(sequenceImports).map((fastaHash) => {
+                                const sequenceImport = sequenceImports[fastaHash];
+                                if (!sequenceImport) return;
                                 return (
-                                    <div
-                                        key={sequenceImport.fasta_id}
-                                        data-fasta_id={sequenceImport.fasta_id}
-                                        className="w-full sm:w-1/3 p-1"
-                                    >
+                                    <div key={fastaHash} data-fasta_hash={fastaHash} className="w-full sm:w-1/3 p-1">
                                         <div
                                             className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
                                                 sequenceImport.status
                                             )}`}
                                         >
-                                            <div className="mr-2 text-xs">{sequenceImport.fasta_id}</div>
+                                            <div className="mr-2 text-xs">{sequenceImport.fasta_ids.join(", ")}</div>
                                             {sequenceImport.status === "sent" && (
                                                 <CircleDashed className="mr-[1px]" width={15} />
                                             )}

@@ -7,6 +7,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket";
 import { BacterialQualityParameters, ViralQualityParameters } from "@/modules/core/models/sequence_analyses";
+import { SequenceAnalysisCasesSchema } from "@/modules/core/models/sequence_analyses_cases";
 
 export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
@@ -37,7 +38,7 @@ export abstract class SequenceAnalysisStrategy {
             .toArray();
         const results: { result: object; fasta_hash: string }[] = [];
         for (const sequenceAnalysis of sequenceAnalysesWithoutResult) {
-            const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis.fasta_hash);
+            const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis);
             if (!result) continue;
             results.push({ result: result, fasta_hash: sequenceAnalysis.fasta_hash });
         }
@@ -59,18 +60,17 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     private runAnalysis = async () => {
+        const newCaseMappings: SequenceAnalysisCasesSchema[] = [];
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
         for (const fastaHash in sequenceImports) {
             const sequenceImport = sequenceImports[fastaHash];
             const existingSequenceAnalysis = await db.sequence_analyses.where({ fasta_hash: fastaHash }).first();
             let sequenceAnalysisId = existingSequenceAnalysis?.id;
-            if (sequenceAnalysisId) {
+            if (existingSequenceAnalysis && existingSequenceAnalysis.result) {
                 // mark sequence analysis as successful if a result for the provided hash already exists
-                if (existingSequenceAnalysis?.result) {
-                    useDataManagementStore.getState().changeSequenceImport(fastaHash, {
-                        status: "success",
-                    });
-                }
+                useDataManagementStore.getState().changeSequenceImport(fastaHash, {
+                    status: "success",
+                });
             } else {
                 // create a new sequence analysis object if not result is available for the provided sequence hash
                 sequenceAnalysisId = await db.sequence_analyses.add({
@@ -78,18 +78,21 @@ export abstract class SequenceAnalysisStrategy {
                     pathogen_id: useCoreStore.getState().activePathogen!.id,
                 });
             }
-            const caseMapping = await db.sequence_analyses_cases
-                .where({ sequence_analysis_id: sequenceAnalysisId, fasta_id: sequenceImport.fasta_id })
-                .first();
-            // create a mapping between existing sequence analysis id and fasta id if it does not already exist
-            // a sequence may be associated with mutiple cases via fasta ids
-            if (!caseMapping) {
-                db.sequence_analyses_cases.add({
-                    sequence_analysis_id: sequenceAnalysisId,
-                    fasta_id: sequenceImport.fasta_id,
-                });
+            for (const fastaId of sequenceImport.fasta_ids) {
+                const caseMapping = await db.sequence_analyses_cases
+                    .where({ sequence_analysis_id: sequenceAnalysisId, fasta_id: fastaId })
+                    .first();
+                // create a mapping between existing sequence analysis id and fasta id if it does not already exist
+                // a sequence may be associated with mutiple cases via fasta ids
+                if (!caseMapping && sequenceAnalysisId) {
+                    newCaseMappings.push({
+                        sequence_analysis_id: sequenceAnalysisId,
+                        fasta_id: fastaId,
+                    } as SequenceAnalysisCasesSchema);
+                }
             }
         }
+        db.sequence_analyses_cases.bulkAdd(newCaseMappings);
         this.emitSequenceAnalysis();
     };
 
@@ -118,14 +121,10 @@ export abstract class SequenceAnalysisStrategy {
         }
 
         if (this.parallelAnalysesThreshold && sentSequenceAnalysesCount % this.parallelAnalysesThreshold === 0) {
-            useDataManagementStore.getState().setScrollToSequence(sequenceImports[data.fasta_hash].fasta_id);
+            useDataManagementStore.getState().setScrollToSequence(data.fasta_hash);
             this.emitSequenceAnalysis();
         }
-        const sessionId = useCoreStore.getState().sessionId;
-        if (!sessionId) {
-            throw new GentrainException("");
-        }
-        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(data.fasta_hash);
+        gentrainApiInstance.deleteSequenceAnalysisResultForHash(data.fasta_hash);
         this.continueIfAllAnalysesAreDone();
     }
 
@@ -197,6 +196,7 @@ export abstract class SequenceAnalysisStrategy {
                 persistedSequenceAnalysis.fasta_hash,
                 persistedSequenceAnalysis.result
             );
+            gentrainApiInstance.deleteSequenceAnalysisResultForHash(persistedSequenceAnalysis.fasta_hash);
         }
     };
 

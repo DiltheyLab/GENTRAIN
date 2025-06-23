@@ -4,7 +4,6 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { useGetSequenceAnalysesWithoutResultCount } from "@/modules/core/hooks/database/sequence_identifiers/useGetSequenceIdentifierCount";
 
 export const useHandlePersistedSequenceAnalysisResults = () => {
-    const sessionId = useCoreStore((state) => state.sessionId);
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const effectRan = useRef(false);
     const sequenceAnalysesWithoutResultCount = useGetSequenceAnalysesWithoutResultCount();
@@ -13,16 +12,11 @@ export const useHandlePersistedSequenceAnalysisResults = () => {
         sequenceAnalysisStrategy?.handlePersistedResults();
     };
     useEffect(() => {
-        if (
-            sessionId &&
-            activePathogen &&
-            sequenceAnalysesWithoutResultCount &&
-            sequenceAnalysesWithoutResultCount > 0
-        ) {
+        if (activePathogen && sequenceAnalysesWithoutResultCount && sequenceAnalysesWithoutResultCount > 0) {
             if (!effectRan.current) {
                 getStrategyAndHandlePersistedResults();
             }
             effectRan.current = true;
         }
-    }, [sessionId, activePathogen, sequenceAnalysesWithoutResultCount]);
+    }, [activePathogen, sequenceAnalysesWithoutResultCount]);
 };

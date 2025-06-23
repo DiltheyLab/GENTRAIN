@@ -6,7 +6,7 @@ export const useScrollToFastaIdElement = () => {
     const scrollToSequence = useDataManagementStore((state) => state.scrollToSequence);
 
     useEffect(() => {
-        const fastaIdElement = document.querySelector(`[data-fasta_id="${scrollToSequence}"]`);
+        const fastaIdElement = document.querySelector(`[data-fasta_hash="${scrollToSequence}"]`);
         fastaIdElement?.scrollIntoView({ behavior: "smooth" });
     }, [scrollToSequence]);
 

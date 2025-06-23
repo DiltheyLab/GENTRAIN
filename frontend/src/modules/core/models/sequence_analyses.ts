@@ -15,7 +15,7 @@ export interface SequenceSchema {
 }
 
 export type SequenceImport = {
-    fasta_id: string;
+    fasta_ids: string[];
     sequence: string;
     sequence_length?: number;
     n_count?: number;
@@ -71,6 +71,7 @@ interface SequenceAnalysisSchema {
 
 export const deleteSequenceAnalysisById = async (id: number) => {
     await db.sequence_analyses.delete(id);
+    db.sequence_analyses_cases.where({ sequence_analysis_id: id }).delete();
 };
 
 export type { SequenceAnalysisSchema, ViralAnalysisResult, BacterialAnalysisResult };

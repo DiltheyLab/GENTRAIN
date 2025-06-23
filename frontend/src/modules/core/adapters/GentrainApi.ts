@@ -1,6 +1,7 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { Pathogen } from "@/modules/core/models/pathogens";
 import { AlignedSequences, PersistedSequenceAnalysis } from "@/modules/core/types/api";
+import { deleteSequenceAnalysisById, SequenceAnalysisSchema } from "../models/sequence_analyses";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
@@ -17,14 +18,18 @@ export class GentrainApi {
     }
 
     // Sequence Analyses
-    public async getPersistedSequenceAnalysisResult(fastaHash: string) {
+    public async getPersistedSequenceAnalysisResult(sequenceAnalysis: SequenceAnalysisSchema) {
         const sequenceAnalysesResult = await this.getRequest<PersistedSequenceAnalysis>(
-            `${this.url}/sequence_analyses/${fastaHash}`
+            `${this.url}/sequence_analyses/${sequenceAnalysis.fasta_hash}`
         );
+        if (sequenceAnalysesResult === undefined) {
+            deleteSequenceAnalysisById(sequenceAnalysis.id);
+            return null;
+        }
         return sequenceAnalysesResult;
     }
 
-    public async deleteSequenceAnalysisResultForPathogenAndSession(fastaHash: string) {
+    public async deleteSequenceAnalysisResultForHash(fastaHash: string) {
         const response = await this.deleteRequest(`${this.url}/sequence_analyses/${fastaHash}`);
         return response;
     }
@@ -96,17 +101,23 @@ export class GentrainApi {
     private handleException(response: Response) {
         switch (response.status) {
             case 400:
-                throw new GentrainException("BadRequest: The request was invalid.");
+                throw new GentrainException("BadRequest: The request was invalid.", { status: response.status });
             case 401:
-                throw new GentrainException("Unauthorized: Authentication failed.");
+                throw new GentrainException("Unauthorized: Authentication failed.", { status: response.status });
             case 403:
-                throw new GentrainException("Forbidden: Access denied.");
+                throw new GentrainException("Forbidden: Access denied.", { status: response.status });
             case 404:
-                throw new GentrainException("NotFound: Resource not found.");
+                throw new GentrainException("NotFound: Resource not found.", { status: response.status });
+            case 422:
+                throw new GentrainException("UnprocessableContent: The entity could not be processed.", {
+                    status: response.status,
+                });
             case 500:
-                throw new GentrainException("ServerError: Internal server error.");
+                throw new GentrainException("ServerError: Internal server error.", { status: response.status });
             default:
-                throw new GentrainException(`ApiError: ${response.status} ${response.statusText}`);
+                throw new GentrainException(`ApiError: ${response.status} ${response.statusText}`, {
+                    status: response.status,
+                });
         }
     }
 }

@@ -90,8 +90,8 @@ export abstract class DistanceCalculationStrategy {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
         useDataManagementStore.getState().setFailedSequenceImports(
             Object.keys(sequenceImports)
-                .filter((fastaId) => sequenceImports[fastaId].status === "failed")
-                .map((fastaId) => fastaId)
+                .filter((fastaHash) => sequenceImports[fastaHash].status === "failed")
+                .map((fastaHash) => fastaHash)
         );
         useDataManagementStore.getState().resetSequenceUpload();
         if (useDataManagementStore.getState().importAssistentStep === "sequence_analysis") {

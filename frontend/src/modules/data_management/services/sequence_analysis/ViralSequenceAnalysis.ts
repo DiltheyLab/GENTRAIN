@@ -8,11 +8,11 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
         const finishedSequenceAnalyses = Object.keys(sequenceImports).filter(
             (fastaHash) =>
-                sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error"
+                sequenceImports[fastaHash].status === "finished" || sequenceImports[fastaHash].status === "failed"
         );
         const pendingSequenceAnalyses = Object.keys(sequenceImports).filter(
             (fastaHash) =>
-                sequenceImports[fastaHash].status !== "success" && sequenceImports[fastaHash].status !== "error"
+                sequenceImports[fastaHash].status !== "finished" && sequenceImports[fastaHash].status !== "failed"
         );
 
         // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
@@ -25,6 +25,8 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
         let fastaString = "";
         for (let i = finishedSequenceAnalyses.length; i < socketMessageLimit; i++) {
             const fastaHash = Object.keys(sequenceImports)[i];
+            if (sequenceImports[fastaHash].status === "finished" || sequenceImports[fastaHash].status === "failed")
+                continue;
             fastaString += `>${fastaHash}\n${sequenceImports[fastaHash].sequence}\n`;
         }
         gentrainWebsocketInstance.sequenceAnalysisEmit(this.pathogen.id, fastaString);

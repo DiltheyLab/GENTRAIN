@@ -10,5 +10,5 @@ export type CaseImports = {
 };
 
 export type SequenceImports = {
-    [sequenceHash: string]: SequenceImport;
+    [fastaHash: string]: SequenceImport;
 };

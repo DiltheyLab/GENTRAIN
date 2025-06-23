@@ -52,7 +52,7 @@ type DataManagementStoreActions = {
     // sequence import
     changeSequenceImport: (key: string, value: any) => void;
     removeSequenceImport: (key: string) => void;
-    setSequenceImports: (imports: { [sequenceHash: string]: SequenceImport }) => void;
+    setSequenceImports: (imports: { [fastaHash: string]: SequenceImport }) => void;
     clearSequenceImports: () => void;
     setSequenceSelectionActive: (value: boolean) => void;
     setShowSequenceUploadStatus: (value: boolean) => void;
@@ -63,7 +63,7 @@ type DataManagementStoreActions = {
     incrementDistanceCalculationCount: () => void;
     setDistanceCalculationSum: (sum: number) => void;
     resetSequenceUpload: () => void;
-    setFailedSequenceImports: (sequenceHash: string[]) => void;
+    setFailedSequenceImports: (fastaHash: string[]) => void;
     setScrollToSequence: (fastaId: string) => void;
 
     // contact import
@@ -195,8 +195,8 @@ export const useDataManagementStore = create<DataManagementStore>((set, get) => 
         set({ failedSequenceImports: fastaIds });
     },
     scrollToSequence: null,
-    setScrollToSequence: (fastaId: string) => {
-        set({ scrollToSequence: fastaId });
+    setScrollToSequence: (fastaHash: string) => {
+        set({ scrollToSequence: fastaHash });
     },
     // contact import
     contactImports: {},

@@ -7,8 +7,7 @@ from io import StringIO
 from os import popen
 from Bio import SeqIO
 from werkzeug.utils import secure_filename
-from hashlib import sha256
-
+import time
 from backend.modules.core.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
@@ -129,7 +128,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
             .replace("\n", "")
             .strip()
         )
-        print()
         return (
             result["seqName"],
             ViralSequenceAnalysisResponseModel(
@@ -153,6 +151,12 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def emit_enqueued_event(self):
         for fasta_hash in self.sequences.keys():
+            self.redis_connection.hmset(
+                f"client:sequence_analysis:{fasta_hash}",
+                {
+                    "enqueued_at": time.time(),
+                },
+            )
             sio.emit(
                 "sequence_analysis_enqueued",
                 fasta_hash,
