@@ -30,7 +30,7 @@ export class SequencesValidation extends ValidationStrategy {
                     ...{
                         fasta_ids: [sequenceItem.fastaId],
                         sequence: sequenceItem.sequence,
-                        status: "sent",
+                        status: "pending",
                     },
                     ...sequenceAnalysisStrategy?.getQualityParameters(sequenceItem.sequence),
                 };

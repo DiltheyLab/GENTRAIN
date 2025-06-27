@@ -65,7 +65,14 @@ export class GraphDataGenerator {
 
             for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
                 const columnCase = this.graphCases[columnIndex];
-                if (!rowCase.sequence_analysis || !columnCase.sequence_analysis) continue;
+                // exclude link from graph if distance was not yet calculated
+                if (
+                    !rowCase.sequence_analysis?.result ||
+                    !columnCase.sequence_analysis?.result ||
+                    this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id] === undefined
+                )
+                    continue;
+
                 this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,

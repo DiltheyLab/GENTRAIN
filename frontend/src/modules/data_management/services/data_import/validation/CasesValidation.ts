@@ -91,7 +91,9 @@ export class CasesValidation extends ValidationStrategy {
             return caseId;
         });
 
-        const cases = await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)));
+        const cases = (await getWithRelations(db.cases.where("case_id").anyOf(Array.from(caseIds)))).filter(
+            (currentCase) => currentCase.pathogen_id === activePathogen.id
+        );
         this.cases = ObjectRelationalMapper.arrayToMap(cases, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);
         this.outbreaks = ObjectRelationalMapper.arrayToMap(outbreaks);

@@ -47,7 +47,7 @@ export function SequenceAnalysisModal() {
                                                 (
                                                 {
                                                     Object.keys(sequenceImports).filter(
-                                                        (key: string) => sequenceImports[key].status === "finished"
+                                                        (key: string) => sequenceImports[key].status === "success"
                                                     ).length
                                                 }{" "}
                                                 von{" "}

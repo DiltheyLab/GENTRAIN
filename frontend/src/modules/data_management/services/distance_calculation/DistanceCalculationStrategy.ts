@@ -88,11 +88,16 @@ export abstract class DistanceCalculationStrategy {
         });
         useDataManagementStore.getState().setDistanceCalculationRunning(false);
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
-        useDataManagementStore.getState().setFailedSequenceImports(
-            Object.keys(sequenceImports)
-                .filter((fastaHash) => sequenceImports[fastaHash].status === "failed")
-                .map((fastaHash) => fastaHash)
-        );
+        let fastaIdsForFailedSequenceImports: string[] = [];
+        Object.keys(sequenceImports)
+            .filter((fastaHash) => sequenceImports[fastaHash].status === "error")
+            .forEach(
+                (fastaHash) =>
+                    (fastaIdsForFailedSequenceImports = fastaIdsForFailedSequenceImports.concat(
+                        sequenceImports[fastaHash].fasta_ids
+                    ))
+            );
+        useDataManagementStore.getState().setFailedSequenceImports(fastaIdsForFailedSequenceImports);
         useDataManagementStore.getState().resetSequenceUpload();
         if (useDataManagementStore.getState().importAssistentStep === "sequence_analysis") {
             useDataManagementStore.getState().nextImportAssistentStep();

@@ -151,16 +151,20 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
 
     def emit_enqueued_event(self):
         for fasta_hash in self.sequences.keys():
+            sio.emit(
+                "sequence_analysis_enqueued",
+                fasta_hash,
+                to=f"{self.type}_{self.socket_id}",
+            )
             self.redis_connection.hmset(
                 f"client:sequence_analysis:{fasta_hash}",
                 {
                     "enqueued_at": time.time(),
                 },
             )
-            sio.emit(
-                "sequence_analysis_enqueued",
-                fasta_hash,
-                to=f"{self.type}_{self.socket_id}",
+            self.redis_connection.expire(
+                name=f"client:sequence_analysis:{fasta_hash}",
+                time=1800,
             )
 
     def emit_started_event(self):

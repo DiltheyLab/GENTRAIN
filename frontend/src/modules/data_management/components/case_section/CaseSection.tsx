@@ -16,11 +16,13 @@ export const CaseSection = () => {
     if (!casesData) return null;
 
     const deleteSelectedCases = (selectedRows: Row<CaseWithRelationships>[]) => {
-        selectedRows.forEach(async (row) => {
+        selectedRows.forEach(async (row, index) => {
             const currentCase = row.original;
             await deleteCaseById(currentCase.id);
+            if (index === selectedRows.length - 1) {
+                updateCasesWithRelationships();
+            }
         });
-        updateCasesWithRelationships();
     };
 
     return (

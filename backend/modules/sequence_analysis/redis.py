@@ -38,22 +38,6 @@ def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
     return chunk_keys
 
 
-def remember_session_id(socket_id, gentrain_session_id):
-    """
-    Map the provided session id to a socket id.
-
-    Parameters:
-        socket_id --  Id of the websocket connection
-        gentrain_session_id -- Session id created in frontend and used to retrieve cached results in case of a connection
-            interruption
-    """
-    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
-    redis_connection.expire(
-        name=f"client:gentrain_session:{socket_id}",
-        time=1800,
-    )
-
-
 def get_merged_fasta_content_if_complete(socket_id, chunk_information):
     """
     Merge entire fasta file content into a string if all chunks were successfully transferred.

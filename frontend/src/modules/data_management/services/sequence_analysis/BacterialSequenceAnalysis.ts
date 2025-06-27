@@ -7,24 +7,8 @@ export class BacterialSequenceAnalysis extends SequenceAnalysisStrategy {
 
     protected emitSequenceAnalysis = () => {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
-        const finishedSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error"
-        );
-        const pendingSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status !== "success" && sequenceImports[fastaHash].status !== "error"
-        );
-
-        // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
-        // depending on which value is lower
-        const socketMessageLimit = Math.min(
-            finishedSequenceAnalyses.length + this.parallelAnalysesThreshold,
-            pendingSequenceAnalyses.length
-        );
-        // always send max. 10 message via websockt channel to regulate user inputs
-        for (let i = finishedSequenceAnalyses.length; i < socketMessageLimit; i++) {
-            const fastaHash = Object.keys(sequenceImports)[i];
+        const fastaHashesToProcess = this.getFastaHashesToProcess(sequenceImports);
+        for (const fastaHash of fastaHashesToProcess) {
             gentrainWebsocketInstance.sequenceAnalysisEmit(
                 this.pathogen.id,
                 this.getAnonymizedSequence(sequenceImports[fastaHash].sequence),

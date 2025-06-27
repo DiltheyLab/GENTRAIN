@@ -6,26 +6,22 @@ from backend.modules.core.models import Pathogen
 from backend.modules.sequence_analysis.redis import (
     get_merged_fasta_content_if_complete,
     persist_fasta_chunk,
-    remember_session_id,
 )
 from backend.modules.sequence_analysis.strategies import (
     ViralSequenceAnalysis,
     BacterialSequenceAnalysis,
 )
-from backend.server import sio, redis_connection, queue_viral, queue_bacterial
+from backend.server import sio, queue_viral, queue_bacterial
 
 
 @sio.event
-def join_sequence_analysis_room(gentrain_session_id, pathogen_type):
+def join_sequence_analysis_room(pathogen_type):
     """
     Join a sequence analysis room and remember the session id by mapping it to the connections socket id.
 
-    gentrain_session_id: Session id created in frontend and used to retrieve cached results in case of a connection
-        interruption
     pathogen_type: Type of the selected pathogen (viral | bacterial)
     """
     socket_id = request.sid
-    remember_session_id(socket_id, gentrain_session_id)
     join_room(f"{pathogen_type}_{socket_id}")
     sio.emit(
         f"{pathogen_type}_room_created",
@@ -43,8 +39,6 @@ def leave_sequence_analysis_room(pathogen_type):
     """
     socket_id = request.sid
     leave_room(f"{pathogen_type}_{socket_id}")
-    # delete socket-session-mapping from redis
-    redis_connection.delete(f"client:gentrain_session:{socket_id}")
 
 
 @sio.event

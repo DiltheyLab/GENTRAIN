@@ -2,30 +2,15 @@ import { SequenceAnalysisStrategy } from "@/modules/data_management/services/seq
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket.ts";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
-    protected parallelAnalysesThreshold = 100;
+    protected parallelAnalysesThreshold = 10;
 
     protected emitSequenceAnalysis = () => {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
-        const finishedSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status === "finished" || sequenceImports[fastaHash].status === "failed"
-        );
-        const pendingSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status !== "finished" && sequenceImports[fastaHash].status !== "failed"
-        );
-
-        // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
-        // depending on which value is lower
-        const socketMessageLimit = Math.min(
-            finishedSequenceAnalyses.length + this.parallelAnalysesThreshold,
-            pendingSequenceAnalyses.length
-        );
+        const fastaHashesToProcess = this.getFastaHashesToProcess(sequenceImports);
         // always send max. 10 message via websockt channel to regulate user inputs
         let fastaString = "";
-        for (let i = finishedSequenceAnalyses.length; i < socketMessageLimit; i++) {
-            const fastaHash = Object.keys(sequenceImports)[i];
-            if (sequenceImports[fastaHash].status === "finished" || sequenceImports[fastaHash].status === "failed")
+        for (const fastaHash of fastaHashesToProcess) {
+            if (sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error")
                 continue;
             fastaString += `>${fastaHash}\n${sequenceImports[fastaHash].sequence}\n`;
         }

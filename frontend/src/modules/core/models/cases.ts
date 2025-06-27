@@ -187,7 +187,6 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
     }
 
     casesWithRelationships = await collectContactsForCases(casesWithRelationships);
-
     return Object.values(casesWithRelationships);
 };
 
@@ -218,6 +217,10 @@ export const getCasesForPathogenWithSequenceAnalysis = async (pathogen_id: numbe
 };
 
 export const deleteCaseById = async (id: number) => {
+    const caseData = await db.cases.get(id);
+    if (caseData?.fasta_id) {
+        await db.sequence_analyses_cases.where({ fasta_id: caseData?.fasta_id }).delete();
+    }
     await db.cases.delete(id);
 };
 
