@@ -1,9 +1,9 @@
 import { describe, expect, beforeEach, vi, it, afterEach } from "vitest";
 import { CustomNode, CustomLink } from "@/modules/core/types/graph";
 import { ClusterAnalyser } from "../../services/graph/ClusterAnalyser";
-import { createNodeWithoutSample, createNodeWithSample } from "../entities/nodes";
 import i18next from "i18next";
 import { CONTACT_LINK_VALUE } from "../../services/graph/GraphDataGenerator";
+import { createNodeWithoutSequence, createNodeWithSequence } from "../entities/nodes";
 
 describe("ClusterAnalyser", () => {
     let nodes: CustomNode[];
@@ -11,14 +11,14 @@ describe("ClusterAnalyser", () => {
 
     beforeEach(() => {
         nodes = [
-            createNodeWithSample({ id: 1 }),
-            createNodeWithSample({ id: 2 }),
-            createNodeWithSample({ id: 3 }),
-            createNodeWithSample({ id: 4 }),
-            createNodeWithSample({ id: 5 }),
-            createNodeWithSample({ id: 6 }),
-            createNodeWithoutSample({ id: 7 }),
-            createNodeWithoutSample({ id: 8 }),
+            createNodeWithSequence({ id: 1 }),
+            createNodeWithSequence({ id: 2 }),
+            createNodeWithSequence({ id: 3 }),
+            createNodeWithSequence({ id: 4 }),
+            createNodeWithSequence({ id: 5 }),
+            createNodeWithSequence({ id: 6 }),
+            createNodeWithoutSequence({ id: 7 }),
+            createNodeWithoutSequence({ id: 8 }),
         ] as CustomNode[];
 
         links = [

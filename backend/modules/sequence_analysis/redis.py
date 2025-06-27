@@ -1,72 +1,53 @@
 from backend.server import redis_connection
 
 
-def persist_fasta_chunk(
-        fasta_chunk, chunk_information, socket_id, identifier
-):
+def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
     """
     Write a fasta chunk into the redis cache.
 
     Parameters:
         fasta_chunk -- Chunk of a fasta file in case viral analyses and a chunk of a sequence in case of bacterial analyses
-        chunk_information -- Dictionary containing information about the index of the transferred chunk
+        chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
             and the total amount of chunks relating to the current analysis
         socket_id -- Id of the websocket connection
-        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
-            and a pseudonymized sequence identifier in case of bacterial analyses
+        sequence_chunk -- Hash of the complete genomic fasta content
     """
     redis_connection.set(
-        name=f"chunks:{socket_id}:{identifier}:{chunk_information['index']}",
+        name=f"chunks:{socket_id}:{chunk_information['id']}:{chunk_information['index']}",
         value=fasta_chunk,
     )
     redis_connection.expire(
-        name=f"chunks:{socket_id}:{identifier}:{chunk_information['index']}",
+        name=f"chunks:{socket_id}:{chunk_information['id']}:{chunk_information['index']}",
         time=60,
     )
 
 
-def get_persisted_fasta_chunk_keys(socket_id, identifier):
+def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
     """
     Get all keys of persisted fasta chunks for the provided identifier.
 
     Parameters:
         socket_id --  Id of the websocket connection
-        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
-            and a pseudonymized sequence identifier in case of bacterial analyses
+        chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
+            and the total amount of chunks relating to the current analysis
     """
-    chunk_keys = redis_connection.keys(f"chunks:{socket_id}:{identifier}:*")
+    chunk_keys = redis_connection.keys(
+        f"chunks:{socket_id}:{chunk_information['id']}:*"
+    )
     chunk_keys.sort()
     return chunk_keys
 
 
-def remember_session_id(socket_id, gentrain_session_id):
+def get_merged_fasta_content_if_complete(socket_id, chunk_information):
     """
-    Map the provided session id to a socket id.
+    Merge entire fasta file content into a string if all chunks were successfully transferred.
 
-    Parameters:
-        socket_id --  Id of the websocket connection
-        gentrain_session_id -- Session id created in frontend and used to retrieve cached results in case of a connection
-            interruption
+     Parameters:
+         socket_id -- Id of the websocket connection
+         chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
+             and the total amount of chunks relating to the current analysis
     """
-    redis_connection.set(f"client:gentrain_session:{socket_id}", gentrain_session_id)
-    redis_connection.expire(
-        name=f"client:gentrain_session:{socket_id}",
-        time=1800,
-    )
-
-
-def get_merged_fasta_content_if_complete(socket_id, identifier, chunk_information):
-    """
-   Merge entire fasta file content into a string if all chunks were successfully transferred.
-
-    Parameters:
-        socket_id -- Id of the websocket connection
-        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
-            and a pseudonymized sequence identifier in case of bacterial analyses
-        chunk_information -- Dictionary containing information about the index of the transferred chunk
-            and the total amount of chunks relating to the current analysis
-    """
-    chunk_keys = get_persisted_fasta_chunk_keys(socket_id, identifier)
+    chunk_keys = get_persisted_fasta_chunk_keys(socket_id, chunk_information)
     if chunk_information["total"] > len(chunk_keys):
         return
     fasta_content = ""

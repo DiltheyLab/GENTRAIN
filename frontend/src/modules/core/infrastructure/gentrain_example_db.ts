@@ -1,6 +1,5 @@
 import Dexie from "dexie";
 import { PathogenTypeName } from "@/modules/core/models/pathogen_types";
-import { Pathogen } from "@/modules/core/models/pathogens";
 import gentrainApiInstance from "../adapters/GentrainApi";
 import { DatabaseSchema } from "../services/database/DatabaseManager";
 
@@ -14,7 +13,7 @@ gentrainExampleDB.version(1).stores({
     samples: "++id, fasta_id, case_id, lineage, n_count, sequence_length, sequence_analysis_id, created_at, updated_at",
     sequence_analyses: "++id, result, schema, version, created_at, updated_at",
     distance_matrices: "++id, pathogen_id, created_at, updated_at",
-    distances: "++id, sample_id_1, sample_id_2, distance_matrix_id, value, created_at, updated_atx",
+    distances: "++id, case_id_1, case_id_2, distance_matrix_id, value, created_at, updated_atx",
     cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
     contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type+context]",
     groups: "++id, name, category_id, pathogen_id, created_at, updated_at, [name+category_id+pathogen_id]",
@@ -42,8 +41,27 @@ gentrainExampleDB.version(1.1).stores({
     sequence_identifiers: "id, fasta_id, pathogen_id",
 });
 
+gentrainExampleDB.version(1.2).stores({
+    sequence_analyses:
+        "++id, fasta_hash, result, schema, version, pathogen_id, created_at, updated_at, [fasta_hash+pathogen_id]",
+    sequence_analyses_cases:
+        "++id, sequence_analysis_id, fasta_id, created_at, updated_at, [sequence_analysis_id+fasta_id]",
+    distance_matrices: "++id, pathogen_id, created_at, updated_at",
+    distances: "++id, case_id_1, case_id_2, distance_matrix_id, value, created_at, updated_atx",
+    cases: "++id, case_id, fasta_id, outbreak_id, *group_ids, pathogen_id, first_name, last_name, city, zip_code, street, infected_by, registered_at, created_at, updated_at, [case_id+pathogen_id], [fasta_id+pathogen_id]",
+    contacts: "++id, case_id_1, case_id_2, type, context, created_at, updated_at, [case_id_1+case_id_2+type]",
+    groups: "++id, name, category_id, pathogen_id, created_at, updated_at, [name+category_id+pathogen_id]",
+    pathogens: "id, name, genetic_distance_threshold, pathogen_type_id, activated_at, created_at, updated_at",
+    pathogen_types: "++id, name, initialized_at, created_at, updated_at",
+    categories: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
+    analyses: "++id, name, settings, pathogen_id, created_at, updated_at",
+    outbreaks: "++id, name, pathogen_id, created_at, updated_at, [name+pathogen_id]",
+    samples: null,
+    sequence_identifiers: null,
+});
+
 gentrainExampleDB.on("populate", async () => {
-    let persistedPathogenTypes = {} as Record<string, number>;
+    const persistedPathogenTypes = {} as Record<string, number>;
 
     for (const pathogenTypeName of Object.keys(PathogenTypeName)) {
         const newPathogenTypeId = await gentrainExampleDB.pathogen_types.add({
@@ -53,7 +71,7 @@ gentrainExampleDB.on("populate", async () => {
         persistedPathogenTypes[pathogenTypeName] = newPathogenTypeId;
     }
 
-    const pathogens: Pathogen[] = await gentrainApiInstance.getPathogens();
+    const pathogens = (await gentrainApiInstance.getPathogensFromServer()) ?? [];
     for (const pathogen of pathogens) {
         // check if the pathogen already exists in pathogen-table
         // otherwise persist pathogen

@@ -19,11 +19,11 @@ export interface PathogenTypeWithRelationships extends PathogenTypeSchema {
 
 export const getAllPathogenTypesWithRelationships = async () => {
     const pathogenTypes = await db.pathogen_types.toArray();
-    let pathogenTypesWithRelationships: PathogenTypeWithRelationships[] = [];
+    const pathogenTypesWithRelationships: PathogenTypeWithRelationships[] = [];
     for (const key in pathogenTypes) {
         pathogenTypesWithRelationships[key] = pathogenTypes[key];
         const pathogens = await db.pathogens.where({ pathogen_type_id: pathogenTypes[key].id }).toArray();
-        let pathogensWithRelationships: PathogenWithRelationships[] = [];
+        const pathogensWithRelationships: PathogenWithRelationships[] = [];
         for (const key in pathogens) {
             pathogensWithRelationships[key] = pathogens[key];
             // retrieve pathogen schema object
@@ -45,3 +45,5 @@ export const setInitializedAtForPathogenType = async (pathogenTypeId: number) =>
         initialized_at: new Date(),
     });
 };
+
+export const getAllPathogenTypes = async () => await db.pathogen_types.toArray();

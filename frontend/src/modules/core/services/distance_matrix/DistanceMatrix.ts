@@ -1,5 +1,5 @@
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
-import { getAllDistancesForDistanceMatrixWithFastaIds } from "@/modules/core/models/distances";
+import { getAllDistancesForDistanceMatrixWithCaseReferences } from "@/modules/core/models/distances";
 
 export class DistanceMatrix {
     private id: number;
@@ -7,18 +7,18 @@ export class DistanceMatrix {
         this.id = id;
     }
     public assemble = async () => {
-        const distances = await getAllDistancesForDistanceMatrixWithFastaIds(this.id);
+        const distances = await getAllDistancesForDistanceMatrixWithCaseReferences(this.id);
         if (!distances) return;
         const matrix: DistanceMatrixAssembly = {};
         for (const distance of distances) {
-            if (!matrix[distance.fasta_id_1]) {
-                matrix[distance.fasta_id_1] = {};
+            if (!matrix[distance.case_reference_1]) {
+                matrix[distance.case_reference_1] = {};
             }
-            matrix[distance.fasta_id_1][distance.fasta_id_2] = distance.value;
-            if (!matrix[distance.fasta_id_2]) {
-                matrix[distance.fasta_id_2] = {};
+            matrix[distance.case_reference_1][distance.case_reference_2] = distance.value;
+            if (!matrix[distance.case_reference_2]) {
+                matrix[distance.case_reference_2] = {};
             }
-            matrix[distance.fasta_id_2][distance.fasta_id_1] = distance.value;
+            matrix[distance.case_reference_2][distance.case_reference_1] = distance.value;
         }
         return matrix;
     };

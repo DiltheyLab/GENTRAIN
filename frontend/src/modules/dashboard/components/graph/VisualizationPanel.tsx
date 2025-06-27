@@ -60,10 +60,9 @@ export const DashboardVisualizationPanel = () => {
             contacts: ContactSchema[]
         ) => {
             const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
-            let graphData = await graphDataGenerator.execute();
+            const graphData = await graphDataGenerator.execute();
             const allLinks = graphDataGenerator.getAllLinks();
             setAllLinks(allLinks);
-
             if (dashboardStore.graphSettings.coloringMode === "clusters") {
                 // create clusters and assign them to the nodes based on all links (not only the MSTLinks) below the clustering threshold
                 const clusterAnalyser = new ClusterAnalyser(graphData.nodes, allLinks, settings.clusteringThreshold);

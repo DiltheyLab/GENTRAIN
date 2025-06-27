@@ -1,4 +1,4 @@
-import { SampleSchema } from "@/modules/core/models/samples";
+import { SequenceAnalysisSchema, ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 const ambiguousChars: { [base: string]: string[] } = {
     A: ["A"],
@@ -21,8 +21,8 @@ const ambiguousChars: { [base: string]: string[] } = {
 };
 
 export class ViralDistanceExtractor {
-    protected sample1: SampleSchema;
-    protected sample2: SampleSchema;
+    protected sequenceAnalysisResult1: ViralAnalysisResult;
+    protected sequenceAnalysisResult2: ViralAnalysisResult;
     protected properThreshold: number;
     protected distance: number = 0;
     protected activeGap1: boolean = false;
@@ -34,12 +34,18 @@ export class ViralDistanceExtractor {
     protected currentChar1: string = "";
     protected currentChar2: string = "";
 
-    constructor(sample1: SampleSchema, sample2: SampleSchema, properThreshold: number = 20) {
-        this.sample1 = sample1;
-        this.sample2 = sample2;
+    constructor(
+        sequenceAnalysis1: SequenceAnalysisSchema,
+        sequenceAnalysis2: SequenceAnalysisSchema,
+        properThreshold: number = 20
+    ) {
+        this.sequenceAnalysisResult1 = sequenceAnalysis1.result as ViralAnalysisResult;
+        this.sequenceAnalysisResult2 = sequenceAnalysis2.result as ViralAnalysisResult;
         this.properThreshold = properThreshold;
-        this.properCharAmount1 = (sample1.sequence_length ?? 0) - (sample1.n_count ?? 0);
-        this.properCharAmount2 = (sample2.sequence_length ?? 0) - (sample2.n_count ?? 0);
+        this.properCharAmount1 =
+            (this.sequenceAnalysisResult1.sequence_length ?? 0) - (this.sequenceAnalysisResult1.n_count ?? 0);
+        this.properCharAmount2 =
+            (this.sequenceAnalysisResult2.sequence_length ?? 0) - (this.sequenceAnalysisResult2.n_count ?? 0);
     }
 
     public getDistance = () => {

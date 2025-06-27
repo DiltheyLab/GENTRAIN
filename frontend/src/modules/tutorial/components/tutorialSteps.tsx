@@ -357,7 +357,8 @@ export const tutorialSteps: Step[] = [
         title: "Alle Daten löschen.",
         content: (
             <p>
-                Wenn Sie ihren gesamten Datenbestand löschen wollen, können Sie das hier tun.{" "}
+                Wenn Sie ihre Analysen abgeschlossen haben und die Daten nicht mehr benötigen, können Sie den gesamten
+                Datenbestand hier löschen.{" "}
                 <strong>Achtung: Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>
             </p>
         ),

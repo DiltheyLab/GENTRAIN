@@ -8,7 +8,7 @@ import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactSchema } from "@/modules/core/models/contacts";
 import { DistanceMatrixAssembly } from "@/modules/core/models/distance_matrices";
 import { LinkColorMapGenerator } from "./LinkColorMapGenerator";
-import {formatDate} from "@/modules/core/helpers/dates.ts";
+import { formatDate } from "@/modules/core/helpers/dates.ts";
 
 export const CONTACT_LINK_VALUE = -1;
 
@@ -65,12 +65,18 @@ export class GraphDataGenerator {
 
             for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
                 const columnCase = this.graphCases[columnIndex];
+                // exclude link from graph if distance was not yet calculated
+                if (
+                    !rowCase.sequence_analysis?.result ||
+                    !columnCase.sequence_analysis?.result ||
+                    this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id] === undefined
+                )
+                    continue;
 
-                if (!rowCase.sample || !columnCase.sample) continue;
                 this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,
-                    value: this.distanceMatrixAssembly?.[rowCase.sample.fasta_id]?.[columnCase.sample.fasta_id],
+                    value: this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id],
                     color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
                     curvature: 0,
                     type: i18next.t("linkTypes.geneticDistance"),

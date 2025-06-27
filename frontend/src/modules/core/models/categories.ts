@@ -22,7 +22,7 @@ export const categoryRules = z.object({
 
 export const getAllCategoriesWithGroups = async () => {
     const categories = await db.categories.toArray();
-    let categoriesWithGroups: CategoriesWithGroups[] = [];
+    const categoriesWithGroups: CategoriesWithGroups[] = [];
     for (const key in categories) {
         categoriesWithGroups[key] = categories[key];
         // retrieve groups schema object
@@ -42,7 +42,7 @@ export const getCategoriesForActivePathogen = async () => {
 
 export const getCategoriesWithGroupsAndCaseCountForActivePathogen = async (pathogenId: number) => {
     const categories = await db.categories.where({ pathogen_id: pathogenId }).toArray();
-    let categoriesWithGroups: CategoriesWithGroups[] = [];
+    const categoriesWithGroups: CategoriesWithGroups[] = [];
     for (const key in categories) {
         categoriesWithGroups[key] = categories[key];
         // retrieve groups schema object

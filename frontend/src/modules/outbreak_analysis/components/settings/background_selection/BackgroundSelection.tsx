@@ -19,7 +19,7 @@ export const BackgroundSelection = () => {
     const createOptions = (groupsAndOutbreaks: SelectedBackground | undefined) => {
         if (!groupsAndOutbreaks) return;
         const options: Option[] = [];
-        for (const outbreak of groupsAndOutbreaks?.outbreaks) {
+        for (const outbreak of groupsAndOutbreaks.outbreaks) {
             options.push({
                 label: outbreak.name,
                 value: outbreak.name,
@@ -35,7 +35,7 @@ export const BackgroundSelection = () => {
                 group: "Ausbrüche",
             });
         }
-        for (const group of groupsAndOutbreaks?.groupsWithCategories) {
+        for (const group of groupsAndOutbreaks.groupsWithCategories) {
             options.push({
                 label: group.name,
                 value: group.name,

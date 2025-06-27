@@ -6,7 +6,6 @@ import { Charts } from "../components/charts/Charts";
 
 export function Dashboard() {
     useUpdateClusterAndGeneticDistanceThresholds();
-
     return (
         <div className="relative mx-auto p-4" data-tutorial-tour-step="tutorial-start">
             <div className="flex flex-col-reverse gap-4 md:flex-row min-h-[85vh]">

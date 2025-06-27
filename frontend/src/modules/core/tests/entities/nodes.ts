@@ -1,16 +1,16 @@
-import { CaseWithRelationships } from "../../models/cases";
 import { CustomNode } from "../../types/graph";
 import { createCase } from "./cases";
-import { createSample } from "./samples";
+import { createSequenceAnalysis } from "./sequence_analysis";
 
-type TestCustomNode = Partial<CustomNode>;
-
-export const createNodeWithSample = ({ id }: TestCustomNode) => {
-    const caseDataWithSample = createCase({ id: id, sample: createSample({}) }) as CaseWithRelationships;
-    return { id, caseData: caseDataWithSample } as CustomNode;
+export const createNodeWithSequence = ({ id }: Partial<CustomNode>) => {
+    const caseDataWithSequence = createCase({
+        id: id,
+        sequence_analysis: createSequenceAnalysis({}),
+    });
+    return { id, caseData: caseDataWithSequence } as CustomNode;
 };
 
-export const createNodeWithoutSample = ({ id }: TestCustomNode) => {
-    const caseDataWithSample = createCase({ id: id, sample: null }) as CaseWithRelationships;
-    return { id, caseData: caseDataWithSample } as CustomNode;
+export const createNodeWithoutSequence = ({ id }: Partial<CustomNode>) => {
+    const caseDataWithoutSequence = createCase({ id: id, sequence_analysis: null });
+    return { id, caseData: caseDataWithoutSequence } as CustomNode;
 };

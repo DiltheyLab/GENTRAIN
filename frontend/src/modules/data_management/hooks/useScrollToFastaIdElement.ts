@@ -3,12 +3,12 @@ import { useDataManagementStore } from "../stores/dataManagement";
 
 export const useScrollToFastaIdElement = () => {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const scrollToSample = useDataManagementStore((state) => state.scrollToSample);
+    const scrollToSequence = useDataManagementStore((state) => state.scrollToSequence);
 
     useEffect(() => {
-        const fastaIdElement = document.querySelector(`[data-fasta_id="${scrollToSample}"]`);
+        const fastaIdElement = document.querySelector(`[data-fasta_hash="${scrollToSequence}"]`);
         fastaIdElement?.scrollIntoView({ behavior: "smooth" });
-    }, [scrollToSample]);
+    }, [scrollToSequence]);
 
     return scrollAreaRef;
 };

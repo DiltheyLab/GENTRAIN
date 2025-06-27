@@ -44,7 +44,7 @@ describe("SingleFileReading", () => {
 
     describe("readContent", () => {
         it("should read content of a single text file correctly", async () => {
-            let fileBuffer1 = fs.readFileSync(`${__dirname}/../../../../fixtures/files/test1.txt`);
+            const fileBuffer1 = fs.readFileSync(`${__dirname}/../../../../fixtures/files/test1.txt`);
             singleFileReadingStrategy.files = [new File([new Blob([fileBuffer1])], ":file_name_1:")];
             await singleFileReadingStrategy.readContent();
 

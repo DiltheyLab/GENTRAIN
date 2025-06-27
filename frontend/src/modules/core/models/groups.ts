@@ -30,7 +30,7 @@ export const groupRules = z.object({
 
 export const getGroupsByIdsWithRelationships = async (group_ids: number[]) => {
     const groups = await db.groups.where("id").anyOf(group_ids).toArray();
-    let groupsWithRelationships: GroupWithRelationships[] = [];
+    const groupsWithRelationships: GroupWithRelationships[] = [];
     for (const key in groups) {
         groupsWithRelationships[key] = groups[key];
         // retrieve category schema object

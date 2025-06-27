@@ -2,7 +2,7 @@ import { Button } from "@/modules/core/components/ui/Button";
 import { X } from "lucide-react";
 import { CaseInfoItem } from "./CaseInfoItem";
 import { CustomNode } from "../../types/graph";
-import {formatDate} from "@/modules/core/helpers/dates.ts";
+import { formatDate } from "@/modules/core/helpers/dates.ts";
 
 type CaseInfoProps = {
     selectedNode: CustomNode | null;
@@ -44,7 +44,6 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
             </Button>
             <div className="flex flex-col gap-1 -mt-1">
                 <CaseInfoItem label="Fall ID" description={selectedNode.caseData.case_id} copyToClipboard />
-                <CaseInfoItem label="Sequenz ID" description={selectedNode.caseData.sample?.fasta_id ?? "-"} />
                 <CaseInfoItem label="Ausbruch" description={selectedNode.caseData.outbreak?.name ?? "-"} />
                 <CaseInfoItem
                     label="Registrierungsdatum"
@@ -55,13 +54,7 @@ export const CaseInfo = ({ selectedNode, updateSelectedNode }: CaseInfoProps) =>
                 {selectedNode.caseData.groups
                     ?.filter((group) => group.category)
                     .map((group) => {
-                        return (
-                            <CaseInfoItem
-                                key={`${selectedNode.caseData.case_id}_${group.category}_${group.name}`}
-                                label={group.category!.name}
-                                description={group.name}
-                            />
-                        );
+                        return <CaseInfoItem key={group.id} label={group.category!.name} description={group.name} />;
                     })}
             </div>
         </fieldset>

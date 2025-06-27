@@ -6,7 +6,7 @@ import { SequenceMappingDialog } from "./SequenceMappingDialog";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { Button } from "@/modules/core/components/ui/Button";
 import { Row } from "@tanstack/react-table";
-import { CaseWithRelationships, deleteCaseWithSampleById } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseById } from "@/modules/core/models/cases";
 
 export const CaseSection = () => {
     const casesData = useCoreStore((state) => state.casesWithRelationships);
@@ -16,11 +16,13 @@ export const CaseSection = () => {
     if (!casesData) return null;
 
     const deleteSelectedCases = (selectedRows: Row<CaseWithRelationships>[]) => {
-        selectedRows.forEach(async (row) => {
+        selectedRows.forEach(async (row, index) => {
             const currentCase = row.original;
-            await deleteCaseWithSampleById(currentCase.id);
+            await deleteCaseById(currentCase.id);
+            if (index === selectedRows.length - 1) {
+                updateCasesWithRelationships();
+            }
         });
-        updateCasesWithRelationships();
     };
 
     return (
