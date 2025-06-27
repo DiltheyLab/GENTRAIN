@@ -78,8 +78,10 @@ export const deleteDataForPathogen = async (pathogen_id: number) => {
                     const sequence_analysis = await getSequenceAnalysis(caseData.fasta_id);
                     if (sequence_analysis) {
                         deletions.push(db.sequence_analyses.where({ id: sequence_analysis.id }).delete());
+                        deletions.push(
+                            db.sequence_analyses_cases.where({ sequence_analysis_id: sequence_analysis.id }).delete()
+                        );
                     }
-                    deletions.push(db.sequence_analyses_cases.where({ fasta_id: caseData.fasta_id }).delete());
                 }
                 deletions.push(
                     db.contacts.where({ case_id_1: caseData.id }).or("case_id_2").equals(caseData.id).delete()

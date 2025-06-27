@@ -2,7 +2,7 @@ import { SequenceAnalysisStrategy } from "@/modules/data_management/services/seq
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket.ts";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
-    protected parallelAnalysesThreshold = 10;
+    protected parallelAnalysesThreshold = 100;
 
     protected emitSequenceAnalysis = () => {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;

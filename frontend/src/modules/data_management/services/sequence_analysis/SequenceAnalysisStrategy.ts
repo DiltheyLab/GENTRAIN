@@ -150,10 +150,23 @@ export abstract class SequenceAnalysisStrategy {
         useDataManagementStore.getState().changeSequenceImport(fastaHash, { status: "success" });
     };
 
-    private handleUnsuccessfulAnalysis = (fastaHash: string) => {
+    private handleUnsuccessfulAnalysis = async (fastaHash: string) => {
         useDataManagementStore.getState().changeSequenceImport(fastaHash, {
             status: "error",
         });
+        const activePathogen = useCoreStore.getState().activePathogen;
+        if (!activePathogen) {
+            return;
+        }
+        const sequenceAnalysis = await db.sequence_analyses
+            .where({
+                fasta_hash: fastaHash,
+                pathogen_id: activePathogen.id,
+            })
+            .first();
+        if (!sequenceAnalysis) return;
+        db.sequence_analyses.where({ id: sequenceAnalysis.id }).delete();
+        db.sequence_analyses_cases.where({ sequence_analysis_id: sequenceAnalysis.id }).delete();
     };
 
     private async sequenceAnalysisEnqueuedActions(fastaHash: string) {
