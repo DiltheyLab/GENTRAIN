@@ -4,6 +4,8 @@ import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { createCase } from "../entities/cases";
 import { createDistance } from "../entities/distances";
 import { createSequenceAnalysis } from "../entities/sequence_analysis";
+import { createPathogen } from "../entities/pathogens";
+import { useCoreStore } from "../../stores/core";
 
 describe("GraphCaseCollector", () => {
     let settings: AnalysisSettings;
@@ -36,7 +38,6 @@ describe("GraphCaseCollector", () => {
         const outbreak1 = { id: 1, name: ":outbreakName1:" };
         const outbreak2 = { id: 2, name: ":outbreakName2:" };
         const outbreak3 = { id: 3, name: ":outbreakName3:" };
-
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
             createCase({
