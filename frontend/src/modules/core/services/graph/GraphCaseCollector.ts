@@ -54,14 +54,12 @@ export class GraphCaseCollector {
             excludeCasesOutsideOfDateRange,
             dateRange,
         } = this.settings;
-
         // *************************** SELECT OUTBREAK ********************************
 
         // get cases from outbreak and add them to the casesInGraph and casesInOutbreak array for later use
         if (selectedOutbreak) {
             this.addCasesFromOutbreak(selectedOutbreak);
         }
-
         // *************************** SELECT BACKGROUND ********************************
 
         // use all cases without any filtering for the graph

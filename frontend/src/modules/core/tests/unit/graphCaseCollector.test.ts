@@ -36,7 +36,6 @@ describe("GraphCaseCollector", () => {
         const outbreak1 = { id: 1, name: ":outbreakName1:" };
         const outbreak2 = { id: 2, name: ":outbreakName2:" };
         const outbreak3 = { id: 3, name: ":outbreakName3:" };
-
         const allCases = [
             createCase({ id: 1, outbreak: outbreak1, outbreak_id: outbreak1.id }),
             createCase({
