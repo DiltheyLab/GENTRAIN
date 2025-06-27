@@ -4,8 +4,6 @@ import { GraphCaseCollector } from "../../services/graph/GraphCaseCollector";
 import { createCase } from "../entities/cases";
 import { createDistance } from "../entities/distances";
 import { createSequenceAnalysis } from "../entities/sequence_analysis";
-import { createPathogen } from "../entities/pathogens";
-import { useCoreStore } from "../../stores/core";
 
 describe("GraphCaseCollector", () => {
     let settings: AnalysisSettings;
