@@ -70,7 +70,7 @@ export class GraphDataGenerator {
                 if (
                     !rowCase.sequence_analysis?.result ||
                     !columnCase.sequence_analysis?.result ||
-                    this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id] === undefined
+                    distance === undefined
                 )
                     continue;
                 this.allLinks.push({
