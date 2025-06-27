@@ -7,6 +7,7 @@ import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { SequenceAnalysisSchema } from "./sequence_analyses";
 import { Collection } from "dexie";
 import { useCoreStore } from "../stores/core";
+import { deleteDistancesByCaseId } from "./distances";
 
 export interface CaseSchema {
     id: number;
@@ -228,6 +229,7 @@ export const getCasesForPathogenWithSequenceAnalysis = async (pathogen_id: numbe
 
 export const deleteCaseById = async (id: number) => {
     const caseData = await db.cases.get(id);
+    if (!caseData) return;
     if (caseData?.fasta_id) {
         const activePathogen = useCoreStore.getState().activePathogen;
         if (activePathogen) {
@@ -243,6 +245,7 @@ export const deleteCaseById = async (id: number) => {
                 .delete();
         }
     }
+    await deleteDistancesByCaseId(id);
     await db.cases.delete(id);
 };
 

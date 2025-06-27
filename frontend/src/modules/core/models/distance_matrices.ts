@@ -43,5 +43,6 @@ export const assembleDistanceMatrixByPathogenId = async (pathogen_id: number) =>
     if (!distanceMatrix) return null;
 
     const matrix = new DistanceMatrix(distanceMatrix.id);
+    console.log(matrix.assemble());
     return matrix.assemble();
 };

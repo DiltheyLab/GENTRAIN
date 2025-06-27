@@ -20,7 +20,7 @@ export const CaseSection = () => {
             const currentCase = row.original;
             await deleteCaseById(currentCase.id);
             if (index === selectedRows.length - 1) {
-                updateCasesWithRelationships();
+                await updateCasesWithRelationships();
             }
         });
     };
