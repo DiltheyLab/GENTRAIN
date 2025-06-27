@@ -35,12 +35,12 @@ export class ClusterAnalyser {
     };
 
     public getClusters = () => {
-        //filter out nodes without samples because they would build own clusters
-        const nodesWithSamples = this.nodes.filter((node) => node.caseData.sample);
+        //filter out nodes without sequence analyses because they would build own clusters
+        const nodesWithSequenceAnalysis = this.nodes.filter((node) => node.caseData.sequence_analysis);
 
         //create node map for performance
         const nodeMap = new Map<number, CustomNode>();
-        for (const node of nodesWithSamples) {
+        for (const node of nodesWithSequenceAnalysis) {
             nodeMap.set(node.id, node);
         }
 

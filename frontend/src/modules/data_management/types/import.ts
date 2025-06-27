@@ -1,4 +1,5 @@
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
+import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 
 export type CaseImports = {
     [id: string]: {
@@ -6,4 +7,8 @@ export type CaseImports = {
         persisted: CaseWithRelationships | null;
         import: boolean;
     };
+};
+
+export type SequenceImports = {
+    [fastaHash: string]: SequenceImport;
 };

@@ -12,7 +12,7 @@ import { t } from "i18next";
 
 export function FailedCaseImportDialog() {
     const failedCaseImports = useDataManagementStore((state) => state.failedCaseImports);
-    const setFailedSampleImports = useDataManagementStore((state) => state.setFailedCaseImports);
+    const setFailedCaseImports = useDataManagementStore((state) => state.setFailedCaseImports);
     return (
         <AlertDialog open>
             <AlertDialogContent className="z-[105]">
@@ -36,7 +36,7 @@ export function FailedCaseImportDialog() {
                 </AlertDialogDescription>
 
                 <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => setFailedSampleImports({})}>Okay</AlertDialogAction>
+                    <AlertDialogAction onClick={() => setFailedCaseImports({})}>Okay</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

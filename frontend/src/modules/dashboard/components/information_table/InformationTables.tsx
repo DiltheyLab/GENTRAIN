@@ -1,6 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/modules/core/components/ui/Accordion";
 import { ClusterInformationTable } from "./ClusterInformationTable";
-import { SampleInformationTable } from "./SampleInformationTable";
+import { CaseInformationTable } from "./CaseInformationTable";
 import { useDashboardStore } from "../../stores/dashboard";
 import { DistanceMatrixTable } from "./DistanceMatrixTable";
 import { useCoreStore } from "@/modules/core/stores/core";
@@ -28,7 +28,7 @@ export const InformationTables = () => {
                         Informationen zu den im Datensatz enthaltenen Fällen
                     </AccordionTrigger>
                     <AccordionContent>
-                        <SampleInformationTable />
+                        <CaseInformationTable />
                     </AccordionContent>
                 </AccordionItem>
             )}

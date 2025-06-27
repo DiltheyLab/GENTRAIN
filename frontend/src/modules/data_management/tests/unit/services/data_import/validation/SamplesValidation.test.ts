@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { SamplesValidation } from "@/modules/data_management/services/data_import/validation/SamplesValidation";
+import { SequencesValidation } from "@/modules/data_management/services/data_import/validation/SequencesValidation";
 
-describe("SamplesValidation", () => {
-    let samplesValidationStrategy: any;
+describe("SequencesValidation", () => {
+    let SequencesValidationStrategy: any;
 
     beforeEach(() => {
-        samplesValidationStrategy = new SamplesValidation();
+        SequencesValidationStrategy = new SequencesValidation();
     });
 
     describe("isHeaderValid", () => {
         it("should return false for samplemupload", () => {
-            const result = samplesValidationStrategy.isHeaderValid();
+            const result = SequencesValidationStrategy.isHeaderValid();
 
             expect(result).toBeFalsy();
         });

@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import json
 import logging
 from os import environ
-
 from redis import Redis
 from flask_socketio import SocketIO
 from backend.modules.core.exceptions import (
@@ -26,11 +25,11 @@ sio = SocketIO(
 
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
+
     redis_connection = redis_connection
     sio = sio
 
-    def __init__(self, pathogen, identifier, fasta_content, socket_id):
-        self.identifier = identifier
+    def __init__(self, pathogen, fasta_content, socket_id):
         self.fasta_content = fasta_content
         self.pathogen = pathogen
         self.socket_id = socket_id
@@ -71,19 +70,15 @@ class SequenceAnalysisStrategy(ABC):
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
 
-    def persist_result(self, response):
-        gentrain_session_id = self.redis_connection.get(
-            f"client:gentrain_session:{self.socket_id}"
-        )
+    def persist_result(self, fasta_hash, result_object):
         self.redis_connection.hmset(
-            f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
+            f"client:sequence_analysis:{fasta_hash}",
             {
-                "result": json.dumps(response),
-                "identifier": self.identifier,
-            }
+                "result": json.dumps(result_object),
+            },
         )
         self.redis_connection.expire(
-            name=f"client:results:{gentrain_session_id}:{self.pathogen.id}:{self.identifier}",
+            name=f"client:sequence_analysis:{fasta_hash}",
             time=1800,
         )
 

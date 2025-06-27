@@ -12,6 +12,8 @@ import { CaseImports } from "@/modules/data_management/types/import";
 import { ObjectRelationalMapper } from "@/modules/core/services/database/ObjectRelationalMapper";
 import { createInfectedByContacts } from "@/modules/core/models/contacts";
 import { z } from "zod";
+import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 export class CasesPersistence extends PersistenceStrategy {
     protected persist = async () => {
@@ -30,6 +32,7 @@ export class CasesPersistence extends PersistenceStrategy {
             duration: 5000,
             variant: "success",
         });
+        this.triggerDistanceCalculation();
     };
 
     private async createOrUpdateCases(caseImports: CaseImports) {
@@ -70,26 +73,22 @@ export class CasesPersistence extends PersistenceStrategy {
     }
 
     private async sanitizeAndGetCaseSchema(caseId: string, importedCase: CaseImport) {
-        try {
-            return caseRules.parse({
-                case_id: caseId,
-                fasta_id: importedCase.fasta_id !== "" ? importedCase.fasta_id : null,
-                pathogen_id: this.pathogen!.id,
-                outbreak_id: importedCase.outbreak
-                    ? await getOrPersistOutbreak(importedCase.outbreak, this.pathogen!.id)
-                    : null,
-                group_ids: await persistGroupsForCategories(importedCase, this.pathogen!.id),
-                registered_at: importedCase.registered_at,
-                street: importedCase.street,
-                zip_code: importedCase.zip_code,
-                city: importedCase.city,
-                first_name: importedCase.first_name,
-                last_name: importedCase.last_name,
-                infected_by: importedCase.infected_by,
-            } as CaseSchema);
-        } catch (err) {
-            throw err;
-        }
+        return caseRules.parse({
+            case_id: caseId,
+            fasta_id: importedCase.fasta_id !== "" ? importedCase.fasta_id : null,
+            pathogen_id: this.pathogen!.id,
+            outbreak_id: importedCase.outbreak
+                ? await getOrPersistOutbreak(importedCase.outbreak, this.pathogen!.id)
+                : null,
+            group_ids: await persistGroupsForCategories(importedCase, this.pathogen!.id),
+            registered_at: importedCase.registered_at,
+            street: importedCase.street,
+            zip_code: importedCase.zip_code,
+            city: importedCase.city,
+            first_name: importedCase.first_name,
+            last_name: importedCase.last_name,
+            infected_by: importedCase.infected_by,
+        } as CaseSchema);
     }
 
     private async createContacts() {
@@ -104,4 +103,12 @@ export class CasesPersistence extends PersistenceStrategy {
         await ContactsPersistence.createSameAddressAndLastnameContactsForCases(caseIdMapByNumber);
         await ContactsPersistence.createSameAddressAndDifferentLastnameContactsForCases(caseIdMapByNumber);
     }
+
+    private triggerDistanceCalculation = async () => {
+        const distanceCalculationStrategy = await PathogenStrategyManager.getDistanceCalculationStrategy(
+            useCoreStore.getState().activePathogen!
+        );
+        if (!distanceCalculationStrategy) return;
+        await distanceCalculationStrategy.execute();
+    };
 }

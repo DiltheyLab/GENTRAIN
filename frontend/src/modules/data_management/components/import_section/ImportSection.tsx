@@ -4,9 +4,8 @@ import { CasesPersistence } from "../../services/data_import/persistence/CasesPe
 import { CasesValidation } from "../../services/data_import/validation/CasesValidation";
 import { useDataManagementStore } from "../../stores/dataManagement";
 import { CaseSelection } from "./tables/CaseSelection";
-import { SamplesPersistence } from "../../services/data_import/persistence/SamplesPersistence";
-import { SamplesValidation } from "../../services/data_import/validation/SamplesValidation";
-import { SequenceSelection } from "./tables/SequenceSelection";
+import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
+import { SequencesValidation } from "../../services/data_import/validation/SequencesValidation";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
 import { ContactSelection } from "./tables/ContactSelection";
@@ -17,7 +16,7 @@ export const ImportSection = () => {
     const activePathogen = useCoreStore((state) => state.activePathogen);
     const casesForActivePathogen = useCoreStore((state) => state.casesWithRelationships);
     const caseImports = useDataManagementStore((state) => state.caseImports);
-    const sampleImports = useDataManagementStore((state) => state.sampleImports);
+    const sequenceImports = useDataManagementStore((state) => state.sequenceImports);
     const contactImports = useDataManagementStore((state) => state.contactImports);
     const setShowImportAssistent = useDataManagementStore((state) => state.setShowImportAssistent);
 
@@ -52,16 +51,13 @@ export const ImportSection = () => {
                 </div>
                 <div className="w-1/3">
                     <DataImport
-                        data={sampleImports}
-                        persistenceStrategy={new SamplesPersistence()}
-                        validationStrategy={new SamplesValidation()}
+                        data={sequenceImports}
+                        persistenceStrategy={new SequenceAnalysesPersistence()}
+                        validationStrategy={new SequencesValidation()}
                         type="sequence"
                         icon={<Dna />}
                         exampleDataPath={activePathogen?.sequences_example}
-                        disable={casesForActivePathogen.length === 0}
-                    >
-                        <SequenceSelection />
-                    </DataImport>
+                    ></DataImport>
                 </div>
                 <div className="w-1/3">
                     <DataImport

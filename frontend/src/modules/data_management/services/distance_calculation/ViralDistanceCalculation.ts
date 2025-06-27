@@ -1,6 +1,6 @@
 import { referenceString } from "@/data/referenceString";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
-import { SampleSchema } from "@/modules/core/models/samples";
+import { CaseWithRelationships } from "@/modules/core/models/cases";
 import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 import { DistanceCalculationStrategy } from "@/modules/data_management/services/distance_calculation/DistanceCalculationStrategy";
 import { ViralDistanceExtractor } from "@/modules/data_management/services/distance_calculation/ViralDistanceExtractor";
@@ -10,16 +10,26 @@ import {
 } from "@/modules/data_management/services/distance_calculation/ViralPositionExtractor";
 
 export class ViralDistanceCalculation extends DistanceCalculationStrategy {
-    protected calculateSampleDistanceForTwoSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
-        const viralDistanceExtractor = new ViralDistanceExtractor(sample1, sample2);
-        const alignment = await this.alignSamples(sample1, sample2);
+    protected calculateGeneticDistanceForTwoCases = async (
+        case1: CaseWithRelationships,
+        case2: CaseWithRelationships
+    ) => {
+        if (!case1.sequence_analysis?.result || !case2.sequence_analysis?.result) return null;
+        const alignment = await this.alignSequences(
+            case1.sequence_analysis.result as ViralAnalysisResult,
+            case2.sequence_analysis.result as ViralAnalysisResult
+        );
+        const viralDistanceExtractor = new ViralDistanceExtractor(case1.sequence_analysis, case2.sequence_analysis);
         viralDistanceExtractor.calculateDistance(alignment[0], alignment[1]);
         return viralDistanceExtractor.getDistance();
     };
 
-    private alignSamples = async (sample1: SampleSchema, sample2: SampleSchema) => {
-        const positionsSample1 = this.getMutationPositions(sample1);
-        const positionsSample2 = this.getMutationPositions(sample2);
+    private alignSequences = async (
+        sequenceAnalysisResult1: ViralAnalysisResult,
+        sequenceAnalysisResult2: ViralAnalysisResult
+    ) => {
+        const positionsSample1 = this.getMutationPositions(sequenceAnalysisResult1);
+        const positionsSample2 = this.getMutationPositions(sequenceAnalysisResult2);
         let sequence1 = "";
         let sequence2 = "";
         for (let baseIndex = 0; baseIndex < referenceString.length; baseIndex++) {
@@ -67,9 +77,8 @@ export class ViralDistanceCalculation extends DistanceCalculationStrategy {
      * @param sample
      * @returns
      */
-    private getMutationPositions(sample: SampleSchema) {
-        const sequenceAnalysis = sample.sequence_analysis?.result as ViralAnalysisResult;
-        const viralPositionService = new ViralPositionExtractor(sequenceAnalysis);
+    private getMutationPositions(sequenceAnalysisResult: ViralAnalysisResult) {
+        const viralPositionService = new ViralPositionExtractor(sequenceAnalysisResult);
         viralPositionService.collectPositions();
         return viralPositionService.getPositions();
     }

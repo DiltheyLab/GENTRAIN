@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { PathogenTypeWithRelationships } from "@/modules/core/models/pathogen_types";
 import { cn } from "../../helpers/cn";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
 type PathogenSwitchProps = {
     className?: string;
@@ -16,6 +17,7 @@ export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
     const pathogenTypes = useGetAllPathogenTypesWithPathogens();
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
     const activePathogen = useCoreStore((state) => state.activePathogen);
+    const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
     const { t } = useTranslation();
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
         if (pathogenType.pathogens?.length === 0) {
@@ -53,6 +55,7 @@ export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
                     role="combobox"
                     aria-expanded={open}
                     className={cn("w-full sm:w-fit md:min-w-[200px] justify-between", className)}
+                    disabled={sequenceAnalysisRunning}
                 >
                     <span className="truncate pr-2">{activePathogen ? activePathogen.name : "Pathogen auswählen"}</span>
                     <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />

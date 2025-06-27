@@ -70,7 +70,7 @@ export abstract class ColorMapGeneratorStrategy {
         updatedClusterNames: string[],
         selectedOutbreakName: string | undefined
     ) => {
-        let colorMapClusterNames = Object.keys(colorMap);
+        const colorMapClusterNames = Object.keys(colorMap);
         for (const updatedClusterName of updatedClusterNames) {
             if (!colorMapClusterNames.includes(updatedClusterName)) {
                 const colorIndex = colorMapClusterNames.length;

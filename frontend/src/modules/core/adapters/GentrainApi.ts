@@ -1,52 +1,41 @@
-import {GentrainException} from "@/modules/core/exceptions/GentrainException";
-import {Pathogen} from "@/modules/core/models/pathogens";
-import {PersistedSequenceAnalysisResult} from "@/modules/core/types/api";
+import { GentrainException } from "@/modules/core/exceptions/GentrainException";
+import { Pathogen } from "@/modules/core/models/pathogens";
+import { AlignedSequences, PersistedSequenceAnalysis } from "@/modules/core/types/api";
+import { deleteSequenceAnalysisById, SequenceAnalysisSchema } from "../models/sequence_analyses";
 
 export class GentrainApi {
     private url: string = `${import.meta.env.VITE_API_HOST}`;
-    private username: string = `${import.meta.env.VITE_API_BASIC_USERNAME}`;
-    private password: string = `${import.meta.env.VITE_API_BASIC_PASSWORD}`;
 
     private defaultHeaderParameters = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Basic " + btoa(`${this.username}:${this.password}`),
     };
 
     // Pathogens
-
-    public async getPathogens() {
-        const pathogens: Pathogen[] = await this.getRequest(`${import.meta.env.VITE_API_HOST}/pathogens`);
-        return pathogens ?? [];
+    public async getPathogensFromServer() {
+        const pathogens = await this.getRequest<Pathogen[]>(`${this.url}/pathogens`);
+        return pathogens;
     }
 
     // Sequence Analyses
-
-    public async getPersistedSequenceAnalysisResults(sessionId: string, pathogenId: number) {
-        const sequenceAnalysisResults: PersistedSequenceAnalysisResult[] = await this.getRequest(
-            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}`
+    public async getPersistedSequenceAnalysisResult(sequenceAnalysis: SequenceAnalysisSchema) {
+        const sequenceAnalysesResult = await this.getRequest<PersistedSequenceAnalysis>(
+            `${this.url}/sequence_analyses/${sequenceAnalysis.fasta_hash}`
         );
-        return sequenceAnalysisResults ?? [];
+        if (sequenceAnalysesResult === undefined) {
+            deleteSequenceAnalysisById(sequenceAnalysis.id);
+            return null;
+        }
+        return sequenceAnalysesResult;
     }
 
-    public async deleteSequenceAnalysisResultForPathogenAndSession(
-        sessionId: string,
-        pathogenId: number,
-        sequenceIdentifier: string
-    ) {
-        console.log(sessionId,
-            pathogenId,
-            sequenceIdentifier
-        )
-
-        const response = await this.deleteRequest(
-            `${this.url}/sequence_analyses/sessions/${sessionId}/pathogens/${pathogenId}/sequences/${sequenceIdentifier}`
-        );
+    public async deleteSequenceAnalysisResultForHash(fastaHash: string) {
+        const response = await this.deleteRequest(`${this.url}/sequence_analyses/${fastaHash}`);
         return response;
     }
 
     public async alignSequences(sequence1: string, sequence2: string) {
-        const response = await this.postRequest(`${this.url}/sequences/align`, {
+        const response = await this.postRequest<AlignedSequences>(`${this.url}/sequences/align`, {
             sequence_1: sequence1,
             sequence_2: sequence2,
         });
@@ -54,22 +43,21 @@ export class GentrainApi {
     }
 
     // Infrastructure
-
-    private async getRequest(url: string, headerParameters?: { [key: string]: string }) {
+    private async getRequest<T>(url: string, headerParameters?: { [key: string]: string }) {
         try {
-            const response = await fetch(url, {headers: {...this.defaultHeaderParameters, ...headerParameters}});
+            const response = await fetch(url, { headers: { ...this.defaultHeaderParameters, ...headerParameters } });
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            return;
         }
     }
 
-    private async postRequest(
+    private async postRequest<T>(
         url: string,
         bodyParameters: { [key: string]: any },
         headerParameters?: { [key: string]: string }
@@ -78,33 +66,58 @@ export class GentrainApi {
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify(bodyParameters),
-                headers: {...this.defaultHeaderParameters, ...headerParameters},
+                headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
+
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
+
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            return;
         }
     }
 
-    private async deleteRequest(url: string, headerParameters?: { [key: string]: string }) {
+    private async deleteRequest<T>(url: string, headerParameters?: { [key: string]: string }) {
         try {
             const response = await fetch(url, {
                 method: "DELETE",
-                headers: {...this.defaultHeaderParameters, ...headerParameters},
+                headers: { ...this.defaultHeaderParameters, ...headerParameters },
             });
             if (!response.ok) {
-                throw new GentrainException("ApiError");
+                this.handleException(response);
             }
             const data = await response.json();
-            return data;
+            return data as T;
         } catch (error) {
             console.error("Error fetching from Gentrain API.", error);
-            return null;
+            return;
+        }
+    }
+
+    private handleException(response: Response) {
+        switch (response.status) {
+            case 400:
+                throw new GentrainException("BadRequest: The request was invalid.", { status: response.status });
+            case 401:
+                throw new GentrainException("Unauthorized: Authentication failed.", { status: response.status });
+            case 403:
+                throw new GentrainException("Forbidden: Access denied.", { status: response.status });
+            case 404:
+                throw new GentrainException("NotFound: Resource not found.", { status: response.status });
+            case 422:
+                throw new GentrainException("UnprocessableContent: The entity could not be processed.", {
+                    status: response.status,
+                });
+            case 500:
+                throw new GentrainException("ServerError: Internal server error.", { status: response.status });
+            default:
+                throw new GentrainException(`ApiError: ${response.status} ${response.statusText}`, {
+                    status: response.status,
+                });
         }
     }
 }

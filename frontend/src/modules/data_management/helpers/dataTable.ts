@@ -1,6 +1,7 @@
 import { formatDate } from "@/modules/core/helpers/dates";
 import { CaseImport, CaseWithRelationships } from "@/modules/core/models/cases";
 import { ContactImport } from "@/modules/core/models/contacts";
+import { ViralAnalysisResult } from "@/modules/core/models/sequence_analyses";
 
 export const uploadedDataFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
@@ -38,7 +39,7 @@ export const caseUpdateFilterFn = (row: any, _columnId: any, value: string, _add
     );
 };
 
-export const sampleImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
+export const sequenceImportFilterFn = (row: any, _columnId: any, value: string, _addMeta: any) => {
     value = value.toLowerCase();
     return caseIdContainsValue(row.original, value) || fastaIdContainsValue(row.original, value);
 };
@@ -89,10 +90,8 @@ const existingAndImportedFastaIdContainsValue = (
 };
 
 const lineageContainsValue = (data: CaseWithRelationships, value: string) => {
-    if (!data.sample?.lineage) {
-        return false;
-    }
-    return data.sample?.lineage?.toLowerCase().includes(value);
+    const viralAnalysisResult = data.sequence_analysis?.result as ViralAnalysisResult;
+    return viralAnalysisResult?.lineage?.toLowerCase().includes(value) ?? false;
 };
 
 const categoryNameContainsValue = (data: CaseWithRelationships | CaseImport, value: string) => {

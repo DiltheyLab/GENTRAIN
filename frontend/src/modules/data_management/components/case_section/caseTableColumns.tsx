@@ -12,7 +12,7 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { formatDate } from "@/modules/core/helpers/dates";
-import { CaseWithRelationships, deleteCaseWithSampleById } from "@/modules/core/models/cases";
+import { CaseWithRelationships, deleteCaseById } from "@/modules/core/models/cases";
 import { useCoreStore } from "@/modules/core/stores/core";
 import i18next from "i18next";
 import { useDataManagementStore } from "../../stores/dataManagement";
@@ -68,27 +68,17 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
             );
         },
         cell: ({ row }) => {
-            const sample = row.original.sample;
-            if (sample) {
+            const sequenceAnalysis = row.original.sequence_analysis;
+            if (sequenceAnalysis) {
                 return (
                     <>
-                        <p className="font-medium">{sample.fasta_id}</p>
-                        {sample.sequence_analysis?.schema && <p>Schema: {sample.sequence_analysis?.schema}</p>}
-                        {sample.sequence_analysis?.chewbbaca_version && (
-                            <p>chewBBACA Version: {sample.sequence_analysis?.chewbbaca_version}</p>
+                        <p className="font-medium">{row.original.fasta_id}</p>
+                        {sequenceAnalysis?.schema && <p>Schema: {sequenceAnalysis?.schema}</p>}
+                        {sequenceAnalysis?.chewbbaca_version && (
+                            <p>chewBBACA Version: {sequenceAnalysis?.chewbbaca_version}</p>
                         )}
-                        {sample.sequence_analysis?.nextclade_version && (
-                            <p>Nextclade Version: {sample.sequence_analysis?.nextclade_version}</p>
-                        )}
-                        {sample.lineage != null && <p>Abstammung: {sample.lineage}</p>}
-                        {sample.n_count != null && <p>Ns: {sample.n_count}</p>}
-                        {sample.ambiguity_character_count != null && (
-                            <p>IUPAC Ambiguity Characters: {sample.ambiguity_character_count}</p>
-                        )}
-                        {sample.contig_count != null && <p>Contigs: {sample.contig_count}</p>}
-                        {sample.first_contig_length != null && <p>Länge erster Contig: {sample.first_contig_length}</p>}
-                        {sample.undeterminable_gen_count != null && (
-                            <p>Unbestimmbarer Gene: {sample.undeterminable_gen_count}</p>
+                        {sequenceAnalysis?.nextclade_version && (
+                            <p>Nextclade Version: {sequenceAnalysis?.nextclade_version}</p>
                         )}
                     </>
                 );
@@ -215,7 +205,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
                 <div>
                     {groups &&
                         groups.map((group) => (
-                            <p key={group.name}>
+                            <p key={group.id}>
                                 <span className="font-medium">{group.category?.name}: </span>
                                 {group.name}
                             </p>
@@ -248,7 +238,7 @@ export const caseTableColumns: ColumnDef<CaseWithRelationships>[] = [
         cell: ({ row }) => {
             const deleteCase = async () => {
                 try {
-                    await deleteCaseWithSampleById(row.original.id);
+                    await deleteCaseById(row.original.id);
                     await useCoreStore.getState().updateCasesWithRelationships();
                 } catch (error) {
                     toast({
