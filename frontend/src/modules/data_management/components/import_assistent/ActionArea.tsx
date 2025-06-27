@@ -10,7 +10,6 @@ import { ContactRound, Dna, UsersRound } from "lucide-react";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { CaseSelection } from "../import_section/tables/CaseSelection";
 import { DataImport } from "../import_section/DataImport";
-import { SequenceSelection } from "../import_section/tables/SequenceSelection";
 import { ContactSelection } from "../import_section/tables/ContactSelection";
 import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
 
@@ -64,7 +63,6 @@ export function ActionArea() {
                     </>
                 );
             case "sequence_import":
-            case "sequence_selection":
                 return (
                     <>
                         <DataImport
@@ -79,9 +77,7 @@ export function ActionArea() {
                             }
                             inlineSelection
                             icon={<Dna />}
-                        >
-                            <SequenceSelection />
-                        </DataImport>
+                        ></DataImport>
                         {Object.keys(sequenceImports).length === 0 && (
                             <div className="flex justify-end gap-4">
                                 <Button variant="secondary" onClick={previousImportAssistentStep}>

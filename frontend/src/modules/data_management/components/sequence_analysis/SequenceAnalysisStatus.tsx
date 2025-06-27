@@ -15,15 +15,15 @@ export function SequenceAnalysisStatus() {
 
     const getSampleStatusColorClassNames = (status: string) => {
         switch (status) {
-            case "sent":
+            case "pending":
                 return "text-slate-200 border-slate-200";
             case "enqueued":
                 return "text-slate-700 border-slate-700";
             case "started":
                 return "text-yellow-600 border-yellow-600";
-            case "finished":
+            case "success":
                 return "text-green-600 border-green-600";
-            case "failed":
+            case "error":
                 return "text-red-600 border-red-600";
             default:
                 return "";
@@ -46,21 +46,17 @@ export function SequenceAnalysisStatus() {
                     )}
                     <ScrollArea ref={scrollAreaRef}>
                         <div className="w-full flex flex-wrap max-h-[300px]">
-                            {Object.keys(sequenceImports).map((sequenceHash) => {
-                                const sequenceImport = sequenceImports[sequenceHash];
-                                if (!sequenceImports[sequenceHash]) return;
+                            {Object.keys(sequenceImports).map((fastaHash) => {
+                                const sequenceImport = sequenceImports[fastaHash];
+                                if (!sequenceImport) return;
                                 return (
-                                    <div
-                                        key={sequenceImport.fasta_id}
-                                        data-fasta_id={sequenceImport.fasta_id}
-                                        className="w-full sm:w-1/3 p-1"
-                                    >
+                                    <div key={fastaHash} data-fasta_hash={fastaHash} className="w-full sm:w-1/3 p-1">
                                         <div
                                             className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
                                                 sequenceImport.status
                                             )}`}
                                         >
-                                            <div className="mr-2 text-xs">{sequenceImport.fasta_id}</div>
+                                            <div className="mr-2 text-xs">{sequenceImport.fasta_ids.join(", ")}</div>
                                             {sequenceImport.status === "sent" && (
                                                 <CircleDashed className="mr-[1px]" width={15} />
                                             )}
@@ -70,8 +66,8 @@ export function SequenceAnalysisStatus() {
                                             {sequenceImport.status === "started" && (
                                                 <LoadingSpinner className="w-[17px]" strokeWidth={1.5} />
                                             )}
-                                            {sequenceImport.status === "finished" && <Check width={18} />}
-                                            {sequenceImport.status === "failed" && <CircleAlert width={18} />}
+                                            {sequenceImport.status === "success" && <Check width={18} />}
+                                            {sequenceImport.status === "error" && <CircleAlert width={18} />}
                                         </div>
                                     </div>
                                 );
@@ -106,7 +102,7 @@ export function SequenceAnalysisStatus() {
                             </div>
                             <div
                                 className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
-                                    "finished"
+                                    "success"
                                 )}`}
                             >
                                 <div className="mr-2 text-xs">Beendet</div>
@@ -114,7 +110,7 @@ export function SequenceAnalysisStatus() {
                             </div>
                             <div
                                 className={`cursor-default flex items-center justify-between h-[25px] border-[1px] py-4 pl-2 pr-1 rounded-md bg-white ${getSampleStatusColorClassNames(
-                                    "failed"
+                                    "error"
                                 )}`}
                             >
                                 <div className="mr-2 text-xs">Fehlgeschlagen</div>

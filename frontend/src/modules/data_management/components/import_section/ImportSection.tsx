@@ -6,7 +6,6 @@ import { useDataManagementStore } from "../../stores/dataManagement";
 import { CaseSelection } from "./tables/CaseSelection";
 import { SequenceAnalysesPersistence } from "../../services/data_import/persistence/SequenceAnalysesPersistence";
 import { SequencesValidation } from "../../services/data_import/validation/SequencesValidation";
-import { SequenceSelection } from "./tables/SequenceSelection";
 import { ContactsPersistence } from "../../services/data_import/persistence/ContactsPersistence";
 import { ContactsValidation } from "../../services/data_import/validation/ContactsValidation";
 import { ContactSelection } from "./tables/ContactSelection";
@@ -58,10 +57,7 @@ export const ImportSection = () => {
                         type="sequence"
                         icon={<Dna />}
                         exampleDataPath={activePathogen?.sequences_example}
-                        disable={casesForActivePathogen.length === 0}
-                    >
-                        <SequenceSelection />
-                    </DataImport>
+                    ></DataImport>
                 </div>
                 <div className="w-1/3">
                     <DataImport

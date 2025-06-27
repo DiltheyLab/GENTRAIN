@@ -6,6 +6,7 @@ import { getGroupsByIdsWithRelationships, GroupSchema, GroupWithRelationships } 
 import { collectContactsForCases, GroupedContacts } from "./contacts";
 import { SequenceAnalysisSchema } from "./sequence_analyses";
 import { Collection } from "dexie";
+import { useCoreStore } from "../stores/core";
 
 export interface CaseSchema {
     id: number;
@@ -81,7 +82,16 @@ export const getAllCases = async () => {
 };
 
 export const getSequenceAnalysis = async (fastaId: string) => {
-    const sequenceAnalysisMapping = await db.sequence_analyses_cases.where({ fasta_id: fastaId }).first();
+    const activePathogen = useCoreStore.getState().activePathogen;
+    if (!activePathogen) return null;
+    const pathogenSequenceAnalyses = await db.sequence_analyses.where({ pathogen_id: activePathogen.id }).toArray();
+    const pathogenSequenceAnalyisIds = pathogenSequenceAnalyses.map((sequenceAnalysis) => sequenceAnalysis.id);
+    const sequenceAnalysisMapping = await db.sequence_analyses_cases
+        .where({ fasta_id: fastaId })
+        .filter((sequenceAnalysisMapping) =>
+            pathogenSequenceAnalyisIds.includes(sequenceAnalysisMapping.sequence_analysis_id)
+        )
+        .first();
     if (!sequenceAnalysisMapping) return null;
     const sequenceAnalysis = await db.sequence_analyses
         .where({ id: sequenceAnalysisMapping.sequence_analysis_id })
@@ -187,7 +197,6 @@ export const getAllCasesForPathogenWithRelationships = async (pathogen_id: numbe
     }
 
     casesWithRelationships = await collectContactsForCases(casesWithRelationships);
-
     return Object.values(casesWithRelationships);
 };
 
@@ -218,6 +227,22 @@ export const getCasesForPathogenWithSequenceAnalysis = async (pathogen_id: numbe
 };
 
 export const deleteCaseById = async (id: number) => {
+    const caseData = await db.cases.get(id);
+    if (caseData?.fasta_id) {
+        const activePathogen = useCoreStore.getState().activePathogen;
+        if (activePathogen) {
+            const pathogenSequenceAnalyses = await db.sequence_analyses
+                .where({ pathogen_id: activePathogen.id })
+                .toArray();
+            const pathogenSequenceAnalyisIds = pathogenSequenceAnalyses.map((sequenceAnalysis) => sequenceAnalysis.id);
+            await db.sequence_analyses_cases
+                .where({ fasta_id: caseData?.fasta_id })
+                .filter((sequenceAnalysisMapping) =>
+                    pathogenSequenceAnalyisIds.includes(sequenceAnalysisMapping.sequence_analysis_id)
+                )
+                .delete();
+        }
+    }
     await db.cases.delete(id);
 };
 

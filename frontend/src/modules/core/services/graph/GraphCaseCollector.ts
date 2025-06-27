@@ -171,7 +171,7 @@ export class GraphCaseCollector {
     };
 
     private filterCasesWithoutSequenceAnalysis = (cases: CaseWithRelationships[]) => {
-        return cases.filter((caseData) => caseData.sequence_analysis);
+        return cases.filter((caseData) => caseData.sequence_analysis?.result);
     };
 
     private removeDuplicateCases() {

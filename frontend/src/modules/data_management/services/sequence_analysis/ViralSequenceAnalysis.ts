@@ -6,25 +6,12 @@ export class ViralSequenceAnalysis extends SequenceAnalysisStrategy {
 
     protected emitSequenceAnalysis = () => {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
-        const finishedSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error"
-        );
-        const pendingSequenceAnalyses = Object.keys(sequenceImports).filter(
-            (fastaHash) =>
-                sequenceImports[fastaHash].status !== "success" && sequenceImports[fastaHash].status !== "error"
-        );
-
-        // use total amount of sequences to analyse or the amount of finished analyses for socket message limit
-        // depending on which value is lower
-        const socketMessageLimit = Math.min(
-            finishedSequenceAnalyses.length + this.parallelAnalysesThreshold,
-            pendingSequenceAnalyses.length
-        );
+        const fastaHashesToProcess = this.getFastaHashesToProcess(sequenceImports);
         // always send max. 10 message via websockt channel to regulate user inputs
         let fastaString = "";
-        for (let i = finishedSequenceAnalyses.length; i < socketMessageLimit; i++) {
-            const fastaHash = Object.keys(sequenceImports)[i];
+        for (const fastaHash of fastaHashesToProcess) {
+            if (sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error")
+                continue;
             fastaString += `>${fastaHash}\n${sequenceImports[fastaHash].sequence}\n`;
         }
         gentrainWebsocketInstance.sequenceAnalysisEmit(this.pathogen.id, fastaString);

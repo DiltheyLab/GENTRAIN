@@ -1,5 +1,4 @@
 import { io } from "socket.io-client";
-import { useCoreStore } from "../stores/core";
 import { GentrainException } from "../exceptions/GentrainException";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,7 +18,7 @@ export class GentrainWebsocket {
         if (!this.client) {
             throw new GentrainException("InvalidWebsocketClient");
         }
-        this.client.emit("join_sequence_analysis_room", useCoreStore.getState().sessionId, pathogenTypeName);
+        this.client.emit("join_sequence_analysis_room", pathogenTypeName);
         this.client.once(`${pathogenTypeName}_room_created`, async (roomName: string) => {
             callback(roomName);
         });

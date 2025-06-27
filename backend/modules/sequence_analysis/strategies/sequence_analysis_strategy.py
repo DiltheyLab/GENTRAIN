@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import json
 import logging
 from os import environ
-
 from redis import Redis
 from flask_socketio import SocketIO
 from backend.modules.core.exceptions import (
@@ -73,13 +72,13 @@ class SequenceAnalysisStrategy(ABC):
 
     def persist_result(self, fasta_hash, result_object):
         self.redis_connection.hmset(
-            f"client:results:{fasta_hash}",
+            f"client:sequence_analysis:{fasta_hash}",
             {
                 "result": json.dumps(result_object),
             },
         )
         self.redis_connection.expire(
-            name=f"client:results:{fasta_hash}",
+            name=f"client:sequence_analysis:{fasta_hash}",
             time=1800,
         )
 

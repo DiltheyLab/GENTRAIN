@@ -7,11 +7,13 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import gentrainApiInstance from "@/modules/core/adapters/GentrainApi";
 import gentrainWebsocketInstance from "@/modules/core/adapters/GentrainWebsocket";
 import { BacterialQualityParameters, ViralQualityParameters } from "@/modules/core/models/sequence_analyses";
+import { SequenceAnalysisCasesSchema } from "@/modules/core/models/sequence_analyses_cases";
+import { SequenceImports } from "../../types/import";
 
 export abstract class SequenceAnalysisStrategy {
     protected pathogen: PathogenWithRelationships;
     protected roomName: string;
-    protected parallelAnalysesThreshold: number | null = null;
+    protected parallelAnalysesThreshold: number;
 
     public abstract getQualityParameters(sequence: string): ViralQualityParameters | BacterialQualityParameters;
     protected abstract emitSequenceAnalysis(): void;
@@ -19,6 +21,7 @@ export abstract class SequenceAnalysisStrategy {
     constructor(pathogen: PathogenWithRelationships) {
         this.pathogen = pathogen;
         this.roomName = "";
+        this.parallelAnalysesThreshold = 0;
     }
 
     public setRoomName(roomName: string) {
@@ -37,7 +40,7 @@ export abstract class SequenceAnalysisStrategy {
             .toArray();
         const results: { result: object; fasta_hash: string }[] = [];
         for (const sequenceAnalysis of sequenceAnalysesWithoutResult) {
-            const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis.fasta_hash);
+            const result = await gentrainApiInstance.getPersistedSequenceAnalysisResult(sequenceAnalysis);
             if (!result) continue;
             results.push({ result: result, fasta_hash: sequenceAnalysis.fasta_hash });
         }
@@ -59,38 +62,45 @@ export abstract class SequenceAnalysisStrategy {
     };
 
     private runAnalysis = async () => {
+        const activePathogen = useCoreStore.getState().activePathogen;
+        if (!activePathogen) return;
+        const newCaseMappings: SequenceAnalysisCasesSchema[] = [];
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
         for (const fastaHash in sequenceImports) {
             const sequenceImport = sequenceImports[fastaHash];
-            const existingSequenceAnalysis = await db.sequence_analyses.where({ fasta_hash: fastaHash }).first();
+            const existingSequenceAnalysis = await db.sequence_analyses
+                .where({ fasta_hash: fastaHash, pathogen_id: activePathogen.id })
+                .first();
             let sequenceAnalysisId = existingSequenceAnalysis?.id;
-            if (sequenceAnalysisId) {
+            if (existingSequenceAnalysis && existingSequenceAnalysis.result) {
                 // mark sequence analysis as successful if a result for the provided hash already exists
-                if (existingSequenceAnalysis?.result) {
-                    useDataManagementStore.getState().changeSequenceImport(fastaHash, {
-                        status: "success",
-                    });
-                }
+                useDataManagementStore.getState().changeSequenceImport(fastaHash, {
+                    status: "success",
+                });
             } else {
                 // create a new sequence analysis object if not result is available for the provided sequence hash
                 sequenceAnalysisId = await db.sequence_analyses.add({
                     fasta_hash: fastaHash,
-                    pathogen_id: useCoreStore.getState().activePathogen!.id,
+                    pathogen_id: activePathogen.id,
                 });
             }
-            const caseMapping = await db.sequence_analyses_cases
-                .where({ sequence_analysis_id: sequenceAnalysisId, fasta_id: sequenceImport.fasta_id })
-                .first();
-            // create a mapping between existing sequence analysis id and fasta id if it does not already exist
-            // a sequence may be associated with mutiple cases via fasta ids
-            if (!caseMapping) {
-                db.sequence_analyses_cases.add({
-                    sequence_analysis_id: sequenceAnalysisId,
-                    fasta_id: sequenceImport.fasta_id,
-                });
+            for (const fastaId of sequenceImport.fasta_ids) {
+                const caseMapping = await db.sequence_analyses_cases
+                    .where({ sequence_analysis_id: sequenceAnalysisId, fasta_id: fastaId })
+                    .first();
+                // create a mapping between existing sequence analysis id and fasta id if it does not already exist
+                // a sequence may be associated with mutiple cases via fasta ids
+                if (!caseMapping && sequenceAnalysisId) {
+                    newCaseMappings.push({
+                        sequence_analysis_id: sequenceAnalysisId,
+                        fasta_id: fastaId,
+                    } as SequenceAnalysisCasesSchema);
+                }
             }
         }
+        db.sequence_analyses_cases.bulkAdd(newCaseMappings);
         this.emitSequenceAnalysis();
+        this.continueIfAllAnalysesAreDone();
     };
 
     private handleAnalysisEvents = () => {
@@ -107,8 +117,9 @@ export abstract class SequenceAnalysisStrategy {
 
     protected async sequenceAnalysisResponseActions(data: any) {
         const sequenceImports = useDataManagementStore.getState().sequenceImports;
-        const sentSequenceAnalysesCount = Object.keys(sequenceImports).map(
-            (fastaHash) => sequenceImports[fastaHash].status === "sent"
+        const processingSequenceAnalysesCount = Object.keys(sequenceImports).filter(
+            (fastaHash) =>
+                sequenceImports[fastaHash].status === "enqueued" || sequenceImports[fastaHash].status === "started"
         ).length;
         if (data.status === "success") {
             await this.handleSuccessfulAnalysis(data.fasta_hash, data.result);
@@ -116,28 +127,46 @@ export abstract class SequenceAnalysisStrategy {
         if (data.status === "error") {
             this.handleUnsuccessfulAnalysis(data.fasta_hash);
         }
-
-        if (this.parallelAnalysesThreshold && sentSequenceAnalysesCount % this.parallelAnalysesThreshold === 0) {
-            useDataManagementStore.getState().setScrollToSequence(sequenceImports[data.fasta_hash].fasta_id);
+        if (processingSequenceAnalysesCount === 1) {
+            useDataManagementStore.getState().setScrollToSequence(data.fasta_hash);
             this.emitSequenceAnalysis();
         }
-        const sessionId = useCoreStore.getState().sessionId;
-        if (!sessionId) {
-            throw new GentrainException("");
-        }
-        gentrainApiInstance.deleteSequenceAnalysisResultForPathogenAndSession(data.fasta_hash);
+        gentrainApiInstance.deleteSequenceAnalysisResultForHash(data.fasta_hash);
         this.continueIfAllAnalysesAreDone();
     }
 
-    private handleSuccessfulAnalysis = async (fastaHash: string, sequenceAnalysisResult: any) => {
-        await this.persistSequenceAnalysisResult(fastaHash, sequenceAnalysisResult);
-        useDataManagementStore.getState().changeSequenceImport(fastaHash, { status: "finished" });
+    protected getFastaHashesToProcess = (sequenceImports: SequenceImports) => {
+        // retrieve fasta hashes for sequence imports that were not sent to the server yet
+        const pendingFastaHashes = Object.keys(sequenceImports).filter(
+            (fastaHash) => sequenceImports[fastaHash].status === "pending"
+        );
+        // trim list of pending fasta hashes to the amount of processable entries
+        const fastaHashesToProcess = pendingFastaHashes.slice(0, this.parallelAnalysesThreshold);
+        return fastaHashesToProcess;
     };
 
-    private handleUnsuccessfulAnalysis = (fastaHash: string) => {
+    private handleSuccessfulAnalysis = async (fastaHash: string, sequenceAnalysisResult: any) => {
+        await this.persistSequenceAnalysisResult(fastaHash, sequenceAnalysisResult);
+        useDataManagementStore.getState().changeSequenceImport(fastaHash, { status: "success" });
+    };
+
+    private handleUnsuccessfulAnalysis = async (fastaHash: string) => {
         useDataManagementStore.getState().changeSequenceImport(fastaHash, {
-            status: "failed",
+            status: "error",
         });
+        const activePathogen = useCoreStore.getState().activePathogen;
+        if (!activePathogen) {
+            return;
+        }
+        const sequenceAnalysis = await db.sequence_analyses
+            .where({
+                fasta_hash: fastaHash,
+                pathogen_id: activePathogen.id,
+            })
+            .first();
+        if (!sequenceAnalysis) return;
+        db.sequence_analyses.where({ id: sequenceAnalysis.id }).delete();
+        db.sequence_analyses_cases.where({ sequence_analysis_id: sequenceAnalysis.id }).delete();
     };
 
     private async sequenceAnalysisEnqueuedActions(fastaHash: string) {
@@ -159,8 +188,8 @@ export abstract class SequenceAnalysisStrategy {
         if (
             fastaHashes.filter(
                 (fastaHash: string) =>
-                    sequenceImports[fastaHash].status === "finished" || sequenceImports[fastaHash].status === "failed"
-            ).length === fastaHashes.length
+                    sequenceImports[fastaHash].status === "success" || sequenceImports[fastaHash].status === "error"
+            ).length >= fastaHashes.length
         ) {
             this.continue();
         }
@@ -197,6 +226,7 @@ export abstract class SequenceAnalysisStrategy {
                 persistedSequenceAnalysis.fasta_hash,
                 persistedSequenceAnalysis.result
             );
+            gentrainApiInstance.deleteSequenceAnalysisResultForHash(persistedSequenceAnalysis.fasta_hash);
         }
     };
 

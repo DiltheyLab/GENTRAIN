@@ -42,7 +42,8 @@ gentrainDB.version(1.1).stores({
 });
 
 gentrainDB.version(1.2).stores({
-    sequence_analyses: "++id, fasta_hash, result, schema, version, pathogen_id, created_at, updated_at",
+    sequence_analyses:
+        "++id, fasta_hash, result, schema, version, pathogen_id, created_at, updated_at, [fasta_hash+pathogen_id]",
     sequence_analyses_cases:
         "++id, sequence_analysis_id, fasta_id, created_at, updated_at, [sequence_analysis_id+fasta_id]",
     distance_matrices: "++id, pathogen_id, created_at, updated_at",

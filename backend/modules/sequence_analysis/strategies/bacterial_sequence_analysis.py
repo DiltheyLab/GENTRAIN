@@ -22,6 +22,7 @@ from backend.modules.sequence_analysis.strategies.sequence_analysis_strategy imp
 from backend.modules.sequence_analysis.response_models import (
     BacterialSequenceAnalysisResponseModel,
 )
+from backend.server import redis_connection
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
@@ -80,6 +81,12 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
+        persisted_sequence_analysis = redis_connection.hgetall(
+            f"client:sequence_analysis:{self.fasta_hash}"
+        )
+        if persisted_sequence_analysis and "result" in persisted_sequence_analysis:
+            print(persisted_sequence_analysis)
+            return persisted_sequence_analysis["result"]
         process = Popen(
             [
                 "perl",
@@ -170,6 +177,16 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             "sequence_analysis_enqueued",
             self.fasta_hash,
             to=f"{self.type}_{self.socket_id}",
+        )
+        self.redis_connection.hmset(
+            f"client:sequence_analysis:{self.fasta_hash}",
+            {
+                "enqueued_at": time.time(),
+            },
+        )
+        self.redis_connection.expire(
+            name=f"client:sequence_analysis:{self.fasta_hash}",
+            time=1800,
         )
 
     def emit_started_event(self):
