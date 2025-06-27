@@ -73,7 +73,6 @@ export class GraphDataGenerator {
                     distance === undefined
                 )
                     continue;
-
                 this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,
