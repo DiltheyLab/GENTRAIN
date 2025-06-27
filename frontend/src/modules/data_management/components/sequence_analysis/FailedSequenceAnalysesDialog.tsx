@@ -25,9 +25,7 @@ export function FailedSequenceAnalysesDialog() {
                                     Folgende Sequenzen konnten nicht erfolgreich analysisiert werden. Bitte überprüfen
                                     Sie die importierten FASTA-Dateien:
                                 </p>
-                                <p className="font-bold">
-                                    {failedSequenceImports.map((fastaId) => fastaId).join(", ")}
-                                </p>
+                                <p className="font-bold">{failedSequenceImports.join(", ")}</p>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
