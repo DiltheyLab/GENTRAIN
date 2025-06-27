@@ -65,6 +65,7 @@ export class GraphDataGenerator {
 
             for (let columnIndex = rowIndex + 1; columnIndex < this.graphCases.length; columnIndex++) {
                 const columnCase = this.graphCases[columnIndex];
+                const distance = this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id];
                 // exclude link from graph if distance was not yet calculated
                 if (
                     !rowCase.sequence_analysis?.result ||
@@ -72,11 +73,10 @@ export class GraphDataGenerator {
                     this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id] === undefined
                 )
                     continue;
-
                 this.allLinks.push({
                     source: this.graphCases[rowIndex].id,
                     target: this.graphCases[columnIndex].id,
-                    value: this.distanceMatrixAssembly?.[rowCase.case_id]?.[columnCase.case_id],
+                    value: distance,
                     color: COLOR_FOR_GENETIC_DISTANCE_LINKS,
                     curvature: 0,
                     type: i18next.t("linkTypes.geneticDistance"),

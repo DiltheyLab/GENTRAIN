@@ -7,6 +7,8 @@ export const createSequenceAnalysis = (overrides: Partial<SequenceAnalysisSchema
         fasta_id: ":fasta_id:",
         sequence: ":sequence:",
         analysis_type: "default",
+        pathogen_id: 0,
+        result: {},
         created_at: new Date(),
         updated_at: new Date(),
         ...overrides,
