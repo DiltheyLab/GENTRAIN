@@ -73,26 +73,22 @@ export class CasesPersistence extends PersistenceStrategy {
     }
 
     private async sanitizeAndGetCaseSchema(caseId: string, importedCase: CaseImport) {
-        try {
-            return caseRules.parse({
-                case_id: caseId,
-                fasta_id: importedCase.fasta_id !== "" ? importedCase.fasta_id : null,
-                pathogen_id: this.pathogen!.id,
-                outbreak_id: importedCase.outbreak
-                    ? await getOrPersistOutbreak(importedCase.outbreak, this.pathogen!.id)
-                    : null,
-                group_ids: await persistGroupsForCategories(importedCase, this.pathogen!.id),
-                registered_at: importedCase.registered_at,
-                street: importedCase.street,
-                zip_code: importedCase.zip_code,
-                city: importedCase.city,
-                first_name: importedCase.first_name,
-                last_name: importedCase.last_name,
-                infected_by: importedCase.infected_by,
-            } as CaseSchema);
-        } catch (err) {
-            throw err;
-        }
+        return caseRules.parse({
+            case_id: caseId,
+            fasta_id: importedCase.fasta_id !== "" ? importedCase.fasta_id : null,
+            pathogen_id: this.pathogen!.id,
+            outbreak_id: importedCase.outbreak
+                ? await getOrPersistOutbreak(importedCase.outbreak, this.pathogen!.id)
+                : null,
+            group_ids: await persistGroupsForCategories(importedCase, this.pathogen!.id),
+            registered_at: importedCase.registered_at,
+            street: importedCase.street,
+            zip_code: importedCase.zip_code,
+            city: importedCase.city,
+            first_name: importedCase.first_name,
+            last_name: importedCase.last_name,
+            infected_by: importedCase.infected_by,
+        } as CaseSchema);
     }
 
     private async createContacts() {

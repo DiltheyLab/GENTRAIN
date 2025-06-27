@@ -26,7 +26,7 @@ export interface DistanceWithCaseReferences {
  */
 export const getAllDistancesForDistanceMatrixWithCaseReferences = async (distanceMatrixId: number) => {
     const distances = await db.distances.where({ distance_matrix_id: distanceMatrixId }).toArray();
-    let distancesWithFastaIds = [];
+    const distancesWithFastaIds = [];
 
     const caseReferences = new Set<number>();
     for (const distance of distances) {

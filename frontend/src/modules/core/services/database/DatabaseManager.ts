@@ -57,6 +57,7 @@ class DatabaseManager {
     }
 
     public getCurrentDB() {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const manager = this;
         return new Proxy({} as DatabaseSchema, {
             get(_target, key) {

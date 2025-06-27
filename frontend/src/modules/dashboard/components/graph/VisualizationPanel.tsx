@@ -60,7 +60,7 @@ export const DashboardVisualizationPanel = () => {
             contacts: ContactSchema[]
         ) => {
             const graphDataGenerator = new GraphDataGenerator(cases, distanceMatrixAssembly, contacts, settings);
-            let graphData = await graphDataGenerator.execute();
+            const graphData = await graphDataGenerator.execute();
             const allLinks = graphDataGenerator.getAllLinks();
             setAllLinks(allLinks);
             if (dashboardStore.graphSettings.coloringMode === "clusters") {

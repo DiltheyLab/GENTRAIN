@@ -163,7 +163,7 @@ export class PdfDataGenerator {
         const clusterAnalyses = new ClusterAnalyser(
             this.graphData.nodes,
             this.graphData.links,
-            this.coreStore.activePathogen?.genetic_distance_threshold!
+            this.coreStore.activePathogen?.genetic_distance_threshold ?? 0
         );
         return clusterAnalyses.getClusters();
     };

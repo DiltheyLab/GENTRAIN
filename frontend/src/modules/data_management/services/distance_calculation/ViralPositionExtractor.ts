@@ -61,9 +61,9 @@ export class ViralPositionExtractor {
         // Ns
         for (const mutation of this.sequenceAnalysisResult.missing) {
             // { begin: 28881, end: 28883, character: "N" }
-            let start = mutation["range"]["begin"];
-            let end = mutation["range"]["end"];
-            let char = mutation["character"];
+            const start = mutation["range"]["begin"];
+            const end = mutation["range"]["end"];
+            const char = mutation["character"];
 
             // add each position of a N block separately
             for (let j = start; j < end; j++) {
@@ -74,9 +74,9 @@ export class ViralPositionExtractor {
         // other ambious characters
         for (const mutation of this.sequenceAnalysisResult.nonACGTNs) {
             // { begin: 60, end: 61, character: "Y" }
-            let start = mutation["range"]["begin"];
-            let end = mutation["range"]["end"];
-            let char = mutation["character"];
+            const start = mutation["range"]["begin"];
+            const end = mutation["range"]["end"];
+            const char = mutation["character"];
 
             // add each position of a ambig char block separately
             for (let j = start; j < end; j++) {

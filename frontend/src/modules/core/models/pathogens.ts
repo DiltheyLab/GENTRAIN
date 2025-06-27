@@ -36,7 +36,7 @@ export interface PathogenWithRelationships extends PathogenSchema {
 
 export const getAllPathogensWithRelationships = async () => {
     const pathogens = await db.pathogens.toArray();
-    let pathogensWithRelationships: PathogenWithRelationships[] = [];
+    const pathogensWithRelationships: PathogenWithRelationships[] = [];
     for (const key in pathogens) {
         pathogensWithRelationships[key] = pathogens[key];
         // retrieve pathogen schema object
