@@ -9,7 +9,6 @@ export const useGetDistanceMatrixAssembly = () => {
     return useLiveQuery(async () => {
         if (!activePathogenId || distanceCalculationRunning) return;
         const assembly = await assembleDistanceMatrixByPathogenId(activePathogenId);
-        console.log(assembly);
         return assembly;
     }, [activePathogenId, distanceCalculationRunning]);
 };
