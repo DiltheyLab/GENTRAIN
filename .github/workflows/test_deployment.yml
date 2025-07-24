@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   frontend_build:
     name: Frontend Build
     runs-on: ubuntu-latest
@@ -128,8 +127,6 @@ jobs:
             touch .env
             echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> .env
             echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> .env
-            echo -e "VITE_APP_PUBLIC_POSTHOG_HOST=${{vars.VITE_APP_PUBLIC_POSTHOG_HOST}}" >> .env
-            echo -e "VITE_APP_PUBLIC_POSTHOG_KEY=${{secrets.VITE_APP_PUBLIC_POSTHOG_KEY}}" >> .env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> .env
             echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
             echo -e "APP_ENV=${{vars.TEST_APP_ENV}}" >> .env
