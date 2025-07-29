@@ -1,4 +1,3 @@
-from os import environ
 
 from flask_security import SQLAlchemyUserDatastore
 from backend.app import app, db
@@ -15,3 +14,4 @@ with app.app_context():
         super_user_role = Role(name="superuser")
         db.session.add(super_user_role)
     db.session.commit()
+
