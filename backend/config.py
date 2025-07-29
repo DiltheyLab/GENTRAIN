@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from flask_security import uia_username_mapper
 
@@ -8,8 +9,8 @@ def get_project_path():
     return os.path.dirname(os.path.realpath(__file__))
 
 
-# Create dummy secrey key so we can use sessions
 SECRET_KEY = os.environ.get("SECRET_KEY")
+PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
 
 # Create in-memory database
 SQLALCHEMY_DATABASE_URI = f"{os.environ.get('DATABASE_DRIVER')}://{os.environ.get('DATABASE_USER')}:{os.environ.get('DATABASE_PASSWORD')}@{os.environ.get('DATABASE_HOST')}:{os.environ.get('DATABASE_PORT')}/{os.environ.get('DATABASE_NAME')}"

@@ -1,3 +1,4 @@
+from flask import session
 from flask_admin import Admin
 from flask_admin.theme import Bootstrap4Theme
 
@@ -13,3 +14,7 @@ admin = Admin(app, name="gentrain-admin",
 # bind admin views with models
 admin.add_view(PathogenView(Pathogen, db.session))
 admin.add_view(UserView(User, db.session))
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
