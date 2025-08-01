@@ -125,10 +125,7 @@ jobs:
             cd ${{ vars.GENTRAIN_DIR }}
             rm -f .env
             touch .env
-            echo -e "VITE_HTBASIC_USERNAME=${{vars.HTBASIC_USERNAME}}" >> .env
-            echo -e "VITE_HTBASIC_PASSWORD=${{secrets.HTBASIC_PASSWORD}}" >> .env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> .env
-            echo -e "VITE_ENABLE_WEBSOCKETS=${{vars.ENABLE_WEBSOCKETS}}" >> .env
             echo -e "APP_ENV=${{vars.TEST_APP_ENV}}" >> .env
             echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env

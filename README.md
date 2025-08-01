@@ -27,7 +27,6 @@ Before you begin, ensure you have the following installed on your system:
     GENTRAIN uses environment variables for configuration. Create a `.env` file in the root directory of the cloned project. This file will hold settings for both the frontend and backend services. Here's an example of the essential variables you'll need for a local setup (you can also find this in the `env.example` file):
 
     ```ini
-    # .env - Example for Local Development
     # BACKEND VARIABLES
       APP_ENV=development
       DATABASE_DRIVER=postgresql
@@ -49,8 +48,6 @@ Before you begin, ensure you have the following installed on your system:
 
       # FRONTEND VARIABLES
       VITE_API_HOST=http://localhost:4000
-      VITE_API_BASIC_USERNAME=YourUsername
-      VITE_API_BASIC_PASSWORD=YourPassword
     ```
 
 3.  **Build and Run Docker Containers**:
@@ -100,29 +97,35 @@ The CI/CD pipeline consists of the following steps:
 
 ### GitHub Actions Variables and Secrets
 
-To ensure proper functionality of the CI/CD pipeline, the following GitHub Actions variables and secrets need to be set up:
+To ensure proper functionality of the CI/CD pipeline, the following GitHub Actions variables and secrets need to be set up. Make sure to configure them in your GitHub repository settings under `Settings > Secrets and variables > Actions` before running the deployment workflow.
 
 #### Variables:
 
-- `SSH_HOST`: The hostname or IP address of the deployment server
-- `SSH_USER`: The username for SSH access to the deployment server
-- `GENTRAIN_DIR`: The path to your project directory on the server
-- `PRODUCTION_BRANCH`: The branch name for production deployments (e.g., "prod")
-- `HTBASIC_USERNAME`: The username for HTTP basic authentication
-- `API_HOST`: The URL of your API (e.g., https://api.yourdomain.com)
-- `APP_ENV`: The runtime environment (e.g., "production")
-- `FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE`: The HTTP status code for Pydantic validation errors (e.g., 422)
-- `REDIS_URL`: The URL for the Redis connection
-- `SLACK_WEBHOOK_URL`: The Slack webhook URL for notifications
+- **`SSH_HOST`**: The hostname or IP address of the deployment server.
+- **`SSH_USER`**: The username for SSH access to the deployment server.
+- **`GENTRAIN_DIR`**: The absolute path to your project directory on the server (e.g., `/var/www/gentrain`).
+- **`PRODUCTION_BRANCH`**: The branch name for production deployments (set to `prod` in the workflow).
+- **`SLACK_WEBHOOK_URL`**: The Slack webhook URL for workflow status notifications.
+- **`API_HOST`**: The URL of your API backend (e.g., `https://api.gentrain.bi.denbi.de`).
+- **`PROD_APP_ENV`**: The runtime environment to be set in the server's `.env` file (e.g., `production`).
+- **`REDIS_HOST`**: The hostname or IP address of the Redis server.
+- **`REDIS_PORT`**: The port of the Redis server.
+- **`REDIS_USERNAME`**: The username for the Redis connection.
+- **`DATABASE_DRIVER`**: The database driver (e.g., `postgresql`).
+- **`DATABASE_NAME`**: The name of the database.
+- **`DATABASE_HOST`**: The hostname of the database.
+- **`DATABASE_PORT`**: The port of the database.
+- **`DATABASE_USER`**: The username for the database connection.
+- **`ADMIN_HTBASIC_USERNAME`**: The username for HTTP basic authentication of the admin area.
 
 #### Secrets:
 
-- `SSH_PRIVATE_KEY`: The SSH private key for accessing the deployment server
-- `HTBASIC_PASSWORD`: The password for HTTP basic authentication
-- `RQ_SECRET`: The secret key for Redis Queue
-- `GENTRAIN_PASSWORD`: The sudo password for the deployment server
-
-Make sure to set these variables and secrets in your GitHub repository settings under "Settings" > "Secrets and variables" > "Actions" before running the deployment workflow.
+- **`SSH_PRIVATE_KEY`**: The SSH private key for accessing the deployment server.
+- **`GENTRAIN_PASSWORD`**: The sudo password for the user on the deployment server, used for Docker commands.
+- **`SECRET_KEY`**: A secret key for the backend application (e.g., for token signing). (Probably not neccessary anymore)
+- **`REDIS_PASSWORD`**: The password for the Redis connection.
+- **`DATABASE_PASSWORD`**: The password for the database connection.
+- **`PROD_ADMIN_HTBASIC_PASSWORD`**: The password for HTTP basic authentication of the admin area.
 
 ### Automatic Deployment
 
