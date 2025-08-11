@@ -1,7 +1,7 @@
 export function DataPrivacy() {
     return (
         <div className="flex flex-1 flex-col space-y-3 p-5">
-            <h1 className="text-2xl font-bold tracking-tight mb-4">Datenschutzerklärung</h1>
+            <h1 className="text-2xl font-bold tracking-tight mb-4">Datenschutzhinweise für das Dashboard „Gentrain“</h1>
             <div>
                 <p>
                     Wir nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Wir möchten Ihnen mit diesen
@@ -57,15 +57,17 @@ export function DataPrivacy() {
                     Besucherinnen/Besucher.
                 </p>
             </div>
-            <div>
-                <h2 className="font-bold text-lg mb-1">
+            <div className="flex flex-col space-y-3">
+                <h2 className="font-bold text-lg -mb-2">
                     4. Datenverarbeitung im Rahmen der Bereitstellung des Dashboards
                 </h2>
                 <p>
-                    Beim Besuch und Nutzung der Web-Anwendung Dashboard „Gentrain“ werden folgende Metadaten
-                    verarbeitet:
+                    <u>
+                        Beim Besuch und Nutzung der Web-Anwendung Dashboard „Gentrain“ werden folgende Metadaten
+                        verarbeitet:
+                    </u>
                 </p>
-                <ul>
+                <ul className="list-disc ml-6">
                     <li>IP-Adresse</li>
                     <li>Datum und Uhrzeit des Abrufs</li>
                     <li>Name des aufgerufenen Internetdienstes, aufgerufenen Ressource und der verwendeten Aktion</li>
@@ -75,30 +77,28 @@ export function DataPrivacy() {
                     <li>Browser-Identifikation (enthält in der Regel die Browserversion sowie das Betriebssystem)</li>
                 </ul>
                 <p>
-                    <strong>Zweck der Datenverarbeitung:</strong> Bereitstellung der bestimmungsgemäßen Funktionalität
-                    des Dashboards.
+                    <u>Zweck der Datenverarbeitung:</u> Bereitstellung der bestimmungsgemäßen Funktionalität des
+                    Dashboards.
                 </p>
                 <p>
-                    <strong>Rechtsgrundlagen der Datenverarbeitung:</strong> Sofern Sie als Mitarbeitende/r eines
-                    Gesundheitsamtes das Dashboard nutzen, um in Folgeschritten die Ausbruchsanalyse auf Basis von
-                    Infektionsketten durchzuführen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 S. 1 lit. b)
-                    DSGVO verarbeitet (Nutzungsvereinbarung). Sofern Sie als zufällige/r Besucherin/Besucher das
-                    Dashboard nutzen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 UAbs. 1 lit. f) DSGVO
-                    verarbeitet (legitimes Interesse des Verantwortlichen zur Bereitstellung der bestimmungsgemäßen
-                    Funktionalität des Dashboards).
+                    <u>Rechtsgrundlagen der Datenverarbeitung:</u> Sofern Sie als Mitarbeitende/r eines Gesundheitsamtes
+                    das Dashboard nutzen, um in Folgeschritten die Ausbruchsanalyse auf Basis von Infektionsketten
+                    durchzuführen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 S. 1 lit. b) DSGVO
+                    verarbeitet (Nutzungsvereinbarung). Sofern Sie als zufällige/r Besucherin/Besucher das Dashboard
+                    nutzen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 UAbs. 1 lit. f) DSGVO verarbeitet
+                    (legitimes Interesse des Verantwortlichen zur Bereitstellung der bestimmungsgemäßen Funktionalität
+                    des Dashboards).
                 </p>
                 <p>
-                    <strong>
-                        Pflicht zur Bereitstellung der Daten und Folgen, wenn die Daten nicht bereitgestellt werden:
-                    </strong>{" "}
+                    <u>Pflicht zur Bereitstellung der Daten und Folgen, wenn die Daten nicht bereitgestellt werden:</u>{" "}
                     Eine gesetzliche Verpflichtung zur Verarbeitung von personenbezogenen Daten besteht nicht.
                     Allerdings ist eine Nutzung des Dashboards ohne Bereitstellung der Informationen technisch nicht
                     möglich.
                 </p>
                 <p>
-                    <strong>Löschung der Daten:</strong> Die Daten werden nur so lange verarbeitet, bis der Server die
-                    Anfrage beantwortet. Nach der Bearbeitung der Anfrage verfallen die Daten. Demnach findet
-                    Server-seitig keine Persistierung der Daten statt.
+                    <u>Löschung der Daten:</u> Die Daten werden nur so lange verarbeitet, bis der Server die Anfrage
+                    beantwortet. Nach der Bearbeitung der Anfrage verfallen die Daten. Demnach findet Server-seitig
+                    keine Persistierung der Daten statt.
                 </p>
             </div>
             <div>
@@ -165,7 +165,9 @@ export function DataPrivacy() {
                 <p className="mt-2">
                     <strong>Zuständige Aufsichtsbehörde ist:</strong>
                     <br />
-                    Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen
+                    Landesbeauftragte für Datenschutz und Informationsfreiheit
+                    <br />
+                    Nordrhein-Westfalen
                     <br />
                     Postfach 20 04 44
                     <br />
