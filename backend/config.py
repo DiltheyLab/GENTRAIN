@@ -10,6 +10,11 @@ def get_project_path():
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
+
+# Session-Cookie setting
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Strict'
 PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
 
 # Create in-memory database
