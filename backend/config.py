@@ -43,6 +43,13 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECURITY_USERNAME_ENABLE = True
 SECURITY_USERNAME_REQUIRED = True
 SECURITY_USER_IDENTITY_ATTRIBUTES = [{"username": {"mapper": uia_username_mapper, "case_insensitive": True}}]
+SECURITY_MSG_INVALID_PASSWORD = ("Bad username or password", "error")
+SECURITY_MSG_PASSWORD_NOT_PROVIDED = ("Bad username or password", "error")
+SECURITY_MSG_USER_DOES_NOT_EXIST = ("Bad username or password", "error")
+SECURITY_MSG_USERNAME_ILLEGAL_CHARACTERS = ("Bad username or password", "error")
+SECURITY_MSG_USERNAME_DISALLOWED_CHARACTERS = ("Bad username or password", "error")
+SECURITY_MSG_USERNAME_NOT_PROVIDED = ("Bad username or password", "error")
+SECURITY_USERNAME_MIN_LENGTH = 0
 
 BASIC_AUTH_USERNAME = os.environ.get("ADMIN_HTBASIC_USERNAME")
 BASIC_AUTH_PASSWORD = os.environ.get("ADMIN_HTBASIC_PASSWORD")
