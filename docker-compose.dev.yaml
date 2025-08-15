@@ -28,17 +28,6 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     restart: unless-stopped
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: gentrain-pgadmin
-    restart: always
-    ports:
-      - "7777:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
   backend:
     container_name: gentrain-backend
     image: gentrain-backend
@@ -71,6 +60,3 @@ services:
     env_file: ".env"
 volumes:
   postgres_data:
-  pgadmin_data:
-
-

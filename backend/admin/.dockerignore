@@ -1,0 +1,11 @@
+# Ignore all files which are not needed in the image
+node_modules
+npm-debug.log
+README.md
+.git
+
+# Ignore all env files in the image for security reasons
+.env*
+
+#Ignore all test files in the image
+coverage

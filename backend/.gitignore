@@ -5,3 +5,5 @@ supervisord.pid
 supervisord.log
 logs/*
 redis.conf
+.idea/*
+.idea

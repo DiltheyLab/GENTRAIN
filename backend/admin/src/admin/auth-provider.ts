@@ -1,0 +1,30 @@
+import { DefaultAuthProvider } from 'adminjs';
+
+import { DEFAULT_ADMIN } from './constants.js';
+import { componentLoader } from './component-loader.js';
+
+/**
+ * Make sure to modify "authenticate" to be a proper authentication method
+ */
+const provider = new DefaultAuthProvider({
+  componentLoader,
+  authenticate: async ({ email, password }) => {
+    if (email === DEFAULT_ADMIN.email) {
+      return { email };
+    }
+
+    return null;
+  },
+});
+
+export default provider;
+
+/* export const createAuthUsers = async () =>
+  Promise.all(
+    AuthUsers.map(async ({ email, password }) => {
+      const admin = await AdminModel.findOne({ email });
+      if (!admin) {
+        await AdminModel.create({ email, password: await argon2.hash(password) });
+      }
+    })
+  ); */

@@ -119,13 +119,27 @@ services:
       - type: bind
         source: ./backend/modules/sequence_analysis/schemes
         target: /home/backend/modules/sequence_analysis/schemes
-    command: [ "supervisord", "-c", "/home/backend/supervisor.conf" ]
+    command: ["supervisord", "-c", "/home/backend/supervisor.conf"]
     links:
       - redis
     env_file: ".env"
     networks:
       - caddy
-
+  admin:
+    container_name: gentrain-admin
+    image: gentrain-admin
+    restart: unless-stopped
+    build:
+      context: ./backend/admin
+      dockerfile: Dockerfile.prod
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
+    env_file: ".env"
   frontend:
     container_name: gentrain-frontend
     image: gentrain-frontend
@@ -147,7 +161,6 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
-
 
 networks:
   # Docker network for Caddy
