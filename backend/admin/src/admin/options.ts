@@ -1,9 +1,6 @@
 import { AdminJSOptions } from 'adminjs';
 import { componentLoader, Components } from './component-loader.js';
-import initialize from 'src/db/index.js';
 
-/* const { prisma } = await initialize(); // PrismaClient aus deinem initialize holen
- */
 const options: AdminJSOptions = {
   rootPath: '/admin',
   /*   dashboard: {
@@ -21,8 +18,6 @@ const options: AdminJSOptions = {
   },
   defaultTheme: 'light',
   componentLoader,
-  resources: [],
-  databases: [],
 };
 
 export default options;

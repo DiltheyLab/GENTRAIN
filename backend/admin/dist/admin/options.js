@@ -13,7 +13,5 @@ const options = {
     },
     defaultTheme: 'light',
     componentLoader,
-    resources: [],
-    databases: [],
 };
 export default options;
