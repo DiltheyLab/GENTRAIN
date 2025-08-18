@@ -7,7 +7,14 @@
     "build:watch": "tsc -w",
     "lint": "eslint \"src\"",
     "start": "node dist/app",
-    "dev": "concurrently \"tsc --watch\" \"nodemon\""
+    "dev": "concurrently \"tsc --watch\" \"nodemon\"",
+    "dev:prisma-pull": "dotenv -e ../../.env -- npx prisma db pull",
+    "dev:prisma-init-migrate": "dotenv -e ../../.env -- npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
+    "dev:prisma-resolve": "dotenv -e ../../.env -- npx prisma migrate resolve --applied 0_init",
+    "dev:prisma-setup-db": "npm run dev:prisma-init-migrate && npm run dev:prisma-resolve",
+    "dev:prisma-migrate": "dotenv -e ../../.env -- npx prisma migrate dev --name",
+    "dev:prisma-push": "dotenv -e ../../.env -- npx prisma db push",
+    "dev:prisma-studio": "dotenv -e ../../.env -- npx prisma studio"
   },
   "dependencies": {
     "@adminjs/express": "^6.1.0",
