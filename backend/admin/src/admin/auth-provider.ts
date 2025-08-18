@@ -9,10 +9,14 @@ import { componentLoader } from './component-loader.js';
 const provider = new DefaultAuthProvider({
   componentLoader,
   authenticate: async ({ email, password }) => {
+    /*  const user = await AdminModel.findOne({ email });
+      if (user && (await argon2.verify(user.password, password))) {
+       return { ...userData, ...user.toObject() };
+     }
+     return null; */
     if (email === DEFAULT_ADMIN.email) {
       return { email };
     }
-
     return null;
   },
 });

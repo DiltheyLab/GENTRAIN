@@ -1,12 +1,11 @@
 import { AdminJSOptions } from 'adminjs';
-import { componentLoader, Components } from './component-loader.js';
+import { componentLoader, DASHBOARD } from './component-loader.js';
 
-const options: AdminJSOptions = {
+const options = {
   rootPath: '/admin',
-  /*   dashboard: {
-    component: Components.Dashboard,
-  }, */
-  pages: {},
+  dashboard: {
+    component: DASHBOARD,
+  },
   branding: {
     companyName: 'GENTRAIN Admin',
     withMadeWithLove: false,
@@ -18,6 +17,6 @@ const options: AdminJSOptions = {
   },
   defaultTheme: 'light',
   componentLoader,
-};
+} as AdminJSOptions;
 
 export default options;

@@ -1,7 +1,9 @@
-import { componentLoader } from './component-loader.js';
+import { componentLoader, DASHBOARD } from './component-loader.js';
 const options = {
     rootPath: '/admin',
-    pages: {},
+    dashboard: {
+        component: DASHBOARD,
+    },
     branding: {
         companyName: 'GENTRAIN Admin',
         withMadeWithLove: false,

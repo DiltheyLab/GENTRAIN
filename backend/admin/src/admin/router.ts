@@ -1,18 +1,9 @@
 import AdminJSExpress from '@adminjs/express';
 import AdminJS from 'adminjs';
-import argon2 from 'argon2';
 import ConnectPgSimple from 'connect-pg-simple';
 import session from 'express-session';
 import { Router } from 'express';
-
-export const authenticateUser = async (email, password) => {
-  /*  const user = await AdminModel.findOne({ email });
-   if (user && (await argon2.verify(user.password, password))) {
-    return { ...userData, ...user.toObject() };
-  }
-  return null; */
-  return true; //löschen!!
-};
+import provider from './auth-provider.js';
 
 export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | null = null) => {
   const ConnectSession = ConnectPgSimple(session);
@@ -29,12 +20,12 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
   return AdminJSExpress.buildAuthenticatedRouter(
     adminJs,
     {
-      authenticate: authenticateUser,
       cookieName: 'adminjs',
       cookiePassword: process.env.COOKIE_SECRET ?? 'sessionsecret',
+      provider: provider,
     },
-    router
-    /*     {
+    router,
+    {
       store: sessionStore,
       resave: true,
       saveUninitialized: true,
@@ -42,8 +33,9 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
       },
       name: 'adminjs',
-    } */
+    }
   );
 };

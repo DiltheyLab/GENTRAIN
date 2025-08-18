@@ -1,5 +1,7 @@
 import express from 'express';
 import AdminJS from 'adminjs';
+import { ResourceOptions } from 'adminjs';
+
 import options from './admin/options.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -21,6 +23,7 @@ const start = async () => {
 
   // Setup Prisma Client and register it in AdminJS
   const prisma = new PrismaClient();
+
   AdminJS.registerAdapter({ Database, Resource });
 
   // Create AdminJS with options
@@ -28,8 +31,31 @@ const start = async () => {
     ...options,
     resources: [
       {
-        resource: { model: getModelByName('User'), client: prisma },
-        options: {},
+        resource: { model: getModelByName('user'), client: prisma },
+        options: {
+          navigation: {
+            name: 'Postgres DB',
+            icon: 'Database',
+          },
+        } as ResourceOptions,
+      },
+      {
+        resource: { model: getModelByName('pathogen'), client: prisma },
+        options: {
+          navigation: {
+            name: 'Postgres DB',
+            icon: 'Database',
+          },
+        },
+      },
+      {
+        resource: { model: getModelByName('role'), client: prisma },
+        options: {
+          navigation: {
+            name: 'Postgres DB',
+            icon: 'Database',
+          },
+        },
       },
     ],
   });

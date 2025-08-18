@@ -19,8 +19,31 @@ const start = async () => {
         ...options,
         resources: [
             {
-                resource: { model: getModelByName('User'), client: prisma },
-                options: {},
+                resource: { model: getModelByName('user'), client: prisma },
+                options: {
+                    navigation: {
+                        name: 'Postgres DB',
+                        icon: 'Database',
+                    },
+                },
+            },
+            {
+                resource: { model: getModelByName('pathogen'), client: prisma },
+                options: {
+                    navigation: {
+                        name: 'Postgres DB',
+                        icon: 'Database',
+                    },
+                },
+            },
+            {
+                resource: { model: getModelByName('role'), client: prisma },
+                options: {
+                    navigation: {
+                        name: 'Postgres DB',
+                        icon: 'Database',
+                    },
+                },
             },
         ],
     });
