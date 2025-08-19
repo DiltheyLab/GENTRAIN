@@ -67,7 +67,7 @@ export const Login: React.FC = () => {
           >
             <H2 fontWeight="lighter">GENTRAIN Admin</H2>
             <Text fontWeight="lighter" mt="default">
-              Willkommen im GENTRAIN Admin-Bereich.
+              Welcome to the GENTRAIN admin panel.
             </Text>
             <IllustrationsWrapper p="xxl">
               <Box display="inline" mr="default">

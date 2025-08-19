@@ -7,9 +7,8 @@ const Dashboard = () => {
       <Box variant="white" p="xl" textAlign="center">
         <H1 fontWeight="lighter">GENTRAIN Admin</H1>
         <Text fontWeight="lighter" mt="default">
-          Willkommen im GENTRAIN Admin-Bereich! Hier können Sie die Pathogen-Datenbank verwalten, Benutzer für das
-          Admin-Panel anlegen und entsprechende Benutzetrollen zuweisen. In der linken Seitenleiste finden Sie die
-          Navigation zu den verschiedenen Bereichen.
+          Welcome to the GENTRAIN admin panel. Here you can manage the pathogen database, create users for the admin
+          panel and assign user roles. Use the navigation on the left sidebar to access different sections.
         </Text>
       </Box>
     </Box>
