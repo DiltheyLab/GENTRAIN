@@ -8,7 +8,7 @@ export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
   return {
     resource: { model: getModelByName('user'), client: prisma },
     options: {
-      navigation: navigation,
+      navigation: navigation, // Add resource to navigation
       properties: {
         email: {
           isRequired: true,

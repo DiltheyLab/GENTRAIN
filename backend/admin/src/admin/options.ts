@@ -11,13 +11,11 @@ export const navigation = {
   icon: 'Database',
 };
 
-export const createAdminJsOptions = (
-  prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>
-): AdminJSOptions => {
-  const options = {
+export const createAdminJsOptions = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
+  const options: AdminJSOptions = {
     rootPath: '/admin',
     dashboard: {
-      component: DASHBOARD,
+      component: DASHBOARD, // Override the default dashboard component with a custom one
     },
     branding: {
       companyName: 'GENTRAIN Admin',
@@ -30,8 +28,8 @@ export const createAdminJsOptions = (
     },
     defaultTheme: 'light',
     componentLoader,
-    resources: [createUserResource(prisma), createPathogenResource(prisma), createRoleResource(prisma)],
-  } as AdminJSOptions;
+    resources: [createUserResource(prisma), createPathogenResource(prisma), createRoleResource(prisma)], // Register resources in database
+  };
 
   return options;
 };
