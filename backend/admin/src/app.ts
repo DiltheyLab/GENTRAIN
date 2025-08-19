@@ -1,12 +1,10 @@
 import express from 'express';
 import AdminJS from 'adminjs';
-import { ResourceOptions } from 'adminjs';
-
-import options from './admin/options.js';
+import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { expressAuthenticatedRouter } from './admin/router.js';
-import { Database, getModelByName, Resource } from '@adminjs/prisma';
+import { Database, Resource } from '@adminjs/prisma';
 import { PrismaClient } from '@prisma/client';
 
 const port = process.env.ADMIN_PANEL_PORT;
@@ -26,39 +24,10 @@ const start = async () => {
 
   AdminJS.registerAdapter({ Database, Resource });
 
+  const options = createAdminJsOptions(prisma);
+
   // Create AdminJS with options
-  const admin = new AdminJS({
-    ...options,
-    resources: [
-      {
-        resource: { model: getModelByName('user'), client: prisma },
-        options: {
-          navigation: {
-            name: 'Postgres DB',
-            icon: 'Database',
-          },
-        } as ResourceOptions,
-      },
-      {
-        resource: { model: getModelByName('pathogen'), client: prisma },
-        options: {
-          navigation: {
-            name: 'Postgres DB',
-            icon: 'Database',
-          },
-        },
-      },
-      {
-        resource: { model: getModelByName('role'), client: prisma },
-        options: {
-          navigation: {
-            name: 'Postgres DB',
-            icon: 'Database',
-          },
-        },
-      },
-    ],
-  });
+  const admin = new AdminJS(options);
 
   // Compile tsx in js
   if (process.env.NODE_ENV === 'production') {
