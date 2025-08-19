@@ -1,10 +1,10 @@
 import express from 'express';
 import AdminJS from 'adminjs';
-import options from './admin/options.js';
+import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { expressAuthenticatedRouter } from './admin/router.js';
-import { Database, getModelByName, Resource } from '@adminjs/prisma';
+import { Database, Resource } from '@adminjs/prisma';
 import { PrismaClient } from '@prisma/client';
 const port = process.env.ADMIN_PANEL_PORT;
 const start = async () => {
@@ -15,38 +15,8 @@ const start = async () => {
     app.use(express.static(publicPath));
     const prisma = new PrismaClient();
     AdminJS.registerAdapter({ Database, Resource });
-    const admin = new AdminJS({
-        ...options,
-        resources: [
-            {
-                resource: { model: getModelByName('user'), client: prisma },
-                options: {
-                    navigation: {
-                        name: 'Postgres DB',
-                        icon: 'Database',
-                    },
-                },
-            },
-            {
-                resource: { model: getModelByName('pathogen'), client: prisma },
-                options: {
-                    navigation: {
-                        name: 'Postgres DB',
-                        icon: 'Database',
-                    },
-                },
-            },
-            {
-                resource: { model: getModelByName('role'), client: prisma },
-                options: {
-                    navigation: {
-                        name: 'Postgres DB',
-                        icon: 'Database',
-                    },
-                },
-            },
-        ],
-    });
+    const options = createAdminJsOptions(prisma);
+    const admin = new AdminJS(options);
     if (process.env.NODE_ENV === 'production') {
         console.log('initialized in production mode');
         await admin.initialize();

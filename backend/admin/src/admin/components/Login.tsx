@@ -18,7 +18,6 @@ import {
 } from '@adminjs/design-system';
 import { styled } from '@adminjs/design-system/styled-components';
 import { ReduxState, useTranslation } from 'adminjs';
-import { AuthUser } from '../constants.js';
 import { LoginTemplateAttributes } from 'node_modules/adminjs/types/src/frontend/login-template.js';
 
 const Wrapper = styled(Box)<BoxProps>`
@@ -68,7 +67,7 @@ export const Login: React.FC = () => {
           >
             <H2 fontWeight="lighter">GENTRAIN Admin</H2>
             <Text fontWeight="lighter" mt="default">
-              {translateComponent('Login.welcomeMessage')}
+              Willkommen im GENTRAIN Admin-Bereich.
             </Text>
             <IllustrationsWrapper p="xxl">
               <Box display="inline" mr="default">

@@ -35,7 +35,7 @@ export const Login = () => {
             React.createElement(Box, { bg: "white", height: "480px", flex: true, boxShadow: "login", width: [1, 2 / 3, 'auto'] },
                 React.createElement(Box, { bg: "primary100", color: "white", p: "x3", width: "380px", flexGrow: 0, display: ['none', 'none', 'block'], position: "relative" },
                     React.createElement(H2, { fontWeight: "lighter" }, "GENTRAIN Admin"),
-                    React.createElement(Text, { fontWeight: "lighter", mt: "default" }, translateComponent('Login.welcomeMessage')),
+                    React.createElement(Text, { fontWeight: "lighter", mt: "default" }, "Willkommen im GENTRAIN Admin-Bereich."),
                     React.createElement(IllustrationsWrapper, { p: "xxl" },
                         React.createElement(Box, { display: "inline", mr: "default" },
                             React.createElement(Illustration, { variant: "Planet", width: 82, height: 91 })),

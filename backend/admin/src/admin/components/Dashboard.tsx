@@ -1,11 +1,17 @@
 import React from 'react';
-import { Box } from '@adminjs/design-system';
+import { Box, H1, H2, Text } from '@adminjs/design-system';
 
 const Dashboard = () => {
   return (
     <Box variant="grey">
-      <h1>Hallo, AdminJS!</h1>
-      <p>Dies ist meine erste eigene Komponente im Frontend. </p>
+      <Box variant="white" p="xl" textAlign="center">
+        <H1 fontWeight="lighter">GENTRAIN Admin</H1>
+        <Text fontWeight="lighter" mt="default">
+          Willkommen im GENTRAIN Admin-Bereich! Hier können Sie die Pathogen-Datenbank verwalten, Benutzer für das
+          Admin-Panel anlegen und entsprechende Benutzetrollen zuweisen. In der linken Seitenleiste finden Sie die
+          Navigation zu den verschiedenen Bereichen.
+        </Text>
+      </Box>
     </Box>
   );
 };
