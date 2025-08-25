@@ -9,11 +9,25 @@ datasource db {
 }
 
 model pathogen {
-  id                         Int    @id @default(autoincrement())
-  name                       String @db.VarChar
-  genetic_distance_threshold Int
-  type                       String @db.VarChar
-  scheme_name                String @db.VarChar
+  id                                 Int     @id @default(autoincrement())
+  name                               String  @db.VarChar
+  genetic_distance_threshold         Int
+  type                               String  @db.VarChar
+  scheme_name                        String  @db.VarChar
+  scheme_file_name                   String? @db.VarChar
+  scheme_key                         String? @db.VarChar
+  scheme_file_path                   String? @db.VarChar
+  scheme_size                        Int?
+  scheme_bucket                      String?
+  scheme_files_to_delete             String?
+  scheme_mime_type                   String?
+  cases_example_data_key             String? @db.VarChar
+  cases_example_data_file_path       String? @db.VarChar
+  cases_example_data_size            Int?
+  cases_example_data_bucket          String?
+  cases_exmaple_data_file_name       String?
+  cases_example_data_files_to_delete String?
+  cases_exmaple_data_mime_type       String?
 }
 
 model role {

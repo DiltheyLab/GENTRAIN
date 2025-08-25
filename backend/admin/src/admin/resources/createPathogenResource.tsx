@@ -19,10 +19,7 @@ interface CustomActionRequest extends ActionRequest {
 }
 
 const validateScheme = (request: ActionRequest, context: ActionContext) => {
-  console.log('Payload', request.payload);
-
   const customRequest = request as CustomActionRequest;
-  console.log('Custom Request:', customRequest);
 
   const uploadedScheme = customRequest.files && customRequest.files['scheme_file.0'];
   // We only want to validate "post" requests
@@ -30,8 +27,8 @@ const validateScheme = (request: ActionRequest, context: ActionContext) => {
 
   if (!uploadedScheme) {
     throw new ValidationError({
-      scheme_name: {
-        message: 'Eine Datei muss hochgeladen werden.',
+      scheme_file: {
+        message: 'Ein Schema muss hochgeladen werden.',
       },
     });
   }
@@ -39,16 +36,16 @@ const validateScheme = (request: ActionRequest, context: ActionContext) => {
   const maxSizeBytes = 20 * 1024 * 1024 * 1024;
   if (uploadedScheme.size > maxSizeBytes) {
     throw new ValidationError({
-      scheme_name: {
+      scheme_file: {
         message: 'Die Datei ist zu groß (max. 20 GB).',
       },
     });
   }
 
-  if (!uploadedScheme.name.endsWith('.pdf')) {
+  if (!uploadedScheme.name.endsWith('.zip')) {
     throw new ValidationError({
-      scheme_name: {
-        message: 'Nur PDF-Dateien sind erlaubt.',
+      scheme_file: {
+        message: 'Nur ZIP-Dateien sind erlaubt.',
       },
     });
   }
@@ -68,19 +65,43 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
             { value: 'bacterial', label: 'Bacterial' },
             { value: 'viral', label: 'Viral' },
           ],
+          position: 1,
         },
         genetic_distance_threshold: {
           type: 'number',
+          position: 2,
         },
-        /*         cases_example_data: {
-          components: {
-            edit: FileUpload,
-            show: FileUpload,
-          },
-        }, */
+
         scheme_name: {
+          position: 3,
           type: 'string',
+        },
+        scheme_key: { isVisible: false },
+        scheme_file_path: { isVisible: false },
+        scheme_size: { isVisible: false },
+        scheme_bucket: { isVisible: false },
+        scheme_files_to_delete: { isVisible: false },
+        scheme_mime_type: { isVisible: false },
+        cases_example_data_key: { isVisible: false },
+        cases_example_data_file_path: { isVisible: false },
+        cases_example_data_size: { isVisible: false },
+        cases_example_data_bucket: { isVisible: false },
+        cases_exmaple_data_file_name: { isVisible: false },
+        cases_example_data_files_to_delete: { isVisible: false },
+        cases_exmaple_data_mime_type: { isVisible: false },
+        scheme_file: {
+          isVisible: { list: false, filter: false, show: true, edit: true },
+          label: 'Scheme (PDF, max. 20GB)',
+          type: 'mixed',
           isRequired: true,
+          position: 4,
+        } as PropertyOptions,
+
+        cases_example_file: {
+          type: 'mixed',
+          isVisible: { list: false, filter: false, show: true, edit: true },
+          label: 'Example Case Data (CSV, max. 5 MB)',
+          position: 5,
         } as PropertyOptions,
       },
       actions: {
@@ -101,13 +122,45 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         },
 
         properties: {
-          key: 'scheme_name',
+          key: 'scheme_key',
           file: 'scheme_file',
+          filePath: 'scheme_file_path',
+          filename: 'scheme_file_name',
+          bucket: 'scheme_bucket',
+          filesToDelete: 'scheme_files_to_delete',
+          mimeType: 'scheme_mime_type',
+          size: 'scheme_size',
         },
-
         validation: {
           //20 gb in bytes
           maxSize: 20000000000,
+          mimeTypes: ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'],
+        },
+      }),
+      // Neue Konfiguration für 'cases_example_data'
+      uploadFeature({
+        componentLoader,
+        provider: {
+          local: {
+            bucket: 'public/example_data',
+            opts: {
+              baseUrl: '/example_data',
+            },
+          },
+        },
+        properties: {
+          key: 'cases_example_data_key',
+          file: 'cases_example_file',
+          filePath: 'cases_example_data_file_path',
+          bucket: 'cases_example_data_bucket',
+          filename: 'cases_example_data_file_name',
+          filesToDelete: 'cases_example_data_files_to_delete',
+          size: 'cases_example_data_size',
+          mimeType: 'cases_example_data_mime_type',
+        },
+        validation: {
+          maxSize: 5 * 1024 * 1024, // 5 MB
+          mimeTypes: ['text/csv'],
         },
       }),
     ],
