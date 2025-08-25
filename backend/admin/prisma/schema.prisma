@@ -22,6 +22,14 @@ model role {
   description String? @db.VarChar(255)
 }
 
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+
 model user {
   id            Int       @id @default(autoincrement())
   password      String?   @db.VarChar(255)
