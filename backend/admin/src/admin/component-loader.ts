@@ -31,4 +31,5 @@ override('Login', 'components/Login');
 /**
  * Add components
  */
-export const DASHBOARD = add('Dashboard', './components/Dashboard');
+export const Dashboard = add('Dashboard', './components/Dashboard');
+export const FileUpload = add('FileUpload', './components/FileUpload');

@@ -2,10 +2,10 @@ import express from 'express';
 import AdminJS from 'adminjs';
 import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { expressAuthenticatedRouter } from './admin/router.js';
 import { Database, Resource } from '@adminjs/prisma';
 import { PrismaClient } from '@prisma/client';
+import * as url from 'url';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
@@ -14,10 +14,8 @@ const start = async () => {
   const app = express();
 
   // Setup static public folder for assets
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const publicPath = path.join(__dirname, '..', 'public'); // path from dist to public
-  app.use(express.static(publicPath));
+  const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+  app.use(express.static(path.join(__dirname, '../public'))); // path from dist to public
 
   // Setup Prisma Client and register it in AdminJS
   const prisma = new PrismaClient();

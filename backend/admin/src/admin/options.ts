@@ -1,5 +1,5 @@
 import { AdminJSOptions } from 'adminjs';
-import { componentLoader, DASHBOARD } from './component-loader.js';
+import { componentLoader, Dashboard } from './component-loader.js';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime/library';
 import { createUserResource } from './resources/createUserResource.js';
@@ -15,7 +15,7 @@ export const createAdminJsOptions = (prisma: PrismaClient<Prisma.PrismaClientOpt
   const options: AdminJSOptions = {
     rootPath: '/admin',
     dashboard: {
-      component: DASHBOARD, // Override the default dashboard component with a custom one
+      component: Dashboard, // Override the default dashboard component with a custom one
     },
     branding: {
       companyName: 'GENTRAIN Admin',
