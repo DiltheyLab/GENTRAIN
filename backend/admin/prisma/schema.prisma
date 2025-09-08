@@ -34,6 +34,7 @@ model role {
   id          Int     @id @default(autoincrement())
   name        String? @unique @db.VarChar(80)
   description String? @db.VarChar(255)
+  users       user[]
 }
 
 model session {
@@ -51,4 +52,6 @@ model user {
   username     String?   @unique @db.VarChar
   created_at   DateTime? @default(now()) @db.Timestamp(6)
   updated_at   DateTime? @db.Timestamp(6)
+  role         role      @relation(fields: [roleId], references: [id])
+  roleId       Int
 }

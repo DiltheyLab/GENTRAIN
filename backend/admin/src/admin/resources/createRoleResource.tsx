@@ -14,15 +14,6 @@ export const createRoleResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
           isRequired: true,
           type: 'string',
         },
-        permissions: {
-          isArray: true,
-          type: 'string',
-          availableValues: [
-            { value: 'read', label: 'Read' },
-            { value: 'write', label: 'Write' },
-            { value: 'delete', label: 'Delete' },
-          ],
-        },
       },
     } as ResourceOptions,
   };
