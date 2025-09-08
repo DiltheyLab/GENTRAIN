@@ -45,11 +45,10 @@ model session {
 }
 
 model user {
-  id            Int       @id @default(autoincrement())
-  password      String?   @db.VarChar(255)
-  active        Boolean?
-  confirmed_at  DateTime? @db.Timestamp(6)
-  fs_uniquifier String    @unique @db.VarChar(64)
-  username      String?   @unique @db.VarChar
-  last_login_at DateTime? @db.Timestamp(6)
+  id           Int       @id @default(autoincrement())
+  password     String?   @db.VarChar(255)
+  confirmed_at DateTime? @db.Timestamp(6)
+  username     String?   @unique @db.VarChar
+  created_at   DateTime? @db.Timestamp(6)
+  updated_at   DateTime? @db.Timestamp(6)
 }
