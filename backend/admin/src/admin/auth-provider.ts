@@ -3,20 +3,25 @@ import { CurrentAdmin, DefaultAuthProvider, DefaultAuthenticatePayload } from 'a
 import { SUPERUSER_ROLE } from './constants.js';
 import { componentLoader } from './component-loader.js';
 import { verify } from 'argon2';
+import { prisma } from './db.js';
 
-type LoginPayload = DefaultAuthenticatePayload & {
-  username: string;
-};
-
-const authenticate = async (payload: LoginPayload, ctx?: any): Promise<CurrentAdmin | null> => {
-  const { username, password } = payload;
+const authenticate = async (payload: DefaultAuthenticatePayload, _ctx?: any): Promise<CurrentAdmin | null> => {
+  const { email: username, password } = payload; // AdminJS sends "email" field by default
 
   if (!username || !password) return null;
 
-  const user = await prisma.findOne({ username });
+  const user = await prisma.user.findFirst({
+    where: { username },
+    include: { role: true },
+  });
+
   if (user && (await verify(user.password, password))) {
-    console.log(user);
-    return { ...user.toObject() };
+    return {
+      email: user.username, // AdminJS requires an email field, we use username here
+      role: user.role.name,
+      id: user.id.toString(),
+      username: user.username,
+    };
   }
   return null;
 };
@@ -30,6 +35,5 @@ export const authProvider = new DefaultAuthProvider({
 });
 
 export const isSuperuser = (currentAdmin: CurrentAdmin, allowedRole = SUPERUSER_ROLE) => {
-  console.log('Current Admin Role:', currentAdmin?.role);
   return currentAdmin.role === allowedRole;
 };
