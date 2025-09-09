@@ -1,10 +1,10 @@
 export type AuthUser = {
-  email: string;
+  username: string;
   password: string;
 };
 export const DEFAULT_ADMIN: AuthUser = {
-  email: 'admin@example.com',
-  password: 'password',
+  username: process.env.DEFAULT_ADMIN || 'admin',
+  password: process.env.DEFAULT_ADMIN_PASSWORD || 'secretPassword',
 };
 
 export const SUPERUSER_ROLE = 'superuser';

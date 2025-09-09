@@ -1,37 +1,33 @@
-import { CurrentAdmin, DefaultAuthProvider } from 'adminjs';
+import { CurrentAdmin, DefaultAuthProvider, DefaultAuthenticatePayload } from 'adminjs';
 
-import { DEFAULT_ADMIN, SUPERUSER_ROLE } from './constants.js';
+import { SUPERUSER_ROLE } from './constants.js';
 import { componentLoader } from './component-loader.js';
+import { verify } from 'argon2';
+
+type LoginPayload = DefaultAuthenticatePayload & {
+  username: string;
+};
+
+const authenticate = async (payload: LoginPayload, ctx?: any): Promise<CurrentAdmin | null> => {
+  const { username, password } = payload;
+
+  if (!username || !password) return null;
+
+  const user = await prisma.findOne({ username });
+  if (user && (await verify(user.password, password))) {
+    console.log(user);
+    return { ...user.toObject() };
+  }
+  return null;
+};
 
 /**
  * Make sure to modify "authenticate" to be a proper authentication method
  */
-const provider = new DefaultAuthProvider({
+export const authProvider = new DefaultAuthProvider({
   componentLoader,
-  authenticate: async ({ email, password }) => {
-    /*  const user = await AdminModel.findOne({ email });
-      if (user && (await argon2.verify(user.password, password))) {
-       return { ...userData, ...user.toObject() };
-     }
-     return null; */
-    if (email === DEFAULT_ADMIN.email) {
-      return { email };
-    }
-    return null;
-  },
+  authenticate,
 });
-
-export default provider;
-
-/* export const createAuthUsers = async () =>
-  Promise.all(
-    AuthUsers.map(async ({ email, password }) => {
-      const admin = await AdminModel.findOne({ email });
-      if (!admin) {
-        await AdminModel.create({ email, password: await argon2.hash(password) });
-      }
-    })
-  ); */
 
 export const isSuperuser = (currentAdmin: CurrentAdmin, allowedRole = SUPERUSER_ROLE) => {
   console.log('Current Admin Role:', currentAdmin?.role);

@@ -3,7 +3,7 @@ import AdminJS from 'adminjs';
 import ConnectPgSimple from 'connect-pg-simple';
 import session from 'express-session';
 import { Router } from 'express';
-import provider from './auth-provider.js';
+import { authProvider } from './auth-provider.js';
 
 export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | null = null) => {
   const ConnectSession = ConnectPgSimple(session);
@@ -22,7 +22,7 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
     {
       cookieName: 'adminjs',
       cookiePassword: process.env.COOKIE_SECRET ?? 'sessionsecret',
-      provider: provider,
+      provider: authProvider,
     },
     router,
     {

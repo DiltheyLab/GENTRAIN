@@ -93,8 +93,8 @@ export const Login: React.FC = () => {
               />
             )}
             <FormGroup>
-              <Label required>{translateComponent('Login.properties.email')}</Label>
-              <Input name="email" placeholder={translateComponent('Login.properties.email')} />
+              <Label required>Username</Label>
+              <Input name="username" placeholder="Username" />
             </FormGroup>
             <FormGroup>
               <Label required>{translateComponent('Login.properties.password')}</Label>
