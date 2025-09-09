@@ -12,6 +12,7 @@ const port = process.env.ADMIN_PANEL_PORT;
 const start = async () => {
   // Create express app
   const app = express();
+  app.enable('trust proxy');
 
   // Setup static public folder for assets
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
