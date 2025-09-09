@@ -5,6 +5,7 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 import { getModelByName } from '@adminjs/prisma';
 import { componentLoader, FileUpload } from '../component-loader.js';
 import uploadFeature from '@adminjs/upload';
+import { prisma } from '../db.js';
 
 interface CustomActionRequest extends ActionRequest {
   files: {
@@ -53,7 +54,7 @@ const validateScheme = (request: ActionRequest, context: ActionContext) => {
   return request;
 };
 
-export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
+export const createPathogenResource = () => {
   return {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {

@@ -1,11 +1,10 @@
 import { ResourceOptions } from 'adminjs';
 import { navigation } from '../options.js';
 import { getModelByName } from '@adminjs/prisma';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { isSuperuser } from '../auth-provider.js';
+import { prisma } from '../db.js';
 
-export const createRoleResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
+export const createRoleResource = () => {
   return {
     resource: { model: getModelByName('role'), client: prisma },
     options: {

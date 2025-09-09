@@ -7,8 +7,9 @@ import { hash } from 'argon2';
 import { isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 import { isPOSTMethod } from '../admin.utils.js';
+import { prisma } from '../db.js';
 
-export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
+export const createUserResource = () => {
   return {
     resource: { model: getModelByName('user'), client: prisma },
     options: {
