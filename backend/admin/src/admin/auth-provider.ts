@@ -1,6 +1,6 @@
-import { DefaultAuthProvider } from 'adminjs';
+import { CurrentAdmin, DefaultAuthProvider } from 'adminjs';
 
-import { DEFAULT_ADMIN } from './constants.js';
+import { DEFAULT_ADMIN, SUPERUSER_ROLE } from './constants.js';
 import { componentLoader } from './component-loader.js';
 
 /**
@@ -32,3 +32,8 @@ export default provider;
       }
     })
   ); */
+
+export const isSuperuser = (currentAdmin: CurrentAdmin, allowedRole = SUPERUSER_ROLE) => {
+  console.log('Current Admin Role:', currentAdmin?.role);
+  return currentAdmin.role === allowedRole;
+};

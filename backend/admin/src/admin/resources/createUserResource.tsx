@@ -1,9 +1,11 @@
-import { ListActionResponse, RecordActionResponse, ResourceOptions } from 'adminjs';
+import { ResourceOptions } from 'adminjs';
 import { navigation } from '../options.js';
 import { getModelByName } from '@adminjs/prisma';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime/library';
 import { hash } from 'argon2';
+import { isSuperuser } from '../auth-provider.js';
+import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 
 export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
   return {
@@ -20,6 +22,10 @@ export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
           isRequired: true,
           type: 'password',
           isVisible: { list: false, filter: false, show: false, edit: true },
+        },
+        role: {
+          isRequired: true,
+          type: 'reference',
         },
         confirmed_at: {
           isVisible: {
@@ -48,6 +54,7 @@ export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
       },
       actions: {
         new: {
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
           before: async (request) => {
             // hash password before saving
             if (request.payload?.password) {
@@ -57,41 +64,41 @@ export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
           },
         },
         show: {
-          after: async (response: RecordActionResponse) => {
-            // prevent password from being sent to the client
-            response.record.params.password = '';
-            return response;
-          },
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          after: [sanitizeUserResponse],
         },
         edit: {
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
           before: async (request) => {
-            // no need to hash on GET requests, we'll remove passwords there anyway
+            // no need to hash password on GET requests, it will be removed there anyway
             if (request.method === 'post') {
-              // hash only if password is present, delete otherwise
-              // so we don't overwrite it
+              // hash only if password is present, delete otherwise so it will not overwrite existing password with empty string
               if (request.payload?.password) {
                 request.payload.password = await hash(request.payload.password);
-                request.payload.updated_at = new Date();
               } else {
                 delete request.payload?.password;
               }
+              request.payload.updated_at = new Date();
             }
             return request;
           },
-          after: async (response: RecordActionResponse) => {
-            // prevent password from being sent to the client
-            response.record.params.password = '';
-            return response;
-          },
+          after: [sanitizeUserResponse],
+        },
+        delete: {
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          after: [sanitizeUserResponse],
+        },
+        bulkDelete: {
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          after: [sanitizeUserResponse],
+        },
+        search: {
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          after: [sanitizeUserResponse],
         },
         list: {
-          after: async (response: ListActionResponse) => {
-            // prevent password from being sent to the client
-            response.records.forEach((record) => {
-              record.params.password = '';
-            });
-            return response;
-          },
+          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          after: [sanitizeUserResponse],
         },
       },
     } as ResourceOptions,
