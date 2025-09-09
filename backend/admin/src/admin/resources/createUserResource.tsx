@@ -6,6 +6,7 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 import { hash } from 'argon2';
 import { isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
+import { isPOSTMethod } from '../admin.utils.js';
 
 export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
   return {
@@ -71,7 +72,7 @@ export const createUserResource = (prisma: PrismaClient<Prisma.PrismaClientOptio
           isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
           before: async (request) => {
             // no need to hash password on GET requests, it will be removed there anyway
-            if (request.method === 'post') {
+            if (isPOSTMethod(request)) {
               // hash only if password is present, delete otherwise so it will not overwrite existing password with empty string
               if (request.payload?.password) {
                 request.payload.password = await hash(request.payload.password);
