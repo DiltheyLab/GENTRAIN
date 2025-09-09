@@ -1,13 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'argon2';
-import { SUPERUSER_ROLE } from '../src/admin/constants.js';
 
 const prisma = new PrismaClient();
 
 async function main() {
   const username = process.env.DEFAULT_ADMIN_USERNAME ?? 'admin';
   const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'secretPassword';
-  const roleName = SUPERUSER_ROLE;
+  const roleName = 'superuser';
 
   // If there isn't a role with the name "superuser", create it
   let role = await prisma.role.findUnique({
