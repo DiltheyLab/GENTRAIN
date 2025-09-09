@@ -14,7 +14,8 @@
     "dev:prisma-setup-db": "npm run dev:prisma-init-migrate && npm run dev:prisma-resolve",
     "dev:prisma-migrate": "dotenv -e ../../.env -- npx prisma migrate dev --name",
     "dev:prisma-push": "dotenv -e ../../.env -- npx prisma db push",
-    "dev:prisma-studio": "dotenv -e ../../.env -- npx prisma studio"
+    "dev:prisma-studio": "dotenv -e ../../.env -- npx prisma studio",
+    "dev:prisma-seed": "dotenv -e ../../.env -- npx prisma db seed"
   },
   "dependencies": {
     "@adminjs/express": "^6.1.0",
