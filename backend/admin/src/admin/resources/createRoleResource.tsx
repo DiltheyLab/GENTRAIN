@@ -8,7 +8,7 @@ export const createRoleResource = () => {
   return {
     resource: { model: getModelByName('role'), client: prisma },
     options: {
-      navigation: navigation,
+      navigation: null,
       properties: {
         name: {
           isRequired: true,

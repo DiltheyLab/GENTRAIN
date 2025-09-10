@@ -4,11 +4,6 @@ import { createUserResource } from './resources/createUserResource.js';
 import { createPathogenResource } from './resources/createPathogenResource.js';
 import { createRoleResource } from './resources/createRoleResource.js';
 
-export const navigation = {
-  name: 'Postgres DB',
-  icon: 'Database',
-};
-
 export const createAdminJsOptions = () => {
   const options: AdminJSOptions = {
     rootPath: '/admin',

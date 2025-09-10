@@ -58,8 +58,7 @@ export const createPathogenResource = () => {
   return {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
-      navigation: navigation,
-
+      navigation: null,
       properties: {
         type: {
           availableValues: [

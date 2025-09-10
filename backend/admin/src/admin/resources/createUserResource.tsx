@@ -13,7 +13,7 @@ export const createUserResource = () => {
   return {
     resource: { model: getModelByName('user'), client: prisma },
     options: {
-      navigation: navigation, // Add resource to navigation
+      navigation: null, // Add resource to navigation
       properties: {
         username: {
           position: 2,
