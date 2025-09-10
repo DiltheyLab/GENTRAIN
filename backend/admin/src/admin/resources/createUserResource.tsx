@@ -1,8 +1,5 @@
 import { ResourceOptions } from 'adminjs';
-import { navigation } from '../options.js';
 import { getModelByName } from '@adminjs/prisma';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { hash } from 'argon2';
 import { isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';

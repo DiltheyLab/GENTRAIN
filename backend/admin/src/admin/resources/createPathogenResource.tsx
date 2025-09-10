@@ -1,7 +1,4 @@
 import { ActionContext, ActionRequest, PropertyOptions, ResourceOptions, ValidationError } from 'adminjs';
-import { navigation } from '../options.js';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { getModelByName } from '@adminjs/prisma';
 import { componentLoader, FileUpload } from '../component-loader.js';
 import uploadFeature from '@adminjs/upload';

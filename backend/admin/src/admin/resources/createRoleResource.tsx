@@ -1,5 +1,4 @@
 import { ResourceOptions } from 'adminjs';
-import { navigation } from '../options.js';
 import { getModelByName } from '@adminjs/prisma';
 import { isSuperuser } from '../auth-provider.js';
 import { prisma } from '../db.js';
