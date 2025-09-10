@@ -27,8 +27,8 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
     router,
     {
       store: sessionStore,
-      resave: true,
-      saveUninitialized: true,
+      resave: false,
+      saveUninitialized: false,
       secret: process.env.SESSION_SECRET ?? 'sessionsecret',
       cookie: {
         httpOnly: true,
