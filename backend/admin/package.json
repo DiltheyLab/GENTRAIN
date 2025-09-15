@@ -18,9 +18,13 @@
   },
   "dependencies": {
     "@adminjs/express": "^6.1.0",
+    "@adminjs/logger": "^5.0.1",
     "@adminjs/prisma": "^5.0.1",
+    "@adminjs/relations": "^1.1.2",
     "@adminjs/upload": "^4.0.2",
     "@prisma/client": "^5.6.0",
+    "@types/adm-zip": "^0.5.7",
+    "adm-zip": "^0.5.16",
     "adminjs": "^7.7.2",
     "argon2": "^0.44.0",
     "connect-pg-simple": "^10.0.0",
@@ -29,7 +33,9 @@
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.3",
     "fs-extra": "^11.3.1",
-    "pg": "latest"
+    "get-folder-size": "^5.0.0",
+    "pg": "latest",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "@types/connect-pg-simple": "^7.0.3",

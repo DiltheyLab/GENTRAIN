@@ -3,8 +3,8 @@ import Login from '../dist/admin/components/Login'
 AdminJS.UserComponents.Login = Login
 import Dashboard from '../dist/admin/components/Dashboard'
 AdminJS.UserComponents.Dashboard = Dashboard
-import FileUpload from '../dist/admin/components/FileUpload'
-AdminJS.UserComponents.FileUpload = FileUpload
+import SchemeUpload from '../dist/admin/components/SchemeUpload'
+AdminJS.UserComponents.SchemeUpload = SchemeUpload
 import UploadEditComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadEditComponent'
 AdminJS.UserComponents.UploadEditComponent = UploadEditComponent
 import UploadListComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadListComponent'

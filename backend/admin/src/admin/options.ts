@@ -7,7 +7,7 @@ import { createPathogenResource } from './resources/createPathogenResource.js';
 import { createRoleResource } from './resources/createRoleResource.js';
 
 export const navigation = {
-  name: 'Postgres DB',
+  name: 'GENTRAIN',
   icon: 'Database',
 };
 

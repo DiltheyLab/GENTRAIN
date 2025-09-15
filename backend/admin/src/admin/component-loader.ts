@@ -32,4 +32,4 @@ override('Login', 'components/Login');
  * Add components
  */
 export const Dashboard = add('Dashboard', './components/Dashboard');
-export const FileUpload = add('FileUpload', './components/FileUpload');
+export const SchemeUpload = add('SchemeUpload', './components/SchemeUpload');
