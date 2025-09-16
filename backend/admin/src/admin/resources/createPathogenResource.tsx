@@ -17,6 +17,8 @@ import fs from 'fs';
 import uploadFeature from '@adminjs/upload';
 import unzipper from 'unzipper';
 import getFolderSize from 'get-folder-size';
+import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
+import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
 
 const fillSchemeSizesFromDirectories = async (response: ActionResponse) => {
   if (!response.record && !response.records) {
@@ -77,22 +79,11 @@ const validateSchemeUpload = async (file: UploadedFile, record?: BaseRecord) => 
         { message: 'Scheme upload is invalid' }
       );
     }
-    try {
-      const zip = await unzipper.Open.file(file.path);
-
-      if (!zip.files || zip.files.length === 0) {
-        throw new ValidationError(
-          { scheme_upload: { message: 'Uploaded ZIP archive is empty.' } },
-          { message: 'Scheme upload is invalid' }
-        );
-      }
-    } catch (err) {
-      throw new ValidationError(
-        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
   }
+  const validator =
+    record.params.type === 'viral' ? new ViralSchemeValidator(record) : new BacterialSchemeValidator(record);
+  await validator.validateUpload(file);
+  return await validator.getValidatedZip();
 };
 
 export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
@@ -171,7 +162,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
           before: async (request: ActionRequest, context: ActionContext) => {
             // validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
-              await validateSchemeUpload(request.payload.scheme_upload);
+              request.payload.scheme_upload = await validateSchemeUpload(request.payload.scheme_upload);
             }
             return request;
           },
@@ -187,7 +178,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
           before: async (request: ActionRequest, context: ActionContext) => {
             // validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
-              await validateSchemeUpload(request.payload.scheme_upload, context.record);
+              request.payload.scheme_upload = await validateSchemeUpload(request.payload.scheme_upload, context.record);
             }
             return request;
           },
