@@ -1,6 +1,6 @@
 import { RecordActionResponse, ListActionResponse, BaseRecord } from 'adminjs';
 
-export const sanitizeUserResponse = async (response: RecordActionResponse | ListActionResponse) => {
+export const sanitizeUserResponse = (response: RecordActionResponse | ListActionResponse) => {
   if ('record' in response && response.record) {
     response.record.params.password = '';
   }
