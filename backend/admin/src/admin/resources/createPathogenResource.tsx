@@ -62,10 +62,12 @@ const deleteSchemeDirectory = async (record: BaseRecord) => {
   }
 };
 
-const validateSchemeUpload = async (file: UploadedFile, record?: BaseRecord) => {
+const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
   if (
-    !file &&
-    (!record || !fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString())))
+    (!file && !record) ||
+    (!file &&
+      record.params &&
+      !fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString())))
   ) {
     throw new ValidationError(
       { scheme_upload: { message: 'Scheme upload must be provided.' } },
@@ -80,8 +82,7 @@ const validateSchemeUpload = async (file: UploadedFile, record?: BaseRecord) => 
       );
     }
   }
-  const validator =
-    record.params.type === 'viral' ? new ViralSchemeValidator(record) : new BacterialSchemeValidator(record);
+  const validator = type === 'viral' ? new ViralSchemeValidator() : new BacterialSchemeValidator();
   await validator.validateUpload(file);
   return await validator.getValidatedZip();
 };
@@ -162,7 +163,10 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
           before: async (request: ActionRequest, context: ActionContext) => {
             // validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
-              request.payload.scheme_upload = await validateSchemeUpload(request.payload.scheme_upload);
+              request.payload.scheme_upload = await validateSchemeUpload(
+                request.payload.scheme_upload,
+                request.payload.type
+              );
             }
             return request;
           },
@@ -178,7 +182,11 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
           before: async (request: ActionRequest, context: ActionContext) => {
             // validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
-              request.payload.scheme_upload = await validateSchemeUpload(request.payload.scheme_upload, context.record);
+              request.payload.scheme_upload = await validateSchemeUpload(
+                request.payload.scheme_upload,
+                request.payload.type,
+                context.record
+              );
             }
             return request;
           },

@@ -4,7 +4,7 @@ import { SchemeValidator } from './SchemeValidator.js';
 export class ViralSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = async () => {
     const pathogenJson = await this.getPathogenJson();
-    this.checkReferenceFastaIsValid(pathogenJson);
+    await this.checkReferenceFastaIsValid(pathogenJson);
     this.checkTreeJsonIsValid(pathogenJson);
     this.findInvalidFiles(Object.values(pathogenJson.files));
   };
@@ -33,7 +33,7 @@ export class ViralSchemeValidator extends SchemeValidator {
     return JSON.parse(content.toString());
   };
 
-  private checkReferenceFastaIsValid = (pathogenJson) => {
+  private checkReferenceFastaIsValid = async (pathogenJson) => {
     if (!pathogenJson.files.reference) {
       throw new ValidationError(
         { scheme_upload: { message: `Uploaded ZIP archive does not contain a reference genome.` } },
@@ -47,6 +47,8 @@ export class ViralSchemeValidator extends SchemeValidator {
         { message: 'Scheme upload is invalid' }
       );
     }
+
+    await this.validateFastaFile(file);
   };
 
   private checkTreeJsonIsValid = (pathogenJson) => {
