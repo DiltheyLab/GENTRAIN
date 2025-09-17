@@ -1,30 +1,61 @@
-import { ResourceOptions } from 'adminjs';
+import { ActionResponse, After, ListActionResponse, RecordActionResponse, ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
 import { hash } from 'argon2';
 import { isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 import { isPOSTMethod } from '../admin.utils.js';
 import { prisma } from '../db.js';
+import loggerFeature from '@adminjs/logger';
+import { componentLoader } from '../component-loader.js';
 
 export const createUserResource = () => {
   return {
     resource: { model: getModelByName('user'), client: prisma },
+    features: [
+      loggerFeature({
+        componentLoader,
+        propertiesMapping: {
+          user: 'userId',
+        },
+        /*   resourceOptions: {
+          actions: {
+            list: {
+              after: [sanitizeUserResponse as After<ListActionResponse>],
+            },
+            show: {
+              after: [sanitizeUserResponse as After<RecordActionResponse>],
+            },
+          },
+        }, */
+        userIdAttribute: 'id',
+      }),
+    ],
     options: {
       navigation: null, // Add resource to navigation
       properties: {
+        id: {
+          position: 0,
+          isVisible: {
+            list: true,
+            edit: false,
+            filter: true,
+            show: true,
+          },
+        },
         username: {
-          position: 2,
           isRequired: true,
           type: 'string',
+          isTitle: true,
+          position: 1,
+        },
+        role: {
+          isRequired: true,
+          type: 'reference',
         },
         password: {
           isRequired: true,
           type: 'password',
           isVisible: { list: false, filter: false, show: false, edit: true },
-        },
-        role: {
-          isRequired: true,
-          type: 'reference',
         },
         confirmed_at: {
           isVisible: {
