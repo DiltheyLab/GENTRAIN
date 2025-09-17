@@ -17,21 +17,11 @@ export const createUserResource = () => {
         propertiesMapping: {
           user: 'userId',
         },
-        /*   resourceOptions: {
-          actions: {
-            list: {
-              after: [sanitizeUserResponse as After<ListActionResponse>],
-            },
-            show: {
-              after: [sanitizeUserResponse as After<RecordActionResponse>],
-            },
-          },
-        }, */
         userIdAttribute: 'id',
       }),
     ],
     options: {
-      navigation: null, // Add resource to navigation
+      navigation: null,
       properties: {
         id: {
           position: 0,
