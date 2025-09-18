@@ -33,3 +33,4 @@ override('Login', 'components/Login');
  */
 export const Dashboard = add('Dashboard', './components/Dashboard');
 export const SchemeUpload = add('SchemeUpload', './components/SchemeUpload');
+export const SchemeTypeSelectEdit = add('SchemeTypeSelectEdit', './components/SchemeTypeSelectEdit');

@@ -13,7 +13,7 @@ model pathogen {
   name                       String    @db.VarChar
   genetic_distance_threshold Int
   type                       String    @db.VarChar
-  activated                  Boolean   @db.Boolean
+  activated                  Boolean   @default(false) @db.Boolean
   scheme_version             DateTime? @db.Timestamp(6)
   example_data_key           String?   @db.VarChar
   example_data_size          Int?

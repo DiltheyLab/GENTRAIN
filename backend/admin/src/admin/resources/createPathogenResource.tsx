@@ -63,12 +63,14 @@ const deleteSchemeDirectory = async (record: BaseRecord) => {
 };
 
 const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
-  if (
-    (!file && !record) ||
-    (!file &&
+  if (!file) {
+    if (
+      record &&
       record.params &&
-      !fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString())))
-  ) {
+      fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))
+    ) {
+      return null;
+    }
     throw new ValidationError(
       { scheme_upload: { message: 'Scheme upload must be provided.' } },
       { message: 'Scheme upload is invalid' }
@@ -109,13 +111,18 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         name: {
           type: 'string',
           position: 2,
+          defaultValue: 'test',
         },
         type: {
           availableValues: [
             { value: 'bacterial', label: 'Bacterial' },
             { value: 'viral', label: 'Viral' },
           ],
+          description: 'Can only be set on first creation of the pathogen.',
           position: 3,
+          components: {
+            edit: 'SchemeTypeSelectEdit',
+          },
         },
         genetic_distance_threshold: {
           type: 'number',
@@ -147,21 +154,21 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
       actions: {
         list: {
           after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // retrieve size of scheme directory to present in show view
+            // Retrieve size of scheme directory to present in show view
             response = fillSchemeSizesFromDirectories(response);
             return response;
           },
         },
         show: {
           after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // retrieve size of scheme directory to present in show view
+            // Retrieve size of scheme directory to present in show view
             response = fillSchemeSizesFromDirectories(response);
             return response;
           },
         },
         new: {
           before: async (request: ActionRequest, context: ActionContext) => {
-            // validate zip upload before extraction to scheme directory
+            // Validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
               request.payload.scheme_upload = await validateSchemeUpload(
                 request.payload.scheme_upload,
@@ -171,7 +178,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
             return request;
           },
           after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // extract validated zip upload to scheme directory
+            // Extract validated zip upload to scheme directory
             if (request.method === 'post') {
               extractSchemeUpload(request, context.record);
             }
@@ -180,7 +187,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         },
         edit: {
           before: async (request: ActionRequest, context: ActionContext) => {
-            // validate zip upload before extraction to scheme directory
+            // Validate zip upload before extraction to scheme directory
             if (request.method === 'post') {
               request.payload.scheme_upload = await validateSchemeUpload(
                 request.payload.scheme_upload,

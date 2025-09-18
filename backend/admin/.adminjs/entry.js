@@ -5,6 +5,8 @@ import Dashboard from '../dist/admin/components/Dashboard'
 AdminJS.UserComponents.Dashboard = Dashboard
 import SchemeUpload from '../dist/admin/components/SchemeUpload'
 AdminJS.UserComponents.SchemeUpload = SchemeUpload
+import SchemeTypeSelectEdit from '../dist/admin/components/SchemeTypeSelectEdit'
+AdminJS.UserComponents.SchemeTypeSelectEdit = SchemeTypeSelectEdit
 import UploadEditComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadEditComponent'
 AdminJS.UserComponents.UploadEditComponent = UploadEditComponent
 import UploadListComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadListComponent'
