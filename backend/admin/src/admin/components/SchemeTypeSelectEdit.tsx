@@ -1,6 +1,6 @@
 import { EditPropertyProps, PropertyDescription, PropertyLabel, useTranslation } from 'adminjs';
 import React, { FC } from 'react';
-import { FormGroup, FormMessage, Select } from '@adminjs/design-system';
+import { Box, FormGroup, FormMessage, Select } from '@adminjs/design-system';
 
 const SchemeTypeSelectEdit: FC<EditPropertyProps> = (props) => {
   const { record, property, onChange } = props;
@@ -23,13 +23,15 @@ const SchemeTypeSelectEdit: FC<EditPropertyProps> = (props) => {
   return (
     <FormGroup error={Boolean(error)}>
       <PropertyLabel property={property} />
-      <Select
-        value={selected}
-        options={availableValues}
-        onChange={(s) => onChange(property.path, s?.value ?? '')}
-        isDisabled={record.params.id ? true : false}
-        {...property.props}
-      />{' '}
+      <Box style={{ opacity: record.params.id ? 0.5 : 1 }}>
+        <Select
+          value={selected}
+          options={availableValues}
+          onChange={(s) => onChange(property.path, s?.value ?? '')}
+          isDisabled={record.params.id ? true : false}
+          {...property.props}
+        />{' '}
+      </Box>
       <FormMessage>{error && tm(error.message, property.resourceId)}</FormMessage>
     </FormGroup>
   );

@@ -84,8 +84,8 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
       );
     }
   }
-  const validator = type === 'viral' ? new ViralSchemeValidator() : new BacterialSchemeValidator();
-  await validator.validateUpload(file);
+  const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
+  await validator.validateUpload();
   return await validator.getValidatedZip();
 };
 
@@ -110,6 +110,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         },
         name: {
           type: 'string',
+          description: 'Representation of the pathogen within the GENTRAIN dashboard.',
           position: 2,
           defaultValue: 'test',
         },
@@ -118,7 +119,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
             { value: 'bacterial', label: 'Bacterial' },
             { value: 'viral', label: 'Viral' },
           ],
-          description: 'Can only be set on first creation of the pathogen.',
+          description: 'Defines how genomic sequences are analyzed. Can not be changed after first pathogen creation.',
           position: 3,
           components: {
             edit: 'SchemeTypeSelectEdit',
@@ -126,6 +127,8 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         },
         genetic_distance_threshold: {
           type: 'number',
+          description:
+            'Genetic distances below this threshold are be considered as similar or almost similar genomic sequences.',
           position: 4,
         },
         scheme_size: {
@@ -139,6 +142,7 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         scheme_upload: {
           type: 'mixed',
           isRequired: true,
+          description: 'Used to extract mutation information of genomic sequences.',
           isVisible: { list: false, show: false, edit: true, filter: false },
           custom: {
             label: 'Scheme Upload',

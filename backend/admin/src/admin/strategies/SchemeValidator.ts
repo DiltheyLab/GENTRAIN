@@ -7,7 +7,28 @@ import path from 'path';
 export abstract class SchemeValidator {
   protected zip: AdmZip;
 
+  constructor(file: UploadedFile) {
+    if (file) {
+      if (file.type !== 'application/zip') {
+        throw new ValidationError(
+          { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
+          { message: 'Scheme upload is invalid' }
+        );
+      }
+    }
+    try {
+      this.zip = new AdmZip(file.path);
+    } catch (err) {
+      throw new ValidationError(
+        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
+        { message: 'Scheme upload is invalid' }
+      );
+    }
+  }
+
   public abstract validateSchemeStructure(): void;
+  protected abstract getValidFileNames(): string[];
+  protected abstract getValidFileExtensions(): string[];
 
   public getValidatedZip = async () => {
     const zipBuffer = this.zip.toBuffer();
@@ -29,44 +50,46 @@ export abstract class SchemeValidator {
     };
   };
 
-  public validateUpload = async (file: UploadedFile) => {
-    await this.validateZipFile(file);
+  public validateUpload = async () => {
+    await this.validateZipFile();
     await this.validateSchemeStructure();
   };
 
-  protected validateZipFile = async (file: UploadedFile) => {
-    if (file) {
-      if (file.type !== 'application/zip') {
-        throw new ValidationError(
-          { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
-          { message: 'Scheme upload is invalid' }
-        );
-      }
-    }
-    try {
-      this.zip = new AdmZip(file.path);
-      const zipEntries = this.zip.getEntries();
+  protected validateZipFile = async () => {
+    const zipEntries = this.zip.getEntries();
+    const rootFolderEntry = zipEntries.find((entry) => {
+      // Entry is a directory and has no parent (only one segment)
+      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
+    });
+    const rootFolderName = rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
 
-      // Drop directories which is automatically created and their content recursively
-      zipEntries.forEach((entry) => {
-        if (entry.entryName.startsWith('__MACOSX/') || entry.entryName.startsWith('.DS_STORE')) {
-          this.zip.deleteFile(entry.entryName);
+    // Drop directories which is automatically created and their content recursively
+    const preprocessedZip = new AdmZip();
+    zipEntries.forEach((entry) => {
+      if (
+        entry.entryName.startsWith('__MACOSX/') ||
+        entry.entryName.startsWith('.DS_STORE') ||
+        entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
+      ) {
+        return;
+      }
+      if (!entry.isDirectory) {
+        // Remove the root folder prefix from the path
+        const fileName = rootFolderName ? entry.entryName.replace(rootFolderName + '/', '') : entry.entryName;
+
+        if (
+          !this.getValidFileNames().includes(fileName) &&
+          !this.getValidFileExtensions().includes(fileName.split('.').pop())
+        ) {
+          throw new ValidationError(
+            { scheme_upload: { message: `Uploaded ZIP archive contains invalid files.` } },
+            { message: 'Scheme upload is invalid' }
+          );
         }
-      });
-
-      const files = zipEntries.filter((entry) => !entry.isDirectory);
-      if (!files || files.length === 0) {
-        throw new ValidationError(
-          { scheme_upload: { message: 'Uploaded ZIP archive is empty.' } },
-          { message: 'Scheme upload is invalid' }
-        );
+        preprocessedZip.addFile(fileName, entry.getData());
       }
-    } catch (err) {
-      throw new ValidationError(
-        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
+    });
+    this.zip = preprocessedZip;
   };
 
   public validateFastaFile = async (file: IZipEntry) => {
@@ -106,5 +129,16 @@ export abstract class SchemeValidator {
         { message: 'Scheme upload is invalid' }
       );
     }
+  };
+
+  protected checkFileExists = (name: string) => {
+    const file = this.zip.getEntry(name);
+    if (!file) {
+      throw new ValidationError(
+        { scheme_upload: { message: `Uploaded ZIP archive does not contain ${name}.` } },
+        { message: 'Scheme upload is invalid' }
+      );
+    }
+    return file;
   };
 }

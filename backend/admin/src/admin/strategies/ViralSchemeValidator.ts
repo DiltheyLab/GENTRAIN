@@ -1,27 +1,29 @@
-import { ValidationError } from 'adminjs';
+import { UploadedFile, ValidationError } from 'adminjs';
 import { SchemeValidator } from './SchemeValidator.js';
 
 export class ViralSchemeValidator extends SchemeValidator {
+  protected pathogenJson: any;
+
+  constructor(file: UploadedFile) {
+    super(file);
+    this.pathogenJson = this.getPathogenJson();
+  }
+
   public validateSchemeStructure = async () => {
-    const pathogenJson = await this.getPathogenJson();
-    await this.checkReferenceFastaIsValid(pathogenJson);
-    this.checkTreeJsonIsValid(pathogenJson);
-    this.findInvalidFiles(Object.values(pathogenJson.files));
+    await this.checkReferenceFastaIsValid(this.pathogenJson);
+    this.checkTreeJsonExists(this.pathogenJson);
   };
 
-  private findInvalidFiles = (validFileNames: string[]) => {
-    const zipEntries = this.zip.getEntries();
-    const invalidFiles = zipEntries.filter((entry) => !validFileNames.includes(entry.entryName));
-    if (invalidFiles && invalidFiles.length > 0) {
-      console.log(invalidFiles);
-      throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive contains invalid files.` } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
+  protected getValidFileNames = (): string[] => {
+    console.log(Object.values(this.pathogenJson.files));
+    return Object.values(this.pathogenJson.files);
   };
 
-  private getPathogenJson = async () => {
+  protected getValidFileExtensions = (): string[] => {
+    return [];
+  };
+
+  private getPathogenJson = () => {
     const file = this.zip.getEntry('pathogen.json');
     if (!file) {
       throw new ValidationError(
@@ -51,16 +53,10 @@ export class ViralSchemeValidator extends SchemeValidator {
     await this.validateFastaFile(file);
   };
 
-  private checkTreeJsonIsValid = (pathogenJson) => {
+  private checkTreeJsonExists = (pathogenJson) => {
     if (!pathogenJson.files.treeJson) {
       return;
     }
-    const file = this.zip.getEntry(pathogenJson.files.treeJson);
-    if (!file) {
-      throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive does not contain ${pathogenJson.files.treeJson}.` } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
+    this.checkFileExists(pathogenJson.files.treeJson);
   };
 }
