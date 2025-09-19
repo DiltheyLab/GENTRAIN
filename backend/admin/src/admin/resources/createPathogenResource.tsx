@@ -76,6 +76,12 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
       { message: 'Scheme upload is invalid' }
     );
   }
+  if (file.size > 50 * 1024 * 1024) {
+    throw new ValidationError(
+      { scheme_upload: { message: 'Uploaded file is too large (max. 50 MB).' } },
+      { message: 'Scheme upload is invalid' }
+    );
+  }
   if (file) {
     if (file.type !== 'application/zip') {
       throw new ValidationError(
@@ -151,9 +157,15 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
             edit: SchemeUpload,
           },
         },
-        example_data_key: { isVisible: false },
-        example_data_size: { isVisible: false },
-        example_data_bucket: { isVisible: false },
+        example_cases_key: { isVisible: false },
+        example_cases_size: { isVisible: false },
+        example_cases_bucket: { isVisible: false },
+        example_sequences_key: { isVisible: false },
+        example_sequences_size: { isVisible: false },
+        example_sequences_bucket: { isVisible: false },
+        example_contacts_key: { isVisible: false },
+        example_contacts_size: { isVisible: false },
+        example_contacts_bucket: { isVisible: false },
       },
       actions: {
         list: {
@@ -230,22 +242,68 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
         componentLoader,
         provider: {
           local: {
-            bucket: 'public/example_data',
+            bucket: 'public/example_cases',
             opts: {
-              baseUrl: '/example_data',
+              baseUrl: '/example_cases',
             },
           },
         },
         properties: {
-          key: 'example_data_key',
-          file: 'example_file',
-          filePath: 'file_path_example_data_upload',
-          filesToDelete: 'files_to_delete_example_data_upload',
-          bucket: 'example_data_bucket',
-          size: 'example_data_size',
+          key: 'example_cases_key',
+          file: 'example_cases_file',
+          filePath: 'file_path_example_cases',
+          filesToDelete: 'files_to_delete_example_cases',
+          bucket: 'example_cases_bucket',
+          size: 'example_cases_size',
         },
         validation: {
-          mimeTypes: ['application/zip'],
+          maxSize: 5 * 1024 * 1024,
+          mimeTypes: ['text/csv'],
+        },
+      }),
+      uploadFeature({
+        componentLoader,
+        provider: {
+          local: {
+            bucket: 'public/example_sequences',
+            opts: {
+              baseUrl: '/example_sequences',
+            },
+          },
+        },
+        properties: {
+          key: 'example_sequences_key',
+          file: 'example_sequences_file',
+          filePath: 'file_path_example_sequences',
+          filesToDelete: 'files_to_delete_example_sequences',
+          bucket: 'example_sequences_bucket',
+          size: 'example_sequences_size',
+        },
+        validation: {
+          maxSize: 5 * 1024 * 1024,
+        },
+      }),
+      uploadFeature({
+        componentLoader,
+        provider: {
+          local: {
+            bucket: 'public/example_contacts',
+            opts: {
+              baseUrl: '/example_contacts',
+            },
+          },
+        },
+        properties: {
+          key: 'example_contacts_key',
+          file: 'example_contacts_file',
+          filePath: 'file_path_example_contacts',
+          filesToDelete: 'files_to_delete_example_contacts',
+          bucket: 'example_contacts_bucket',
+          size: 'example_contacts_size',
+        },
+        validation: {
+          maxSize: 5 * 1024 * 1024,
+          mimeTypes: ['text/csv'],
         },
       }),
     ],
