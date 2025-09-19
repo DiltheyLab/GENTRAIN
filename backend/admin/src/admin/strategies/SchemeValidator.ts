@@ -51,11 +51,11 @@ export abstract class SchemeValidator {
   };
 
   public validateUpload = async () => {
-    await this.validateZipFile();
+    await this.validateAndPreprocessZipFile();
     await this.validateSchemeStructure();
   };
 
-  protected validateZipFile = async () => {
+  protected validateAndPreprocessZipFile = async () => {
     const zipEntries = this.zip.getEntries();
     const rootFolderEntry = zipEntries.find((entry) => {
       // Entry is a directory and has no parent (only one segment)

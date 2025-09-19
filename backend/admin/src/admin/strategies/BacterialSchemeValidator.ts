@@ -5,9 +5,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = async () => {
     this.validateGenesList();
     this.checkFileExists('.schema_config');
-
-    //this.validateSchemaConfig();
-    //this.validateFastaFiles();
+    this.validateFastaFiles();
   };
 
   protected getValidFileNames = (): string[] => {
@@ -25,6 +23,13 @@ export class BacterialSchemeValidator extends SchemeValidator {
     const fastaFileNames = content.match(regex) || [];
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
+    }
+  };
+
+  private validateFastaFiles = () => {
+    const fastaFiles = this.zip.getEntries().filter((entry) => entry.entryName.includes('.fasta'));
+    for (const fastaFile of fastaFiles) {
+      this.validateFastaFile(fastaFile);
     }
   };
 }
