@@ -6,6 +6,7 @@ export class ViralSchemeValidator extends SchemeValidator {
 
   constructor(file: UploadedFile) {
     super(file);
+    // Get pathogen.json first to retrieve valid file names for reference and treeJson
     this.pathogenJson = this.getPathogenJson();
   }
 
@@ -24,7 +25,10 @@ export class ViralSchemeValidator extends SchemeValidator {
   };
 
   private getPathogenJson = () => {
-    const file = this.zip.getEntry('pathogen.json');
+    const rootFolderName = this.getRootFolderName();
+    const file = rootFolderName
+      ? this.zip.getEntry(`${rootFolderName}/pathogen.json`)
+      : this.zip.getEntry('pathogen.json');
     if (!file) {
       throw new ValidationError(
         { scheme_upload: { message: `Uploaded ZIP archive does not contain pathogen.json.` } },

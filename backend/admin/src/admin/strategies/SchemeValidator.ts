@@ -57,11 +57,7 @@ export abstract class SchemeValidator {
 
   protected validateAndPreprocessZipFile = async () => {
     const zipEntries = this.zip.getEntries();
-    const rootFolderEntry = zipEntries.find((entry) => {
-      // Entry is a directory and has no parent (only one segment)
-      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
-    });
-    const rootFolderName = rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
+    const rootFolderName = this.getRootFolderName();
 
     // Drop directories which is automatically created and their content recursively
     const preprocessedZip = new AdmZip();
@@ -129,6 +125,15 @@ export abstract class SchemeValidator {
         { message: 'Scheme upload is invalid' }
       );
     }
+  };
+
+  protected getRootFolderName = (): string | null => {
+    const zipEntries = this.zip.getEntries();
+    const rootFolderEntry = zipEntries.find((entry) => {
+      // Entry is a directory and has no parent (only one segment)
+      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
+    });
+    return rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
   };
 
   protected checkFileExists = (name: string) => {
