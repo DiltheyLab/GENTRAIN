@@ -88,13 +88,13 @@ export const Login: React.FC = () => {
             {errorMessage && (
               <MessageBox
                 my="lg"
-                message={errorMessage.split(' ').length > 1 ? errorMessage : translateMessage(errorMessage)}
+                message={errorMessage.split(' ').length > 1 ? errorMessage : 'Wrong username and/or password'}
                 variant="danger"
               />
             )}
             <FormGroup>
-              <Label required>{translateComponent('Login.properties.email')}</Label>
-              <Input name="email" placeholder={translateComponent('Login.properties.email')} />
+              <Label required>Username</Label>
+              <Input name="email" placeholder="Username" />
             </FormGroup>
             <FormGroup>
               <Label required>{translateComponent('Login.properties.password')}</Label>

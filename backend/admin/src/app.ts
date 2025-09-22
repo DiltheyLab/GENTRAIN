@@ -4,25 +4,26 @@ import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
 import { expressAuthenticatedRouter } from './admin/router.js';
 import { Database, Resource } from '@adminjs/prisma';
-import { PrismaClient } from '@prisma/client';
 import * as url from 'url';
+import { prisma } from './admin/db.js';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
 const start = async () => {
   // Create express app
   const app = express();
+  app.enable('trust proxy');
 
   // Setup static public folder for assets
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
   app.use(express.static(path.join(__dirname, '../public'))); // path from dist to public
 
   // Setup Prisma Client and register it in AdminJS
-  const prisma = new PrismaClient();
+  await prisma.$connect();
 
   AdminJS.registerAdapter({ Database, Resource });
 
-  const options = createAdminJsOptions(prisma);
+  const options = createAdminJsOptions();
 
   // Create AdminJS with options
   const admin = new AdminJS(options);

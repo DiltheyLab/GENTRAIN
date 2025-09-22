@@ -1,17 +1,11 @@
 import { AdminJSOptions } from 'adminjs';
 import { componentLoader, Dashboard } from './component-loader.js';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { createUserResource } from './resources/createUserResource.js';
 import { createPathogenResource } from './resources/createPathogenResource.js';
 import { createRoleResource } from './resources/createRoleResource.js';
+import LoggerResource from './resources/createLoggerResource.js';
 
-export const navigation = {
-  name: 'GENTRAIN',
-  icon: 'Database',
-};
-
-export const createAdminJsOptions = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
+export const createAdminJsOptions = () => {
   const options: AdminJSOptions = {
     rootPath: '/admin',
     dashboard: {
@@ -28,7 +22,7 @@ export const createAdminJsOptions = (prisma: PrismaClient<Prisma.PrismaClientOpt
     },
     defaultTheme: 'light',
     componentLoader,
-    resources: [createUserResource(prisma), createPathogenResource(prisma), createRoleResource(prisma)], // Register resources in database
+    resources: [createUserResource(), createPathogenResource(), createRoleResource(), LoggerResource], // Register resources in database
   };
 
   return options;

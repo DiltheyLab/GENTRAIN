@@ -1,34 +1,39 @@
-import { DefaultAuthProvider } from 'adminjs';
+import { CurrentAdmin, DefaultAuthProvider, DefaultAuthenticatePayload } from 'adminjs';
 
-import { DEFAULT_ADMIN } from './constants.js';
+import { SUPERUSER_ROLE } from './constants.js';
 import { componentLoader } from './component-loader.js';
+import { verify } from 'argon2';
+import { prisma } from './db.js';
+
+const authenticate = async (payload: DefaultAuthenticatePayload, _ctx?: any): Promise<CurrentAdmin | null> => {
+  const { email: username, password } = payload; // AdminJS sends "email" field by default
+
+  if (!username || !password) return null;
+
+  const user = await prisma.user.findFirst({
+    where: { username },
+    include: { role: true },
+  });
+
+  if (user && (await verify(user.password, password))) {
+    return {
+      email: user.username, // AdminJS requires an email field, we use username here
+      role: user.role.name,
+      id: user.id.toString(),
+      username: user.username,
+    };
+  }
+  return null;
+};
 
 /**
  * Make sure to modify "authenticate" to be a proper authentication method
  */
-const provider = new DefaultAuthProvider({
+export const authProvider = new DefaultAuthProvider({
   componentLoader,
-  authenticate: async ({ email, password }) => {
-    /*  const user = await AdminModel.findOne({ email });
-      if (user && (await argon2.verify(user.password, password))) {
-       return { ...userData, ...user.toObject() };
-     }
-     return null; */
-    if (email === DEFAULT_ADMIN.email) {
-      return { email };
-    }
-    return null;
-  },
+  authenticate,
 });
 
-export default provider;
-
-/* export const createAuthUsers = async () =>
-  Promise.all(
-    AuthUsers.map(async ({ email, password }) => {
-      const admin = await AdminModel.findOne({ email });
-      if (!admin) {
-        await AdminModel.create({ email, password: await argon2.hash(password) });
-      }
-    })
-  ); */
+export const isSuperuser = (currentAdmin: CurrentAdmin, allowedRole = SUPERUSER_ROLE) => {
+  return currentAdmin.role === allowedRole;
+};
