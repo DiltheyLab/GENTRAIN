@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   ActionContext,
   ActionRequest,
@@ -8,25 +7,16 @@ import {
   UploadedFile,
   ValidationError,
 } from 'adminjs';
-import { navigation } from '../options.js';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
-=======
-import { ActionContext, ActionRequest, PropertyOptions, ResourceOptions, ValidationError } from 'adminjs';
->>>>>>> adminJS
 import { getModelByName } from '@adminjs/prisma';
 import { componentLoader, SchemeUpload } from '../component-loader.js';
 import path from 'path';
 import fs from 'fs';
 import uploadFeature from '@adminjs/upload';
-<<<<<<< HEAD
 import unzipper from 'unzipper';
 import getFolderSize from 'get-folder-size';
 import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
 import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
-=======
 import { prisma } from '../db.js';
->>>>>>> adminJS
 
 const fillSchemeSizesFromDirectories = async (response: ActionResponse) => {
   if (!response.record && !response.records) {
@@ -108,8 +98,7 @@ export const createPathogenResource = () => {
   return {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
-<<<<<<< HEAD
-      navigation: navigation,
+      navigation: null,
       listProperties: [
         'id',
         'name',
@@ -119,9 +108,6 @@ export const createPathogenResource = () => {
         'scheme_size',
         'example_file',
       ],
-=======
-      navigation: null,
->>>>>>> adminJS
       properties: {
         activated: {
           type: 'boolean',
