@@ -10,13 +10,12 @@ export class ViralSchemeValidator extends SchemeValidator {
     this.pathogenJson = this.getPathogenJson();
   }
 
-  public validateSchemeStructure = async () => {
-    await this.checkReferenceFastaIsValid(this.pathogenJson);
+  public validateSchemeStructure = () => {
+    this.checkReferenceFastaIsValid(this.pathogenJson);
     this.checkTreeJsonExists(this.pathogenJson);
   };
 
   protected getValidFileNames = (): string[] => {
-    console.log(Object.values(this.pathogenJson.files));
     return Object.values(this.pathogenJson.files);
   };
 
@@ -39,7 +38,7 @@ export class ViralSchemeValidator extends SchemeValidator {
     return JSON.parse(content.toString());
   };
 
-  private checkReferenceFastaIsValid = async (pathogenJson) => {
+  private checkReferenceFastaIsValid = (pathogenJson: any) => {
     if (!pathogenJson.files.reference) {
       throw new ValidationError(
         { scheme_upload: { message: `Uploaded ZIP archive does not contain a reference genome.` } },
@@ -54,7 +53,7 @@ export class ViralSchemeValidator extends SchemeValidator {
       );
     }
 
-    await this.validateFastaFile(file);
+    this.validateFastaFile(file);
   };
 
   private checkTreeJsonExists = (pathogenJson) => {

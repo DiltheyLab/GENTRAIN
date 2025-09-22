@@ -83,6 +83,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     );
   }
   if (file) {
+    // extend by zip-compressed, x-zip-compressed?
     if (file.type !== 'application/zip') {
       throw new ValidationError(
         { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
@@ -91,8 +92,8 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     }
   }
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
-  await validator.validateUpload();
-  return await validator.getValidatedZip();
+  validator.validateUpload();
+  return validator.getValidatedZip();
 };
 
 export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>) => {
@@ -118,7 +119,6 @@ export const createPathogenResource = (prisma: PrismaClient<Prisma.PrismaClientO
           type: 'string',
           description: 'Representation of the pathogen within the GENTRAIN dashboard.',
           position: 2,
-          defaultValue: 'test',
         },
         type: {
           availableValues: [

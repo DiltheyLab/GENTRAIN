@@ -30,7 +30,7 @@ export abstract class SchemeValidator {
   protected abstract getValidFileNames(): string[];
   protected abstract getValidFileExtensions(): string[];
 
-  public getValidatedZip = async () => {
+  public getValidatedZip = () => {
     const zipBuffer = this.zip.toBuffer();
     const arrayBuffer = zipBuffer.buffer.slice(
       zipBuffer.byteOffset,
@@ -50,12 +50,12 @@ export abstract class SchemeValidator {
     };
   };
 
-  public validateUpload = async () => {
-    await this.validateAndPreprocessZipFile();
-    await this.validateSchemeStructure();
+  public validateUpload = () => {
+    this.validateAndPreprocessZipFile();
+    this.validateSchemeStructure();
   };
 
-  protected validateAndPreprocessZipFile = async () => {
+  protected validateAndPreprocessZipFile = () => {
     const zipEntries = this.zip.getEntries();
     const rootFolderName = this.getRootFolderName();
 
@@ -88,7 +88,7 @@ export abstract class SchemeValidator {
     this.zip = preprocessedZip;
   };
 
-  public validateFastaFile = async (file: IZipEntry) => {
+  public validateFastaFile = (file: IZipEntry) => {
     const alphabet = /^[ACGTN]+$/i;
     const fastaString = file.getData().toString('utf8');
     const lines = fastaString.trim().split(/\r?\n/);
