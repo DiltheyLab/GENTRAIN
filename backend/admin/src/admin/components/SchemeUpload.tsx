@@ -7,7 +7,10 @@ const SchemeUpload = (props: BasePropertyProps) => {
 
   const [_, setFile] = useState<File | null>(null);
   const schemeSize = record.params.scheme_size;
-  const schemeVersion = record.params.scheme_version;
+  const schemeVersion = new Date(record.params.scheme_version).toLocaleString('de-DE', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  });
   const { tm } = useTranslation();
 
   const handleDrop = (files: File[]) => {
@@ -26,7 +29,7 @@ const SchemeUpload = (props: BasePropertyProps) => {
       </Box>
       <DropZone onChange={handleDrop} />
       {schemeVersion && schemeSize && (
-        <DropZoneItem filename={`Version: ${schemeVersion}, Size: ${schemeSize}`} src={'test'} />
+        <DropZoneItem filename={`Version: <${schemeVersion}>, Size: ${schemeSize} MB`} src={'test'} />
       )}
       <FormMessage>{error && tm(error.message, property.resourceId)}</FormMessage>
     </FormGroup>

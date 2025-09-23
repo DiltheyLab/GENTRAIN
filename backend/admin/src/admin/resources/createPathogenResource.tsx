@@ -1,113 +1,20 @@
-import {
-  ActionContext,
-  ActionRequest,
-  ActionResponse,
-  BaseRecord,
-  ResourceOptions,
-  UploadedFile,
-  ValidationError,
-} from 'adminjs';
+import { ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
 import { componentLoader, SchemeUpload } from '../component-loader.js';
-import path from 'path';
-import fs from 'fs';
 import uploadFeature from '@adminjs/upload';
-import unzipper from 'unzipper';
-import getFolderSize from 'get-folder-size';
-import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
-import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
 import { prisma } from '../db.js';
-
-const fillSchemeSizesFromDirectories = async (response: ActionResponse) => {
-  if (!response.record && !response.records) {
-    return response;
-  }
-  for (const record of response.records ?? [response.record]) {
-    const size = await getFolderSize.strict(
-      path.join('../modules/sequence_analysis/schemes', record.params.id.toString())
-    );
-    record.params.scheme_size = `${(size / (1024 * 1024)).toFixed(2)} MB`;
-  }
-  return response;
-};
-
-const extractSchemeUpload = async (request: ActionRequest, record: BaseRecord) => {
-  if (record && request.payload?.scheme_upload) {
-    const file = request.payload?.scheme_upload;
-    // create folder using record id
-    const folderName = record.params.id.toString();
-    const extractPath = path.join('../modules/sequence_analysis/schemes', folderName);
-    if (fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))) {
-      await fs.promises.rmdir(extractPath, { recursive: true });
-    }
-    await fs.promises.mkdir(extractPath, { recursive: true });
-    // extract ZIP into folder named after record id
-    await fs
-      .createReadStream(file.path)
-      .pipe(unzipper.Extract({ path: extractPath }))
-      .promise();
-    await record.update({
-      scheme_version: new Date(),
-    });
-  }
-};
-
-const deleteSchemeDirectory = async (record: BaseRecord) => {
-  const folderName = record.params.id.toString();
-  const extractPath = path.join('../modules/sequence_analysis/schemes', folderName);
-  if (fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))) {
-    await fs.promises.rmdir(extractPath, { recursive: true });
-  }
-};
-
-const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
-  if (!file) {
-    if (
-      record &&
-      record.params &&
-      fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))
-    ) {
-      return null;
-    }
-    throw new ValidationError(
-      { scheme_upload: { message: 'Scheme upload must be provided.' } },
-      { message: 'Scheme upload is invalid' }
-    );
-  }
-  if (file.size > 50 * 1024 * 1024) {
-    throw new ValidationError(
-      { scheme_upload: { message: 'Uploaded file is too large (max. 50 MB).' } },
-      { message: 'Scheme upload is invalid' }
-    );
-  }
-  if (file) {
-    // extend by zip-compressed, x-zip-compressed?
-    if (file.type !== 'application/zip') {
-      throw new ValidationError(
-        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
-  }
-  const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
-  validator.validateUpload();
-  return validator.getValidatedZip();
-};
+import loggerFeature from '@adminjs/logger';
+import { handleSchemeExtraction } from '../hooks/handleSchemeExtraction.js';
+import preprocessSchemeExtraction from '../hooks/preprocessSchemeExtraction.js';
+import { fillSchemeSizesFromDirectories } from '../hooks/fillSchemeSizeFromDIrectories.js';
+import deleteSchemeDirectory from '../hooks/deleteSchemeDirectory.js';
 
 export const createPathogenResource = () => {
   return {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
       navigation: null,
-      listProperties: [
-        'id',
-        'name',
-        'type',
-        'genetic_distance_threshold',
-        'scheme_version',
-        'scheme_size',
-        'example_file',
-      ],
+      listProperties: ['id', 'name', 'type', 'genetic_distance_threshold', 'scheme_version', 'scheme_size'],
       properties: {
         activated: {
           type: 'boolean',
@@ -167,71 +74,21 @@ export const createPathogenResource = () => {
       },
       actions: {
         list: {
-          after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // Retrieve size of scheme directory to present in show view
-            response = fillSchemeSizesFromDirectories(response);
-            return response;
-          },
+          after: [fillSchemeSizesFromDirectories],
         },
         show: {
-          after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // Retrieve size of scheme directory to present in show view
-            response = fillSchemeSizesFromDirectories(response);
-            return response;
-          },
+          after: [fillSchemeSizesFromDirectories],
         },
         new: {
-          before: async (request: ActionRequest, context: ActionContext) => {
-            // Validate zip upload before extraction to scheme directory
-            if (request.method === 'post') {
-              request.payload.scheme_upload = await validateSchemeUpload(
-                request.payload.scheme_upload,
-                request.payload.type
-              );
-            }
-            return request;
-          },
-          after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // Extract validated zip upload to scheme directory
-            if (request.method === 'post') {
-              extractSchemeUpload(request, context.record);
-            }
-            return response;
-          },
+          before: [preprocessSchemeExtraction],
+          after: [handleSchemeExtraction],
         },
         edit: {
-          before: async (request: ActionRequest, context: ActionContext) => {
-            // Validate zip upload before extraction to scheme directory
-            if (request.method === 'post') {
-              request.payload.scheme_upload = await validateSchemeUpload(
-                request.payload.scheme_upload,
-                request.payload.type,
-                context.record
-              );
-            }
-            return request;
-          },
-          after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            const { record } = context;
-            // retrieve size of scheme directory to present in edit view
-            if (request.method === 'get') {
-              if (fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))) {
-                response = fillSchemeSizesFromDirectories(response);
-              }
-            }
-            // extract validated zip upload to scheme directory
-            if (request.method === 'post') {
-              extractSchemeUpload(request, record);
-            }
-            return response;
-          },
+          before: [preprocessSchemeExtraction],
+          after: [handleSchemeExtraction],
         },
         delete: {
-          after: async (response: ActionResponse, request: ActionRequest, context: ActionContext) => {
-            // delete corresponding scheme directory and content recursively on pathogen deletion
-            deleteSchemeDirectory(context.record);
-            return response;
-          },
+          after: [deleteSchemeDirectory],
         },
       },
     } as ResourceOptions,
@@ -303,6 +160,13 @@ export const createPathogenResource = () => {
           maxSize: 5 * 1024 * 1024,
           mimeTypes: ['text/csv'],
         },
+      }),
+      loggerFeature({
+        componentLoader,
+        propertiesMapping: {
+          user: 'userId',
+        },
+        userIdAttribute: 'id',
       }),
     ],
   };

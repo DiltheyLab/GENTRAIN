@@ -7,6 +7,10 @@ import SchemeUpload from '../dist/admin/components/SchemeUpload'
 AdminJS.UserComponents.SchemeUpload = SchemeUpload
 import SchemeTypeSelectEdit from '../dist/admin/components/SchemeTypeSelectEdit'
 AdminJS.UserComponents.SchemeTypeSelectEdit = SchemeTypeSelectEdit
+import RecordDifference from '../node_modules/@adminjs/logger/lib/components/RecordDifference'
+AdminJS.UserComponents.RecordDifference = RecordDifference
+import RecordLink from '../node_modules/@adminjs/logger/lib/components/RecordLink'
+AdminJS.UserComponents.RecordLink = RecordLink
 import UploadEditComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadEditComponent'
 AdminJS.UserComponents.UploadEditComponent = UploadEditComponent
 import UploadListComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadListComponent'
