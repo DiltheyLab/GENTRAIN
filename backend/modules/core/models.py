@@ -48,7 +48,7 @@ class Pathogen(db.Model):
             "name": self.name,
             "genetic_distance_threshold": self.genetic_distance_threshold,
             "type": self.type,
-            activated: self.activated,
+            "activated": self.activated,
         }
 
     def get_example_data_path(self, file_type):

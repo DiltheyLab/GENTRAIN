@@ -9,7 +9,7 @@ export const createAdminJsOptions = () => {
   const options: AdminJSOptions = {
     rootPath: '/admin',
     dashboard: {
-      component: Dashboard, // Override the default dashboard component with a custom one
+      component: Dashboard,
     },
     branding: {
       companyName: 'GENTRAIN Admin',

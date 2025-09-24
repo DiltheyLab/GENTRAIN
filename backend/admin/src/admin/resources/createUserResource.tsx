@@ -1,7 +1,7 @@
 import { ActionResponse, After, ListActionResponse, RecordActionResponse, ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
 import { hash } from 'argon2';
-import { isSuperuser } from '../auth-provider.js';
+import { isCurrentUser, isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 import { isPOSTMethod } from '../admin.utils.js';
 import { prisma } from '../db.js';
@@ -84,11 +84,11 @@ export const createUserResource = () => {
           },
         },
         show: {
-          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          isAccessible: ({ currentAdmin, record }) => isSuperuser(currentAdmin) || isCurrentUser(currentAdmin, record),
           after: [sanitizeUserResponse],
         },
         edit: {
-          isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
+          isAccessible: ({ currentAdmin, record }) => isSuperuser(currentAdmin) || isCurrentUser(currentAdmin, record),
           before: async (request) => {
             // no need to hash password on GET requests, it will be removed there anyway
             if (isPOSTMethod(request)) {

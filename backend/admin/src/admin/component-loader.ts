@@ -27,6 +27,7 @@ export const override = (componentName: OverridableComponent, url: string): stri
  * Overridable components
  */
 override('Login', 'components/Login');
+override('LoggedIn', 'components/LoggedIn');
 
 /**
  * Add components

@@ -1,6 +1,8 @@
 AdminJS.UserComponents = {}
 import Login from '../dist/admin/components/Login'
 AdminJS.UserComponents.Login = Login
+import LoggedIn from '../dist/admin/components/LoggedIn'
+AdminJS.UserComponents.LoggedIn = LoggedIn
 import Dashboard from '../dist/admin/components/Dashboard'
 AdminJS.UserComponents.Dashboard = Dashboard
 import SchemeUpload from '../dist/admin/components/SchemeUpload'
