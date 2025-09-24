@@ -40,7 +40,7 @@ class Pathogen(db.Model):
     name = db.Column(db.String, nullable=False, unique=True)
     genetic_distance_threshold = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String, nullable=False)
-    scheme_name = db.Column(db.String, nullable=False, unique=True)
+    activated = db.Column(db.Boolean, nullable=False)
 
     def serialize(self):
         return {
@@ -48,10 +48,7 @@ class Pathogen(db.Model):
             "name": self.name,
             "genetic_distance_threshold": self.genetic_distance_threshold,
             "type": self.type,
-            "scheme_name": self.scheme_name,
-            "cases_example": self.get_example_data_path("cases"),
-            "sequences_example": self.get_example_data_path("sequences"),
-            "contacts_example": self.get_example_data_path("contacts"),
+            activated: self.activated,
         }
 
     def get_example_data_path(self, file_type):

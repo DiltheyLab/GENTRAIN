@@ -3,8 +3,10 @@ import Login from '../dist/admin/components/Login'
 AdminJS.UserComponents.Login = Login
 import Dashboard from '../dist/admin/components/Dashboard'
 AdminJS.UserComponents.Dashboard = Dashboard
-import FileUpload from '../dist/admin/components/FileUpload'
-AdminJS.UserComponents.FileUpload = FileUpload
+import SchemeUpload from '../dist/admin/components/SchemeUpload'
+AdminJS.UserComponents.SchemeUpload = SchemeUpload
+import SchemeTypeSelectEdit from '../dist/admin/components/SchemeTypeSelectEdit'
+AdminJS.UserComponents.SchemeTypeSelectEdit = SchemeTypeSelectEdit
 import RecordDifference from '../node_modules/@adminjs/logger/lib/components/RecordDifference'
 AdminJS.UserComponents.RecordDifference = RecordDifference
 import RecordLink from '../node_modules/@adminjs/logger/lib/components/RecordLink'
