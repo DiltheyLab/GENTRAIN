@@ -32,6 +32,7 @@ export abstract class SchemeValidator {
 
   public getValidatedZip = () => {
     const zipBuffer = this.zip.toBuffer();
+    // Create temp file from preprocessed zip to further process the zip file in adminjs
     const arrayBuffer = zipBuffer.buffer.slice(
       zipBuffer.byteOffset,
       zipBuffer.byteOffset + zipBuffer.byteLength
@@ -89,6 +90,7 @@ export abstract class SchemeValidator {
   };
 
   public validateFastaFile = (file: IZipEntry) => {
+    // Allow valid nucleotides of DNA and RNA sequences
     const alphabet = /^[ACGTN]+$/i;
     const fastaString = file.getData().toString('utf8');
     const lines = fastaString.trim().split(/\r?\n/);
