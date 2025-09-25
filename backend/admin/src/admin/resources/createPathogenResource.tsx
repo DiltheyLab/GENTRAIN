@@ -78,6 +78,8 @@ export const createPathogenResource = () => {
           label: 'Example Case Data (CSV, max. 5 MB)',
           position: 6,
         },
+        // Custom error handling component that only display an error message.
+        // Mainly used since the upload component does not handle error messages.
         example_cases_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
           position: 7,
@@ -90,6 +92,8 @@ export const createPathogenResource = () => {
           label: 'Example Case Data (CSV, max. 5 MB)',
           position: 8,
         },
+        // Custom error handling component that only display an error message.
+        // Mainly used since the upload component does not handle error messages.
         example_sequences_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
           position: 9,
@@ -102,6 +106,8 @@ export const createPathogenResource = () => {
           label: 'Example Case Data (CSV, max. 5 MB)',
           position: 10,
         },
+        // Custom error handling component that only display an error message.
+        // Mainly used since the upload component does not handle error messages.
         example_contacts_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
           position: 11,
