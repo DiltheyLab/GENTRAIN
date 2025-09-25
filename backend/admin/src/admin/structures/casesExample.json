@@ -1,0 +1,68 @@
+{
+  "case_id": {
+    "label": "Fall ID",
+    "required": true,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9\\-]+$"
+  },
+  "registration_date": {
+    "label": "Registrierungsdatum",
+    "required": true,
+    "flexible": false,
+    "pattern": "^(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|1[0-2])\\.(\\d{4})$"
+  },
+  "sequence_id": {
+    "label": "Sequenz ID",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9\\-\\_]*$"
+  },
+  "outbreak": {
+    "label": "Ausbruch",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9äöüÄÖÜß\\,\\(\\)\\s]*$"
+  },
+  "firstname": {
+    "label": "Vorname",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-zäöüÄÖÜß\\-\\s]*$"
+  },
+  "lastname": {
+    "label": "Nachname",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-zäöüÄÖÜß\\-\\s]*$"
+  },
+  "postal_code": {
+    "label": "PLZ",
+    "required": false,
+    "flexible": false,
+    "pattern": "^\\d{5}$"
+  },
+  "place": {
+    "label": "Ort",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-zäöüÄÖÜß\\-\\s]*$"
+  },
+  "street": {
+    "label": "Straße",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[0-9A-Za-zäöüÄÖÜß\\.\\-\\s]*$"
+  },
+  "infected_by": {
+    "label": "Angesteckt bei",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9\\-]*$"
+  },
+  "category": {
+    "label": "Kategorie",
+    "required": false,
+    "flexible": true,
+    "pattern": "^[A-Za-z0-9äöüÄÖÜß\\-\\s]*$"
+  }
+}

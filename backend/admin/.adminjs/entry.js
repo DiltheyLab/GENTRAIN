@@ -9,6 +9,8 @@ import SchemeUpload from '../dist/admin/components/SchemeUpload'
 AdminJS.UserComponents.SchemeUpload = SchemeUpload
 import SchemeTypeSelectEdit from '../dist/admin/components/SchemeTypeSelectEdit'
 AdminJS.UserComponents.SchemeTypeSelectEdit = SchemeTypeSelectEdit
+import ErrorMessage from '../dist/admin/components/ErrorMessage'
+AdminJS.UserComponents.ErrorMessage = ErrorMessage
 import RecordDifference from '../node_modules/@adminjs/logger/lib/components/RecordDifference'
 AdminJS.UserComponents.RecordDifference = RecordDifference
 import RecordLink from '../node_modules/@adminjs/logger/lib/components/RecordLink'

@@ -13,7 +13,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
   };
 
   protected getValidFileExtensions = (): string[] => {
-    return ['fasta', 'fa'];
+    return ['fa', 'mpfa', 'fna', 'fsa', 'fasta'];
   };
 
   private validateGenesList = () => {
