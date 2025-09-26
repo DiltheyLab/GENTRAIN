@@ -9,6 +9,8 @@ import preprocessSchemeExtraction from '../hooks/preprocessSchemeExtraction.js';
 import { fillSchemeSizesFromDirectories } from '../hooks/fillSchemeSizeFromDIrectories.js';
 import deleteSchemeDirectory from '../hooks/deleteSchemeDirectory.js';
 import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
+import { initValidationErrors } from '../hooks/initValidationErrors.js';
+import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 
 export const createPathogenResource = () => {
   return {
@@ -124,11 +126,11 @@ export const createPathogenResource = () => {
           after: [fillSchemeSizesFromDirectories],
         },
         new: {
-          before: [preprocessSchemeExtraction, validateExampleDataUploads],
+          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
         },
         edit: {
-          before: [preprocessSchemeExtraction, validateExampleDataUploads],
+          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
         },
         delete: {
