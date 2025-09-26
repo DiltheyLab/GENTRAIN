@@ -1,41 +1,22 @@
-import { Button } from "@/modules/core/components/ui/Button";
-import { DeleteDialog } from "@/modules/core/components/ui/DeleteDialog";
-import { useToast } from "@/modules/core/components/ui/UseToast";
-import { db } from "@/modules/core/services/database/DatabaseManager";
+import { DataDeletionOptions } from "./data_deletion/DataDeletionOptions";
 
 export const DatabaseDeletion = () => {
-    const { toast } = useToast();
-
-    const deleteDatabase = async () => {
-        try {
-            await db.delete();
-            localStorage.removeItem("core");
-            localStorage.removeItem("selectedDB");
-            location.reload();
-        } catch (error) {
-            toast({
-                title: "Daten konnten nicht gelöscht werden!",
-                description: "Laden Sie die Anwendung erneut und versuchen Sie es noch einmal",
-                duration: 10000,
-                variant: "destructive",
-            });
-            console.log(error);
-        }
-    };
     return (
         <div data-tutorial-tour-step="data-management-delete-data-section" className="bg-white rounded-xl p-3">
-            <h2 className="text-2xl font-bold tracking-tight">Alle Daten löschen</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Datenlöschung</h2>
             <p className="text-muted-foreground mb-4">
-                Hier können Sie alle bereits importierten Daten löschen. Dies schließt Daten aller Pathogen ein. Diese
-                Aktion setzt den gesamten Status der Anwendung zurück und{" "}
-                <strong>löscht alle lokal gespeicherten Daten</strong>.
+                Hier finden Sie Optionen zur Datenlöschung.{" "}
+                <strong>
+                    {" "}
+                    Standardmäßig ist die automatische Datenlöschung aktiv, welche die Daten 24 Stunden nach dem Import
+                    automatisch löscht.
+                </strong>{" "}
+                Zusätzlich haben Sie die Möglichkeit eine striktere Löschung zu aktivieren, um die Daten schon beim
+                Schließen der Seite zu entfernen. Sie können die Daten auch jederzeit manuell löschen. Bei der Löschung
+                werden alle lokal gespeicherten Daten entfernt, das inkludiert auch die Daten aller Pathogene.
             </p>
-            <DeleteDialog
-                triggerComponent={<Button variant="destructive">Alle Daten löschen</Button>}
-                deleteAction={deleteDatabase}
-                dialogTitle="Alle Daten un­wi­der­ruf­lich löschen"
-                dialogDescription="Dieser Vorgang kann nicht rückgängig gemacht werden! Dadurch werden alle Daten in GENTRAIN dauerhaft gelöscht."
-            />
+
+            <DataDeletionOptions />
         </div>
     );
 };
