@@ -156,11 +156,10 @@ export const createPathogenResource = () => {
           size: 'example_cases_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
-          mimeTypes: ['text/csv'],
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/falldaten.csv`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/falldaten.${filename.split('.').pop()}`;
         },
       }),
       uploadFeature({
@@ -180,10 +179,10 @@ export const createPathogenResource = () => {
           size: 'example_sequences_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/sequenzdaten.fasta`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/sequenzdaten.${filename.split('.').pop()}`;
         },
       }),
       uploadFeature({
@@ -203,11 +202,10 @@ export const createPathogenResource = () => {
           size: 'example_contacts_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
-          mimeTypes: ['text/csv'],
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/kontaktdaten.csv`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/kontaktdaten.${filename.split('.').pop()}`;
         },
       }),
       loggerFeature({

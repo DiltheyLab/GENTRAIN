@@ -2,6 +2,7 @@ import { ActionContext, ActionRequest } from 'adminjs';
 import { isPOSTMethod } from '../admin.utils.js';
 import { ExampleCasesValidator } from '../strategies/ExampleCasesValidator.js';
 import { ExampleContactsValidator } from '../strategies/ExampleContactsValidator.js';
+import { ExampleSequencesValidator } from '../strategies/ExampleSequencesValidator.js';
 
 interface CustomActionRequest extends ActionRequest {
   files: {
@@ -21,6 +22,8 @@ export const validateExampleDataUploads = async (request: CustomActionRequest, c
     exampleCasesValidator.validate(context);
     const exampleContactsValidator = new ExampleContactsValidator(request);
     exampleContactsValidator.validate(context);
+    const exampleSequencesValidator = new ExampleSequencesValidator(request, request.payload.type);
+    exampleSequencesValidator.validate(context);
   }
   return request;
 };

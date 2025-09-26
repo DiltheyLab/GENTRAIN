@@ -15,12 +15,12 @@
     "label": "Typ",
     "required": false,
     "flexible": false,
-    "pattern": "^[A-Za-z]+$"
+    "pattern": "^[A-Za-z ]*$"
   },
   "context": {
     "label": "Kontext",
     "required": false,
     "flexible": false,
-    "pattern": "^[A-Za-z0-9\\-]+$"
+    "pattern": "^[A-Za-z0-9 \\-]*$"
   }
 }

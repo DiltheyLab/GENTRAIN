@@ -23,6 +23,14 @@ export abstract class ExampleCsvValidator extends ExampleDataValidator {
     this.validateCells(data, header);
   };
 
+  protected getValidMimetypes = () => {
+    return ['text/csv'];
+  };
+
+  protected getValidExtensions = () => {
+    return ['csv'];
+  };
+
   protected parseCSV = () => {
     if (!this.file) {
       return;
