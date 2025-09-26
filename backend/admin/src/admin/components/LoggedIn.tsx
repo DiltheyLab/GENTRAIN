@@ -20,7 +20,7 @@ const LoggedIn: React.FC<LoggedInProps> = (props) => {
         event.preventDefault();
         window.location.href = `/admin/resources/password/records/${session.id}/edit`;
       },
-      icon: 'User',
+      icon: 'Lock',
     },
     {
       label: translateButton('logout'),
