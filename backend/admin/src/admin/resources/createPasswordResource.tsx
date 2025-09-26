@@ -1,7 +1,9 @@
-import { ResourceOptions } from 'adminjs';
+import { ActionContext, ActionRequest, ActionResponse, ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
-import { isCurrentUser, isSuperuser } from '../auth-provider.js';
+import { isCurrentUser } from '../auth-provider.js';
 import { prisma } from '../db.js';
+import { validatePasswordChange } from '../hooks/validatePasswordChange.js';
+import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 
 export const createPasswordResource = () => {
   return {
@@ -31,10 +33,17 @@ export const createPasswordResource = () => {
         show: { isAccessible: false },
         list: { isAccessible: false },
         new: { isAccessible: false },
+        search: { isAccessible: false },
         edit: {
           isAccessible: ({ currentAdmin, record }) => isCurrentUser(currentAdmin, record),
-          before: [],
-          after: [],
+          before: [validatePasswordChange],
+          after: [
+            sanitizeUserResponse,
+            (response: ActionResponse, _request: ActionRequest, _context: ActionContext) => {
+              response.redirectUrl = '/';
+              return response;
+            },
+          ],
         },
       },
     } as ResourceOptions,
