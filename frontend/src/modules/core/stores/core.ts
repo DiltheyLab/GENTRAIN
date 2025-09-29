@@ -10,8 +10,6 @@ type CoreStoreState = {
     pathogenIsLoading: boolean;
     sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
-    indexedDbExpiresAt: null | number;
-    deleteIndexedDbOnExit: boolean;
 };
 
 type CoreStoreActions = {
@@ -19,8 +17,6 @@ type CoreStoreActions = {
     initSession: () => void;
     updateActivePathogen: (pathogen: PathogenSchema | null) => void;
     setPathogenIsLoading: (pathogenIsLoading: boolean) => void;
-    setIndexedDbExpiresAt: (timestamp: number | null) => void;
-    setDeleteIndexedDbOnExit: (isActive: boolean) => void;
 };
 
 export type CoreStore = CoreStoreState & CoreStoreActions;
@@ -60,22 +56,12 @@ export const useCoreStore = create<CoreStore>()(
             setPathogenIsLoading: (pathogenIsLoading) => {
                 set({ pathogenIsLoading: pathogenIsLoading });
             },
-            indexedDbExpiresAt: null,
-            setIndexedDbExpiresAt: (timestamp) => {
-                set({ indexedDbExpiresAt: timestamp });
-            },
-            deleteIndexedDbOnExit: false,
-            setDeleteIndexedDbOnExit: (isActive) => {
-                set({ deleteIndexedDbOnExit: isActive });
-            },
         }),
         {
             name: "core",
             partialize: (state) => ({
                 activePathogen: state.activePathogen,
                 sessionId: state.sessionId,
-                indexedDbExpiresAt: state.indexedDbExpiresAt,
-                deleteIndexedDbOnExit: state.deleteIndexedDbOnExit,
             }),
             onRehydrateStorage: () => (state) => {
                 // When store is rehydrated, if there's an active pathogen, load its cases
