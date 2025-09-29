@@ -40,6 +40,8 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
   const size = await getFolderSize.strict(
     path.join('../modules/sequence_analysis/schemes', context.record.params.id.toString())
   );
+  console.log(size);
+
   await context.record.update({
     scheme_size: size / (1024 * 1024),
   });
