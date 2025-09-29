@@ -9,6 +9,8 @@ import preprocessSchemeExtraction from '../hooks/preprocessSchemeExtraction.js';
 import { fillSchemeSizesFromDirectories } from '../hooks/fillSchemeSizeFromDIrectories.js';
 import deleteSchemeDirectory from '../hooks/deleteSchemeDirectory.js';
 import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
+import { initValidationErrors } from '../hooks/initValidationErrors.js';
+import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 
 export const createPathogenResource = () => {
   return {
@@ -124,11 +126,11 @@ export const createPathogenResource = () => {
           after: [fillSchemeSizesFromDirectories],
         },
         new: {
-          before: [preprocessSchemeExtraction, validateExampleDataUploads],
+          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
         },
         edit: {
-          before: [preprocessSchemeExtraction, validateExampleDataUploads],
+          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
         },
         delete: {
@@ -154,11 +156,10 @@ export const createPathogenResource = () => {
           size: 'example_cases_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
-          mimeTypes: ['text/csv'],
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/falldaten.csv`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/falldaten.${filename.split('.').pop()}`;
         },
       }),
       uploadFeature({
@@ -178,10 +179,10 @@ export const createPathogenResource = () => {
           size: 'example_sequences_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/sequenzdaten.fasta`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/sequenzdaten.${filename.split('.').pop()}`;
         },
       }),
       uploadFeature({
@@ -201,11 +202,10 @@ export const createPathogenResource = () => {
           size: 'example_contacts_size',
         },
         validation: {
-          maxSize: 5 * 1024 * 1024,
-          mimeTypes: ['text/csv'],
+          maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/kontaktdaten.csv`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/kontaktdaten.${filename.split('.').pop()}`;
         },
       }),
       loggerFeature({

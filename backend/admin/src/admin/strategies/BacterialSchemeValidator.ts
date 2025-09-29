@@ -1,5 +1,6 @@
 import { ValidationError } from 'adminjs';
 import { SchemeValidator } from './SchemeValidator.js';
+import { validateFastaFile } from '../util/Validation.js';
 
 export class BacterialSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = async () => {
@@ -29,7 +30,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
   private validateFastaFiles = () => {
     const fastaFiles = this.zip.getEntries().filter((entry) => entry.entryName.includes('.fasta'));
     for (const fastaFile of fastaFiles) {
-      this.validateFastaFile(fastaFile);
+      validateFastaFile(fastaFile.getData().toString('utf8'));
     }
   };
 }

@@ -15,12 +15,12 @@ const LoggedIn: React.FC<LoggedInProps> = (props) => {
 
   const dropActions: CurrentUserNavProps['dropActions'] = [
     {
-      label: 'Edit profile',
+      label: 'Change password',
       onClick: (event: Event): void => {
         event.preventDefault();
-        window.location.href = `/admin/resources/user/records/${session.id}/edit`;
+        window.location.href = `/admin/resources/password/records/${session.id}/edit`;
       },
-      icon: 'User',
+      icon: 'Lock',
     },
     {
       label: translateButton('logout'),

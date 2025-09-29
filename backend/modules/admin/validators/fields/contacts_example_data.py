@@ -1,4 +1,4 @@
-{
-    "Fall ID 1": {"required": true, "flexible": false, "pattern": "^[A-Za-z0-9\\-]+$"},
-    "Fall ID 2": {"required": true, "flexible": false, "pattern": "^[A-Za-z0-9\\-]+$"},
+contacts_example_data_fields = {
+    "Fall ID 1": {"required": True, "flexible": False, "pattern": r"^[A-Za-z0-9\-]+$"},
+    "Fall ID 2": {"required": True, "flexible": False, "pattern": r"^[A-Za-z0-9\-]+$"},
 }

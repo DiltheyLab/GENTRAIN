@@ -4,7 +4,10 @@ from wtforms.validators import ValidationError
 
 from backend.config import get_project_path
 from backend.modules.core.helpers import get_csv_reader
-from backend.modules.core.validation_rules import valid_sequence_id_in_fasta, valid_sequence
+from backend.modules.core.validation_rules import (
+    valid_sequence_id_in_fasta,
+    valid_sequence,
+)
 
 
 class ExampleDataValidatorStrategy(ABC):
@@ -25,30 +28,54 @@ class ExampleDataValidatorStrategy(ABC):
         """
         cases_csv = get_csv_reader(data.stream)
         column_names = cases_csv.fieldnames
-        required_column_names = {key for key, value in fields.items() if value["required"]}
+        required_column_names = {
+            key for key, value in fields.items() if value["required"]
+        }
         if not required_column_names <= set(column_names):
-            raise ValidationError(f"Following columns are required: {','.join(required_column_names)}")
-        allowed_static_columns = [key for key, value in fields.items() if
-                                  not value["flexible"]]
-        allowed_flexible_columns = [key for key, value in fields.items() if
-                                    value["flexible"]]
-        invalid_static_columns = [column_name for column_name in column_names if
-                                  column_name not in allowed_static_columns]
-        invalid_columns = [column_name for column_name in invalid_static_columns if
-                           not self.validate_flexible_column_name(column_name, allowed_flexible_columns)]
+            raise ValidationError(
+                f"Following columns are required: {','.join(required_column_names)}"
+            )
+        allowed_static_columns = [
+            key for key, value in fields.items() if not value["flexible"]
+        ]
+        allowed_flexible_columns = [
+            key for key, value in fields.items() if value["flexible"]
+        ]
+        invalid_static_columns = [
+            column_name
+            for column_name in column_names
+            if column_name not in allowed_static_columns
+        ]
+        invalid_columns = [
+            column_name
+            for column_name in invalid_static_columns
+            if not self.validate_flexible_column_name(
+                column_name, allowed_flexible_columns
+            )
+        ]
 
         if invalid_columns:
-            raise ValidationError(f"Following columns are invalid: {','.join(invalid_columns)}")
+            raise ValidationError(
+                f"Following columns are invalid: {','.join(invalid_columns)}"
+            )
         for index, row in enumerate(cases_csv):
             for column_name in column_names:
-                self.validate_against_pattern(fields[column_name] if column_name in fields else
-                                              fields[column_name.split(":")[0]], column_name, row[column_name])
+                self.validate_against_pattern(
+                    (
+                        fields[column_name]
+                        if column_name in fields
+                        else fields[column_name.split(":")[0]]
+                    ),
+                    column_name,
+                    row[column_name],
+                )
 
     @staticmethod
     def validate_against_pattern(field, filed_name, field_value):
-        if not re.compile(field['pattern']).match(field_value):
-            raise ValidationError(f"'{field_value}' is not valid for column {filed_name}.")
-
+        if not re.compile(field["pattern"]).match(field_value):
+            raise ValidationError(
+                f"'{field_value}' is not valid for column {filed_name}."
+            )
 
     @staticmethod
     def validate_fasta(sequences):
@@ -60,5 +87,7 @@ class ExampleDataValidatorStrategy(ABC):
 
     @staticmethod
     def validate_flexible_column_name(column_to_test, flexible_column_names):
-        return any(re.match(f"^{flexible_column_name}:[a-zA-Z0-9-]+$", column_to_test) for flexible_column_name in
-                   flexible_column_names)
+        return any(
+            re.match(f"^{flexible_column_name}:[a-zA-Z0-9-]+$", column_to_test)
+            for flexible_column_name in flexible_column_names
+        )

@@ -4,14 +4,19 @@ import fs from 'fs';
 import { isPOSTMethod } from '../admin.utils.js';
 import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
 import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
+import { collectValidationErrors } from '../util/Errors.js';
 
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
-    context.scheme_upload = await validateSchemeUpload(
-      request.payload.scheme_upload,
-      request.payload.type,
-      context.record ?? null
-    );
+    try {
+      context.scheme_upload = await validateSchemeUpload(
+        request.payload.scheme_upload,
+        request.payload.type,
+        context.record ?? null
+      );
+    } catch (error) {
+      collectValidationErrors(error, context);
+    }
     updateSchemeVersion(request, context);
   }
   return request;

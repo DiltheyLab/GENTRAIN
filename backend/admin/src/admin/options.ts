@@ -4,6 +4,7 @@ import { createUserResource } from './resources/createUserResource.js';
 import { createPathogenResource } from './resources/createPathogenResource.js';
 import { createRoleResource } from './resources/createRoleResource.js';
 import LoggerResource from './resources/createLoggerResource.js';
+import { createPasswordResource } from './resources/createPasswordResource.js';
 
 export const createAdminJsOptions = () => {
   const options: AdminJSOptions = {
@@ -22,7 +23,13 @@ export const createAdminJsOptions = () => {
     },
     defaultTheme: 'light',
     componentLoader,
-    resources: [createUserResource(), createPathogenResource(), createRoleResource(), LoggerResource], // Register resources in database
+    resources: [
+      createUserResource(),
+      createPathogenResource(),
+      createRoleResource(),
+      createPasswordResource(),
+      LoggerResource,
+    ],
   };
 
   return options;

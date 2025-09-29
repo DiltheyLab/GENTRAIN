@@ -1,5 +1,6 @@
 import { UploadedFile, ValidationError } from 'adminjs';
 import { SchemeValidator } from './SchemeValidator.js';
+import { validateFastaFile } from '../util/Validation.js';
 
 export class ViralSchemeValidator extends SchemeValidator {
   protected pathogenJson: any;
@@ -53,7 +54,7 @@ export class ViralSchemeValidator extends SchemeValidator {
       );
     }
 
-    this.validateFastaFile(file);
+    validateFastaFile(file.getData().toString('utf8'));
   };
 
   private checkTreeJsonExists = (pathogenJson) => {
