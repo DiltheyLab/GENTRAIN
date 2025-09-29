@@ -6,10 +6,11 @@ import path from 'path';
 
 export abstract class SchemeValidator {
   protected zip: AdmZip;
+  protected validMimetypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'];
 
   constructor(file: UploadedFile) {
     if (file) {
-      if (file.type !== 'application/zip') {
+      if (!this.validMimetypes.includes(file.type)) {
         throw new ValidationError(
           { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
           { message: 'Scheme upload is invalid' }
