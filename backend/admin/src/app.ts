@@ -27,14 +27,13 @@ const start = async () => {
 
   // Create AdminJS with options
   const admin = new AdminJS(options);
-
   // Compile tsx in js
   if (process.env.NODE_ENV === 'production') {
     console.log('initialized in production mode');
     await admin.initialize();
   } else {
     console.log('started in development mode');
-    admin.watch(); // this builds your frontend code in development environment
+    admin.watch();
   }
 
   // create router with authentification

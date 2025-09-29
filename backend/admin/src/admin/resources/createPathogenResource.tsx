@@ -6,7 +6,6 @@ import { prisma } from '../db.js';
 import loggerFeature from '@adminjs/logger';
 import { handleSchemeExtraction } from '../hooks/handleSchemeExtraction.js';
 import preprocessSchemeExtraction from '../hooks/preprocessSchemeExtraction.js';
-import { fillSchemeSizesFromDirectories } from '../hooks/fillSchemeSizeFromDIrectories.js';
 import deleteSchemeDirectory from '../hooks/deleteSchemeDirectory.js';
 import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
 import { initValidationErrors } from '../hooks/initValidationErrors.js';
@@ -60,7 +59,7 @@ export const createPathogenResource = () => {
           description: 'Used to extract mutation information of genomic sequences.',
           isVisible: { list: false, show: false, edit: true, filter: false },
           custom: {
-            label: 'Scheme Upload',
+            label: 'Scheme Upload Test',
           },
           components: {
             edit: SchemeUpload,
@@ -119,12 +118,8 @@ export const createPathogenResource = () => {
         },
       },
       actions: {
-        list: {
-          after: [fillSchemeSizesFromDirectories],
-        },
-        show: {
-          after: [fillSchemeSizesFromDirectories],
-        },
+        list: {},
+        show: {},
         new: {
           before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],

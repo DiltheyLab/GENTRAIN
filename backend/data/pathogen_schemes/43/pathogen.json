@@ -1,0 +1,14 @@
+{
+  "files": {
+    "reference": "measles_reference.fasta",
+    "pathogenJson": "pathogen.json"
+  },
+  "attributes": {
+    "name": "UKD 2025"
+  },
+  "schemaVersion": "3.0.0",
+  "version": {
+    "updatedAt": "2024-06-07T06:48:19Z",
+    "tag": "2024-06-07--06-48-19Z"
+  }
+}

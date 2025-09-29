@@ -130,7 +130,7 @@ services:
       context: ./backend/admin
       dockerfile: Dockerfile.prod
     ports:
-      - "5000:5000"
+      - "4001:4001"
     depends_on:
       db:
         condition: service_completed_successfully

@@ -41,6 +41,9 @@ services:
       - type: bind
         source: ./backend/api
         target: /api
+      - type: bind
+        source: ./backend/prisma
+        target: /api/prisma
     depends_on:
       - redis
       - db
@@ -57,6 +60,21 @@ services:
         target: /api
     links:
       - redis
+    env_file: ".env"
+  admin:
+    container_name: gentrain-admin
+    image: gentrain-admin
+    restart: unless-stopped
+    build:
+      context: ./backend/admin
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/admin:/admin # Mount local code to the container
+      - /admin/node_modules
+    ports:
+      - "4001:4001"
+    depends_on:
+      - db
     env_file: ".env"
 volumes:
   postgres_data:

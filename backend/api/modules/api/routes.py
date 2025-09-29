@@ -1,6 +1,7 @@
 import json
 from Bio import Align
 from flask import Response, jsonify, request, abort
+from prisma.models import pathogen
 from api.modules.core.models import Pathogen
 from api.app import app
 from api.server import redis_connection
@@ -9,7 +10,8 @@ from api.server import redis_connection
 # Pathogens
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():
-    return jsonify([pathogen.serialize() for pathogen in Pathogen.query.all()])
+    pathogens = pathogen.prisma().find_many()
+    return [pathogen.dict() for pathogen in pathogens]
 
 
 @app.route("/pathogens/<int:pathogen_id>", methods=["GET"])

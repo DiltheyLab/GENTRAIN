@@ -24,11 +24,7 @@ export const preprocessSchemeExtraction = async (request: ActionRequest, context
 
 const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
   if (!file) {
-    if (
-      record &&
-      record.params &&
-      fs.existsSync(path.join('../modules/sequence_analysis/schemes', record.params.id.toString()))
-    ) {
+    if (record && record.params && fs.existsSync(path.join('../data/pathogen_schemes', record.params.id.toString()))) {
       return undefined;
     }
     throw new ValidationError(

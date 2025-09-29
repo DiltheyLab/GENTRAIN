@@ -1,0 +1,166 @@
+Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;Nachname;Vorname;Ort;PLZ;Straße;Angesteckt bei;Kategorie:Geimpft
+GENTRAIN-0;;8.8.2021;;Müller;Dieter;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-1;;11.8.2021;;Maier;Lara;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-2;;18.8.2021;;Roth;Elisa;Düsseldorf;40476;Musterstraße 2;;Nein
+GENTRAIN-3;;19.8.2021;;Petrov;Sveta;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-4;;21.8.2021;;Roth;Nadja;Düsseldorf;40476;Musterstraße 2;;Ja
+GENTRAIN-5;;22.8.2021;;El-Masri;Omar;Düsseldorf;40215;Musterstraße 3;;Ja
+GENTRAIN-6;G6;22.8.2021;;El-Masri;Cara;Düsseldorf;40215;Musterstraße 3;;Nein
+GENTRAIN-7;;24.8.2021;;Nguyen;An;Düsseldorf;40627;Musterstraße 4;;Ja
+GENTRAIN-8;;24.8.2021;;Roth;Tessa;Düsseldorf;40476;Musterstraße 2;;Ja
+GENTRAIN-9;;24.8.2021;;Müller;Hannah;Düsseldorf;40227;Musterstraße 5;;Ja
+GENTRAIN-10;;24.8.2021;;Karl;Hanna;Düsseldorf;40227;Musterstraße 5;;Nein
+GENTRAIN-11;;24.8.2021;;Timm;Sven;Düsseldorf;40227;Musterstraße 5;;Ja
+GENTRAIN-12;;24.8.2021;;Meno;Manja;Düsseldorf;40227;Musterstraße 5;;Ja
+GENTRAIN-13;;24.8.2021;;Vito;Marc;Düsseldorf;40227;Musterstraße 5;;Ja
+GENTRAIN-14;;25.8.2021;Schule A;Becker;Laura;Düsseldorf;40549;Musterstraße 6;;Nein
+GENTRAIN-15;;25.8.2021;;Petrov;Natalja;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-16;;25.8.2021;;Petrov;Mara;Düsseldorf;40237;Musterstraße 1;GENTRAIN-17;Ja
+GENTRAIN-17;G17;25.8.2021;;Petrov;Dimitri;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-18;G18;25.8.2021;;Kaya;Mehmet;Düsseldorf;40479;Musterstraße 7;GENTRAIN-17;Nein
+GENTRAIN-19;G19;25.8.2021;;Petrov;Matthias;Düsseldorf;40237;Musterstraße 1;;Ja
+GENTRAIN-20;;26.8.2021;Kita B;Berger;Lena;Düsseldorf;40476;Musterstraße 8;;Ja
+GENTRAIN-21;;26.8.2021;;Zwirner;Leonard;Düsseldorf;40472;Musterstraße 9;;Ja
+GENTRAIN-22;;26.8.2021;;Zwirner;Tabea;Düsseldorf;40472;Musterstraße 9;;Nein
+GENTRAIN-23;G23;28.8.2021;Schule B;Berkel;Sandra;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-24;;28.8.2021;Schule B;Al-Zaharani;Hassan;Düsseldorf;40476;Musterstraße 11;;Ja
+GENTRAIN-25;;28.8.2021;Schule A;Hoffmann;Elena;Düsseldorf;40210;Musterstraße 12;;Ja
+GENTRAIN-26;;28.8.2021;Schule A;Hoffmann;Sabrina;Düsseldorf;40210;Musterstraße 12;;Nein
+GENTRAIN-27;;28.8.2021;Schule B;Fuchs;Mara;Düsseldorf;40476;Musterstraße 13;;Ja
+GENTRAIN-28;G28;28.8.2021;Schule B;Volkov;Pavel;Düsseldorf;40239;Musterstraße 14;;Ja
+GENTRAIN-29;G29;28.8.2021;;Hoffmann;Britt;Düsseldorf;40210;Musterstraße 12;;Ja
+GENTRAIN-30;G30;29.8.2021;;Becker;Tim;Düsseldorf;40549;Musterstraße 6;;Nein
+GENTRAIN-31;G31;29.8.2021;Schule A;Becker;Nora;Düsseldorf;40549;Musterstraße 6;;Ja
+GENTRAIN-32;;29.8.2021;Schule A;Rodriguez;Dua;Düsseldorf;40223;Musterstraße 15;;Ja
+GENTRAIN-33;;29.8.2021;Schule A;Lehmann;Markus;Düsseldorf;40211;Musterstraße 16;;Ja
+GENTRAIN-34;;29.8.2021;Schule A;Zwirner;Ludwig;Düsseldorf;40472;Musterstraße 9;;Nein
+GENTRAIN-35;;29.8.2021;Kita B;Schröder;Roland;Düsseldorf;40221;Musterstraße 17;;Ja
+GENTRAIN-36;;30.8.2021;Schule A;Hassan;Diallo;Düsseldorf;40223;Musterstraße 18;;Ja
+GENTRAIN-37;;30.8.2021;Kita B;Keller;Jan;Düsseldorf;40477;Musterstraße 19;;Ja
+GENTRAIN-38;;30.8.2021;Kita B;Patel;Rajesh;Düsseldorf;40210;Musterstraße 20;;Nein
+GENTRAIN-39;;30.8.2021;;Schröder;Felix;Düsseldorf;40589;Musterstraße 21;;Ja
+GENTRAIN-40;;30.8.2021;Schule A;Santos;Maria;Düsseldorf;40477;Musterstraße 22;;Ja
+GENTRAIN-41;;30.8.2021;Schule A;Wolf;Thomas;Düsseldorf;40591;Musterstraße 23;;Ja
+GENTRAIN-42;;30.8.2021;Schule A;Khaan;Adeel;Düsseldorf;40223;Musterstraße 24;;Nein
+GENTRAIN-43;G43;30.8.2021;;Hiroshi;Saki;Düsseldorf;40233;Musterstraße 25;;Ja
+GENTRAIN-44;;30.8.2021;Schule A;Klein;Sebastian;Düsseldorf;40545;Musterstraße 26;;Ja
+GENTRAIN-45;G45;30.8.2021;;Nowak;Pavlov  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GENTRAIN-46;G46;31.8.2021;Schule A;Schmitz;Luca;Düsseldorf;40477;Musterstraße 28;;Nein
+GENTRAIN-47;G47;31.8.2021;Abschiedsparty;Hussein;Yasemin;Düsseldorf;40231;Musterstraße 29;;Ja
+GENTRAIN-48;;31.8.2021;Schule A;Fuchs;Tobias  ;Düsseldorf;40476;Musterstraße 13;;Ja
+GENTRAIN-49;G49;31.8.2021;Schule A;Youssef;Hakan;Düsseldorf;40474;Musterstraße 30;;Ja
+GENTRAIN-50;G50;31.8.2021;;Youssef;Leila Ben ;Düsseldorf;40474;Musterstraße 30;;Nein
+GENTRAIN-51;;31.8.2021;;Lehmann;Sarah;Düsseldorf;40211;Musterstraße 16;;Ja
+GENTRAIN-52;;31.8.2021;;Bauer;Svenja;Düsseldorf;40225;Musterstraße 31;;Ja
+GENTRAIN-53;G53;31.8.2021;;Schröder;Susanne;Düsseldorf;40221;Musterstraße 17;;Ja
+GENTRAIN-54;;31.8.2021;Schule A;Meurer;Lisa;Düsseldorf;40468;Musterstraße 32;;Nein
+GENTRAIN-55;G55;31.8.2021;Schule A;Nowak;Krzysztof;Düsseldorf;40219;Musterstraße 27;GENTRAIN-73;Ja
+GENTRAIN-56;;31.8.2021;;Fischer;Lisa;Düsseldorf;40213;Musterstraße 33;;Ja
+GENTRAIN-57;;31.8.2021;Kita B;Fischer;Jens;Düsseldorf;40213;Musterstraße 33;;Ja
+GENTRAIN-58;;31.8.2021;Schule A;Rossi;Sandro;Düsseldorf;40479;Musterstraße 34;;Nein
+GENTRAIN-59;;31.8.2021;;Hussein;Tobias  ;Düsseldorf;40231;Musterstraße 29;;Ja
+GENTRAIN-60;;1.9.2021;Schule A;Keller;Svenja;Düsseldorf;40476;Musterstraße 35;;Ja
+GENTRAIN-61;;1.9.2021;Schule A;Keller;Christian;Düsseldorf;40476;Musterstraße 35;;Ja
+GENTRAIN-62;;1.9.2021;Schule A;Berkel;Peter;Düsseldorf;40237;Musterstraße 10;;Nein
+GENTRAIN-63;G63;1.9.2021;;Berkel;Marie;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-64;G64;1.9.2021;;Berkel;Sebastian;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-65;;1.9.2021;;Berkel;Nour;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-66;;1.9.2021;Schule A;Meier;Tanja;Düsseldorf;40212;Musterstraße 36;;Nein
+GENTRAIN-67;;1.9.2021;Kita B;Haddad;Sarah;Düsseldorf;40211;Musterstraße 37;GENTRAIN-38;Ja
+GENTRAIN-68;;1.9.2021;;Wagner;Alexander;Düsseldorf;40625;Musterstraße 38;;Ja
+GENTRAIN-69;;1.9.2021;Kita A;Winter;Lara;Düsseldorf;40476;Musterstraße 39;;Ja
+GENTRAIN-70;;1.9.2021;Abschiedsparty;Schneider;Philipp;Düsseldorf;40549;Musterstraße 40;;Nein
+GENTRAIN-71;;1.9.2021;Abschiedsparty;Marques;Rafael;Düsseldorf;40212;Musterstraße 41;;Ja
+GENTRAIN-72;;1.9.2021;;Nowak;Katya  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GENTRAIN-73;G73;1.9.2021;;Nowak;Tobias  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GENTRAIN-74;G74;1.9.2021;Kita B;Bauer;Andreas;Düsseldorf;40225;Musterstraße 31;GENTRAIN-75;Nein
+GENTRAIN-75;G75;1.9.2021;;Bauer;Niklas;Düsseldorf;40225;Musterstraße 31;;Ja
+GENTRAIN-76;;1.9.2021;Schule A;Popescu;Zana;Düsseldorf;40225;Musterstraße 42;;Ja
+GENTRAIN-77;G77;1.9.2021;;Zimmermann;Jakob;Düsseldorf;40476;Musterstraße 43;;Ja
+GENTRAIN-78;;1.9.2021;;Berger;Bruno;Düsseldorf;40476;Musterstraße 8;;Nein
+GENTRAIN-79;;1.9.2021;;Hoffmann;Mustafa;Düsseldorf;40210;Musterstraße 12;;Ja
+GENTRAIN-80;;1.9.2021;Kita B;Hoffmann;Claudia;Düsseldorf;40211;Musterstraße 44;;Ja
+GENTRAIN-81;;1.9.2021;Kita B;Patel;Subra;Düsseldorf;40210;Musterstraße 20;GENTRAIN-38;Ja
+GENTRAIN-82;;1.9.2021;;Rodriguez;Miguel;Düsseldorf;40223;Musterstraße 15;;Nein
+GENTRAIN-83;;1.9.2021;;Schulte;Jörg;Düsseldorf;40210;Musterstraße 12;;Ja
+GENTRAIN-84;;1.9.2021;;Klein;Nora;Düsseldorf;40545;Musterstraße 26;;Ja
+GENTRAIN-85;G85;2.9.2021;Schule A;Neumann;Patrick;Düsseldorf;40227;Musterstraße 45;;Ja
+GENTRAIN-86;G86;2.9.2021;;Hiroshi;Takahashi;Düsseldorf;40233;Musterstraße 25;;Nein
+GENTRAIN-87;G87;2.9.2021;;Leskos;Nuri;Düsseldorf;40221;Musterstraße 46;;Ja
+GENTRAIN-88;;2.9.2021;;Schneider;Sabine;Düsseldorf;40549;Musterstraße 40;;Ja
+GENTRAIN-89;;2.9.2021;Schule A;Lehmann;Pascal;Düsseldorf;40211;Musterstraße 16;;Ja
+GENTRAIN-90;G90;2.9.2021;;Krüger;Piet;Düsseldorf;40221;Musterstraße 46;;Nein
+GENTRAIN-91;;2.9.2021;;Krüger;Lisa;Düsseldorf;40221;Musterstraße 46;;Ja
+GENTRAIN-92;;2.9.2021;;Krüger;Sigrun;Düsseldorf;40221;Musterstraße 46;;Ja
+GENTRAIN-93;G93;2.9.2021;;Arslan;Fatih;Düsseldorf;40470;Musterstraße 47;;Ja
+GENTRAIN-94;G94;2.9.2021;;Yildiz;Ahmed;Düsseldorf;40223;Musterstraße 48;;Nein
+GENTRAIN-95;;2.9.2021;;Hassan;Ali;Düsseldorf;40223;Musterstraße 18;;Ja
+GENTRAIN-96;;2.9.2021;;Hassan;Murat;Düsseldorf;40223;Musterstraße 18;;Ja
+GENTRAIN-97;G97;2.9.2021;;Ji-Hoon;Joong;Düsseldorf;40477;Musterstraße 49;;Ja
+GENTRAIN-98;G98;2.9.2021;;Ji-Hoon;Kim;Düsseldorf;40477;Musterstraße 49;;Nein
+GENTRAIN-99;G99;2.9.2021;;Schröder;Leon;Düsseldorf;40221;Musterstraße 17;;Ja
+GENTRAIN-100;;2.9.2021;;Gustavson;Lara;Düsseldorf;40227;Musterstraße 5;;Ja
+GENTRAIN-101;;2.9.2021;Kita A;Günther;Stefan;Düsseldorf;40468;Musterstraße 50;;Ja
+GENTRAIN-102;;2.9.2021;;Lehmann;Jeremy;Düsseldorf;40211;Musterstraße 16;;Nein
+GENTRAIN-103;;3.9.2021;;Mansour;Karim;Düsseldorf;40235;Musterstraße 51;;Ja
+GENTRAIN-104;;3.9.2021;Kita B;Subrama;Elif;Düsseldorf;40479;Musterstraße 7;;Ja
+GENTRAIN-105;;3.9.2021;;Weber;Svetlana;Düsseldorf;40474;Musterstraße 52;;Ja
+GENTRAIN-106;;3.9.2021;;König;Julia;Düsseldorf;40625;Musterstraße 53;;Nein
+GENTRAIN-107;;3.9.2021;;Maier;Jonas;Düsseldorf;40221;Musterstraße 54;;Ja
+GENTRAIN-108;;3.9.2021;Kita A;Moretti;Isabella;Düsseldorf;40474;Musterstraße 55;;Ja
+GENTRAIN-109;;3.9.2021;;Moretti;Luca;Düsseldorf;40474;Musterstraße 55;;Ja
+GENTRAIN-110;;3.9.2021;Kita A;Hamid;Marian;Düsseldorf;40227;Musterstraße 5;;Nein
+GENTRAIN-111;;3.9.2021;;Diallo;Aisha;Düsseldorf;40468;Musterstraße 32;;Ja
+GENTRAIN-112;;3.9.2021;;Hassan;Sara;Düsseldorf;40223;Musterstraße 18;;Ja
+GENTRAIN-113;G113;4.9.2021;;Ivanova;Olga;Düsseldorf;40545;Musterstraße 56;;Ja
+GENTRAIN-114;G114;4.9.2021;;Vogt;Melina;Düsseldorf;40210;Musterstraße 57;;Nein
+GENTRAIN-115;;4.9.2021;Kita A;Ndiaye;Mona;Düsseldorf;40211;Musterstraße 58;;Ja
+GENTRAIN-116;G116;4.9.2021;Kita A;Dupont;Jacque;Düsseldorf;40217;Musterstraße 59;;Ja
+GENTRAIN-117;;4.9.2021;;Wagner;Tessa;Düsseldorf;40217;Musterstraße 60;;Ja
+GENTRAIN-118;G118;4.9.2021;Kita A;Bakari;Samuel;Düsseldorf;40219;Musterstraße 61;;Nein
+GENTRAIN-119;G119;4.9.2021;Schule A;Berkel;Bao;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-120;;4.9.2021;;Öztürk;Fatima;Düsseldorf;40211;Musterstraße 62;;Ja
+GENTRAIN-121;;4.9.2021;;Hassan;Jo;Düsseldorf;40223;Musterstraße 18;;Ja
+GENTRAIN-122;;4.9.2021;;Rossi;Sandro;Düsseldorf;40479;Musterstraße 34;GENTRAIN-58;Nein
+GENTRAIN-123;;4.9.2021;Kita A;Schulte;Diana;Düsseldorf;40215;Musterstraße 63;;Ja
+GENTRAIN-124;G124;4.9.2021;;Lehmann;Jeremy;Düsseldorf;40211;Musterstraße 16;;Ja
+GENTRAIN-125;G125;5.9.2021;;Ivanova;Svetlana;Düsseldorf;40545;Musterstraße 56;;Ja
+GENTRAIN-126;G126;5.9.2021;;Ivanova;Marc;Düsseldorf;40545;Musterstraße 56;;Nein
+GENTRAIN-127;G127;5.9.2021;;Meier;Jonas;Düsseldorf;40212;Musterstraße 36;;Ja
+GENTRAIN-128;G128;5.9.2021;;Weber;David;Düsseldorf;40474;Musterstraße 52;;Ja
+GENTRAIN-129;G129;5.9.2021;;Schneider;Tim;Düsseldorf;40549;Musterstraße 40;;Ja
+GENTRAIN-130;G130;5.9.2021;;Jansen;Nadine;Düsseldorf;40477;Musterstraße 64;;Nein
+GENTRAIN-131;G131;5.9.2021;;Nakamura;Takashi;Düsseldorf;40210;Musterstraße 65;;Ja
+GENTRAIN-132;G132;5.9.2021;;Ndiaye;Amara;Düsseldorf;40211;Musterstraße 58;;Ja
+GENTRAIN-133;;5.9.2021;;Klein;Peter;Düsseldorf;40545;Musterstraße 26;;Ja
+GENTRAIN-134;G134;5.9.2021;;Klein;Tim;Düsseldorf;40545;Musterstraße 26;;Nein
+GENTRAIN-135;G135;5.9.2021;;Klein;Dagmar;Düsseldorf;40545;Musterstraße 26;;Ja
+GENTRAIN-136;G136;5.9.2021;;Dingert;Nura;Düsseldorf;40211;Musterstraße 62;;Ja
+GENTRAIN-137;G137;5.9.2021;;Dingert;Sebo;Düsseldorf;40211;Musterstraße 62;;Ja
+GENTRAIN-138;G138;5.9.2021;;Ndiaye;Tom;Düsseldorf;40211;Musterstraße 58;;Nein
+GENTRAIN-139;G139;6.9.2021;;Popescu;Ivan;Düsseldorf;40225;Musterstraße 42;;Ja
+GENTRAIN-140;;6.9.2021;;Berkel;Marie;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-141;;6.9.2021;;Berkel;Lucia;Düsseldorf;40237;Musterstraße 10;;Ja
+GENTRAIN-142;;7.9.2021;;Fischer;Sophie;Düsseldorf;40213;Musterstraße 33;;Nein
+GENTRAIN-143;G143;7.9.2021;;Ivanova;Nadja;Düsseldorf;40545;Musterstraße 56;;Ja
+GENTRAIN-144;G144;7.9.2021;;Ivanova;Tanja;Düsseldorf;40545;Musterstraße 56;;Ja
+GENTRAIN-145;;7.9.2021;;Lorer;Sakura;Düsseldorf;40468;Musterstraße 32;;Ja
+GENTRAIN-146;G146;7.9.2021;;Lopez;Sara;Düsseldorf;40545;Musterstraße 66;;Nein
+GENTRAIN-147;G147;8.9.2021;;Ivanova;Luca;Düsseldorf;40545;Musterstraße 56;;Ja
+GENTRAIN-148;G148;8.9.2021;;Dupont;Chloe;Düsseldorf;40217;Musterstraße 59;;Ja
+GENTRAIN-149;G149;8.9.2021;;Braun;Felicitas;Düsseldorf;40231;Musterstraße 67;;Ja
+GENTRAIN-150;;9.9.2021;;Rahman;Abdullah;Düsseldorf;40474;Musterstraße 67;;Nein
+GENTRAIN-151;;10.9.2021;;Schwarz;Michelle;Düsseldorf;40227;Musterstraße 68;;Ja
+GENTRAIN-152;;11.9.2021;;Lopez;Ben;Düsseldorf;40545;Musterstraße 66;;Ja
+GENTRAIN-153;;11.9.2021;;Lopez;Isabel;Düsseldorf;40545;Musterstraße 66;;Ja
+GENTRAIN-154;;11.9.2021;;Lopez;Rodrigo;Düsseldorf;40545;Musterstraße 66;;Nein
+GENTRAIN-155;;11.9.2021;;Schneider;Anna;Düsseldorf;40549;Musterstraße 40;;Ja
+GENTRAIN-156;G156;11.9.2021;;Moretti;Maria;Düsseldorf;40474;Musterstraße 55;;Ja
+GENTRAIN-157;;11.9.2021;;Patel;Ranjid;Düsseldorf;40210;Musterstraße 20;GENTRAIN-81;Ja
+GENTRAIN-158;G158;11.9.2021;;Jansen;Nala;Düsseldorf;40477;Musterstraße 64;GENTRAIN-162;Nein
+GENTRAIN-159;G159;11.9.2021;;Wagner;Clara;Düsseldorf;40217;Musterstraße 60;;Ja
+GENTRAIN-160;;13.9.2021;;Lopez;Fernando;Düsseldorf;40545;Musterstraße 66;;Ja
+GENTRAIN-161;G161;16.9.2021;;Krüger;Pascal;Düsseldorf;40221;Musterstraße 46;;Ja
+GENTRAIN-162;G162;18.9.2021;;Jansen;Isabell;Düsseldorf;40477;Musterstraße 64;;Nein
+GENTRAIN-163;G163;19.9.2021;;Jansen;Tom;Düsseldorf;40477;Musterstraße 64;GENTRAIN-164;Ja
+GENTRAIN-164;;24.9.2021;;Jansen;Stefan;Düsseldorf;40477;Musterstraße 64;;Ja

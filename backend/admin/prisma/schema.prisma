@@ -1,6 +1,11 @@
-generator client {
+generator js_client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+generator py_client {
+  provider      = "prisma-client-py"
+  interface = "sync"
 }
 
 datasource db {
