@@ -14,7 +14,7 @@ export const useSyncPathogensBetweenServerAndClient = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
+        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend api if you are in the tutorial mode
         setPathogenIsLoading(true);
 
         const syncPathogensBetweenServerAndClient = async () => {

@@ -3,13 +3,13 @@ services:
     container_name: gentrain-redis
     image: gentrain-redis
     build:
-      context: ./redis
+      context: ./backend/redis
       dockerfile: Dockerfile
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
-      - ./redis/tls:/usr/local/etc/redis/tls
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./backend/redis/tls:/usr/local/etc/redis/tls
+      - ./backend/redis/redis.conf:/usr/local/etc/redis/redis.conf
   redis-insight:
     container_name: gentrain-redis-insight
     image: redis/redisinsight:latest
@@ -28,33 +28,33 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     restart: unless-stopped
-  backend:
-    container_name: gentrain-backend
-    image: gentrain-backend
+  api:
+    container_name: gentrain-api
+    image: gentrain-api
     restart: unless-stopped
     build:
-      context: ./backend
+      context: ./backend/api
       dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
     volumes:
       - type: bind
-        source: ./backend
-        target: /backend
+        source: ./backend/api
+        target: /api
     depends_on:
       - redis
       - db
     env_file: ".env"
   worker:
     container_name: gentrain-worker
-    image: gentrain-backend:latest
+    image: gentrain-api:latest
     depends_on:
       - redis
-    entrypoint: /backend/entrypoint-worker.sh
+    entrypoint: /api/entrypoint-worker.sh
     volumes:
       - type: bind
-        source: ./backend
-        target: /backend
+        source: ./backend/api
+        target: /api
     links:
       - redis
     env_file: ".env"

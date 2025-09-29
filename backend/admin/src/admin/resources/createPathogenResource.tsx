@@ -143,7 +143,7 @@ export const createPathogenResource = () => {
         componentLoader,
         provider: {
           local: {
-            bucket: '../static/pathogen_example_data',
+            bucket: 'public/pathogen_example_data',
             opts: {},
           },
         },
@@ -166,7 +166,7 @@ export const createPathogenResource = () => {
         componentLoader,
         provider: {
           local: {
-            bucket: '../static/pathogen_example_data',
+            bucket: 'public/pathogen_example_data',
             opts: {},
           },
         },
@@ -189,7 +189,7 @@ export const createPathogenResource = () => {
         componentLoader,
         provider: {
           local: {
-            bucket: '../static/pathogen_example_data',
+            bucket: 'public/pathogen_example_data',
             opts: {},
           },
         },

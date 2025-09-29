@@ -42,15 +42,6 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
       { message: 'Scheme upload is invalid' }
     );
   }
-  if (file) {
-    // extend by zip-compressed, x-zip-compressed?
-    if (file.type !== 'application/zip') {
-      throw new ValidationError(
-        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
-        { message: 'Scheme upload is invalid' }
-      );
-    }
-  }
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
   validator.validateUpload();
   return validator.getValidatedZip();
