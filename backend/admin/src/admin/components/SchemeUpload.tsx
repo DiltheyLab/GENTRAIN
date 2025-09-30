@@ -22,7 +22,6 @@ const SchemeUpload = (props: BasePropertyProps) => {
   };
 
   const error = record.errors?.[property.path];
-  console.log(schemeVersion, schemeSize);
   return (
     <FormGroup error={Boolean(error)}>
       <Box flex style={{ justifyContent: 'space-between' }}>

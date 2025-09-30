@@ -1,6 +1,10 @@
-import { RecordActionResponse, ListActionResponse, ActionContext } from 'adminjs';
+import { RecordActionResponse, ListActionResponse, ActionContext, ActionRequest } from 'adminjs';
 
-export const readableSchemeSize = (response: RecordActionResponse | ListActionResponse, _context: ActionContext) => {
+export const readableSchemeSize = (
+  response: RecordActionResponse | ListActionResponse,
+  _request: ActionRequest,
+  _context: ActionContext
+) => {
   if (!response.record && !response.records) {
     return response;
   }

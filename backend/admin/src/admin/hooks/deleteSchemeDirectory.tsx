@@ -3,15 +3,20 @@ import path from 'path';
 import fs from 'fs';
 
 export const deleteSchemeDirectory = async (
-  _response: ActionResponse,
+  response: ActionResponse,
   _request: ActionRequest,
-  context: ActionContext
+  _context: ActionContext
 ) => {
-  const { record } = context;
-  const folderName = record.params.id.toString();
-  const extractPath = path.join('../data/pathogen_schemes', folderName);
-  if (fs.existsSync(path.join('../data/pathogen_schemes', record.params.id.toString()))) {
-    await fs.promises.rmdir(extractPath, { recursive: true });
+  if (!response.record && !response.records) {
+    return response;
   }
+  for (const record of response.records ?? [response.record]) {
+    const folderName = record.params.id.toString();
+    const extractPath = path.join('../data/pathogen_schemes', folderName);
+    if (fs.existsSync(path.join('../data/pathogen_schemes', record.params.id.toString()))) {
+      await fs.promises.rm(extractPath, { recursive: true });
+    }
+  }
+  return response;
 };
 export default deleteSchemeDirectory;

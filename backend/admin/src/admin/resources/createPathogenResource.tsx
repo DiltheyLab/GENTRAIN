@@ -119,8 +119,8 @@ export const createPathogenResource = () => {
         },
       },
       actions: {
-        list: {},
-        show: {},
+        list: { after: [readableSchemeSize] },
+        show: { after: [readableSchemeSize] },
         new: {
           before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
@@ -130,6 +130,9 @@ export const createPathogenResource = () => {
           after: [handleSchemeExtraction],
         },
         delete: {
+          after: [deleteSchemeDirectory],
+        },
+        bulkDelete: {
           after: [deleteSchemeDirectory],
         },
       },
