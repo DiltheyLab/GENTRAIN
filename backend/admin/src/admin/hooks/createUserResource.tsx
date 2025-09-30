@@ -1,11 +1,20 @@
-import { ResourceOptions } from 'adminjs';
+import {
+  ActionResponse,
+  After,
+  ListActionResponse,
+  RecordActionResponse,
+  ResourceOptions,
+  ValidationError,
+} from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
+import { hash } from 'argon2';
 import { isCurrentUser, isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
+import { isGETMethod, isPOSTMethod } from '../admin.utils.js';
 import { prisma } from '../db.js';
 import loggerFeature from '@adminjs/logger';
 import { componentLoader } from '../component-loader.js';
-import { validateUser } from '../hooks/validateUser.js';
+import { validatePasswordPattern } from '../util/Validation.js';
 
 export const createUserResource = () => {
   return {
@@ -74,7 +83,24 @@ export const createUserResource = () => {
       actions: {
         new: {
           isAccessible: ({ currentAdmin }) => isSuperuser(currentAdmin),
-          before: [validateUser],
+          before: async (request) => {
+            // hash password before saving
+            if (request.payload?.password) {
+              if (!validatePasswordPattern(request.payload.password)) {
+                throw new ValidationError(
+                  {
+                    password: {
+                      message:
+                        'Password must contain at least 8 characters, one special character, one lowercase character, one uppercase character and one digit',
+                    },
+                  },
+                  { message: 'User was not created' }
+                );
+              }
+              request.payload.password = await hash(request.payload.password);
+            }
+            return request;
+          },
         },
         show: {
           isAccessible: ({ currentAdmin, record }) => isSuperuser(currentAdmin) || isCurrentUser(currentAdmin, record),
@@ -82,7 +108,32 @@ export const createUserResource = () => {
         },
         edit: {
           isAccessible: ({ currentAdmin, record }) => isSuperuser(currentAdmin) || isCurrentUser(currentAdmin, record),
-          before: [validateUser],
+          before: async (request, context) => {
+            console.log(context.record);
+            // no need to hash password on GET requests, it will be removed there anyway
+            if (isPOSTMethod(request)) {
+              // hash only if password is present, delete otherwise so it will not overwrite existing password with empty string
+              if (request.payload?.password) {
+                if (!validatePasswordPattern(request.payload.password)) {
+                  throw new ValidationError(
+                    {
+                      password: {
+                        message:
+                          'Password must contain at least 8 characters, one special character, one lowercase character, one uppercase character and one digit',
+                      },
+                    },
+                    { message: 'User was not updated' }
+                  );
+                } else {
+                  request.payload.password = await hash(request.payload.password);
+                }
+              } else {
+                delete request.payload?.password;
+              }
+              request.payload.updated_at = new Date();
+            }
+            return request;
+          },
           after: [sanitizeUserResponse],
         },
         delete: {

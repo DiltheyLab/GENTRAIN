@@ -1,3 +1,5 @@
+import { ValidationError } from 'adminjs';
+
 export const validateFastaFile = (fastaString: string) => {
   // Allow valid nucleotides of DNA and RNA sequences
   const alphabet = /^[ACGTN]+$/i;
@@ -30,4 +32,11 @@ export const validateFastaFile = (fastaString: string) => {
     errors.push('Last header has no sequence');
   }
   return errors;
+};
+
+export const validatePasswordPattern = (password: string) => {
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(password)) {
+    return false;
+  }
+  return true;
 };
