@@ -48,6 +48,8 @@ services:
       - redis
       - db
     env_file: ".env"
+    environment:
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_USER}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
   worker:
     container_name: gentrain-worker
     image: gentrain-api:latest
@@ -60,22 +62,6 @@ services:
         target: /api
     links:
       - redis
-    env_file: ".env"
-  admin:
-    container_name: gentrain-admin
-    image: gentrain-admin
-    restart: unless-stopped
-    build:
-      context: ./backend/admin
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./backend/admin:/admin
-      - /admin/node_modules
-      - ./backend/prisma:/admin/prisma
-    ports:
-      - "4001:4001"
-    depends_on:
-      - db
     env_file: ".env"
 volumes:
   postgres_data:
