@@ -69,8 +69,9 @@ services:
       context: ./backend/admin
       dockerfile: Dockerfile.dev
     volumes:
-      - ./backend/admin:/admin # Mount local code to the container
+      - ./backend/admin:/admin
       - /admin/node_modules
+      - ./backend/prisma:/admin/prisma
     ports:
       - "4001:4001"
     depends_on:

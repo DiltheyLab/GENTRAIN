@@ -4,19 +4,16 @@ WORKDIR /admin
 
 RUN apk add --no-cache openssl
 
-# Set the environment variable for production
 ENV NODE_ENV="development"
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate --generator js_client
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
 
-# Expose the port the app runs on
 EXPOSE 4001
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["./entrypoint.sh"]

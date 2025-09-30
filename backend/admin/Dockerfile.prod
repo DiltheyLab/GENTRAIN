@@ -22,7 +22,7 @@ RUN npm run build
 RUN npx prisma generate --generator js_client
 
 # Delete code from src because only the compiled code is nesseccary
-#RUN rm -rf src
+RUN rm -rf src
 
 # Expose the port the app runs on
 EXPOSE 4001
