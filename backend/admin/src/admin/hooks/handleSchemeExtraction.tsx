@@ -41,7 +41,7 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
   const size = await getFolderSize.strict(path.join('../data/pathogen_schemes', context.record.params.id.toString()));
 
   await context.record.update({
-    scheme_size: size / (1024 * 1024),
+    scheme_size: size,
   });
 };
 

@@ -10,6 +10,7 @@ import deleteSchemeDirectory from '../hooks/deleteSchemeDirectory.js';
 import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
 import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
+import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
 
 export const createPathogenResource = () => {
   return {
