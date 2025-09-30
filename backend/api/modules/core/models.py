@@ -1,14 +1,7 @@
 from sqlalchemy import create_engine, MetaData, Table
-from os import environ
 from os.path import exists
 from werkzeug.utils import secure_filename
 from api.config import get_project_path
-
-engine = create_engine(f"{environ.get('DATABASE_DRIVER')}://{environ.get('DATABASE_USER')}:{environ.get('DATABASE_PASSWORD')}@{environ.get('DATABASE_HOST')}:{environ.get('DATABASE_PORT')}/{environ.get('DATABASE_NAME')}")
-metadata = MetaData()
-metadata.reflect(bind=engine)
-
-Pathogen = Table("pathogen", metadata, autoload_with=engine)
 
 def get_example_data_path(self, file_type):
         example_data_mappings = {

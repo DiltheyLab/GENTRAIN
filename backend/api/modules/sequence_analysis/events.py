@@ -2,7 +2,7 @@ import re
 from flask import request
 from flask_socketio import leave_room, join_room
 
-from api.modules.core.models import Pathogen
+from prisma.models import pathogen as Pathogen
 from api.modules.sequence_analysis.redis import (
     get_merged_fasta_content_if_complete,
     persist_fasta_chunk,
