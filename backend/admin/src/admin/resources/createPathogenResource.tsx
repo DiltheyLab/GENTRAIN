@@ -11,6 +11,7 @@ import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
 import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
+import { sanitizeFileName } from '../util/Helper.js';
 
 export const createPathogenResource = () => {
   return {
@@ -166,7 +167,7 @@ export const createPathogenResource = () => {
           maxSize: 100 * 1024 * 1024,
         },
         uploadPath: (record, _filename) => {
-          return `${record.params.id}/falldaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.csv`;
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_falldaten.csv`;
         },
       }),
       uploadFeature({
@@ -192,7 +193,7 @@ export const createPathogenResource = () => {
           maxSize: 100 * 1024 * 1024,
         },
         uploadPath: (record, _filename) => {
-          return `${record.params.id}/sequenzdaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.fasta`;
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.fasta`;
         },
       }),
       uploadFeature({
@@ -217,7 +218,7 @@ export const createPathogenResource = () => {
           maxSize: 100 * 1024 * 1024,
         },
         uploadPath: (record, _filename) => {
-          return `${record.params.id}/kontaktdaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.csv`;
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_kontaktdaten.csv`;
         },
       }),
       loggerFeature({

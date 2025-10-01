@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, DropZone, FormGroup, FormMessage, Icon, Link, Loader } from '@adminjs/design-system';
 import { BasePropertyProps, PropertyLabel, useTranslation } from 'adminjs';
-import UploadedScheme from './UploadedScheme.js';
+import { UploadedScheme } from './UploadedScheme.js';
 
 const SchemeUpload = (props: BasePropertyProps) => {
   const { onChange, property, record } = props;

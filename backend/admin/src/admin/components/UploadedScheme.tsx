@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Icon } from '@adminjs/design-system';
-import AdminJS, { RecordJSON } from 'adminjs';
-import getReadableSize from '../util/Helper.js';
+import { RecordJSON } from 'adminjs';
+import { getReadableSize, sanitizeFileName } from '../util/Helper.js';
 
-const UploadedScheme = (props: { record: RecordJSON }) => {
+export const UploadedScheme = (props: { record: RecordJSON }) => {
   const { record } = props;
   const [downloading, setDownloading] = useState(false);
   const schemeSize = record.params.scheme_size;
@@ -30,7 +30,7 @@ const UploadedScheme = (props: { record: RecordJSON }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${record.params.name}_scheme.zip`);
+      link.setAttribute('download', `${sanitizeFileName(encodeURIComponent(record.params.name))}_scheme.zip`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -92,5 +92,3 @@ const UploadedScheme = (props: { record: RecordJSON }) => {
     </Box>
   );
 };
-
-export default UploadedScheme;

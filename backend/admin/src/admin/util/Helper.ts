@@ -9,5 +9,7 @@ const getReadableSize = (schemeSizeInBytes: number) => {
   }
   return `${readableSchemeSize.toFixed(2)} ${units[index]}`;
 };
-
-export default getReadableSize;
+const sanitizeFileName = (filename: string) => {
+  return encodeURIComponent(filename.toLowerCase()).replace('%2520', '-');
+};
+export { getReadableSize, sanitizeFileName };
