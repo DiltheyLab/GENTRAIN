@@ -44,6 +44,9 @@ services:
       - type: bind
         source: ./backend/prisma
         target: /api/prisma
+      - type: bind
+        source: ./backend/data/pathogen_schemes
+        target: /api/pathogen_schemes
     depends_on:
       - redis
       - db

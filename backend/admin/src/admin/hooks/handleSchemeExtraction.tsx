@@ -24,7 +24,7 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const folderName = record.params.id.toString();
   const extractPath = path.join('../data/pathogen_schemes', folderName);
   if (fs.existsSync(path.join('../data/pathogen_schemes', folderName))) {
-    await fs.promises.rmdir(extractPath, { recursive: true });
+    await fs.promises.rm(extractPath, { recursive: true });
   }
   await fs.promises.mkdir(extractPath, { recursive: true });
   // extract ZIP into folder named after record id

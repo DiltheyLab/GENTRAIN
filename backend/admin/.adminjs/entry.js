@@ -1,4 +1,5 @@
 AdminJS.UserComponents = {}
+AdminJS.env.API_HOST = "http://localhost:4000"
 import Login from '../dist/admin/components/Login'
 AdminJS.UserComponents.Login = Login
 import LoggedIn from '../dist/admin/components/LoggedIn'

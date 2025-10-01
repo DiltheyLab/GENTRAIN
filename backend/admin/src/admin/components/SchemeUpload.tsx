@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Box, DropZone, DropZoneItem, FormGroup, FormMessage, Text } from '@adminjs/design-system';
+import { Box, DropZone, FormGroup, FormMessage, Icon, Link, Loader } from '@adminjs/design-system';
 import { BasePropertyProps, PropertyLabel, useTranslation } from 'adminjs';
+import UploadedScheme from './UploadedScheme.js';
 
 const SchemeUpload = (props: BasePropertyProps) => {
   const { onChange, property, record } = props;
-
   const [_, setFile] = useState<File | null>(null);
-  const schemeSize = record.params.scheme_size;
   const schemeVersion = record.params.scheme_version
     ? new Date(record.params.scheme_version).toLocaleString('de-DE', {
         dateStyle: 'short',
@@ -28,7 +27,7 @@ const SchemeUpload = (props: BasePropertyProps) => {
         <PropertyLabel property={property} />
       </Box>
       <DropZone onChange={handleDrop} />
-      {schemeVersion && <DropZoneItem filename={`Version: <${schemeVersion}>, Size: ${schemeSize} MB`} src={'test'} />}
+      {schemeVersion && <UploadedScheme record={record} />}
       <FormMessage>{error && tm(error.message, property.resourceId)}</FormMessage>
     </FormGroup>
   );

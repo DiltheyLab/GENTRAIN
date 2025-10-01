@@ -126,7 +126,13 @@ export const createPathogenResource = () => {
           after: [handleSchemeExtraction],
         },
         edit: {
-          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
+          before: [
+            initValidationErrors,
+            readableSchemeSize,
+            preprocessSchemeExtraction,
+            validateExampleDataUploads,
+            throwValidationErrors,
+          ],
           after: [handleSchemeExtraction],
         },
         delete: {

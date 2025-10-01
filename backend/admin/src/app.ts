@@ -27,6 +27,9 @@ const start = async () => {
 
   // Create AdminJS with options
   const admin = new AdminJS(options);
+
+  admin.options.env = Object.assign({}, admin.options.env, { API_HOST: process.env.VITE_API_HOST });
+
   // Compile tsx in js
   if (process.env.NODE_ENV === 'production') {
     console.log('initialized in production mode');
@@ -38,6 +41,8 @@ const start = async () => {
 
   // create router with authentification
   const adminRouter = expressAuthenticatedRouter(admin);
+
+  app.set('trust proxy', 1);
 
   // set path under you can access the admin panel
   app.use(admin.options.rootPath, adminRouter);
