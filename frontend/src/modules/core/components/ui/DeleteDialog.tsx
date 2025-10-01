@@ -21,7 +21,7 @@ type DeleteDialogProps = {
 export function DeleteDialog({ deleteAction, dialogTitle, dialogDescription, triggerComponent }: DeleteDialogProps) {
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild className="w-fit">
+            <AlertDialogTrigger asChild>
                 {React.isValidElement(triggerComponent) ? triggerComponent : <>{triggerComponent}</>}
             </AlertDialogTrigger>
             <AlertDialogContent className="z-[105]">
