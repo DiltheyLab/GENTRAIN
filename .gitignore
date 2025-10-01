@@ -11,3 +11,4 @@ redis/tls
 **/.DS_Store
 certs/
 certs/*
+backend/data/pathogen_schemes/*
