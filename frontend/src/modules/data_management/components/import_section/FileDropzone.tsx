@@ -40,10 +40,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         try {
             const fileReaderResult = await fileReadingStrategy.execute(files, type);
             if (!fileReaderResult) return;
-
             // format the file content into a proper structure (fasta -> string[], csv -> object[])
             const formattedData = formatData(fileReaderResult);
-
             // validate the data
             validationStrategy.collectData(formattedData);
             const validationResult = await validationStrategy.execute();

@@ -13,27 +13,83 @@ import { GroupWithRelationships } from "@/modules/core/models/groups";
 import { z } from "zod";
 
 const COLUMNS = {
-    case_id: { required: true, names: ["Fall ID", "Aktenzeichen"] },
-    registered_at: { required: true, names: ["Registrierungsdatum", "Meldedatum"] },
+    case_id: {
+        required: true,
+        names: [
+            "Fall ID", // Gentrain
+            "Aktenzeichen", // Survnet
+            "fallFallkennzeichen", //ISGA
+        ],
+    },
+    registered_at: {
+        required: true,
+        names: [
+            "Registrierungsdatum", // Gentrain
+            "Meldedatum", // Survnet
+            "fallMeldedatum", // ISGA
+        ],
+    },
     fasta_id: { required: false, names: ["Sequenz ID"] },
     outbreak: {
         required: false,
         names: [
-            "Ausbruch",
-            "AusbruchInfo_NameGA",
-            "AusbruchInfo_InternalName",
-            "AusbruchInfo_NameLS",
-            "AusbruchInfo_NameRKI",
-            "AusbruchInfo_GuidRecord",
-            "AusbruchInfo_InterneRef",
+            "Ausbruch", // Gentrain
+            "AusbruchInfo_NameGA", // Survnet
+            "AusbruchInfo_InternalName", // Survnet
+            "AusbruchInfo_NameLS", // Survnet
+            "AusbruchInfo_NameRKI", // Survnet
+            "AusbruchInfo_GuidRecord", // Survnet
+            "AusbruchInfo_InterneRef", // Survnet
+            "ausbruchAktenzeichen", // ISGA
+            "ausbruchId", // ISGA
         ],
     },
     infected_by: { required: false, names: ["Angesteckt bei", "AngestecktBei"] },
-    first_name: { required: false, names: ["Vorname", "PersonVorname"] },
-    last_name: { required: false, names: ["Nachname", "PersonFamilienname"] },
-    city: { required: false, names: ["Ort", "PersonOrt"] },
-    zip_code: { required: false, names: ["PLZ", "PersonPLZ"] },
-    street: { required: false, names: ["Straße", "PersonStrasse"] },
+    first_name: {
+        required: false,
+        names: [
+            "Vorname", // Gentrain
+            "PersonVorname", // Survnet
+            "persVorname", // ISGA
+        ],
+    },
+    last_name: {
+        required: false,
+        names: [
+            "Nachname", // Gentrain
+            "PersonFamilienname", // Survnet
+            "persName", // ISGA
+        ],
+    },
+    city: {
+        required: false,
+        names: [
+            "Ort", // Gentrain
+            "PersonOrt", // Survnet
+            "persOrt", // ISGA
+        ],
+    },
+    zip_code: {
+        required: false,
+        names: [
+            "PLZ", // Gentrain
+            "PersonPLZ", // Survnet
+        ],
+    },
+    street: {
+        required: false,
+        names: [
+            "Straße", // Gentrain
+            "PersonStrasse", // Survnet
+            "persStrasse", // ISGA
+        ],
+    },
+    street_number: {
+        required: false,
+        names: [
+            "persHnr", // ISGA
+        ],
+    },
 };
 
 export class CasesValidation extends ValidationStrategy {
@@ -56,7 +112,6 @@ export class CasesValidation extends ValidationStrategy {
         const caseImports = await this.collectCaseImports();
         useDataManagementStore.getState().setCaseSelectionActive(true);
         useDataManagementStore.getState().setCaseImports(caseImports);
-
         if (Object.keys(caseImports).length === 0) {
             toast({
                 title: "Die ausgewählte Datei enthält keine neuen Fälle.",
@@ -68,7 +123,6 @@ export class CasesValidation extends ValidationStrategy {
                 useDataManagementStore.getState().nextImportAssistentStep();
             }
         }
-
         return { data: this.data };
     }
 
@@ -122,6 +176,7 @@ export class CasesValidation extends ValidationStrategy {
                     street: this.getCellValueForColumn(row, COLUMNS.street),
                     registered_at: parseGermanDateFormat(registeredAt!),
                 } satisfies CaseImport);
+
                 if (persistedCase) {
                     persistedCase.outbreak = this.outbreaks?.get(persistedCase.outbreak_id) ?? null;
                     persistedCase.groups = persistedCase.groups ?? [];
@@ -134,6 +189,7 @@ export class CasesValidation extends ValidationStrategy {
                     import: true,
                 };
             } catch (err) {
+                console.log(err);
                 if (err instanceof z.ZodError && caseId) {
                     const errorPaths = err.errors.map((err) => err.path.join("."));
                     failedCaseImports[caseId] = errorPaths;
