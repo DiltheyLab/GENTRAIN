@@ -42,7 +42,7 @@ services:
         source: ./backend/api
         target: /api
       - type: bind
-        source: ./backend/prisma
+        source: ./backend/admin/prisma
         target: /api/prisma
     depends_on:
       - redis
