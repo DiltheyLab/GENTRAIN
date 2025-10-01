@@ -94,7 +94,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/modules/sequence_analysis/schemes/{secure_filename(self.pathogen.scheme_name)}",
+                f"{get_project_path()}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
                 "-output",
                 self.output,
             ],
@@ -164,7 +164,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         )
         return BacterialSequenceAnalysisResponseModel(
             chewBACCA_version=chewBBACCA_version,
-            analysis_schema=self.pathogen.scheme_name,
+            analysis_schema=str(self.pathogen.scheme_version),
             allele_ids=result["allele_ids"],
             allele_hashes=result["allele_hashes"],
             undeterminable_gen_count=result["undeterminable_gen_count"],
