@@ -5,6 +5,7 @@ import { toast } from "@/modules/core/components/ui/UseToast";
 import { CaseImports, SequenceImports } from "../types/import";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
 import { persist } from "zustand/middleware";
+import { DatabaseName } from "@/modules/core/services/database/DatabaseManager";
 
 type DataManagementStoreState = {
     // case import
@@ -36,9 +37,10 @@ type DataManagementStoreState = {
     // sequence mapping
     sequenceMappingDialogCase: CaseWithRelationships | null;
 
-    // indexedDB deletion
+    // database operations
     indexedDbExpiresAt: null | number;
-    indexedDBDeletionOnExitIsActive: boolean;
+    deleteIndexedDbOnExit: boolean;
+    selectedDB?: DatabaseName;
 };
 
 type DataManagementStoreActions = {
@@ -90,9 +92,10 @@ type DataManagementStoreActions = {
     initSequenceMappingDialog: (focusedCase: CaseWithRelationships) => void;
     hideSequenceMappingDialog: () => void;
 
-    // indexedDB deletion
-    setIndexedDbExpiresAt: (timestamp: number | null) => void;
-    setIndexedDBDeletionOnExitIsActive: (isActive: boolean) => void;
+    // database operations
+    setIndexedDbExpiresAt: (hours: number | null) => void;
+    setDeleteIndexedDbOnExit: (isActive: boolean) => void;
+    setSelectedDB: (db: DatabaseName) => void;
 };
 
 export type DataManagementStore = DataManagementStoreState & DataManagementStoreActions;
@@ -336,19 +339,30 @@ export const useDataManagementStore = create<DataManagementStore>()(
                 set({ sequenceMappingDialogCase: null });
             },
             indexedDbExpiresAt: null,
-            setIndexedDbExpiresAt: (timestamp) => {
-                set({ indexedDbExpiresAt: timestamp });
+            setIndexedDbExpiresAt: (hours) => {
+                if (hours && !isNaN(hours) && hours > 0) {
+                    const TTLinMilliseconds = hours * 60 * 60 * 1000;
+                    const expiryDate = Date.now() + TTLinMilliseconds;
+                    set({ indexedDbExpiresAt: expiryDate });
+                } else {
+                    set({ indexedDbExpiresAt: null });
+                }
             },
-            indexedDBDeletionOnExitIsActive: false,
-            setIndexedDBDeletionOnExitIsActive: (isActive) => {
-                set({ indexedDBDeletionOnExitIsActive: isActive });
+            deleteIndexedDbOnExit: false,
+            setDeleteIndexedDbOnExit: (isActive) => {
+                set({ deleteIndexedDbOnExit: isActive });
+            },
+            selectedDB: undefined,
+            setSelectedDB: (db) => {
+                set({ selectedDB: db });
             },
         }),
         {
             name: "database",
             partialize: (state) => ({
+                selectedDB: state.selectedDB,
                 indexedDbExpiresAt: state.indexedDbExpiresAt,
-                deleteIndexedDbOnExit: state.indexedDBDeletionOnExitIsActive,
+                deleteIndexedDbOnExit: state.deleteIndexedDbOnExit,
             }),
         }
     )

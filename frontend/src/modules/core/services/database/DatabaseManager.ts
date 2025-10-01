@@ -14,8 +14,9 @@ import { SequenceAnalysisSchema } from "@/modules/core/models/sequence_analyses"
 import { gentrainExampleDB } from "@/modules/core/infrastructure/gentrain_example_db";
 import { handleError } from "../../helpers/errors";
 import { SequenceAnalysisCasesSchema } from "../../models/sequence_analyses_cases";
+import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 
-type DatabaseName = "gentrain" | "gentrain_example";
+export type DatabaseName = "gentrain" | "gentrain_example";
 
 export type DatabaseSchema = Dexie & {
     sequence_analyses: EntityTable<SequenceAnalysisSchema, "id">;
@@ -42,7 +43,7 @@ class DatabaseManager {
         };
 
         // Get previously selected DB from localStorage or use default
-        const savedDB = (localStorage.getItem("selectedDB") as DatabaseName) || "gentrain";
+        const savedDB = useDataManagementStore.getState().selectedDB || "gentrain";
         this.currentDB = this.databases[savedDB];
     }
 
@@ -50,7 +51,7 @@ class DatabaseManager {
         try {
             if (!this.databases[dbName]) throw new Error(`No database with name ${dbName} found`);
             this.currentDB = this.databases[dbName];
-            localStorage.setItem("selectedDB", dbName);
+            useDataManagementStore.getState().setSelectedDB(dbName);
         } catch (error) {
             handleError(error, "database");
         }
