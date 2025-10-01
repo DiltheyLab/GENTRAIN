@@ -22,9 +22,12 @@ def get_all_pathogens():
 def get_pathogen(pathogen_id: int):
     pathogen = Pathogen.prisma().find_unique(
         where={
-            'id': pathogen_id,
+            "id": pathogen_id,
         }
     )
+    if not pathogen:
+        abort(404)
+    print(pathogen)
     return pathogen.dict()
 
 
@@ -79,12 +82,12 @@ def align_sequences():
 def download_scheme(pathogen_id: str):
     pathogen = Pathogen.prisma().find_unique(
         where={
-            'id': pathogen_id,
+            "id": pathogen_id,
         }
     )
     scheme_path = f"{get_project_path()}/pathogen_schemes/{str(pathogen_id)}"
     buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for root, dirs, files in os.walk(scheme_path):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -95,5 +98,5 @@ def download_scheme(pathogen_id: str):
         buffer,
         as_attachment=True,
         download_name=f"{pathogen.name}_scheme.zip",
-        mimetype='application/zip'
+        mimetype="application/zip",
     )

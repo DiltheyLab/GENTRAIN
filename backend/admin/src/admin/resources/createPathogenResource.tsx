@@ -149,7 +149,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -163,8 +165,8 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/falldaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/falldaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.csv`;
         },
       }),
       uploadFeature({
@@ -172,7 +174,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -182,12 +186,13 @@ export const createPathogenResource = () => {
           filesToDelete: 'files_to_delete_example_sequences',
           bucket: 'example_sequences_bucket',
           size: 'example_sequences_size',
+          filename: 'sequenzdaten.fasta',
         },
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/sequenzdaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/sequenzdaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.fasta`;
         },
       }),
       uploadFeature({
@@ -195,7 +200,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -209,8 +216,8 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/kontaktdaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/kontaktdaten_${encodeURIComponent(record.params.name.replace(' ', '_'))}.csv`;
         },
       }),
       loggerFeature({
