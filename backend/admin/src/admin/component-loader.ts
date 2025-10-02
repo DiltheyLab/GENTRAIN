@@ -34,5 +34,7 @@ override('LoggedIn', 'components/LoggedIn');
  */
 export const Dashboard = add('Dashboard', './components/Dashboard');
 export const SchemeUpload = add('SchemeUpload', './components/SchemeUpload');
+export const SchemeDownloadList = add('SchemeDownloadList', './components/SchemeDownloadList');
+export const SchemeDownloadShow = add('SchemeDownloadShow', './components/SchemeDownloadShow');
 export const SchemeTypeSelectEdit = add('SchemeTypeSelectEdit', './components/SchemeTypeSelectEdit');
 export const ErrorMessage = add('ErrorMessage', './components/ErrorMessage');

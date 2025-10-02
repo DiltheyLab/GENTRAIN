@@ -1,90 +1,43 @@
-from sqlalchemy import create_engine, MetaData, Table
-from os.path import exists
-from werkzeug.utils import secure_filename
-from api.config import get_project_path
-
-def get_example_data_path(self, file_type):
-        example_data_mappings = {
-            "cases": {"extension": "csv", "filename": "falldaten"},
-            "sequences": {
-                "extension": "fasta" if self.type == "viral" else "zip",
-                "filename": "sequenzdaten",
-            },
-            "contacts": {"extension": "csv", "filename": "kontaktdaten"},
-        }
-        file_path = f"static/pathogen_example_data/{secure_filename(self.name)}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"
-        return file_path if exists(f"{get_project_path()}/{file_path}") else None
-
-""" from os import path
-from os.path import exists
-
-from flask_security import RoleMixin, UserMixin
-from werkzeug.utils import secure_filename
-
-from api.app import db
-from api.config import get_project_path
-
-roles_users = db.Table(
-    "roles_users",
-    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
-    db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
-)
+from prisma.models import pathogen
+from os import environ
 
 
-class Role(db.Model, RoleMixin):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(255))
+def serialize_pathogen(pathogen: pathogen):
+    pathogen = pathogen.dict()
 
-    def __str__(self):
-        return self.name
-
-
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255))
-    active = db.Column(db.Boolean())
-    confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship(
-        "Role", secondary=roles_users, backref=db.backref("users", lazy="dynamic")
+    # Assemble example data paths
+    pathogen["cases_example"] = (
+        (
+            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_cases_key']}"
+        )
+        if pathogen["example_cases_key"]
+        else None
     )
-    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False)
+    pathogen["sequences_example"] = (
+        (
+            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_sequences_key']}"
+        )
+        if pathogen["example_sequences_key"]
+        else None
+    )
+    pathogen["contacts_example"] = (
+        (
+            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_contacts_key']}"
+        )
+        if pathogen["example_contacts_key"]
+        else None
+    )
 
+    # Remove unnecessary fields and upload overhead from API response
+    del pathogen["example_cases_key"]
+    del pathogen["example_sequences_key"]
+    del pathogen["example_contacts_key"]
+    del pathogen["example_cases_bucket"]
+    del pathogen["example_sequences_bucket"]
+    del pathogen["example_contacts_bucket"]
+    del pathogen["example_cases_size"]
+    del pathogen["example_sequences_size"]
+    del pathogen["example_contacts_size"]
+    del pathogen["scheme_size"]
 
-class Pathogen(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
-    genetic_distance_threshold = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String, nullable=False)
-    activated = db.Column(db.Boolean, nullable=False)
-    scheme_version = db.Column(db.DateTime, nullable=False)
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "genetic_distance_threshold": self.genetic_distance_threshold,
-            "type": self.type,
-            "activated": self.activated,
-            "scheme_version": self.scheme_version,
-            "cases_example": self.get_example_data_path("cases"),
-            "sequences_example": self.get_example_data_path("sequences"),
-            "contacts_example": self.get_example_data_path("contacts"),
-        }
-
-    def get_example_data_path(self, file_type):
-        example_data_mappings = {
-            "cases": {"extension": "csv", "filename": "falldaten"},
-            "sequences": {
-                "extension": "fasta" if self.type == "viral" else "zip",
-                "filename": "sequenzdaten",
-            },
-            "contacts": {"extension": "csv", "filename": "kontaktdaten"},
-        }
-        file_path = f"static/pathogen_example_data/{secure_filename(self.name)}/{example_data_mappings[file_type]['filename']}.{example_data_mappings[file_type]['extension']}"
-        return file_path if exists(f"{get_project_path()}/{file_path}") else None
- """
-
-
-
+    return pathogen

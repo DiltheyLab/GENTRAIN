@@ -3,6 +3,7 @@ import os
 import zipfile
 from Bio import Align
 from flask import Response, jsonify, request, abort, send_file
+from api.modules.core.models import serialize_pathogen
 from prisma.models import pathogen as Pathogen
 from api.app import app
 from api.server import redis_connection
@@ -15,7 +16,7 @@ from api.config import get_project_path
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():
     pathogens = Pathogen.prisma().find_many()
-    return [pathogen.dict() for pathogen in pathogens]
+    return [serialize_pathogen(pathogen) for pathogen in pathogens]
 
 
 @app.route("/pathogens/<int:pathogen_id>", methods=["GET"])
@@ -27,8 +28,7 @@ def get_pathogen(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    print(pathogen)
-    return pathogen.dict()
+    return serialize_pathogen(pathogen)
 
 
 # Sequence Analyses

@@ -1,11 +1,12 @@
 import express from 'express';
-import AdminJS from 'adminjs';
+import AdminJS, { defaultConfig } from 'adminjs';
 import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
 import { expressAuthenticatedRouter } from './admin/router.js';
 import { Database, Resource } from '@adminjs/prisma';
 import * as url from 'url';
 import { prisma } from './admin/db.js';
+import bodyParser from 'body-parser';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
@@ -28,7 +29,10 @@ const start = async () => {
   // Create AdminJS with options
   const admin = new AdminJS(options);
 
-  admin.options.env = Object.assign({}, admin.options.env, { API_HOST: process.env.VITE_API_HOST });
+  admin.options.env = Object.assign({}, admin.options.env, {
+    API_HOST: process.env.VITE_API_HOST,
+    ADMIN_SCHEME_DIRECTORY: process.env.ADMIN_SCHEME_DIRECTORY,
+  });
 
   // Compile tsx in js
   if (process.env.NODE_ENV === 'production') {
@@ -42,10 +46,10 @@ const start = async () => {
   // create router with authentification
   const adminRouter = expressAuthenticatedRouter(admin);
 
-  app.set('trust proxy', 1);
-
   // set path under you can access the admin panel
   app.use(admin.options.rootPath, adminRouter);
+
+  app.use(bodyParser.json({ limit: '300mb' }));
 
   app.listen(port, () => {
     console.log(`AdminJS available at http://localhost:${port}${admin.options.rootPath}`);

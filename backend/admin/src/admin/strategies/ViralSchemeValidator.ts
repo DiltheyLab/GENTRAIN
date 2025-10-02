@@ -31,7 +31,7 @@ export class ViralSchemeValidator extends SchemeValidator {
       : this.zip.getEntry('pathogen.json');
     if (!file) {
       throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive does not contain pathogen.json.` } },
+        { scheme: { message: `Uploaded ZIP archive does not contain pathogen.json.` } },
         { message: 'Scheme upload is invalid' }
       );
     }
@@ -42,14 +42,14 @@ export class ViralSchemeValidator extends SchemeValidator {
   private checkReferenceFastaIsValid = (pathogenJson: any) => {
     if (!pathogenJson.files.reference) {
       throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive does not contain a reference genome.` } },
+        { scheme: { message: `Uploaded ZIP archive does not contain a reference genome.` } },
         { message: 'Scheme upload is invalid' }
       );
     }
     const file = this.zip.getEntry(pathogenJson.files.reference);
     if (!file) {
       throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive does not contain ${pathogenJson.files.reference}.` } },
+        { scheme: { message: `Uploaded ZIP archive does not contain ${pathogenJson.files.reference}.` } },
         { message: 'Scheme upload is invalid' }
       );
     }

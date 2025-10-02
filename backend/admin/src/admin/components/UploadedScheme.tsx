@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Box, Icon } from '@adminjs/design-system';
 import { RecordJSON } from 'adminjs';
 import { getReadableSize, sanitizeFileName } from '../util/Helper.js';
+import { SchemeDownload } from './SchemeDownload.js';
 
 export const UploadedScheme = (props: { record: RecordJSON }) => {
   const { record } = props;
   const [downloading, setDownloading] = useState(false);
+  console.log(record);
   const schemeSize = record.params.scheme_size;
   const schemeVersion = record.params.scheme_version
     ? new Date(record.params.scheme_version).toLocaleString('de-DE', {
@@ -47,7 +49,6 @@ export const UploadedScheme = (props: { record: RecordJSON }) => {
       style={{
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 20,
         padding: 8,
         border: '1px solid rgb(187, 195, 203)',
         borderRadius: 4,
@@ -80,14 +81,7 @@ export const UploadedScheme = (props: { record: RecordJSON }) => {
           border: !downloading ? '1px solid rgb(187, 195, 203)' : '',
         }}
       >
-        <Icon
-          style={{ cursor: downloading ? 'auto' : 'pointer' }}
-          icon={downloading ? 'Loader' : 'Download'}
-          size={downloading ? 20 : 15}
-          color="rgb(69, 70, 85)"
-          onClick={!downloading ? triggerSchemeDownload : null}
-          spin={downloading}
-        />
+        <SchemeDownload record={record} />
       </Box>
     </Box>
   );
