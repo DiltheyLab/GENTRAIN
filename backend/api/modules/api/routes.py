@@ -27,7 +27,6 @@ def get_pathogen(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    print(pathogen)
     return pathogen.dict()
 
 

@@ -29,7 +29,10 @@ const start = async () => {
   // Create AdminJS with options
   const admin = new AdminJS(options);
 
-  admin.options.env = Object.assign({}, admin.options.env, { API_HOST: process.env.VITE_API_HOST });
+  admin.options.env = Object.assign({}, admin.options.env, {
+    API_HOST: process.env.VITE_API_HOST,
+    ADMIN_SCHEME_DIRECTORY: process.env.ADMIN_SCHEME_DIRECTORY,
+  });
 
   // Compile tsx in js
   if (process.env.NODE_ENV === 'production') {

@@ -7,7 +7,8 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
   const { record } = props;
   const [downloading, setDownloading] = useState(false);
 
-  const triggerSchemeDownload = async () => {
+  const triggerSchemeDownload = async (evt: any) => {
+    evt.preventDefault();
     try {
       setDownloading(true);
 

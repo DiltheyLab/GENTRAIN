@@ -22,8 +22,8 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const { record, scheme } = context;
   // create folder using record id
   const folderName = record.params.id.toString();
-  const extractPath = path.join('../data/pathogen_schemes', folderName);
-  if (fs.existsSync(path.join('../data/pathogen_schemes', folderName))) {
+  const extractPath = path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName);
+  if (fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName))) {
     await fs.promises.rm(extractPath, { recursive: true });
   }
   await fs.promises.mkdir(extractPath, { recursive: true });
@@ -38,7 +38,9 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
   if (!context.scheme) {
     return;
   }
-  const size = await getFolderSize.strict(path.join('../data/pathogen_schemes', context.record.params.id.toString()));
+  const size = await getFolderSize.strict(
+    path.join(process.env.ADMIN_SCHEME_DIRECTORY, context.record.params.id.toString())
+  );
 
   await context.record.update({
     scheme_size: size,
