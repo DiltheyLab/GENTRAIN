@@ -18,7 +18,15 @@ export const createPathogenResource = () => {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
       navigation: null,
-      listProperties: ['id', 'name', 'type', 'genetic_distance_threshold', 'scheme_version', 'scheme_size'],
+      listProperties: [
+        'id',
+        'name',
+        'type',
+        'genetic_distance_threshold',
+        'scheme_version',
+        'scheme_size',
+        'activated',
+      ],
       properties: {
         activated: {
           type: 'boolean',

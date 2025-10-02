@@ -32,7 +32,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
       { message: 'Scheme upload is invalid' }
     );
   }
-  if (file.size > 50 * 1024 * 1024) {
+  if (file.size > 300 * 1024 * 1024) {
     throw new ValidationError(
       { scheme_upload: { message: 'Uploaded file is too large (max. 50 MB).' } },
       { message: 'Scheme upload is invalid' }

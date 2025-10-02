@@ -26,7 +26,7 @@ const SchemeUpload = (props: BasePropertyProps) => {
       <Box flex style={{ justifyContent: 'space-between' }}>
         <PropertyLabel property={property} />
       </Box>
-      <DropZone onChange={handleDrop} />
+      <DropZone onChange={handleDrop} validate={{ maxSize: 300 * 1024 * 1024 }} />
       {schemeVersion && <UploadedScheme record={record} />}
       <FormMessage>{error && tm(error.message, property.resourceId)}</FormMessage>
     </FormGroup>

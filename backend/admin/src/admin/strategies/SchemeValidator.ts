@@ -60,7 +60,6 @@ export abstract class SchemeValidator {
   protected validateAndPreprocessZipFile = () => {
     const zipEntries = this.zip.getEntries();
     const rootFolderName = this.getRootFolderName();
-
     // Drop directories which is automatically created and their content recursively
     const preprocessedZip = new AdmZip();
     zipEntries.forEach((entry) => {
@@ -80,7 +79,7 @@ export abstract class SchemeValidator {
           !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
           throw new ValidationError(
-            { scheme_upload: { message: `Uploaded ZIP archive contains invalid files.` } },
+            { scheme_upload: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
             { message: 'Scheme upload is invalid' }
           );
         }
@@ -94,7 +93,7 @@ export abstract class SchemeValidator {
     const zipEntries = this.zip.getEntries();
     const rootFolderEntry = zipEntries.find((entry) => {
       // Entry is a directory and has no parent (only one segment)
-      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
+      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length >= 1;
     });
     return rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
   };

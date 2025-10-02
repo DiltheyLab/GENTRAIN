@@ -36,6 +36,7 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
         sameSite: 'strict',
       },
       name: 'adminjs',
-    }
+    },
+    { maxFileSize: 300 * 1024 * 1024 } // allow 300 MB file uploads
   );
 };

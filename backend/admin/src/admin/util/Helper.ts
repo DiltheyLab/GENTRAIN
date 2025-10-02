@@ -1,4 +1,7 @@
 const getReadableSize = (schemeSizeInBytes: number) => {
+  if (!schemeSizeInBytes) {
+    return null;
+  }
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let index = 0;
   let readableSchemeSize = schemeSizeInBytes;

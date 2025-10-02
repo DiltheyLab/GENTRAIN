@@ -20,7 +20,7 @@ model pathogen {
   type                       String    @db.VarChar
   activated                  Boolean   @default(false) @db.Boolean
   scheme_version             DateTime? @db.Timestamp(6)
-  scheme_size                Int?
+  scheme_size                BigInt?
   example_cases_key          String?   @db.VarChar
   example_cases_size         Int?
   example_cases_bucket       String?
