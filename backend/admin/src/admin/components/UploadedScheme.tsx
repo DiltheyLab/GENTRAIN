@@ -49,7 +49,6 @@ export const UploadedScheme = (props: { record: RecordJSON }) => {
       style={{
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 20,
         padding: 8,
         border: '1px solid rgb(187, 195, 203)',
         borderRadius: 4,

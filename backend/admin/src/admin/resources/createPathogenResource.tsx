@@ -26,14 +26,10 @@ export const createPathogenResource = () => {
     options: {
       navigation: null,
       properties: {
-        activated: {
-          type: 'boolean',
-          position: 1,
-        },
         name: {
           type: 'string',
           description: 'Representation of the pathogen within the GENTRAIN dashboard.',
-          position: 2,
+          position: 1,
         },
         type: {
           availableValues: [
@@ -41,7 +37,7 @@ export const createPathogenResource = () => {
             { value: 'viral', label: 'Viral' },
           ],
           description: 'Defines how genomic sequences are analyzed. Can not be changed after first pathogen creation.',
-          position: 3,
+          position: 2,
           components: {
             edit: SchemeTypeSelectEdit,
           },
@@ -50,6 +46,10 @@ export const createPathogenResource = () => {
           type: 'number',
           description:
             'Genetic distances below this threshold are be considered as similar or almost similar genomic sequences.',
+          position: 3,
+        },
+        activated: {
+          type: 'boolean',
           position: 4,
         },
         scheme_version: {
