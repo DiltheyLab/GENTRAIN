@@ -23,7 +23,7 @@ export const DataDeletionOptions = () => {
         return (
             <Badge className="bg-accent hover:bg-accent text-black">
                 <div className="grid p-1 place-items-center text-center">
-                    <p className="font-light">Automatische Löschung am</p>
+                    <p className="font-light">Autom. Löschung am</p>
                     <p> {`${date.toLocaleDateString()}, ${date.toLocaleTimeString()} Uhr`}</p>
                 </div>
             </Badge>

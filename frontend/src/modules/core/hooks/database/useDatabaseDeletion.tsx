@@ -1,19 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { DatabaseName, db } from "@/modules/core/services/database/DatabaseManager";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { toast } from "../../components/ui/UseToast";
 
-export const deleteDatabase = async (
-    options: {
-        reloadPage: boolean;
-    } = { reloadPage: false }
-) => {
+export const deleteDatabase = async (options: { reloadPage?: boolean; unregisterHandlers?: () => void } = {}) => {
     try {
         await db.delete();
         localStorage.removeItem("core");
         localStorage.removeItem("database");
 
-        options.reloadPage && location.reload();
+        if (options.reloadPage) {
+            options.unregisterHandlers?.(); // prevent triggering unload handlers after deletion because page is reloading
+            location.reload(); // reload the page to reset the app state
+        }
+
         return true;
     } catch (error) {
         toast({
@@ -22,44 +22,51 @@ export const deleteDatabase = async (
             duration: 10000,
             variant: "destructive",
         });
-        console.log(error);
+        console.error(error);
         return false;
     }
 };
 
 export const useDatabaseDeletion = () => {
-    const deleteIndexedDbOnExit = useDataManagementStore((state) => state.deleteIndexedDbOnExit);
-    const indexedDbExpiresAt = useDataManagementStore((state) => state.indexedDbExpiresAt);
+    const deleteIndexedDbOnExit = useDataManagementStore((s) => s.deleteIndexedDbOnExit);
+    const indexedDbExpiresAt = useDataManagementStore((s) => s.indexedDbExpiresAt);
     const gentrainDbIsSelected = (db.name as DatabaseName) === "gentrain";
 
+    // Ref saves current handlers for unregistering
+    const handlersRef = useRef<{
+        handleBeforeUnload?: (ev: BeforeUnloadEvent) => void;
+        handleUnload?: () => void;
+    }>({});
+
+    // Exit-based deletion
     useEffect(() => {
         if (!deleteIndexedDbOnExit || !gentrainDbIsSelected) return;
 
         let shouldDelete = false;
 
-        // mark the user is about to leave and give him the chance to cancel
         const handleBeforeUnload = (ev: BeforeUnloadEvent) => {
             ev.preventDefault();
             ev.returnValue = "";
             shouldDelete = true;
         };
 
-        // if the user really leaves, delete the database
         const handleUnload = () => {
             if (shouldDelete) {
                 void deleteDatabase();
             }
         };
 
+        handlersRef.current.handleBeforeUnload = handleBeforeUnload;
+        handlersRef.current.handleUnload = handleUnload;
+
         window.addEventListener("beforeunload", handleBeforeUnload);
         window.addEventListener("unload", handleUnload);
 
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-            window.removeEventListener("unload", handleUnload);
-        };
-    }, [deleteIndexedDbOnExit, gentrainDbIsSelected, deleteDatabase]);
+        //clean-up
+        return unregisterHandlers;
+    }, [deleteIndexedDbOnExit, gentrainDbIsSelected]);
 
+    // TTL-based deletion
     useEffect(() => {
         if (!indexedDbExpiresAt || !gentrainDbIsSelected) return;
         let warningShown = false;
@@ -69,7 +76,10 @@ export const useDatabaseDeletion = () => {
             const timeLeftInHours = Math.round(timeLeft / (1000 * 60 * 60));
 
             if (timeLeft <= 0) {
-                const success = await deleteDatabase({ reloadPage: true });
+                const success = await deleteDatabase({
+                    reloadPage: true,
+                    unregisterHandlers: unregisterHandlers,
+                });
                 if (success) {
                     toast({
                         title: "Daten wurden gelöscht!",
@@ -91,13 +101,23 @@ export const useDatabaseDeletion = () => {
             }
         };
 
-        // check expiration immediately on effect run
         void checkExpiration();
-
-        // check every 1 minute
-        const timer = 60 * 1000;
-        const interval = setInterval(checkExpiration, timer);
+        const interval = setInterval(checkExpiration, 1000); // check every minute
 
         return () => clearInterval(interval);
-    }, [indexedDbExpiresAt, gentrainDbIsSelected, deleteDatabase]);
+    }, [indexedDbExpiresAt, gentrainDbIsSelected]);
+
+    // Helper function, to unregister handlers
+    const unregisterHandlers = () => {
+        if (handlersRef.current.handleBeforeUnload) {
+            window.removeEventListener("beforeunload", handlersRef.current.handleBeforeUnload);
+            handlersRef.current.handleBeforeUnload = undefined;
+        }
+        if (handlersRef.current.handleUnload) {
+            window.removeEventListener("unload", handlersRef.current.handleUnload);
+            handlersRef.current.handleUnload = undefined;
+        }
+    };
+
+    return { unregisterHandlers };
 };
