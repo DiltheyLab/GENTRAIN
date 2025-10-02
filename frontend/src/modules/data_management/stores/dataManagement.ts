@@ -38,7 +38,8 @@ type DataManagementStoreState = {
     sequenceMappingDialogCase: CaseWithRelationships | null;
 
     // database operations
-    indexedDbExpiresAt: null | number;
+    indexedDbTtlIsEnabled: boolean;
+    indexedDbExpiresAt?: number;
     deleteIndexedDbOnExit: boolean;
     selectedDB?: DatabaseName;
 };
@@ -93,7 +94,8 @@ type DataManagementStoreActions = {
     hideSequenceMappingDialog: () => void;
 
     // database operations
-    setIndexedDbExpiresAt: (hours: number | null) => void;
+    setIndexedDbTtlIsEnabled: (isEnabled: boolean) => void;
+    setIndexedDbExpiresAt: (hours: number) => void;
     setDeleteIndexedDbOnExit: (isActive: boolean) => void;
     setSelectedDB: (db: DatabaseName) => void;
 };
@@ -338,15 +340,16 @@ export const useDataManagementStore = create<DataManagementStore>()(
             hideSequenceMappingDialog: () => {
                 set({ sequenceMappingDialogCase: null });
             },
-            indexedDbExpiresAt: null,
+            // database operations
+            indexedDbTtlIsEnabled: true,
+            setIndexedDbTtlIsEnabled: (isEnabled: boolean) => {
+                set({ indexedDbTtlIsEnabled: isEnabled });
+            },
+            indexedDbExpiresAt: undefined,
             setIndexedDbExpiresAt: (hours) => {
-                if (hours && !isNaN(hours) && hours > 0) {
-                    const TTLinMilliseconds = hours * 60 * 60 * 1000;
-                    const expiryDate = Date.now() + TTLinMilliseconds;
-                    set({ indexedDbExpiresAt: expiryDate });
-                } else {
-                    set({ indexedDbExpiresAt: null });
-                }
+                const TTLinMilliseconds = hours * 60 * 60 * 1000;
+                const expiryDate = Date.now() + TTLinMilliseconds;
+                set({ indexedDbExpiresAt: expiryDate });
             },
             deleteIndexedDbOnExit: false,
             setDeleteIndexedDbOnExit: (isActive) => {

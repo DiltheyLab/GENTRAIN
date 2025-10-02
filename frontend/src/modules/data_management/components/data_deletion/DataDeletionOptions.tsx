@@ -13,11 +13,13 @@ export const TTLHOURS = 24;
 export const DataDeletionOptions = () => {
     const indexedDbExpiresAt = useDataManagementStore((state) => state.indexedDbExpiresAt);
     const setIndexedDbExpiresAt = useDataManagementStore((state) => state.setIndexedDbExpiresAt);
+    const indexedDbTtlIsEnabled = useDataManagementStore((state) => state.indexedDbTtlIsEnabled);
+    const setIndexedDbTtlIsEnabled = useDataManagementStore((state) => state.setIndexedDbTtlIsEnabled);
     const setDeleteIndexedDbOnExit = useDataManagementStore((state) => state.setDeleteIndexedDbOnExit);
     const deleteIndexedDbOnExit = useDataManagementStore((state) => state.deleteIndexedDbOnExit);
 
     const renderExpirationBadge = () => {
-        if (!indexedDbExpiresAt) return null;
+        if (!indexedDbTtlIsEnabled || !indexedDbExpiresAt) return null;
 
         const date = new Date(indexedDbExpiresAt);
         return (
@@ -32,9 +34,10 @@ export const DataDeletionOptions = () => {
 
     const handleDatabaseExpiration = (checked: CheckedState) => {
         if (checked) {
-            setIndexedDbExpiresAt(TTLHOURS);
+            setIndexedDbTtlIsEnabled(true);
+            setIndexedDbExpiresAt(TTLHOURS); //reset expiration
         } else {
-            setIndexedDbExpiresAt(null); //deactivate expiration
+            setIndexedDbTtlIsEnabled(false); //deactivate expiration
         }
     };
 
@@ -43,7 +46,7 @@ export const DataDeletionOptions = () => {
             <div className="flex gap-7 items-center">
                 <Label className="flex items-start gap-3">
                     <Checkbox
-                        checked={Boolean(indexedDbExpiresAt)}
+                        checked={Boolean(indexedDbTtlIsEnabled)}
                         onCheckedChange={(checked) => handleDatabaseExpiration(checked)}
                     />
                     <div className="font-normal text-base leading-none grid gap-2">

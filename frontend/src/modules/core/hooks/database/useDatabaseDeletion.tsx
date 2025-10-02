@@ -28,8 +28,9 @@ export const deleteDatabase = async (options: { reloadPage?: boolean; unregister
 };
 
 export const useDatabaseDeletion = () => {
-    const deleteIndexedDbOnExit = useDataManagementStore((s) => s.deleteIndexedDbOnExit);
-    const indexedDbExpiresAt = useDataManagementStore((s) => s.indexedDbExpiresAt);
+    const deleteIndexedDbOnExit = useDataManagementStore((store) => store.deleteIndexedDbOnExit);
+    const indexedDbExpiresAt = useDataManagementStore((store) => store.indexedDbExpiresAt);
+    const indexedDbTtlIsEnabled = useDataManagementStore((store) => store.indexedDbTtlIsEnabled);
     const gentrainDbIsSelected = (db.name as DatabaseName) === "gentrain";
 
     // Ref saves current handlers for unregistering
@@ -37,6 +38,17 @@ export const useDatabaseDeletion = () => {
         handleBeforeUnload?: (ev: BeforeUnloadEvent) => void;
         handleUnload?: () => void;
     }>({});
+
+    const unregisterHandlers = () => {
+        if (handlersRef.current.handleBeforeUnload) {
+            window.removeEventListener("beforeunload", handlersRef.current.handleBeforeUnload);
+            handlersRef.current.handleBeforeUnload = undefined;
+        }
+        if (handlersRef.current.handleUnload) {
+            window.removeEventListener("unload", handlersRef.current.handleUnload);
+            handlersRef.current.handleUnload = undefined;
+        }
+    };
 
     // Exit-based deletion
     useEffect(() => {
@@ -64,11 +76,11 @@ export const useDatabaseDeletion = () => {
 
         //clean-up
         return unregisterHandlers;
-    }, [deleteIndexedDbOnExit, gentrainDbIsSelected]);
+    }, [deleteIndexedDbOnExit, gentrainDbIsSelected, unregisterHandlers]);
 
     // TTL-based deletion
     useEffect(() => {
-        if (!indexedDbExpiresAt || !gentrainDbIsSelected) return;
+        if (!indexedDbTtlIsEnabled || !indexedDbExpiresAt || !gentrainDbIsSelected) return;
         let warningShown = false;
 
         const checkExpiration = async () => {
@@ -102,22 +114,8 @@ export const useDatabaseDeletion = () => {
         };
 
         void checkExpiration();
-        const interval = setInterval(checkExpiration, 1000); // check every minute
+        const interval = setInterval(checkExpiration, 60 * 1000); // check every minute
 
         return () => clearInterval(interval);
-    }, [indexedDbExpiresAt, gentrainDbIsSelected]);
-
-    // Helper function, to unregister handlers
-    const unregisterHandlers = () => {
-        if (handlersRef.current.handleBeforeUnload) {
-            window.removeEventListener("beforeunload", handlersRef.current.handleBeforeUnload);
-            handlersRef.current.handleBeforeUnload = undefined;
-        }
-        if (handlersRef.current.handleUnload) {
-            window.removeEventListener("unload", handlersRef.current.handleUnload);
-            handlersRef.current.handleUnload = undefined;
-        }
-    };
-
-    return { unregisterHandlers };
+    }, [indexedDbExpiresAt, gentrainDbIsSelected, indexedDbTtlIsEnabled]);
 };
