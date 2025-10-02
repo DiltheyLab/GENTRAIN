@@ -8,6 +8,10 @@ import Dashboard from '../dist/admin/components/Dashboard'
 AdminJS.UserComponents.Dashboard = Dashboard
 import SchemeUpload from '../dist/admin/components/SchemeUpload'
 AdminJS.UserComponents.SchemeUpload = SchemeUpload
+import SchemeDownloadList from '../dist/admin/components/SchemeDownloadList'
+AdminJS.UserComponents.SchemeDownloadList = SchemeDownloadList
+import SchemeDownloadShow from '../dist/admin/components/SchemeDownloadShow'
+AdminJS.UserComponents.SchemeDownloadShow = SchemeDownloadShow
 import SchemeTypeSelectEdit from '../dist/admin/components/SchemeTypeSelectEdit'
 AdminJS.UserComponents.SchemeTypeSelectEdit = SchemeTypeSelectEdit
 import ErrorMessage from '../dist/admin/components/ErrorMessage'

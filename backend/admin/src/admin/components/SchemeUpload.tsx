@@ -23,9 +23,7 @@ const SchemeUpload = (props: BasePropertyProps) => {
   const error = record.errors?.[property.path];
   return (
     <FormGroup error={Boolean(error)}>
-      <Box flex style={{ justifyContent: 'space-between' }}>
-        <PropertyLabel property={property} />
-      </Box>
+      <PropertyLabel property={property} />
       <DropZone onChange={handleDrop} validate={{ maxSize: 300 * 1024 * 1024 }} />
       {schemeVersion && <UploadedScheme record={record} />}
       <FormMessage>{error && tm(error.message, property.resourceId)}</FormMessage>

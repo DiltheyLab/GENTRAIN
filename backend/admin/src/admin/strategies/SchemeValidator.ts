@@ -12,7 +12,7 @@ export abstract class SchemeValidator {
     if (file) {
       if (!this.validMimetypes.includes(file.type)) {
         throw new ValidationError(
-          { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
+          { scheme: { message: 'Uploaded file is not a valid ZIP archive.' } },
           { message: 'Scheme upload is invalid' }
         );
       }
@@ -21,7 +21,7 @@ export abstract class SchemeValidator {
       this.zip = new AdmZip(file.path);
     } catch (err) {
       throw new ValidationError(
-        { scheme_upload: { message: 'Uploaded file is not a valid ZIP archive.' } },
+        { scheme: { message: 'Uploaded file is not a valid ZIP archive.' } },
         { message: 'Scheme upload is invalid' }
       );
     }
@@ -79,7 +79,7 @@ export abstract class SchemeValidator {
           !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
           throw new ValidationError(
-            { scheme_upload: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
+            { scheme: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
             { message: 'Scheme upload is invalid' }
           );
         }
@@ -102,7 +102,7 @@ export abstract class SchemeValidator {
     const file = this.zip.getEntry(name);
     if (!file) {
       throw new ValidationError(
-        { scheme_upload: { message: `Uploaded ZIP archive does not contain ${name}.` } },
+        { scheme: { message: `Uploaded ZIP archive does not contain ${name}.` } },
         { message: 'Scheme upload is invalid' }
       );
     }

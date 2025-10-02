@@ -9,11 +9,7 @@ import { collectValidationErrors } from '../util/Errors.js';
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
     try {
-      context.scheme_upload = await validateSchemeUpload(
-        request.payload.scheme_upload,
-        request.payload.type,
-        context.record ?? null
-      );
+      context.scheme = await validateSchemeUpload(request.payload.scheme, request.payload.type, context.record ?? null);
     } catch (error) {
       collectValidationErrors(error, context);
     }
@@ -28,13 +24,13 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
       return undefined;
     }
     throw new ValidationError(
-      { scheme_upload: { message: 'Scheme upload must be provided.' } },
+      { scheme: { message: 'Scheme upload must be provided.' } },
       { message: 'Scheme upload is invalid' }
     );
   }
   if (file.size > 300 * 1024 * 1024) {
     throw new ValidationError(
-      { scheme_upload: { message: 'Uploaded file is too large (max. 50 MB).' } },
+      { scheme: { message: 'Uploaded file is too large (max. 50 MB).' } },
       { message: 'Scheme upload is invalid' }
     );
   }
@@ -44,7 +40,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
 };
 
 const updateSchemeVersion = async (request: ActionRequest, context: ActionContext) => {
-  if (context.scheme_upload) {
+  if (context.scheme) {
     request.payload.scheme_version = new Date();
   }
 };
