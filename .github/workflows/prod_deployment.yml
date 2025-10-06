@@ -111,7 +111,6 @@ jobs:
             touch .env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}" >> .env
             echo -e "APP_ENV=${{vars.PROD_APP_ENV}}" >> .env
-            echo -e "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
             echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
@@ -122,6 +121,12 @@ jobs:
             echo -e "DATABASE_PORT=${{vars.DATABASE_PORT}}" >> .env
             echo -e "DATABASE_USER=${{vars.DATABASE_USER}}" >> .env
             echo -e "DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}}" >> .env
+            echo -e "DEFAULT_ADMIN_USERNAME=${{vars.DEFAULT_ADMIN_USERNAME}}" >> .env
+            echo -e "DEFAULT_ADMIN_PASSWORD=${{secrets.DEFAULT_ADMIN_PASSWORD}}" >> .env
+            echo -e "COOKIE_SECRET=${{secrets.COOKIE_SECRET}}" >> .env
+            echo -e "SESSION_SECRET=${{secrets.SESSION_SECRET}}" >> .env
+            echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
+            echo -e "ADMIN_SCHEME_DIRECTORY=${{vars.ADMIN_SCHEME_DIRECTORY}}" >> .env
             echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
             echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit
