@@ -15,6 +15,7 @@ export type Pathogen = {
     contacts_example: string | null;
     type: PathogenTypeName;
     genetic_distance_threshold: number;
+    activated: boolean;
 };
 
 export interface PathogenSchema {

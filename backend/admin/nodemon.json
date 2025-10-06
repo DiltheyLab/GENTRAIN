@@ -1,0 +1,6 @@
+{
+  "watch": ["dist"],
+  "ext": "js,json",
+  "ignore": ["*.spec.*", "test"],
+  "exec": "cross-env DOTENV_CONFIG_PATH=../../.env node --require dotenv/config ./dist/app"
+}

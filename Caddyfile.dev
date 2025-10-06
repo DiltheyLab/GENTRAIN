@@ -10,8 +10,8 @@ api.localhost {
 	}
 	respond @options 200
 
-	# Reverse proxy to the backend docker container
-	reverse_proxy backend:8080
+	# Reverse proxy to the api docker container
+	reverse_proxy api:8080
 	log {
 		output stdout
 	}

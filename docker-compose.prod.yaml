@@ -57,14 +57,14 @@ services:
     depends_on:
       frontend:
         condition: service_started
-      backend:
+      api:
         condition: service_started
 
   redis:
     container_name: gentrain-redis
     image: gentrain-redis
     build:
-      context: ./redis
+      context: ./backend/redis
       dockerfile: Dockerfile
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
@@ -88,44 +88,67 @@ services:
     networks:
       - caddy
 
-  backend:
-    container_name: gentrain-backend
-    image: gentrain-backend
+  api:
+    container_name: gentrain-api
+    image: gentrain-api
     restart: unless-stopped
     depends_on:
       - redis
       - db
     volumes:
       - type: bind
-        source: ./backend/modules/sequence_analysis/schemes
-        target: /home/backend/modules/sequence_analysis/schemes
-      - type: bind
-        source: ./backend/static/pathogen_example_data
-        target: /home/backend/static/pathogen_example_data
+        source: ./backend/data/pathogen_schemes
+        target: /api/pathogen_schemes
     build:
-      context: ./backend
+      context: ./backend/api
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
     env_file: ".env"
+    environment:
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     networks:
       - caddy
   worker:
     container_name: gentrain-worker
-    image: gentrain-backend:latest
+    image: gentrain-api:latest
     depends_on:
       - redis
     volumes:
       - type: bind
-        source: ./backend/modules/sequence_analysis/schemes
-        target: /home/backend/modules/sequence_analysis/schemes
-    command: [ "supervisord", "-c", "/home/backend/supervisor.conf" ]
+        source: ./backend/data/pathogen_schemes
+        target: /api/pathogen_schemes
+    command: ["supervisord", "-c", "/api/supervisor.conf"]
     links:
       - redis
     env_file: ".env"
+    environment:
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     networks:
       - caddy
-
+  admin:
+    container_name: gentrain-admin
+    image: gentrain-admin
+    restart: unless-stopped
+    build:
+      context: ./backend/admin
+      dockerfile: Dockerfile.prod
+    volumes:
+      - type: bind
+        source: ./backend/data/pathogen_schemes
+        target: /admin/pathogen_schemes
+    ports:
+      - "4001:4001"
+    depends_on:
+      db:
+        condition: service_completed_successfully
+      api:
+        condition: service_completed_successfully
+    env_file: ".env"
+    environment:
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    networks:
+      - caddy
   frontend:
     container_name: gentrain-frontend
     image: gentrain-frontend
@@ -140,14 +163,13 @@ services:
       - caddy
     env_file: ".env"
     depends_on:
-      backend:
+      api:
         condition: service_started
 
 volumes:
   caddy_data:
   caddy_config:
   postgres_data:
-
 
 networks:
   # Docker network for Caddy
