@@ -8,6 +8,7 @@ import { PathogenSelectionDialog } from "./components/PathogenSelectionDialog";
 import { useTutorialStore } from "../tutorial/stores/tutorial";
 import { useSyncPathogensBetweenServerAndClient } from "./hooks/useSyncPathogensBetweenServerAndClient";
 import { useDatabaseDeletion } from "./hooks/database/useDatabaseDeletion";
+import { MobileBlocker } from "./components/layout/MobileBlocker";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
@@ -23,6 +24,7 @@ export const Root = () => {
 
     return (
         <>
+            <MobileBlocker />
             <PathogenSelectionDialog />
             {tutorialTourIsActive && <TutorialTour />}
             <Layout>
