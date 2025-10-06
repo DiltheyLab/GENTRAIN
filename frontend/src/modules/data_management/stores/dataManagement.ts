@@ -372,6 +372,7 @@ export const useDataManagementStore = create<DataManagementStore>()(
                 selectedDB: state.selectedDB,
                 indexedDbExpiresAt: state.indexedDbExpiresAt,
                 deleteIndexedDbOnExit: state.deleteIndexedDbOnExit,
+                indexedDbTtlIsEnabled: state.indexedDbTtlIsEnabled,
             }),
         }
     )

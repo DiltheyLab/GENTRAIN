@@ -16,10 +16,8 @@ export abstract class PersistenceStrategy {
 
     private setIndexedDbTtlOnDataImport() {
         const indexedDbTtlIsEnabled = useDataManagementStore.getState().indexedDbTtlIsEnabled;
-        const indexedDbExpiresAt = useDataManagementStore.getState().indexedDbExpiresAt;
         const setIndexedDbExpiresAt = useDataManagementStore.getState().setIndexedDbExpiresAt;
-        // only set TTL if option is enabled and data is uploaded the first time. In this case, no TTL has been set so far.
-        if (indexedDbTtlIsEnabled && !indexedDbExpiresAt) {
+        if (indexedDbTtlIsEnabled) {
             setIndexedDbExpiresAt(TTLHOURS);
         }
     }
