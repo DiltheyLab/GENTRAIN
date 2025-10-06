@@ -26,7 +26,7 @@ export const MobileBlocker = () => {
 
             <div className="flex flex-col items-center bg-white dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 p-6 sm:p-8 rounded-2xl shadow-xl max-w-md w-full border border-gray-200/60 dark:border-gray-700/50">
                 <AlertTriangle size={56} className="text-primary mb-4 sm:mb-6 flex-shrink-0" />
-                <h1 className="text-xl sm:text-2xl font-semibold mb-3">Nicht für mobile Geräte optimiert</h1>
+                <h1 className="text-xl sm:text-2xl font-semibold mb-3">Nicht für mobile Geräte ausgelegt</h1>
                 <p className="text-sm sm:text-base leading-relaxed max-w-xs sm:max-w-sm">
                     Diese Anwendung ist für Desktop-Ansichten konzipiert. Bitte öffne sie auf einem größeren Bildschirm
                     (z. B. Laptop oder PC), um alle Funktionen nutzen zu können.
