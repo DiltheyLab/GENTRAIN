@@ -78,7 +78,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 f"{get_project_path()}/modules/sequence_analysis/scripts/viral.sh",
                 self.input,
                 self.output,
-                f"{get_project_path()}/modules/sequence_analysis/schemes/{secure_filename(self.pathogen.scheme_name)}",
+                f"{get_project_path()}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
             ],
             check=False,
         )
@@ -138,7 +138,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                     if "clade" in result
                     else None
                 ),
-                analysis_schema=self.pathogen.scheme_name,
+                analysis_schema=str(self.pathogen.scheme_version),
                 n_count=result["totalMissing"],
                 substitutions=result["substitutions"],
                 deletions=result["deletions"],

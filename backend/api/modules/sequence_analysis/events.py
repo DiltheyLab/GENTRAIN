@@ -53,7 +53,11 @@ def sequence_analysis(fasta_chunk, chunk_information, pathogen_id, fasta_hash=No
         pathogen_id -- Postgres db id of the selected pathogen
         fasta_hash -- Hashed fasta content
     """
-    pathogen = Pathogen.query.get(pathogen_id)
+    pathogen = Pathogen.prisma().find_unique(
+        where={
+            "id": pathogen_id,
+        }
+    )
     socket_id = request.sid
     fasta_chunk = fasta_chunk.replace("\r", "")
     # ensure pseudonymization of bacterial fasta assemblies by removing potentially included ids in headers

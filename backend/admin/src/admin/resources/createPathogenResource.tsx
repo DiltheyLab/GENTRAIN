@@ -1,6 +1,13 @@
 import { ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
-import { componentLoader, ErrorMessage, SchemeTypeSelectEdit, SchemeUpload } from '../component-loader.js';
+import {
+  componentLoader,
+  ErrorMessage,
+  SchemeDownloadList,
+  SchemeDownloadShow,
+  SchemeTypeSelectEdit,
+  SchemeUpload,
+} from '../component-loader.js';
 import uploadFeature from '@adminjs/upload';
 import { prisma } from '../db.js';
 import loggerFeature from '@adminjs/logger';
@@ -11,22 +18,18 @@ import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
 import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
+import { sanitizeFileName } from '../util/Helper.js';
 
 export const createPathogenResource = () => {
   return {
     resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
       navigation: null,
-      listProperties: ['id', 'name', 'type', 'genetic_distance_threshold', 'scheme_version', 'scheme_size'],
       properties: {
-        activated: {
-          type: 'boolean',
-          position: 1,
-        },
         name: {
           type: 'string',
           description: 'Representation of the pathogen within the GENTRAIN dashboard.',
-          position: 2,
+          position: 1,
         },
         type: {
           availableValues: [
@@ -34,7 +37,7 @@ export const createPathogenResource = () => {
             { value: 'viral', label: 'Viral' },
           ],
           description: 'Defines how genomic sequences are analyzed. Can not be changed after first pathogen creation.',
-          position: 3,
+          position: 2,
           components: {
             edit: SchemeTypeSelectEdit,
           },
@@ -43,27 +46,38 @@ export const createPathogenResource = () => {
           type: 'number',
           description:
             'Genetic distances below this threshold are be considered as similar or almost similar genomic sequences.',
+          position: 3,
+        },
+        activated: {
+          type: 'boolean',
           position: 4,
+        },
+        scheme_version: {
+          isVisible: { list: true, show: false, edit: false, filter: false },
+          position: 5,
         },
         scheme_size: {
           type: 'string',
-          isVisible: { list: true, show: true, edit: false, filter: false },
+          isVisible: { list: true, show: false, edit: false, filter: false },
           isVirtual: true,
+          position: 6,
         },
-        scheme_version: {
-          isVisible: { list: true, show: true, edit: false, filter: false },
-        },
-        scheme_upload: {
-          position: 5,
+        scheme: {
+          position: 7,
           type: 'mixed',
           isRequired: true,
           description: 'Used to extract mutation information of genomic sequences.',
           isVisible: { list: false, show: false, edit: true, filter: false },
-          custom: {
-            label: 'Scheme Upload Test',
-          },
           components: {
             edit: SchemeUpload,
+          },
+        },
+        scheme_download: {
+          position: 8,
+          isVisible: { list: true, show: true, edit: false, filter: false },
+          components: {
+            show: SchemeDownloadShow,
+            list: SchemeDownloadList,
           },
         },
         example_cases_key: { isVisible: false },
@@ -77,42 +91,39 @@ export const createPathogenResource = () => {
         example_contacts_bucket: { isVisible: false },
         example_cases_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
-          label: 'Example Case Data (CSV, max. 5 MB)',
-          position: 6,
+          position: 9,
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
         example_cases_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
-          position: 7,
+          position: 10,
           components: {
             edit: ErrorMessage,
           },
         },
         example_sequences_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
-          label: 'Example Case Data (CSV, max. 5 MB)',
-          position: 8,
+          position: 11,
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
         example_sequences_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
-          position: 9,
+          position: 12,
           components: {
             edit: ErrorMessage,
           },
         },
         example_contacts_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
-          label: 'Example Case Data (CSV, max. 5 MB)',
-          position: 10,
+          position: 13,
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
         example_contacts_errors: {
           isVisible: { list: false, filter: false, show: false, edit: true },
-          position: 11,
+          position: 14,
           components: {
             edit: ErrorMessage,
           },
@@ -120,13 +131,19 @@ export const createPathogenResource = () => {
       },
       actions: {
         list: { after: [readableSchemeSize] },
-        show: { after: [readableSchemeSize] },
+        show: { after: [] },
         new: {
           before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
           after: [handleSchemeExtraction],
         },
         edit: {
-          before: [initValidationErrors, preprocessSchemeExtraction, validateExampleDataUploads, throwValidationErrors],
+          before: [
+            initValidationErrors,
+            readableSchemeSize,
+            preprocessSchemeExtraction,
+            validateExampleDataUploads,
+            throwValidationErrors,
+          ],
           after: [handleSchemeExtraction],
         },
         delete: {
@@ -143,7 +160,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -157,8 +176,8 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/falldaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_falldaten.csv`;
         },
       }),
       uploadFeature({
@@ -166,7 +185,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -176,12 +197,13 @@ export const createPathogenResource = () => {
           filesToDelete: 'files_to_delete_example_sequences',
           bucket: 'example_sequences_bucket',
           size: 'example_sequences_size',
+          filename: 'sequenzdaten.fasta',
         },
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/sequenzdaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.fasta`;
         },
       }),
       uploadFeature({
@@ -189,7 +211,9 @@ export const createPathogenResource = () => {
         provider: {
           local: {
             bucket: 'public/pathogen_example_data',
-            opts: {},
+            opts: {
+              baseUrl: '/pathogen_example_data',
+            },
           },
         },
         properties: {
@@ -203,8 +227,8 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, filename) => {
-          return `${record.params.id}/kontaktdaten.${filename.split('.').pop()}`;
+        uploadPath: (record, _filename) => {
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_kontaktdaten.csv`;
         },
       }),
       loggerFeature({

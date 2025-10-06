@@ -1,4 +1,6 @@
-from backend.modules.admin.strategies.scheme_processor.scheme_processor_strategy import SchemeProcessorStrategy
+from backend.modules.admin.strategies.scheme_processor.scheme_processor_strategy import (
+    SchemeProcessorStrategy,
+)
 
 
 class BacterialSchemeProcessor(SchemeProcessorStrategy):
@@ -11,5 +13,9 @@ class BacterialSchemeProcessor(SchemeProcessorStrategy):
         """Concrete method to extract viral scheme files."""
         zip_filenames = zip_file.namelist()
         for filename in zip_filenames:
-            if ".schema_config" in filename or ".genes_list" in filename or ".fasta" in filename:
+            if (
+                ".schema_config" in filename
+                or ".genes_list" in filename
+                or ".fasta" in filename
+            ):
                 zip_file.extract(filename, path=self.extract_path)

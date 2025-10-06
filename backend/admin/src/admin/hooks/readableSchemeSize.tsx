@@ -1,24 +1,22 @@
 import { RecordActionResponse, ListActionResponse, ActionContext, ActionRequest } from 'adminjs';
+import { isGETMethod } from '../admin.utils.js';
+import { getReadableSize } from '../util/Helper.js';
 
 export const readableSchemeSize = (
   response: RecordActionResponse | ListActionResponse,
-  _request: ActionRequest,
+  request: ActionRequest,
   _context: ActionContext
 ) => {
   if (!response.record && !response.records) {
     return response;
   }
-  for (const record of response.records ?? [response.record]) {
-    const schemeSizeInBytes = record.params.scheme_size;
-    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    let index = 0;
-    let readableSchemeSize = schemeSizeInBytes;
+  if (isGETMethod(request)) {
+    for (const record of response.records ?? [response.record]) {
+      const schemeSizeInBytes = record.params.scheme_size;
 
-    while (readableSchemeSize >= 1024 && index < units.length - 1) {
-      readableSchemeSize /= 1024;
-      index++;
+      record.params.scheme_size = getReadableSize(schemeSizeInBytes);
     }
-    record.params.scheme_size = `${readableSchemeSize.toFixed(2)} ${units[index]}`;
   }
+
   return response;
 };

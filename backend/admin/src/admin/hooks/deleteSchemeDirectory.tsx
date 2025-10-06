@@ -12,8 +12,8 @@ export const deleteSchemeDirectory = async (
   }
   for (const record of response.records ?? [response.record]) {
     const folderName = record.params.id.toString();
-    const extractPath = path.join('../data/pathogen_schemes', folderName);
-    if (fs.existsSync(path.join('../data/pathogen_schemes', record.params.id.toString()))) {
+    const extractPath = path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName);
+    if (fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, record.params.id.toString()))) {
       await fs.promises.rm(extractPath, { recursive: true });
     }
   }
