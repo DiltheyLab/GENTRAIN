@@ -6,7 +6,6 @@ import { expressAuthenticatedRouter } from './admin/router.js';
 import { Database, Resource } from '@adminjs/prisma';
 import * as url from 'url';
 import { prisma } from './admin/db.js';
-import bodyParser from 'body-parser';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
