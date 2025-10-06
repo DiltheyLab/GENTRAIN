@@ -98,7 +98,7 @@ services:
     volumes:
       - type: bind
         source: ./backend/data/pathogen_schemes
-        target: /api/data/pathogen_schemes
+        target: /api/pathogen_schemes
     build:
       context: ./backend/api
       dockerfile: Dockerfile.prod
@@ -115,7 +115,7 @@ services:
     volumes:
       - type: bind
         source: ./backend/data/pathogen_schemes
-        target: /api/data/pathogen_schemes
+        target: /api/pathogen_schemes
     command: ["supervisord", "-c", "/api/supervisor.conf"]
     links:
       - redis
@@ -129,6 +129,10 @@ services:
     build:
       context: ./backend/admin
       dockerfile: Dockerfile.prod
+    volumes:
+      - type: bind
+        source: ./backend/data/pathogen_schemes
+        target: /admin/pathogen_schemes
     ports:
       - "4001:4001"
     depends_on:
