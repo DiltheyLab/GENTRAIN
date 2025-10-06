@@ -6,3 +6,5 @@ README.md
 
 # Ignore all env files in the image for security reasons
 .env*
+
+node_modules
