@@ -52,7 +52,7 @@ services:
       - db
     env_file: ".env"
     environment:
-      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_USER}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
   worker:
     container_name: gentrain-worker
     image: gentrain-api:latest
@@ -70,7 +70,7 @@ services:
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
     environment:
-      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_USER}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     links:
       - redis
     env_file: ".env"
