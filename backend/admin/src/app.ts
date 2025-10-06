@@ -49,8 +49,6 @@ const start = async () => {
   // set path under you can access the admin panel
   app.use(admin.options.rootPath, adminRouter);
 
-  app.use(bodyParser.json({ limit: '300mb' }));
-
   app.listen(port, () => {
     console.log(`AdminJS available at http://localhost:${port}${admin.options.rootPath}`);
   });
