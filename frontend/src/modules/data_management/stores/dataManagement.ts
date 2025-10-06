@@ -42,6 +42,7 @@ type DataManagementStoreState = {
     indexedDbExpiresAt?: number;
     deleteIndexedDbOnExit: boolean;
     selectedDB?: DatabaseName;
+    unregisterDbHandlers: (() => void) | null;
 };
 
 type DataManagementStoreActions = {
@@ -98,6 +99,7 @@ type DataManagementStoreActions = {
     setIndexedDbExpiresAt: (hours: number) => void;
     setDeleteIndexedDbOnExit: (isActive: boolean) => void;
     setSelectedDB: (db: DatabaseName) => void;
+    setUnregisterDbHandlers: (unregister: (() => void) | null) => void;
 };
 
 export type DataManagementStore = DataManagementStoreState & DataManagementStoreActions;
@@ -358,6 +360,10 @@ export const useDataManagementStore = create<DataManagementStore>()(
             selectedDB: undefined,
             setSelectedDB: (db) => {
                 set({ selectedDB: db });
+            },
+            unregisterDbHandlers: null,
+            setUnregisterDbHandlers: (unregister) => {
+                set({ unregisterDbHandlers: unregister });
             },
         }),
         {

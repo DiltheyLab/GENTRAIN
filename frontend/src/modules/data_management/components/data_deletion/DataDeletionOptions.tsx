@@ -17,6 +17,7 @@ export const DataDeletionOptions = () => {
     const setIndexedDbTtlIsEnabled = useDataManagementStore((state) => state.setIndexedDbTtlIsEnabled);
     const setDeleteIndexedDbOnExit = useDataManagementStore((state) => state.setDeleteIndexedDbOnExit);
     const deleteIndexedDbOnExit = useDataManagementStore((state) => state.deleteIndexedDbOnExit);
+    const unregisterDbHandlers = useDataManagementStore((state) => state.unregisterDbHandlers);
 
     const renderExpirationBadge = () => {
         if (!indexedDbTtlIsEnabled || !indexedDbExpiresAt) return null;
@@ -104,7 +105,9 @@ export const DataDeletionOptions = () => {
                         Alle Daten löschen
                     </Button>
                 }
-                deleteAction={() => deleteDatabase({ reloadPage: true })}
+                deleteAction={() =>
+                    deleteDatabase({ reloadPage: true, unregisterHandlers: unregisterDbHandlers || undefined })
+                }
                 dialogTitle="Alle Daten unwiderruflich löschen"
                 dialogDescription="Dieser Vorgang kann nicht rückgängig gemacht werden! Dadurch werden alle Daten in GENTRAIN dauerhaft gelöscht."
             />

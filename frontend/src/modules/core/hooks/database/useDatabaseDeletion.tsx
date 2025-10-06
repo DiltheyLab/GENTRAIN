@@ -31,6 +31,7 @@ export const useDatabaseDeletion = () => {
     const deleteIndexedDbOnExit = useDataManagementStore((store) => store.deleteIndexedDbOnExit);
     const indexedDbExpiresAt = useDataManagementStore((store) => store.indexedDbExpiresAt);
     const indexedDbTtlIsEnabled = useDataManagementStore((store) => store.indexedDbTtlIsEnabled);
+    const setUnregisterDbHandlers = useDataManagementStore((store) => store.setUnregisterDbHandlers);
     const gentrainDbIsSelected = (db.name as DatabaseName) === "gentrain";
 
     // Ref saves current handlers for unregistering
@@ -49,6 +50,12 @@ export const useDatabaseDeletion = () => {
             handlersRef.current.handleUnload = undefined;
         }
     };
+
+    // Store the unregister function globally so other component can access it
+    useEffect(() => {
+        setUnregisterDbHandlers(unregisterHandlers);
+        return () => setUnregisterDbHandlers(null);
+    }, [setUnregisterDbHandlers]);
 
     // Exit-based deletion
     useEffect(() => {
