@@ -99,6 +99,9 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
+      - type: bind
+        source: ./backend/admin/prisma
+        target: /api/prisma
     build:
       context: ./backend/api
       dockerfile: Dockerfile.prod
@@ -118,6 +121,9 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
+      - type: bind
+        source: ./backend/admin/prisma
+        target: /api/prisma
     command: ["supervisord", "-c", "/api/supervisor.conf"]
     links:
       - redis
