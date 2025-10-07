@@ -6,7 +6,6 @@ generator js_client {
 generator py_client {
   provider  = "prisma-client-py"
   interface = "sync"
-  output    = "/api/prisma"
 }
 
 datasource db {
