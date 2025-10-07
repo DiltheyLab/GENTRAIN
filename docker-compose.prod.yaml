@@ -99,9 +99,6 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
-      - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
     build:
       context: ./backend/api
       dockerfile: Dockerfile.prod
@@ -121,10 +118,7 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
-      - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
-    command: ["supervisord", "-c", "/api/supervisor.conf"]
+    entrypoint: /api/entrypoint-worker.sh
     links:
       - redis
     env_file: ".env"
@@ -153,7 +147,6 @@ services:
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-      - NODE_ENV=production
     networks:
       - caddy
   frontend:

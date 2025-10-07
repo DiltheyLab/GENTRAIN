@@ -29,9 +29,7 @@ ENV PYTHONPATH="$PYTHONPATH:/"
 # Copy the current directory contents into the container at the working directory
 COPY --chown=gentrain . .
 
-RUN prisma generate --generator py_client
-
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-CMD ["gunicorn", "--chdir", "/", "--workers", "1", "--threads", "100", "--bind", ":8080", "api.server:app"]
+ENTRYPOINT ["/api/entrypoint-api-prod.sh"]
