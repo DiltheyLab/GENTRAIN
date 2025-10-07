@@ -8,7 +8,7 @@ import { createPasswordResource } from './resources/createPasswordResource.js';
 
 export const createAdminJsOptions = () => {
   const options: AdminJSOptions = {
-    rootPath: '/admin',
+    rootPath: '/',
     dashboard: {
       component: Dashboard,
     },
