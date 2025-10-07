@@ -70,7 +70,7 @@ The deployment includes the following services:
 
 - **Caddy**: Reverse proxy and web server
 - **Redis**: In-memory data structure store
-- **Backend**: Python-based backend service
+- **API**: Python-based api service
 - **Worker**: Background task processor
 - **Frontend**: Node.js-based frontend service
 - **Redis Insight**: GUI for Redis monitoring and management

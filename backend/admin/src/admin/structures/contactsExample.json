@@ -1,0 +1,26 @@
+{
+  "case_id_1": {
+    "label": "Fall ID 1",
+    "required": true,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9\\-]+$"
+  },
+  "case_id_2": {
+    "label": "Fall ID 2",
+    "required": true,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9\\-]+$"
+  },
+  "type": {
+    "label": "Typ",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-z ]*$"
+  },
+  "context": {
+    "label": "Kontext",
+    "required": false,
+    "flexible": false,
+    "pattern": "^[A-Za-z0-9 \\-]*$"
+  }
+}

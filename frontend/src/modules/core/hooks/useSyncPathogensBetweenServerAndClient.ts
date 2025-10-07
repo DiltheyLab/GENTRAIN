@@ -14,13 +14,13 @@ export const useSyncPathogensBetweenServerAndClient = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend if you are in the tutorial mode
+        if (tutorialTourIsActive) return; // don't fetch pathogens from the backend api if you are in the tutorial mode
         setPathogenIsLoading(true);
 
         const syncPathogensBetweenServerAndClient = async () => {
             try {
                 // fetch pathogens from the server and client database and pathogen types
-                const [pathogensFromServerDB, pathogensFromClientDB, pathogenTypes] = await Promise.all([
+                let [pathogensFromServerDB, pathogensFromClientDB, pathogenTypes] = await Promise.all([
                     gentrainApiInstance.getPathogensFromServer(),
                     getAllPathogensWithRelationships(),
                     getAllPathogenTypes(),
@@ -30,6 +30,8 @@ export const useSyncPathogensBetweenServerAndClient = () => {
                 if (!pathogensFromServerDB) {
                     return;
                 }
+
+                pathogensFromServerDB = pathogensFromServerDB.filter((pathogen) => pathogen.activated);
 
                 // check if the server and client databases have the same pathogens
                 const pathogenIDsFromServer = pathogensFromServerDB.map((pathogen) => pathogen.id);

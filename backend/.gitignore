@@ -1,7 +1,1 @@
-temp_data
-__pycache__/
-.env
-supervisord.pid
-supervisord.log
-logs/*
-redis.conf
+data/pathogen_schemes/*

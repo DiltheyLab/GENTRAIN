@@ -1,0 +1,10 @@
+temp_data
+__pycache__/
+.env
+supervisord.pid
+supervisord.log
+logs/*
+redis.conf
+.idea/*
+.idea
+node_modules

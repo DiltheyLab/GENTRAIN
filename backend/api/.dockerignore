@@ -1,0 +1,10 @@
+# All files that are not required in our build
+.gitignore
+.git
+*.log
+README.md
+
+# Ignore all env files in the image for security reasons
+.env*
+
+node_modules
