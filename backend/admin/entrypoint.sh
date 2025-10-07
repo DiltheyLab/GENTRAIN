@@ -7,4 +7,4 @@ npx prisma generate --generator js_client
 
 # Start dev server
 echo "Starting app..."
-exec npm run dev
+exec npm run start

@@ -1,5 +1,5 @@
 import express from 'express';
-import AdminJS, { defaultConfig } from 'adminjs';
+import AdminJS from 'adminjs';
 import { createAdminJsOptions } from './admin/options.js';
 import path from 'path';
 import { expressAuthenticatedRouter } from './admin/router.js';
