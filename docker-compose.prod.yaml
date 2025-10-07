@@ -124,7 +124,7 @@ services:
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
-    entrypoint: /api/entrypoint-worker-prod.sh
+    command: ["supervisord", "-c", "/api/supervisor.conf"]
     links:
       - redis
     env_file: ".env"
