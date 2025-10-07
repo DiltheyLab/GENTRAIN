@@ -11,6 +11,7 @@ export const preprocessSchemeExtraction = async (request: ActionRequest, context
     try {
       context.scheme = await validateSchemeUpload(request.payload.scheme, request.payload.type, context.record ?? null);
     } catch (error) {
+      console.log(error);
       collectValidationErrors(error, context);
     }
     updateSchemeVersion(request, context);

@@ -30,7 +30,7 @@ const SchemeUpload = (props: BasePropertyProps) => {
           <UploadedScheme record={record} />
         </Box>
       )}
-      {error && <FormMessage>tm(error.message, property.resourceId)</FormMessage>}
+      {error && <FormMessage>{tm(error.message, property.resourceId)}</FormMessage>}
     </FormGroup>
   );
 };

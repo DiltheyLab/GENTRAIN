@@ -65,7 +65,7 @@ export abstract class SchemeValidator {
     zipEntries.forEach((entry) => {
       if (
         entry.entryName.startsWith('__MACOSX/') ||
-        entry.entryName.startsWith('.DS_STORE') ||
+        entry.entryName.startsWith('.DS_Store') ||
         entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
       ) {
         return;
@@ -78,6 +78,7 @@ export abstract class SchemeValidator {
           !this.getValidFileNames().includes(fileName) &&
           !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
+          console.log('test');
           throw new ValidationError(
             { scheme: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
             { message: 'Scheme upload is invalid' }
