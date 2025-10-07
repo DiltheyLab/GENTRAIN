@@ -135,7 +135,6 @@ services:
   admin:
     container_name: gentrain-admin
     image: gentrain-admin
-    restart: unless-stopped
     build:
       context: ./backend/admin
       dockerfile: Dockerfile.prod
@@ -146,10 +145,7 @@ services:
     ports:
       - "4001:4001"
     depends_on:
-      db:
-        condition: service_completed_successfully
-      api:
-        condition: service_completed_successfully
+      - db
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
