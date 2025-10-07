@@ -118,7 +118,7 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /api/pathogen_schemes
-    command: ["supervisord", "-c", "/api/supervisor.conf"]
+    entrypoint: /api/entrypoint-worker-prod.sh
     links:
       - redis
     env_file: ".env"
