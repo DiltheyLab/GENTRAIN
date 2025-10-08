@@ -12,14 +12,12 @@ from api.modules.core.exceptions import (
 redis_connection = Redis(
     host=environ.get("REDIS_HOST"),
     port=environ.get("REDIS_PORT"),
-    ssl=True,
-    ssl_cert_reqs=None,
     username=environ.get("REDIS_USERNAME"),
     password=environ.get("REDIS_PASSWORD"),
     decode_responses=True,
 )
 sio = SocketIO(
-    message_queue=f"rediss://{environ.get('REDIS_USERNAME')}:{environ.get('REDIS_PASSWORD')}@{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}?ssl_cert_reqs=none"
+    message_queue=f"redis://{environ.get('REDIS_USERNAME')}:{environ.get('REDIS_PASSWORD')}@{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}"
 )
 
 
