@@ -12,3 +12,7 @@ dist
 .adminjs/*
 public/pathogen_example_data/*
 !public/pathogen_example_data/.gitkeep
+prisma/*
+!prisma/schema.prisma
+!prisma/seed.js
+!prisma/migrations/*
