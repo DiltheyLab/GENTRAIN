@@ -1,5 +1,4 @@
 const getReadableSize = (schemeSizeInBytes: number) => {
-  return null
   if (!schemeSizeInBytes) {
     return null;
   }
