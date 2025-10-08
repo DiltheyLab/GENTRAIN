@@ -18,4 +18,4 @@ ENV PYTHONPATH="$PYTHONPATH:/"
 # Copy the current directory contents into the container at the working directory
 COPY . .
 
-ENTRYPOINT ["/api/entrypoint-api.sh"]
+ENTRYPOINT ["/api/entrypoint-dev.sh"]

@@ -58,7 +58,6 @@ services:
     image: gentrain-api:latest
     depends_on:
       - redis
-    entrypoint: /api/entrypoint-worker.sh
     volumes:
       - type: bind
         source: ./backend/api
@@ -71,6 +70,7 @@ services:
         target: /api/pathogen_schemes
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    command: ["supervisord", "-c", "/api/supervisor_dev.conf"]
     links:
       - redis
     env_file: ".env"
