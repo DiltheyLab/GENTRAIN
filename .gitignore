@@ -7,7 +7,6 @@ Caddyfile
 .idea
 .idea/*
 backend/redis/redis.conf
-backend/redis/tls
 **/.DS_Store
 certs/
 certs/*

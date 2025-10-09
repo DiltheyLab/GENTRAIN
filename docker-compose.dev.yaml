@@ -4,11 +4,9 @@ services:
     image: gentrain-redis
     build:
       context: ./backend/redis
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - ./backend/redis/redis.conf:/usr/local/etc/redis/redis.conf
   redis-insight:
     container_name: gentrain-redis-insight
     image: redis/redisinsight:latest

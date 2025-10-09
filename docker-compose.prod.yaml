@@ -65,9 +65,9 @@ services:
     image: gentrain-redis
     build:
       context: ./backend/redis
-      dockerfile: Dockerfile
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
+      dockerfile: Dockerfile.prod
+    expose:
+      - "${REDIS_PORT}"
     networks:
       - caddy
 
@@ -76,8 +76,8 @@ services:
     image: postgres
     user: postgres:postgres
     hostname: localhost
-    ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
+    export:
+      - "${DATABASE_PORT}"
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
@@ -105,8 +105,8 @@ services:
     build:
       context: ./backend/api
       dockerfile: Dockerfile.prod
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
@@ -142,8 +142,8 @@ services:
       - type: bind
         source: ./backend/data/pathogen_schemes
         target: /admin/pathogen_schemes
-    ports:
-      - "4001:4001"
+    expose:
+      - "4001"
     depends_on:
       - db
     env_file: ".env"
