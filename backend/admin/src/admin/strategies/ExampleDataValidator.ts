@@ -1,6 +1,6 @@
 import { ActionContext, UploadedFile, ValidationError } from 'adminjs';
 import CustomActionRequest from '../types/CustomActionRequest.js';
-import { collectValidationErrors } from '../util/errors.js';
+import { collectValidationErrors } from '../util/error.js';
 
 export abstract class ExampleDataValidator {
   protected fileName: string;
