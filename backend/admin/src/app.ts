@@ -10,6 +10,7 @@ import { prisma } from './admin/db.js';
 const port = process.env.ADMIN_PANEL_PORT;
 
 const start = async () => {
+
   // Create express app
   const app = express();
   app.enable('trust proxy');
@@ -51,6 +52,16 @@ const start = async () => {
   app.listen(port, () => {
     console.log(`AdminJS available at http://localhost:${port}${admin.options.rootPath}`);
   });
+};
+
+// This convert bigint to string in JSON objects (adminJS issue)
+declare global {
+  interface BigInt {
+    toJSON: () => number;
+  }
+}
+BigInt.prototype.toJSON = function (): number {
+  return Number(this);
 };
 
 start();

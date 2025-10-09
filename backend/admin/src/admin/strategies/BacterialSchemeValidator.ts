@@ -15,6 +15,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
       '.schema_config',
       'loci_modes',
       'self_scores',
+      'short/self_scores',
       'pre_computed/PROTEINtable1',
       'pre_computed/DNAtable1',
       'pre_computed/PROTEINtable2',

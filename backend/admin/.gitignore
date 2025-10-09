@@ -16,3 +16,4 @@ prisma/*
 !prisma/schema.prisma
 !prisma/seed.js
 !prisma/migrations/*
+

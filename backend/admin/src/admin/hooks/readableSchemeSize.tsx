@@ -10,6 +10,7 @@ export const readableSchemeSize = (
   if (!response.record && !response.records) {
     return response;
   }
+
   if (isGETMethod(request)) {
     for (const record of response.records ?? [response.record]) {
       const schemeSizeInBytes = record.params.scheme_size;

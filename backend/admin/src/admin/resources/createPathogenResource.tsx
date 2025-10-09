@@ -57,7 +57,6 @@ export const createPathogenResource = () => {
           position: 5,
         },
         scheme_size: {
-          type: 'string',
           isVisible: { list: true, show: false, edit: false, filter: false },
           isVirtual: true,
           position: 6,

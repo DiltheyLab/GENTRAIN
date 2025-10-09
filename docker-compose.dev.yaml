@@ -8,7 +8,6 @@ services:
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
-      - ./backend/redis/tls:/usr/local/etc/redis/tls
       - ./backend/redis/redis.conf:/usr/local/etc/redis/redis.conf
   redis-insight:
     container_name: gentrain-redis-insight
@@ -70,7 +69,7 @@ services:
         target: /api/pathogen_schemes
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-    command: ["supervisord", "-c", "/api/supervisor_dev.conf"]
+    entrypoint: "/api/entrypoint-worker.sh dev"
     links:
       - redis
     env_file: ".env"
