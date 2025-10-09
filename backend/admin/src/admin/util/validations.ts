@@ -1,5 +1,3 @@
-import { ValidationError } from 'adminjs';
-
 export const validateFastaFile = (fastaString: string) => {
   // Allow valid nucleotides of DNA and RNA sequences
   const alphabet = /^[ACGTN]+$/i;

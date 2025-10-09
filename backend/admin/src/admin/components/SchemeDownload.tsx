@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@adminjs/design-system';
 import { RecordJSON } from 'adminjs';
-import { sanitizeFileName } from '../util/Helper.js';
+import { sanitizeFileName } from '../util/helpers.js';
 
 export const SchemeDownload = (props: { record: RecordJSON }) => {
   const { record } = props;

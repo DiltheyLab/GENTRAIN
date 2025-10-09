@@ -18,7 +18,7 @@ import validateExampleDataUploads from '../hooks/validateExampleDataUploads.js';
 import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
-import { sanitizeFileName } from '../util/Helper.js';
+import { sanitizeFileName } from '../util/helpers.js';
 
 export const createPathogenResource = () => {
   return {

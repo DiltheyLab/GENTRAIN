@@ -1,8 +1,8 @@
 import { ActionContext, ActionRequest } from 'adminjs';
-import { isPOSTMethod } from '../admin.utils.js';
 import { ExampleCasesValidator } from '../strategies/ExampleCasesValidator.js';
 import { ExampleContactsValidator } from '../strategies/ExampleContactsValidator.js';
 import { ExampleSequencesValidator } from '../strategies/ExampleSequencesValidator.js';
+import { isPOSTMethod } from '../util/helpers.js';
 
 interface CustomActionRequest extends ActionRequest {
   files: {

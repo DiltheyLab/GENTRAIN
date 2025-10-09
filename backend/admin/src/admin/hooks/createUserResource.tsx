@@ -1,20 +1,13 @@
-import {
-  ActionResponse,
-  After,
-  ListActionResponse,
-  RecordActionResponse,
-  ResourceOptions,
-  ValidationError,
-} from 'adminjs';
+import { ResourceOptions, ValidationError } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
 import { hash } from 'argon2';
 import { isCurrentUser, isSuperuser } from '../auth-provider.js';
 import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
-import { isGETMethod, isPOSTMethod } from '../admin.utils.js';
 import { prisma } from '../db.js';
 import loggerFeature from '@adminjs/logger';
 import { componentLoader } from '../component-loader.js';
-import { validatePasswordPattern } from '../util/Validation.js';
+import { validatePasswordPattern } from '../util/validations.js';
+import { isPOSTMethod } from '../util/helpers.js';
 
 export const createUserResource = () => {
   return {
