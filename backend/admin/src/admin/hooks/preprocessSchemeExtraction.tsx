@@ -4,7 +4,7 @@ import fs from 'fs';
 import { isPOSTMethod } from '../admin.utils.js';
 import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
 import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
-import { collectValidationErrors } from '../util/Errors.js';
+import { collectValidationErrors } from '../util/errors.js';
 
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {

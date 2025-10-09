@@ -2,7 +2,7 @@ import { UploadedFile, ValidationError } from 'adminjs';
 import CustomActionRequest from '../types/CustomActionRequest.js';
 import { ExampleDataValidator } from './ExampleDataValidator.js';
 import fs from 'fs';
-import { validateFastaFile } from '../util/Validation.js';
+import { validateFastaFile } from '../util/validations.js';
 import AdmZip from 'adm-zip';
 
 export class ExampleSequencesValidator extends ExampleDataValidator {

@@ -14,7 +14,7 @@ import { isGETMethod, isPOSTMethod } from '../admin.utils.js';
 import { prisma } from '../db.js';
 import loggerFeature from '@adminjs/logger';
 import { componentLoader } from '../component-loader.js';
-import { validatePasswordPattern } from '../util/Validation.js';
+import { validatePasswordPattern } from '../util/validations.js';
 
 export const createUserResource = () => {
   return {

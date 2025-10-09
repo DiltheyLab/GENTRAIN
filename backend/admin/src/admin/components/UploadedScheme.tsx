@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Icon } from '@adminjs/design-system';
 import { RecordJSON } from 'adminjs';
-import { getReadableSize, sanitizeFileName } from '../util/Helper.js';
+import { getReadableSize, sanitizeFileName } from '../util/helpers.js';
 import { SchemeDownload } from './SchemeDownload.js';
 
 export const UploadedScheme = (props: { record: RecordJSON }) => {

@@ -1,6 +1,6 @@
 import { ActionRequest, ActionContext, ValidationError } from 'adminjs';
 import { isPOSTMethod } from '../admin.utils.js';
-import { validatePasswordPattern } from '../util/Validation.js';
+import { validatePasswordPattern } from '../util/validations.js';
 import { hash } from 'argon2';
 
 export const validateUser = async (request: ActionRequest, context?: ActionContext) => {

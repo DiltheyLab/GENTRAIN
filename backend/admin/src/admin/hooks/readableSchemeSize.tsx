@@ -1,6 +1,6 @@
 import { RecordActionResponse, ListActionResponse, ActionContext, ActionRequest } from 'adminjs';
 import { isGETMethod } from '../admin.utils.js';
-import { getReadableSize } from '../util/Helper.js';
+import { getReadableSize } from '../util/helpers.js';
 
 export const readableSchemeSize = (
   response: RecordActionResponse | ListActionResponse,

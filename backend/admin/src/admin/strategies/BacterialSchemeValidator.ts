@@ -1,6 +1,6 @@
 import { ValidationError } from 'adminjs';
 import { SchemeValidator } from './SchemeValidator.js';
-import { validateFastaFile } from '../util/Validation.js';
+import { validateFastaFile } from '../util/validations.js';
 
 export class BacterialSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = async () => {

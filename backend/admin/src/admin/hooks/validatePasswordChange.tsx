@@ -2,7 +2,7 @@ import { ActionRequest, ActionContext, ValidationError } from 'adminjs';
 import { isPOSTMethod } from '../admin.utils.js';
 import { hash, verify } from 'argon2';
 import { prisma } from '../db.js';
-import { validatePasswordPattern } from '../util/Validation.js';
+import { validatePasswordPattern } from '../util/validations.js';
 
 export const validatePasswordChange = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
