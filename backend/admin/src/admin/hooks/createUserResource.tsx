@@ -109,7 +109,6 @@ export const createUserResource = () => {
         edit: {
           isAccessible: ({ currentAdmin, record }) => isSuperuser(currentAdmin) || isCurrentUser(currentAdmin, record),
           before: async (request, context) => {
-            console.log(context.record);
             // no need to hash password on GET requests, it will be removed there anyway
             if (isPOSTMethod(request)) {
               // hash only if password is present, delete otherwise so it will not overwrite existing password with empty string

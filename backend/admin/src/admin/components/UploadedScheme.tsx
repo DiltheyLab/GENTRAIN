@@ -7,7 +7,6 @@ import { SchemeDownload } from './SchemeDownload.js';
 export const UploadedScheme = (props: { record: RecordJSON }) => {
   const { record } = props;
   const [downloading, setDownloading] = useState(false);
-  console.log(record);
   const schemeSize = record.params.scheme_size;
   const schemeVersion = record.params.scheme_version
     ? new Date(record.params.scheme_version).toLocaleString('de-DE', {

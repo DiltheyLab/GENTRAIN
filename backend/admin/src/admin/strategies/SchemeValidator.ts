@@ -78,7 +78,6 @@ export abstract class SchemeValidator {
           !this.getValidFileNames().includes(fileName) &&
           !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
-          console.log('test');
           throw new ValidationError(
             { scheme: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
             { message: 'Scheme upload is invalid' }
