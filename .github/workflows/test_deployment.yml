@@ -158,9 +158,6 @@ jobs:
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.prod.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker system prune -f
-            cd backend/redis
-            echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S sh gen-certs.sh
-            cd ../..
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.prod.yaml build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
             echo ${{ secrets.GENTRAIN_PASSWORD_TEST_SERVER }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
