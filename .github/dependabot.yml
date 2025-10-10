@@ -57,7 +57,7 @@ updates:
       prefix: "deps(redis)"
 
   # Docker base images
-  - package-ecosystem: "docker"
+  - package-ecosystem: "docker-compose"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -67,3 +67,15 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps(docker)"
+
+  # Docker base images
+  - package-ecosystem: "github-actions"
+    directory: "/.github"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(github-actions)"
