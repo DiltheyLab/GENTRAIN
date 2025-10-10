@@ -46,7 +46,7 @@
         "d3-force": "^3.0.0",
         "d3-scale": "^4.0.2",
         "date-fns": "^3.6.0",
-        "dexie-export-import": "^4.1.2",
+        "dexie-export-import": "^4.1.4",
         "dexie-react-hooks": "^1.1.7",
         "file-saver": "^2.0.5",
         "html2canvas": "^1.4.1",
