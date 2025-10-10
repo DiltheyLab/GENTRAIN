@@ -1,10 +1,15 @@
 import { t } from "i18next";
 import { Trans } from "react-i18next";
 
+type TranslationElement =
+    | { tag: "p"; content: string }
+    | { tag: "ul"; content: string[] }
+    | { tag: "code"; content: string };
+
 export const renderHtmlFromTranslation = (i18nKey: string) => {
-    const elements: { tag: "p" | "code"; content: string }[] | { tag: "ul"; content: string[] }[] = t(i18nKey, {
+    const elements = t(i18nKey, {
         returnObjects: true,
-    });
+    }) as TranslationElement[];
     return elements.map((element, elementIndex) => {
         switch (element.tag) {
             case "p":
