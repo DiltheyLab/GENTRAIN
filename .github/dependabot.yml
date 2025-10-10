@@ -1,0 +1,78 @@
+version: 2
+updates:
+  # FRONTEND (React)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+      - "frontend"
+    commit-message:
+      prefix: "deps(frontend)"
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"] # no automatic breaking updates
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
+  # ADMIN (AdminJS)
+  - package-ecosystem: "npm"
+    directory: "/backend/admin"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+      - "backend"
+    commit-message:
+      prefix: "deps(admin)"
+    ignore:
+      - dependency-name: "adminjs"
+        update-types: ["version-update:semver-major"]
+
+  # API (Python)
+  - package-ecosystem: "pip"
+    directory: "/backend/api"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "security"
+      - "backend"
+    commit-message:
+      prefix: "deps(api)"
+
+  # REDIS (Dockerfile)
+  - package-ecosystem: "docker"
+    directory: "/backend/redis"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    open-pull-requests-limit: 2
+    labels:
+      - "docker"
+      - "security"
+      - "backend"
+    commit-message:
+      prefix: "deps(redis)"
+
+  # Docker base images
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    open-pull-requests-limit: 3
+    labels:
+      - "docker"
+      - "security"
+    commit-message:
+      prefix: "deps(docker)"
