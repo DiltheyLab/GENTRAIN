@@ -39,11 +39,15 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     );
   }
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
-  validator.validateUpload();
+  try {
+    validator.validateUpload();
+  } catch (error) {
+    throw error;
+  }
   return validator.getValidatedZip();
 };
 
-const updateSchemeVersion = async (request: ActionRequest, context: ActionContext) => {
+const updateSchemeVersion = (request: ActionRequest, context: ActionContext) => {
   if (context.scheme) {
     request.payload.scheme_version = new Date();
   }

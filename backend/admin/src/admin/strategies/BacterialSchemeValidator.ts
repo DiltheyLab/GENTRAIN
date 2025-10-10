@@ -1,30 +1,16 @@
-import { ValidationError } from 'adminjs';
 import { SchemeValidator } from './SchemeValidator.js';
-import { validateFastaFile } from '../util/validations.js';
+import { validateFastaFile, validateFilename } from '../util/validations.js';
+import { ValidationError } from 'adminjs';
 
 export class BacterialSchemeValidator extends SchemeValidator {
-  public validateSchemeStructure = async () => {
+  public validateSchemeStructure = () => {
     this.validateGenesList();
     this.checkFileExists('.schema_config');
     this.validateFastaFiles();
   };
 
   protected getValidFileNames = (): string[] => {
-    return [
-      '.genes_list',
-      '.schema_config',
-      'loci_modes',
-      'self_scores',
-      'short/self_scores',
-      'pre_computed/PROTEINtable1',
-      'pre_computed/DNAtable1',
-      'pre_computed/PROTEINtable2',
-      'pre_computed/DNAtable2',
-      'pre_computed/PROTEINtable3',
-      'pre_computed/DNAtable3',
-      'pre_computed/PROTEINtable4',
-      'pre_computed/DNAtable4',
-    ];
+    return ['.genes_list', '.schema_config', 'loci_modes', 'self_scores', 'short/self_scores'];
   };
 
   protected getValidFileExtensions = (): string[] => {
@@ -44,7 +30,13 @@ export class BacterialSchemeValidator extends SchemeValidator {
   private validateFastaFiles = () => {
     const fastaFiles = this.zip.getEntries().filter((entry) => entry.entryName.includes('.fasta'));
     for (const fastaFile of fastaFiles) {
-      validateFastaFile(fastaFile.getData().toString('utf8'));
+      if (!validateFilename(fastaFile.entryName)) {
+        this.throwException(`Invalid filename: ${fastaFile.entryName}`);
+      }
+      const validationErrors = validateFastaFile(fastaFile.getData().toString('utf8'));
+      if (validationErrors.length > 0) {
+        this.throwException(`Fasta file is invalid. ${validationErrors.join(', ')}.`);
+      }
     }
   };
 }

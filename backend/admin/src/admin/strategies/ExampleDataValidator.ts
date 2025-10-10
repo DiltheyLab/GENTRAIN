@@ -31,7 +31,6 @@ export abstract class ExampleDataValidator {
 
   private validateMimetype = () => {
     const fileExtension = this.file.name.split('.').pop();
-
     if (!this.getValidMimetypes().includes(this.file.type) || !this.getValidExtensions().includes(fileExtension)) {
       this.throwException('File type is invalid.');
     }

@@ -32,6 +32,20 @@ export const validateFastaFile = (fastaString: string) => {
   return errors;
 };
 
+export const validateJsonFile = (jsonString: string) => {
+  try {
+    JSON.parse(jsonString);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
+export const validateFilename = (filename: string) => {
+  const validCharacters = /^(?!\.\.\/)(?!\.\/)[a-zA-Z0-9\/_.-]+$/;
+  return validCharacters.test(filename);
+};
+
 export const validatePasswordPattern = (password: string) => {
   if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(password)) {
     return false;
