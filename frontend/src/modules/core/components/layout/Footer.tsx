@@ -11,7 +11,7 @@ export const Footer = () => {
                             DiltheyLab
                         </a>
                     </div>
-                    <small>© 2025 Universitätsklinikum Düsseldorf</small>
+                    <small>© {new Date().getFullYear()} Universitätsklinikum Düsseldorf</small>
                     <div className="mt-2">
                         <a href="/contact" className="underline">
                             Kontakt
