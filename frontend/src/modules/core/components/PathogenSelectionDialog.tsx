@@ -34,7 +34,10 @@ export const PathogenSelectionDialog = () => {
                     <DialogDescription>Um fortzufahren müssen Sie ein Pathogen auswählen.</DialogDescription>
                 </DialogHeader>
 
-                <PathogenSwitch className="w-[310px]" />
+                <PathogenSwitch
+                    className="w-[310px]"
+                    classNamePopOverContent="max-h-[45vh] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-[#8b8b8b] scrollbar-track-transparent"
+                />
 
                 <DialogFooter>
                     <Button type="button" disabled={!activePathogen} onClick={() => setIsOpen(false)}>

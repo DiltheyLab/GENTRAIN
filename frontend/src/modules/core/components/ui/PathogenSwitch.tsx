@@ -11,8 +11,9 @@ import { useDataManagementStore } from "@/modules/data_management/stores/dataMan
 
 type PathogenSwitchProps = {
     className?: string;
+    classNamePopOverContent?: string;
 };
-export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
+export const PathogenSwitch = ({ className, classNamePopOverContent }: PathogenSwitchProps) => {
     const [open, setOpen] = useState(false);
     const pathogenTypes = useGetAllPathogenTypesWithPathogens();
     const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
@@ -62,7 +63,7 @@ export const PathogenSwitch = ({ className }: PathogenSwitchProps) => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                className={cn("w-[var(--radix-popover-trigger-width)] p-0")}
+                className={cn("w-[var(--radix-popover-trigger-width)] p-0", classNamePopOverContent)}
                 align="start"
                 sideOffset={5} // Distance between the trigger and the popover
             >
