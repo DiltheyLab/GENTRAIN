@@ -28,7 +28,7 @@ export function ImportAssistent() {
     return (
         <Dialog open={opened} onOpenChange={closeImportAssistent}>
             <DialogContent
-                className="max-w-[1000px] w-[calc(100vw-50px)]"
+                className="max-w-[1000px] w-[calc(100vw-50px)] max-h-[100vh] overflow-y-auto"
                 onInteractOutside={(e) => e.preventDefault()}
             >
                 <DialogHeader>
