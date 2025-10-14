@@ -1,6 +1,14 @@
 services:
   # The caddy-init-container adjusts permissions for caddy
   # container volumes to enable non-root container start up.
+  init:
+    image: ubuntu:20.04
+    volumes:
+      - myvolume:/data
+    entrypoint: /bin/bash -c "chown -R myuser:myuser /data && exit"
+    user: root
+    networks:
+      - caddy
   caddy-init:
     image: caddy:latest
     volumes:
