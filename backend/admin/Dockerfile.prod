@@ -34,4 +34,4 @@ RUN rm -rf src
 # Expose the port the app runs on
 EXPOSE 4001
 
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["/admin/entrypoint-prod.sh"]
