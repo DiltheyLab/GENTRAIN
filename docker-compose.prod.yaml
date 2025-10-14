@@ -5,7 +5,7 @@ services:
     image: ubuntu:20.04
     volumes:
       - myvolume:/data
-    entrypoint: /bin/bash -c "chown -R myuser:myuser /data && exit"
+    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /data && exit"
     user: root
     networks:
       - caddy
