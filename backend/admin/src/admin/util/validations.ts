@@ -12,22 +12,22 @@ export const validateFastaFile = (fastaString: string) => {
       const header = line.slice(1).trim();
       const [id, ...desc] = header.split(/\s+/);
       if (!/^[A-Za-z0-9._-]+$/.test(id)) {
-        errors.push(`Line ${i + 1}: Sequence id is invalid`);
+        errors.push(`Line ${i + 1}: Sequence id is invalid.`);
       }
       if (desc.join(' ').match(/[^\x20-\x7E]/)) {
-        errors.push(`Line ${i + 1}: Non-ASCII characters in sequence description`);
+        errors.push(`Line ${i + 1}: Sequence description is invalid.`);
       }
       hasSequence = false;
     } else {
       // Validate non header line
       if (!alphabet.test(line)) {
-        errors.push(`Line ${i + 1}: Invalid characters in sequence`);
+        errors.push(`Line ${i + 1}: Sequence is invalid.`);
       }
       hasSequence = true;
     }
   }
   if (!hasSequence) {
-    errors.push('Last header has no sequence');
+    errors.push('Last header has no sequence.');
   }
   return errors;
 };

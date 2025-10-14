@@ -5,7 +5,7 @@ import { ValidationError } from 'adminjs';
 export class BacterialSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = () => {
     this.validateGenesList();
-    this.checkFileExists('.schema_config');
+    this.validateSchemaConfig();
     this.validateFastaFiles();
   };
 
@@ -19,7 +19,9 @@ export class BacterialSchemeValidator extends SchemeValidator {
 
   private validateGenesList = () => {
     const file = this.checkFileExists('.genes_list');
-    const content = file.getData().toString('utf8');
+    const content = file.getData().toString('binary');
+    //const validCharacters = /^[a-zA-Z0-9_.-]+$/;
+    //content.replace(/\f/g, '').replace(' ', '')
     const regex = /\b[\w\-.]+\.fasta\b/g;
     const fastaFileNames = content.match(regex) || [];
     for (const fastaFileName of fastaFileNames) {
@@ -27,12 +29,19 @@ export class BacterialSchemeValidator extends SchemeValidator {
     }
   };
 
+  private validateSchemaConfig = () => {
+    const file = this.checkFileExists('.schema_config');
+  };
+
   private validateFastaFiles = () => {
     const fastaFiles = this.zip.getEntries().filter((entry) => entry.entryName.includes('.fasta'));
     for (const fastaFile of fastaFiles) {
+      // Validate filename
+      // Only allow a strict regex pattern to prevent active code
       if (!validateFilename(fastaFile.entryName)) {
         this.throwException(`Invalid filename: ${fastaFile.entryName}`);
       }
+      // Validate fasta content
       const validationErrors = validateFastaFile(fastaFile.getData().toString('utf8'));
       if (validationErrors.length > 0) {
         this.throwException(`Fasta file is invalid. ${validationErrors.join(', ')}.`);

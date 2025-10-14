@@ -83,7 +83,9 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - caddy
@@ -96,8 +98,8 @@ services:
       - redis
       - db
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
+      - type: volume
+        source: pathogen_schemes
         target: /api/pathogen_schemes
       - type: bind
         source: ./backend/admin/prisma
@@ -118,8 +120,8 @@ services:
     depends_on:
       - redis
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
+      - type: volume
+        source: pathogen_schemes
         target: /api/pathogen_schemes
       - type: bind
         source: ./backend/admin/prisma
@@ -139,8 +141,8 @@ services:
       context: ./backend/admin
       dockerfile: Dockerfile.prod
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
+      - type: volume
+        source: pathogen_schemes
         target: /admin/pathogen_schemes
     expose:
       - "4001"
@@ -172,6 +174,7 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
+  pathogen_schemes:
 
 networks:
   # Docker network for Caddy
