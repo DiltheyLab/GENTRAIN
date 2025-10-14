@@ -10,7 +10,7 @@ RUN apk add --no-cache openssl
 ENV NODE_ENV="production"
 
 RUN addgroup -g $GROUP_ID gentrain
-RUN adduser -D -u $USER_ID -G $GROUP_ID gentrain
+RUN adduser -D -u $USER_ID -G gentrain
 RUN chown gentrain:gentrain -R /api
 USER gentrain
 
