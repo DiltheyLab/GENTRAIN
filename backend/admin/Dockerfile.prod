@@ -6,6 +6,8 @@ ARG GROUP_ID=1001
 WORKDIR /admin
 
 RUN apk add --no-cache openssl
+RUN npm i -g typescript
+
 # Set the environment variable for production
 ENV NODE_ENV="production"
 
@@ -19,8 +21,6 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY --chown=gentrain . .
-
-RUN npm i typescript
 
 # Run the build command to compile TypeScript to JavaScript
 RUN npm run build
