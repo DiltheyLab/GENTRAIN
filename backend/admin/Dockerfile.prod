@@ -20,7 +20,7 @@ RUN npm ci --only=production
 
 COPY --chown=gentrain . .
 
-RUN npm i -g typescript
+RUN npm i typescript
 
 # Run the build command to compile TypeScript to JavaScript
 RUN npm run build
