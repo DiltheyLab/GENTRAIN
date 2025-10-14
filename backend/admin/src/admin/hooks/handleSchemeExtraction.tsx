@@ -1,4 +1,4 @@
-import { ActionContext, ActionRequest, ActionResponse } from 'adminjs';
+import { ActionContext, ActionRequest, ActionResponse, ValidationError } from 'adminjs';
 import getFolderSize from 'get-folder-size';
 import path from 'path';
 import unzipper from 'unzipper';
@@ -23,6 +23,21 @@ const extractSchemeUpload = async (context: ActionContext) => {
   // create folder using record id
   const folderName = record.params.id.toString();
   const extractPath = path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName);
+  // Prevent excessive disk space usage by keeping a puffer of 10 GB
+  const availableDiskSpaceInGigabyte: number = await new Promise((resolve, reject) => {
+    fs.statfs('/', (err, stats) => {
+      if (err) {
+        reject(err);
+      } else {
+        const availableDiskSpace = ((stats.bsize * stats.bavail) + Number(record.params.scheme_size)) / 1024 / 1024 / 1024; // in GB
+        resolve(availableDiskSpace);
+      }
+    });
+  });
+  console.log("Available disk space: ", availableDiskSpaceInGigabyte);
+  if (availableDiskSpaceInGigabyte < 10) {
+    throw new ValidationError({}, { message: 'Scheme upload not possible' });
+  }
   if (fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName))) {
     await fs.promises.rm(extractPath, { recursive: true });
   }
