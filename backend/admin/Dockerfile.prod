@@ -3,15 +3,21 @@ FROM node:22-alpine
 WORKDIR /admin
 
 RUN apk add --no-cache openssl
-
 # Set the environment variable for production
 ENV NODE_ENV="production"
+
+ARG USER_ID=1001
+ARG GROUP_ID=1001
+RUN addgroup --gid $GROUP_ID gentrain
+RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
+RUN chown gentrain:gentrain -R /api
+USER gentrain
 
 COPY package*.json ./
 
 RUN npm ci --only=production
 
-COPY . .
+COPY --chown=gentrain . .
 
 RUN npm i -g typescript
 

@@ -16,7 +16,6 @@ RUN conda env create -f /api/environment.yaml
 RUN addgroup --gid $GROUP_ID gentrain
 RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
 RUN chown gentrain:gentrain -R /api
-#RUN chown gentrain:gentrain -R /opt/conda/envs/gentrain
 USER gentrain
 
 RUN rm -rf /api/logs
