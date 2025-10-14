@@ -4,8 +4,10 @@ services:
   init:
     image: ubuntu:20.04
     volumes:
-      - myvolume:/data
-    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /data && exit"
+      - type: volume
+        source: pathogen_schemes
+        target: pathogen_schemes
+    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /pathogen_schemes && exit"
     user: root
     networks:
       - caddy
