@@ -34,7 +34,6 @@ const extractSchemeUpload = async (context: ActionContext) => {
       }
     });
   });
-  console.log("Available disk space: ", availableDiskSpaceInGigabyte);
   if (availableDiskSpaceInGigabyte < 10) {
     throw new ValidationError({}, { message: 'Scheme upload not possible' });
   }

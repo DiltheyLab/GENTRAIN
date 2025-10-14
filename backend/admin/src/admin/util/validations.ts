@@ -1,6 +1,6 @@
 export const validateFastaFile = (fastaString: string) => {
   // Allow valid nucleotides of DNA and RNA sequences
-  const alphabet = /^[ACGTN]+$/i;
+  const alphabet = /^[ACGTNRYSWKMBDHV]+$/i;
   const lines = fastaString.trim().split(/\r?\n/);
   let errors = [];
   let hasSequence = false;
