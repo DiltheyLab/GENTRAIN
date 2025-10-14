@@ -57,6 +57,7 @@ export const ImportSection = () => {
                         type="sequence"
                         icon={<Dna />}
                         exampleDataPath={activePathogen?.sequences_example}
+                        disable={casesForActivePathogen.length === 0}
                     ></DataImport>
                 </div>
                 <div className="w-1/3">
