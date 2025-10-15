@@ -6,7 +6,7 @@ Caddyfile
 .vscode
 .idea
 .idea/*
-backend/redis/redis.conf
+backend/redis/redis.prod.conf
 **/.DS_Store
 certs/
 certs/*
