@@ -82,19 +82,19 @@ const config: Config = {
       items: [
         {
           type: "docSidebar",
-          sidebarId: "autoSidebar",
+          sidebarId: "applicationSidebar",
           position: "left",
           label: "Application",
         },
         {
           type: "docSidebar",
-          sidebarId: "autoSidebar",
+          sidebarId: "developersSidebar",
           position: "left",
           label: "Developers",
         },
         {
           type: "docSidebar",
-          sidebarId: "autoSidebar",
+          sidebarId: "adminSidebar",
           position: "left",
           label: "Admin",
         },
@@ -108,57 +108,8 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      links: [
-        {
-          title: "Docs",
-          items: [
-            {
-              label: "Application",
-              to: "/docs/intro",
-            },
-            {
-              label: "Developers",
-              to: "/docs/intro",
-            },
-            {
-              label: "Admin",
-              to: "/docs/intro",
-            },
-          ],
-        },
-        /*  {
-          title: "Community",
-          items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "X",
-              href: "https://x.com/docusaurus",
-            },
-          ],
-        }, */
-
-        /* {
-          title: "More",
-          items: [
-                        {
-              label: "Blog",
-              to: "/blog",
-            }, 
-            {
-              label: "GitHub",
-              href: "https://github.com/DiltheyLab/GENTRAIN",
-            },
-          ],
-        },*/
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Universitätsklinikum Düsseldorf.`,
+      // justify: "space-between",
+      copyright: `<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;"><div>Copyright © ${new Date().getFullYear()} Universitätsklinikum Düsseldorf</div> <div><a href="https://gentrain.bi.denbi.de/impress" target="_blank">Impressum</a> · <a href="https://gentrain.bi.denbi.de/data-privacy" target="_blank">Datenschutz</a> · <a href="https://gentrain.bi.denbi.de/contact" target="_blank">Kontakt</a></div></div>`,
     },
     prism: {
       theme: prismThemes.github,
