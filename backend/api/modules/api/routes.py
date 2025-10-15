@@ -11,7 +11,6 @@ import io
 
 from api.config import get_project_path
 
-
 # Pathogens
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():

@@ -38,3 +38,4 @@ export const SchemeDownloadList = add('SchemeDownloadList', './components/Scheme
 export const SchemeDownloadShow = add('SchemeDownloadShow', './components/SchemeDownloadShow');
 export const SchemeTypeSelectEdit = add('SchemeTypeSelectEdit', './components/SchemeTypeSelectEdit');
 export const ErrorMessage = add('ErrorMessage', './components/ErrorMessage');
+export const ExampleDataShow = add('ExampleDataShow', './components/ExampleDataShow');

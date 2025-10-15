@@ -1,4 +1,4 @@
-import { PropertyLabel, ShowPropertyProps, useTranslation } from 'adminjs';
+import { ShowPropertyProps, useTranslation } from 'adminjs';
 import React from 'react';
 import { UploadedScheme } from './UploadedScheme.js';
 import { ValueGroup } from '@adminjs/design-system';
