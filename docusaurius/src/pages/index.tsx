@@ -3,12 +3,12 @@ import clsx from "clsx";
 import { useState } from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
-import HomepageFeatures from "@site/src/components/HomepageFeatures";
+import DocumentationSections from "@site/src/components/DocumentationSections";
 import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
 
-function HomepageHeader() {
+function DocumentationHeader() {
   const { siteConfig } = useDocusaurusContext();
   const [showVideo, setShowVideo] = useState(false);
   return (
@@ -61,9 +61,9 @@ export default function Home(): ReactNode {
       title={`Hello from ${siteConfig.title}`}
       description="In this documentation you will find all information about the app GENTRAIN and how to use it."
     >
-      <HomepageHeader />
+      <DocumentationHeader />
       <main>
-        <HomepageFeatures />
+        <DocumentationSections />
       </main>
     </Layout>
   );

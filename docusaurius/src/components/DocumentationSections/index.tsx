@@ -3,13 +3,13 @@ import clsx from "clsx";
 import Heading from "@theme/Heading";
 import styles from "./styles.module.css";
 
-type FeatureItem = {
+type SectionItem = {
   title: string;
   imgSrc: string;
   description: ReactNode;
 };
 
-const FeatureList: FeatureItem[] = [
+const SectionList: SectionItem[] = [
   {
     title: "Application",
     imgSrc: "/img/appicon.png",
@@ -45,7 +45,7 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({ title, imgSrc, description }: FeatureItem) {
+function Section({ title, imgSrc, description }: SectionItem) {
   return (
     <div className={clsx("col col--4")}>
       <div className="text--center">
@@ -59,13 +59,13 @@ function Feature({ title, imgSrc, description }: FeatureItem) {
   );
 }
 
-export default function HomepageFeatures(): ReactNode {
+export default function DocumentationSections(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
         <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
+          {SectionList.map((props, idx) => (
+            <Section key={idx} {...props} />
           ))}
         </div>
       </div>
