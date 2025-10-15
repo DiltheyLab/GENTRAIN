@@ -83,7 +83,20 @@ export abstract class SchemeValidator {
     const zipEntries = this.zip.getEntries();
     const rootFolderEntry = zipEntries.find((entry) => {
       // Entry is a directory and has no parent (only one segment)
-      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length >= 1;
+      const isRootDirectory = entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
+      if (!isRootDirectory) {
+        return false;
+      }
+      const rootDirectory = entry.entryName;
+      // Return as root directory if all entries (auto generated filed excluded) start with the directory name
+      return (
+        zipEntries.find(
+          (entry) =>
+            !entry.entryName.startsWith(`${rootDirectory}`) &&
+            !entry.entryName.startsWith('.DS_Store') &&
+            !entry.entryName.startsWith('__MACOSX/')
+        ) === undefined
+      );
     });
     return rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
   };
