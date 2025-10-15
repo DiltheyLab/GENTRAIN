@@ -160,7 +160,7 @@ export const createPathogenResource = () => {
           local: {
             bucket: 'public/pathogen_example_data',
             opts: {
-              baseUrl: '/pathogen_example_data',
+              baseUrl: '/example_data',
             },
           },
         },
@@ -185,7 +185,7 @@ export const createPathogenResource = () => {
           local: {
             bucket: 'public/pathogen_example_data',
             opts: {
-              baseUrl: '/pathogen_example_data',
+              baseUrl: '/example_data',
             },
           },
         },
@@ -211,7 +211,7 @@ export const createPathogenResource = () => {
           local: {
             bucket: 'public/pathogen_example_data',
             opts: {
-              baseUrl: '/pathogen_example_data',
+              baseUrl: '/example_data',
             },
           },
         },
