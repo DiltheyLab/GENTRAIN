@@ -193,7 +193,7 @@ export const DataImport = ({
                         <Button
                             variant="link"
                             className="hover:text-primary hover:no-underline"
-                            onClick={() => downloadFileFromUrl(`${import.meta.env.VITE_API_HOST}/${exampleDataPath}`)}
+                            onClick={() => downloadFileFromUrl(`${exampleDataPath}`)}
                         >
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
                             <FileDown className="h-5 w-5 ml-1" />

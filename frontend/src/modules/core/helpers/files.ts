@@ -22,6 +22,8 @@ export const downloadFile = (blob: Blob, name: string) => {
  * @param name
  */
 export const downloadFileFromUrl = (url: string) => {
+    console.log(url)
+
     const tempLink = document.createElement("a");
     tempLink.href = url;
     tempLink.setAttribute("download", url);
