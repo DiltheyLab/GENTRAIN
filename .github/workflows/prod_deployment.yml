@@ -126,6 +126,7 @@ jobs:
             echo -e "COOKIE_SECRET=${{secrets.COOKIE_SECRET}}" >> .env
             echo -e "SESSION_SECRET=${{secrets.SESSION_SECRET}}" >> .env
             echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
+            echo -e "ADMIN_PANEL_URL=${{vars.ADMIN_PANEL_URL}}" >> .env
             echo -e "ADMIN_SCHEME_DIRECTORY=${{vars.ADMIN_SCHEME_DIRECTORY}}" >> .env
             echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
             echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
