@@ -1,8 +1,8 @@
-import { useToast } from "@/modules/core/components/ui/UseToast";
-import { GentrainException } from "@/modules/core/exceptions/GentrainException";
-import { getToastDescription } from "@/modules/core/helpers/errors";
-import { useTranslation } from "react-i18next";
-import { ZodError } from "zod";
+import {useToast} from "@/modules/core/components/ui/UseToast";
+import {GentrainException} from "@/modules/core/exceptions/GentrainException";
+import {getToastDescription} from "@/modules/core/helpers/errors";
+import {useTranslation} from "react-i18next";
+import {ZodError} from "zod";
 import {
     Dialog,
     DialogContent,
@@ -11,19 +11,20 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/modules/core/components/ui/Dialog";
-import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
-import { Button } from "@/modules/core/components/ui/Button";
-import { FileDropzone } from "./FileDropzone";
-import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
-import { PersistenceStrategy } from "../../services/data_import/persistence/PersistenceStrategy";
-import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
-import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
-import { useState } from "react";
-import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
-import { downloadFileFromUrl } from "@/modules/core/helpers/files";
-import { FileDown } from "lucide-react";
-import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
-import { SequenceImport } from "@/modules/core/models/sequence_analyses";
+import {useDataManagementStore} from "@/modules/data_management/stores/dataManagement";
+import {Button} from "@/modules/core/components/ui/Button";
+import {FileDropzone} from "./FileDropzone";
+import {ValidationStrategy} from "../../services/data_import/validation/ValidationStrategy";
+import {PersistenceStrategy} from "../../services/data_import/persistence/PersistenceStrategy";
+import {CaseImport, CaseSchema} from "@/modules/core/models/cases";
+import {ContactImport, ContactSchema} from "@/modules/core/models/contacts";
+import {useState} from "react";
+import {renderHtmlFromTranslation} from "@/modules/core/helpers/translations";
+import {downloadFileFromUrl} from "@/modules/core/helpers/files";
+import {FileDown} from "lucide-react";
+import {FailedCaseImportDialog} from "./FailedCaseImportDialog";
+import {SequenceImport} from "@/modules/core/models/sequence_analyses";
+import {useEnableExampleDataDownload} from "@/modules/data_management/hooks/useEnableExampleDataDownload";
 
 type DataImportProps = {
     children?: JSX.Element;
@@ -43,34 +44,34 @@ type DataImportProps = {
 type ImportData = {
     [id: string]:
         | {
-              imported: CaseImport | ContactImport;
-              persisted?: CaseSchema | ContactSchema | null;
-              import: boolean;
-              status?: string;
-          }
+        imported: CaseImport | ContactImport;
+        persisted?: CaseSchema | ContactSchema | null;
+        import: boolean;
+        status?: string;
+    }
         | SequenceImport;
 };
 
 export const DataImport = ({
-    children = undefined,
-    data,
-    persistenceStrategy,
-    validationStrategy,
-    actions,
-    inlineSelection = false,
-    type,
-    icon = null,
-    exampleDataPath = null,
-    disable = false,
-}: DataImportProps) => {
-    const { toast } = useToast();
-    const { t } = useTranslation();
+                               children = undefined,
+                               data,
+                               persistenceStrategy,
+                               validationStrategy,
+                               actions,
+                               inlineSelection = false,
+                               type,
+                               icon = null,
+                               exampleDataPath = null,
+                               disable = false,
+                           }: DataImportProps) => {
+    const {toast} = useToast();
+    const {t} = useTranslation();
     const clearImports = useDataManagementStore((state) => state.clearImports);
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
     const failedCaseImports = useDataManagementStore((state) => state.failedCaseImports);
-
     const [openDialog, setOpenDialog] = useState(false);
+    const enableExampleDataDownload = useEnableExampleDataDownload(exampleDataPath);
 
     const renderDropzone = () => {
         // hide dropzone for inline selection if data was uploaded
@@ -93,7 +94,7 @@ export const DataImport = ({
     const renderDataSelection = () => {
         if (Object.keys(data).length === 0) return;
         // render inline version if assistent is active and correspending data was uploaded
-        if (Object.keys(failedCaseImports).length > 0) return <FailedCaseImportDialog />;
+        if (Object.keys(failedCaseImports).length > 0) return <FailedCaseImportDialog/>;
 
         if (inlineSelection && showImportAssistent) {
             return (
@@ -172,13 +173,13 @@ export const DataImport = ({
                 {renderDropzone()}
                 {children ? renderDataSelection() : null}
             </div>
-            {exampleDataPath && (
+            {enableExampleDataDownload && (
                 <Button
                     variant="link"
                     className="hover:text-primary hover:no-underline"
                     onClick={() => downloadFileFromUrl(`${exampleDataPath}`)}
                 >
-                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
+                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1"/>
                 </Button>
             )}
         </div>
@@ -189,14 +190,14 @@ export const DataImport = ({
                     <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                         {renderDropzone()}
                     </div>
-                    {exampleDataPath && (
+                    {enableExampleDataDownload && (
                         <Button
                             variant="link"
                             className="hover:text-primary hover:no-underline"
                             onClick={() => downloadFileFromUrl(`${exampleDataPath}`)}
                         >
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
-                            <FileDown className="h-5 w-5 ml-1" />
+                            <FileDown className="h-5 w-5 ml-1"/>
                         </Button>
                     )}
                 </div>

@@ -22,8 +22,6 @@ export const downloadFile = (blob: Blob, name: string) => {
  * @param name
  */
 export const downloadFileFromUrl = (url: string) => {
-    console.log(url)
-
     const tempLink = document.createElement("a");
     tempLink.href = url;
     tempLink.setAttribute("download", url);
@@ -38,10 +36,14 @@ export const downloadFileFromUrl = (url: string) => {
  */
 export const readFileAsText = (file: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsText(file);
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
+        try {
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+        } catch (error) {
+            console.log(error)
+        }
     });
 };
 
@@ -84,7 +86,7 @@ export const formatData = (
                 // for bacterial uploads:
                 // fasta file name contains fasta id
                 // content contains assembly
-                fastaSequencesArray.push({ fastaId: file.filename.split(".")[0], sequence: file.content });
+                fastaSequencesArray.push({fastaId: file.filename.split(".")[0], sequence: file.content});
             }
         }
         return fastaSequencesArray;
@@ -116,7 +118,7 @@ export const formatData = (
                 });
                 rowData.push(rowObject);
             }
-            return { columns: columns, rows: rowData };
+            return {columns: columns, rows: rowData};
         }
     }
 };
@@ -141,7 +143,7 @@ export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
         }
 
         if (fastaId) {
-            fastaSequencesArray.push({ fastaId: fastaId, sequence: genome });
+            fastaSequencesArray.push({fastaId: fastaId, sequence: genome});
         }
     }
     return fastaSequencesArray;
