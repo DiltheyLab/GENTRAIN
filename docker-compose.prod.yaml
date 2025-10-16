@@ -1,19 +1,11 @@
 services:
   init:
-    image: ubuntu:20.04
-    volumes:
-      - type: volume
-        source: api_data
-        target: /api_data
-    entrypoint: /bin/bash -c "addgroup --gid 1001 gentrain && adduser --disabled-password --uid 1001 --gid 1001 gentrain && chown -R gentrain:gentrain /api_data && exit"
-    user: root
-    networks:
-      - caddy
-  # The caddy-init-container adjusts permissions for caddy
-  # container volumes to enable non-root container start up.
-  caddy-init:
+    container_name: gentrain-init
     image: caddy:latest
     volumes:
+      - type: bind
+        source: ./init-entrypoint.sh
+        target: /init-entrypoint.sh
       - type: volume
         source: caddy_data
         target: /data
@@ -23,13 +15,13 @@ services:
       - type: bind
         source: ./caddy/certs
         target: /certs
+      - type: volume
+        source: api_data
+        target: /api_data
+    entrypoint: "/init-entrypoint.sh"
+    user: root
     networks:
       - caddy
-    entrypoint:
-      - sh
-      - -c
-      - |
-        chown -R 65534:65534 /data /config /certs
   caddy:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub

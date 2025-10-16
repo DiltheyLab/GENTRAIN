@@ -12,7 +12,7 @@ RUN npm i -g typescript
 ENV NODE_ENV="production"
 
 RUN addgroup -g $GROUP_ID gentrain
-RUN adduser -D -G gentrain -u 1010 gentrain
+RUN adduser -D -G gentrain -u $USER_ID gentrain
 RUN chown gentrain:gentrain -R /admin
 USER gentrain
 
