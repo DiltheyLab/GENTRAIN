@@ -16,9 +16,6 @@ const ExampleDataDownloadShow: React.FC<ShowPropertyProps> = (props) => {
   const getBlob = () => {
     fetch(`${process.env.API_HOST}/pathogens/${record.id}/example_data/${property.custom.type}`, {
       method: 'GET',
-      headers: {
-        'Access-Control-Expose-Headers': 'Content-Disposition',
-      },
     }).then((response) => {
       if (response.ok) {
         response.blob().then((data) => {
