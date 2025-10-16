@@ -96,7 +96,7 @@ export const createPathogenResource = () => {
           components: {
             show: ExampleDataDownloadShow,
           },
-          custom: { type: 'case', filename: 'falldaten' },
+          custom: { type: 'case', filename: 'falldaten', key: 'example_cases_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -113,7 +113,7 @@ export const createPathogenResource = () => {
           components: {
             show: ExampleDataDownloadShow,
           },
-          custom: { type: 'sequence', filename: 'sequenzdaten' },
+          custom: { type: 'sequence', filename: 'sequenzdaten', key: 'example_sequences_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -130,7 +130,7 @@ export const createPathogenResource = () => {
           components: {
             show: ExampleDataDownloadShow,
           },
-          custom: { type: 'contact', filename: 'kontaktdaten' },
+          custom: { type: 'contact', filename: 'kontaktdaten', key: 'example_contacts_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.

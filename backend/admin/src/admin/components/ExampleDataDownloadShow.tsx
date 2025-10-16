@@ -14,15 +14,19 @@ const ExampleDataDownloadShow: React.FC<ShowPropertyProps> = (props) => {
   }, []);
 
   const getBlob = () => {
-    fetch(`${process.env.API_HOST}/pathogens/${record.id}/example_data/${property.custom.type}`, {
-      method: 'GET',
-    }).then((response) => {
-      if (response.ok) {
-        response.blob().then((data) => {
-          setBlob(data);
-        });
-      }
-    });
+    if (record.params?.[property.custom.key]) {
+      fetch(`${process.env.API_HOST}/pathogens/${record.id}/example_data/${property.custom.type}`, {
+        method: 'GET',
+      }).then((response) => {
+        if (response.ok) {
+          response.blob().then((data) => {
+            setBlob(data);
+          });
+        } else {
+          throw new Error(`File does not exists.`);
+        }
+      });
+    }
   };
 
   const getFileName = () => {
