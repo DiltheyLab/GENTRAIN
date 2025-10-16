@@ -11,9 +11,7 @@ different analysis techniques are applied.
 
 #### Mutation Calling
 
-For viral sequences we determine mutations based on the corresponding reference genome, which is done using the
-<a href="https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/index.html" target="_blank">
-Nextclade CLI</a>.
+For viral sequences we determine mutations based on the corresponding reference genome, which is done using the<a href="https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/index.html" target="_blank">Nextclade CLI</a>.
 Nextclade provides mutation objects consisting of snps, insertions, deletions, Ns and nonACGTN-characters.
 These mutation objects enable us to calculate genetic distances without persisting whole sequences. All sequences of a fasta file are analyzed simultaneously in a single job. The fasta content is pseudonymized before sending it to the sever, by replacing fasta ids with corresponding random pseudonyms.
 
@@ -418,9 +416,7 @@ flowchart LR
 ## Distance Matrix Assembling
 
 <div class="title">calculateSampleDistances</div>
-<div class="description">Firstly, the distance between all samples in the dataset is calculated and persisted in the IndexedDB. By calculating the distance between two samples only once, we minimize the calculation time. The complete distance matrix will be assembeled in the subsequent step.
-
-</div>
+<div class="description">Firstly, the distance between all samples in the dataset is calculated and persisted in the IndexedDB. By calculating the distance between two samples only once, we minimize the calculation time. The complete distance matrix will be assembeled in the subsequent step.</div>
 
 ```mermaid
 flowchart LR

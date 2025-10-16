@@ -74,7 +74,7 @@ Samples provide mappings between cases and the corresponding sequenced genome. I
 has to be sequenced, as Gentrain can also provide valuable inferences based on contact tracing information. However, it
 is the genetic information that makes gentrain what it is!
 
-Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values ([RFC9562](https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value){:target="\_blank"}).
+Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values (<a href="https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value" target="_blank">RFC9562</a>).
 
 #### Fasta File Format
 
