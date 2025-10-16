@@ -5,7 +5,7 @@ services:
       - type: volume
         source: api_data
         target: /api_data
-    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /api_data && exit"
+    entrypoint: /bin/bash -c "addgroup -g 1001 gentrain && adduser -D -G gentrain -u 1001 gentrain && chown -R gentrain:gentrain /api_data && exit"
     user: root
     networks:
       - caddy
