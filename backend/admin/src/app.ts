@@ -31,7 +31,6 @@ const start = async () => {
 
   admin.options.env = Object.assign({}, admin.options.env, {
     API_HOST: process.env.VITE_API_HOST,
-    ADMIN_SCHEME_DIRECTORY: process.env.ADMIN_SCHEME_DIRECTORY,
   });
 
   // Compile tsx in js

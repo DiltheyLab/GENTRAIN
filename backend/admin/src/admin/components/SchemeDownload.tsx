@@ -12,7 +12,7 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
     try {
       setDownloading(true);
 
-      const response = await fetch(`${process.env.API_HOST}/schemes/${record.id}`, {
+      const response = await fetch(`${process.env.API_HOST}/pathogens/${record.id}/scheme`, {
         method: 'GET',
       });
 

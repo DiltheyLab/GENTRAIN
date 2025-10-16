@@ -3,6 +3,7 @@ import { getModelByName } from '@adminjs/prisma';
 import {
   componentLoader,
   ErrorMessage,
+  ExampleDataDownloadShow,
   SchemeDownloadList,
   SchemeDownloadShow,
   SchemeTypeSelectEdit,
@@ -19,6 +20,7 @@ import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
 import { sanitizeFileName } from '../util/helpers.js';
+import path from 'path';
 
 export const createPathogenResource = () => {
   return {
@@ -91,6 +93,10 @@ export const createPathogenResource = () => {
         example_cases_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 9,
+          components: {
+            show: ExampleDataDownloadShow,
+          },
+          custom: { type: 'case', filename: 'falldaten' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -104,6 +110,10 @@ export const createPathogenResource = () => {
         example_sequences_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 11,
+          components: {
+            show: ExampleDataDownloadShow,
+          },
+          custom: { type: 'case', filename: 'sequenzdaten' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -117,6 +127,10 @@ export const createPathogenResource = () => {
         example_contacts_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 13,
+          components: {
+            show: ExampleDataDownloadShow,
+          },
+          custom: { type: 'contact', filename: 'kontaktdaten' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -158,10 +172,8 @@ export const createPathogenResource = () => {
         componentLoader,
         provider: {
           local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/example_data',
-            },
+            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
+            opts: {},
           },
         },
         properties: {
@@ -183,10 +195,8 @@ export const createPathogenResource = () => {
         componentLoader,
         provider: {
           local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/example_data',
-            },
+            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
+            opts: {},
           },
         },
         properties: {
@@ -201,18 +211,16 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.fasta`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.${filename.split('.')[1]}`;
         },
       }),
       uploadFeature({
         componentLoader,
         provider: {
           local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/example_data',
-            },
+            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
+            opts: {},
           },
         },
         properties: {

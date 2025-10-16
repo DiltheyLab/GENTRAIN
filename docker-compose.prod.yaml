@@ -3,9 +3,9 @@ services:
     image: ubuntu:20.04
     volumes:
       - type: volume
-        source: pathogen_schemes
-        target: /pathogen_schemes
-    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /pathogen_schemes && exit"
+        source: api_data
+        target: /api_data
+    entrypoint: /bin/bash -c "chown -R gentrain:gentrain /api_data && exit"
     user: root
     networks:
       - caddy
@@ -110,8 +110,8 @@ services:
       - init
     volumes:
       - type: volume
-        source: pathogen_schemes
-        target: /api/pathogen_schemes
+        source: api_data
+        target: /api/data
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
@@ -132,8 +132,8 @@ services:
       - redis
     volumes:
       - type: volume
-        source: pathogen_schemes
-        target: /api/pathogen_schemes
+        source: api_data
+        target: /api/data
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
@@ -154,8 +154,8 @@ services:
       dockerfile: Dockerfile.prod
     volumes:
       - type: volume
-        source: pathogen_schemes
-        target: /admin/pathogen_schemes
+        source: api_data
+        target: /admin/data
     expose:
       - "4001"
     depends_on:
@@ -187,7 +187,7 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
-  pathogen_schemes:
+  api_data:
 
 networks:
   # Docker network for Caddy

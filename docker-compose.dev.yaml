@@ -42,8 +42,8 @@ services:
         source: ./backend/admin/prisma
         target: /api/prisma
       - type: bind
-        source: ./backend/data/pathogen_schemes
-        target: /api/pathogen_schemes
+        source: ./backend/data
+        target: /api/data
     depends_on:
       - redis
       - db
@@ -63,8 +63,8 @@ services:
         source: ./backend/admin/prisma
         target: /api/prisma
       - type: bind
-        source: ./backend/data/pathogen_schemes
-        target: /api/pathogen_schemes
+        source: ./backend/data
+        target: /api/data
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     entrypoint: "/api/entrypoint-worker.sh dev"

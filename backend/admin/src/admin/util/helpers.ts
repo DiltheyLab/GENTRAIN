@@ -16,7 +16,7 @@ export const getReadableSize = (schemeSizeInBytes: number) => {
 };
 
 export const sanitizeFileName = (filename: string) => {
-  return encodeURIComponent(filename.toLowerCase()).replace('%20', '-');
+  return filename.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
 };
 
 export const isPOSTMethod = ({ method }: ActionRequest): boolean => method.toLowerCase() === 'post';

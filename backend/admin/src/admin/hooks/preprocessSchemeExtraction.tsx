@@ -23,7 +23,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     if (
       record &&
       record.params &&
-      fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, record.params.id.toString()))
+      fs.existsSync(path.join(process.env.ADMIN_DATA_DIRECTORY, "pathogen_schemes", record.params.id.toString()))
     ) {
       return undefined;
     }
