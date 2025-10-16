@@ -1,6 +1,6 @@
 services:
   init:
-    image: ubuntu:20.04
+    image: node:22-alpine
     volumes:
       - type: volume
         source: api_data
