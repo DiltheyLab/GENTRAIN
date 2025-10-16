@@ -4,9 +4,10 @@ generator js_client {
 }
 
 generator py_client {
-  provider  = "prisma-client-py"
-  interface = "sync"
-  output    = "/api/prisma"
+  provider      = "prisma-client-py"
+  interface     = "sync"
+  output        = "/api/prisma"
+  binaryTargets = ["debian-openssl-3.3.x"]
 }
 
 datasource db {
