@@ -17,6 +17,18 @@ updates:
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
 
+    # FRONTEND (Docker)
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(docker-frontend)"
+
   # Documentation (React)
   - package-ecosystem: "npm"
     directory: "/documentation"
