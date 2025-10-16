@@ -1,6 +1,8 @@
 # Use the official Miniconda3 image as the base image
 FROM continuumio/miniconda3:latest
 
+RUN apt-get update && apt-get install -y libatomic1
+
 ARG USER_ID=1010
 ARG GROUP_ID=1010
 
