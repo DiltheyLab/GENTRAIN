@@ -89,7 +89,6 @@ const ExampleDataEdit: FC<EditPropertyProps> = ({ property, record, onChange }) 
     }
   };
 
-  console.log(path, key, file, filesToUpload);
   return (
     <FormGroup>
       <Label>{translateProperty(property.label, property.resourceId)}</Label>
