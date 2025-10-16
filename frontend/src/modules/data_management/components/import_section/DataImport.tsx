@@ -38,7 +38,6 @@ type DataImportProps = {
     inlineSelection?: boolean;
     type: string;
     icon?: JSX.Element | null;
-    exampleDataPath?: string | null;
     disable?: boolean;
 };
 
@@ -62,7 +61,6 @@ export const DataImport = ({
     inlineSelection = false,
     type,
     icon = null,
-    exampleDataPath = null,
     disable = false,
 }: DataImportProps) => {
     const { toast } = useToast();

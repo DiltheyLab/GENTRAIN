@@ -44,7 +44,6 @@ export const ImportSection = () => {
                         validationStrategy={new CasesValidation()}
                         type="case"
                         icon={<ContactRound />}
-                        exampleDataPath={activePathogen?.cases_example}
                     >
                         <CaseSelection />
                     </DataImport>
@@ -56,7 +55,6 @@ export const ImportSection = () => {
                         validationStrategy={new SequencesValidation()}
                         type="sequence"
                         icon={<Dna />}
-                        exampleDataPath={activePathogen?.sequences_example}
                         disable={casesForActivePathogen.length === 0}
                     ></DataImport>
                 </div>
@@ -67,7 +65,6 @@ export const ImportSection = () => {
                         validationStrategy={new ContactsValidation()}
                         type="contact"
                         icon={<UsersRound />}
-                        exampleDataPath={activePathogen?.contacts_example}
                         disable={casesForActivePathogen.length === 0}
                     >
                         <ContactSelection />
