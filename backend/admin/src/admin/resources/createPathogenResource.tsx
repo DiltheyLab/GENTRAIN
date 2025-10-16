@@ -113,7 +113,7 @@ export const createPathogenResource = () => {
           components: {
             show: ExampleDataDownloadShow,
           },
-          custom: { type: 'case', filename: 'sequenzdaten' },
+          custom: { type: 'sequence', filename: 'sequenzdaten' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
