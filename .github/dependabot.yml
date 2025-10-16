@@ -17,6 +17,23 @@ updates:
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
 
+  # Documentation (React)
+  - package-ecosystem: "npm"
+    directory: "/documentation"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(documentation)"
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"] # no automatic breaking updates
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
   # ADMIN (AdminJS)
   - package-ecosystem: "npm"
     directory: "/backend/admin"
