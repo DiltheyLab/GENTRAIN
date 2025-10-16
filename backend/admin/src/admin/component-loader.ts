@@ -36,6 +36,7 @@ export const Dashboard = add('Dashboard', './components/Dashboard');
 export const SchemeUpload = add('SchemeUpload', './components/SchemeUpload');
 export const SchemeDownloadList = add('SchemeDownloadList', './components/SchemeDownloadList');
 export const SchemeDownloadShow = add('SchemeDownloadShow', './components/SchemeDownloadShow');
+export const ExampleDataEdit = add('ExampleDataEdit', './components/ExampleDataEdit');
 export const ExampleDataDownloadShow = add('ExampleDataDownloadShow', './components/ExampleDataDownloadShow');
 export const SchemeTypeSelectEdit = add('SchemeTypeSelectEdit', './components/SchemeTypeSelectEdit');
 export const ErrorMessage = add('ErrorMessage', './components/ErrorMessage');

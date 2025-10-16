@@ -8,7 +8,10 @@ const adminDataDirectory = process.env.ADMIN_DATA_DIRECTORY || '../data';
 
 export default class UploadProvider extends LocalProvider {
   constructor(uploadPath: string) {
-    super({ bucket: path.join(adminDataDirectory, uploadPath), opts: {} });
+    super({
+      bucket: path.join(adminDataDirectory, uploadPath),
+      opts: {},
+    });
   }
 
   // Override the upload method to prevent error when using a docker volume as upload directory

@@ -4,6 +4,7 @@ import {
   componentLoader,
   ErrorMessage,
   ExampleDataDownloadShow,
+  ExampleDataEdit,
   SchemeDownloadList,
   SchemeDownloadShow,
   SchemeTypeSelectEdit,
@@ -95,6 +96,7 @@ export const createPathogenResource = () => {
           position: 9,
           components: {
             show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
           },
           custom: { type: 'case', filename: 'falldaten', key: 'example_cases_key' },
         },

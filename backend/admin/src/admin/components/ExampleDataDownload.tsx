@@ -34,7 +34,7 @@ export const ExampleDataDownload = (props: { record: RecordJSON; type: string; f
       }}
     >
       <Icon
-        style={{ cursor: downloading ? 'auto' : 'pointer' }}
+        style={{ cursor: downloading ? 'auto' : 'pointer', marginTop: 2 }}
         icon={downloading ? 'Loader' : 'Download'}
         size={downloading ? 20 : 15}
         color="rgb(69, 70, 85)"

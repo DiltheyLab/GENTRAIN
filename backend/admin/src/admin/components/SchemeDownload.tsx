@@ -6,7 +6,7 @@ import { sanitizeFileName } from '../util/helpers.js';
 export const SchemeDownload = (props: { record: RecordJSON }) => {
   const { record } = props;
   const [downloading, setDownloading] = useState(false);
-  
+
   const triggerSchemeDownload = async (evt: any) => {
     evt.preventDefault();
     try {
@@ -49,7 +49,7 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
       }}
     >
       <Icon
-        style={{ cursor: downloading ? 'auto' : 'pointer' }}
+        style={{ cursor: downloading ? 'auto' : 'pointer', marginTop: 2 }}
         icon={downloading ? 'Loader' : 'Download'}
         size={downloading ? 20 : 15}
         color="rgb(69, 70, 85)"
