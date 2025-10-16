@@ -9,24 +9,26 @@ const ExampleDataDownloadShow: React.FC<ShowPropertyProps> = (props) => {
   const { translateProperty } = useTranslation();
   const [blob, setBlob] = React.useState<Blob | null>(null);
 
+  if (!record.params?.[property.custom.key]) {
+    return;
+  }
+
   useEffect(() => {
     getBlob();
   }, []);
 
   const getBlob = () => {
-    if (record.params?.[property.custom.key]) {
-      fetch(`${process.env.API_HOST}/pathogens/${record.id}/example_data/${property.custom.type}`, {
-        method: 'GET',
-      }).then((response) => {
-        if (response.ok) {
-          response.blob().then((data) => {
-            setBlob(data);
-          });
-        } else {
-          throw new Error(`File does not exists.`);
-        }
-      });
-    }
+    fetch(`${process.env.API_HOST}/pathogens/${record.id}/example_data/${property.custom.type}`, {
+      method: 'GET',
+    }).then((response) => {
+      if (response.ok) {
+        response.blob().then((data) => {
+          setBlob(data);
+        });
+      } else {
+        throw new Error(`File does not exists.`);
+      }
+    });
   };
 
   const getFileName = () => {
@@ -41,10 +43,6 @@ const ExampleDataDownloadShow: React.FC<ShowPropertyProps> = (props) => {
         throw new Error('Unknown type for example data download');
     }
   };
-
-  if (!blob) {
-    return;
-  }
 
   return (
     <ValueGroup label={translateProperty(property.label, property.resourceId)}>
