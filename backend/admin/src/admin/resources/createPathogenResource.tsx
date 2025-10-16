@@ -20,7 +20,7 @@ import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
 import { sanitizeFileName } from '../util/helpers.js';
-import path from 'path';
+import UploadProvider from '../upload-provider.js';
 
 export const createPathogenResource = () => {
   return {
@@ -170,12 +170,7 @@ export const createPathogenResource = () => {
     features: [
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
-            opts: {},
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_cases_key',
           file: 'example_cases_file',
@@ -193,12 +188,7 @@ export const createPathogenResource = () => {
       }),
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
-            opts: {},
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_sequences_key',
           file: 'example_sequences_file',
@@ -217,12 +207,7 @@ export const createPathogenResource = () => {
       }),
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_example_data'),
-            opts: {},
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_contacts_key',
           file: 'example_contacts_file',
