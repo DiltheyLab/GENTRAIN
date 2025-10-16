@@ -114,6 +114,7 @@ export const createPathogenResource = () => {
           position: 11,
           components: {
             show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
           },
           custom: { type: 'sequence', filename: 'sequenzdaten', key: 'example_sequences_key' },
         },
@@ -131,6 +132,7 @@ export const createPathogenResource = () => {
           position: 13,
           components: {
             show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
           },
           custom: { type: 'contact', filename: 'kontaktdaten', key: 'example_contacts_key' },
         },
