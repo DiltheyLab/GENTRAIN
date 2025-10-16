@@ -7,7 +7,7 @@ Personal data is added via case imports and stored in the browser's IndexedDB.
 
 Genetic data, such as viral and bacterial genomes, are transferred to the server and analysis results are temporarily stored for a maximum of 30 minutes.
 These contain information on mutations based on the corresponding reference genome.
-Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values ([RFC9562](https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value){:target="\_blank"}).
+Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values (<a href="https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value" target="_blank">RFC9562</a>).
 
 Data does not refer to the user, but to the persons associated with the cases registered with the health authorities.
 
@@ -66,6 +66,7 @@ Admin passwords must be set on first login and follow following rules:
 ### Registration Process
 
 The admin panel is not connected to a mail server. Therefore, users are created by users with the superuser role and passwords are changed at the first login, which also serves as account confirmation.
+
 ```mermaid
 sequenceDiagram
     participant Super User

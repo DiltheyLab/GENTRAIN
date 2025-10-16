@@ -1,0 +1,5 @@
+# Ignore all files which are not needed in the image
+node_modules
+.docusaurus
+build
+README.md
