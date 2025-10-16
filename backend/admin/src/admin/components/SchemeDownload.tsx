@@ -24,7 +24,7 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${sanitizeFileName(encodeURIComponent(record.params.name))}_scheme.zip`);
+      link.setAttribute('download', `${sanitizeFileName(record.params.name)}_scheme.zip`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
