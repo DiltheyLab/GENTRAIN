@@ -31,7 +31,35 @@ jobs:
           notify_when: "failure"
           notification_title: "Frontend Build"
           icon_failure: 💥
+  documentation_build:
+    name: Documentation Build
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: |
+          cd documentation
+          npm ci
+      - name: Build
+        run: |
+          cd documentation
+          npm run build
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "Frontend Build"
+          icon_failure: 💥
   pull_production_state:
     name: Pull Production State
     runs-on: ubuntu-latest
@@ -60,37 +88,6 @@ jobs:
           notify_when: "failure"
           notification_title: "Pull Production State"
           icon_failure: 💥
-
-  documentation_build:
-    name: Documentation Build
-    runs-on: ubuntu-latest
-    needs: pull_production_state
-
-    steps:
-      - name: Create, activate virtual environment and build mkdocs
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            cd ${{ vars.GENTRAIN_DIR }}/documentation
-            python3 -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            mkdocs build
-      - name: Clear docs static files and move new build
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            rm -rf ${{ vars.GENTRAIN_DIR }}/backend/static/docs
-            mkdir ${{ vars.GENTRAIN_DIR }}/backend/static/docs
-            mv ${{ vars.GENTRAIN_DIR }}/documentation/site/* ${{ vars.GENTRAIN_DIR }}/backend/static/docs
 
   restart_docker_containers:
     name: Restart Docker Containers
