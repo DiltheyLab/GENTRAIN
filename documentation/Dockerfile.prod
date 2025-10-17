@@ -3,4 +3,5 @@ WORKDIR /documentation
 COPY package*.json ./
 RUN npm ci
 COPY . .
-CMD [ "npm", "run", "build", "--","--no-clean" ]
+RUN rm -rf ./build 
+CMD [ "npm", "run", "build"]
