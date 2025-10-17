@@ -190,7 +190,7 @@ services:
     volumes:
       - type: bind
         source: ./documentation/build
-        target: /documentation/build
+        target: /docs/build
     networks:
       - caddy
 
