@@ -78,7 +78,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 f"{get_project_path()}/modules/sequence_analysis/scripts/viral.sh",
                 self.input,
                 self.output,
-                f"{get_project_path()}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
             ],
             check=False,
         )

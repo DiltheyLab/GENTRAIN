@@ -94,7 +94,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
                 "-output",
                 self.output,
             ],
