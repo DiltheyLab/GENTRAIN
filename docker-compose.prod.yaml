@@ -42,7 +42,11 @@ services:
         read_only: true
       - type: bind
         source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
-        target: /srv
+        target: /srv/frontend
+        read_only: true#
+      - type: bind
+        source: ./documentation/build # Mount the build directory of the documentation so Caddy can serve the static files
+        target: /srv/documentation
         read_only: true
       - type: bind
         source: ./caddy/certs
@@ -174,6 +178,19 @@ services:
     depends_on:
       api:
         condition: service_started
+
+  documentation:
+    container_name: gentrain-documentation
+    image: gentrain-documentation
+    build:
+      context: ./documentation
+      dockerfile: Dockerfile.prod
+    volumes:
+      - type: bind
+        source: ./documentation/build
+        target: /documentation/build
+    networks:
+      - caddy
 
 volumes:
   caddy_data:
