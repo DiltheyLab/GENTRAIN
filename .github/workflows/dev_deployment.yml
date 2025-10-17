@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22.10.0"
+          node-version: "22"
       - name: Install dependencies
         run: |
           cd frontend
@@ -31,6 +31,35 @@ jobs:
       - name: Build
         run: |
           cd frontend
+          npm run build
+      - name: Notify Slack Action Success
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "Frontend Build"
+          icon_failure: 💥
+  documentation_build:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: |
+          cd documentation
+          npm ci
+      - name: Build
+        run: |
+          cd documentation
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
