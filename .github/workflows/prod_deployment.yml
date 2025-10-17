@@ -15,11 +15,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22.10.0"
-      - name: Build frontend
+          node-version: "22"
+      - name: Install dependencies
         run: |
           cd frontend
           npm ci
+      - name: Build
+        run: |
+          cd frontend
           npm run build
       - name: Notify Slack Action Success
         uses: ravsamhq/notify-slack-action@2.3.0
