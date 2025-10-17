@@ -174,7 +174,8 @@ services:
         target: /app/dist
     networks:
       - caddy
-    env_file: ".env"
+    environment:
+      - VITE_API_HOST=${API_HOST}
     depends_on:
       api:
         condition: service_started
