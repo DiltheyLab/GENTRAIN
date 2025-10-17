@@ -19,7 +19,7 @@ export function Onboarding() {
                     <img width={800} src={GentrainLogo} alt="GENTRAIN NRW" />
                 </div>
                 <p className="font-medium w-11/12">
-                    Das Gentrain Dashboard ermöglicht Ausbruchsanalysen auf Basis von Kontaktnachverfolgung und
+                    Das GENTRAIN Dashboard ermöglicht Ausbruchsanalysen auf Basis von Kontaktnachverfolgung und
                     genetischen Distanzen. Es können Ausbruchsanalysen für virale und bakterielle Pathogene durchgeführt
                     werden.
                 </p>
