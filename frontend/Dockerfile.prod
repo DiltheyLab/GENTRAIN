@@ -6,6 +6,9 @@ WORKDIR /app
 ARG VITE_API_HOST
 ENV VITE_API_HOST=$VITE_API_HOST
 
+# log $VITE_API_HOST
+RUN echo "VITE_API_HOST is set to $VITE_API_HOST"
+
 COPY package*.json ./
 RUN npm ci
 RUN npm i -g vite
