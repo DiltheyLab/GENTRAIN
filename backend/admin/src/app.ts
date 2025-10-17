@@ -6,11 +6,11 @@ import { expressAuthenticatedRouter } from './admin/router.js';
 import { Database, Resource } from '@adminjs/prisma';
 import * as url from 'url';
 import { prisma } from './admin/db.js';
+import fs from 'fs';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
 const start = async () => {
-
   // Create express app
   const app = express();
   app.enable('trust proxy');
@@ -18,6 +18,16 @@ const start = async () => {
   // Setup static public folder for assets
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
   app.use(express.static(path.join(__dirname, '../public'))); // path from dist to public
+
+  if (!fs.existsSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_example_data`)) {
+    fs.mkdirSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_example_data`);
+    console.log(`Pathogen example data directory was created.`);
+  }
+
+  if (!fs.existsSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_schemes`)) {
+    fs.mkdirSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_schemes`);
+    console.log(`Pathogen schemes directory was created.`);
+  }
 
   // Setup Prisma Client and register it in AdminJS
   await prisma.$connect();
@@ -31,7 +41,6 @@ const start = async () => {
 
   admin.options.env = Object.assign({}, admin.options.env, {
     API_HOST: process.env.VITE_API_HOST,
-    ADMIN_SCHEME_DIRECTORY: process.env.ADMIN_SCHEME_DIRECTORY,
   });
 
   // Compile tsx in js
@@ -45,6 +54,17 @@ const start = async () => {
 
   // create router with authentification
   const adminRouter = expressAuthenticatedRouter(admin);
+
+  // Provided route to download example data using content-disposition attachment header and filename
+  app.get('/example_data/:pathogen_id/:filename', function (req, res) {
+    const { pathogen_id, filename } = req.params;
+    if (!fs.existsSync(`public/pathogen_example_data/${pathogen_id}/${filename}`)) {
+      res.status(404).send();
+    }
+    res.setHeader('Access-Control-Allow-Origin', process.env.APP_URL);
+    res.setHeader('Content-Disposition', 'attachment; filename="' + path.basename(filename) + '"');
+    res.download(`public/pathogen_example_data/${pathogen_id}/${filename}`);
+  });
 
   // set path under you can access the admin panel
   app.use(admin.options.rootPath, adminRouter);

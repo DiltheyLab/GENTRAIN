@@ -1,9 +1,11 @@
 services:
-  # The caddy-init-container adjusts permissions for caddy
-  # container volumes to enable non-root container start up.
-  caddy-init:
+  init:
+    container_name: gentrain-init
     image: caddy:latest
     volumes:
+      - type: bind
+        source: ./init-entrypoint.sh
+        target: /init-entrypoint.sh
       - type: volume
         source: caddy_data
         target: /data
@@ -13,13 +15,13 @@ services:
       - type: bind
         source: ./caddy/certs
         target: /certs
+      - type: volume
+        source: api_data
+        target: /api_data
+    entrypoint: "/init-entrypoint.sh"
+    user: root
     networks:
       - caddy
-    entrypoint:
-      - sh
-      - -c
-      - |
-        chown -R 65534:65534 /data /config /certs
   caddy:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
@@ -83,7 +85,9 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - caddy
@@ -95,10 +99,11 @@ services:
     depends_on:
       - redis
       - db
+      - init
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
-        target: /api/pathogen_schemes
+      - type: volume
+        source: api_data
+        target: /api/data
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
@@ -118,15 +123,16 @@ services:
     depends_on:
       - redis
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
-        target: /api/pathogen_schemes
+      - type: volume
+        source: api_data
+        target: /api/data
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
     entrypoint: "/api/entrypoint-worker.sh prod"
     links:
       - redis
+      - init
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
@@ -139,13 +145,14 @@ services:
       context: ./backend/admin
       dockerfile: Dockerfile.prod
     volumes:
-      - type: bind
-        source: ./backend/data/pathogen_schemes
-        target: /admin/pathogen_schemes
+      - type: volume
+        source: api_data
+        target: /admin/data
     expose:
       - "4001"
     depends_on:
       - db
+      - init
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable
@@ -172,6 +179,7 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
+  api_data:
 
 networks:
   # Docker network for Caddy

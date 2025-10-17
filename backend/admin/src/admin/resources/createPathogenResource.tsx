@@ -3,6 +3,8 @@ import { getModelByName } from '@adminjs/prisma';
 import {
   componentLoader,
   ErrorMessage,
+  ExampleDataDownloadShow,
+  ExampleDataEdit,
   SchemeDownloadList,
   SchemeDownloadShow,
   SchemeTypeSelectEdit,
@@ -19,6 +21,7 @@ import { initValidationErrors } from '../hooks/initValidationErrors.js';
 import { throwValidationErrors } from '../hooks/throwValidationErrors.js';
 import { readableSchemeSize } from '../hooks/readableSchemeSize.js';
 import { sanitizeFileName } from '../util/helpers.js';
+import UploadProvider from '../upload-provider.js';
 
 export const createPathogenResource = () => {
   return {
@@ -91,6 +94,11 @@ export const createPathogenResource = () => {
         example_cases_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 9,
+          components: {
+            show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
+          },
+          custom: { type: 'case', filename: 'falldaten', key: 'example_cases_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -104,6 +112,11 @@ export const createPathogenResource = () => {
         example_sequences_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 11,
+          components: {
+            show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
+          },
+          custom: { type: 'sequence', filename: 'sequenzdaten', key: 'example_sequences_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -117,6 +130,11 @@ export const createPathogenResource = () => {
         example_contacts_file: {
           isVisible: { list: false, filter: false, show: true, edit: true },
           position: 13,
+          components: {
+            show: ExampleDataDownloadShow,
+            edit: ExampleDataEdit,
+          },
+          custom: { type: 'contact', filename: 'kontaktdaten', key: 'example_contacts_key' },
         },
         // Custom error handling component that only display an error message.
         // Mainly used since the upload component does not handle error messages.
@@ -156,14 +174,7 @@ export const createPathogenResource = () => {
     features: [
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/pathogen_example_data',
-            },
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_cases_key',
           file: 'example_cases_file',
@@ -181,14 +192,7 @@ export const createPathogenResource = () => {
       }),
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/pathogen_example_data',
-            },
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_sequences_key',
           file: 'example_sequences_file',
@@ -201,20 +205,13 @@ export const createPathogenResource = () => {
         validation: {
           maxSize: 100 * 1024 * 1024,
         },
-        uploadPath: (record, _filename) => {
-          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.fasta`;
+        uploadPath: (record, filename) => {
+          return `${record.params.id}/${sanitizeFileName(record.params.name)}_sequenzdaten.${filename.split('.')[1]}`;
         },
       }),
       uploadFeature({
         componentLoader,
-        provider: {
-          local: {
-            bucket: 'public/pathogen_example_data',
-            opts: {
-              baseUrl: '/pathogen_example_data',
-            },
-          },
-        },
+        provider: new UploadProvider('pathogen_example_data'),
         properties: {
           key: 'example_contacts_key',
           file: 'example_contacts_file',

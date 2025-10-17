@@ -1,8 +1,10 @@
 # Use the official Miniconda3 image as the base image
 FROM continuumio/miniconda3:latest
 
-ARG USER_ID=1001
-ARG GROUP_ID=1001
+RUN apt-get update && apt-get install -y libatomic1
+
+ARG USER_ID=1010
+ARG GROUP_ID=1010
 
 # Set working directory in the container
 WORKDIR /api
@@ -16,7 +18,6 @@ RUN conda env create -f /api/environment.yaml
 RUN addgroup --gid $GROUP_ID gentrain
 RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
 RUN chown gentrain:gentrain -R /api
-#RUN chown gentrain:gentrain -R /opt/conda/envs/gentrain
 USER gentrain
 
 RUN rm -rf /api/logs

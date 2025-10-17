@@ -24,6 +24,8 @@ import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 import { FileDown } from "lucide-react";
 import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
+import { useEnableExampleDataDownload } from "@/modules/data_management/hooks/useEnableExampleDataDownload";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 type DataImportProps = {
     children?: JSX.Element;
@@ -36,7 +38,6 @@ type DataImportProps = {
     inlineSelection?: boolean;
     type: string;
     icon?: JSX.Element | null;
-    exampleDataPath?: string | null;
     disable?: boolean;
 };
 
@@ -60,7 +61,6 @@ export const DataImport = ({
     inlineSelection = false,
     type,
     icon = null,
-    exampleDataPath = null,
     disable = false,
 }: DataImportProps) => {
     const { toast } = useToast();
@@ -69,8 +69,9 @@ export const DataImport = ({
     const nextImportAssistentStep = useDataManagementStore((state) => state.nextImportAssistentStep);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
     const failedCaseImports = useDataManagementStore((state) => state.failedCaseImports);
-
     const [openDialog, setOpenDialog] = useState(false);
+    const activePathogen = useCoreStore((state) => state.activePathogen);
+    const enableExampleDataDownload = useEnableExampleDataDownload(type);
 
     const renderDropzone = () => {
         // hide dropzone for inline selection if data was uploaded
@@ -172,11 +173,15 @@ export const DataImport = ({
                 {renderDropzone()}
                 {children ? renderDataSelection() : null}
             </div>
-            {exampleDataPath && (
+            {enableExampleDataDownload && (
                 <Button
                     variant="link"
                     className="hover:text-primary hover:no-underline"
-                    onClick={() => downloadFileFromUrl(`${exampleDataPath}`)}
+                    onClick={() =>
+                        downloadFileFromUrl(
+                            `${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`
+                        )
+                    }
                 >
                     Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
                 </Button>
@@ -189,11 +194,17 @@ export const DataImport = ({
                     <div className={`w-full h-full ${disable ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
                         {renderDropzone()}
                     </div>
-                    {exampleDataPath && (
+                    {enableExampleDataDownload && (
                         <Button
                             variant="link"
                             className="hover:text-primary hover:no-underline"
-                            onClick={() => downloadFileFromUrl(`${import.meta.env.VITE_API_HOST}/${exampleDataPath}`)}
+                            onClick={() =>
+                                downloadFileFromUrl(
+                                    `${import.meta.env.VITE_API_HOST}/pathogens/${
+                                        activePathogen?.id
+                                    }/example_data/${type}`
+                                )
+                            }
                         >
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
                             <FileDown className="h-5 w-5 ml-1" />

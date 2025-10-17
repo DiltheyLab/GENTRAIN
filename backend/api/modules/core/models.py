@@ -8,21 +8,21 @@ def serialize_pathogen(pathogen: pathogen):
     # Assemble example data paths
     pathogen["cases_example"] = (
         (
-            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_cases_key']}"
+            f"{environ.get('ADMIN_PANEL_URL')}/example_data/{pathogen['example_cases_key']}"
         )
         if pathogen["example_cases_key"]
         else None
     )
     pathogen["sequences_example"] = (
         (
-            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_sequences_key']}"
+            f"{environ.get('ADMIN_PANEL_URL')}/example_data/{pathogen['example_sequences_key']}"
         )
         if pathogen["example_sequences_key"]
         else None
     )
     pathogen["contacts_example"] = (
         (
-            f"{environ.get('ADMIN_PANEL_URL')}/pathogen_example_data/{pathogen['example_contacts_key']}"
+            f"{environ.get('ADMIN_PANEL_URL')}/example_data/{pathogen['example_contacts_key']}"
         )
         if pathogen["example_contacts_key"]
         else None

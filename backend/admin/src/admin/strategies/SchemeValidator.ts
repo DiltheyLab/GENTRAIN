@@ -11,19 +11,13 @@ export abstract class SchemeValidator {
   constructor(file: UploadedFile) {
     if (file) {
       if (!this.validMimetypes.includes(file.type)) {
-        throw new ValidationError(
-          { scheme: { message: 'Uploaded file is not a valid ZIP archive.' } },
-          { message: 'Scheme upload is invalid' }
-        );
+        this.throwException('Uploaded file is not a valid ZIP archive.');
       }
     }
     try {
       this.zip = new AdmZip(file.path);
     } catch (err) {
-      throw new ValidationError(
-        { scheme: { message: 'Uploaded file is not a valid ZIP archive.' } },
-        { message: 'Scheme upload is invalid' }
-      );
+      this.throwException('Uploaded file is not a valid ZIP archive.');
     }
   }
 
@@ -73,15 +67,11 @@ export abstract class SchemeValidator {
       if (!entry.isDirectory) {
         // Remove the root folder prefix from the path
         const fileName = rootFolderName ? entry.entryName.replace(rootFolderName + '/', '') : entry.entryName;
-
         if (
           !this.getValidFileNames().includes(fileName) &&
           !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
-          throw new ValidationError(
-            { scheme: { message: `Uploaded ZIP archive contains invalid file: ${fileName}` } },
-            { message: 'Scheme upload is invalid' }
-          );
+          this.throwException(`Uploaded ZIP archive contains invalid file: ${fileName}`);
         }
         preprocessedZip.addFile(fileName, entry.getData());
       }
@@ -93,7 +83,20 @@ export abstract class SchemeValidator {
     const zipEntries = this.zip.getEntries();
     const rootFolderEntry = zipEntries.find((entry) => {
       // Entry is a directory and has no parent (only one segment)
-      return entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length >= 1;
+      const isRootDirectory = entry.isDirectory && entry.entryName.replace(/\/$/, '').split('/').length === 1;
+      if (!isRootDirectory) {
+        return false;
+      }
+      const rootDirectory = entry.entryName;
+      // Return as root directory if all entries (auto generated filed excluded) start with the directory name
+      return (
+        zipEntries.find(
+          (entry) =>
+            !entry.entryName.startsWith(`${rootDirectory}`) &&
+            !entry.entryName.startsWith('.DS_Store') &&
+            !entry.entryName.startsWith('__MACOSX/')
+        ) === undefined
+      );
     });
     return rootFolderEntry ? rootFolderEntry.entryName.replace(/\/$/, '') : null;
   };
@@ -101,11 +104,16 @@ export abstract class SchemeValidator {
   protected checkFileExists = (name: string) => {
     const file = this.zip.getEntry(name);
     if (!file) {
-      throw new ValidationError(
-        { scheme: { message: `Uploaded ZIP archive does not contain ${name}.` } },
-        { message: 'Scheme upload is invalid' }
-      );
+      this.throwException(`Uploaded ZIP archive does not contain ${name}.`);
     }
     return file;
+  };
+
+  protected throwException = (fieldMessage: string) => {
+    throw new ValidationError({
+      scheme: {
+        message: fieldMessage,
+      },
+    });
   };
 }

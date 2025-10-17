@@ -2,7 +2,7 @@ import { UploadedFile, ValidationError } from 'adminjs';
 import CustomActionRequest from '../types/CustomActionRequest.js';
 import { ExampleDataValidator } from './ExampleDataValidator.js';
 import fs from 'fs';
-import { validateFastaFile } from '../util/validations.js';
+import { validateFastaFile, validateFilename } from '../util/validations.js';
 import AdmZip from 'adm-zip';
 
 export class ExampleSequencesValidator extends ExampleDataValidator {
@@ -70,6 +70,11 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
     }
 
     for (const fastaFile of files) {
+      if (!validateFilename(fastaFile.entryName)) {
+        this.throwException(
+          `Invalid filename: ${fastaFile.entryName}`
+        );
+      }
       const fileErrors = validateFastaFile(fastaFile.getData().toString('utf8'));
       if (fileErrors.length > 0) {
         validationErrors[fastaFile.entryName] = fileErrors;

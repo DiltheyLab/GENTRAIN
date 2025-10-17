@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon } from '@adminjs/design-system';
+import { Box, Icon } from '@adminjs/design-system';
 import { RecordJSON } from 'adminjs';
 import { sanitizeFileName } from '../util/helpers.js';
 
@@ -12,7 +12,7 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
     try {
       setDownloading(true);
 
-      const response = await fetch(`${process.env.API_HOST}/schemes/${record.id}`, {
+      const response = await fetch(`${process.env.API_HOST}/pathogens/${record.id}/scheme`, {
         method: 'GET',
       });
 
@@ -24,7 +24,7 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${sanitizeFileName(encodeURIComponent(record.params.name))}_scheme.zip`);
+      link.setAttribute('download', `${sanitizeFileName(record.params.name)}_scheme.zip`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -36,13 +36,26 @@ export const SchemeDownload = (props: { record: RecordJSON }) => {
   };
 
   return (
-    <Icon
-      style={{ cursor: downloading ? 'auto' : 'pointer' }}
-      icon={downloading ? 'Loader' : 'Download'}
-      size={downloading ? 20 : 15}
-      color="rgb(69, 70, 85)"
-      onClick={!downloading ? triggerSchemeDownload : null}
-      spin={downloading}
-    />
+    <Box
+      width={30}
+      height={30}
+      flex
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '50%',
+        marginRight: 8,
+        border: !downloading ? '1px solid rgb(187, 195, 203)' : '',
+      }}
+    >
+      <Icon
+        style={{ cursor: downloading ? 'auto' : 'pointer', marginTop: 2 }}
+        icon={downloading ? 'Loader' : 'Download'}
+        size={downloading ? 20 : 15}
+        color="rgb(69, 70, 85)"
+        onClick={!downloading ? triggerSchemeDownload : null}
+        spin={downloading}
+      />
+    </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { ActionContext, ActionRequest, ActionResponse } from 'adminjs';
+import { ActionContext, ActionRequest, ActionResponse, ValidationError } from 'adminjs';
 import getFolderSize from 'get-folder-size';
 import path from 'path';
 import unzipper from 'unzipper';
@@ -22,12 +22,28 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const { record, scheme } = context;
   // create folder using record id
   const folderName = record.params.id.toString();
-  const extractPath = path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName);
-  if (fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName))) {
+  const extractPath = path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_schemes', folderName);
+  // Prevent excessive disk space usage by keeping a puffer of 10 GB
+  const availableDiskSpaceInGigabyte: number = await new Promise((resolve, reject) => {
+    fs.statfs('/', (err, stats) => {
+      if (err) {
+        reject(err);
+      } else {
+        const availableDiskSpace =
+          (stats.bsize * stats.bavail + Number(record.params.scheme_size)) / 1024 / 1024 / 1024; // in GB
+        resolve(availableDiskSpace);
+      }
+    });
+  });
+  if (availableDiskSpaceInGigabyte < 10) {
+    throw new ValidationError({}, { message: 'Scheme upload not possible' });
+  }
+  if (fs.existsSync(extractPath)) {
     await fs.promises.rm(extractPath, { recursive: true });
   }
   await fs.promises.mkdir(extractPath, { recursive: true });
   // extract ZIP into folder named after record id
+
   await fs
     .createReadStream(scheme.path)
     .pipe(unzipper.Extract({ path: extractPath }))
@@ -39,7 +55,7 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
     return;
   }
   const size = await getFolderSize.strict(
-    path.join(process.env.ADMIN_SCHEME_DIRECTORY, context.record.params.id.toString())
+    path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_schemes', context.record.params.id.toString())
   );
 
   await context.record.update({

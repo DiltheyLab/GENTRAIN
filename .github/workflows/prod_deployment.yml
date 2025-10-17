@@ -111,6 +111,7 @@ jobs:
             touch .env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}" >> .env
             echo -e "APP_ENV=${{vars.PROD_APP_ENV}}" >> .env
+            echo -e "APP_URL=${{vars.APP_URL}}" >> .env
             echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
@@ -126,7 +127,8 @@ jobs:
             echo -e "COOKIE_SECRET=${{secrets.COOKIE_SECRET}}" >> .env
             echo -e "SESSION_SECRET=${{secrets.SESSION_SECRET}}" >> .env
             echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
-            echo -e "ADMIN_SCHEME_DIRECTORY=${{vars.ADMIN_SCHEME_DIRECTORY}}" >> .env
+            echo -e "ADMIN_PANEL_URL=${{vars.ADMIN_PANEL_URL}}" >> .env
+            echo -e "ADMIN_DATA_DIRECTORY=${{vars.ADMIN_DATA_DIRECTORY}}" >> .env
             echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
             echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit

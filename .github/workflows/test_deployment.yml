@@ -127,6 +127,7 @@ jobs:
             touch .env
             echo -e "VITE_API_HOST=${{vars.API_HOST}}:${{vars.HTTPS_PORT_TEST_SERVER}}" >> .env
             echo -e "APP_ENV=${{vars.TEST_APP_ENV}}" >> .env
+            echo -e "APP_URL=${{vars.APP_URL}}" >> .env
             echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
             echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
             echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
@@ -141,8 +142,9 @@ jobs:
             echo -e "DEFAULT_ADMIN_PASSWORD=${{secrets.DEFAULT_ADMIN_PASSWORD}}" >> .env
             echo -e "COOKIE_SECRET=${{secrets.COOKIE_SECRET}}" >> .env
             echo -e "SESSION_SECRET=${{secrets.SESSION_SECRET}}" >> .env
+            echo -e "ADMIN_PANEL_URL=${{vars.ADMIN_PANEL_URL}}" >> .env
             echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
-            echo -e "ADMIN_SCHEME_DIRECTORY=${{vars.ADMIN_SCHEME_DIRECTORY}}" >> .env
+            echo -e "ADMIN_DATA_DIRECTORY=${{vars.ADMIN_DATA_DIRECTORY}}" >> .env
             echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
             echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.TEST_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit
