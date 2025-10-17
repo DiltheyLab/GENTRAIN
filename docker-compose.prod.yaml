@@ -63,6 +63,8 @@ services:
     depends_on:
       frontend:
         condition: service_started
+      documentation:
+        condition: service_started
       api:
         condition: service_started
 
