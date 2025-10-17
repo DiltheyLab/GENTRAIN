@@ -1,12 +1,6 @@
-# --- Stage 1: Build ---
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 WORKDIR /documentation
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run build
-
-# --- Stage 2: Runtime (keep only output) ---
-FROM alpine
-WORKDIR /documentation
-COPY --from=builder /documentation/build ./build
+CMD [ "npm", "run", "build"]
