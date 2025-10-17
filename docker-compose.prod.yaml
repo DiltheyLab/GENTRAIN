@@ -169,7 +169,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        - VITE_API_HOST=${API_HOST}
+        VITE_API_HOST: ${API_HOST}
     volumes:
       - type: volume
         source: frontend_files
