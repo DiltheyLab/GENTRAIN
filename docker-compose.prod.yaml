@@ -40,14 +40,12 @@ services:
         source: ./Caddyfile
         target: /etc/caddy/Caddyfile
         read_only: true
-      - type: bind
-        source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
+      - type: volume
+        source: frontend_files
         target: /srv/frontend
-        read_only: true
-      - type: bind
-        source: ./documentation/build # Mount the build directory of the documentation so Caddy can serve the static files
+      - type: volume
+        source: docs_files
         target: /srv/documentation
-        read_only: true
       - type: bind
         source: ./caddy/certs
         target: /certs
@@ -171,8 +169,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
     volumes:
-      - type: bind # Mount the dist directory to the frontend service
-        source: ./frontend/dist
+      - type: volume
+        source: frontend_files
         target: /app/dist
     networks:
       - caddy
@@ -188,8 +186,8 @@ services:
       context: ./documentation
       dockerfile: Dockerfile.prod
     volumes:
-      - type: bind
-        source: ./documentation/build
+      - type: volume
+        source: docs_files
         target: /documentation/build
     networks:
       - caddy
@@ -199,6 +197,8 @@ volumes:
   caddy_config:
   postgres_data:
   api_data:
+  docs_files:
+  frontend_files:
 
 networks:
   # Docker network for Caddy
