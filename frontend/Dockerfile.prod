@@ -1,24 +1,3 @@
-FROM node:22-alpine
-
-# Set working directory in the container
-WORKDIR /app
-
-# Copy the 'package.json' and 'package-lock.json' files into the container
-COPY package*.json ./
-
-# Install the required packages
-RUN npm ci
-RUN npm i -g vite
-
-# Copy the current directory contents into the container at the working directory
-COPY . .
-
-# Run the application
-CMD ["npm", "run", "build"]
-
-
-
-
 # --- Stage 1: Build ---
 FROM node:22-alpine AS builder
 WORKDIR /app
