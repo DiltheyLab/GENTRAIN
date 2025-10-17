@@ -62,9 +62,9 @@ services:
       - caddy
     depends_on:
       frontend:
-        condition: service_started
+        condition: service_completed_successfully
       documentation:
-        condition: service_started
+        condition: service_completed_successfully
       api:
         condition: service_started
 
