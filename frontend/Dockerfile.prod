@@ -1,23 +1,12 @@
-# --- Stage 1: Build ---
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 WORKDIR /app
 
 # Build-Argument
 ARG VITE_API_HOST
 ENV VITE_API_HOST=$VITE_API_HOST
 
-# log $VITE_API_HOST
-RUN echo "VITE_API_HOST is set to $VITE_API_HOST"
-
 COPY package*.json ./
 RUN npm ci
 RUN npm i -g vite
 COPY . .
-RUN npm run build
-
-# --- Stage 2: Runtime (keep only output) ---
-FROM alpine
-WORKDIR /app
-RUN ls -la
-COPY --from=builder /app/dist ./dist
-RUN ls -la ./dist
+CMD [ "npm", "run", "build" ]
