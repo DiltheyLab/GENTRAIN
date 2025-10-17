@@ -1,3 +1,3 @@
 # Dashboard
 
-You can find the Gentrain Dashboard at https://gentrain.bi.denbi.de.
+You can find the GENTRAIN Dashboard at https://gentrain.bi.denbi.de.
