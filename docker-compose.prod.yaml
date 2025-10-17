@@ -43,7 +43,7 @@ services:
       - type: bind
         source: ./frontend/dist # Mount the build directory of the frontend so Caddy can serve the static files
         target: /srv/frontend
-        read_only: true#
+        read_only: true
       - type: bind
         source: ./documentation/build # Mount the build directory of the documentation so Caddy can serve the static files
         target: /srv/documentation
