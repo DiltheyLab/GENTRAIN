@@ -169,13 +169,14 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        VITE_API_HOST: ${API_HOST}
+        VITE_API_HOST: ${VITE_API_HOST}
     volumes:
       - type: volume
         source: frontend_files
         target: /app/dist
     networks:
       - caddy
+    env_file: ".env"
     depends_on:
       api:
         condition: service_started
