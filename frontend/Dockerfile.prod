@@ -16,6 +16,6 @@ COPY . .
 CMD ["npm", "run", "build"]
 
 # --- Stage 2: Runtime (keep only output) ---
-FROM alpine
+FROM builder
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
