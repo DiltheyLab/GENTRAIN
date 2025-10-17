@@ -4,7 +4,7 @@ import time
 import pathlib
 import tempfile
 import sys
-from os import popen
+from os import popen, environ
 from subprocess import Popen
 
 from werkzeug.utils import secure_filename
@@ -94,7 +94,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                f"{get_project_path()}/{environ.get('API_DATA_DIRECTORY')}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
                 "-output",
                 self.output,
             ],

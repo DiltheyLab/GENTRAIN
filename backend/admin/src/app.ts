@@ -19,13 +19,13 @@ const start = async () => {
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
   app.use(express.static(path.join(__dirname, '../public'))); // path from dist to public
 
-  if (!fs.existsSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_example_data`)) {
-    fs.mkdirSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_example_data`);
+  if (!fs.existsSync(`${process.env.API_DATA_DIRECTORY}/pathogen_example_data`)) {
+    fs.mkdirSync(`${process.env.API_DATA_DIRECTORY}/pathogen_example_data`);
     console.log(`Pathogen example data directory was created.`);
   }
 
-  if (!fs.existsSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_schemes`)) {
-    fs.mkdirSync(`${process.env.ADMIN_DATA_DIRECTORY}/pathogen_schemes`);
+  if (!fs.existsSync(`${process.env.API_DATA_DIRECTORY}/pathogen_schemes`)) {
+    fs.mkdirSync(`${process.env.API_DATA_DIRECTORY}/pathogen_schemes`);
     console.log(`Pathogen schemes directory was created.`);
   }
 

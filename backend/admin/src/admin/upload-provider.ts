@@ -3,13 +3,12 @@ import path from 'path';
 import fsExtra from 'fs-extra';
 import { LocalProvider } from '@adminjs/upload';
 import { UploadedFile } from 'adminjs';
-
-const adminDataDirectory = process.env.ADMIN_DATA_DIRECTORY || '../data';
+import { API_DATA_DIRECTORY } from './constants.js';
 
 export default class UploadProvider extends LocalProvider {
   constructor(uploadPath: string) {
     super({
-      bucket: path.join(adminDataDirectory, uploadPath),
+      bucket: path.join(API_DATA_DIRECTORY, uploadPath),
       opts: {},
     });
   }

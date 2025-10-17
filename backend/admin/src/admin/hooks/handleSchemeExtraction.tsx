@@ -23,7 +23,7 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const { record, scheme } = context;
   // create folder using record id
   const folderName = record.params.id.toString();
-  const extractPath = path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_schemes', folderName);
+  const extractPath = path.join(process.env.API_DATA_DIRECTORY, 'pathogen_schemes', folderName);
   // Prevent excessive disk space usage by keeping a puffer of 10 GB
   const availableDiskSpaceInGigabyte = await getAvailableDiskSpaceInGigabyte(record);
   if (availableDiskSpaceInGigabyte < 10) {
@@ -49,7 +49,7 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
     return;
   }
   const size = await getFolderSize.strict(
-    path.join(process.env.ADMIN_DATA_DIRECTORY, 'pathogen_schemes', context.record.params.id.toString())
+    path.join(process.env.API_DATA_DIRECTORY, 'pathogen_schemes', context.record.params.id.toString())
   );
 
   await context.record.update({
