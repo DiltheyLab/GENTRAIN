@@ -1,10 +1,9 @@
 import { SchemeValidator } from './SchemeValidator.js';
 import { validateFastaFile, validateFilename } from '../util/validations.js';
-import { ValidationError } from 'adminjs';
 
 export class BacterialSchemeValidator extends SchemeValidator {
-  public validateSchemeStructure = () => {
-    this.validateGenesList();
+  public validateSchemeStructure = async () => {
+    await this.validateGenesList();
     this.validateSchemaConfig();
     this.validateFastaFiles();
   };
@@ -17,7 +16,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
     return ['fa', 'mpfa', 'fna', 'fsa', 'fasta'];
   };
 
-  private validateGenesList = () => {
+  private validateGenesList = async () => {
     const file = this.checkFileExists('.genes_list');
     const content = file.getData().toString('binary');
     //const validCharacters = /^[a-zA-Z0-9_.-]+$/;
@@ -27,6 +26,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
     }
+    await this.scanFile(file);
   };
 
   private validateSchemaConfig = () => {

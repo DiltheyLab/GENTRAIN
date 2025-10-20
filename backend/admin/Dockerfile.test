@@ -1,0 +1,53 @@
+FROM node:22-alpine
+
+ARG USER_ID=1010
+ARG GROUP_ID=1010
+
+WORKDIR /admin
+
+RUN apk add --no-cache openssl clamav clamav-daemon supervisor
+
+RUN npm i -g typescript
+
+# Set the environment variable for production
+ENV NODE_ENV="production"
+
+RUN addgroup -g $GROUP_ID gentrain
+RUN adduser -D -G gentrain -u $USER_ID gentrain
+RUN chown gentrain:gentrain -R /admin
+
+RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
+    echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
+    sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/freshclam.conf
+
+# Manage clamav directory permissions
+RUN chown gentrain:gentrain /var/log/clamav
+RUN mkdir /var/run/clamav
+RUN chown gentrain:gentrain /var/run/clamav
+RUN chmod 750 /var/run/clamav
+RUN chown gentrain:gentrain /var/lib/clamav
+
+USER gentrain
+
+# Init clamav database
+RUN freshclam
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY --chown=gentrain . .
+
+# Run the build command to compile TypeScript to JavaScript
+RUN npm run build
+
+# Generate Prisma client
+RUN npx prisma generate --generator js_client
+
+# Delete code from src because only the compiled code is necessary
+RUN rm -rf src
+
+# Expose the port the app runs on
+EXPOSE 4001
+
+CMD ["supervisord", "-c", "/admin/supervisor.conf", "-n"]

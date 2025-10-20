@@ -1,8 +1,9 @@
-import { BaseRecord, ParamsType, UploadedFile, ValidationError } from 'adminjs';
+import { UploadedFile, ValidationError } from 'adminjs';
 import AdmZip, { IZipEntry } from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import NodeClam from 'clamscan';
 
 export abstract class SchemeValidator {
   protected zip: AdmZip;
@@ -49,6 +50,18 @@ export abstract class SchemeValidator {
   public validateUpload = () => {
     this.validateAndPreprocessZipFile();
     this.validateSchemeStructure();
+  };
+
+  protected scanFile = async (fileToScan: any) => {
+    const clamScan = await new NodeClam().init({
+      clamdscan: {
+        host: '127.0.0.1',
+        port: 3310,
+      }
+    });
+    console.log(clamScan);
+    const {isInfected, file, viruses} = await clamScan.isInfected(fileToScan.path);
+    console.log(isInfected, file, viruses)
   };
 
   protected validateAndPreprocessZipFile = () => {
