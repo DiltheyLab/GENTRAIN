@@ -16,7 +16,7 @@ function DocumentationHeader() {
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <Heading as="h1" className="hero__title">
-          <Translate id="home.title">GENTRAIN -Dokumentation</Translate>
+          <Translate id="home.title">GENTRAIN - Dokumentation</Translate>
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
