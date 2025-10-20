@@ -1,19 +1,19 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+gentrain:
+  label: GENTRAIN
+  permalink: /tags/gentrain
+  description: Artikel und Anleitungen rund um die GENTRAIN-Anwendung und ihre Nutzung
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+dokumentation:
+  label: Dokumentation
+  permalink: /tags/dokumentation
+  description: Technische und Anwenderdokumentation, Tutorials und How‑tos
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+forschung:
+  label: Forschung
+  permalink: /tags/forschung
+  description: Wissenschaftliche Beiträge, Studien und methodische Artikel
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+infektionsepidemiologie:
+  label: Infektionsepidemiologie
+  permalink: /tags/infektionsepidemiologie
+  description: Beiträge zur Ausbreitungsanalyse, Kontaktverfolgung und Outbreak-Analysen

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import clsx from "clsx";
 import Heading from "@theme/Heading";
 import styles from "./styles.module.css";
+import Translate, { translate } from "@docusaurus/Translate";
 
 type SectionItem = {
   title: string;
@@ -11,36 +12,36 @@ type SectionItem = {
 
 const SectionList: SectionItem[] = [
   {
-    title: "Application",
+    title: translate({ id: "home.section.application.title", message: "Anwendung" }),
     imgSrc: "/img/appicon.png",
     description: (
-      <>
-        Learn how to use GENTRAIN as an end user: <br /> Importing and managing sequence data, working with samples and
-        pathogens, running outbreak analyses and visualizing results in the dashboard, and exporting data while
-        respecting privacy and retention (TTL) settings.
-      </>
+      <Translate id="home.section.application.description">
+        Für Endbenutzer: Der Abschnitt Anwendung beschreibt, wie Sie GENTRAIN im Alltag nutzen – vom Import und der
+        Verwaltung von Falldaten über die Analyse von Ausbrüchen bis hin zur Visualisierung genetischer Zusammenhänge im
+        Dashboard.
+      </Translate>
     ),
   },
   {
-    title: "Developers",
+    title: translate({ id: "home.section.development.title", message: "Entwicklung" }),
     imgSrc: "/img/devicon.png",
     description: (
-      <>
-        For contributors and integrators: <br /> The developers section documents the application's architecture,
-        data-management patterns, genomic operations, deployment and CI guidance, plus security & testing best practices
-        to help you extend and run GENTRAIN.
-      </>
+      <Translate id="home.section.development.description">
+        Für Entwickler: Der Entwicklerbereich dokumentiert die Architektur der Anwendung, Datenverwaltung, genomische
+        Operationen, Bereitstellungs- und CI-Anleitungen sowie Best Practices für Sicherheit und Tests, die Ihnen bei
+        der Erweiterung und Ausführung von GENTRAIN helfen.
+      </Translate>
     ),
   },
   {
-    title: "Admin",
+    title: translate({ id: "home.section.admin.title", message: "Administration" }),
     imgSrc: "/img/adminicon.png",
     description: (
-      <>
-        For system operators:
-        <br /> The admin section documents user and role management, pathogen and schema configuration, operational
-        settings and deployment guidance to run and maintain GENTRAIN in production.
-      </>
+      <Translate id="home.section.admin.description">
+        Für Administratoren: Der Admin-Bereich dokumentiert die Benutzer- und Rollenverwaltung, die Konfiguration von
+        Pathogenen und Schemata, die Betriebseinstellungen und die Bereitstellungsanleitung für den Betrieb und die
+        Wartung von GENTRAIN in der Produktion.
+      </Translate>
     ),
   },
 ];
