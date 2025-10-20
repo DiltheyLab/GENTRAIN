@@ -72,6 +72,7 @@ export const defaultGeneralSettings: GeneralSettings = {
 
 export const getDefaultAnalysisSettings = (): AnalysisSettings => {
     const geneticDistanceThreshold = useCoreStore.getState().activePathogen?.genetic_distance_threshold;
+    const isSequenceAnalysisAvailable = useCoreStore.getState().casesWithRelationships.some((c) => c.sequence_analysis);
 
     return {
         backgroundType: "none",
@@ -83,7 +84,7 @@ export const getDefaultAnalysisSettings = (): AnalysisSettings => {
         excludeCasesWithoutSequence: false,
         dateRange: { from: addWeeks(new Date(), -3), to: new Date() },
         geneticDistanceThreshold: geneticDistanceThreshold ?? 0,
-        showContactTracingLinks: true,
+        showContactTracingLinks: !isSequenceAnalysisAvailable, // Default to true if no sequence analysis is available to prevent empty graph
         clusteringThreshold: geneticDistanceThreshold ?? 0,
     };
 };
