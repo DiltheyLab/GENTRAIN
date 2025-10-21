@@ -105,8 +105,3 @@ GENTRAIN offers options to manage the lifespan of local data:
 - GENTRAIN has been audited by an external service provider according to modern security standards. However, please note that the application runs locally in the browser, so the security of your data also depends on the security of your device and browser.
 
 ---
-
-:::info SurvNet
-
-If you are using SurvNet, refer to the [SurvNet Import](./import-options/export) section to learn how to export case data and contact person data directly from SurvNet and import them into GENTRAIN.
-:::

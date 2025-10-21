@@ -103,8 +103,3 @@ GENTRAIN bietet Optionen zur Verwaltung der Lebensdauer lokaler Daten:
 - GENTRAIN wurde von einem externen Dienstleister nach modernen Sicherheitsstandards geprüft. Dennoch sollten Sie beachten, dass die Anwendung lokal im Browser läuft und die Sicherheit Ihrer Daten auch von der Sicherheit Ihres Geräts und Browsers abhängt.
 
 ---
-
-:::info SurvNet
-
-Wenn Sie SurvNet verwenden, können Sie im Abschnitt [SurvNet-Import](./import-options/export) nachlesen wie Sie Fall- und Kontaktpersonendaten direkt aus dem Survnet exportieren und in GENTRAIN importieren können.
-:::
