@@ -2,5 +2,13 @@
   "version.label": {
     "message": "Next",
     "description": "The label for version current"
+  },
+  "sidebar.applicationSidebar.category.Datenverwaltung": {
+    "message": "Data Management",
+    "description": "The label for category 'Data Management' in sidebar 'applicationSidebar'"
+  },
+  "sidebar.applicationSidebar.category.Importoptionen": {
+    "message": "Import Options",
+    "description": "The label for category 'Import Options' in sidebar 'applicationSidebar'"
   }
 }
