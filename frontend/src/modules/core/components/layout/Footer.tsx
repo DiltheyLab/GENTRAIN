@@ -22,6 +22,9 @@ export const Footer = () => {
                         <a href="/impress" className="underline ml-4">
                             Impressum
                         </a>
+                        <a href="https://docs.gentrain.bi.denbi.de" className="underline ml-4" target="_blank">
+                            Dokumentation
+                        </a>
                     </div>
                 </div>
                 <div className="flex items-center justify-evenly relative">

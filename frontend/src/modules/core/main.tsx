@@ -16,6 +16,7 @@ import { Root } from "@/modules/core/Root";
 import { Impress } from "@/modules/core/pages/Impress";
 import { Contact } from "@/modules/core/pages/Contact";
 import { DataPrivacy } from "@/modules/core/pages/DataPrivacy";
+import { Help } from "../help/pages/Help";
 
 i18next.init({
     interpolation: { escapeValue: false },
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
             { path: "/outbreak-analysis", element: <OutbreakAnalysisOverview /> },
             { path: "/outbreak-analysis/:name", element: <OutbreakAnalysis /> },
             { path: "/data-management", element: <DataManagement /> },
+            { path: "/help", element: <Help /> },
         ],
     },
 ]);
