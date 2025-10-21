@@ -1,3 +1,10 @@
+---
+id: dashboard
+title: Dashboard
+sidebar_label: Dashboard
+sidebar_position: 2
+---
+
 # Dashboard
 
 The **Dashboard** is the central view of your entire dataset in **GENTRAIN**.  
@@ -71,9 +78,15 @@ From this graph, **connected components** are then determined:
 
 ## Graph Visualization
 
-The graph represents cases as **nodes** and genetic relationships as **gray edges** in a _minimum spanning tree_.  
-Solid edges represent genetic connections **below** the pathogen-specific distance threshold, while dashed edges indicate distances **equal to or above** that threshold.  
-This allows for a quick visual assessment of the genetic proximity between cases.
+The graph represents cases as **nodes** and genetic relationships as **gray edges** in a _minimum spanning tree_. Solid edges represent genetic connections **below** the pathogen-specific distance threshold, while dashed edges indicate distances **equal to or above** that threshold. This allows for a quick visual assessment of the genetic proximity between cases.
+
+:::info Red Supplementary Edges
+
+When clicking on a case, **red dashed supplementary edges** may appear.  
+These edges are shown whenever the **genetic distance** between the selected case and other cases is **below the defined threshold**.
+
+This feature helps to reveal **potential connections between cases** that would otherwise remain hidden in the **Minimum Spanning Tree** representation, since that visualization connects each case with only a single edge.
+:::
 
 ### Controls
 
@@ -90,8 +103,7 @@ This allows for a quick visual assessment of the genetic proximity between cases
 Use the `Zoom-to-Fit` function in the bottom-right corner to fit the graph optimally to the window size.
 
 The graph is generated from several data sources:  
-**Distance matrix (genetic distances)**, **cases with relationships**, and **contact data**.  
-When necessary, a background process analyzes all links and assigns cluster names accordingly.
+**Distance matrix (genetic distances)**, **cases with relationships**, and **contact data**.
 
 ---
 

@@ -1,3 +1,10 @@
+---
+id: dashboard
+title: Dashboard
+sidebar_label: Dashboard
+sidebar_position: 2
+---
+
 # Dashboard
 
 Das **Dashboard** ist die zentrale Ansicht Ihres gesamten Datenbestands in **GENTRAIN**.  
@@ -71,9 +78,15 @@ Anschließend werden aus diesem Graphen **zusammenhängende Komponenten (connect
 
 ## Graph-Visualisierung
 
-Der Graph stellt in seiner einfachsten Form Fälle als **Knoten** und genetische Verbindungen als **graue Kanten** in einem „Minimalen Spannbaum“ dar.  
-Durchgezogene Kanten repräsentieren genetische Verbindungen **unterhalb** des pathogenabhängigen Distanzschwellenwerts, während gestrichelte Kanten genetische Verbindungen **gleich oder oberhalb** des Schwellenwerts darstellen.  
-Das erlaubt eine schnelle visuelle Einschätzung der genetischen Nähe zwischen Fällen.
+Der Graph stellt in seiner einfachsten Form Fälle als **Knoten** und genetische Verbindungen als **graue Kanten** in einem „Minimalen Spannbaum“ dar. Durchgezogene Kanten repräsentieren genetische Verbindungen **unterhalb** des pathogenabhängigen Distanzschwellenwerts, während gestrichelte Kanten genetische Verbindungen **gleich oder oberhalb** des Schwellenwerts darstellen. Das erlaubt eine schnelle visuelle Einschätzung der genetischen Nähe zwischen Fällen.
+
+:::info Rote Zusatzkanten für genetische Distanzen
+
+Beim Anklicken eines Falls können **zusätzliche rote, gestrichelte Kanten** eingeblendet werden.  
+Diese Kanten erscheinen, wenn zwischen dem ausgewählten Fall und anderen Fällen eine **genetische Distanz** besteht, die **unterhalb des festgelegten Distanzschwellenwerts** liegt.
+
+Damit lassen sich **potenzielle epidemiologische Verbindungen** sichtbar machen, die in der Darstellung als **Minimaler Spannbaum (Minimum Spanning Tree)** sonst verborgen bleiben würden – da in dieser Visualisierungsform jeder Fall nur durch eine einzige Kante verbunden ist.
+:::
 
 ### Steuerung
 
@@ -90,8 +103,7 @@ Das erlaubt eine schnelle visuelle Einschätzung der genetischen Nähe zwischen 
 Verwenden Sie die Funktion `Zoom-to-Fit` in der unteren rechten Ecke, um den Graphen optimal an die Fenstergröße anzupassen.
 
 Der Graph wird aus mehreren Quellen erstellt:  
-**Distanzmatrix (genetische Distanzen)**, **Fälle mit ihren Beziehungen** und **Kontaktdaten**.  
-Bei Bedarf analysiert der Hintergrundprozess das Gesamt-Link-Set und weist Cluster-Namen zu.
+**Distanzmatrix (genetische Distanzen)** und **Kontaktdaten**.
 
 ---
 
