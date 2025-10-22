@@ -27,14 +27,14 @@ The frontend, documentation and admin can be run locally without Docker.
 
 ## Repository layout (high level)
 
-- `frontend/` — React application, start with `npm run dev`.
-- `backend/admin/` — Admin UI / Prisma tooling (Node/TypeScript). Use `npm run dev` for local dev.
-- `backend/api/` — Python API and workers. Dockerfile and entrypoint scripts available.
-- `backend/redis` — Dockerfile and config for custom Redis setup.
-- `backend/data` — Pathogen schemes and example data files.
-- `documentation` — Documentation files, start locally with `npm run start`.
-- `docker-compose.dev.yaml` — Development compose file (redis, redis-insight, db, api, worker).
-- `dev.sh` — small helper script to build & start the dev compose and run the frontend dev server.
+- `frontend/` — React application
+- `backend/admin/` — Admin UI / Prisma tooling
+- `backend/api/` — Python API and supervisor config (worker)
+- `backend/redis` — Dockerfile and config for custom Redis setup
+- `backend/data` — Static files lile Pathogen schemes and example data files
+- `documentation` — Documentation files
+- `.github` — GitHub workflows and dependabot config
+- `.devcontainer` — VSCode devcontainer config to set up a consistent development environment inside the docker container for api
 
 :::info Repository layout
 In addition to the main directories mentioned above, the repository also contains other configuration files, scripts, and folders that are relevant for the operation of GENTRAIN. A more detailed overview can be found in the repository.

@@ -35,14 +35,14 @@ Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Programme installiert
 
 ## Verzeichnisstruktur (Überblick)
 
-- `frontend/` — React-Anwendung; lokal starten mit `npm run dev`.
-- `backend/admin/` — Admin-Oberfläche und Prisma-Tools (Node/TypeScript); starten mit `npm run dev`.
-- `backend/api/` — Python-API und Hintergrundprozesse; enthält Dockerfile und Startskripte.
+- `frontend/` — React-Anwendung
+- `backend/admin/` — Admin-Oberfläche und Prisma-Tools
+- `backend/api/` — Python-API und Worker
 - `backend/redis/` — Dockerfile und Konfiguration für die Redis-Instanz.
-- `backend/data/` — Erregerschemata und Beispieldatensätze.
-- `documentation/` — Dokumentationsdateien; lokal starten mit `npm run start`.
-- `docker-compose.dev.yaml` — Docker-Compose-Datei für die Entwicklungsumgebung (Redis, Redis Insight, PostgreSQL, API, Worker).
-- `dev.sh` — Hilfsskript zum Erstellen und Starten der Entwicklungsumgebung und des Frontend-Servers.
+- `backend/data/` — Statische Dateien wie Pathogen Schemata und Beispieldatensätze.
+- `documentation/` — Dokumentationsdateien
+- `.github/` — GitHub Workflows und Dependabot-Konfiguration
+- `.devcontainer/` — VSCode Devcontainer-Konfiguration zur Einrichtung einer Entwicklungsumgebung innerhalb des Docker-Containers für die API
 
 :::info Verzeichnisstruktur
 Neben den oben genannten Hauptverzeichnissen enthält das Repository auch weitere Konfigurationsdateien, Skripte und Ordner, die für den Betrieb von GENTRAIN relevant sind. Eine detailliertere Übersicht finden Sie im Repository.
