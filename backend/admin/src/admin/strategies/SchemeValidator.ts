@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import NodeClam from 'clamscan';
+import { Readable } from 'stream';
 
 export abstract class SchemeValidator {
   protected zip: AdmZip;
@@ -52,16 +53,18 @@ export abstract class SchemeValidator {
     this.validateSchemeStructure();
   };
 
-  protected scanFile = async (fileToScan: any) => {
+  protected scanZipEntry = async (fileToScan: IZipEntry) => {
     const clamScan = await new NodeClam().init({
       clamdscan: {
         host: '127.0.0.1',
         port: 3310,
       }
     });
-    console.log(clamScan);
-    const {isInfected, file, viruses} = await clamScan.isInfected(fileToScan.path);
-    console.log(isInfected, file, viruses)
+    const fileStream = Readable.from(fileToScan.getData());
+    const { isInfected }= await clamScan.scanStream(fileStream);
+    if(isInfected) {
+      this.throwException(`Uploaded ZIP archive contains malware.`);
+    }
   };
 
   protected validateAndPreprocessZipFile = () => {

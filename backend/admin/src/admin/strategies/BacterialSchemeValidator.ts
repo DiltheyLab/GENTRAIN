@@ -26,7 +26,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
     }
-    await this.scanFile(file);
+    await this.scanZipEntry(file);
   };
 
   private validateSchemaConfig = () => {

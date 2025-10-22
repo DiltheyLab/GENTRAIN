@@ -16,9 +16,9 @@ RUN addgroup -g $GROUP_ID gentrain
 RUN adduser -D -G gentrain -u $USER_ID gentrain
 RUN chown gentrain:gentrain -R /admin
 
-RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
-    echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
-    sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/freshclam.conf
+RUN echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
+    echo "Foreground yes" >> /etc/clamav/clamd.conf
+
 
 # Manage clamav directory permissions
 RUN chown gentrain:gentrain /var/log/clamav
