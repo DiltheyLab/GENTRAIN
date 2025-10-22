@@ -1,3 +1,10 @@
+---
+id: datamanagement
+title: Datenmanagement
+sidebar_label: Datenmanagement
+sidebar_position: 2
+---
+
 # Datenmanagement
 
 Ausbruchsanalysen basieren auf _Minimum Spanning Tree (MST)_-Visualisierungen von Infektionsfällen, die durch genetische
