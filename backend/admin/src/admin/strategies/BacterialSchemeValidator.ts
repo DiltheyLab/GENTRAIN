@@ -4,7 +4,7 @@ import { validateFastaFile, validateFilename } from '../util/validations.js';
 export class BacterialSchemeValidator extends SchemeValidator {
   public validateSchemeStructure = async () => {
     await this.validateGenesList();
-    this.validateSchemaConfig();
+    await this.validateSchemaConfig();
     this.validateFastaFiles();
   };
 
@@ -26,11 +26,12 @@ export class BacterialSchemeValidator extends SchemeValidator {
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
     }
-    await this.scanZipEntry(file);
+    await this.scanZipEntryForMalware(file);
   };
 
-  private validateSchemaConfig = () => {
+  private validateSchemaConfig = async () => {
     const file = this.checkFileExists('.schema_config');
+    await this.scanZipEntryForMalware(file);
   };
 
   private validateFastaFiles = () => {

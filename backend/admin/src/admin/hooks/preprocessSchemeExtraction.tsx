@@ -45,7 +45,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
   await validateExtractedZipSize(file);
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
   try {
-    validator.validateUpload();
+    await validator.validateUpload();
   } catch (error) {
     throw error;
   }

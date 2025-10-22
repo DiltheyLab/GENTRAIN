@@ -23,7 +23,7 @@ export abstract class SchemeValidator {
     }
   }
 
-  public abstract validateSchemeStructure(): void;
+  public abstract validateSchemeStructure(): void|Promise<void>;
   protected abstract getValidFileNames(): string[];
   protected abstract getValidFileExtensions(): string[];
 
@@ -48,14 +48,15 @@ export abstract class SchemeValidator {
     };
   };
 
-  public validateUpload = () => {
+  public validateUpload = async () => {
     this.validateAndPreprocessZipFile();
-    this.validateSchemeStructure();
+    await this.validateSchemeStructure();
   };
 
-  protected scanZipEntry = async (fileToScan: IZipEntry) => {
+  protected scanZipEntryForMalware = async (fileToScan: IZipEntry) => {
     const clamScan = await new NodeClam().init({
       clamdscan: {
+        // TODO: maybe local socket is enough here
         host: '127.0.0.1',
         port: 3310,
       }
