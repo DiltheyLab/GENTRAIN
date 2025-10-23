@@ -9,23 +9,24 @@ export class ClamScan {
 
   public static instance = async () => {
     if (!ClamScan.#instance) {
-      ClamScan.#instance = new ClamScan();
-      await ClamScan.#instance.init();
+      try {
+        ClamScan.#instance = new ClamScan();
+        await ClamScan.#instance.init();
+      } catch (error) {
+        ClamScan.#instance = undefined;
+        throw error;
+      }
     }
 
     return ClamScan.#instance;
   };
 
   protected init = async () => {
-    try {
-      this.client = await new NodeClam().init({
-        clamdscan: {
-          socket: '/run/clamav/clamd.sock',
-        },
-      });
-    } catch (error) {
-      console.error('Failed to initialize ClamScan:', error);
-    }
+    this.client = await new NodeClam().init({
+      clamdscan: {
+        socket: '/run/clamav/clamd.sock',
+      },
+    });
   };
 
   public streamIsMalicious = async (stream: Readable) => {
