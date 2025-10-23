@@ -3,7 +3,7 @@ import AdmZip, { IZipEntry } from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import NodeClam from 'clamscan';
+import { ClamScan } from '../clamscan.js';
 import { Readable } from 'stream';
 
 export abstract class SchemeValidator {
@@ -23,7 +23,7 @@ export abstract class SchemeValidator {
     }
   }
 
-  public abstract validateSchemeStructure(): void|Promise<void>;
+  public abstract validateSchemeStructure(): void | Promise<void>;
   protected abstract getValidFileNames(): string[];
   protected abstract getValidFileExtensions(): string[];
 
@@ -54,16 +54,9 @@ export abstract class SchemeValidator {
   };
 
   protected scanZipEntryForMalware = async (fileToScan: IZipEntry) => {
-    const clamScan = await new NodeClam().init({
-      clamdscan: {
-        // TODO: maybe local socket is enough here
-        host: '127.0.0.1',
-        port: 3310,
-      }
-    });
+    const clamScan = await ClamScan.instance();
     const fileStream = Readable.from(fileToScan.getData());
-    const { isInfected }= await clamScan.scanStream(fileStream);
-    if(isInfected) {
+    if (await clamScan.streamIsMalicious(fileStream)) {
       this.throwException(`Uploaded ZIP archive contains malware.`);
     }
   };

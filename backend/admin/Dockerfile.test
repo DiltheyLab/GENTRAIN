@@ -16,8 +16,7 @@ RUN addgroup -g $GROUP_ID gentrain
 RUN adduser -D -G gentrain -u $USER_ID gentrain
 RUN chown gentrain:gentrain -R /admin
 
-RUN echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
-    echo "Foreground yes" >> /etc/clamav/clamd.conf
+RUN echo "Foreground yes" >> /etc/clamav/clamd.conf
 
 
 # Manage clamav directory permissions
