@@ -99,7 +99,7 @@ admin.<yourDomain> {
 docs.<yourDomain> {
 
         root * /srv/documentation/dist
-        try_files {path} /index.html
+        try_files {path} {path}/index.html /index.html
         file_server
 
         import common_security_headers
