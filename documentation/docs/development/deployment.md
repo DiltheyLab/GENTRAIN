@@ -135,13 +135,12 @@ Im Folgenden werden alle wichtigen Parameter erläutert.
 
 ### 🔹 Anwendung / API-Konfiguration
 
-| Name                                 | Typ      | Beschreibung                                                   |
-| ------------------------------------ | -------- | -------------------------------------------------------------- |
-| `VITE_API_HOST`                      | Variable | Öffentlicher API-Endpunkt (z. B. `https://api.deinedomain.org` |
-| ). Wird im Frontend-Build verwendet. |
-| `APP_URL`                            | Variable | Basis-URL der Anwendung (für Weiterleitungen und Links).       |
-| `APP_ENV` or `PROD_APP_ENV`          | Variable | Legt die Laufzeitumgebung fest (z. B. `production`).           |
-| `API_DATA_DIRECTORY`                 | Variable | Pfad, in dem die API Dateien und Pathogen-Daten speichert.     |
+| Name                        | Typ      | Beschreibung                                                                                       |
+| --------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `VITE_API_HOST`             | Variable | Öffentlicher API-Endpunkt (z. B. `https://api.deinedomain.org`). Wird im Frontend-Build verwendet. |
+| `APP_URL`                   | Variable | Basis-URL der Anwendung (für Weiterleitungen und Links).                                           |
+| `APP_ENV` or `PROD_APP_ENV` | Variable | Legt die Laufzeitumgebung fest (z. B. `production`).                                               |
+| `API_DATA_DIRECTORY`        | Variable | Pfad, in dem die API Dateien und Pathogen-Daten speichert.                                         |
 
 ### 🔹 Datenbank und Redis
 
