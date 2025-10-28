@@ -20,7 +20,7 @@ and many more...
 
 ## 🛠️ Quick Start
 
-You can run GENTRAIN locally using Docker Compose:
+You can run GENTRAIN locally using Docker Compose and Node.js:
 
 ```bash
 git clone https://github.com/DiltheyLab/GENTRAIN.git
@@ -28,7 +28,8 @@ cd GENTRAIN
 cp .env.example .env
 docker compose -f docker-compose.dev.yaml up -d
 cd frontend
-npm install && npm run dev
+npm install
+npm run dev
 ```
 
 Then open the frontend at:
