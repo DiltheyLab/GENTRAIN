@@ -1,90 +1,267 @@
+---
+title: Deployment
+sidebar_position: 2
+---
+
 # Deployment
 
-GenTrain is currently deployed using Docker and Docker Compose on the de.NBI Cloud. The deployment process is automated through a CI/CD pipeline using GitHub Actions.
+This part explains how to deploy **GENTRAIN** for both internal use and external organizations (e.g. research institutes or health agencies).  
+It details the deployment workflow, environment variables, secrets, and automation using **GitHub Actions**.
 
-## CI/CD Pipeline
+---
 
-The project uses a GitHub Actions workflow for continuous integration and deployment. The workflow is triggered on:
+## 🏗️ 1. Deployment Overview
 
-- Pull requests to the `prod` branch
-- Pushes to the `prod` branch
-- Manual trigger (workflow_dispatch)
+GENTRAIN supports two main deployment modes:
 
-The CI/CD pipeline consists of the following steps:
+| Mode            | Use Case                               | Tooling                            |
+| --------------- | -------------------------------------- | ---------------------------------- |
+| **Development** | Local testing or customization         | `docker-compose.dev.yaml`          |
+| **Production**  | Stable instance for organizational use | `docker-compose.prod.yaml` + Caddy |
 
-1. **Frontend Build**: Builds the frontend application.
-2. **Pull Production State**: Updates the production server with the latest code.
-3. **Restart Docker Containers**: Regenerates environment variables and restarts the Docker containers.
+The repository includes examples and templates to help you get started:
 
-## GitHub Actions Variables and Secrets
+- **`.env.example`** — shows required and optional environment variables.
+- **`Caddyfile.example`** — example reverse proxy configuration for Caddy, including TLS and routing to the API and frontend.
+- **`.github/workflows/prod_deployment.yml`** — production workflow (GitHub Actions CI/CD) used by the core deployment, which can be adapted to your own server.
 
-To ensure proper functionality of the CI/CD pipeline, the following GitHub Actions variables and secrets need to be set up:
+---
 
-### Variables
+## ⚙️ 2. Prerequisites
 
-- `SSH_HOST`: The hostname or IP address of the deployment server
-- `SSH_USER`: The username for SSH access to the deployment server
-- `GENTRAIN_DIR`: The path to your project directory on the server
-- `PRODUCTION_BRANCH`: The branch name for production deployments (e.g., "prod")
-- `HTBASIC_USERNAME`: The username for HTTP basic authentication
-- `API_HOST`: The URL of your API (e.g., https://api.yourdomain.com)
-- `APP_ENV`: The runtime environment (e.g., "production")
-- `FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE`: The HTTP status code for Pydantic validation errors (e.g., 422)
-- `REDIS_URL`: The URL for the Redis connection
-- `SLACK_WEBHOOK_URL`: The Slack webhook URL for notifications
+Install the following dependencies before deploying:
 
-### Secrets
+- Docker (≥ 20.x)
+- Docker Compose (plugin ≥ v2)
+- Git
 
-- `SSH_PRIVATE_KEY`: The SSH private key for accessing the deployment server
-- `HTBASIC_PASSWORD`: The password for HTTP basic authentication
-- `RQ_SECRET`: The secret key for Redis Queue
-- `GENTRAIN_PASSWORD`: The sudo password for the deployment server
+---
 
-Make sure to set these variables and secrets in your GitHub repository settings under "Settings" > "Secrets and variables" > "Actions" before running the deployment workflow.
+## 🧩 3. Local Development Setup
 
-## Automatic Deployment
+Run GENTRAIN locally to test or modify code. You can find a comprehensive guide in the [Getting Started](./getting-started) section.
 
-When changes are pushed to the `prod` branch, the following process occurs automatically:
+```bash
+# Start Redis, Postgres, and API
+docker compose -f docker-compose.dev.yaml up -d
 
-1. The GitHub Actions workflow is triggered.
-2. The frontend is built and tested.
-3. The latest code is pulled to the production server on the de.NBI Cloud.
-4. Environment variables are regenerated on the server.
-5. Docker containers are stopped, rebuilt without using cache, and restarted.
+# Run the frontend with hot reload
+npm run dev
+```
 
-This ensures that the production environment is always running the latest version of the application with minimal downtime.
+Alternatively, use the helper script:
 
-## Manual Deployment
+```bash
+sh dev.sh
+```
 
-While the deployment process is automated, it can also be triggered manually through the GitHub Actions interface if needed.
+---
 
-## Deployment Infrastructure
+## 🚀 4. Production Deployment
 
-- **Hosting**: de.NBI Cloud
-- **Containerization**: Docker and Docker Compose
-- **CI/CD**: GitHub Actions
+Production deployment uses **Caddy** as a reverse proxy with HTTPS support.  
+Persistent Docker volumes store database, uploads, and built static files.
 
-## Services
+### Step 1 — Clone the repository
 
-The deployment includes the following services:
+```bash
+git clone https://github.com/DiltheyLab/GENTRAIN.git
+cd GENTRAIN
+```
 
-- **Caddy**: Reverse proxy and web server
-- **Redis**: In-memory data structure store
-- **API**: Python-based api service
-- **Worker**: Background task processor
-- **Frontend**: Node.js-based frontend service
-- **Redis Insight**: GUI for Redis monitoring and management
+### Step 2 — Configure environment variables
 
-## Accessing the Application
+If you are not using a deployment workflow, manually create the variables described in the [Explanation of Variables and Secrets](#-6-explanation-of-variables-and-secrets) section:
 
-After successful deployment:
+```bash
+cp .env.example .env
+```
 
-- The frontend is accessible via HTTPS (port 443)
-- The backend API is available on port 4000
-- Redis Insight can be accessed on port 5540
+Adjust your `.env` with correct hostnames, secrets, and paths.
 
-## Monitoring
+### Step 3 — Configure Caddy
 
-Deployment status notifications are sent to a Slack channel, providing real-time updates on the success or failure of each deployment step.
+Use `Caddyfile.example` as reference to configure Caddy for HTTPS termination and routing:
 
-For more detailed information about the deployment process, refer to the `.github/workflows/prod_deployment.yml` file in the repository.
+- Serves frontend and documentation under `/`
+- Proxies `/api/*` to the backend container
+- Supports automatic TLS certificates via Let’s Encrypt
+
+### Step 4 — Start the stack
+
+```bash
+docker compose -f docker-compose.prod.yaml up -d --build
+```
+
+---
+
+## ⚙️ 5. Automated Deployment with GitHub Actions
+
+The repository includes a **production deployment workflow** at  
+`.github/workflows/prod_deployment.yml`.
+
+This workflow automates:
+
+1. Building the **frontend** and **documentation**
+2. Connecting via SSH to the remote production server
+3. Regenerating `.env` from GitHub variables and secrets
+4. Rebuilding and restarting Docker containers safely
+5. Sending Slack notifications on success or failure
+
+This means organizations can reuse the same pipeline by:
+
+- Forking the repo or mirroring it privately
+- Adding their own GitHub **Actions variables and secrets**
+- Defining a `prod` branch for production updates
+
+---
+
+## 🔧 6. Explanation of Variables and Secrets
+
+The workflow dynamically writes a `.env` file on the server based on GitHub **variables (`vars`)** and **secrets (`secrets`)**.
+
+Below is an explanation of each one and its purpose.
+
+### 🔹 General / Connection
+
+| Name                | Type     | Description                                                                        |
+| ------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `SSH_HOST`          | Variable | Hostname or IP of the production server (used by `appleboy/ssh-action`).           |
+| `SSH_USER`          | Variable | Username for SSH connection (e.g. `ubuntu`, `gentrain`).                           |
+| `SSH_PRIVATE_KEY`   | Secret   | Private key for authentication (never commit to repo).                             |
+| `GENTRAIN_DIR`      | Variable | Path on the server where GENTRAIN is located (e.g. `/opt/gentrain`).               |
+| `PRODUCTION_BRANCH` | Variable | The Git branch that should be deployed (e.g. `prod`).                              |
+| `GENTRAIN_PASSWORD` | Secret   | Sudo password on the remote host, used for restarting Docker with elevated rights. |
+
+### 🔹 Application / API Configuration
+
+| Name                        | Type     | Description                                                                       |
+| --------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `VITE_API_HOST`             | Variable | Public API endpoint (e.g. `https://api.yourdomain.org`). Used in frontend builds. |
+| `APP_URL`                   | Variable | Base URL of your application (used for redirects and link generation).            |
+| `APP_ENV` or `PROD_APP_ENV` | Variable | Defines runtime environment (e.g. `production`).                                  |
+| `API_DATA_DIRECTORY`        | Variable | Directory path where API stores uploaded files and pathogen data.                 |
+
+### 🔹 Database and Redis
+
+| Name                | Type     | Description                                                       |
+| ------------------- | -------- | ----------------------------------------------------------------- |
+| `DATABASE_DRIVER`   | Variable | Database driver (usually `postgres`).                             |
+| `DATABASE_HOST`     | Variable | Hostname of PostgreSQL service (container name or external host). |
+| `DATABASE_PORT`     | Variable | Port of PostgreSQL service (default `5432`).                      |
+| `DATABASE_NAME`     | Variable | Name of the GENTRAIN database.                                    |
+| `DATABASE_USER`     | Variable | Username used by GENTRAIN backend.                                |
+| `DATABASE_PASSWORD` | Secret   | Password for database authentication.                             |
+| `REDIS_HOST`        | Variable | Hostname of Redis service.                                        |
+| `REDIS_PORT`        | Variable | Redis port (default `6379`).                                      |
+| `REDIS_USERNAME`    | Variable | Optional Redis username.                                          |
+| `REDIS_PASSWORD`    | Secret   | Password for Redis authentication (if enabled).                   |
+
+### 🔹 Admin Panel
+
+| Name                          | Type     | Description                                                           |
+| ----------------------------- | -------- | --------------------------------------------------------------------- |
+| `ADMIN_PANEL_PORT`            | Variable | Port on which the admin interface runs (e.g. `5540`).                 |
+| `ADMIN_PANEL_URL`             | Variable | Public or internal URL for admin access.                              |
+| `DEFAULT_ADMIN_USERNAME`      | Variable | Default administrator username (used during first setup).             |
+| `DEFAULT_ADMIN_PASSWORD`      | Secret   | Default administrator password (should be changed after first login). |
+| `ADMIN_HTBASIC_USERNAME`      | Variable | Username for HTTP Basic Auth (protects admin route).                  |
+| `PROD_ADMIN_HTBASIC_PASSWORD` | Secret   | Password for HTTP Basic Auth (never expose publicly).                 |
+
+### 🔹 Security and Sessions
+
+| Name             | Type   | Description                                     |
+| ---------------- | ------ | ----------------------------------------------- |
+| `SESSION_SECRET` | Secret | Used for session encryption in the backend.     |
+| `COOKIE_SECRET`  | Secret | Used to sign secure cookies in the admin panel. |
+
+### 🔹 Notifications
+
+| Name                | Type     | Description                                                                                   |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `SLACK_WEBHOOK_URL` | Variable | Webhook URL for Slack notifications. Used in all workflow steps to report success or failure. |
+
+---
+
+## 🧱 7. Example of Environment Generation in the Workflow
+
+During the GitHub Action run, the workflow executes SSH commands like this:
+
+```yaml
+- name: Generate environment variables
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ vars.SSH_HOST }}
+    username: ${{ vars.SSH_USER }}
+    key: ${{ secrets.SSH_PRIVATE_KEY }}
+    script: |
+      cd ${{ vars.GENTRAIN_DIR }}
+      rm -f .env
+      touch .env
+      echo -e "VITE_API_HOST=${{vars.VITE_API_HOST}}" >> .env
+      ...
+```
+
+This ensures the `.env` file on the server always matches the latest variables from GitHub.
+
+---
+
+## 💾 8. Persistent Volumes
+
+Production Compose defines named Docker volumes:
+
+| Volume                         | Description                                   |
+| ------------------------------ | --------------------------------------------- |
+| `postgres_data`                | PostgreSQL database data (must be backed up). |
+| `api_data`                     | Pathogen schemes, example files               |
+| `frontend_files`, `docs_files` | Built frontend and docs.                      |
+| `caddy_config`, `caddy_data`   | Caddy state, certificates, and logs.          |
+
+To back up:
+
+```bash
+docker exec -t gentrain-db pg_dumpall -c -U ${DATABASE_USER} > backup.sql
+cp -r ./api_data ./backup_api_data_$(date +%F)
+```
+
+---
+
+## 🧯 9. Rollback Procedure
+
+If a deployment fails:
+
+```bash
+docker compose -f docker-compose.prod.yaml down
+git checkout <previous-tag>
+docker compose -f docker-compose.prod.yaml up -d --build
+```
+
+Restore your database if required:
+
+```bash
+psql -U $DATABASE_USER -d $DATABASE_NAME -f backup.sql
+```
+
+---
+
+## 🧠 10. Security Best Practices
+
+- Rotate all GitHub secrets regularly
+- Restrict SSH access to trusted IPs
+- Use HTTPS with automatic renewal via Caddy
+- Never store plaintext passwords in `.env` files
+- Use Basic Auth on the admin panel if it’s exposed publicly
+
+---
+
+## 📁 11. Important Repository Files
+
+| File                                    | Purpose                                                            |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| `.env.example`                          | Example configuration for required environment variables           |
+| `Caddyfile.example`                     | Example configuration for HTTPS reverse proxy                      |
+| `docker-compose.dev.yaml`               | Development stack                                                  |
+| `docker-compose.prod.yaml`              | Production stack                                                   |
+| `.github/workflows/prod_deployment.yml` | Production CI/CD workflow                                          |
+| `.github/workflows/dev_deployment.yml`  | Development CI/CD workflow                                         |
+| `init-entrypoint.sh`                    | Initializes volumes and user permissions for production containers |
