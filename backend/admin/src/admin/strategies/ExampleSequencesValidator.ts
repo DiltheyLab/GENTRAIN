@@ -4,9 +4,9 @@ import { ExampleDataValidator } from './ExampleDataValidator.js';
 import fs from 'fs';
 import { validateFastaFile, validateFilename } from '../util/validations.js';
 import AdmZip from 'adm-zip';
+import { Readable } from 'stream';
 
 export class ExampleSequencesValidator extends ExampleDataValidator {
-  protected fileName: string;
   protected pathogenType: 'bacterial' | 'viral';
   protected file: UploadedFile;
   protected request: CustomActionRequest;
@@ -24,19 +24,20 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
     return this.pathogenType === 'bacterial' ? ['zip'] : ['fa', 'mpfa', 'fna', 'fsa', 'fasta'];
   };
 
-  public validateFile = () => {
+  public validateFile = async () => {
     if (!this.file) {
       return;
     }
 
     if (this.pathogenType === 'bacterial') {
-      const validationErrors = this.validateZipFile();
+      const validationErrors = await this.validateZipFile();
       if (Object.keys(validationErrors).length > 0) {
         this.throwException(
           `${Object.keys(validationErrors).map((fileName: string) => `File "${fileName}" is invalid. ${validationErrors[fileName].join(', ')}.`)}`
         );
       }
     } else {
+      await this.scanForMalware(fs.createReadStream(this.file.path));
       const validationErrors = validateFastaFile(this.parseFasta());
       if (validationErrors.length > 0) {
         this.throwException(`Fasta file is invalid. ${validationErrors.join(', ')}.`);
@@ -48,7 +49,7 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
     return fs.readFileSync(this.file.path, 'utf-8');
   };
 
-  protected validateZipFile = () => {
+  protected validateZipFile = async () => {
     const validationErrors = {};
     let zip = null;
     try {
@@ -75,6 +76,8 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
           `Invalid filename: ${fastaFile.entryName}`
         );
       }
+      await this.scanForMalware(Readable.from(fastaFile.getData()));
+
       const fileErrors = validateFastaFile(fastaFile.getData().toString('utf8'));
       if (fileErrors.length > 0) {
         validationErrors[fastaFile.entryName] = fileErrors;

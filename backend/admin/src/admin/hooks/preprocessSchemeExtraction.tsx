@@ -11,7 +11,6 @@ import pLimit from 'p-limit';
 
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
-    console.log("preprocessSchemeExtraction");
     try {
       context.scheme = await validateSchemeUpload(request.payload.scheme, request.payload.type, context.record ?? null);
     } catch (error) {
@@ -23,7 +22,6 @@ export const preprocessSchemeExtraction = async (request: ActionRequest, context
 };
 
 const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
-  console.log("validateSchemeUpload");
   if (!file) {
     if (
       record &&
@@ -56,13 +54,14 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
 };
 
 const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => {
-  console.log("validateExtractedZipSizeAndScanForMalware");
   let extractedZipSize = 0;
+  // Each upload should reuse an existing clamscan singleton object
   const clamScan = await ClamScan.instance();
   const zipDirectory = await unzipper.Open.file(file.path);
   for (const file of zipDirectory.files) {
     extractedZipSize += file.uncompressedSize;
-    // TODO: should be 8 GB not 100MB
+    // Zips leading to extracted directory sizes larger than 8 GB are not allowed
+    // to prevent zip bombs and disk storage overload
     if (extractedZipSize > 8 * 1024 * 1024 * 1024) {
       throw new ValidationError({
         scheme: { message: 'Extracted scheme size exceeds the allowed limit of 8 GB.' },
@@ -70,11 +69,12 @@ const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => 
     }
   }
 
-  // Scanning all files concurrently is not manageble for large zips, so we limit concurrency using p-limit
-  const limit = pLimit(10);
+  // Scanning all files concurrently is not manageable for large zips, so we limit concurrency using p-limit
+  const limit = pLimit(100);
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
   );
+  // Throw an exception if at least one file is infected
   if (results.some((result: boolean) => result)) {
     throw new ValidationError({
       scheme: { message: 'Uploaded zip contains malware.' },

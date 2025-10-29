@@ -19,11 +19,11 @@ interface CustomActionRequest extends ActionRequest {
 export const validateExampleDataUploads = async (request: CustomActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
     const exampleCasesValidator = new ExampleCasesValidator(request);
-    exampleCasesValidator.validate(context);
+    await exampleCasesValidator.validate(context);
     const exampleContactsValidator = new ExampleContactsValidator(request);
-    exampleContactsValidator.validate(context);
+    await exampleContactsValidator.validate(context);
     const exampleSequencesValidator = new ExampleSequencesValidator(request, request.payload.type);
-    exampleSequencesValidator.validate(context);
+    await exampleSequencesValidator.validate(context);
   }
   return request;
 };
