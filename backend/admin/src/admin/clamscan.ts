@@ -1,19 +1,20 @@
 import NodeClam from 'clamscan';
-import { Readable } from 'stream';
+import Stream from 'stream';
 
 export class ClamScan {
   static #instance: ClamScan;
   protected client: NodeClam;
 
-  private constructor() {}
+  private constructor(client: NodeClam) {
+    this.client = client;
+  }
 
   public static instance = async () => {
     if (!ClamScan.#instance) {
       try {
-        ClamScan.#instance = new ClamScan();
-        await ClamScan.#instance.init();
+        const clamScanClient = await ClamScan.initClient();
+        ClamScan.#instance = new ClamScan(clamScanClient);
       } catch (error) {
-        ClamScan.#instance = undefined;
         throw error;
       }
     }
@@ -21,15 +22,15 @@ export class ClamScan {
     return ClamScan.#instance;
   };
 
-  protected init = async () => {
-    this.client = await new NodeClam().init({
+  protected static initClient = async () => {
+    return await new NodeClam().init({
       clamdscan: {
         socket: '/run/clamav/clamd.sock',
       },
     });
   };
 
-  public streamIsMalicious = async (stream: Readable) => {
+  public streamIsMalicious = async (stream: Stream) => {
     const { isInfected } = await this.client.scanStream(stream);
     return isInfected;
   };

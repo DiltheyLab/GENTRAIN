@@ -29,14 +29,10 @@ export class BacterialSchemeValidator extends SchemeValidator {
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
     }
-    // As .genes_list does not provide an established content structure we check for malware using clamav
-    await this.scanZipEntryForMalware(file);
   };
 
   private validateSchemaConfig = async () => {
-    const file = this.checkFileExists('.schema_config');
-    // As .schema_config does not provide an established content structure we check for malware using clamav
-    await this.scanZipEntryForMalware(file);
+    this.checkFileExists('.schema_config');
   };
 
   private validateFastaFiles = () => {

@@ -57,7 +57,7 @@ export abstract class SchemeValidator {
     const clamScan = await ClamScan.instance();
     const fileStream = Readable.from(fileToScan.getData());
     if (await clamScan.streamIsMalicious(fileStream)) {
-      this.throwException(`Uploaded ZIP archive contains malware.`);
+      this.throwException('Uploaded ZIP archive contains malware.');
     }
   };
 
@@ -68,18 +68,18 @@ export abstract class SchemeValidator {
     const preprocessedZip = new AdmZip();
     zipEntries.forEach((entry) => {
       if (
-        entry.entryName.startsWith('__MACOSX/') ||
-        entry.entryName.startsWith('.DS_Store') ||
-        entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
+        entry.entryName.startsWith('__MACOSX/')
+        || entry.entryName.startsWith('.DS_Store')
+        || entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
       ) {
         return;
       }
       if (!entry.isDirectory) {
         // Remove the root folder prefix from the path
-        const fileName = rootFolderName ? entry.entryName.replace(rootFolderName + '/', '') : entry.entryName;
+        const fileName = rootFolderName ? entry.entryName.replace(`${rootFolderName}/`, '') : entry.entryName;
         if (
-          !this.getValidFileNames().includes(fileName) &&
-          !this.getValidFileExtensions().includes(fileName.split('.').pop())
+          !this.getValidFileNames().includes(fileName)
+          && !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
           this.throwException(`Uploaded ZIP archive contains invalid file: ${fileName}`);
         }

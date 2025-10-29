@@ -6,10 +6,12 @@ import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator
 import { collectValidationErrors } from '../util/error.js';
 import { isPOSTMethod } from '../util/helpers.js';
 import unzipper from 'unzipper';
-import { on } from 'events';
+import { ClamScan } from '../clamscan.js';
+import pLimit from 'p-limit';
 
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
   if (isPOSTMethod(request)) {
+    console.log("preprocessSchemeExtraction");
     try {
       context.scheme = await validateSchemeUpload(request.payload.scheme, request.payload.type, context.record ?? null);
     } catch (error) {
@@ -21,6 +23,7 @@ export const preprocessSchemeExtraction = async (request: ActionRequest, context
 };
 
 const validateSchemeUpload = async (file: UploadedFile, type: string, record?: BaseRecord) => {
+  console.log("validateSchemeUpload");
   if (!file) {
     if (
       record &&
@@ -42,7 +45,7 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     );
   }
   // Extracted zip size must be smaller than 8 GB
-  await validateExtractedZipSize(file);
+  await validateExtractedZipSizeAndScanForMalware(file);
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
   try {
     await validator.validateUpload();
@@ -52,26 +55,30 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
   return validator.getValidatedZip();
 };
 
-const validateExtractedZipSize = async (file: UploadedFile) => {
+const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => {
+  console.log("validateExtractedZipSizeAndScanForMalware");
   let extractedZipSize = 0;
-  try {
-    await fs
-      .createReadStream(file.path)
-      .pipe(unzipper.Parse())
-      // Sum up the size of all extracted files
-      .on('entry', (entry: unzipper.Entry) => {
-        entry.on('data', (chunk: Buffer) => {
-          extractedZipSize += chunk.length;
-        });
-        if (extractedZipSize > 0.1 * 1024 * 1024 * 1024) {
-          throw new ValidationError({
-            scheme: { message: 'Extracted scheme size exceeds the allowed limit of 8 GB.' },
-          });
-        }
-      })
-      .promise();
-  } catch (error) {
-    throw error;
+  const clamScan = await ClamScan.instance();
+  const zipDirectory = await unzipper.Open.file(file.path);
+  for (const file of zipDirectory.files) {
+    extractedZipSize += file.uncompressedSize;
+    // TODO: should be 8 GB not 100MB
+    if (extractedZipSize > 8 * 1024 * 1024 * 1024) {
+      throw new ValidationError({
+        scheme: { message: 'Extracted scheme size exceeds the allowed limit of 8 GB.' },
+      });
+    }
+  }
+
+  // Scanning all files concurrently is not manageble for large zips, so we limit concurrency using p-limit
+  const limit = pLimit(10);
+  const results = await Promise.all(
+    zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
+  );
+  if (results.some((result: boolean) => result)) {
+    throw new ValidationError({
+      scheme: { message: 'Uploaded zip contains malware.' },
+    });
   }
 };
 

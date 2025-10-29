@@ -30,8 +30,8 @@ services:
     image: postgres
     user: postgres:postgres
     hostname: localhost
-    expose:
-      - "${DATABASE_PORT}"
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}

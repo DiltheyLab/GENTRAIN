@@ -16,8 +16,8 @@ RUN addgroup -g $GROUP_ID gentrain
 RUN adduser -D -G gentrain -u $USER_ID gentrain
 RUN chown gentrain:gentrain -R /admin
 
+# Run clamav-service persistently in the foreground
 RUN echo "Foreground yes" >> /etc/clamav/clamd.conf
-
 
 # Manage clamav directory permissions
 RUN chown gentrain:gentrain /var/log/clamav
@@ -26,6 +26,7 @@ RUN chown gentrain:gentrain /var/run/clamav
 RUN chmod 750 /var/run/clamav
 RUN chown gentrain:gentrain /var/lib/clamav
 
+# Change current user to gentrain to execute following commands as non-root user
 USER gentrain
 
 # Init clamav database
