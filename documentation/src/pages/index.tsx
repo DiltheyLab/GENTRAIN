@@ -7,6 +7,7 @@ import DocumentationSections from "@site/src/components/DocumentationSections";
 import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
+import Translate from "@docusaurus/Translate";
 
 function DocumentationHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -15,13 +16,13 @@ function DocumentationHeader() {
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <Heading as="h1" className="hero__title">
-          {siteConfig.title}
+          <Translate id="home.title">GENTRAIN - Dokumentation</Translate>
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           {!showVideo && (
             <button className="button button--secondary button--lg" onClick={() => setShowVideo(true)} type="button">
-              Watch a tutorial video ▶️
+              <Translate id="home.cta.video">Ein Tutorial-Video ansehen ▶️</Translate>
             </button>
           )}
           {showVideo && (

@@ -55,7 +55,7 @@ export const ImportIndexedDbBtn = () => {
                 title="Zustand importieren"
             >
                 <span>
-                    <span className="hidden md:inline">Zustand importieren</span>
+                    <span className="hidden lg:inline">Zustand importieren</span>
                     {isLoading ? <LoadingSpinner /> : <Upload className="h-5 w-5 inline-block" />}
                 </span>
             </Button>

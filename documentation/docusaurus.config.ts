@@ -22,7 +22,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
+  // organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "docusaurus", // Usually your repo name.
 
   onBrokenLinks: "throw",
@@ -31,8 +31,16 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
+    defaultLocale: "de",
+    locales: ["en", "de"],
+    localeConfigs: {
+      de: {
+        htmlLang: "de",
+      },
+      en: {
+        htmlLang: "en-GB",
+      },
+    },
   },
 
   presets: [
@@ -58,6 +66,7 @@ const config: Config = {
           onInlineTags: "warn",
           onInlineAuthors: "warn",
           onUntruncatedBlogPosts: "warn",
+          blogSidebarTitle: "Kürzliche Beiträge",
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -84,24 +93,27 @@ const config: Config = {
           type: "docSidebar",
           sidebarId: "applicationSidebar",
           position: "left",
-          label: "Application",
+          label: "Anwendung",
         },
         {
           type: "docSidebar",
-          sidebarId: "developersSidebar",
-          position: "left",
-          label: "Developers",
+          sidebarId: "developmentSidebar",
+          label: "Entwicklung",
         },
         {
           type: "docSidebar",
           sidebarId: "adminSidebar",
           position: "left",
-          label: "Admin",
+          label: "Administration",
         },
-        // { to: "/blog", label: "Blog", position: "left" },
+        { to: "/blog", label: "Blog", position: "right" },
         {
           href: "https://github.com/DiltheyLab/GENTRAIN",
           label: "GitHub",
+          position: "right",
+        },
+        {
+          type: "localeDropdown",
           position: "right",
         },
       ],

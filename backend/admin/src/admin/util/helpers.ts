@@ -1,5 +1,4 @@
-import { ActionRequest, BaseRecord } from 'adminjs';
-import fs from 'fs';
+import { ActionRequest } from 'adminjs';
 
 export const getReadableSize = (schemeSizeInBytes: number) => {
   if (!schemeSizeInBytes) {
@@ -21,20 +20,6 @@ export const sanitizeFileName = (filename: string) => {
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]/g, '');
-};
-
-export const getAvailableDiskSpaceInGigabyte: (record: BaseRecord) => Promise<number> = async (record: BaseRecord) => {
-  return await new Promise((resolve, reject) => {
-    fs.statfs('/', (err, stats) => {
-      if (err) {
-        reject(err);
-      } else {
-        const availableDiskSpace =
-          (stats.bsize * stats.bavail + Number(record.params.scheme_size)) / 1024 / 1024 / 1024; // in GB
-        resolve(availableDiskSpace);
-      }
-    });
-  });
 };
 
 export const isPOSTMethod = ({ method }: ActionRequest): boolean => method.toLowerCase() === 'post';

@@ -7,6 +7,7 @@ import { Database, Resource } from '@adminjs/prisma';
 import * as url from 'url';
 import { prisma } from './admin/db.js';
 import fs from 'fs';
+import { API_DATA_DIRECTORY } from './admin/constants.js';
 
 const port = process.env.ADMIN_PANEL_PORT;
 
@@ -19,13 +20,13 @@ const start = async () => {
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
   app.use(express.static(path.join(__dirname, '../public'))); // path from dist to public
 
-  if (!fs.existsSync(`${process.env.API_DATA_DIRECTORY}/pathogen_example_data`)) {
-    fs.mkdirSync(`${process.env.API_DATA_DIRECTORY}/pathogen_example_data`);
+  if (!fs.existsSync(`${API_DATA_DIRECTORY}/pathogen_example_data`)) {
+    fs.mkdirSync(`${API_DATA_DIRECTORY}/pathogen_example_data`);
     console.log(`Pathogen example data directory was created.`);
   }
 
-  if (!fs.existsSync(`${process.env.API_DATA_DIRECTORY}/pathogen_schemes`)) {
-    fs.mkdirSync(`${process.env.API_DATA_DIRECTORY}/pathogen_schemes`);
+  if (!fs.existsSync(`${API_DATA_DIRECTORY}/pathogen_schemes`)) {
+    fs.mkdirSync(`${API_DATA_DIRECTORY}/pathogen_schemes`);
     console.log(`Pathogen schemes directory was created.`);
   }
 
