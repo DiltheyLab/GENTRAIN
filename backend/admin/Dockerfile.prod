@@ -23,6 +23,8 @@ RUN mkdir /var/run/clamav
 RUN chown gentrain:gentrain /var/run/clamav
 RUN chmod 750 /var/run/clamav
 RUN chown gentrain:gentrain /var/lib/clamav
+RUN mkdir /admin/logs
+RUN chown gentrain:gentrain /admin/logs
 
 # Change current user to gentrain to execute following commands as non-root user
 USER gentrain
