@@ -24,10 +24,10 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const folderName = record.params.id.toString();
   const extractPath = path.join(process.env.API_DATA_DIRECTORY, 'pathogen_schemes', folderName);
   // Prevent excessive disk space usage by keeping a puffer of 10 GB
-  //const availableDiskSpaceInGigabyte = await getAvailableDiskSpaceInGigabyte(record);
-  //if (availableDiskSpaceInGigabyte < 10) {
-  //  throw new ValidationError({ scheme: { message: 'Scheme upload is not possible.' } });
-  //}
+  const availableDiskSpaceInGigabyte = await getAvailableDiskSpaceInGigabyte(record);
+  if (availableDiskSpaceInGigabyte < 10) {
+    throw new ValidationError({ scheme: { message: 'Scheme upload is not possible.' } });
+  }
   if (fs.existsSync(extractPath)) {
     await fs.promises.rm(extractPath, { recursive: true });
   }
