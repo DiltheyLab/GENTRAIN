@@ -73,6 +73,7 @@ const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => 
   // The concurrency limit is calculated based on the currently available RAM (20 scans per 1 GB RAM)
   const availableRam = (Math.floor(os.freemem() / (1024 ** 3)));
   const limitBasedOnAvailableRam = Math.max(1, 20 * availableRam);
+  console.log("toprocess: ", limitBasedOnAvailableRam);
   const limit = pLimit(limitBasedOnAvailableRam);
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
