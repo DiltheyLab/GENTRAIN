@@ -39,6 +39,9 @@ export const Header = () => {
                 >
                     Datenverwaltung
                 </Link>
+                <Link to="/help" className={`${isSelected("help")} transition-colors hover:text-foreground text-md`}>
+                    Hilfe
+                </Link>
             </nav>
 
             <div className="flex items-center gap-4 ml-auto md:gap-2 lg:gap-4">

@@ -1,0 +1,71 @@
+---
+id: navbar
+title: Navigation Bar
+sidebar_label: Navigation Bar
+sidebar_position: 1
+---
+
+# Navigation Bar
+
+The **navigation bar** provides quick access to the main functional areas of **GENTRAIN**, as well as to essential features such as **saving and importing** the local database (the current application state) and **switching the active pathogen**.
+
+:::info Navigation Bar
+
+<div align="center">
+  <img src="/img/application/navbar.jpeg" alt="navigation bar" />
+</div>
+
+:::
+
+---
+
+## Elements of the Navigation Bar
+
+- **Dashboard:** Overview and visualization of all available data
+- **Ausbruchsanalyse:** Dedicated module for analyzing outbreaks in detail
+- **Datenmanagement:** Import of case, sequence, and contact data as well as data maintenance and storage settings
+- **Hilfe:** Access to support information, tutorials, and documentation
+
+On the right-hand side of the navigation bar, three key actions are available:
+
+- **Zustand importieren:** Load a previously saved JSON file to restore your local working state.
+- **Zustand speichern:** Export the current application state as a JSON file to back up your data.
+- **Pathogen-Auswahl:** Choose the pathogen for which you wish to import and analyze data.
+
+---
+
+## Using the Buttons
+
+### 🗂️ Import State
+
+1. Click **Zustand importieren:**
+2. Select the previously exported **JSON file**.
+3. After a successful import, you will receive a **confirmation message (toast)**, and the application will automatically load the imported data.
+
+### 💾 Save State
+
+1. Click **Zustand speichern:**
+2. Your browser will download a **JSON file** containing the current local state.  
+   Keep this file safe to restore your working environment later.
+
+### 🧫 Switch Pathogen
+
+1. Click the **Pathogen menu** (on the right side of the navigation bar).
+2. Select the desired pathogen.
+
+---
+
+## Error Cases & Tips
+
+- ⚠️ **Import failed:**  
+  Ensure that the selected file is a valid **GENTRAIN export JSON**.  
+  If the issue persists, review the error message displayed in the application.
+
+- 📁 **Lost export file:**  
+  Without a saved export file, your individual local state **cannot be restored**.  
+  It is strongly recommended to back up your work regularly.
+
+---
+
+> 💡 **Tip:**  
+> Regularly use the import and export functions to back up your work and continue seamlessly across different sessions.

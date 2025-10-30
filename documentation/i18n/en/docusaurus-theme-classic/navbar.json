@@ -1,0 +1,26 @@
+{
+  "logo.alt": {
+    "message": "GENTRAIN Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Anwendung": {
+    "message": "Application",
+    "description": "Navbar item with label Application"
+  },
+  "item.label.Entwicklung": {
+    "message": "Development",
+    "description": "Navbar item with label Developers"
+  },
+  "item.label.Administration": {
+    "message": "Administration",
+    "description": "Navbar item with label Admin"
+  },
+  "item.label.Blog": {
+    "message": "Blog",
+    "description": "Navbar item with label Blog"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

@@ -1,9 +1,8 @@
-import { ActionContext, ActionRequest, ActionResponse, ValidationError } from 'adminjs';
+import { ActionContext, ActionRequest, ActionResponse, BaseRecord, ValidationError } from 'adminjs';
 import getFolderSize from 'get-folder-size';
 import path from 'path';
 import unzipper from 'unzipper';
 import fs from 'fs';
-import { getAvailableDiskSpaceInGigabyte } from '../util/helpers.js';
 
 export const handleSchemeExtraction = async (
   response: ActionResponse,
@@ -54,6 +53,20 @@ const persistExtractedSchemeSize = async (context: ActionContext) => {
 
   await context.record.update({
     scheme_size: size,
+  });
+};
+
+export const getAvailableDiskSpaceInGigabyte: (record: BaseRecord) => Promise<number> = async (record: BaseRecord) => {
+  return await new Promise((resolve, reject) => {
+    fs.statfs('/', (err, stats) => {
+      if (err) {
+        reject(err);
+      } else {
+        const availableDiskSpace =
+          (stats.bsize * stats.bavail + Number(record.params.scheme_size)) / 1024 / 1024 / 1024; // in GB
+        resolve(availableDiskSpace);
+      }
+    });
   });
 };
 

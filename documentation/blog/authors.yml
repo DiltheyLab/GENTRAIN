@@ -1,25 +1,18 @@
-yangshun:
-  name: Yangshun Tay
-  title: Ex-Meta Staff Engineer, Co-founder GreatFrontEnd
-  url: https://linkedin.com/in/yangshun
-  image_url: https://github.com/yangshun.png
+philippvogel:
+  name: Philipp Vogel
+  title: Software Engineer, GENTRAIN developer
+  url: https://www.linkedin.com/in/philipp-vogel-4a51661a1/
+  image_url: https://avatars.githubusercontent.com/u/107690428?v=4
   page: true
   socials:
-    x: yangshunz
-    linkedin: yangshun
-    github: yangshun
-    newsletter: https://www.greatfrontend.com
+    linkedin: philipp-vogel-4a51661a1
+    github: PhilippVogel92
 
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
-  page:
-    # customize the url of the author page at /blog/authors/<permalink>
-    permalink: '/all-sebastien-lorber-articles'
+benkraeling:
+  name: Ben Kräling
+  title: Software Engineer, GENTRAIN developer
+  url: https://www.linkedin.com/in/ben-kr%C3%A4ling-5206a6219/
+  image_url: https://avatars.githubusercontent.com/u/33390325?v=4
   socials:
-    x: sebastienlorber
-    linkedin: sebastienlorber
-    github: slorber
-    newsletter: https://thisweekinreact.com
+    linkedin: ben-kr%C3%A4ling-5206a6219
+    github: benjoka

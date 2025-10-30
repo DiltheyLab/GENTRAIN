@@ -22,7 +22,6 @@
   justify-content: center;
 }
 
-/* Der Container, der das Video und den Button umschließt */
 .videoWrapper {
   position: relative;
   display: flex;

@@ -333,26 +333,6 @@ export const tutorialSteps: Step[] = [
         },
     },
     {
-        target: "[data-tutorial-tour-step='data-management-tutorial']",
-        title: "Das Tutorial.",
-        content: <p>Sie können das Tutorial zu jeder Zeit wiederholen, falls Sie erneut Hilfe brauchen.</p>,
-        disableBeacon: true,
-        spotlightClicks: false,
-        styles: {
-            spotlight: {
-                cursor: "not-allowed",
-            },
-        },
-        disableScrolling: false,
-        floaterProps: {
-            options: {
-                preventOverflow: {
-                    boundariesElement: "viewport",
-                },
-            },
-        },
-    },
-    {
         target: "[data-tutorial-tour-step='data-management-delete-data-section']",
         title: "Alle Daten löschen.",
         content: (

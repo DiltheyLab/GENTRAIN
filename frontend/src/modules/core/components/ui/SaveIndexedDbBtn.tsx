@@ -17,7 +17,7 @@ export const SaveIndexedDbBtn = () => {
             onClick={() => exportDatabaseToJson()}
             title="Zustand speichern"
         >
-            <span className="hidden md:inline">Zustand speichern</span>
+            <span className="hidden lg:inline">Zustand speichern</span>
             <Save className="h-5 w-5" />
         </Button>
     );
