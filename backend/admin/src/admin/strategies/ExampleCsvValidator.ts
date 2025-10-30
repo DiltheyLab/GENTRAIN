@@ -4,20 +4,20 @@ import fs from 'fs';
 import { ExampleDataValidator } from './ExampleDataValidator.js';
 
 export abstract class ExampleCsvValidator extends ExampleDataValidator {
-  protected fileName: string;
   protected file: UploadedFile;
   protected request: CustomActionRequest;
   protected dataStructure?: object;
   protected abstract throwException(fieldMessage: string): void;
 
-  constructor(request: CustomActionRequest, fileName: string) {
+  protected constructor(request: CustomActionRequest, fileName: string) {
     super(request, fileName);
   }
 
-  public validateFile = () => {
+  public validateFile = async () => {
     if (!this.file) {
       return;
     }
+    await this.scanForMalware(fs.createReadStream(this.file.path));
     const { header, data } = this.parseCSV();
     this.validateHeader(header);
     this.validateCells(data, header);

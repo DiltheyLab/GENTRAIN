@@ -1,8 +1,10 @@
-import { BaseRecord, ParamsType, UploadedFile, ValidationError } from 'adminjs';
+import { UploadedFile, ValidationError } from 'adminjs';
 import AdmZip, { IZipEntry } from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { ClamScan } from '../clamscan.js';
+import { Readable } from 'stream';
 
 export abstract class SchemeValidator {
   protected zip: AdmZip;
@@ -21,7 +23,7 @@ export abstract class SchemeValidator {
     }
   }
 
-  public abstract validateSchemeStructure(): void;
+  public abstract validateSchemeStructure(): void | Promise<void>;
   protected abstract getValidFileNames(): string[];
   protected abstract getValidFileExtensions(): string[];
 
@@ -46,9 +48,9 @@ export abstract class SchemeValidator {
     };
   };
 
-  public validateUpload = () => {
+  public validateUpload = async () => {
     this.validateAndPreprocessZipFile();
-    this.validateSchemeStructure();
+    await this.validateSchemeStructure();
   };
 
   protected validateAndPreprocessZipFile = () => {
@@ -58,18 +60,18 @@ export abstract class SchemeValidator {
     const preprocessedZip = new AdmZip();
     zipEntries.forEach((entry) => {
       if (
-        entry.entryName.startsWith('__MACOSX/') ||
-        entry.entryName.startsWith('.DS_Store') ||
-        entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
+        entry.entryName.startsWith('__MACOSX/')
+        || entry.entryName.startsWith('.DS_Store')
+        || entry.entryName.startsWith(`${rootFolderName}/pre_computed`)
       ) {
         return;
       }
       if (!entry.isDirectory) {
         // Remove the root folder prefix from the path
-        const fileName = rootFolderName ? entry.entryName.replace(rootFolderName + '/', '') : entry.entryName;
+        const fileName = rootFolderName ? entry.entryName.replace(`${rootFolderName}/`, '') : entry.entryName;
         if (
-          !this.getValidFileNames().includes(fileName) &&
-          !this.getValidFileExtensions().includes(fileName.split('.').pop())
+          !this.getValidFileNames().includes(fileName)
+          && !this.getValidFileExtensions().includes(fileName.split('.').pop())
         ) {
           this.throwException(`Uploaded ZIP archive contains invalid file: ${fileName}`);
         }

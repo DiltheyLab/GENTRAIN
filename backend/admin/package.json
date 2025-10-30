@@ -28,6 +28,7 @@
     "adm-zip": "^0.5.16",
     "adminjs": "^7.8.17",
     "argon2": "^0.44.0",
+    "clamscan": "^2.4.0",
     "connect-pg-simple": "^10.0.0",
     "csv-parser": "^3.2.0",
     "dotenv": "^17.2.1",
@@ -38,6 +39,7 @@
     "fs-extra": "^11.3.1",
     "get-folder-size": "^5.0.0",
     "pg": "latest",
+    "p-limit": "^7.2.0",
     "unzipper": "^0.12.3",
     "yazl": "^3.3.1"
   },

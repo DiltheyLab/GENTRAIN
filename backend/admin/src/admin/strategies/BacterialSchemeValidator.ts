@@ -1,36 +1,38 @@
 import { SchemeValidator } from './SchemeValidator.js';
 import { validateFastaFile, validateFilename } from '../util/validations.js';
-import { ValidationError } from 'adminjs';
 
 export class BacterialSchemeValidator extends SchemeValidator {
-  public validateSchemeStructure = () => {
-    this.validateGenesList();
-    this.validateSchemaConfig();
+  public validateSchemeStructure = async () => {
+    await this.validateGenesList();
+    await this.validateSchemaConfig();
     this.validateFastaFiles();
   };
 
   protected getValidFileNames = (): string[] => {
+    // Accept only the very necessary files
+    // pre_computed folder is also valid but hard to validate
+    // and safely generated during first usage of the scheme
     return ['.genes_list', '.schema_config', 'loci_modes', 'self_scores', 'short/self_scores'];
   };
 
   protected getValidFileExtensions = (): string[] => {
+    // Fasta files may contain different file extensions
     return ['fa', 'mpfa', 'fna', 'fsa', 'fasta'];
   };
 
-  private validateGenesList = () => {
+  private validateGenesList = async () => {
     const file = this.checkFileExists('.genes_list');
     const content = file.getData().toString('binary');
-    //const validCharacters = /^[a-zA-Z0-9_.-]+$/;
-    //content.replace(/\f/g, '').replace(' ', '')
     const regex = /\b[\w\-.]+\.fasta\b/g;
+    // Validate fasta files from .genes_list exist within the zip
     const fastaFileNames = content.match(regex) || [];
     for (const fastaFileName of fastaFileNames) {
       this.checkFileExists(fastaFileName);
     }
   };
 
-  private validateSchemaConfig = () => {
-    const file = this.checkFileExists('.schema_config');
+  private validateSchemaConfig = async () => {
+    this.checkFileExists('.schema_config');
   };
 
   private validateFastaFiles = () => {

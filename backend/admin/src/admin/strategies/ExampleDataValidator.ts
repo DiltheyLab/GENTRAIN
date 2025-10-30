@@ -1,31 +1,39 @@
 import { ActionContext, UploadedFile, ValidationError } from 'adminjs';
 import CustomActionRequest from '../types/CustomActionRequest.js';
 import { collectValidationErrors } from '../util/error.js';
+import { ClamScan } from '../clamscan.js';
+import Stream from 'stream';
 
 export abstract class ExampleDataValidator {
-  protected fileName: string;
   protected file: UploadedFile;
   protected request: CustomActionRequest;
   protected dataStructure?: object;
   protected abstract getValidMimetypes(): string[];
   protected abstract getValidExtensions(): string[];
-  public abstract validateFile(): void;
+  public abstract validateFile(): Promise<void>;
   protected abstract throwException(fieldMessage: string): void;
 
-  constructor(request: CustomActionRequest, fileName: string) {
+  protected constructor(request: CustomActionRequest, fileName: string) {
     this.request = request;
     this.file = this.request.files[`${fileName}.0`];
   }
 
-  public validate = (context: ActionContext) => {
+  public validate = async (context: ActionContext) => {
     if (!this.file) {
       return;
     }
     try {
       this.validateMimetype();
-      this.validateFile();
+      await this.validateFile();
     } catch (error) {
       collectValidationErrors(error, context);
+    }
+  };
+
+  protected scanForMalware = async (stream: Stream) => {
+    const clamScan = await ClamScan.instance();
+    if (await clamScan.streamIsMalicious(stream)) {
+      this.throwException('Upload contains malware.');
     }
   };
 
