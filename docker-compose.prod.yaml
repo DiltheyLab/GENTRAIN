@@ -19,7 +19,6 @@ services:
         source: api_data
         target: /api_data
     entrypoint: "/init-entrypoint.sh"
-    user: root
     networks:
       - caddy
   caddy:
