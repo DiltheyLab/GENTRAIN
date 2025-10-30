@@ -53,14 +53,6 @@ export abstract class SchemeValidator {
     await this.validateSchemeStructure();
   };
 
-  protected scanZipEntryForMalware = async (fileToScan: IZipEntry) => {
-    const clamScan = await ClamScan.instance();
-    const fileStream = Readable.from(fileToScan.getData());
-    if (await clamScan.streamIsMalicious(fileStream)) {
-      this.throwException('Uploaded ZIP archive contains malware.');
-    }
-  };
-
   protected validateAndPreprocessZipFile = () => {
     const zipEntries = this.zip.getEntries();
     const rootFolderName = this.getRootFolderName();
