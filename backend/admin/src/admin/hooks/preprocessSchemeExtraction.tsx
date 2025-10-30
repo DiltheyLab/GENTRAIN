@@ -1,6 +1,7 @@
 import { ActionContext, ActionRequest, BaseRecord, UploadedFile, ValidationError } from 'adminjs';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import { ViralSchemeValidator } from '../strategies/ViralSchemeValidator.js';
 import { BacterialSchemeValidator } from '../strategies/BacterialSchemeValidator.js';
 import { collectValidationErrors } from '../util/error.js';
@@ -68,9 +69,11 @@ const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => 
       });
     }
   }
-
   // Scanning all files concurrently is not manageable for large zips, so we limit concurrency using p-limit
-  const limit = pLimit(100);
+  // The concurrency limit is calculated based on the currently available RAM (20 scans per 1 GB RAM)
+  const availableRam = (Math.floor(os.freemem() / (1024 ** 3)));
+  const limitBasedOnAvailableRam = Math.max(1, 20 * availableRam);
+  const limit = pLimit(limitBasedOnAvailableRam);
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
   );
