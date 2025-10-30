@@ -4,17 +4,31 @@ ARG USER_ID=1010
 ARG GROUP_ID=1010
 
 WORKDIR /admin
+RUN apk add --no-cache openssl clamav clamav-daemon supervisor
 
-RUN apk add --no-cache openssl
 RUN npm i -g typescript
 
-# Set the environment variable for production
 ENV NODE_ENV="production"
 
 RUN addgroup -g $GROUP_ID gentrain
 RUN adduser -D -G gentrain -u $USER_ID gentrain
 RUN chown gentrain:gentrain -R /admin
+
+# Run clamav-service persistently in the foreground
+RUN echo "Foreground yes" >> /etc/clamav/clamd.conf
+
+# Manage clamav directory permissions
+RUN chown gentrain:gentrain /var/log/clamav
+RUN mkdir /var/run/clamav
+RUN chown gentrain:gentrain /var/run/clamav
+RUN chmod 750 /var/run/clamav
+RUN chown gentrain:gentrain /var/lib/clamav
+
+# Change current user to gentrain to execute following commands as non-root user
 USER gentrain
+
+# Init clamav database
+RUN freshclam
 
 COPY package*.json ./
 
@@ -34,4 +48,4 @@ RUN rm -rf src
 # Expose the port the app runs on
 EXPOSE 4001
 
-CMD ["npm", "run", "start"]
+CMD ["supervisord", "-c", "/admin/supervisor.conf", "-n"]
