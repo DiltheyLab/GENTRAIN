@@ -8,6 +8,9 @@ def get_project_path():
     """Retrieve the directory path for the project root."""
     return os.path.dirname(os.path.realpath(__file__))
 
+def get_scripts_path():
+    """Retrieve the directory path for the sequence analysis scripts."""
+    return f"{get_project_path()}/domains/sequence_analysis/scripts"
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 

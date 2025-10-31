@@ -9,20 +9,18 @@ from subprocess import Popen
 
 from werkzeug.utils import secure_filename
 
-from api.modules.core.exceptions import (
+from api.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
 from api.config import get_project_path
-from api.modules.core.helpers import tsv_to_json
-from api.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
+from api.domains.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
 )
-from api.modules.sequence_analysis.response_models import (
-    BacterialSequenceAnalysisResponseModel,
+from api.domains.sequence_analysis.models.bacterial_sequence_analysis import (
+    BacterialSequenceAnalysis as BacterialSequenceAnalysisModel,
 )
-from api.server import redis_connection
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
@@ -81,7 +79,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
 
     def run_analysis(self):
         """Runs the sequence analysing script based on the pathogen."""
-        persisted_sequence_analysis = redis_connection.hgetall(
+        persisted_sequence_analysis = self.redis_connection.hgetall(
             f"client:sequence_analysis:{self.fasta_hash}"
         )
         if persisted_sequence_analysis and "result" in persisted_sequence_analysis:
@@ -90,7 +88,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         process = Popen(
             [
                 "perl",
-                f"{get_project_path()}/modules/sequence_analysis/scripts/bacterial.pl",
+                f"{get_scripts_path()}/bacterial.pl",
                 "-input",
                 self.input,
                 "-scheme",
@@ -162,7 +160,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             .replace("\n", "")
             .strip()
         )
-        return BacterialSequenceAnalysisResponseModel(
+        return BacterialSequenceAnalysisModel(
             chewBACCA_version=chewBBACCA_version,
             analysis_schema=str(self.pathogen.scheme_version),
             allele_ids=result["allele_ids"],
@@ -205,3 +203,28 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             },
             to=f"{self.type}_{self.socket_id}",
         )
+
+
+    def tsv_to_json(file):
+        arr = []
+        a = file.readline()
+
+        # The first line consist of headings of the record
+        # so we will store it in an array and move to
+        # next line in input_file.
+        titles = [t.strip() for t in a.split("\t")]
+        for line in file:
+            d = {}
+            for t, f in zip(titles, line.split("\t")):
+                if t == "FILE":
+                    continue
+                # Convert each row into dictionary with keys as titles
+                d[t] = f.strip()
+
+            # we will use strip to remove '\n'.
+            arr.append(d)
+
+            # we will append all the individual dictionaires into list
+            # and dump into file.
+            result = arr[0]
+        return result

@@ -22,21 +22,6 @@ def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
     )
 
 
-def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
-    """
-    Get all keys of persisted fasta chunks for the provided identifier.
-
-    Parameters:
-        socket_id --  Id of the websocket connection
-        chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
-            and the total amount of chunks relating to the current analysis
-    """
-    chunk_keys = redis_connection.keys(
-        f"chunks:{socket_id}:{chunk_information['id']}:*"
-    )
-    chunk_keys.sort()
-    return chunk_keys
-
 
 def get_merged_fasta_content_if_complete(socket_id, chunk_information):
     """
@@ -61,3 +46,19 @@ def get_merged_fasta_content_if_complete(socket_id, chunk_information):
         redis_connection.delete(key)
         fasta_content += fasta_chunk
     return fasta_content
+
+
+def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
+    """
+    Get all keys of persisted fasta chunks for the provided identifier.
+
+    Parameters:
+        socket_id --  Id of the websocket connection
+        chunk_information -- Dictionary containing information about the chunking id, the index of the transferred chunk
+            and the total amount of chunks relating to the current analysis
+    """
+    chunk_keys = redis_connection.keys(
+        f"chunks:{socket_id}:{chunk_information['id']}:*"
+    )
+    chunk_keys.sort()
+    return chunk_keys

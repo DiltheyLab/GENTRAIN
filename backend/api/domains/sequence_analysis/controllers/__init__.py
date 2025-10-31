@@ -1,0 +1,2 @@
+import api.domains.sequence_analysis.controllers.sequence_controller
+import api.domains.sequence_analysis.controllers.sequence_analysis_controller

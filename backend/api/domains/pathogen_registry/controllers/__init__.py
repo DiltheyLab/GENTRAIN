@@ -1,0 +1,1 @@
+import api.domains.pathogen_registry.controllers.pathogen_controller

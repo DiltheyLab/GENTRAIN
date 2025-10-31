@@ -8,15 +8,15 @@ from os import popen
 from Bio import SeqIO
 from werkzeug.utils import secure_filename
 import time
-from api.modules.core.exceptions import (
+from api.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
-from api.config import get_project_path
-from api.modules.sequence_analysis.response_models import (
-    ViralSequenceAnalysisResponseModel,
+from api.config import get_project_path, get_scripts_path
+from api.domains.sequence_analysis.models.viral_sequence_analysis import (
+    ViralSequenceAnalysis as ViralSequenceAnalysisModel,
 )
-from api.modules.sequence_analysis.strategies.sequence_analysis_strategy import (
+from api.domains.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
 )
@@ -75,7 +75,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"{get_project_path()}/modules/sequence_analysis/scripts/viral.sh",
+                f"{get_scripts_path()}/viral.sh",
                 self.input,
                 self.output,
                 f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
@@ -130,7 +130,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         )
         return (
             result["seqName"],
-            ViralSequenceAnalysisResponseModel(
+            ViralSequenceAnalysisModel(
                 sequence_length=len(self.sequences[result["seqName"]]),
                 nextclade_version=nextclade_version,
                 lineage=(

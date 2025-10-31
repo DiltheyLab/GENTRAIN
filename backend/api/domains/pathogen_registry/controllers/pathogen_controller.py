@@ -1,22 +1,28 @@
-import json
 import os
 import zipfile
 from Bio import Align
-from flask import Response, jsonify, request, abort, send_file
-from api.modules.core.models import serialize_pathogen
+from flask import abort, send_file
 from prisma.models import pathogen as Pathogen
 from api.app import app
 from api.server import redis_connection
 import io
-
 from api.config import get_project_path
+from api.domains.pathogen_registry.models import Pathogen as PathogenModel
 
-# Pathogens
 @app.route("/pathogens", methods=["GET"])
 def get_all_pathogens():
     pathogens = Pathogen.prisma().find_many()
-    return [serialize_pathogen(pathogen) for pathogen in pathogens]
-
+    return [PathogenModel(
+        id=pathogen.id,
+        name=pathogen.name,
+        scheme_version=pathogen.scheme_version,
+        type=pathogen.type,
+        activated=pathogen.activated,
+        genetic_distance_threshold=pathogen.genetic_distance_threshold,
+        cases_example=pathogen.example_cases_key,
+        contacts_example=pathogen.example_contacts_key,
+        sequences_example=pathogen.example_sequences_key,
+    ).model_dump() for pathogen in pathogens]
 
 @app.route("/pathogens/<int:pathogen_id>", methods=["GET"])
 def get_pathogen(pathogen_id: int):
@@ -27,54 +33,18 @@ def get_pathogen(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    return serialize_pathogen(pathogen)
+    return PathogenModel(
+        id=pathogen.id,
+        name=pathogen.name,
+        scheme_version=pathogen.scheme_version,
+        type=pathogen.type,
+        activated=pathogen.activated,
+        genetic_distance_threshold=pathogen.genetic_distance_threshold,
+        cases_example=pathogen.example_cases_key,
+        contacts_example=pathogen.example_contacts_key,
+        sequences_example=pathogen.example_sequences_key,
+    ).model_dump()
 
-
-# Sequence Analyses
-@app.route(
-    "/sequence_analyses/<string:fasta_hash>",
-    methods=["GET"],
-)
-def get_sequence_analysis_result(fasta_hash: str):
-    sequence_analysis = redis_connection.hgetall(
-        f"client:sequence_analysis:{fasta_hash}"
-    )
-    if not sequence_analysis:
-        abort(422)
-    if "enqueued_at" not in sequence_analysis:
-        redis_connection.delete(f"client:sequence_analysis:{fasta_hash}")
-        abort(422)
-    if "result" not in sequence_analysis:
-        return jsonify(None)
-    return jsonify(json.loads(sequence_analysis["result"]))
-
-
-@app.route(
-    "/sequence_analyses/<string:fasta_hash>",
-    methods=["DELETE"],
-)
-def delete_sequence_analysis_result(fasta_hash: str):
-    redis_connection.delete(f"client:sequence_analysis:{fasta_hash}")
-    return jsonify([])
-
-
-@app.route("/sequences/align", methods=["POST"])
-def align_sequences():
-    data = request.get_json()
-
-    if "sequence_1" not in data or "sequence_2" not in data:
-        return Response(
-            "Invalid request body.", status=422, mimetype="application/json"
-        )
-    sequence_1 = data["sequence_1"]
-    sequence_2 = data["sequence_2"]
-
-    aligner = Align.PairwiseAligner(match_score=1.0)
-    alignments = aligner.align(sequence_1, sequence_2)
-
-    return jsonify(
-        {"aligned_sequence_1": alignments[0][0], "aligned_sequence_2": alignments[1][1]}
-    )
 
 
 @app.route("/pathogens/<int:pathogen_id>/scheme", methods=["GET"])
@@ -130,5 +100,5 @@ def download_example_data(pathogen_id: str, type: str):
 
     file_path = f"{get_project_path()}/data/pathogen_example_data/{str(pathogen_id)}/{filename}"
     if not os.path.exists(file_path):
-         abort(404)
+        abort(404)
     return send_file(file_path, as_attachment=True, download_name=filename)

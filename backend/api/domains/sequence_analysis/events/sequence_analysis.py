@@ -1,13 +1,11 @@
 import re
 from flask import request
-from flask_socketio import leave_room, join_room
-
 from prisma.models import pathogen as Pathogen
-from api.modules.sequence_analysis.redis import (
+from api.domains.sequence_analysis.redis_actions import (
     get_merged_fasta_content_if_complete,
     persist_fasta_chunk,
 )
-from api.modules.sequence_analysis.strategies import (
+from api.domains.sequence_analysis.strategies import (
     ViralSequenceAnalysis,
     BacterialSequenceAnalysis,
 )
@@ -15,34 +13,7 @@ from api.server import sio, queue_viral, queue_bacterial
 
 
 @sio.event
-def join_sequence_analysis_room(pathogen_type):
-    """
-    Join a sequence analysis room and remember the session id by mapping it to the connections socket id.
-
-    pathogen_type: Type of the selected pathogen (viral | bacterial)
-    """
-    socket_id = request.sid
-    join_room(f"{pathogen_type}_{socket_id}")
-    sio.emit(
-        f"{pathogen_type}_room_created",
-        f"{pathogen_type}_{socket_id}",
-        to=f"{pathogen_type}_{socket_id}",
-    )
-
-
-@sio.event
-def leave_sequence_analysis_room(pathogen_type):
-    """
-    Leave a sequence analysis room.
-    Parameters:
-        pathogen_type -- Type of the selected pathogen (viral | bacterial)
-    """
-    socket_id = request.sid
-    leave_room(f"{pathogen_type}_{socket_id}")
-
-
-@sio.event
-def sequence_analysis(fasta_chunk, chunk_information, pathogen_id, fasta_hash=None):
+def init_sequence_analysis(fasta_chunk, chunk_information, pathogen_id, fasta_hash=None):
     """
     Collect fasta chunks for sequence analysis and init the analysis when all chunks were successfully transferred.
 
@@ -71,10 +42,10 @@ def sequence_analysis(fasta_chunk, chunk_information, pathogen_id, fasta_hash=No
     if not fasta_content:
         return
 
-    init_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash)
+    enqueue_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash)
 
 
-def init_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=None):
+def enqueue_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=None):
     """
     Instantiate a sequence analysis strategy depending on the type of the selected pathogen and enqueue a job.
 
