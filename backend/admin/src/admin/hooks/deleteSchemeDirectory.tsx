@@ -1,6 +1,7 @@
 import { ActionContext, ActionRequest, ActionResponse } from 'adminjs';
 import path from 'path';
 import fs from 'fs';
+import { API_DATA_DIRECTORY } from '../constants.js';
 
 export const deleteSchemeDirectory = async (
   response: ActionResponse,
@@ -11,9 +12,8 @@ export const deleteSchemeDirectory = async (
     return response;
   }
   for (const record of response.records ?? [response.record]) {
-    const folderName = record.params.id.toString();
-    const extractPath = path.join(process.env.ADMIN_SCHEME_DIRECTORY, folderName);
-    if (fs.existsSync(path.join(process.env.ADMIN_SCHEME_DIRECTORY, record.params.id.toString()))) {
+    const extractPath = path.join(API_DATA_DIRECTORY, "pathogen_schemes", record.params.id.toString());
+    if (fs.existsSync(extractPath)) {
       await fs.promises.rm(extractPath, { recursive: true });
     }
   }
