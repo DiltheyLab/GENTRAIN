@@ -69,5 +69,3 @@ export const getAvailableDiskSpaceInGigabyte: (record: BaseRecord) => Promise<nu
     });
   });
 };
-
-export default handleSchemeExtraction;

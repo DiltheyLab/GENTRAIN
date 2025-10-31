@@ -11,7 +11,6 @@ import { ClamScan } from '../clamscan.js';
 import pLimit from 'p-limit';
 
 export const preprocessSchemeExtraction = async (request: ActionRequest, context: ActionContext) => {
-  console.log("preprocessSchemeExtraction");
   if (isPOSTMethod(request)) {
     try {
       context.scheme = await validateSchemeUpload(request.payload.scheme, request.payload.type, context.record ?? null);
