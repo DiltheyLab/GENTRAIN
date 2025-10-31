@@ -1,4 +1,4 @@
-import { ActionContext, ActionRequest, ActionResponse, BaseRecord, ValidationError } from 'adminjs';
+import { ActionContext, ActionRequest, ActionResponse, BaseRecord } from 'adminjs';
 import getFolderSize from 'get-folder-size';
 import path from 'path';
 import unzipper from 'unzipper';
@@ -26,7 +26,7 @@ const extractSchemeUpload = async (context: ActionContext) => {
   // Prevent excessive disk space usage by keeping a puffer of 10 GB
   const availableDiskSpaceInGigabyte = await getAvailableDiskSpaceInGigabyte(record);
   if (availableDiskSpaceInGigabyte < 10) {
-    throw new ValidationError({ scheme: { message: 'Scheme upload is not possible.' } });
+    throw new Error('Disk does not have enough available space.');
   }
   if (fs.existsSync(extractPath)) {
     await fs.promises.rm(extractPath, { recursive: true });

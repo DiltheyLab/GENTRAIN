@@ -56,17 +56,6 @@ const start = async () => {
   // create router with authentification
   const adminRouter = expressAuthenticatedRouter(admin);
 
-  // Provided route to download example data using content-disposition attachment header and filename
-  app.get('/example_data/:pathogen_id/:filename', function (req, res) {
-    const { pathogen_id, filename } = req.params;
-    if (!fs.existsSync(`public/pathogen_example_data/${pathogen_id}/${filename}`)) {
-      res.status(404).send();
-    }
-    res.setHeader('Access-Control-Allow-Origin', process.env.APP_URL);
-    res.setHeader('Content-Disposition', 'attachment; filename="' + path.basename(filename) + '"');
-    res.download(`public/pathogen_example_data/${pathogen_id}/${filename}`);
-  });
-
   // set path under you can access the admin panel
   app.use(admin.options.rootPath, adminRouter);
 

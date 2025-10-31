@@ -44,7 +44,8 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
     );
   }
   // Extracted zip size must be smaller than 8 GB
-  await validateExtractedZipSizeAndScanForMalware(file);
+  await validateExtractedZipSize(file);
+  await scanForMalware(file);
   const validator = type === 'viral' ? new ViralSchemeValidator(file) : new BacterialSchemeValidator(file);
   try {
     await validator.validateUpload();
@@ -54,11 +55,10 @@ const validateSchemeUpload = async (file: UploadedFile, type: string, record?: B
   return validator.getValidatedZip();
 };
 
-const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => {
-  let extractedZipSize = 0;
-  // Each upload should reuse an existing clamscan singleton object
-  const clamScan = await ClamScan.instance();
+const validateExtractedZipSize = async (file: UploadedFile) => {
   const zipDirectory = await unzipper.Open.file(file.path);
+  // Each upload should reuse an existing clamscan singleton object
+  let extractedZipSize = 0;
   for (const file of zipDirectory.files) {
     extractedZipSize += file.uncompressedSize;
     // Zips leading to extracted directory sizes larger than 8 GB are not allowed
@@ -69,10 +69,15 @@ const validateExtractedZipSizeAndScanForMalware = async (file: UploadedFile) => 
       });
     }
   }
+};
+
+const scanForMalware = async (file: UploadedFile) => {
+  const zipDirectory = await unzipper.Open.file(file.path);
   // Scanning all files concurrently is not manageable for large zips, so we limit concurrency using p-limit
   // The concurrency limit is calculated based on the currently available RAM (20 scans per 1 GB RAM)
+  const clamScan = await ClamScan.instance();
   const availableRam = (Math.floor(os.freemem() / (1024 ** 3)));
-  const limitBasedOnAvailableRam = Math.max(1, 20 * availableRam);
+  const limitBasedOnAvailableRam = Math.max(1, 5 * availableRam);
   const limit = pLimit(limitBasedOnAvailableRam);
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
