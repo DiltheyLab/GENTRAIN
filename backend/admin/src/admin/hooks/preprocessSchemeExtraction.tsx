@@ -82,6 +82,7 @@ const scanForMalware = async (file: UploadedFile) => {
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
   );
+  console.log("malware check: ", results);
   // Throw an exception if at least one file is infected
   if (results.some((result: boolean) => result)) {
     throw new ValidationError({
