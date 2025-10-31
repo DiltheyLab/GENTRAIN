@@ -77,12 +77,11 @@ const scanForMalware = async (file: UploadedFile) => {
   // The concurrency limit is calculated based on the currently available RAM (20 scans per 1 GB RAM)
   const clamScan = await ClamScan.instance();
   const availableRam = (Math.floor(os.freemem() / (1024 ** 3)));
-  const limitBasedOnAvailableRam = Math.max(1, 5 * availableRam);
+  const limitBasedOnAvailableRam = Math.max(1, 10 * availableRam);
   const limit = pLimit(limitBasedOnAvailableRam);
   const results = await Promise.all(
     zipDirectory.files.map((file) => limit(() => clamScan.streamIsMalicious(file.stream())))
   );
-  console.log("malware check: ", results);
   // Throw an exception if at least one file is infected
   if (results.some((result: boolean) => result)) {
     throw new ValidationError({
