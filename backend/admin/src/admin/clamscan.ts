@@ -10,6 +10,7 @@ export class ClamScan {
   }
 
   public static instance = async () => {
+    console.log('env', process.env.NODE_ENV);
     if (process.env.NODE_ENV != 'production') {
       ClamScan.#instance = new ClamScan(null);
     }
