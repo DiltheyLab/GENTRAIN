@@ -7,13 +7,13 @@ from src.domains.sequence_analysis.controllers.sequence_controller import align_
 
 
 ### Sequence Analyses ###
+
 @app.route(
     "/sequence_analyses/<string:fasta_hash>/result",
     methods=["GET"],
 )
 def get_sequence_analysis_result(fasta_hash: str):
     return get_sequence_analysis_result_action(fasta_hash)
-
 
 @app.route(
     "/sequence_analyses/<string:fasta_hash>/result",

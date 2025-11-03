@@ -1,4 +1,8 @@
-from src.server import redis_connection
+from src.server import redis_connection, sio, queue_viral, queue_bacterial
+from src.domains.sequence_analysis.strategies import (
+    ViralSequenceAnalysis,
+    BacterialSequenceAnalysis,
+)
 
 def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
     """
@@ -61,3 +65,34 @@ def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
     )
     chunk_keys.sort()
     return chunk_keys
+
+def enqueue_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=None):
+    """
+    Instantiate a sequence analysis strategy depending on the type of the selected pathogen and enqueue a job.
+
+    Parameters:
+        socket_id -- Id of the websocket connection
+        pathogen -- Selected pathogen
+        identifier -- Batch identifier for the transmitted batch of a fasta file in case of viral analyses
+            and a pseudonymized sequence identifier in case of bacterial analyses
+        fasta_content -- Complete fasta content containing multiple sequences for viral analyses
+            and a single sequence assembly for bacterial analyses
+        fasta_hash -- Hashed fasta content
+    """
+    strategy = (
+        ViralSequenceAnalysis(
+            pathogen=pathogen,
+            fasta_content=fasta_content,
+            socket_id=socket_id,
+        )
+        if pathogen.type == "viral"
+        else BacterialSequenceAnalysis(
+            pathogen=pathogen,
+            fasta_content=fasta_content,
+            socket_id=socket_id,
+            fasta_hash=fasta_hash,
+        )
+    )
+    strategy.enqueue_analysis(
+        queue_viral if pathogen.type == "viral" else queue_bacterial
+    )
