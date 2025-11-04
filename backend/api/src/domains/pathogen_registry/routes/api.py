@@ -1,4 +1,3 @@
-from prisma.models import pathogen as Pathogen
 from src.app import app
 from src.domains.pathogen_registry.controllers.pathogen_controller import get_all_pathogens_action, get_pathogen_action, \
     download_scheme_action, download_example_data_action

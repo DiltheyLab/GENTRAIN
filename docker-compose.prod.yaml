@@ -18,7 +18,10 @@ services:
       - type: volume
         source: api_data
         target: /api_data
-    entrypoint: "/init-entrypoint.sh"
+      - type: bind
+        source: backend
+        target: /backend
+    entrypoint: "/init.prod.sh"
     networks:
       - caddy
   caddy:

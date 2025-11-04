@@ -1,0 +1,2 @@
+from src.domains.sequence_analysis.resources.bacterial_sequence_analysis import BacterialSequenceAnalysis
+from src.domains.sequence_analysis.resources.viral_sequence_analysis import ViralSequenceAnalysis

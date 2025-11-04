@@ -7,7 +7,7 @@ import { componentLoader } from '../component-loader.js';
 
 export const createRoleResource = () => {
   return {
-    resource: { model: getModelByName('role'), client: prisma },
+    resource: { model: getModelByName('Role'), client: prisma },
     features: [
       loggerFeature({
         componentLoader,

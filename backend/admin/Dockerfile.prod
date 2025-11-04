@@ -42,7 +42,7 @@ COPY --chown=gentrain . .
 RUN npm run build
 
 # Generate Prisma client
-RUN npx prisma generate --generator js_client
+RUN npx prisma generate --generator client
 
 # Delete code from src because only the compiled code is necessary
 RUN rm -rf src
