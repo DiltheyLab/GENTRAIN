@@ -136,6 +136,7 @@ dependencies:
       - bleach==6.2.0
       - blinker==1.8.2
       - click==8.1.7
+      - coverage==7.11.0
       - dnspython==2.7.0
       - email-validator==2.2.0
       - flask==3.0.3
@@ -168,6 +169,7 @@ dependencies:
       - pydantic-core==2.20.1
       - pygments==2.19.2
       - pytest==8.4.2
+      - pytest-cov==7.0.0
       - python-dotenv==1.1.1
       - python-engineio==4.9.1
       - python-socketio==5.11.3

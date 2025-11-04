@@ -14,6 +14,9 @@ def get_project_path():
     """Retrieve the directory path for the project root."""
     return os.path.dirname(get_src_path())
 
+def get_pathogen_scheme_path(pathogen_id):
+    """Retrieve the directory path for a pathogen scheme."""
+    return f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(pathogen_id))}"
 
 def get_script_path(pathogen_type):
     """Retrieve the directory path for a specific sequence analysis script."""
@@ -24,6 +27,3 @@ def get_script_path(pathogen_type):
     raise SequenceAnalysisFailedException
 
 
-def get_pathogen_scheme_path(pathogen_id):
-    """Retrieve the directory path for a pathogen scheme."""
-    return f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(pathogen_id))}"
