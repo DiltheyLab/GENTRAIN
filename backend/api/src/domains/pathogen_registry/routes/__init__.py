@@ -1,0 +1,1 @@
+import src.domains.pathogen_registry.routes.api

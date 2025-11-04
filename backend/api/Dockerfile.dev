@@ -15,9 +15,10 @@ RUN conda env create -f /api/environment.yaml
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
 ENV PATH /opt/conda/envs/gentrain/bin:$PATH
-ENV PYTHONPATH="$PYTHONPATH:/"
+# We need to define the PYTHONPATH as workers are located at /workers and still need access to the src module
+ENV PYTHONPATH="$PYTHONPATH:/api"
 
 # Copy the current directory contents into the container at the working directory
 COPY . .
 
-ENTRYPOINT ["/api/entrypoint-dev.sh"]
+ENTRYPOINT ["/api/entrypoint.dev.sh"]

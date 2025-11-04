@@ -20,7 +20,7 @@ export class GentrainApi {
     // Sequence Analyses
     public async getPersistedSequenceAnalysisResult(sequenceAnalysis: SequenceAnalysisSchema) {
         const sequenceAnalysesResult = await this.getRequest<PersistedSequenceAnalysis>(
-            `${this.url}/sequence_analyses/${sequenceAnalysis.fasta_hash}`
+            `${this.url}/sequence_analyses/${sequenceAnalysis.fasta_hash}/result`
         );
         if (sequenceAnalysesResult === undefined) {
             deleteSequenceAnalysisById(sequenceAnalysis.id);
@@ -30,7 +30,7 @@ export class GentrainApi {
     }
 
     public async deleteSequenceAnalysisResultForHash(fastaHash: string) {
-        const response = await this.deleteRequest(`${this.url}/sequence_analyses/${fastaHash}`);
+        const response = await this.deleteRequest(`${this.url}/sequence_analyses/${fastaHash}/result`);
         return response;
     }
 

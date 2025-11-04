@@ -1,0 +1,2 @@
+from src.domains.sequence_analysis.models.bacterial_sequence_analysis import BacterialSequenceAnalysis
+from src.domains.sequence_analysis.models.viral_sequence_analysis import ViralSequenceAnalysis
