@@ -19,8 +19,15 @@ services:
         source: api_data
         target: /api_data
       - type: bind
-        source: backend
-        target: /backend
+        source: ./backend/prisma
+        target: /prisma
+      - type: bind
+        source: ./backend/api/prisma
+        target: /api
+      - type: bind
+        source: ./backend/admin/prisma
+        target: /admin
+    command: sh /prisma/init.sh
     entrypoint: "/init.prod.sh"
     networks:
       - caddy
