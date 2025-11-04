@@ -43,7 +43,7 @@ export class GentrainWebsocket {
                 total: fastaChunks.length,
                 index: parseInt(index),
             };
-            this.client.emit("sequence_analysis", fastaChunks[index], chunkInformation, pathogenId, fastaHash);
+            this.client.emit("init_sequence_analysis", fastaChunks[index], chunkInformation, pathogenId, fastaHash);
         }
     }
 
