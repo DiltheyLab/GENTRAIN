@@ -12,7 +12,7 @@ from src.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
-from src.config import get_project_path, get_scripts_path
+from src.config import get_project_path, get_script_path, get_pathogen_scheme_path
 from src.domains.sequence_analysis.models.viral_sequence_analysis import (
     ViralSequenceAnalysis as ViralSequenceAnalysisModel,
 )
@@ -75,10 +75,10 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         """Runs the sequence analysing script based on the pathogen."""
         process = subprocess.run(
             [
-                f"{get_scripts_path()}/viral.sh",
+                get_script_path("viral"),
                 self.input,
                 self.output,
-                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                get_pathogen_scheme_path(self.pathogen.id),
             ],
             check=False,
         )

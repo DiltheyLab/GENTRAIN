@@ -1,4 +1,4 @@
-from src.server import redis_connection, sio, queue_viral, queue_bacterial
+from src.server import redis_connection, queue_viral, queue_bacterial
 from src.domains.sequence_analysis.strategies import (
     ViralSequenceAnalysis,
     BacterialSequenceAnalysis,

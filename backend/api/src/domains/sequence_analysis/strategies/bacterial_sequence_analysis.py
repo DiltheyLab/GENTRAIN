@@ -13,7 +13,7 @@ from src.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
-from src.config import get_project_path, get_scripts_path
+from src.config import get_project_path, get_script_path, get_pathogen_scheme_path
 from src.domains.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
@@ -87,11 +87,11 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
         process = Popen(
             [
                 "perl",
-                f"{get_scripts_path()}/bacterial.pl",
+                get_script_path("bacterial"),
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                get_pathogen_scheme_path(self.pathogen.id),
                 "-output",
                 self.output,
             ],
