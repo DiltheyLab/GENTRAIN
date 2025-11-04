@@ -18,14 +18,12 @@ def test_get_pathogen_scheme_path_returns_correct_and_secure_path(pathogen_id):
     pathogen_scheme_path = get_pathogen_scheme_path(pathogen_id)
     assert pathogen_scheme_path == f"/api/data/pathogen_schemes/{secure_filename(str(pathogen_id))}"
 
-def test_get_script_path_returns_viral_sequence_analysis_script_for_type_viral():
-    script_path = get_script_path("viral")
-    assert script_path == f"/api/scripts/viral_sequence_analysis.sh"
+@pytest.mark.parametrize(("pathogen_type", "expected"), [("viral", "/api/scripts/viral_sequence_analysis.sh"), ("bacterial", "/api/scripts/bacterial_sequence_analysis.pl")])
+def test_get_script_path_for_valid_type_input(pathogen_type, expected):
+    script_path = get_script_path(pathogen_type)
+    assert script_path == expected
 
-def test_get_script_path_returns_bacterial_sequence_analysis_script_for_type_bacterial():
-    script_path = get_script_path("bacterial")
-    assert script_path == f"/api/scripts/bacterial_sequence_analysis.pl"
-
-def test_get_script_path_raises_exception_for_invalid_type_input():
+@pytest.mark.parametrize("pathogen_type", [None, 1, ":unknown_type_input:"])
+def test_get_script_path_raises_exception_for_invalid_type_input(pathogen_type):
     with pytest.raises(SequenceAnalysisFailedException):
-        get_script_path(":invalid_type_input:")
+        get_script_path(pathogen_type)
