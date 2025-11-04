@@ -1,0 +1,66 @@
+generator client {
+  provider  = "prisma-client-py"
+  interface = "sync"
+  output    = "/api/prisma"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Pathogen {
+  @@map("pathogens")
+  id                         Int       @id @default(autoincrement())
+  name                       String    @db.VarChar
+  genetic_distance_threshold Int
+  type                       String    @db.VarChar
+  activated                  Boolean   @default(false) @db.Boolean
+  scheme_version             DateTime? @db.Timestamp(6)
+  scheme_size                BigInt?   @db.BigInt
+  example_cases_key          String?   @db.VarChar
+  example_cases_size         Int?
+  example_cases_bucket       String?
+  example_sequences_key      String?   @db.VarChar
+  example_sequences_size     Int?
+  example_sequences_bucket   String?
+  example_contacts_key       String?   @db.VarChar
+  example_contacts_size      Int?
+  example_contacts_bucket    String?
+}
+model Role {
+  @@map("roles")
+  id          Int     @id @default(autoincrement())
+  name        String? @unique @db.VarChar(80)
+  description String? @db.VarChar(255)
+  users       User[]
+}
+model Session {
+  @@map("sessions")
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+model User {
+  @@map("users")
+  id           Int       @id @default(autoincrement())
+  password     String?   @db.VarChar(255)
+  confirmed_at DateTime? @db.Timestamp(6)
+  username     String    @unique @db.VarChar
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @db.Timestamp(6)
+  role         Role      @relation(fields: [roleId], references: [id])
+  roleId       Int
+}
+model Log {
+  @@map("logs")
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recordId    Int
+  recordTitle String?  @db.VarChar(128)
+  difference  Json?    @db.Json
+  action      String   @db.VarChar(128)
+  resource    String   @db.VarChar(128)
+  userId      String   @db.VarChar(128)
+}
