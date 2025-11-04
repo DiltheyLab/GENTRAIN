@@ -25,7 +25,7 @@ import UploadProvider from '../upload-provider.js';
 
 export const createPathogenResource = () => {
   return {
-    resource: { model: getModelByName('Pathogen'), client: prisma },
+    resource: { model: getModelByName('pathogen'), client: prisma },
     options: {
       navigation: null,
       properties: {

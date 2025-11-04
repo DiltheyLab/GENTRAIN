@@ -7,6 +7,8 @@ import sys
 from os import popen
 from subprocess import Popen
 
+from werkzeug.utils import secure_filename
+
 from src.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
@@ -16,8 +18,9 @@ from src.domains.sequence_analysis.strategies.sequence_analysis_strategy import 
     SequenceAnalysisStrategy,
     sio,
 )
-from src.domains.sequence_analysis.resources.bacterial_sequence_analysis import BacterialSequenceAnalysis as BacterialSequenceAnalysisResource
-
+from src.domains.sequence_analysis.models.bacterial_sequence_analysis import (
+    BacterialSequenceAnalysis as BacterialSequenceAnalysisModel,
+)
 
 
 class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
@@ -156,7 +159,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             .replace("\n", "")
             .strip()
         )
-        return BacterialSequenceAnalysisResource(
+        return BacterialSequenceAnalysisModel(
             chewBACCA_version=chewBBACCA_version,
             analysis_schema=str(self.pathogen.scheme_version),
             allele_ids=result["allele_ids"],

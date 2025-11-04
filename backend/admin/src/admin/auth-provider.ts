@@ -1,12 +1,10 @@
-import {
-  BaseRecord, CurrentAdmin, DefaultAuthProvider, DefaultAuthenticatePayload
-} from 'adminjs';
-import { verify } from 'argon2';
-import { AuthenticationContext } from '@adminjs/express';
+import { BaseRecord, CurrentAdmin, DefaultAuthProvider, DefaultAuthenticatePayload } from 'adminjs';
 
 import { SUPERUSER_ROLE } from './constants.js';
 import { componentLoader } from './component-loader.js';
+import { verify } from 'argon2';
 import { prisma } from './db.js';
+import { AuthenticationContext } from '@adminjs/express';
 
 const authenticate = async (
   payload: DefaultAuthenticatePayload,

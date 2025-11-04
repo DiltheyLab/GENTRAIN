@@ -1,11 +1,4 @@
 services:
-  init:
-    image: alpine
-    volumes:
-      - ./backend/prisma:/prisma
-      - ./backend/api/prisma:/api
-      - ./backend/admin/prisma:/admin
-    command: sh /prisma/init.sh
   redis:
     container_name: gentrain-redis
     image: gentrain-redis
@@ -46,12 +39,14 @@ services:
         source: ./backend/api
         target: /api
       - type: bind
+        source: ./backend/admin/prisma
+        target: /api/prisma
+      - type: bind
         source: ./backend/data
         target: /api/data
     depends_on:
       - redis
       - db
-      - init
     env_file: ".env"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
@@ -60,11 +55,13 @@ services:
     image: gentrain-api:latest
     depends_on:
       - redis
-      - init
     volumes:
       - type: bind
         source: ./backend/api
         target: /api
+      - type: bind
+        source: ./backend/admin/prisma
+        target: /api/prisma
       - type: bind
         source: ./backend/data
         target: /api/data

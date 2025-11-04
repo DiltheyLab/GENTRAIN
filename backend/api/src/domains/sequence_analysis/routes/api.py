@@ -1,3 +1,4 @@
+from prisma.models import pathogen as Pathogen
 from flask import request
 from src.app import app
 from src.domains.sequence_analysis.controllers.sequence_analysis_controller import get_sequence_analysis_result_action, \

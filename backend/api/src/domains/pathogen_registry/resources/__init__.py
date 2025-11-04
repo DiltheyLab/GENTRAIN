@@ -1,1 +1,0 @@
-from src.domains.pathogen_registry.resources.pathogen import Pathogen

@@ -1,6 +1,5 @@
 import { ActionContext, ActionRequest, ActionResponse, ResourceOptions } from 'adminjs';
 import { getModelByName } from '@adminjs/prisma';
-
 import { isCurrentUser } from '../auth-provider.js';
 import { prisma } from '../db.js';
 import { validatePasswordChange } from '../hooks/validatePasswordChange.js';
@@ -8,7 +7,7 @@ import { sanitizeUserResponse } from '../hooks/sanitizeUserResponse.js';
 
 export const createPasswordResource = () => {
   return {
-    resource: { model: getModelByName('User'), client: prisma },
+    resource: { model: getModelByName('user'), client: prisma },
     options: {
       id: 'password',
       navigation: null,
@@ -17,22 +16,12 @@ export const createPasswordResource = () => {
         current_password: {
           isRequired: true,
           type: 'password',
-          isVisible: {
-            list: false,
-            filter: false,
-            show: false,
-            edit: true,
-          },
+          isVisible: { list: false, filter: false, show: false, edit: true },
         },
         new_password: {
           isRequired: true,
           type: 'password',
-          isVisible: {
-            list: false,
-            filter: false,
-            show: false,
-            edit: true,
-          },
+          isVisible: { list: false, filter: false, show: false, edit: true },
         },
         repeat_password: {
           isRequired: true,

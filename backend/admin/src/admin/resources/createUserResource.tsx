@@ -9,7 +9,7 @@ import { validateUser } from '../hooks/validateUser.js';
 
 export const createUserResource = () => {
   return {
-    resource: { model: getModelByName('User'), client: prisma },
+    resource: { model: getModelByName('user'), client: prisma },
     features: [
       loggerFeature({
         componentLoader,

@@ -1,5 +1,6 @@
 from Bio import Align
 from flask import Response, jsonify
+from prisma.models import pathogen as Pathogen
 
 def align_sequences_action(data):
     if "sequence_1" not in data or "sequence_2" not in data:
