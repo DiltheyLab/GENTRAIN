@@ -4,7 +4,7 @@ import time
 import pathlib
 import tempfile
 import sys
-from os import popen, environ
+from os import popen
 from subprocess import Popen
 
 from werkzeug.utils import secure_filename
@@ -13,7 +13,7 @@ from src.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
-from src.config import get_project_path
+from src.config import get_project_path, get_scripts_path
 from src.domains.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
@@ -83,7 +83,6 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             f"client:sequence_analysis:{self.fasta_hash}"
         )
         if persisted_sequence_analysis and "result" in persisted_sequence_analysis:
-            print(persisted_sequence_analysis)
             return persisted_sequence_analysis["result"]
         process = Popen(
             [
@@ -92,7 +91,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 "-input",
                 self.input,
                 "-scheme",
-                f"{get_project_path()}/{environ.get('API_DATA_DIRECTORY')}/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
+                f"{get_project_path()}/data/pathogen_schemes/{secure_filename(str(self.pathogen.id))}",
                 "-output",
                 self.output,
             ],
@@ -109,13 +108,13 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                results["allele_hashes"] = tsv_to_json(tsv_file)
+                results["allele_hashes"] = chewbacca_result_tsv_to_dict(tsv_file)
             with open(
                 file=f"{self.output}/results_alleles.tsv",
                 mode="r",
                 encoding="utf-8",
             ) as tsv_file:
-                results["allele_ids"] = tsv_to_json(tsv_file)
+                results["allele_ids"] = chewbacca_result_tsv_to_dict(tsv_file)
 
             # collect parameters for quality classification of the assembley
             results["undeterminable_gen_count"] = sum(
@@ -204,27 +203,16 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             to=f"{self.type}_{self.socket_id}",
         )
 
-
-    def tsv_to_json(file):
-        arr = []
-        a = file.readline()
-
-        # The first line consist of headings of the record
-        # so we will store it in an array and move to
-        # next line in input_file.
-        titles = [t.strip() for t in a.split("\t")]
-        for line in file:
-            d = {}
-            for t, f in zip(titles, line.split("\t")):
-                if t == "FILE":
-                    continue
-                # Convert each row into dictionary with keys as titles
-                d[t] = f.strip()
-
-            # we will use strip to remove '\n'.
-            arr.append(d)
-
-            # we will append all the individual dictionaires into list
-            # and dump into file.
-            result = arr[0]
-        return result
+def chewbacca_result_tsv_to_dict(file):
+    dictionary = {}
+    # The first line consist of headings of the record
+    # so we will store it in an array and move to
+    # next line in input_file.
+    titles = [title.strip() for title in file.readline().split("\t")]
+    for line in file:
+        for col_name, value in zip(titles, line.split("\t")):
+            # Skip the file name value
+            if col_name == "FILE":
+                continue
+            dictionary[col_name] = value.strip()
+    return dictionary

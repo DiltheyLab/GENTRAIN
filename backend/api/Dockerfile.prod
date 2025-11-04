@@ -20,13 +20,11 @@ RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
 RUN chown gentrain:gentrain -R /api
 USER gentrain
 
-RUN rm -rf /api/logs
-RUN mkdir /api/logs
-
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
 ENV PATH /opt/conda/envs/gentrain/bin:$PATH
-ENV PYTHONPATH="$PYTHONPATH:/src"
+# We need to define the PYTHONPATH as workers are located at /workers and still need access to the src module
+ENV PYTHONPATH="$PYTHONPATH:/api"
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=gentrain . .
@@ -34,4 +32,4 @@ COPY --chown=gentrain . .
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-ENTRYPOINT ["/api/entrypoint-prod.sh"]
+ENTRYPOINT ["/api/entrypoint.prod.sh"]

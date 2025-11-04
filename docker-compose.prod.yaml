@@ -132,7 +132,7 @@ services:
       - type: bind
         source: ./backend/admin/prisma
         target: /api/prisma
-    entrypoint: "/api/entrypoint-worker.sh prod"
+    entrypoint: "/api/workers/entrypoint.sh prod"
     links:
       - redis
       - init
