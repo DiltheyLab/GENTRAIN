@@ -41,15 +41,10 @@ COPY --chown=gentrain . .
 # Run the build command to compile TypeScript to JavaScript
 RUN npm run build
 
-# Generate Prisma client
-RUN npx prisma generate --generator js_client
-
-
-
 # Delete code from src because only the compiled code is necessary
 RUN rm -rf src
 
 # Expose the port the app runs on
 EXPOSE 4001
 
-CMD ["supervisord", "-c", "/admin/supervisor.conf", "-n"]
+ENTRYPOINT ["/admin/entrypoint.prod.sh"]
