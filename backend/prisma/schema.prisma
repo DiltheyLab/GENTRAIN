@@ -34,7 +34,7 @@ model Pathogen {
   example_contacts_size      Int?
   example_contacts_bucket    String?
 
-  @@map("pathogens")
+  @@map("pathogen")
 }
 
 model Role {
@@ -43,7 +43,7 @@ model Role {
   description String? @db.VarChar(255)
   users       User[]
 
-  @@map("roles")
+  @@map("role")
 }
 
 model Session {
@@ -52,7 +52,7 @@ model Session {
   expire DateTime @db.Timestamp(6)
 
   @@index([expire], map: "IDX_session_expire")
-  @@map("sessions")
+  @@map("session")
 }
 
 model User {
@@ -65,7 +65,7 @@ model User {
   role         Role      @relation(fields: [roleId], references: [id])
   roleId       Int
 
-  @@map("users")
+  @@map("user")
 }
 
 model Log {
@@ -79,5 +79,5 @@ model Log {
   resource    String   @db.VarChar(128)
   userId      String   @db.VarChar(128)
 
-  @@map("logs")
+  @@map("log")
 }
