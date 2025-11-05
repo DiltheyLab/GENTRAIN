@@ -1,13 +1,14 @@
-import { createLoggerResource, LoggerFeatureOptions, LoggerResourceOptions } from '@adminjs/logger';
-import { prisma } from '../db.js';
+import { createLoggerResource, LoggerFeatureOptions } from '@adminjs/logger';
 import { getModelByName } from '@adminjs/prisma';
+
 import { componentLoader } from '../component-loader.js';
 import { isSuperuser } from '../auth-provider.js';
 import { sanitizeLogResponse } from '../hooks/sanitizeLogResponse.js';
+import { prisma } from '../db.js';
 
 const config = {
   componentLoader,
-  resource: { model: getModelByName('log'), client: prisma },
+  resource: { model: getModelByName('Log'), client: prisma },
   featureOptions: {
     componentLoader,
     propertiesMapping: {

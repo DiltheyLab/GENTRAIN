@@ -13,7 +13,7 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.NODE_ENV === 'production',
     },
-    tableName: 'session',
+    tableName: 'sessions',
     createTableIfMissing: true,
   });
 
@@ -37,6 +37,6 @@ export const expressAuthenticatedRouter = (adminJs: AdminJS, router: Router | nu
       },
       name: 'adminjs',
     },
-    { maxFileSize: 300 * 1024 * 1024 } // allow 300 MB file uploads
+    { maxFileSize: 300 * 1024 * 1024 }, // allow 300 MB file uploads
   );
 };
