@@ -23,7 +23,6 @@ model Pathogen {
   activated                  Boolean   @default(false) @db.Boolean
   scheme_version             DateTime? @db.Timestamp(6)
   scheme_size                BigInt?   @db.BigInt
-  description                String?   @db.VarChar
   example_cases_key          String?   @db.VarChar
   example_cases_size         Int?
   example_cases_bucket       String?
