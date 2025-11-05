@@ -39,9 +39,6 @@ services:
         source: ./backend/api
         target: /api
       - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
-      - type: bind
         source: ./backend/data
         target: /api/data
       - type: bind
@@ -62,9 +59,6 @@ services:
       - type: bind
         source: ./backend/api
         target: /api
-      - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
       - type: bind
         source: ./backend/data
         target: /api/data

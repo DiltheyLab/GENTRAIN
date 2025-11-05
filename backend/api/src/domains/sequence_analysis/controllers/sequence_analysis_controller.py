@@ -1,7 +1,7 @@
 import json
 import re
 from flask import jsonify, abort
-from prisma.models import pathogen as Pathogen
+from prisma.models import Pathogen
 from flask import request
 from flask_socketio import leave_room, join_room
 from src.server import redis_connection, sio

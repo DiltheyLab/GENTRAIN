@@ -167,7 +167,7 @@ docker compose -f docker-compose.dev.yaml build --no-cache
 ```bash
 docker compose -f docker-compose.dev.yaml down -v
 ```
- 
+
 - Portkonflikte beheben:
 
   Achten Sie darauf, dass keine anderen Dienste dieselben Ports verwenden:
