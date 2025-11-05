@@ -23,12 +23,12 @@ async function main() {
   }
 
   // Check if a user with the superuser role already exists
-  const existingAdmin = await prisma.User.findFirst({
+  const existingAdmin = await prisma.user.findFirst({
     where: { roleId: role.id },
   });
 
   if (!existingAdmin) {
-    await prisma.User.create({
+    await prisma.user.create({
       data: {
         username,
         password: await hash(password),

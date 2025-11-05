@@ -1,14 +1,14 @@
 import os
 import zipfile
 from flask import abort, send_file
-from prisma.models import Pathogen
+from prisma.models import pathogen as Pathogen
 import io
 from src.config import get_project_path
-from src.domains.pathogen_registry.resources import Pathogen as PathogenResource
+from src.domains.pathogen_registry.models import Pathogen as PathogenModel
 
 def get_all_pathogens_action():
     pathogens = Pathogen.prisma().find_many()
-    return [PathogenResource(
+    return [PathogenModel(
         id=pathogen.id,
         name=pathogen.name,
         scheme_version=pathogen.scheme_version,
@@ -28,7 +28,7 @@ def get_pathogen_action(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    return PathogenResource(
+    return PathogenModel(
         id=pathogen.id,
         name=pathogen.name,
         scheme_version=pathogen.scheme_version,

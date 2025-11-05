@@ -6,13 +6,16 @@ import tempfile
 from io import StringIO
 from os import popen
 from Bio import SeqIO
+from werkzeug.utils import secure_filename
 import time
 from src.domains.sequence_analysis.exceptions import (
     SequenceAnalysisFailedException,
     GenomicErrorException,
 )
 from src.config import get_project_path, get_script_path, get_pathogen_scheme_path
-from src.domains.sequence_analysis.resources.viral_sequence_analysis import ViralSequenceAnalysis as ViralSequenceAnalysisResource
+from src.domains.sequence_analysis.models.viral_sequence_analysis import (
+    ViralSequenceAnalysis as ViralSequenceAnalysisModel,
+)
 from src.domains.sequence_analysis.strategies.sequence_analysis_strategy import (
     SequenceAnalysisStrategy,
     sio,
@@ -127,7 +130,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
         )
         return (
             result["seqName"],
-            ViralSequenceAnalysisResource(
+            ViralSequenceAnalysisModel(
                 sequence_length=len(self.sequences[result["seqName"]]),
                 nextclade_version=nextclade_version,
                 lineage=(
