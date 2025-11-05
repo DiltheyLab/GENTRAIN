@@ -1,5 +1,6 @@
 import { ActionRequest, ActionContext, ValidationError } from 'adminjs';
 import { hash, verify } from 'argon2';
+
 import { prisma } from '../db.js';
 import { validatePasswordPattern } from '../util/validations.js';
 import { isPOSTMethod } from '../util/helpers.js';
@@ -14,7 +15,7 @@ export const validatePasswordChange = async (request: ActionRequest, context: Ac
     if (!(await verify(user.password, request.payload.current_password))) {
       throw new ValidationError(
         { current_password: { message: 'Current password is wrong' } },
-        { message: 'Password was not changed' }
+        { message: 'Password was not changed' },
       );
     }
 
@@ -26,14 +27,14 @@ export const validatePasswordChange = async (request: ActionRequest, context: Ac
               'Password must contain at least 8 characters, one special character, one lowercase character, one uppercase character and one digit',
           },
         },
-        { message: 'Password was not changed' }
+        { message: 'Password was not changed' },
       );
     }
 
     if (request.payload.new_password !== request.payload.repeat_password) {
       throw new ValidationError(
         { repeat_password: { message: 'Passwords do not match' } },
-        { message: 'Password  was not changed' }
+        { message: 'Password  was not changed' },
       );
     }
     request.payload.updated_at = new Date();

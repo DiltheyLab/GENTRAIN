@@ -14,7 +14,7 @@ services:
       - "5540:5540"
   db:
     container_name: gentrain-db
-    image: postgres
+    image: postgres:17
     user: postgres:postgres
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
@@ -39,11 +39,11 @@ services:
         source: ./backend/api
         target: /api
       - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
-      - type: bind
         source: ./backend/data
         target: /api/data
+      - type: bind
+        source: ./backend/prisma/schema.prisma
+        target: /api/prisma/schema.prisma
     depends_on:
       - redis
       - db
@@ -60,11 +60,11 @@ services:
         source: ./backend/api
         target: /api
       - type: bind
-        source: ./backend/admin/prisma
-        target: /api/prisma
-      - type: bind
         source: ./backend/data
         target: /api/data
+      - type: bind
+        source: ./backend/prisma/schema.prisma
+        target: /api/prisma/schema.prisma
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     entrypoint: "/api/workers/entrypoint.sh dev"

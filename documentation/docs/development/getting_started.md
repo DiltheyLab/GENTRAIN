@@ -57,57 +57,85 @@ Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal a
 
    Erstellen Sie eine `.env` -Datei im Hauptverzeichnis des Repositories
    mit Hilfe der `.env.example`. Sie können diese einfach kopieren und bei Bedarf anpassen.
-
+   ```bash
+   # From ./
+   cp .env.example .env
+   ```
 2. Infrastruktur und API starten
 
    Sie können das bereitgestellte Hilfsskript verwenden, um die Container zu erstellen und den Frontend-Entwicklungsserver zu starten:
 
    ```bash
+   # From ./
    ./dev.sh
    ```
 
-   Alternativ können Sie Docker Compose direkt ausführen:
-
+   Alternativ können Sie die Container mit Docker Compose bauen:
    ```bash
-   docker compose -f docker-compose.dev.yaml up --build
+   # From ./
+   docker compose -f docker-compose.dev.yaml build
+   ```
+   und ausführen:
+   ```bash
+   # From ./
+   docker compose -f docker-compose.dev.yaml up
    ```
 
-3. Frontend (Lokale Entwicklung)
+3. Database Initialisation
+
+   ```bash
+   # From ./backend/prisma
+   npm install
+   npm run dev:prisma-push
+   ```
+
+4. Admin
+
+   Erstellen Sie den adminJS prisma client:
+
+   ```bash
+   # From ./backend/prisma
+   npx prisma generate --generator js_client
+   ```
 
    Führen Sie die folgenden Befehle im Terminal aus:
 
    ```bash
-   cd frontend
+   # From ./backend/admin
+   npm install
+   npm run dev:prisma-seed
+   npm run build
+   npm run dev
+   ```
+
+   Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
+   
+   Beim Seeden wird ein Admin User erstellt, dessen Credentials in der `.env`-Datei angepasst werden können. Sie sollten sich nun mit `admin:secretPassword` im Admin-Panel anmelden können.
+
+5. Frontend
+
+   Führen Sie die folgenden Befehle im Terminal aus:
+
+   ```bash
+   # From ./frontend
    npm install
    npm run dev
    ```
 
    Der Frontend-Entwicklungsserver (Vite) wird gestartet und ist anschließend unter der im Terminal angegebenen Adresse verfügbar, in der Regel unter `http://localhost:3000`.
 
-4. Admin (Lokale Entwicklung)
+6. Dokumentation
 
    Führen Sie die folgenden Befehle im Terminal aus:
 
    ```bash
-   cd backend/admin
-   npm install
-   npm run dev
-   ```
-
-   Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
-
-5. Dokumentation (Lokale Entwicklung)
-
-   Führen Sie die folgenden Befehle im Terminal aus:
-
-   ```bash
-   cd documentation
+   # From ./documentation
    npm install
    npm run start
    ```
 
-   Der Dokumentationsserver verwendet Docusaurus und ist unter der im Terminal angegebenen Adresse verfügbar.
-
+   Der Dokumentationsserver verwendet Docusaurus und ist üblicherweise unter `http://localhost:3001` erreichbar.
+    
 ## Umgebungsvariablen
 
 Die Docker-Compose-Konfiguration verweist auf eine `.env`-Datei im Hauptverzeichnis des Repositories. Stellen Sie sicher, dass diese Datei vorhanden ist, damit alle Dienste korrekt ausgeführt werden können. Eine Beispieldatei `.env.example` ist im Repository enthalten.

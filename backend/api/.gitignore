@@ -8,3 +8,4 @@ redis.conf
 .idea/*
 .idea
 node_modules
+prisma

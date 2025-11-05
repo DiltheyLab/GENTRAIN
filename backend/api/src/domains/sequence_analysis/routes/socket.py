@@ -1,4 +1,3 @@
-from prisma.models import pathogen as Pathogen
 from src.domains.sequence_analysis.controllers.sequence_analysis_controller import (
     init_sequence_analysis_action,
     join_sequence_analysis_room_action,
