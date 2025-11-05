@@ -72,7 +72,35 @@ Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal a
    docker compose -f docker-compose.dev.yaml up --build
    ```
 
-3. Frontend (Lokale Entwicklung)
+3. Database Initialisation
+
+   ```bash
+   cd backend/prisma
+   npm install
+   npm run dev:prisma-push
+   ```
+
+4. Admin (Lokale Entwicklung)
+
+   Erstellen Sie den adminJS prisma client:
+
+   ```bash
+   cd backend/prisma
+   npx prisma generate --generator js_client
+   ```
+
+   Führen Sie die folgenden Befehle im Terminal aus:
+
+   ```bash
+   cd backend/admin
+   npm install
+   npm run dev:prisma-seed
+   npm run dev
+   ```
+
+   Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
+
+5. Frontend (Lokale Entwicklung)
 
    Führen Sie die folgenden Befehle im Terminal aus:
 
@@ -84,19 +112,7 @@ Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal a
 
    Der Frontend-Entwicklungsserver (Vite) wird gestartet und ist anschließend unter der im Terminal angegebenen Adresse verfügbar, in der Regel unter `http://localhost:3000`.
 
-4. Admin (Lokale Entwicklung)
-
-   Führen Sie die folgenden Befehle im Terminal aus:
-
-   ```bash
-   cd backend/admin
-   npm install
-   npm run dev
-   ```
-
-   Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
-
-5. Dokumentation (Lokale Entwicklung)
+6. Dokumentation (Lokale Entwicklung)
 
    Führen Sie die folgenden Befehle im Terminal aus:
 

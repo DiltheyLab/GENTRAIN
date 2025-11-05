@@ -8,12 +8,6 @@
     "lint": "eslint \"src\"",
     "start": "node dist/app.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon\"",
-    "dev:prisma-pull": "npm run with-env -- npx prisma db pull",
-    "dev:prisma-init-migrate": "npm run with-env -- npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
-    "dev:prisma-resolve": "npm run with-env -- npx prisma migrate resolve --applied 0_init",
-    "dev:prisma-migrate": "npm run with-env -- npx prisma migrate dev --name",
-    "dev:prisma-push": "npm run with-env -- npx prisma db push",
-    "dev:prisma-studio": "npm run with-env -- npx prisma studio",
     "dev:prisma-seed": "npm run with-env -- npx prisma db seed",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -68,7 +62,6 @@
   },
   "name": "admin",
   "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "node prisma/seed.js"
+    "seed": "node seed.js"
   }
 }
