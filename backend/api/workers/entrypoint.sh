@@ -2,7 +2,6 @@
 rm -rf /api/temp_data/
 rm -rf /api/logs/
 mkdir -p /api/logs/
-prisma generate --generator python_client
 if [[ $1 == "dev" ]]; then
   supervisord -c /api/workers/supervisor/dev.conf
 fi

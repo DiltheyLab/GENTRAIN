@@ -14,7 +14,7 @@ services:
       - "5540:5540"
   db:
     container_name: gentrain-db
-    image: postgres
+    image: postgres:17
     user: postgres:postgres
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
