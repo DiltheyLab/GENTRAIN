@@ -4,8 +4,8 @@ services:
     image: caddy:latest
     volumes:
       - type: bind
-        source: ./init-entrypoint.sh
-        target: /init-entrypoint.sh
+        source: ./init.prod.sh
+        target: /init.prod.sh
       - type: volume
         source: caddy_data
         target: /data
