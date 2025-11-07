@@ -144,7 +144,7 @@ jobs:
           script: |
             cd ${{ vars.GENTRAIN_DIR }}
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S mkdir -p db_dumps
-            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S ls -1t db_dumps/ | tail -n +5 | xargs -I {} rm -f db_dumps/{}
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S bash -c 'ls -1t db_dumps/ | tail -n +5 | xargs -I {} rm -f db_dumps/{}'
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker exec -t gentrain-db pg_dump -d ${{vars.DATABASE_NAME}} -U ${{vars.DATABASE_USER}} > db_dumps/dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
