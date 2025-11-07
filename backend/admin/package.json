@@ -8,7 +8,8 @@
     "lint": "eslint \"src\"",
     "start": "node dist/app.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon\"",
-    "dev:prisma-seed": "npm run with-env -- npx prisma db seed",
+    "prisma:seed": "npm run with-env -- npx prisma db seed",
+    "prisma:deploy-migration": "npm run with-env -- npx prisma migrate deploy",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {

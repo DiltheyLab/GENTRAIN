@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:prisma-pull": "npm run with-env -- npx prisma db pull",
-    "dev:prisma-init-migrate": "npm run with-env -- npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
-    "dev:prisma-resolve": "npm run with-env -- npx prisma migrate resolve --applied 0_init",
-    "dev:prisma-migrate": "npm run with-env -- npx prisma migrate dev --skip-generate --name",
-    "dev:prisma-push": "npm run with-env -- npx prisma db push --skip-generate",
-    "dev:prisma-studio": "npm run with-env -- npx prisma studio",
-    "dev:prisma-seed": "npm run with-env -- npx prisma db seed",
+    "prisma:db-pull": "npm run with-env -- npx prisma db pull",
+    "prisma:db-push": "npm run with-env -- npx prisma db push --skip-generate",
+    "prisma:init-migration": "npm run with-env -- npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
+    "prisma:resolve-migration": "npm run with-env -- npx prisma migrate resolve --applied 0_init",
+    "prisma:migrate": "npm run with-env -- npx prisma migrate dev --skip-generate --name",
+    "prisma:make-migration": "npm run with-env -- npx prisma migrate dev --skip-generate --create-only --name",
+    "prisma:studio": "npm run with-env -- npx prisma studio",
+    "prisma:deploy-migration": "npm run with-env -- npx prisma migrate deploy",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {

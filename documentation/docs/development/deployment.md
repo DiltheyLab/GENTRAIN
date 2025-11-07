@@ -105,8 +105,19 @@ Dieser Workflow automatisiert:
 1. Das Bauen von Frontend und Dokumentation
 2. Die SSH-Verbindung zum Produktionsserver
 3. Das Erzeugen der `.env`-Datei aus GitHub Variablen und Secrets
-4. Das sichere Neustarten der Docker-Container
-5. Slack-Benachrichtigungen bei Erfolg oder Fehler
+4. Erstellung eines Datenbank-Backups (es werden nur die letzten 5 Datenbank-Backups gespeichert)
+5. Das sichere Neustarten der Docker-Container
+6. Slack-Benachrichtigungen bei Erfolg oder Fehler
+
+Das erstellte Datenbank-Backup kann wiefolgt angewendet werden:
+```bash
+docker exec -i gentrain-db psql -U gentrain -d test < db_dumps/<db_dump>.sql
+```
+
+Es kann jederzeit ein manuelles Datenbank-Backup erstellt werden:
+```bash
+docker exec -t gentrain-db pg_dump -d gentrain -U gentrain > db_dumps/`date +%Y-%m-%d"_"%H_%M_%S`.sql
+```
 
 Organisationen können denselben Workflow nutzen, indem sie:
 

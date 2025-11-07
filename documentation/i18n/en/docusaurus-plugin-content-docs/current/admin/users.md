@@ -59,7 +59,7 @@ to create an initial superuser.
 Run the script in the `backend/admin` directory with:
 
 ```bash
-npm run dev:prisma-seed
+npm run prisma:seed
 ```
 
 Before running, adjust the following environment variables in your `.env` file:
