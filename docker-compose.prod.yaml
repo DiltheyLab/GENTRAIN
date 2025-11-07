@@ -76,7 +76,7 @@ services:
       - caddy
   db:
     container_name: gentrain-db
-    image: postgres
+    image: postgres:17
     user: postgres:postgres
     hostname: localhost
     expose:
