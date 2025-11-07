@@ -150,7 +150,7 @@ services:
         target: /admin/data
       - type: bind
         source: ./backend/prisma/schema.prisma
-        target: /admin/prisma/schema.prisma
+        target: /admin/schema.prisma
     expose:
       - "4001"
     depends_on:
