@@ -32,7 +32,6 @@ model Pathogen {
   example_contacts_key       String?   @db.VarChar
   example_contacts_size      Int?
   example_contacts_bucket    String?
-  test                       Boolean   @default(false) @db.Boolean
 
   @@map("pathogens")
 }
