@@ -1,4 +1,4 @@
 #!/bin/sh
 npx prisma generate --generator js_client
-npm run prisma:deploy-migration
+npx prisma migrate deploy
 supervisord -c /admin/supervisor.conf -n
