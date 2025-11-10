@@ -83,7 +83,7 @@ In diesem Abschnitt erfahren Sie Schritt für Schritt wie sie GENTRAIN lokal aus
    ```bash
    # From ./backend/prisma
    npm install
-   npm run dev:prisma-push
+   npm run prisma:db-push
    ```
 
 4. Admin
@@ -100,7 +100,7 @@ In diesem Abschnitt erfahren Sie Schritt für Schritt wie sie GENTRAIN lokal aus
    ```bash
    # From ./backend/admin
    npm install
-   npm run dev:prisma-seed
+   npm run prisma:seed
    npm run build
    npm run dev
    ```

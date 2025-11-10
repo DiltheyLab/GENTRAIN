@@ -5,6 +5,7 @@ import os from 'os';
 import path from 'path';
 import { ClamScan } from '../clamscan.js';
 import { Readable } from 'stream';
+import { validateFilename } from '../util/validations.js';
 
 export abstract class SchemeValidator {
   protected zip: AdmZip;
@@ -69,9 +70,10 @@ export abstract class SchemeValidator {
       if (!entry.isDirectory) {
         // Remove the root folder prefix from the path
         const fileName = rootFolderName ? entry.entryName.replace(`${rootFolderName}/`, '') : entry.entryName;
-        if (
-          !this.getValidFileNames().includes(fileName)
-          && !this.getValidFileExtensions().includes(fileName.split('.').pop())
+        // Filename must be in list of allowed filenames or 
+        // have an allowed extension and valid filename pattern
+        if (!this.getValidFileNames().includes(fileName)
+          && !(this.getValidFileExtensions().includes(fileName.split('.').pop()) && validateFilename(fileName))
         ) {
           this.throwException(`Uploaded ZIP archive contains invalid file: ${fileName}`);
         }
