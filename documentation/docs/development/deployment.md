@@ -109,15 +109,21 @@ Dieser Workflow automatisiert:
 5. Das sichere Neustarten der Docker-Container
 6. Slack-Benachrichtigungen bei Erfolg oder Fehler
 
+::: Datenbank-Backup
+
 Das erstellte Datenbank-Backup kann wiefolgt angewendet werden:
+
 ```bash
 docker exec -i gentrain-db psql -U gentrain -d test < db_dumps/<db_dump>.sql
 ```
 
 Es kann jederzeit ein manuelles Datenbank-Backup erstellt werden:
+
 ```bash
 docker exec -t gentrain-db pg_dump -d gentrain -U gentrain > db_dumps/`date +%Y-%m-%d"_"%H_%M_%S`.sql
 ```
+
+:::
 
 Organisationen können denselben Workflow nutzen, indem sie:
 
