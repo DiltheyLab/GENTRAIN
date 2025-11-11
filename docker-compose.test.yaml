@@ -189,6 +189,24 @@ services:
     networks:
       - caddy
 
+  e2e-tests:
+    container_name: gentrain-e2e-tests
+    image: cypress/included:15.6.0
+    working_dir: /e2e
+    volumes:
+      - type: bind
+        source: ./e2e-tests
+        target: /e2e
+      - /e2e/node_modules # ignore node modules
+    networks:
+      - caddy
+    extra_hosts:
+      - "app.localhost:host-gateway"
+      - "admin.localhost:host-gateway"
+      - "api.localhost:host-gateway"
+    entrypoint: ""
+    command: ["tail", "-f", "/dev/null"]
+
 volumes:
   caddy_data:
   caddy_config:
