@@ -8,4 +8,5 @@ redis.conf
 .idea/*
 .idea
 node_modules
-prisma
+prisma/*
+!prisma/.gitkeep
