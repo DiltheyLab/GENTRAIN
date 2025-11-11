@@ -24,25 +24,28 @@ api.localhost {
         import common_security_headers
 
         # ---- CORS: Erlaubte Origins ----
-        @from_frontend header Origin http://app.localhost
-        @from_admin header Origin http://admin.localhost
+        @from_frontend header Origin https://app.localhost
+        @from_admin header Origin https://admin.localhost
 
         header @from_frontend {
-                Access-Control-Allow-Origin http://app.localhost
+                Access-Control-Allow-Origin https://app.localhost
                 Access-Control-Allow-Methods GET,POST,OPTIONS,HEAD,PATCH,PUT,DELETE
                 Access-Control-Allow-Headers User-Agent,Content-Type,Authorization
                 Access-Control-Allow-Credentials true
                 Access-Control-Max-Age 86400
                 Content-Security-Policy "default-src 'none'; frame-ancestors 'none';"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
         }
 
         header @from_admin {
-                Access-Control-Allow-Origin http://admin.localhost
+                Access-Control-Allow-Origin https://admin.localhost
                 Access-Control-Allow-Methods GET,POST,OPTIONS,HEAD,PATCH,PUT,DELETE
                 Access-Control-Allow-Headers User-Agent,Content-Type,Authorization
                 Access-Control-Allow-Credentials true
                 Access-Control-Max-Age 86400
                 Content-Security-Policy "default-src 'none'; frame-ancestors 'none';"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains"
         }
 }
 
@@ -63,7 +66,7 @@ admin.localhost {
         import common_security_headers
 
         header {
-                Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; connect-src 'self' http://api.localhost data:;"
+                Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; connect-src 'self' https://api.localhost data:;"
                 Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(), xr-spatial-tracking=(), clipboard-read=(), clipboard-write=(), gamepad=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), unload=()"
         }
 
@@ -89,6 +92,8 @@ app.localhost {
                 Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(), xr-spatial-tracking=(), clipboard-read=(), clipboard-write=(), gamepad=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), unload=(self)"
                 Content-Security-Policy "default-src 'self'; connect-src 'self' https://api.localhost wss://api.localhost data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; upgrade-insecure-requests; img-src 'self' data:; script-src 'self' 'unsafe-eval'"
                 Referrer-Policy "strict-origin-when-cross-origin"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
         }
 }
 
