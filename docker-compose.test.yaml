@@ -12,9 +12,6 @@ services:
       - type: volume
         source: caddy_config
         target: /config
-      - type: bind
-        source: ./caddy/certs
-        target: /certs
       - type: volume
         source: api_data
         target: /api_data
@@ -25,8 +22,8 @@ services:
     container_name: gentrain-caddy
     # Use the caddy:latest image from Docker Hub
     image: caddy:latest
-    # Use nobody user
-    user: 65534:65534
+    # Don't use nobody user in test to allow caddy to install the root cert in the container and enable https/wss
+    # user: 65534:65534
     # Restart policy: restart the container unless explicitly stopped
     restart: unless-stopped
     # ports for Caddy
@@ -45,9 +42,6 @@ services:
       - type: volume
         source: docs_files
         target: /srv/documentation
-      - type: bind
-        source: ./caddy/certs
-        target: /certs
       - type: volume
         source: caddy_data
         target: /data
@@ -150,7 +144,10 @@ services:
         target: /admin/data
       - type: bind
         source: ./backend/prisma/schema.prisma
-        target: /admin/prisma/schema.prisma
+        target: /admin/schema.prisma
+      - type: bind
+        source: ./backend/prisma/migrations
+        target: /admin/migrations
     expose:
       - "4001"
     depends_on:
@@ -159,6 +156,7 @@ services:
     env_file: ".env.test"
     environment:
       - DATABASE_URL=${DATABASE_DRIVER}://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable
+      - RUN_SEED=true
     networks:
       - caddy
   frontend:
