@@ -1,14 +1,16 @@
 import datetime
 import io
+import os
 
 import pytest
 from flask import Flask
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, UnprocessableEntity
 
 from prisma.models import Pathogen
 from src.domains.pathogen_registry.controllers.pathogen_controller import get_pathogen_action, get_all_pathogens_action, \
-    download_scheme_action
+    download_scheme_action, download_example_data_action
 from src.domains.pathogen_registry.resources import Pathogen as PathogenResource
+from src.domains.pathogen_registry.services.pathogen_service import get_example_data_filename
 
 
 ### basic fixtures ###
@@ -137,11 +139,10 @@ def test_download_scheme_action_returns_not_found_exception_if_pathogen_does_not
 
 def test_download_scheme_action_returns_not_found_exception_if_scheme_directory_does_not_exist(app, mocker,
                                                                                                make_pathogen_resource):
-    pathogen = make_pathogen_resource()
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
-    mock_pathogen_prisma.return_value.find_unique.return_value = pathogen
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
     mock_isdir = mocker.patch("os.path.isdir", return_value=False)
     with pytest.raises(NotFound):
         download_scheme_action(0)
@@ -149,30 +150,152 @@ def test_download_scheme_action_returns_not_found_exception_if_scheme_directory_
     mock_isdir.assert_called_once()
 
 
-def test_download_scheme_action_returns_success_status_if_pathogen_and_scheme_directory_exists(app,
-                                                                                                    mock_success_setup_for_download_schema_action):
+def test_download_scheme_action_returns_success_status_if_pathogen_and_scheme_directory_exist(app,
+                                                                                              mock_success_setup_for_download_schema_action):
     with app.test_request_context():
-        response = download_scheme_action(0)
+        response = download_scheme_action(mock_success_setup_for_download_schema_action["pathogen"].id)
         assert response.status_code == 200
     mock_success_setup_for_download_schema_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
     mock_success_setup_for_download_schema_action["isdir"].assert_called_once()
     mock_success_setup_for_download_schema_action["create_zip_buffer_from_scheme_directory"].assert_called_once()
 
-def test_download_scheme_action_response_has_correct_content_disposition_header_if_pathogen_and_scheme_directory_exists(app,
-                                                                                                    mock_success_setup_for_download_schema_action):
+
+def test_download_scheme_action_response_has_correct_content_disposition_header_if_pathogen_and_scheme_directory_exist(
+        app,
+        mock_success_setup_for_download_schema_action):
     with app.test_request_context():
-        response = download_scheme_action(0)
-        assert response.headers.get('Content-Disposition') == f"attachment; filename=\"{mock_success_setup_for_download_schema_action['pathogen'].name}_scheme.zip\""
+        response = download_scheme_action(mock_success_setup_for_download_schema_action["pathogen"].id)
+        # replace quotes in filename as flasks send_file method might add quotes in the presence of special chars
+        assert response.headers.get(
+            'Content-Disposition').replace("\"",
+                                           "") == f"attachment; filename={mock_success_setup_for_download_schema_action['pathogen'].name}_scheme.zip"
     mock_success_setup_for_download_schema_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
     mock_success_setup_for_download_schema_action["isdir"].assert_called_once()
     mock_success_setup_for_download_schema_action["create_zip_buffer_from_scheme_directory"].assert_called_once()
 
-def test_download_scheme_action_response_has_correct_content_type_if_pathogen_and_scheme_directory_exists(app,
-                                                                                                    mock_success_setup_for_download_schema_action):
+
+def test_download_scheme_action_response_has_correct_content_type_if_pathogen_and_scheme_directory_exist(app,
+                                                                                                         mock_success_setup_for_download_schema_action):
     with app.test_request_context():
-        response = download_scheme_action(0)
+        response = download_scheme_action(mock_success_setup_for_download_schema_action["pathogen"].id)
         assert response.headers.get('Content-Type') == "application/zip"
     mock_success_setup_for_download_schema_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
     mock_success_setup_for_download_schema_action["isdir"].assert_called_once()
     mock_success_setup_for_download_schema_action["create_zip_buffer_from_scheme_directory"].assert_called_once()
 
+
+### download_example_data_action ###
+
+@pytest.fixture
+def mock_success_setup_for_download_example_data_action(mocker, make_pathogen_resource, request):
+    pathogen_type = getattr(request, "param", None)
+    pathogen = make_pathogen_resource(pathogen_id=0, name="sample", pathogen_type=pathogen_type or "viral")
+    mock_pathogen_prisma = mocker.patch(
+        "prisma.models.Pathogen.prisma"
+    )
+    mock_pathogen_prisma.return_value.find_unique.return_value = pathogen
+    mock_exists = mocker.patch("os.path.exists", return_value=True)
+    mock_get_project_path = mocker.patch(
+        "src.domains.pathogen_registry.controllers.pathogen_controller.get_project_path", return_value=f"/api/test")
+
+    return {
+        "pathogen": pathogen,
+        "pathogen_prisma": mock_pathogen_prisma,
+        "exists": mock_exists,
+        "get_project_path": mock_get_project_path
+    }
+
+@pytest.mark.parametrize("example_data_type", ["case", "contact", "sequence"])
+def test_download_example_data_action_returns_not_found_exception_if_pathogen_does_not_exist(mocker, example_data_type):
+    mock_pathogen_prisma = mocker.patch(
+        "prisma.models.Pathogen.prisma"
+    )
+    mock_pathogen_prisma.return_value.find_unique.return_value = None
+    with pytest.raises(NotFound):
+        download_example_data_action(0, example_data_type)
+    mock_pathogen_prisma.return_value.find_unique.assert_called_once()
+
+
+def test_download_example_data_action_returns_not_found_exception_if_pathogen_type_is_invalid(mocker,
+                                                                                              make_pathogen_resource):
+    mock_pathogen_prisma = mocker.patch(
+        "prisma.models.Pathogen.prisma"
+    )
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
+    with pytest.raises(UnprocessableEntity):
+        download_example_data_action(0, ":invalid_type:")
+    mock_pathogen_prisma.return_value.find_unique.assert_called_once()
+
+
+@pytest.mark.parametrize("example_data_type", ["case", "contact", "sequence"])
+def test_download_example_data_action_returns_not_found_exception_if_file_does_not_exist(mocker, mock_success_setup_for_download_example_data_action, make_pathogen_resource, example_data_type):
+    mock_pathogen_prisma = mocker.patch(
+        "prisma.models.Pathogen.prisma"
+    )
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
+    mock_exists = mocker.patch("os.path.exists", return_value=False)
+
+    with pytest.raises(NotFound):
+        download_example_data_action(0, example_data_type)
+    mock_pathogen_prisma.return_value.find_unique.assert_called_once()
+    mock_exists.assert_called_once()
+
+@pytest.mark.parametrize("mock_success_setup_for_download_example_data_action, example_data_type",
+                         [("viral", "case"), ("viral", "contact"), ("viral", "sequence"), ("bacterial", "case"),
+                          ("bacterial", "contact"), ("bacterial", "sequence")],
+                         indirect=["mock_success_setup_for_download_example_data_action"]
+                         )
+def test_download_scheme_action_returns_success_status_if_pathogen_and_file_exist(app,
+                                                                                  mock_success_setup_for_download_example_data_action,
+                                                                                  example_data_type):
+    with app.test_request_context():
+        response = download_example_data_action(mock_success_setup_for_download_example_data_action["pathogen"].id,
+                                                example_data_type)
+        assert response.status_code == 200
+
+    mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+    mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
+    mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()
+
+
+@pytest.mark.parametrize("mock_success_setup_for_download_example_data_action, example_data_type",
+                         [("viral", "case"), ("viral", "contact"), ("viral", "sequence"), ("bacterial", "case"),
+                          ("bacterial", "contact"), ("bacterial", "sequence")],
+                         indirect=["mock_success_setup_for_download_example_data_action"]
+                         )
+def test_download_scheme_action_response_has_correct_content_disposition_header_if_pathogen_and_file_exist(app,
+                                                                                                           mock_success_setup_for_download_example_data_action,
+                                                                                                           example_data_type):
+    filename = get_example_data_filename(mock_success_setup_for_download_example_data_action["pathogen"],
+                                         example_data_type)
+    with app.test_request_context():
+        response = download_example_data_action(mock_success_setup_for_download_example_data_action["pathogen"].id,
+                                                example_data_type)
+        # replace quotes in filename as flasks send_file method might add quotes in the presence of special chars
+        assert response.headers.get(
+            'Content-Disposition').replace("\"", "") == f"attachment; filename={filename}"
+    mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+    mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
+    mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()
+
+
+@pytest.mark.parametrize("mock_success_setup_for_download_example_data_action, example_data_type, correct_content_type",
+                         [("viral", "case", "text/csv; charset=utf-8"), ("viral", "contact", "text/csv; charset=utf-8"),
+                          ("viral", "sequence", "application/octet-stream"),
+                          ("bacterial", "case", "text/csv; charset=utf-8"),
+                          ("bacterial", "contact", "text/csv; charset=utf-8"),
+                          ("bacterial", "sequence", "application/zip")],
+                         indirect=["mock_success_setup_for_download_example_data_action"]
+                         )
+def test_download_scheme_action_response_has_correct_content_type_if_pathogen_and_file_exist(app,
+                                                                                             mock_success_setup_for_download_example_data_action,
+                                                                                             example_data_type,
+                                                                                             correct_content_type):
+    with app.test_request_context():
+        response = download_example_data_action(mock_success_setup_for_download_example_data_action["pathogen"].id,
+                                                example_data_type)
+        # replace quotes in filename as flasks send_file method might add quotes in the presence of special chars
+        assert response.headers.get('Content-Type') == correct_content_type
+    mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+    mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
+    mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()

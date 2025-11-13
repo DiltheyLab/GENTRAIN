@@ -1,9 +1,11 @@
 import os
 from flask import abort, send_file
+
 from prisma.models import Pathogen
 from src.config import get_project_path
 from src.domains.pathogen_registry.resources import Pathogen as PathogenResource
-from src.domains.pathogen_registry.services.pathogen_service import create_zip_buffer_from_scheme_directory
+from src.domains.pathogen_registry.services.pathogen_service import create_zip_buffer_from_scheme_directory, \
+    get_example_data_filename
 
 
 def get_all_pathogens_action():
@@ -62,7 +64,7 @@ def download_scheme_action(pathogen_id: int):
     )
 
 
-def download_example_data_action(pathogen_id: str, type: str):
+def download_example_data_action(pathogen_id: int, example_data_type: str):
     pathogen = Pathogen.prisma().find_unique(
         where={
             "id": pathogen_id,
@@ -72,18 +74,7 @@ def download_example_data_action(pathogen_id: str, type: str):
         abort(404)
 
     # Handle request file type based on query parameters and pathogen type
-    filename = pathogen.name.lower().replace(' ', '-').replace(r'[^\w\-]', '-')
-
-    if type == "case":
-        filename += "_falldaten.csv"
-    if type == "sequence" and pathogen.type == "viral":
-        filename += "_sequenzdaten.fasta"
-    if type == "sequence" and pathogen.type == "bacterial":
-        filename += "_sequenzdaten.zip"
-    if type == "contact":
-        filename += "_kontaktdaten.csv"
-    if not filename:
-        abort(422)
+    filename = get_example_data_filename(pathogen, example_data_type)
 
     file_path = f"{get_project_path()}/data/pathogen_example_data/{str(pathogen_id)}/{filename}"
     if not os.path.exists(file_path):
