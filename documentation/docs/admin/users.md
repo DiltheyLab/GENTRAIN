@@ -61,7 +61,7 @@ zur Verfügung, mit dem ein initialer Superuser angelegt werden kann.
 Führen Sie das Skript im Verzeichnis `backend/admin` mit folgendem Befehl aus:
 
 ```bash
-npm run dev:prisma-seed
+npm run prisma:seed
 ```
 
 Passen Sie zuvor in der .env-Datei die Umgebungsvariablen an:

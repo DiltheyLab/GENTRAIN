@@ -12,7 +12,7 @@ In dieser Anleitung erfahren Sie, wie Sie eine lokale Entwicklungsumgebung für 
 Das Projekt besteht aus vier Hauptkomponenten:
 
 - **frontend** — Benutzeroberfläche (React + Vite)
-- **admin** — Admin-Panel und Prisma-Setup (Typescript)
+- **admin** — Admin-Panel (Typescript)
 - **api** — Python-API (Flask/Gunicorn über Conda)
 - **documentation** — Docusaurus Dokumentation (Typescript/React/MDX)
 
@@ -36,7 +36,8 @@ Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Programme installiert
 ## Verzeichnisstruktur (Überblick)
 
 - `frontend/` — React-Anwendung
-- `backend/admin/` — Admin-Oberfläche und Prisma-Tools
+- `backend/admin/` — Admin-Oberfläche
+- `backend/prisma/` — Prisma Tools für api und admin
 - `backend/api/` — Python-API und Worker
 - `backend/redis/` — Dockerfile und Konfiguration für die Redis-Instanz.
 - `backend/data/` — Statische Dateien wie Pathogen Schemata und Beispieldatensätze.
@@ -50,43 +51,39 @@ Neben den oben genannten Hauptverzeichnissen enthält das Repository auch weiter
 
 ## Schnellstart (Kompletter Stack mit Docker Compose)
 
-Dieses Setup startet Redis, PostgreSQL und die API in Containern.
-Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal ausgeführt werden, um schnellere Ladezeiten zu ermöglichen.
+In diesem Abschnitt erfahren Sie Schritt für Schritt wie sie GENTRAIN lokal ausführen können.
 
 1. Umgebungsvariablen anlegen
 
-   Erstellen Sie eine `.env` -Datei im Hauptverzeichnis des Repositories
-   mit Hilfe der `.env.example`. Sie können diese einfach kopieren und bei Bedarf anpassen.
+   Erstellen Sie eine `.env` -Datei im Hauptverzeichnis des Repositories mit Hilfe der `.env.example`. Sie können diese einfach kopieren und bei Bedarf anpassen.
+
    ```bash
    # From ./
    cp .env.example .env
    ```
+
 2. Infrastruktur und API starten
 
-   Sie können das bereitgestellte Hilfsskript verwenden, um die Container zu erstellen und den Frontend-Entwicklungsserver zu starten:
-
-   ```bash
-   # From ./
-   ./dev.sh
-   ```
-
-   Alternativ können Sie die Container mit Docker Compose bauen:
    ```bash
    # From ./
    docker compose -f docker-compose.dev.yaml build
    ```
+
    und ausführen:
+
    ```bash
    # From ./
    docker compose -f docker-compose.dev.yaml up
    ```
 
-3. Database Initialisation
+3. Datenbank-Initialisierung
+
+   Erstellen Sie die Datenbanktabellen anhand des `prisma`-Schemas.
 
    ```bash
    # From ./backend/prisma
    npm install
-   npm run dev:prisma-push
+   npm run prisma:db-push
    ```
 
 4. Admin
@@ -98,18 +95,18 @@ Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal a
    npx prisma generate --generator js_client
    ```
 
-   Führen Sie die folgenden Befehle im Terminal aus:
+   Führen Sie die folgenden Befehle im Terminal aus, um die Datenbank zu seeden und den Entwicklungsserver zu starten:
 
    ```bash
    # From ./backend/admin
    npm install
-   npm run dev:prisma-seed
+   npm run prisma:seed
    npm run build
    npm run dev
    ```
 
    Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
-   
+
    Beim Seeden wird ein Admin User erstellt, dessen Credentials in der `.env`-Datei angepasst werden können. Sie sollten sich nun mit `admin:secretPassword` im Admin-Panel anmelden können.
 
 5. Frontend
@@ -135,7 +132,7 @@ Das Frontend, die Dokumentation und das Admin-Tool können anschließend lokal a
    ```
 
    Der Dokumentationsserver verwendet Docusaurus und ist üblicherweise unter `http://localhost:3001` erreichbar.
-    
+
 ## Umgebungsvariablen
 
 Die Docker-Compose-Konfiguration verweist auf eine `.env`-Datei im Hauptverzeichnis des Repositories. Stellen Sie sicher, dass diese Datei vorhanden ist, damit alle Dienste korrekt ausgeführt werden können. Eine Beispieldatei `.env.example` ist im Repository enthalten.

@@ -105,8 +105,25 @@ This workflow automates:
 1. Building the **frontend** and **documentation**
 2. Connecting via SSH to the remote production server
 3. Regenerating `.env` from GitHub variables and secrets
-4. Rebuilding and restarting Docker containers safely
-5. Sending Slack notifications on success or failure
+4. Creating a database backup (only the last 5 backups will be saved)
+5. Rebuilding and restarting Docker containers safely
+6. Sending Slack notifications on success or failure
+
+:::info Database Backup
+
+The created database backup can be used as follows:
+
+```bash
+docker exec -i gentrain-db psql -U gentrain -d test < db_dumps/<db_dump>.sql
+```
+
+You can create a manuell Backup like this:
+
+```bash
+docker exec -t gentrain-db pg_dump -d gentrain -U gentrain > db_dumps/`date +%Y-%m-%d"_"%H_%M_%S`.sql
+```
+
+:::
 
 This means organizations can reuse the same pipeline by:
 

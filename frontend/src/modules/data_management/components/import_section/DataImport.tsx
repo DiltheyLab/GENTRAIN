@@ -20,7 +20,6 @@ import { CaseImport, CaseSchema } from "@/modules/core/models/cases";
 import { ContactImport, ContactSchema } from "@/modules/core/models/contacts";
 import { useState } from "react";
 import { renderHtmlFromTranslation } from "@/modules/core/helpers/translations";
-import { downloadFileFromUrl } from "@/modules/core/helpers/files";
 import { FileDown } from "lucide-react";
 import { FailedCaseImportDialog } from "./FailedCaseImportDialog";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
@@ -173,19 +172,12 @@ export const DataImport = ({
                 {renderDropzone()}
                 {children ? renderDataSelection() : null}
             </div>
-            {enableExampleDataDownload && (
-                <Button
-                    variant="link"
-                    className="hover:text-primary hover:no-underline"
-                    onClick={() =>
-                        downloadFileFromUrl(
-                            `${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`
-                        )
-                    }
-                >
-                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
-                </Button>
-            )}
+                {enableExampleDataDownload && (
+                        <a href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`} target="_blank" download className="flex font-medium align-center inline-block text-black mt-4">
+                            Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
+                            <FileDown className="h-5 w-5 ml-1" />
+                        </a>
+                )}
         </div>
     ) : (
         <>
@@ -195,20 +187,10 @@ export const DataImport = ({
                         {renderDropzone()}
                     </div>
                     {enableExampleDataDownload && (
-                        <Button
-                            variant="link"
-                            className="hover:text-primary hover:no-underline"
-                            onClick={() =>
-                                downloadFileFromUrl(
-                                    `${import.meta.env.VITE_API_HOST}/pathogens/${
-                                        activePathogen?.id
-                                    }/example_data/${type}`
-                                )
-                            }
-                        >
+                        <a href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`}  download className="flex inline-block text-black mt-4">
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
                             <FileDown className="h-5 w-5 ml-1" />
-                        </Button>
+                        </a>
                     )}
                 </div>
             ) : (

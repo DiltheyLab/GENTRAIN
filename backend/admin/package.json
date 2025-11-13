@@ -8,7 +8,8 @@
     "lint": "eslint \"src\"",
     "start": "node dist/app.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon\"",
-    "dev:prisma-seed": "npm run with-env -- npx prisma db seed",
+    "prisma:seed": "npm run with-env -- npx prisma db seed",
+    "prisma:deploy-migration": "npm run with-env -- npx prisma migrate deploy",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
@@ -46,8 +47,8 @@
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "concurrently": "^9.2.0",
-    "dotenv-cli": "^7.2.1",
     "eslint": "^8.38.0",
+    "dotenv-cli": "^7.2.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",

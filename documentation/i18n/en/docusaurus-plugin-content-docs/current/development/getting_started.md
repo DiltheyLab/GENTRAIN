@@ -28,7 +28,8 @@ The frontend, documentation and admin can be run locally without Docker.
 ## Repository layout (high level)
 
 - `frontend/` — React application
-- `backend/admin/` — Admin UI / Prisma tooling
+- `backend/admin/` — Admin UI
+- `backend/prisma/` — Prisma tooling for api and admin
 - `backend/api/` — Python API and supervisor config (worker)
 - `backend/redis` — Dockerfile and config for custom Redis setup
 - `backend/data` — Static files lile Pathogen schemes and example data files
@@ -42,27 +43,65 @@ In addition to the main directories mentioned above, the repository also contain
 
 ## Quick start (full stack with Docker Compose)
 
-This runs Redis, Postgres and the API in containers. The frontend, documentation and admin can be run locally (fast reload).
+In this section, you will learn step by step how to run GENTRAIN locally.
 
 1. Copy environment variables
 
    Create a `.env` at the repository root. You can adapt the `.env.example` for this.
 
+   ```bash
+   # From ./
+   cp .env.example .env
+   ```
+
 2. Start infrastructure and API
 
-   Use the provided script which builds containers and starts the frontend dev server in a second step:
-
    ```bash
-   ./dev.sh
+   # From ./
+   docker compose -f docker-compose.dev.yaml build
    ```
 
-   Or run Docker Compose directly:
+   and run:
 
    ```bash
-   docker compose -f docker-compose.dev.yaml up --build
+   # From ./
+   docker compose -f docker-compose.dev.yaml up
    ```
 
-3. Frontend (local, recommended during development)
+3. Database Initialisation
+
+   Create the database tables with the `prisma` schemes,
+
+   ```bash
+   # From ./backend/prisma
+   npm install
+   npm run prisma:db-push
+   ```
+
+4. Admin
+
+   Create the adminJS prisma client:
+
+   ```bash
+   # From ./backend/prisma
+   npx prisma generate --generator js_client
+   ```
+
+   Run the following commands in the terminal to seed the database and start the development server:
+
+   ```bash
+   # From ./backend/admin
+   npm install
+   npm run prisma:seed
+   npm run build
+   npm run dev
+   ```
+
+   The admin dev server uses tsc and nodemon concurrently and will be available at the terminal output address (commonly `http://localhost:4001`).
+
+   When seeding, an admin user is created whose credentials can be customized in the `.env` file. You should now be able to log in to the admin panel with `admin:secretPassword`.
+
+5. Frontend
 
    In a terminal run:
 
@@ -74,19 +113,7 @@ This runs Redis, Postgres and the API in containers. The frontend, documentation
 
    The frontend dev server uses Vite and will be available at the terminal output address (commonly `http://localhost:3000`).
 
-4. Admin (local, recommended during development)
-
-   In a terminal run:
-
-   ```bash
-   cd backend/admin
-   npm install
-   npm run dev
-   ```
-
-   The admin dev server uses tsc and nodemon concurrently and will be available at the terminal output address (commonly `http://localhost:4001`).
-
-5. Documentation (local, recommended during development)
+6. Documentation
 
    In a terminal run:
 
@@ -96,7 +123,7 @@ This runs Redis, Postgres and the API in containers. The frontend, documentation
    npm run start
    ```
 
-   The documentation dev server uses docusaurus and will be available at the terminal output address.
+   The documentation dev server uses docusaurus and will be available at the terminal output address (commonly `http://localhost:3001`).
 
 ## Environment variables
 

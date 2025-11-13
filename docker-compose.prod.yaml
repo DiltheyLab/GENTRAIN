@@ -76,7 +76,7 @@ services:
       - caddy
   db:
     container_name: gentrain-db
-    image: postgres
+    image: postgres:17
     user: postgres:postgres
     hostname: localhost
     expose:
@@ -150,7 +150,10 @@ services:
         target: /admin/data
       - type: bind
         source: ./backend/prisma/schema.prisma
-        target: /admin/prisma/schema.prisma
+        target: /admin/schema.prisma
+      - type: bind
+        source: ./backend/prisma/migrations
+        target: /admin/migrations
     expose:
       - "4001"
     depends_on:
