@@ -54,7 +54,6 @@ def download_scheme_action(pathogen_id: int):
     if not os.path.isdir(scheme_path):
         abort(404)
     zip_buffer = create_zip_buffer_from_scheme_directory(scheme_path)
-    print(zip_buffer)
     return send_file(
         zip_buffer,
         as_attachment=True,

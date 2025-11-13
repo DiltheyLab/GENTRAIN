@@ -166,3 +166,13 @@ def test_download_scheme_action_response_has_correct_content_disposition_header_
     mock_success_setup_for_download_schema_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
     mock_success_setup_for_download_schema_action["isdir"].assert_called_once()
     mock_success_setup_for_download_schema_action["create_zip_buffer_from_scheme_directory"].assert_called_once()
+
+def test_download_scheme_action_response_has_correct_content_type_if_pathogen_and_scheme_directory_exists(app,
+                                                                                                    mock_success_setup_for_download_schema_action):
+    with app.test_request_context():
+        response = download_scheme_action(0)
+        assert response.headers.get('Content-Type') == "application/zip"
+    mock_success_setup_for_download_schema_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+    mock_success_setup_for_download_schema_action["isdir"].assert_called_once()
+    mock_success_setup_for_download_schema_action["create_zip_buffer_from_scheme_directory"].assert_called_once()
+
