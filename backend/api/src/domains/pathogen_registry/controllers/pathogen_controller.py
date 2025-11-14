@@ -1,5 +1,5 @@
 import os
-from flask import abort, send_file
+from flask import abort, send_file, make_response
 
 from prisma.models import Pathogen
 from src.config import get_project_path
@@ -10,7 +10,7 @@ from src.domains.pathogen_registry.services.pathogen_service import create_zip_b
 
 def get_all_pathogens_action():
     pathogens = Pathogen.prisma().find_many()
-    return [PathogenResource(
+    return make_response([PathogenResource(
         id=pathogen.id,
         name=pathogen.name,
         scheme_version=pathogen.scheme_version,
@@ -20,7 +20,7 @@ def get_all_pathogens_action():
         cases_example=pathogen.example_cases_key,
         contacts_example=pathogen.example_contacts_key,
         sequences_example=pathogen.example_sequences_key,
-    ).model_dump() for pathogen in pathogens]
+    ).model_dump(mode="json") for pathogen in pathogens])
 
 
 def get_pathogen_action(pathogen_id: int):
@@ -31,7 +31,7 @@ def get_pathogen_action(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    return PathogenResource(
+    return make_response(PathogenResource(
         id=pathogen.id,
         name=pathogen.name,
         scheme_version=pathogen.scheme_version,
@@ -41,7 +41,7 @@ def get_pathogen_action(pathogen_id: int):
         cases_example=pathogen.example_cases_key,
         contacts_example=pathogen.example_contacts_key,
         sequences_example=pathogen.example_sequences_key,
-    ).model_dump()
+    ).model_dump(mode="json"))
 
 
 def download_scheme_action(pathogen_id: int):
