@@ -1,5 +1,6 @@
 import os
 from flask import abort, send_file, make_response
+from werkzeug.exceptions import UnprocessableEntity
 
 from prisma.models import Pathogen
 from src.config import get_project_path
@@ -74,8 +75,11 @@ def download_example_data_action(pathogen_id: int, example_data_type: str):
         abort(404)
 
     # Handle request file type based on query parameters and pathogen type
-    filename = get_example_data_filename(pathogen, example_data_type)
-
+    try:
+        filename = get_example_data_filename(pathogen, example_data_type)
+    except Exception:
+        raise UnprocessableEntity
+    
     file_path = f"{get_project_path()}/data/pathogen_example_data/{str(pathogen_id)}/{filename}"
     if not os.path.exists(file_path):
         abort(404)

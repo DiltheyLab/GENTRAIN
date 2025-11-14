@@ -10,11 +10,11 @@ from src.domains.pathogen_registry.routes.api import get_all_pathogens, get_path
 
 ### get_all_pathogens (/pathogens) ###
 
-def test_pathogens_endpoint_returns_pathogen_resources_as_flask_response(mocker, app, make_pathogen_resource):
+def test_pathogens_endpoint_returns_pathogen_resources_as_flask_response(mocker, app, make_pathogen):
     with app.test_request_context():
-        pathogens = [make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
+        pathogens = [make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
         expected_response = make_response([PathogenResource(
             id=pathogen.id,
             name=pathogen.name,
@@ -36,9 +36,9 @@ def test_pathogens_endpoint_returns_pathogen_resources_as_flask_response(mocker,
 
 ### get_pathogen (/pathogens/<id>) ###
 @pytest.mark.parametrize("pathogen_type", ["viral", "bacterial"])
-def test_pathogen_endpoint_returns_pathogen_resource_as_flask_response(mocker, app, make_pathogen_resource, pathogen_type):
+def test_pathogen_endpoint_returns_pathogen_resource_as_flask_response(mocker, app, make_pathogen, pathogen_type):
     with app.test_request_context():
-        pathogen = make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
+        pathogen = make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
         expected_response = make_response(PathogenResource(
             id=pathogen.id,
             name=pathogen.name,
@@ -62,9 +62,9 @@ def test_pathogen_endpoint_returns_pathogen_resource_as_flask_response(mocker, a
 
 
 @pytest.mark.parametrize("pathogen_type", ["viral", "bacterial"])
-def test_pathogen_scheme_endpoint_returns_file_response(app, mocker, make_pathogen_resource, pathogen_type):
+def test_pathogen_scheme_endpoint_returns_file_response(app, mocker, make_pathogen, pathogen_type):
     with app.test_request_context():
-        pathogen = make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
+        pathogen = make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
         expected_response = send_file(
             io.BytesIO(),
             as_attachment=True,
@@ -87,11 +87,11 @@ def test_pathogen_scheme_endpoint_returns_file_response(app, mocker, make_pathog
                           ("bacterial", "contact", "kontaktdaten.csv", "text/csv"),
                           ("bacterial", "sequence", "falldaten.zip", "mimetype/zip")
                           ])
-def test_pathogen_example_data_endpoint_returns_file_response(app, mocker, make_pathogen_resource, pathogen_type,
+def test_pathogen_example_data_endpoint_returns_file_response(app, mocker, make_pathogen, pathogen_type,
                                                          example_data_type,
                                                          file_pattern, mimetype):
     with app.test_request_context():
-        pathogen = make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
+        pathogen = make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type=pathogen_type)
         expected_response = send_file(
             io.BytesIO(),
             as_attachment=True,

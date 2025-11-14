@@ -2,12 +2,20 @@ import os
 import zipfile
 import io
 
-from flask import abort
-
 from prisma.models import Pathogen
+from src.domains.pathogen_registry.exceptions import NestedZipException, InvalidPathogenTypeException, \
+    InvalidExampleDataTypeException
 
 
 def create_zip_buffer_from_scheme_directory(scheme_path: str):
+    if not os.path.exists(scheme_path):
+        raise NotADirectoryError
+    files = os.listdir(scheme_path)
+    if len(files) == 0:
+        raise FileNotFoundError
+    if any(".zip" in filename for filename in files):
+        raise NestedZipException
+
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for root, dirs, files in os.walk(scheme_path):
@@ -26,14 +34,14 @@ def get_example_data_filename(pathogen: Pathogen, example_data_type: str):
         case "case":
             filename = f"{pathogen_slug}_falldaten.csv"
         case "sequence":
+            if pathogen.type != "viral" and pathogen.type != "bacterial":
+                raise InvalidPathogenTypeException
             if pathogen.type == "viral":
                 filename = f"{pathogen_slug}_sequenzdaten.fasta"
             elif pathogen.type == "bacterial":
                 filename = f"{pathogen_slug}_sequenzdaten.zip"
-            else:
-                abort(422)
         case "contact":
             filename = f"{pathogen_slug}_kontaktdaten.csv"
         case _:
-            abort(422)
+            raise InvalidExampleDataTypeException
     return filename

@@ -21,11 +21,11 @@ def test_get_all_pathogens_action_returns_empty_list_if_no_pathogens_exist(app, 
     mock_find_unique.return_value.find_many.assert_called_once()
 
 
-def test_get_all_pathogens_action_returns_success_stats(app, mocker, make_pathogen_resource):
+def test_get_all_pathogens_action_returns_success_stats(app, mocker, make_pathogen):
     with app.test_request_context():
-        pathogens = [make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
+        pathogens = [make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
         mock_pathogen_prisma = mocker.patch(
             "prisma.models.Pathogen.prisma"
         )
@@ -35,11 +35,11 @@ def test_get_all_pathogens_action_returns_success_stats(app, mocker, make_pathog
         mock_pathogen_prisma.return_value.find_many.assert_called_once()
 
 
-def test_get_all_pathogens_action_returns_pathogen_resource_list(app, mocker, make_pathogen_resource):
+def test_get_all_pathogens_action_returns_pathogen_resource_list(app, mocker, make_pathogen):
     with app.test_request_context():
-        pathogens = [make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
-                     make_pathogen_resource(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
+        pathogens = [make_pathogen(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=2, name=":pathogen_2:", pathogen_type="viral"),
+                     make_pathogen(pathogen_id=3, name=":pathogen_3:", pathogen_type="bacterial")]
         mock_pathogen_prisma = mocker.patch(
             "prisma.models.Pathogen.prisma"
         )
@@ -72,9 +72,9 @@ def test_get_pathogen_action_returns_not_found_exception_if_pathogen_does_not_ex
     mock_pathogen_prisma.return_value.find_unique.assert_called_once()
 
 
-def test_get_pathogen_action_returns_single_pathogen_resource(app, mocker, make_pathogen_resource):
+def test_get_pathogen_action_returns_single_pathogen_resource(app, mocker, make_pathogen):
     with app.test_request_context():
-        pathogen = make_pathogen_resource()
+        pathogen = make_pathogen()
         mock_pathogen_prisma = mocker.patch(
             "prisma.models.Pathogen.prisma"
         )
@@ -95,9 +95,9 @@ def test_get_pathogen_action_returns_single_pathogen_resource(app, mocker, make_
         mock_pathogen_prisma.return_value.find_unique.assert_called_once()
 
 
-def test_get_pathogen_action_returns_success_status(app, mocker, make_pathogen_resource):
+def test_get_pathogen_action_returns_success_status(app, mocker, make_pathogen):
     with app.test_request_context():
-        pathogen = make_pathogen_resource()
+        pathogen = make_pathogen()
         mock_pathogen_prisma = mocker.patch(
             "prisma.models.Pathogen.prisma"
         )
@@ -120,11 +120,11 @@ def test_download_scheme_action_returns_not_found_exception_if_pathogen_does_not
 
 
 def test_download_scheme_action_returns_not_found_exception_if_scheme_directory_does_not_exist(mocker,
-                                                                                               make_pathogen_resource):
+                                                                                               make_pathogen):
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
-    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen()
     mock_isdir = mocker.patch("os.path.isdir", return_value=False)
     with pytest.raises(NotFound):
         download_scheme_action(0)
@@ -179,12 +179,12 @@ def test_download_example_data_action_returns_not_found_exception_if_pathogen_do
     mock_pathogen_prisma.return_value.find_unique.assert_called_once()
 
 
-def test_download_example_data_action_returns_not_found_exception_if_pathogen_type_is_invalid(mocker,
-                                                                                              make_pathogen_resource):
+def test_download_example_data_action_returns_unprocessable_entity_exception_if_pathogen_type_is_invalid(mocker,
+                                                                                              make_pathogen):
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
-    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen()
     with pytest.raises(UnprocessableEntity):
         download_example_data_action(0, ":invalid_type:")
     mock_pathogen_prisma.return_value.find_unique.assert_called_once()
@@ -193,12 +193,12 @@ def test_download_example_data_action_returns_not_found_exception_if_pathogen_ty
 @pytest.mark.parametrize("example_data_type", ["case", "contact", "sequence"])
 def test_download_example_data_action_returns_not_found_exception_if_file_does_not_exist(mocker,
                                                                                          mock_success_setup_for_download_example_data_action,
-                                                                                         make_pathogen_resource,
+                                                                                         make_pathogen,
                                                                                          example_data_type):
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
-    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen_resource()
+    mock_pathogen_prisma.return_value.find_unique.return_value = make_pathogen()
     mock_exists = mocker.patch("os.path.exists", return_value=False)
 
     with pytest.raises(NotFound):

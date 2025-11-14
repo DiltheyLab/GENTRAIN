@@ -6,8 +6,8 @@ import pytest
 ### pathogen_controller.download_schema_action ###
 
 @pytest.fixture
-def mock_success_setup_for_download_schema_action(mocker, make_pathogen_resource):
-    pathogen = make_pathogen_resource()
+def mock_success_setup_for_download_schema_action(mocker, make_pathogen):
+    pathogen = make_pathogen()
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
@@ -28,9 +28,9 @@ def mock_success_setup_for_download_schema_action(mocker, make_pathogen_resource
 ### pathogen_controller.download_example_data_action ###
 
 @pytest.fixture
-def mock_success_setup_for_download_example_data_action(mocker, make_pathogen_resource, request):
+def mock_success_setup_for_download_example_data_action(mocker, make_pathogen, request):
     pathogen_type = getattr(request, "param", None)
-    pathogen = make_pathogen_resource(pathogen_id=0, name="sample", pathogen_type=pathogen_type or "viral")
+    pathogen = make_pathogen(pathogen_id=0, name="sample", pathogen_type=pathogen_type or "viral")
     mock_pathogen_prisma = mocker.patch(
         "prisma.models.Pathogen.prisma"
     )
