@@ -20,6 +20,7 @@ def test_get_all_pathogens_action_returns_empty_list_if_no_pathogens_exist(app, 
         assert response.json == []
     mock_find_unique.return_value.find_many.assert_called_once()
 
+
 def test_get_all_pathogens_action_returns_success_stats(app, mocker, make_pathogen_resource):
     with app.test_request_context():
         pathogens = [make_pathogen_resource(pathogen_id=1, name=":pathogen_1:", pathogen_type="viral"),
@@ -32,6 +33,7 @@ def test_get_all_pathogens_action_returns_success_stats(app, mocker, make_pathog
         response = get_all_pathogens_action()
         assert response.status_code == 200
         mock_pathogen_prisma.return_value.find_many.assert_called_once()
+
 
 def test_get_all_pathogens_action_returns_pathogen_resource_list(app, mocker, make_pathogen_resource):
     with app.test_request_context():
@@ -92,6 +94,7 @@ def test_get_pathogen_action_returns_single_pathogen_resource(app, mocker, make_
         assert response.json == pathogen_resource.model_dump(mode="json")
         mock_pathogen_prisma.return_value.find_unique.assert_called_once()
 
+
 def test_get_pathogen_action_returns_success_status(app, mocker, make_pathogen_resource):
     with app.test_request_context():
         pathogen = make_pathogen_resource()
@@ -105,7 +108,6 @@ def test_get_pathogen_action_returns_success_status(app, mocker, make_pathogen_r
 
 
 ### download_schema_action ###
-
 
 def test_download_scheme_action_returns_not_found_exception_if_pathogen_does_not_exist(mocker):
     mock_pathogen_prisma = mocker.patch(
@@ -217,7 +219,8 @@ def test_download_scheme_action_returns_success_status_if_pathogen_and_file_exis
         response = download_example_data_action(mock_success_setup_for_download_example_data_action["pathogen"].id,
                                                 example_data_type)
         assert response.status_code == 200
-        mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+        mock_success_setup_for_download_example_data_action[
+            "pathogen_prisma"].return_value.find_unique.assert_called_once()
         mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
         mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()
 
@@ -238,7 +241,8 @@ def test_download_scheme_action_response_has_correct_content_disposition_header_
         # replace quotes in filename as flasks send_file method might add quotes in the presence of special chars
         assert response.headers.get(
             'Content-Disposition').replace("\"", "") == f"attachment; filename={filename}"
-        mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+        mock_success_setup_for_download_example_data_action[
+            "pathogen_prisma"].return_value.find_unique.assert_called_once()
         mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
         mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()
 
@@ -260,6 +264,7 @@ def test_download_scheme_action_response_has_correct_content_type_if_pathogen_an
                                                 example_data_type)
         # replace quotes in filename as flasks send_file method might add quotes in the presence of special chars
         assert response.headers.get('Content-Type') == correct_content_type
-        mock_success_setup_for_download_example_data_action["pathogen_prisma"].return_value.find_unique.assert_called_once()
+        mock_success_setup_for_download_example_data_action[
+            "pathogen_prisma"].return_value.find_unique.assert_called_once()
         mock_success_setup_for_download_example_data_action["exists"].assert_called_once()
         mock_success_setup_for_download_example_data_action["get_project_path"].assert_called_once()

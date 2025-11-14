@@ -13,7 +13,7 @@ def get_pathogen(pathogen_id: int):
     return get_pathogen_action(pathogen_id)
 
 @app.route("/pathogens/<int:pathogen_id>/scheme", methods=["GET"])
-def download_scheme(pathogen_id: str):
+def download_scheme(pathogen_id: int):
     return download_scheme_action(pathogen_id)
 
 @app.route("/pathogens/<int:pathogen_id>/example_data/<string:type>", methods=["GET"])

@@ -25,19 +25,6 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     restart: unless-stopped
-  test-db:
-    container_name: gentrain-db
-    image: postgres:17
-    user: postgres:postgres
-    ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DB=${DATABASE_NAME}
-    restart: unless-stopped
   api:
     container_name: gentrain-api
     image: gentrain-api
