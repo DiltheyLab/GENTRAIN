@@ -47,9 +47,11 @@ The docker container running the postgres instance is execute as non-root user. 
 
 ## Securing Redis
 
-The docker container running the redis instance is execute as non-root user. The redis instance is TLS encrypted and the legacy authentication method is enabled. In addition, the local docker IP address is bound to prevent access from other origins. ACL rules were defined for vulnerable commands.
+<a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/" target="_blank">'Redis security' guideline</a> was followed conscientiously, with the exception of TLS encryption, as the `gentrain-redis` container is only accessible from the local Docker network.
+The docker container running the redis instance is execute as non-root user and the legacy authentication method is enabled. In addition, the local docker IP address is bound to prevent access from other origins. ACL rules were configured for vulnerable commands:
 
-The <a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/" target="_blank">'Redis security' guideline</a> was followed conscientiously.
+- all commands except dangerous ones (-@dangerous) are allowed
+- commands `+client|list` and `+keys` are explicitly allowed, as python-rq makes use of them
 
 ## Securing the Admin Panel
 
