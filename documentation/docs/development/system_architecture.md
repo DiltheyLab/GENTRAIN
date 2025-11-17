@@ -1,8 +1,13 @@
-# Project Architecture
+# System Architecture
 
 ## Overview
 
 **Gentrain** is a browser-based web application. Below are the key components of its architecture.
+
+<div align="center">
+  <img src="/img/developers/system_architecture/system_architecture.png" alt="System Architecture" />
+</div>
+
 
 | Component               | Description                                                                                                                                                |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -13,30 +18,6 @@
 | **Worker**              | Long-running tasks, such as sequence analyses, are managed through a queue-based system handled by a Worker.                                               |
 | **PostgreSQL Database** | Pathogen-related data is stored in a server-side postgres database, which is accessible and manageable via the Admin Panel.                                |
 
-```mermaid
-architecture-beta
-    group denbi(cloud)[deNBI Cloud]
-
-    service frontend(internet)[Frontend] in denbi
-    service backend(server)[Backend] in denbi
-    service worker(server)[Worker] in denbi
-    service admin(internet)[Admin] in denbi
-    service db(database)[PostgreSQL Database] in denbi
-    service viral_queue(server)[Viral Redis Queue] in denbi
-    service bacterial_queue(server)[Bacterial Redis Queue] in denbi
-
-    group browser(internet)[Local Browser]
-    service indexed_db(database)[IndexedDB] in browser
-
-    viral_queue:R <-- L:backend
-    bacterial_queue:B <-- T:backend
-    worker:B --> T:viral_queue
-    worker:R --> L:bacterial_queue
-    db:T <-- B:backend
-    admin:L --> R:db
-    frontend:L <--> R:backend
-    indexed_db:L <-- R:frontend
-```
 
 ## Database
 
