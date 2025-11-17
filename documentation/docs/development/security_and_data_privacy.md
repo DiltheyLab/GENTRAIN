@@ -47,7 +47,7 @@ The docker container running the postgres instance is execute as non-root user. 
 
 ## Securing Redis
 
-The docker container running the redis instance is execute as non-root user. The redis instance is TLS encrypted and the legacy authentication method is enabled. In addition, the local docker IP address is bound to prevent access from other origins. Several commands that make the redis instance vulnerable have been deactivated.
+The docker container running the redis instance is execute as non-root user. The redis instance is TLS encrypted and the legacy authentication method is enabled. In addition, the local docker IP address is bound to prevent access from other origins. ACL rules were defined for vulnerable commands.
 
 The <a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/" target="_blank">'Redis security' guideline</a> was followed conscientiously.
 
