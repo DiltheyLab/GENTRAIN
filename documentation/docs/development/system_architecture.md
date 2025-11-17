@@ -4,38 +4,40 @@
 
 **Gentrain** is a browser-based web application. Below are the key components of its architecture.
 
-<div align="center">
-  <img src="/img/developers/system_architecture/system_architecture.png" alt="System Architecture" />
-</div>
+![System Architecture](/img/developers/system_architecture/system_architecture.png "System Architecture")
 
+### Dashboard
 
-| Component               | Description                                                                                                                                                |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Frontend**            | The majority of the business logic resides on the frontend, with most data persisted in the user’s browser using IndexedDB.                                |
-| **IndexedDB**           | A low-level API for client-side storage that provides powerful and efficient database functionalities.                                                     |
-| **Backend**             | A Flask server supports the application by offering: <ul><li>An API for backend communication.</li><li>A WebSocket server for real-time updates.</li></ul> |
-| **Admin**               | An User interface for managing pathogen data and especially schemes.                                                                                       |
-| **Worker**              | Long-running tasks, such as sequence analyses, are managed through a queue-based system handled by a Worker.                                               |
-| **PostgreSQL Database** | Pathogen-related data is stored in a server-side postgres database, which is accessible and manageable via the Admin Panel.                                |
+:::info Technologies
+React, Zustand
+:::
 
+The majority of the business logic is located on the frontend, since only sequence analyses are performed on the server side. The application state at runtime is also managed using the Zustand library for React.
 
-## Database
+### API
 
-## Containerization
+:::info Technologies
+Python (Flask), Flask-SocketIO, RQ, Prisma
+:::
 
-The project architecture is technically implemented in the following Docker containers.
+This is an API for backend communication, primarily offering pathogen resources and file downloads, such as example data and pathogen schemes. Additionally, it includes a WebSocket server to handle events during sequence analysis.
 
-| Container         | Description                                                                                       | Locally accessible via |
-| ----------------- | ------------------------------------------------------------------------------------------------- | ---------------------- |
-| **Caddy**         | Reverse proxy and web server                                                                      | -                      |
-| **Redis**         | In-memory data structure store                                                                    | -                      |
-| **Backend**       | Python-based backend service providing API, WebSocket Server and Admin Panel                      | http://localhost:4000  |
-| **Worker**        | Background task processor                                                                         | -                      |
-| **Frontend**      | Node.js-based frontend service to build the react application for production and test instances.s | -                      |
-| **Redis Insight** | GUI for Redis monitoring and management                                                           | http://localhost:5540  |
-| **Database**      | Server-side postgres database                                                                     | -                      |
-| **PG Admin**      | Postgres database client                                                                          | http://localhost:7777  |
+### Admin Panel
 
-## Domain Driven Design
+:::info Technologies
+NodeJS + React (AdminJS), Prisma
+:::
 
-Frontend and backend project are structured in a domain (module) driven manner.
+A user interface for managing pathogen data, particularly schemes.
+
+### Redis Cache
+
+Long-running tasks, such as sequence analyses, are managed via Redis job queues and handled by workers. The Redis cache is also used to implement chunking of WebSocket message data by temporarily storing sequence chunks. Furthermore, sequence analyses are persisted for 30 minutes to prevent data loss if users leave the dashboard during processing.
+
+### IndexedDB
+
+This is a low-level API for client-side storage, providing powerful and efficient database functionalities. Personal data is solely persisted within the web browser's local database.
+
+### PostgreSQL
+
+Both pathogens and admin users and roles are stored in a server-side PostgreSQL database, which can be accessed and managed via the Admin Panel.
