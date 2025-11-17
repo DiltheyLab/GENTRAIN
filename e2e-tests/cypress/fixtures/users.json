@@ -1,0 +1,17 @@
+{
+  "superuser": {
+    "username": "admin-e2e-test",
+    "password": "AdminSecure123!",
+    "roleId": 1
+  },
+  "regularUser": {
+    "username": "user-e2e-test",
+    "password": "UserSecure123!",
+    "roleId": 2
+  },
+  "newUser": {
+    "username": "newuser-e2e-test",
+    "password": "NewUserPass123!",
+    "roleId": 2
+  }
+}
