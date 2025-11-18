@@ -18,7 +18,7 @@ const LoggedIn: React.FC<LoggedInProps> = (props) => {
       label: 'Change password',
       onClick: (event: Event): void => {
         event.preventDefault();
-        window.location.href = `/admin/resources/password/records/${session.id}/edit`;
+        window.location.href = `/resources/password/records/${session.id}/edit`;
       },
       icon: 'Lock',
     },
