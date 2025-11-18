@@ -40,7 +40,7 @@ def get_pathogen_action(pathogen_id: int):
         sequences_example=pathogen.example_sequences_key,
     ).model_dump()
 
-def download_scheme_action(pathogen_id: str):
+def download_scheme_action(pathogen_id: int):
     pathogen = Pathogen.prisma().find_unique(
         where={
             "id": pathogen_id,
@@ -66,7 +66,7 @@ def download_scheme_action(pathogen_id: str):
         mimetype="application/zip",
     )
 
-def download_example_data_action(pathogen_id: str, type: str):
+def download_example_data_action(pathogen_id: int, type: str):
     pathogen = Pathogen.prisma().find_unique(
         where={
             "id": pathogen_id,
