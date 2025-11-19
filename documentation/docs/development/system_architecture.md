@@ -1,3 +1,9 @@
+---
+id: system-architecture
+title: System Architecture
+sidebar_label: System Architecture
+sidebar_position: 3
+---
 # System Architecture
 
 ## Overview
@@ -40,13 +46,14 @@ On page load, the pathogens in the client-side database are compared with the pe
 <details name="Entity Definitions">
     <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
         <div>
-                <h4>Pathogen</h4>
+            <h4>Pathogen</h4>
                 | Type     | Name                       |
                 | -------- | -------------------------- |
                 | int      | id                         |
                 | string   | name                       |
                 | int      | genetic_distance_threshold |
                 | int      | pathogen_type_id           |
+                | boolean  | activated                  |
                 | datetime | created_at                 |
                 | datetime | updated_at                 |
             </div>
@@ -185,33 +192,44 @@ Long-running tasks, such as sequence analyses, are managed via Redis job queues 
 
 Pathogens, admin users and roles are stored in a server-side PostgreSQL database, which can be accessed and managed via the Admin Panel.
 
-```mermaid
-erDiagram
-    Pathogen {
-        int id
-        string name
-        int genetic_distance_threshold
-        string type
-        string scheme_name
-        datetime created_at
-        datetime updated_at
-    }
+![Entity Relationship Model (Postgres DB)](/img/developers/system_architecture/entity_relationship_postgres.jpg "Entity Relationship Model (Postgres DB)")
 
-    Role {
-        int id
-        string name
-        string description
-    }
-
-    User {
-        int id
-        string username
-        string password
-        boolean active
-        datetime confirmed
-        string fs_uniquifier
-        datetime created_at
-        datetime updated_at
-    }
-    User ||--o{ Role : ""
-```
+<details name="Entity Definitions">
+    <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
+        <div>
+            <h4>Pathogen</h4>
+            | Type     | Name                       |
+            | -------- | -------------------------- |
+            | int      | id                         |
+            | string   | name                       |
+            | int      | genetic_distance_threshold |
+            | int      | pathogen_type_id           |
+            | datetime | created_at                 |
+            | datetime | updated_at                 |
+        </div>
+        <div>
+            <h4>User</h4>
+            | Type | Name |
+            | ---- | ---- |
+            | int  | id   |
+        </div>
+        <div>
+            <h4>Role</h4>
+            | Type | Name |
+            | ---- | ---- |
+            | int  | id   |
+        </div>
+        <div>
+            <h4>Logs</h4>
+            | Type | Name |
+            | ---- | ---- |
+            | int  | id   |
+        </div>
+        <div>
+            <h4>Sessions</h4>
+            | Type | Name |
+            | ---- | ---- |
+            | int  | id   |
+        </div>
+    </div>
+</details>

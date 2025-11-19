@@ -1,15 +1,16 @@
+---
+id: security-and-data-privacy
+title: Security and Data Privacy
+sidebar_label: Security and Data Privacy
+sidebar_position: 5
+---
+
 # Security and Data Privacy
 
 ## Processed Data
 
-Gentrain only processes personal data on the client side.
-Personal data is added via case imports and stored in the browser's IndexedDB.
+Gentrain only processes personal data on the client side. Personal data is added via case imports and stored in the browser's IndexedDB. Data does not refer to the user, but to the persons associated with the cases registered with the health authorities.
 
-Genetic data, such as viral and bacterial genomes, are transferred to the server and analysis results are temporarily stored for a maximum of 30 minutes.
-These contain information on mutations based on the corresponding reference genome.
-Whenever communicating with the server fasta ids are pseudomized using UUIDv4 values (<a href="https://www.rfc-editor.org/rfc/rfc9562.html#name-example-of-a-uuidv4-value" target="_blank">RFC9562</a>).
-
-Data does not refer to the user, but to the persons associated with the cases registered with the health authorities.
 
 | Name                         | Description                                                                                                                                                                                                                                                                                          | Source          | Server-side persistence       | Server-side processing | Client-side persistence | Client-side processing |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------- | ---------------------- | ----------------------- | ---------------------- |
@@ -23,6 +24,11 @@ Data does not refer to the user, but to the persons associated with the cases re
 | **Fasta Id**                 | Identifier of a sequence that is linked to an imported case. Used to identify sequences and to assign cases to imported sequences. On the server side, sequences are identified using pseudonyms that are first created on the client side in order to assign pseudonyms and fasta ids continuously. | Sequencing Labs | ❌                            | ❌                     | ✅                      | ✅                     |
 | **Genetic sequences**        | Sequences associated with imported cases. These are used to calculate the genetic distances between cases, which in turn are used to support outbreak analyses.                                                                                                                                      | Sequencing Labs | ❌                            | ✅                     | ❌                      | ✅                     |
 | **Sequence analysis result** | Sequences are analysed for mutations based on the corresponding reference genome. These results are stored on server side for a maximum of 30 minutes in case users close the websocket connection (e.g. by closing the browser tab) and therefore cannot retrieve these results immediately.        | Internal        | ✅ <small>(temporary)</small> | ✅                     | ✅                      | ✅                     |
+
+Genetic data, such as viral and bacterial genomes, are transferred to the server and analysis results are temporarily stored for a maximum of 30 minutes.
+These contain information on mutations based on the corresponding reference genome.
+Whenever communicating with the server, sequences are aggregated and anonymised using only a hash as a reference. The following graphic illustrates this procedure.
+![Sequence Aggregation](/img/developers/security_and_data_privacy/sequence_aggregation.png "Sequence Aggregation")
 
 It is also possible to add flexible data columns to the case import. This data is used for filtering graphs and is only persisted and processed on the client side.
 
@@ -90,3 +96,4 @@ sequenceDiagram
 Access to directories other than the specified upload locations is not permitted for the Ubuntu user running the admin panel. Further uploaded files are checked strictly on the basis of the expected file patterns.
 
 ## Securing the Websocket Connection
+WebSocket communication is TLS encrypted.
