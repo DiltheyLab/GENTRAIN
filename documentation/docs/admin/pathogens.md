@@ -1,5 +1,5 @@
 ---
-title: Pathogene
+title: Pathogenverwaltung
 
 sidebar_position: 3
 ---
