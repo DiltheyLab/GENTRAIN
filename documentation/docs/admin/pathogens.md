@@ -1,5 +1,5 @@
 ---
-title: Pathogene & Analyse-Schemata
+title: Pathogene
 
 sidebar_position: 3
 ---
@@ -24,24 +24,28 @@ Abgesehen vom gewählten Pathogentyp können Sie Pathogene nachträglich ändern
 
 ## Analyse-Schemata
 
-Bei der Analyse von Genomsequenzen dienen Schemata als Referenz für die importierten Sequenzdaten. Da für Viren und Bakterien verschiedene Skripte zur Mutationsbestimmung verwendet werden, unterscheiden sich auch die Schemata in ihrer Struktur.
+Bei der Analyse von Genomsequenzen dienen Schemata als Referenz für die importierten Sequenzdaten. Da für Viren und Bakterien verschiedene Skripte zur Mutationsbestimmung verwendet werden, unterscheiden sich auch die Schemata in ihrer Struktur. Die Schemata sind als ZIP-Datei hochzuladen, die anschließend auf dem Server entpackt werden. Um die Sicherheit des Systems zu gewährleisten, werden die ZIP-Dateien einer strengen Validierung unterzogen.
+
+Hochgeladene ZIP-Dateien dürfen 300 MB nicht überschreiten, die entpackten Datenmengen dürfen maximal 8 GB betragen. Es wird jederzeit sichergestellt, dass der Server nach dem Extrahieren einer ZIP-Datei noch über ausreichend freien Speicherplatz verfügt. Wenn Sie mehr Speicherplatz benötigen, wenden Sie sich bitte an Ihren Hosting-Provider.
 
 ### Viren
-| Datei / Element   | Zweck                                                                                                                     |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `pathogen.json`   | Metadaten über Pathogen, Clades/Lineages, Versionsinfo,<br/>Festlegung der verwendeten Referengenom-Datei (`reference.fasta`) |
-| `reference.fasta` | Referenzgenom für Alignment und Mutation Calling                                                                          |
-| `tree.json`       | Phylogenetischer Baum / Clade-Struktur                                                                                    |
+| Datei / Element   | Zweck                                                                                                                                                                                    | Erforderlich |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `pathogen.json`   | Metadaten über Pathogen, Clades/Lineages, Versionsinfo, Festlegung der verwendeten Referengenom-Datei (`reference.fasta`)                                                                | ✅            |
+| `reference.fasta` | Referenzgenom für Alignment und Mutation Calling. Eine mögliche Bezugsquelle für Referenzgenome ist bspw. die [Genom-Datenbank des NCBI](https://www.ncbi.nlm.nih.gov/datasets/genome/). | ✅            |
+| `tree.json`       | Phylogenetischer Baum / Clade-Struktur                                                                                                                                                   |              |
 
 ### Bakterien
-| Datei / Element     | Zweck                                             |
-| ------------------- | ------------------------------------------------- |
-| `.genes_list`       | Liste aller Loci im Schema                        |
-| `.schema_config`    | Konfigurations- und Metadaten des Schemas         |
-| `self_scores`       | Qualitäts- und Ähnlichkeitsbewertung der Allele   |
-| `loci_modes`        | Definiert den Calling-Modus pro Locus             |
-| `*.fasta`           | Alle Allele eines Locus im Hauptschema            |
-| `short/*.fasta`     | Reduzierte/repräsentative Allele für Short-Schema |
-| `short/self_scores` | Bewertungstabelle für das Short-Schema            |
+| Datei / Element     | Zweck                                             | Erforderlich                                    |
+| ------------------- | ------------------------------------------------- | ----------------------------------------------- |
+| `.genes_list`       | Liste aller Loci im Schema                        | ✅                                               |
+| `.schema_config`    | Konfigurations- und Metadaten des Schemas         | ✅                                               |
+| `loci_modes`        | Definiert den Calling-Modus pro Locus             | ✅                                               |
+| `self_scores`       | Qualitäts- und Ähnlichkeitsbewertung der Allele   |                                                 |
+| `*.fasta`           | Alle Allele eines Locus im Hauptschema            | Datein aus `.genes_list` müssen enthalten sein. |
+| `short/*.fasta`     | Reduzierte/repräsentative Allele für Short-Schema | Datein aus `.genes_list` müssen enthalten sein. |
+| `short/self_scores` | Bewertungstabelle für das Short-Schema            |                                                 |
 
 
+## Beispieldaten
+Für die verschiedenen Importe der Anwendung können Beispieldateien zur Verfügung gestellt werden. Unabhängig vom Pathogentyp sind Falldaten und Kontaktdaten im CSV-Format hochzuladen. Die Struktur dieser Dateien können Sie dem Abschnitt [Datenimport](http://localhost:3001/docs/application/data-management/general#datenimport) im Bereich „Datenverwaltung” der Anwendungsdokumentation entnehmen. Nach dem Speichern des Pathogens werden die Dateien auf ihre Korrektheit validiert.
