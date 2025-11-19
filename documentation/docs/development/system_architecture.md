@@ -43,7 +43,7 @@ On page load, the pathogens in the client-side database are compared with the pe
 
 ![Entity Relationship Model (IndexedDB)](/img/developers/system_architecture/entity_relationship_indexed_db.jpg "Entity Relationship Model (IndexedDB)")
 
-<details name="Entity Definitions">
+<details name="indexeddb-entities">
     <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
         <div>
             <h4>Pathogen</h4>
@@ -194,7 +194,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
 
 ![Entity Relationship Model (Postgres DB)](/img/developers/system_architecture/entity_relationship_postgres.jpg "Entity Relationship Model (Postgres DB)")
 
-<details name="Entity Definitions">
+<details name="postgres-entities">
     <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
         <div>
             <h4>Pathogen</h4>
@@ -204,32 +204,61 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
             | string   | name                       |
             | int      | genetic_distance_threshold |
             | int      | pathogen_type_id           |
+            | int      | genetic_distance_threshold |
+            | int      | pathogen_type_id           |
+            | string   | example_cases_key          |
+            | string   | example_cases_size         |
+            | string   | example_cases_bucket       |
+            | string   | example_sequences_key      |
+            | string   | example_sequences_size     |
+            | string   | example_sequences_bucket   |
+            | string   | example_contacts_key       |
+            | string   | example_contacts_size      |
+            | string   | example_contacts_bucket    |
             | datetime | created_at                 |
             | datetime | updated_at                 |
         </div>
         <div>
             <h4>User</h4>
-            | Type | Name |
-            | ---- | ---- |
-            | int  | id   |
+            | Type     | Name         |
+            | -------- | ------------ |
+            | int      | id           |
+            | string   | username     |
+            | string   | password     |
+            | datetime | confirmed_at |
+            | datetime | created_at   |
+            | datetime | updated_at   |
+            | id       | roleId       |
         </div>
         <div>
             <h4>Role</h4>
-            | Type | Name |
-            | ---- | ---- |
-            | int  | id   |
+            | Type   | Name        |
+            | ------ | ----------- |
+            | int    | id          |
+            | string | name        |
+            | string | description |
         </div>
         <div>
             <h4>Logs</h4>
-            | Type | Name |
-            | ---- | ---- |
-            | int  | id   |
+            | Type     | Name        |
+            | -------- | ----------- |
+            | int      | id          |
+            | int      | recordId    |
+            | string   | recordTitle |
+            | json     | difference  |
+            | string   | action      |
+            | string   | resource    |
+            | string   | userId      |
+            | datetime | createdAt   |
+            | datetime | updatedAt   |
         </div>
         <div>
-            <h4>Sessions</h4>
-            | Type | Name |
-            | ---- | ---- |
-            | int  | id   |
+            <h4>Session</h4>
+            | Type     | Name   |
+            | -------- | ------ |
+            | int      | sid    |
+            | json     | sess   |
+            | datetime | expire |
         </div>
     </div>
 </details>
