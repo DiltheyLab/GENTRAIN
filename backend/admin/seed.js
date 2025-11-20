@@ -34,9 +34,11 @@ async function main() {
     console.log(`Role "${normalUserRoleName}" created`);
   }
 
+  console.log("SUPERUSERROLE", superUserRole);
+  
   // --- Ensure admin user exists ---
   const existingAdmin = await prisma.User.findFirst({
-    where: { roleId: role.id },
+    where: { roleId: superUserRole.id },
   });
 
   if (!existingAdmin) {
@@ -44,7 +46,7 @@ async function main() {
       data: {
         username,
         password: await hash(password),
-        roleId: role.id,
+        roleId: superUserRole.id,
         created_at: new Date(),
       },
     });
