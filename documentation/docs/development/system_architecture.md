@@ -12,9 +12,10 @@ sidebar_position: 3
 
 ![System Components](/img/developers/system_architecture/system_components.jpg "System Components")
 
-## Frontend
+## Components
+### Frontend
 
-### Dashboard
+#### User Interface
 
 :::info Technologies
 React, Zustand
@@ -33,9 +34,11 @@ The React application is divided into separate domains to create a well-structur
 | Help              | Functionalities and components associated with the help page of the application.                                                                                                                      |
 | Tutorial          | Functionalities and components associated with the tutorial module of the application.                                                                                                                |
 
-The application uses IndexedDB to manage the local browser database. As the tutorial relies on a static dataset, two IndexedDB instances have been integrated: `gentrain` and `gentrain_example`. While the latter is only active during the tutorial, the former is active during productive usage of the application.
+The application uses IndexedDB to manage the local browser database. As the tutorial relies on a static dataset, two IndexedDB instances have been integrated: `gentrain` and `gentrain_example`. While the latter is only active during the tutorial, the former is active during productive usage of the application. Additionally state-management solution Zustand is used for data management during runtime. Zustand orchestrates the application state within so-called stores. In GENTRAIN, these stores mirror the domains of the React application, except for the Help domain, which does not have a corresponding store. The following graph illustrates the concrete data sources of the React application.
 
-### IndexedDB
+![User Interface Data Sources](/img/developers/system_architecture/ui_data_sources.jpg "User Interface Data Sources")
+
+#### IndexedDB
 
 This low-level API offers powerful and efficient database functionality for client-side storage. Personal data is stored solely within the web browser's local database. As IndexedDB does not support automatic data deletion, the application provides two options: data can be deleted either after the 24-hour TTL has expired (only possible during productive usage or when the application is loaded again), or when the tab/browser is reloaded or closed (beforeunload event). The former is activated by default, but it is also possible to disable both options.
 
@@ -166,17 +169,28 @@ On page load, the pathogens in the client-side database are compared with the pe
         </div>
 </details>
 
-## Backend 
+### Backend 
 
-### API
+#### API
 
 :::info Technologies
 Python (Flask), Flask-SocketIO, RQ, Prisma
 :::
 
-This is an API for backend communication, primarily offering pathogen resources and file downloads, such as example data and pathogen schemes. Additionally, it includes a WebSocket server to handle events during sequence analysis.
+This API facilitates communication with the backend and primarily offers pathogen resources and file downloads, including example data and pathogen schemes. To ensure tasks are processed reliably, long-running tasks are processed within Redis queues. This means that these tasks will be processed even in high-stress situations. A WebSocket server (SocketIO) is therefore integrated into the API to facilitate bidirectional, event-driven communication during sequence analysis. Redis queues for viral and bacterial sequence analyses are orchestrated using Supervisord and can be configured in the file `/backend/api/workers/supervisor.conf` according to current requirements and server specifications.
 
-### Admin Panel
+![API Structure](/img/developers/system_architecture/api_structure.jpg "API Structure")
+
+The Python application is divided into two domains, as shown in the following table.
+
+
+| Domain                          | Description                                                                                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pathogen Registry               | Operations related to pathogens. This includes retrieving information about persisted pathogens and downloading pathogen schemes and example data. |
+| Sequence Analysis               | Sequence analysis orchestration. This involves managing websocket events, executing sequence analysis jobs, and preparing sequence analysis responses. |
+
+
+#### Admin Panel
 
 :::info Technologies
 NodeJS + React (AdminJS), Prisma
@@ -184,11 +198,11 @@ NodeJS + React (AdminJS), Prisma
 
 A user interface for managing pathogen data, particularly schemes.
 
-### Redis Cache
+#### Redis Cache
 
 Long-running tasks, such as sequence analyses, are managed via Redis job queues and handled by workers. The Redis cache is also used to implement chunking of WebSocket message data by temporarily storing sequence chunks. Furthermore, sequence analyses are persisted for 30 minutes to prevent data loss if users leave the dashboard during processing.
 
-### PostgreSQL
+#### PostgreSQL
 
 Pathogens, admin users and roles are stored in a server-side PostgreSQL database, which can be accessed and managed via the Admin Panel.
 
@@ -262,3 +276,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
         </div>
     </div>
 </details>
+
+## Docker Deployment
+
+![Docker Deployment](/img/developers/system_architecture/docker_deployment.jpg "Docker Deployment")
