@@ -131,7 +131,7 @@ const config: Config = {
       selector: '.markdown img',
       background: {
         light: 'rgb(255, 255, 255)',
-        dark: 'rgb(50, 50, 50)'
+        dark: 'rgb(36, 37, 38)'
       },
       config: {
         margin: 80 // to compensate navbar height
