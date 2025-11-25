@@ -286,9 +286,9 @@ Not all containers are also used for local development, as can be seen in the ta
 
 | Container                | Purpose                                                                                                                                                                  | Used locally?      |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
-| `gentrain-init`          | A one-time initialization container that manages access permissions.                                                                                                     |                    |
-| `gentrain-frontend`      | Builds and provides the compiled assets of the user interface for `gentrain-caddy` to serve.                                                                                        |                    |
-| `gentrain-api`           | Runs a Flask server with API endpoints and WebSocket event handlers.                                                                                                   | <center>✅</center> |
+| `gentrain-init`          | A one-time initialization container to configure volume access permissions.                                                                                              |                    |
+| `gentrain-frontend`      | Builds and provides the compiled assets of the user interface for `gentrain-caddy` to serve.                                                                             |                    |
+| `gentrain-api`           | Runs a Flask server with API endpoints and WebSocket event handlers.                                                                                                     | <center>✅</center> |
 | `gentrain-worker`        | Executes background job workers using the same codebase as `gentrain-api` in Redis queues.                                                                               | <center>✅</center> |
 | `gentrain-db`            | Hosts a Postgres database for centralized server-side data persistence (pathogens, users, roles).                                                                        | <center>✅</center> |
 | `gentrain-redis`         | Provides the Redis in-memory cache used by `gentrain-api` and `gentrain-worker` to implement job queueing, as well as to persist and retrieve sequence analysis results. | <center>✅</center> |
