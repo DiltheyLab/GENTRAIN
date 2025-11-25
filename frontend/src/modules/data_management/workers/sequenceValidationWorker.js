@@ -1,5 +1,5 @@
 import { sha256 } from "js-sha256";
-import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
+import { PathogenStrategyManager } from "@/modules/data_management/services/pathogen_strategies/PathogenStrategyManager";
 
 onmessage = async (e) => {
     const data = e.data.sequences;

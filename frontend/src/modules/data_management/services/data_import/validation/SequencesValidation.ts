@@ -3,7 +3,7 @@ import { ValidationStrategy } from "./ValidationStrategy";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
-import SequenceWorker from "./sequenceWorker?worker";
+import SequenceValidationWorker from "@/modules/data_management/workers/sequenceValidationWorker?worker";
 
 export class SequencesValidation extends ValidationStrategy {
     protected data: { fastaId: string; sequence: string }[] = [];
@@ -20,7 +20,7 @@ export class SequencesValidation extends ValidationStrategy {
 
         // run sequence validation in a web worker to prevent blocking the render loop
         // in case of large file sizes (especially relevant for bacterial imports)
-        const worker = new SequenceWorker();
+        const worker = new SequenceValidationWorker();
         const sequenceImports: {
             [fastaHash: string]: SequenceImport;
         } = await new Promise((resolve, reject) => {
