@@ -8,6 +8,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useDataManagementStore } from "../../stores/dataManagement";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 type FileDropzoneProps = {
     type: string;
@@ -20,6 +21,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
+    const setLoadingBlockerIsActive = useCoreStore((state) => state.setLoadingBlockerIsActive);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -36,8 +38,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         if (!fileReadingStrategy) {
             return;
         }
-
         try {
+            setLoadingBlockerIsActive(true);
             const fileReaderResult = await fileReadingStrategy.execute(files, type);
             if (!fileReaderResult) return;
             // format the file content into a proper structure (fasta -> string[], csv -> object[])
@@ -49,7 +51,9 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                 showWarningToasts(validationResult.warnings);
             }
             onFileUpload();
+            setLoadingBlockerIsActive(false);
         } catch (error) {
+            setLoadingBlockerIsActive(false);
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
                 console.log(error);
@@ -82,9 +86,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         <>
             <div
                 {...getRootProps()}
-                className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${
-                    isDragActive ? "border-muted-foreground/30" : ""
-                }`}
+                className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${isDragActive ? "border-muted-foreground/30" : ""
+                    }`}
             >
                 <input
                     {...getInputProps()}
@@ -103,9 +106,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                     </div>
 
                     <CirclePlus
-                        className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
-                            isDragActive ? "fill-primary scale-125" : " fill-black"
-                        }`}
+                        className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${isDragActive ? "fill-primary scale-125" : " fill-black"
+                            }`}
                         fill="black"
                     />
                 </div>
