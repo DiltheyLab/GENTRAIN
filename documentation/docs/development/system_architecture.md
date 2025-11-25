@@ -183,11 +183,10 @@ This API facilitates communication with the backend and primarily offers pathoge
 
 The Python application is divided into two domains, as shown in the following table.
 
-
-| Domain                          | Description                                                                                                                                        |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pathogen Registry               | Operations related to pathogens. This includes retrieving information about persisted pathogens and downloading pathogen schemes and example data. |
-| Sequence Analysis               | Sequence analysis orchestration. This involves managing websocket events, executing sequence analysis jobs, and preparing sequence analysis responses. |
+| Domain            | Description                                                                                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pathogen Registry | Operations related to pathogens. This includes retrieving information about persisted pathogens and downloading pathogen schemes and example data.     |
+| Sequence Analysis | Sequence analysis orchestration. This involves managing websocket events, executing sequence analysis jobs, and preparing sequence analysis responses. |
 
 
 #### Admin Panel
@@ -279,4 +278,21 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
 
 ## Docker Deployment
 
+GENTRAIN is deployed in Docker containers. Some containers are used to deploy application components directly, while others are used to build production code or perform configuration tasks. The following graph illustrates the dependencies between the containers for a production environment. Dotted arrows indicate dependencies at system start, while solid arrows represent dependencies at runtime.
+
 ![Docker Deployment](/img/developers/system_architecture/docker_deployment.jpg "Docker Deployment")
+
+Not all containers are also used for local development, as can be seen in the table below. The table also provides descriptions of the purpose of each container.
+
+| Container                | Purpose                                                                                                                                    | Used locally?      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `gentrain-init`          | A one-time initialization container that manages access permissions.                                                                       |                    |
+| `gentrain-frontend`      | Builds and provides the compiled assets of the user interface for Caddy to serve.                                                          |                    |
+| `gentrain-api`           | Runs the Flask server with API endpoints and WebSocket event handlers.                                                                     | <center>✅</center> |
+| `gentrain-worker`        | Executes background job workers using the same codebase as `gentrain-api` in Redis queues.                                                 | <center>✅</center> |
+| `gentrain-db`            | Hosts a Postgres database for centralized server-side data persistence (pathogens, users, roles).                                          | <center>✅</center> |
+| `gentrain-redis`         | Provides the Redis in-memory cache used by the API and worker services to implement job queueing and sequence analysis result persistence. | <center>✅</center> |
+| `gentrain-admin`         | Runs a adminJS node application to manage pathogen information and files.                                                                  |                    |
+| `gentrain-documentation` | Builds the Docusaurus documentation for Caddy to serve as static files.                                                                    |                    |
+| `gentrain-caddy`         | Serves as the production reverse proxy and static file server for the API, frontend, and documentation.                                    |                    |
+
