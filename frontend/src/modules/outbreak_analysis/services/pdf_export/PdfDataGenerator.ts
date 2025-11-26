@@ -18,6 +18,7 @@ export class PdfDataGenerator {
     protected allCases: CaseWithRelationships[];
     protected clusters: (CustomNode | undefined)[][];
     protected distantCasesOfSelectedOutbreak: (CustomNode | undefined)[];
+    protected distantClustersOfSelectedOutbreak: { outbreakCase: CustomNode, otherCases: (CustomNode | undefined)[] }[];
     protected clustersContainingCasesOfSelectedOutbreak: number;
 
     constructor() {
@@ -27,6 +28,7 @@ export class PdfDataGenerator {
         this.allCases = [];
         this.clusters = this.getClusters();
         this.distantCasesOfSelectedOutbreak = [];
+        this.distantClustersOfSelectedOutbreak = [];
         this.clustersContainingCasesOfSelectedOutbreak = 0;
     }
 
@@ -76,8 +78,9 @@ export class PdfDataGenerator {
                 customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id &&
                 !mergedClusterCases.includes(customNode.caseData.case_id) &&
                 customNode.caseData.fasta_id
-            );
+            )
         });
+
 
         for (const index in this.clusters) {
             const cluster = this.clusters[index];
@@ -89,7 +92,11 @@ export class PdfDataGenerator {
                 continue;
             }
             if (selectedOutbreakCasesInCluster.length === 1 && selectedOutbreakCasesInCluster[0]) {
-                this.distantCasesOfSelectedOutbreak.push(selectedOutbreakCasesInCluster[0]);
+                const otherCasesInCluster = cluster.filter(
+                    (node) =>
+                        node?.caseData.outbreak_id !== this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
+                );
+                this.distantClustersOfSelectedOutbreak.push({ outbreakCase: selectedOutbreakCasesInCluster[0], otherCases: otherCasesInCluster });
                 continue;
             }
             this.clustersContainingCasesOfSelectedOutbreak++;
@@ -99,7 +106,7 @@ export class PdfDataGenerator {
                     parseInt(index)
                 ) + this.getConclusionPhraseForSubgroupInCluster(cluster);
         }
-        return `${conclusion}${this.getConclusionPhraseForDistantCasesOfSelectedOutbreak()}${this.getConclusionPhraseForOutro()}`;
+        return `${conclusion}${this.getConclusionPhraseForDistantClustersOfSelectedOutbreak()}${this.getConclusionPhraseForDistantCasesOfSelectedOutbreak()}${this.getConclusionPhraseForOutro()}`.trim();
     };
 
     getCaseDataTableColumns = () => {
@@ -297,7 +304,8 @@ export class PdfDataGenerator {
                     .replace(/,([^,]*)$/, " und$1")} ${groupedCases[key].length} Probe${groupedCases[key].length > 1 ? "n" : ""
                     } des vermuteten Ausbruchs "${key}"`;
             })
-            .join(", ")}`;
+            .join(", ")
+            .replace(/,([^,]*)$/, " und$1")}`;
     };
 
     private getConclusionPhraseForUnassignedCasesInCluster = (cases: (CustomNode | undefined)[]) => {
@@ -310,6 +318,21 @@ export class PdfDataGenerator {
             .replace(/,([^,]*)$/, " und$1")} ${cases.length} Proben ohne Ausbruchszuweisung`;
     };
 
+
+    private getConclusionPhraseForDistantClustersOfSelectedOutbreak = () => {
+        let conclusion = "";
+        for (const distantCluster of this.distantClustersOfSelectedOutbreak) {
+            conclusion += `\n\nDie Probe ${distantCluster.outbreakCase.caseData.fasta_id} (${distantCluster.outbreakCase.index}) des untersuchten vermuteten Ausbruchs weist eine genetische Distanz von > ${this.coreStore.activePathogen?.genetic_distance_threshold} zu allen anderen untersuchten Ausbruchsproben auf, weshalb sie genetisch nicht nah verwandt mit diesen ist. Allerdings gibt es mit ${distantCluster.otherCases
+                .map((node) => {
+                    return `${node!.caseData.fasta_id} (${node!.index})`
+                }).join(", ")
+                .replace(/,([^,]*)$/, " und$1")} ${distantCluster.otherCases.length} Probe${distantCluster.otherCases.length > 1 ? "n" : ""
+                } die zu dieser Probe genetisch nah verwandt sind und somit ein Cluster bilden.`
+        }
+
+        return conclusion;
+    };
+
     private getConclusionPhraseForDistantCasesOfSelectedOutbreak = () => {
         if (this.distantCasesOfSelectedOutbreak.length === 0) {
             return "";
@@ -319,16 +342,22 @@ export class PdfDataGenerator {
             } ${this.distantCasesOfSelectedOutbreak
                 .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
                 .join(", ")
-                .replace(/,([^,]*)$/, " und$1")} des untersuchten vermuteten Ausbruchs ${this.distantCasesOfSelectedOutbreak.length > 1 ? "weisen jeweils" : "weist"
+                .replace(/,([^,]*)$/, " und$1")
+            } des untersuchten vermuteten Ausbruchs ${this.distantCasesOfSelectedOutbreak.length > 1 ? "weisen jeweils" : "weist"
             } eine genetische Distanz von > ${this.coreStore.activePathogen?.genetic_distance_threshold
             } zu allen anderen untersuchten Ausbruchsproben auf, weshalb sie genetisch nicht nah verwandt mit diesen ${this.distantCasesOfSelectedOutbreak.length > 1 ? "sind" : "ist"
             }.`;
     };
 
     private getConclusionPhraseForOutro = () => {
-        return `\n\nDamit sind die analysierten genetischen Daten konsistent mit einem Ausbruchs- bzw. klonalen Übertragungsereignis zwischen den genetisch nah verwandten untersuchten Ausbruchsproben de${this.clustersContainingCasesOfSelectedOutbreak === 1 ? "s" : "n"
-            } identifizierten Cluster${this.clustersContainingCasesOfSelectedOutbreak === 1 ? "s" : ""
-            }, unter einer möglichen Beteiligung der genetisch nah verwandten Umgebungsproben innerhalb de${this.clustersContainingCasesOfSelectedOutbreak === 1 ? "s" : "r"
-            } Cluster${this.clustersContainingCasesOfSelectedOutbreak === 1 ? "s" : ""}.`;
+        const casesInSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter(
+            (node) => node.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id
+        );
+        if (casesInSelectedOutbreak.length === this.distantCasesOfSelectedOutbreak.length) {
+            return "\n\nDamit sind die analysierten genetischen Daten nicht konsistent mit einem Ausbruchs- bzw. klonalen Übertragungsereignis zwischen den untersuchten Ausbruchsproben.";
+        }
+        return `\n\nDamit sind die analysierten genetischen Daten konsistent mit einem Ausbruchs - bzw. klonalen Übertragungsereignis zwischen den genetisch nah verwandten Proben de${this.clustersContainingCasesOfSelectedOutbreak > 1 ? "r" : "s"
+            } identifizierten Cluster${this.clustersContainingCasesOfSelectedOutbreak > 1 ? "" : "s"}, unter einer möglichen Beteiligung der genetisch nah verwandten Umgebungsproben innerhalb de${this.clustersContainingCasesOfSelectedOutbreak > 1 ? "r" : "s"
+            } Cluster${this.clustersContainingCasesOfSelectedOutbreak > 1 ? "" : "s"}.`;
     };
 }
