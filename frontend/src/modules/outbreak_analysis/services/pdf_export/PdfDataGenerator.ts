@@ -73,6 +73,7 @@ export class PdfDataGenerator {
         let conclusion = "";
         const mergedClusterCases = concat(...this.clusters).map((customNode) => customNode?.caseData.case_id);
 
+        // Clusters without appearance of a case of the selected outbreak 
         this.distantCasesOfSelectedOutbreak = this.outbreakAnalysisState.graphData.nodes.filter((customNode) => {
             return (
                 customNode.caseData.outbreak_id === this.outbreakAnalysisState.analysisSettings.selectedOutbreak?.id &&
