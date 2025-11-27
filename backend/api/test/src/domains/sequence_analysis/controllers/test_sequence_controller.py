@@ -2,7 +2,7 @@ from src.domains.sequence_analysis.controllers.sequence_controller import (
     align_sequences_action,
 )
 
-### get_all_pathogens_action ###
+### align_sequences_action ###
 
 
 def test_align_sequences_action_returns_success_status_for_aligned_sequences(app):

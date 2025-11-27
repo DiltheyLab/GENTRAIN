@@ -1,5 +1,6 @@
 import json
 import re
+from typing import cast
 from flask import jsonify, abort
 from prisma.models import Pathogen
 from flask import request
@@ -7,12 +8,15 @@ from flask_socketio import leave_room, join_room
 from src.server import redis_connection, sio
 from src.domains.sequence_analysis.redis_actions import (
     get_merged_fasta_content_if_complete,
-    persist_fasta_chunk, enqueue_sequence_analysis_job,
+    persist_fasta_chunk,
+    enqueue_sequence_analysis_job,
 )
 
+
 def get_sequence_analysis_result_action(fasta_hash: str):
-    sequence_analysis = redis_connection.hgetall(
-        f"client:sequence_analysis:{fasta_hash}"
+    sequence_analysis = cast(
+        dict[str, str],
+        redis_connection.hgetall(f"client:sequence_analysis:{fasta_hash}"),
     )
     if not sequence_analysis:
         abort(422)
@@ -22,6 +26,7 @@ def get_sequence_analysis_result_action(fasta_hash: str):
     if "result" not in sequence_analysis:
         return jsonify(None)
     return jsonify(json.loads(sequence_analysis["result"]))
+
 
 def delete_sequence_analysis_result_action(fasta_hash: str):
     redis_connection.delete(f"client:sequence_analysis:{fasta_hash}")
@@ -42,6 +47,7 @@ def join_sequence_analysis_room_action(pathogen_type):
         to=f"{pathogen_type}_{socket_id}",
     )
 
+
 def leave_sequence_analysis_room_action(pathogen_type):
     """
     Leave a sequence analysis room.
@@ -52,7 +58,9 @@ def leave_sequence_analysis_room_action(pathogen_type):
     leave_room(f"{pathogen_type}_{socket_id}")
 
 
-def init_sequence_analysis_action(fasta_chunk, chunk_information, pathogen_id, fasta_hash=None):
+def init_sequence_analysis_action(
+    fasta_chunk, chunk_information, pathogen_id, fasta_hash=None
+):
     """
     Collect fasta chunks for sequence analysis and init the analysis when all chunks were successfully transferred.
 
@@ -68,6 +76,8 @@ def init_sequence_analysis_action(fasta_chunk, chunk_information, pathogen_id, f
             "id": pathogen_id,
         }
     )
+    if not pathogen:
+        return
     socket_id = request.sid
     fasta_chunk = fasta_chunk.replace("\r", "")
     # ensure pseudonymization of bacterial fasta assemblies by removing potentially included ids in headers
