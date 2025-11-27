@@ -5,23 +5,30 @@ from werkzeug.exceptions import UnprocessableEntity
 from prisma.models import Pathogen
 from src.config import get_project_path
 from src.domains.pathogen_registry.resources import Pathogen as PathogenResource
-from src.domains.pathogen_registry.services.pathogen_service import create_zip_buffer_from_scheme_directory, \
-    get_example_data_filename
+from src.domains.pathogen_registry.services.pathogen_service import (
+    create_zip_buffer_from_scheme_directory,
+    get_example_data_filename,
+)
 
 
 def get_all_pathogens_action():
     pathogens = Pathogen.prisma().find_many()
-    return make_response([PathogenResource(
-        id=pathogen.id,
-        name=pathogen.name,
-        scheme_version=pathogen.scheme_version,
-        type=pathogen.type,
-        activated=pathogen.activated,
-        genetic_distance_threshold=pathogen.genetic_distance_threshold,
-        cases_example=pathogen.example_cases_key,
-        contacts_example=pathogen.example_contacts_key,
-        sequences_example=pathogen.example_sequences_key,
-    ).model_dump(mode="json") for pathogen in pathogens])
+    return make_response(
+        [
+            PathogenResource(
+                id=pathogen.id,
+                name=pathogen.name,
+                scheme_version=pathogen.scheme_version,
+                type=pathogen.type,
+                activated=pathogen.activated,
+                genetic_distance_threshold=pathogen.genetic_distance_threshold,
+                cases_example=pathogen.example_cases_key,
+                contacts_example=pathogen.example_contacts_key,
+                sequences_example=pathogen.example_sequences_key,
+            ).model_dump(mode="json")
+            for pathogen in pathogens
+        ]
+    )
 
 
 def get_pathogen_action(pathogen_id: int):
@@ -32,17 +39,19 @@ def get_pathogen_action(pathogen_id: int):
     )
     if not pathogen:
         abort(404)
-    return make_response(PathogenResource(
-        id=pathogen.id,
-        name=pathogen.name,
-        scheme_version=pathogen.scheme_version,
-        type=pathogen.type,
-        activated=pathogen.activated,
-        genetic_distance_threshold=pathogen.genetic_distance_threshold,
-        cases_example=pathogen.example_cases_key,
-        contacts_example=pathogen.example_contacts_key,
-        sequences_example=pathogen.example_sequences_key,
-    ).model_dump(mode="json"))
+    return make_response(
+        PathogenResource(
+            id=pathogen.id,
+            name=pathogen.name,
+            scheme_version=pathogen.scheme_version,
+            type=pathogen.type,
+            activated=pathogen.activated,
+            genetic_distance_threshold=pathogen.genetic_distance_threshold,
+            cases_example=pathogen.example_cases_key,
+            contacts_example=pathogen.example_contacts_key,
+            sequences_example=pathogen.example_sequences_key,
+        ).model_dump(mode="json")
+    )
 
 
 def download_scheme_action(pathogen_id: int):
@@ -79,8 +88,10 @@ def download_example_data_action(pathogen_id: int, example_data_type: str):
         filename = get_example_data_filename(pathogen, example_data_type)
     except Exception:
         raise UnprocessableEntity
-    
-    file_path = f"{get_project_path()}/data/pathogen_example_data/{str(pathogen_id)}/{filename}"
+
+    file_path = (
+        f"{get_project_path()}/data/pathogen_example_data/{str(pathogen_id)}/{filename}"
+    )
     if not os.path.exists(file_path):
         abort(404)
     return send_file(file_path, as_attachment=True, download_name=filename)
