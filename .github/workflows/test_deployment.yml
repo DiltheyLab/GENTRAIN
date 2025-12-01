@@ -17,6 +17,9 @@ jobs:
       - name: Start Docker Containers
         run: docker compose -f docker-compose.test.yaml up -d
 
+        #docker compose -f docker-compose.test.yaml run --rm e2e-tests npx cypress run --browser chrome --spec "cypress/e2e/app/tutorial*.spec.ts"
+        #docker compose -f docker-compose.test.yaml run --rm e2e-tests npx cypress run --browser chrome --spec "cypress/e2e/smoke/smoke*.spec.ts"
+
       - name: Shut down containers
         if: always()
         run: docker compose down -v

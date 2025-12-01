@@ -1,6 +1,7 @@
 /**
  * Custom Cypress commands for admin panel E2E tests
  */
+import "cypress-file-upload";
 
 /**
  * Login command - uses API to seed session, then visits dashboard

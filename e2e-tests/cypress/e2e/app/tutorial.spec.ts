@@ -2,7 +2,7 @@
  * Tutorial Tests
  * Tests for the interactive GENTRAIN tutorial
  */
-import { checkIfCanvaHasContent } from "../../support/helpers";
+import { checkIfCanvasHasContent } from "../../support/helpers";
 
 describe("tutorial", () => {
   function clickUntilNextPageOrEnd(): void {
@@ -35,7 +35,7 @@ describe("tutorial", () => {
     cy.contains("Schritt 2").should("be.visible");
     cy.contains("button", "Weiter").click();
     cy.contains("Schritt 3").should("be.visible");
-    checkIfCanvaHasContent(".force-graph-container > canvas");
+    checkIfCanvasHasContent(".force-graph-container > canvas");
     clickUntilNextPageOrEnd();
     cy.url().should("include", "/data-management");
     clickUntilNextPageOrEnd();
@@ -43,7 +43,7 @@ describe("tutorial", () => {
     clickUntilNextPageOrEnd();
     cy.url().should("include", "/outbreak-analysis/1");
     cy.contains("button > span", "Schule A");
-    checkIfCanvaHasContent(".force-graph-container > canvas");
+    checkIfCanvasHasContent(".force-graph-container > canvas");
     clickUntilNextPageOrEnd();
     cy.url().should("equal", `${Cypress.env("APP_URL")}/`);
   });
@@ -51,9 +51,9 @@ describe("tutorial", () => {
   it("refreshes the page during the turorial and checks if the turorial step stays the same", () => {
     cy.contains("button", "Weiter").click();
     cy.contains("Schritt 2").should("be.visible");
-    checkIfCanvaHasContent(".force-graph-container > canvas");
+    checkIfCanvasHasContent(".force-graph-container > canvas");
     cy.reload();
-    checkIfCanvaHasContent(".force-graph-container > canvas");
+    checkIfCanvasHasContent(".force-graph-container > canvas");
     cy.contains("Schritt 2").should("be.visible");
   });
 

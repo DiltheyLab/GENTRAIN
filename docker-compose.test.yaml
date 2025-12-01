@@ -191,13 +191,15 @@ services:
 
   e2e-tests:
     container_name: gentrain-e2e-tests
-    image: cypress/included:15.6.0
-    working_dir: /e2e
+    image: gentrain-e2e-tests
+    build:
+      context: ./e2e-tests
+      dockerfile: Dockerfile
     volumes:
       - type: bind
         source: ./e2e-tests
         target: /e2e
-      - /e2e/node_modules # ignore node modules
+      - /e2e-tests/node_modules # ignore node modules
     networks:
       - caddy
     extra_hosts:
@@ -206,6 +208,9 @@ services:
       - "api.localhost:host-gateway"
     entrypoint: ""
     command: ["tail", "-f", "/dev/null"]
+    #depends_on:
+    #caddy:
+    #condition: service_started
 
 volumes:
   caddy_data:
