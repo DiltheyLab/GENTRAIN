@@ -8,7 +8,7 @@ import { useCoreStore } from "@/modules/core/stores/core";
 import { FileReadingStrategy } from "../data_import/file_reading/FileReadingStrategy";
 import { SingleFileReading } from "../data_import/file_reading/SingleFileReading";
 import { MultiFileReading } from "../data_import/file_reading/MultiFileReading";
-import { PathogenSchema } from "@/modules/core/models/pathogens";
+import { PathogenSchema, PathogenWithRelationships } from "@/modules/core/models/pathogens";
 
 export class PathogenStrategyManager {
     public static getDistanceCalculationStrategy = async (
@@ -23,6 +23,22 @@ export class PathogenStrategyManager {
                 return new BacterialDistanceCalculation(pathogen);
             default:
                 return new ViralDistanceCalculation(pathogen);
+        }
+    };
+
+    // For strategy retrieval from worker files
+    public static getSequenceAnalysisStrategyWithoutZustand = (pathogen: PathogenWithRelationships):
+        BacterialSequenceAnalysis | ViralSequenceAnalysis => {
+        if (!pathogen.pathogen_type) {
+            throw new GentrainException("InvalidPathogenType");
+        }
+        switch (pathogen.pathogen_type.name) {
+            case PathogenTypeName[PathogenTypeName.bacterial]:
+                return new BacterialSequenceAnalysis(pathogen);
+            case PathogenTypeName[PathogenTypeName.viral]:
+                return new ViralSequenceAnalysis(pathogen);
+            default:
+                throw new GentrainException("InvalidPathogenType");
         }
     };
 

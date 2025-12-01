@@ -9,6 +9,7 @@ import { useTutorialStore } from "../tutorial/stores/tutorial";
 import { useSyncPathogensBetweenServerAndClient } from "./hooks/useSyncPathogensBetweenServerAndClient";
 import { useDatabaseDeletion } from "./hooks/database/useDatabaseDeletion";
 import { MobileBlocker } from "./components/layout/MobileBlocker";
+import { LoadingBlocker } from "./components/layout/LoadingBlocker";
 
 export const Root = () => {
     const sessionId = useCoreStore((state) => state.sessionId);
@@ -25,6 +26,7 @@ export const Root = () => {
     return (
         <>
             <MobileBlocker />
+            <LoadingBlocker />
             <PathogenSelectionDialog />
             {tutorialTourIsActive && <TutorialTour />}
             <Layout>

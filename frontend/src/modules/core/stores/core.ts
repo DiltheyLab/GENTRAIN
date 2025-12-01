@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 type CoreStoreState = {
     activePathogen: PathogenWithRelationships | null;
     pathogenIsLoading: boolean;
+    loadingBlockerIsActive: boolean;
     sessionId: string | null | undefined;
     casesWithRelationships: CaseWithRelationships[];
 };
@@ -15,6 +16,7 @@ type CoreStoreState = {
 type CoreStoreActions = {
     updateCasesWithRelationships: () => Promise<void>;
     initSession: () => void;
+    setLoadingBlockerIsActive: (loadingBlockerIsActive: boolean) => void;
     updateActivePathogen: (pathogen: PathogenSchema | null) => void;
     setPathogenIsLoading: (pathogenIsLoading: boolean) => void;
 };
@@ -26,6 +28,7 @@ export const useCoreStore = create<CoreStore>()(
         (set, get) => ({
             activePathogen: null,
             pathogenIsLoading: false,
+            loadingBlockerIsActive: false,
             sessionId: undefined,
             casesWithRelationships: [],
             updateCasesWithRelationships: async () => {
@@ -37,6 +40,9 @@ export const useCoreStore = create<CoreStore>()(
             initSession: () => {
                 const sessionId = uuidv4();
                 set({ sessionId: sessionId });
+            },
+            setLoadingBlockerIsActive: (loadingBlockerIsActive: boolean) => {
+                set({ loadingBlockerIsActive: loadingBlockerIsActive });
             },
             updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
                 if (!pathogen) {
@@ -53,17 +59,17 @@ export const useCoreStore = create<CoreStore>()(
                 set({ activePathogen: pathogen });
                 get().updateCasesWithRelationships();
             },
-            setPathogenIsLoading: (pathogenIsLoading) => {
+            setPathogenIsLoading: pathogenIsLoading => {
                 set({ pathogenIsLoading: pathogenIsLoading });
             },
         }),
         {
             name: "core",
-            partialize: (state) => ({
+            partialize: state => ({
                 activePathogen: state.activePathogen,
                 sessionId: state.sessionId,
             }),
-            onRehydrateStorage: () => (state) => {
+            onRehydrateStorage: () => state => {
                 // When store is rehydrated, if there's an active pathogen, load its cases
                 if (state?.activePathogen) {
                     state.updateCasesWithRelationships();
