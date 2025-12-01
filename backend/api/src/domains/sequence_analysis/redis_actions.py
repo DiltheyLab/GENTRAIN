@@ -4,6 +4,7 @@ from src.domains.sequence_analysis.strategies import (
     BacterialSequenceAnalysis,
 )
 
+
 def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
     """
     Write a fasta chunk into the redis cache.
@@ -23,7 +24,6 @@ def persist_fasta_chunk(fasta_chunk, socket_id, chunk_information):
         name=f"chunks:{socket_id}:{chunk_information['id']}:{chunk_information['index']}",
         time=60,
     )
-
 
 
 def get_merged_fasta_content_if_complete(socket_id, chunk_information):
@@ -65,6 +65,7 @@ def get_persisted_fasta_chunk_keys(socket_id, chunk_information):
     )
     chunk_keys.sort()
     return chunk_keys
+
 
 def enqueue_sequence_analysis_job(socket_id, pathogen, fasta_content, fasta_hash=None):
     """
