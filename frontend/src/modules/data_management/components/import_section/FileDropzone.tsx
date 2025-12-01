@@ -20,8 +20,8 @@ type FileDropzoneProps = {
 export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: FileDropzoneProps) => {
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
-    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
-    const setLoadingBlockerIsActive = useCoreStore((state) => state.setLoadingBlockerIsActive);
+    const showImportAssistent = useDataManagementStore(state => state.showImportAssistent);
+    const setLoadingBlockerIsActive = useCoreStore(state => state.setLoadingBlockerIsActive);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -51,9 +51,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                 showWarningToasts(validationResult.warnings);
             }
             onFileUpload();
-            setLoadingBlockerIsActive(false);
         } catch (error) {
-            setLoadingBlockerIsActive(false);
             // if an error occurs, show a toast notification with the error message
             if (error instanceof GentrainException) {
                 console.log(error);
@@ -73,6 +71,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                 });
             }
             console.log(error);
+        } finally {
+            setLoadingBlockerIsActive(false);
         }
     };
 
@@ -86,32 +86,34 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         <>
             <div
                 {...getRootProps()}
-                className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${isDragActive ? "border-muted-foreground/30" : ""
-                    }`}
+                className={`flex flex-col p-10 items-center border-2 rounded-lg border-dashed border-muted-foreground/10 hover:border-muted-foreground/30 bg-muted/50 min-w-[100px] w-full group ${
+                    isDragActive ? "border-muted-foreground/30" : ""
+                }`}
             >
                 <input
                     {...getInputProps()}
                     accept={fileReadingStrategy.getAcceptedMimeType(type).join(",")}
                     multiple={fileReadingStrategy.allowMultifile()}
-                    onChange={(e) => {
+                    onChange={e => {
                         handleFileUpload(e.target.files);
                     }}
                 />
                 {!showImportAssistent && (
-                    <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
+                    <h3 className='font-bold tracking-tight text-lg mb-4'>{t(`import:labels.${type}`)}</h3>
                 )}
-                <div className="relative">
-                    <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
+                <div className='relative'>
+                    <div className='relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full'>
                         {icon ? <>{icon}</> : <File />}
                     </div>
 
                     <CirclePlus
-                        className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${isDragActive ? "fill-primary scale-125" : " fill-black"
-                            }`}
-                        fill="black"
+                        className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
+                            isDragActive ? "fill-primary scale-125" : " fill-black"
+                        }`}
+                        fill='black'
                     />
                 </div>
-                <div className="text-center mt-4 flex items-center justfy-center flex-1 lg:px-10">
+                <div className='text-center mt-4 flex items-center justfy-center flex-1 lg:px-10'>
                     {isDragActive ? (
                         <small>
                             Platzieren Sie die Dateien in der Fläche.
@@ -125,7 +127,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                         </small>
                     )}
                 </div>
-                <Button className="mt-4">{t(`import:labels.${type}`)} auswählen</Button>
+                <Button className='mt-4'>{t(`import:labels.${type}`)} auswählen</Button>
             </div>
         </>
     );
