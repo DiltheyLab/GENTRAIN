@@ -206,11 +206,9 @@ services:
       - "app.localhost:host-gateway"
       - "admin.localhost:host-gateway"
       - "api.localhost:host-gateway"
-    entrypoint: ""
-    command: ["tail", "-f", "/dev/null"]
-    #depends_on:
-    #caddy:
-    #condition: service_started
+    depends_on:
+      caddy:
+        condition: service_started
 
 volumes:
   caddy_data:

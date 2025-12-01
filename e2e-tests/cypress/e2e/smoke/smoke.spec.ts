@@ -24,7 +24,6 @@
  */
 
 import * as helpers from "../../support/helpers";
-import { checkIfCanvasHasContent } from "../../support/helpers";
 
 describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
   it("should execute all critical admin panel workflows without errors", () => {
