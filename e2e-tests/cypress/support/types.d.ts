@@ -62,10 +62,10 @@ declare namespace Cypress {
 
     /**
      * Clear IndexedDB storage
-     * @param dbName - optional database name
+     * @param dbName - database name
      * @param storeName - optional store name
      */
-    clearIndexedDB(dbName?: string, storeName?: string): Chainable<void>;
+    clearIndexedDB(dbName: string, storeName?: string): Chainable<void>;
 
     /**
      * Navigate to a resource list page

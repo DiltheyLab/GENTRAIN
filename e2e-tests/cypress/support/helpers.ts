@@ -128,7 +128,7 @@ export const clickShowRecord = (recordName: string): void => {
  * Submit a form
  */
 export const submitForm = (): void => {
-  cy.get('form button[type="submit"]').click({ force: true });
+  cy.get('form button[type="submit"]').click();
 };
 
 /**

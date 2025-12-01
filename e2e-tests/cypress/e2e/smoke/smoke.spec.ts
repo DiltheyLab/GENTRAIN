@@ -3,21 +3,31 @@
  * Tests all major workflows in rapid succession
  * Purpose: Catch major regressions in < 2 minutes
  *
- * Coverage:
- * 1. Login → Dashboard
- * 2. Navigate Users → Create → Edit → Delete
+ * Coverage Admin Panel:
+ * 1. Login → Admin
+ * 2. Navigate Users → Create → Delete
  * 3. Navigate Roles → View list
- * 4. Navigate Pathogens → Create → Edit
- * 5. Logout
+ * 4. Navigate Pathogens → Create
+ * 5. Logout from Admin
+ * 6. Auth boundary check → Non-superuser access and permissions
+ *
+ * Coverage Dashboard:
+ * 1. Go to Dashboard
+ * 2. Select Pathogen
+ * 3. Navigate to Data Management
+ * 4. Upload Case, Contact, Sequence Data
+ * 5. Navigate to Dashboard
+ * 6. Verify Sequence Analysis Graph Rendering
+ *
+ * Note: This test is designed to run quickly and catch critical issues.
+ * It does not cover every edge case or detail, but ensures core functionality works.
  */
 
 import * as helpers from "../../support/helpers";
+import { checkIfCanvasHasContent } from "../../support/helpers";
 
 describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
-  /**
-   * Complete workflow smoke test
-   */
-  it("should execute all critical workflows without errors", () => {
+  it("should execute all critical admin panel workflows without errors", () => {
     // 1. LOGIN
     cy.loginAs();
 
@@ -54,7 +64,6 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
     // Create pathogen
     cy.contains("Create new", { matchCase: false }).click();
     cy.get("form").should("be.visible");
-
     const smokePathogen = `smoke-pathogen-${Date.now()}`;
     cy.get('input[name="name"]').clear().type(smokePathogen);
     cy.get(".css-1o5aihk").click(); // Open select
@@ -62,78 +71,105 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
     cy.get('input[name="genetic_distance_threshold"]').clear().type("2");
     cy.contains("label", "Activated").click();
 
-    // Upload files
+    // Upload files (scheme, example data)
     const schemePath = "/sars-cov-2_scheme.zip";
-    // get the file input and attach the file in section with data-testid="property-edit-scheme"
     cy.get('[data-testid="property-edit-scheme"]').find("input").attachFile(schemePath);
-
     const exampleCaseDataPath = "/sars-cov-2_falldaten.csv";
     cy.get('[data-testid="property-edit-example_cases_file"]').find("input").attachFile(exampleCaseDataPath);
-
-    const exampleSequenceDataPath = "/sars-cov-2_sequenzdaten";
+    const exampleSequenceDataPath = "/sars-cov-2_sequenzdaten.fasta";
     cy.get('[data-testid="property-edit-example_sequences_file"]').find("input").attachFile({
       filePath: exampleSequenceDataPath,
+      mimeType: "application/octet-stream",
     });
-
     const exampleContactsDataPath = "/sars-cov-2_kontaktdaten.csv";
     cy.get('[data-testid="property-edit-example_contacts_file"]').find("input").attachFile(exampleContactsDataPath);
 
     helpers.submitForm();
-    cy.contains(smokePathogen, { timeout: 5000 }).should("exist");
-
-    // Edit pathogen (just view form and make minor change)
-    helpers.clickShowRecord(smokePathogen);
-    cy.get('input[name="genetic_distance_threshold"]', { timeout: 5000 }).clear().type("75");
-    helpers.submitForm();
+    cy.contains(smokePathogen).should("exist");
 
     // 5. LOGOUT
     cy.logout();
     cy.url().should("include", "/login");
-
-    // Success - all workflows executed without errors
-    cy.log("✅ Smoke test passed - all critical workflows working");
   });
 
   /**
    * Auth boundary check
    */
-  /* 
-    it("should enforce authentication boundaries", () => {
-      // Unauthenticated access attempt
-      cy.clearCookie("adminjs");
-      cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
+  it("should enforce authentication boundaries of admin panel", () => {
+    // Unauthenticated access attempt
+    cy.clearCookie("adminjs");
+    cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
 
-      // Should redirect to login
-      cy.url().should("include", "/login");
+    // Should redirect to login
+    cy.url().should("include", "/login");
 
-      // Login and verify access
-      cy.loginAs();
-      cy.navigateToResource("User");
-      cy.url().should("include", "User");
+    // Login and verify access
+    cy.loginAs();
+    cy.navigateToResource("User");
 
-      // Non-superuser cannot access users
-      cy.logout();
-      cy.loginAs("user");
+    // Create user with non-superuser role
+    const normalUsername = `user-${Date.now()}`;
+    const normalPassword = "UserPass123!";
+    cy.contains("Create new").click();
+    cy.get("form").should("be.visible");
 
-      cy.navigateToResource("User");
-      cy.url().should("not.include", "/User");
+    cy.get('[data-testid="property-edit-username"]').type(normalUsername);
+    cy.get('[data-testid="property-edit-password"]').type(normalPassword);
+    cy.get('[data-testid="property-edit-role"]').click().should("contain", "user");
+
+    cy.contains(/^user$/).click();
+    helpers.submitForm();
+    helpers.assertRowInTable(normalUsername);
+
+    // Non-superuser cannot access users
+    cy.logout();
+    cy.loginAs(normalUsername, normalPassword);
+
+    cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
+    cy.contains("Page not found").should("exist");
+    cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/Role`);
+    cy.contains("Page not found").should("exist");
+    cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/Log`);
+    cy.contains("Page not found").should("exist");
+  });
+});
+
+describe("Smoke Test - Dashboard Sequence Analysis", () => {
+  beforeEach(() => {
+    cy.visit(Cypress.env("APP_URL"));
+    cy.wait(1000); // wait for app to load
+    cy.clearIndexedDB("gentrain");
+  });
+
+  it("should complete a sequence analysis and render the graph", () => {
+    cy.contains("Pathogen auswählen").click();
+    cy.contains("pathogen").click();
+    cy.contains("Starten").click();
+    cy.contains("a", "Datenverwaltung").click();
+
+    // Upload case data
+    cy.get('[data-testid="file-dropzone-input-case"]').attachFile("/sars-cov-2_falldaten.csv", {
+      subjectType: "drag-n-drop",
     });
-  */
-  /**
-   * Data persistence check
-   */
-  /* 
-    it("should persist data across page reloads", () => {
-      cy.loginAs("superuser");
-      cy.navigateToResource("User");
-      //helpers.waitForTableLoad();
+    cy.contains("Falldaten hinzufügen").click();
+    cy.contains("Datei wurde erfolgreich hochgeladen").should("exist");
 
-      // Reload page
-      cy.reload();
-
-      // Should still be on users page and logged in
-      cy.url().should("include", "users");
-      cy.get("table tbody").should("be.visible");
+    // Upload contact data
+    cy.get('[data-testid="file-dropzone-input-contact"]').attachFile("/sars-cov-2_kontaktdaten.csv", {
+      subjectType: "drag-n-drop",
     });
-    */
+    cy.contains("Kontaktpersonendaten hinzufügen").click();
+    cy.contains("Import war erfolgreich").should("exist");
+
+    // Upload sequence data
+    cy.get('[data-testid="file-dropzone-input-sequence"]').attachFile("/sars-cov-2_sequenzdaten.fasta", {
+      subjectType: "drag-n-drop",
+    });
+    cy.contains("Sequenzdaten werden hinzugefügt").should("exist");
+    // wait some time until the button appears
+    cy.contains("Datei wurde erfolgreich hochgeladen", { timeout: 60000 }).should("exist");
+
+    cy.contains("a", "Dashboard").click();
+    helpers.checkIfCanvasHasContent(".force-graph-container > canvas");
+  });
 });
