@@ -50,7 +50,7 @@ export class PdfDataGenerator {
             caseCountWithoutOutbreak
         )}${this.getSummaryPhraseForUnassignedCases(
             caseCountWithoutOutbreak
-        )}${this.getSummaryPhraseForSequenceQuality()}${this.getSummaryPhraseForContactLinks()}`;
+        )}${this.getSummaryPhraseForContactLinks()}`;
     };
 
     public generateGraphImage = async () => {
@@ -209,22 +209,6 @@ export class PdfDataGenerator {
             }`;
     };
 
-    private getSummaryPhraseForSequenceQuality = () => {
-        const sequencedCaseNodes = this.outbreakAnalysisState.graphData.nodes.filter((node) => node.caseData.fasta_id);
-        const sequencedCaseNodesWithLowAmountOfNs = sequencedCaseNodes.filter((node) => {
-            if (this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral) {
-                const viralSequenceAnalysisResult = node.caseData.sequence_analysis?.result as ViralAnalysisResult;
-                return viralSequenceAnalysisResult?.n_count && viralSequenceAnalysisResult.n_count < 1500;
-            }
-            return false;
-        });
-        return `\n\nFür ${sequencedCaseNodes.length} von ${this.outbreakAnalysisState.graphData.nodes.length
-            } Fällen liegen genetische Sequenzdaten vor${this.coreStore.activePathogen?.pathogen_type?.name === PathogenTypeName.viral
-                ? `, wobei ${sequencedCaseNodesWithLowAmountOfNs.length} von ${sequencedCaseNodes.length} Genomen fast perfekt (< 1500 Ns) aufgelöst sind`
-                : ""
-            }.`;
-    };
-
     private getSummaryPhraseForContactLinks = () => {
         const allContactTracingLinks = this.outbreakAnalysisState.graphData.links.filter(
             (link) => link.type !== t(`linkTypes.geneticDistance`)
@@ -339,7 +323,7 @@ export class PdfDataGenerator {
             return "";
         }
 
-        return `\n\nDie Probe${this.distantCasesOfSelectedOutbreak.length > 1 ? "n" : ""
+        return `\n\nDie Probe ${this.distantCasesOfSelectedOutbreak.length > 1 ? "n" : ""
             } ${this.distantCasesOfSelectedOutbreak
                 .map((node) => `${node?.caseData.fasta_id} (${node?.index})`)
                 .join(", ")
