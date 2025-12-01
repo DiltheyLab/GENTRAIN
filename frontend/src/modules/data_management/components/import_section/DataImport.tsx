@@ -172,12 +172,16 @@ export const DataImport = ({
                 {renderDropzone()}
                 {children ? renderDataSelection() : null}
             </div>
-                {enableExampleDataDownload && (
-                        <a href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`} target="_blank" download className="flex font-medium align-center inline-block text-black mt-4">
-                            Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
-                            <FileDown className="h-5 w-5 ml-1" />
-                        </a>
-                )}
+            {enableExampleDataDownload && (
+                <a
+                    href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`}
+                    target="_blank"
+                    download
+                    className="font-medium align-center inline-block text-black mt-4"
+                >
+                    Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
+                </a>
+            )}
         </div>
     ) : (
         <>
@@ -187,7 +191,13 @@ export const DataImport = ({
                         {renderDropzone()}
                     </div>
                     {enableExampleDataDownload && (
-                        <a href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`}  download className="flex inline-block text-black mt-4">
+                        <a
+                            href={`${import.meta.env.VITE_API_HOST}/pathogens/${
+                                activePathogen?.id
+                            }/example_data/${type}`}
+                            download
+                            className="inline-block text-black mt-4"
+                        >
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
                             <FileDown className="h-5 w-5 ml-1" />
                         </a>

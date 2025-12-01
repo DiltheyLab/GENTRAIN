@@ -93,6 +93,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                     onChange={(e) => {
                         handleFileUpload(e.target.files);
                     }}
+                    data-testid={`file-dropzone-input-${type}`}
                 />
                 {!showImportAssistent && (
                     <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
