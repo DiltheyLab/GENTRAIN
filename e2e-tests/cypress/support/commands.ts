@@ -10,22 +10,12 @@ import "cypress-file-upload";
 Cypress.Commands.add(
   "loginAs",
   (username = Cypress.env("ADMIN_SUPERUSER"), password = Cypress.env("ADMIN_PASSWORD")) => {
-    // Use cy.session to cache authentication across tests
-    cy.session(
-      [username],
-      () => {
-        cy.visit(Cypress.env("ADMIN_PANEL_URL"));
-        cy.get("input[name=email]").type(username);
-        cy.get("input[name=password]").type(`${password}{enter}`);
-        cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/`);
-        cy.get("div").should("contain", username);
-      },
-      {
-        validate: () => {
-          cy.getCookie("adminjs").should("exist");
-        },
-      }
-    );
+    cy.visit(Cypress.env("ADMIN_PANEL_URL"));
+    cy.get("input[name=email]").type(username);
+    cy.get("input[name=password]").type(`${password}{enter}`);
+    cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/`);
+    cy.get("div").should("contain", username);
+    cy.getCookie("adminjs").should("exist");
   }
 );
 
