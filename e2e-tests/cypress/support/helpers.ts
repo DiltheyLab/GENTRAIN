@@ -145,7 +145,7 @@ export const assertNotification = (type: "success" | "error" | "info" | "warning
 /**
  * Check if a canvas is not empty
  */
-export const checkIfCanvaHasContent = (selector: string, waitUntilRendering = 2000): void => {
+export const checkIfCanvasHasContent = (selector: string, waitUntilRendering = 2000): void => {
   cy.wait(waitUntilRendering);
   cy.get(selector).then(($canvas: JQuery<HTMLCanvasElement>) => {
     const canvas = $canvas[0];
