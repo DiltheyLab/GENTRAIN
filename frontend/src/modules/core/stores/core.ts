@@ -42,9 +42,6 @@ export const useCoreStore = create<CoreStore>()(
                 set({ sessionId: sessionId });
             },
             setLoadingBlockerIsActive: (loadingBlockerIsActive: boolean) => {
-                if (loadingBlockerIsActive && get().loadingBlockerIsActive) {
-                    return;
-                }
                 set({ loadingBlockerIsActive: loadingBlockerIsActive });
             },
             updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
@@ -62,17 +59,17 @@ export const useCoreStore = create<CoreStore>()(
                 set({ activePathogen: pathogen });
                 get().updateCasesWithRelationships();
             },
-            setPathogenIsLoading: (pathogenIsLoading) => {
+            setPathogenIsLoading: pathogenIsLoading => {
                 set({ pathogenIsLoading: pathogenIsLoading });
             },
         }),
         {
             name: "core",
-            partialize: (state) => ({
+            partialize: state => ({
                 activePathogen: state.activePathogen,
                 sessionId: state.sessionId,
             }),
-            onRehydrateStorage: () => (state) => {
+            onRehydrateStorage: () => state => {
                 // When store is rehydrated, if there's an active pathogen, load its cases
                 if (state?.activePathogen) {
                     state.updateCasesWithRelationships();
