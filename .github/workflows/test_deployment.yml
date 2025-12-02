@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - test
+      - e2e-testing
   workflow_dispatch:
 
 jobs:
@@ -17,8 +17,19 @@ jobs:
       - name: Start Docker Containers
         run: docker compose -f docker-compose.test.yaml up -d
 
-        #docker compose -f docker-compose.test.yaml run --rm e2e-tests npx cypress run --browser chrome --spec "cypress/e2e/app/tutorial*.spec.ts"
-        #docker compose -f docker-compose.test.yaml run --rm e2e-tests npx cypress run --browser chrome --spec "cypress/e2e/smoke/smoke*.spec.ts"
+      - name: Upload Cypress videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: e2e-tests/cypress/videos
+
+      - name: Upload Cypress screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: e2e-tests/cypress/screenshots
 
       - name: Shut down containers
         if: always()
