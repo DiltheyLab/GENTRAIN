@@ -7,13 +7,11 @@ export default defineConfig({
 
     //artifacts
     video: true,
-    videoCompression: 32,
     screenshotOnRunFailure: true,
-    trashAssetsBeforeRuns: true,
 
     env: {
-      ADMIN_SUPERUSER_ROLE: "superuser",
-      ADMIN_USER_ROLE: "user",
+      SUPERUSER_ROLE: "superuser",
+      USER_ROLE: "user",
       ADMIN_SUPERUSER: "admin",
       ADMIN_PASSWORD: "secretPassword",
       ADMIN_PANEL_URL: "https://admin.localhost",

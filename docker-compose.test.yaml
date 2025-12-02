@@ -206,6 +206,7 @@ services:
       - "app.localhost:host-gateway"
       - "admin.localhost:host-gateway"
       - "api.localhost:host-gateway"
+      - "docs.localhost:host-gateway"
 
 volumes:
   caddy_data:
