@@ -29,7 +29,9 @@ jobs:
         run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
 
       - name: Build Docker images
-        run: docker compose build --no-cache --pull
+        run: |
+          docker compose build --no-cache --pull
+          docker compose --profile testing build e2e-tests
 
       - name: Start services
         run: |

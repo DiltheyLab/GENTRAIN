@@ -197,6 +197,9 @@ services:
     build:
       context: ./e2e-tests
       dockerfile: Dockerfile
+      args:
+        CHROME_VERSION: "139.0.7258.154-1"
+    command: npx cypress run
     volumes:
       - type: bind
         source: ./e2e-tests

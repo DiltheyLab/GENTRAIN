@@ -1,7 +1,10 @@
-FROM cypress/included:15.6.0
+FROM cypress/factory
 WORKDIR /e2e
 COPY package*.json ./
-RUN npm ci
-COPY . .
 
-CMD ["npx", "cypress", "run", "--browser", "chrome", "--headless"]
+RUN npm ci
+
+# Install Cypress binaries
+RUN npx cypress install 
+
+COPY . .
