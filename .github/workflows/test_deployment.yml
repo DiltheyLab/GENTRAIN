@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker images
         run: |
-          docker compose build --no-cache --pull
+          docker compose build --no-cache
           docker compose --profile testing build e2e-tests
 
       - name: Start services

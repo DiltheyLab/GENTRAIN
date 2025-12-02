@@ -198,8 +198,8 @@ services:
       context: ./e2e-tests
       dockerfile: Dockerfile
       args:
-        CHROME_VERSION: "139.0.7258.154-1"
-    command: npx cypress run
+        CHROME_VERSION: "142.0.7444.175-1"
+    command: npx cypress run --browser chrome --headless
     volumes:
       - type: bind
         source: ./e2e-tests
@@ -210,9 +210,6 @@ services:
       - "app.localhost:host-gateway"
       - "admin.localhost:host-gateway"
       - "api.localhost:host-gateway"
-    depends_on:
-      caddy:
-        condition: service_started
 
 volumes:
   caddy_data:
