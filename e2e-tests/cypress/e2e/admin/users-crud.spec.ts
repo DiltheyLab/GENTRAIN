@@ -96,8 +96,8 @@ describe("User Management - CRUD Operations", () => {
     cy.loginAs();
     cy.navigateToResource("User");
 
-    const nameEditTestUser = `nameedituser-${Date.now()}`;
-    const updatedName = `updateduser-${Date.now()}`;
+    const nameEditTestUser = `user-${Date.now()}`;
+    const updatedName = `updated-${Date.now()}`;
 
     // Create a test user for test isolation
     helpers.createUser(nameEditTestUser, testPassword, "user");
@@ -106,12 +106,13 @@ describe("User Management - CRUD Operations", () => {
     // Click to edit
     helpers.clickShowRecord(nameEditTestUser);
     cy.get('[data-testid="action-edit"]').click();
+
     // Change username
-    cy.get('[data-testid="property-edit-username"] input').clear().type(updatedName);
-    cy.wait(2000);
+    cy.get('[data-testid="property-edit-username"] input').clear().type(updatedName).blur();
     helpers.submitForm();
 
-    //helpers.assertRowInTable(updatedName);
+    // Verify success
+    helpers.assertRowInTable(updatedName);
 
     // Cleanup - delete user
     helpers.clickShowRecord(updatedName);
@@ -141,8 +142,7 @@ describe("User Management - CRUD Operations", () => {
     helpers.clickShowRecord(passwordEditTestUser);
     cy.get('[data-testid="action-edit"]').click();
     // Change password
-    cy.get('[data-testid="property-edit-password"] input').clear().type(newPassword);
-    cy.wait(2000);
+    cy.get('[data-testid="property-edit-password"] input').clear().type(newPassword).blur();
     helpers.submitForm();
     // Verify success
     helpers.assertRowInTable(passwordEditTestUser);
