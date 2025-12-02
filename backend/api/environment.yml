@@ -3,10 +3,10 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python=3.11
+  - python=3.11 # chewbbaca does currently not support newer python versions
   - pip
-  - nextclade=3.8.2
-  - chewbbaca=3.3.9
+  - nextclade=3.18
+  - chewbbaca=3.4
   - pip:
       - -r requirements.txt
 prefix: /opt/conda/envs/gentrain
