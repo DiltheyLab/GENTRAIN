@@ -1,0 +1,12 @@
+name: gentrain
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pip
+  - nextclade=3.8.2
+  - chewbbaca=3.3.9
+  - pip:
+      - -r requirements.txt
+prefix: /opt/conda/envs/gentrain

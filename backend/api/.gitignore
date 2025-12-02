@@ -9,3 +9,4 @@ redis.conf
 .idea
 node_modules
 prisma
+.coverage
