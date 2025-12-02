@@ -10,8 +10,6 @@ export default defineConfig({
     videoCompression: 32,
     screenshotOnRunFailure: true,
     trashAssetsBeforeRuns: true,
-    videosFolder: "cypress/videos",
-    screenshotsFolder: "cypress/screenshots",
 
     env: {
       ADMIN_SUPERUSER_ROLE: "superuser",
