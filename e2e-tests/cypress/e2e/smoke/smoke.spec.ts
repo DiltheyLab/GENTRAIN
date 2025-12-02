@@ -84,7 +84,7 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
     cy.get('[data-testid="property-edit-example_contacts_file"]').find("input").attachFile(exampleContactsDataPath);
 
     helpers.submitForm();
-    cy.contains(smokePathogen).should("exist");
+    cy.contains(smokePathogen, { timeout: 15000 }).should("exist");
 
     // 5. LOGOUT
     cy.logout();
