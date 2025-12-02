@@ -199,6 +199,13 @@ services:
       dockerfile: Dockerfile
       args:
         CHROME_VERSION: "142.0.7444.175-1"
+    volumes:
+      - type: bind
+        source: ./e2e-tests/cypress/videos
+        target: /e2e-tests/cypress/videos
+      - type: bind
+        source: ./e2e-tests/cypress/screenshots
+        target: /e2e-tests/cypress/screenshots
     command: npx cypress run --browser chrome --headless
     networks:
       - caddy
