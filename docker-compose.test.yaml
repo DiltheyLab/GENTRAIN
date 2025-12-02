@@ -192,6 +192,8 @@ services:
   e2e-tests:
     container_name: gentrain-e2e-tests
     image: gentrain-e2e-tests
+    profiles:
+      - testing # Only starts when profile is explicitly activated
     build:
       context: ./e2e-tests
       dockerfile: Dockerfile
@@ -199,7 +201,6 @@ services:
       - type: bind
         source: ./e2e-tests
         target: /e2e
-      - /e2e-tests/node_modules # ignore node modules
     networks:
       - caddy
     extra_hosts:

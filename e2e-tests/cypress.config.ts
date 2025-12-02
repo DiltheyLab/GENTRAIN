@@ -4,8 +4,13 @@ export default defineConfig({
   e2e: {
     specPattern: "cypress/e2e/**/*.spec.ts",
     supportFile: "cypress/support/e2e.ts",
+
+    //artifacts
     video: true,
+    videoCompression: 32,
     screenshotOnRunFailure: true,
+    trashAssetsBeforeRuns: true,
+
     env: {
       ADMIN_SUPERUSER_ROLE: "superuser",
       ADMIN_USER_ROLE: "user",
