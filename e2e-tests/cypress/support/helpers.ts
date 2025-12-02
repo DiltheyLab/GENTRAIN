@@ -157,3 +157,19 @@ export const checkIfCanvasHasContent = (selector: string, waitUntilRendering = 2
     expect(hasContent).to.be.true;
   });
 };
+
+export const createUser = (username: string, password: string, role: string): void => {
+  cy.contains("Create new").click();
+  cy.get("form").should("be.visible");
+  cy.get('[data-testid="property-edit-username"] input').type(username);
+  cy.get('[data-testid="property-edit-password"] input').type(password);
+  cy.get('[data-testid="property-edit-role"]').click().should("contain", role);
+  cy.contains(new RegExp(`^${role}$`)).click();
+  submitForm();
+};
+
+export const deleteUser = (): void => {
+  cy.get("[data-testid=action-delete]").click();
+  cy.get('button[label="Confirm"]').click();
+  cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
+};
