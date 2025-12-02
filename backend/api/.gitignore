@@ -10,3 +10,4 @@ redis.conf
 node_modules
 prisma/*
 !prisma/.gitkeep
+.coverage

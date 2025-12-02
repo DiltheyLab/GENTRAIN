@@ -8,6 +8,7 @@ db = Prisma()
 db.connect()
 register(db)
 app = Flask(__name__)
+
 if environ.get("APP_ENV") == "development":
     CORS(app)
 app.config.from_pyfile("config.py")

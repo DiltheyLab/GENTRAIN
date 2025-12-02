@@ -87,7 +87,17 @@ Verwenden Sie `Caddyfile.example` als Vorlage für die HTTPS- und Routing-Konfig
 - Für die API, die Dokumentation und das Admin-Panel werden entsprechende Subdomains definiert und geroutet.
 - Automatische TLS-Zertifikate über Let’s Encrypt werden unterstützt
 
-### Schritt 4 — Stack starten
+### Schritt 4 — Redis konfigurieren
+
+Verwenden Sie `/backend/redis/redis.conf.prod.example` als Vorlage für die Konfiguration:
+
+```bash
+cp /backend/redis/redis.conf.prod.example /backend/redis/redis.conf.prod
+```
+
+Anschließend müssen Sie lediglich ein Password für den `default`-User setzen. Die anzupassenden Stellen sind in der Beispiel-Konfigurationsdatei mit `insert_password_for_default_user` markiert. Beachten Sie dass auch innerhalb der übergreifenden `.env`-Datei ein entsprechender Eintrag gesetzt sein muss um eine Redis-Verbindung herzustellen (`REDIS_PASSWORD`).
+
+### Schritt 5 — Stack starten
 
 ```bash
 docker compose -f docker-compose.prod.yaml up -d --build
@@ -109,15 +119,21 @@ Dieser Workflow automatisiert:
 5. Das sichere Neustarten der Docker-Container
 6. Slack-Benachrichtigungen bei Erfolg oder Fehler
 
+::: Datenbank-Backup
+
 Das erstellte Datenbank-Backup kann wiefolgt angewendet werden:
+
 ```bash
 docker exec -i gentrain-db psql -U gentrain -d test < db_dumps/<db_dump>.sql
 ```
 
 Es kann jederzeit ein manuelles Datenbank-Backup erstellt werden:
+
 ```bash
 docker exec -t gentrain-db pg_dump -d gentrain -U gentrain > db_dumps/`date +%Y-%m-%d"_"%H_%M_%S`.sql
 ```
+
+:::
 
 Organisationen können denselben Workflow nutzen, indem sie:
 

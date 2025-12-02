@@ -77,9 +77,11 @@ export class ContactsValidation extends ValidationStrategy {
             const existingContact = await db.contacts
                 .where("[case_id_1+case_id_2+type]")
                 .equals([indexCase.id, otherCase.id, t("import:contact_types.contact_person")])
+                .or("[case_id_1+case_id_2+type]")
+                .equals([otherCase.id, indexCase.id, t("import:contact_types.contact_person")])
                 .first();
 
-            // don't add contact to contact set if a db entry exists already
+            // Don't add contact to set if a db entry exists already
             if (existingContact) {
                 continue;
             }
@@ -87,6 +89,7 @@ export class ContactsValidation extends ValidationStrategy {
             // we sort cases alphabetically to add case pairs only once
             contactSet.add(JSON.stringify([case1, case2].sort() as [string, string]));
         }
+
         return this.collectContactsFromUniqueSet(contactSet);
     };
 

@@ -1,0 +1,4 @@
+bind 0.0.0.0
+requirepass "insert_password_for_default_user"
+protected-mode yes
+user default on sanitize-payload >insert_password_for_default_user ~* &* +@all -@dangerous +client|list +keys

@@ -1,10 +1,8 @@
 import { UploadedFile, ValidationError } from 'adminjs';
-import AdmZip, { IZipEntry } from 'adm-zip';
+import AdmZip from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { ClamScan } from '../clamscan.js';
-import { Readable } from 'stream';
 import { validateFilename } from '../util/validations.js';
 
 export abstract class SchemeValidator {

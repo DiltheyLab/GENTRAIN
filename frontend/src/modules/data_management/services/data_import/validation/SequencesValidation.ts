@@ -1,10 +1,9 @@
 import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { ValidationStrategy } from "./ValidationStrategy";
-import { PathogenStrategyManager } from "../../pathogen_strategies/PathogenStrategyManager";
 import { useDataManagementStore } from "@/modules/data_management/stores/dataManagement";
 import { useCoreStore } from "@/modules/core/stores/core";
 import { SequenceImport } from "@/modules/core/models/sequence_analyses";
-import { sha256 } from "js-sha256";
+import SequenceValidationWorker from "@/modules/data_management/workers/sequenceValidationWorker?worker";
 
 export class SequencesValidation extends ValidationStrategy {
     protected data: { fastaId: string; sequence: string }[] = [];
@@ -15,27 +14,21 @@ export class SequencesValidation extends ValidationStrategy {
 
     protected validate = async () => {
         const activePathogen = useCoreStore.getState().activePathogen;
-        const sequenceAnalysisStrategy = await PathogenStrategyManager.getSequenceAnalysisStrategy();
-
         if (!activePathogen) {
             throw new GentrainException("InvalidPathogenSelection");
         }
-        const sequenceImports: { [fastaId: string]: SequenceImport } = {};
-        for (const sequenceItem of this.data) {
-            const fastaHash = sha256(sequenceItem.sequence);
-            if (fastaHash in sequenceImports) {
-                sequenceImports[fastaHash].fasta_ids.push(sequenceItem.fastaId);
-            } else {
-                sequenceImports[fastaHash] = {
-                    ...{
-                        fasta_ids: [sequenceItem.fastaId],
-                        sequence: sequenceItem.sequence,
-                        status: "pending",
-                    },
-                    ...sequenceAnalysisStrategy?.getQualityParameters(sequenceItem.sequence),
-                };
-            }
-        }
+
+        // run sequence validation in a web worker to prevent blocking the render loop
+        // in case of large file sizes (especially relevant for bacterial imports)
+        const worker = new SequenceValidationWorker();
+        const sequenceImports: {
+            [fastaHash: string]: SequenceImport;
+        } = await new Promise((resolve, reject) => {
+            worker.onmessage = (e) => resolve(e.data);
+            worker.onerror = reject;
+            worker.postMessage({ sequences: this.data, activePathogen: activePathogen });
+        });
+        worker.terminate();
 
         useDataManagementStore.getState().setSequenceImports(sequenceImports);
 
