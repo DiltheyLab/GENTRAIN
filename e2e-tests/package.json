@@ -3,12 +3,7 @@
   "version": "1.0.0",
   "description": "E2E tests for GENTRAIN Admin Panel using Cypress",
   "scripts": {
-    "test": "cypress run",
-    "test:open": "cypress open",
-    "test:smoke": "cypress run --spec 'cypress/e2e/integration/smoke.spec.ts'",
-    "test:ci": "cypress run --headless --browser chromium",
-    "test:debug": "cypress run --headed --no-exit",
-    "test:headed": "cypress run --headed"
+    "test": "cypress run"
   },
   "devDependencies": {
     "cypress": "^15.6.0",
