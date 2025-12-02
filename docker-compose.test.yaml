@@ -200,10 +200,6 @@ services:
       args:
         CHROME_VERSION: "142.0.7444.175-1"
     command: npx cypress run --browser chrome --headless
-    volumes:
-      - type: bind
-        source: ./e2e-tests
-        target: /e2e
     networks:
       - caddy
     extra_hosts:
