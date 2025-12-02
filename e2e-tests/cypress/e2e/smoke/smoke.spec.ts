@@ -32,29 +32,20 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
 
     // 2. ROLES WORKFLOW
     cy.navigateToResource("Role");
-    cy.contains("superuser").should("exist");
+    cy.contains(Cypress.env("SUPERUSER_ROLE")).should("exist");
 
     // 3. USERS WORKFLOW
     cy.navigateToResource("User");
     helpers.assertRowInTable(Cypress.env("ADMIN_SUPERUSER"));
 
     // Create user
-    cy.contains("Create new").click();
-    cy.get("form").should("be.visible");
-
     const smokeUser = `smoke-user-${Date.now()}`;
-    cy.get('[data-testid="property-edit-username"]').type(smokeUser);
-    cy.get('[data-testid="property-edit-password"]').type("SmokePass123!");
-    cy.get('[data-testid="property-edit-role"]').click().should("contain", "superuser");
-    cy.contains("superuser").click();
-    helpers.submitForm();
+    helpers.createUser(smokeUser, "SmokeUserPass123!", Cypress.env("USER_ROLE"));
     helpers.assertRowInTable(smokeUser);
 
     // Delete user
     helpers.clickShowRecord(smokeUser);
-    cy.contains("a", "Delete").click();
-    cy.get('button[label="Confirm"]').click();
-    cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
+    helpers.deleteUser();
     helpers.assertRowNotInTable(smokeUser);
 
     // 4. PATHOGENS WORKFLOW
@@ -114,9 +105,9 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
 
     cy.get('[data-testid="property-edit-username"]').type(normalUsername);
     cy.get('[data-testid="property-edit-password"]').type(normalPassword);
-    cy.get('[data-testid="property-edit-role"]').click().should("contain", "user");
+    cy.get('[data-testid="property-edit-role"]').click().should("contain", Cypress.env("USER_ROLE"));
 
-    cy.contains(/^user$/).click();
+    cy.contains(new RegExp(`^${Cypress.env("USER_ROLE")}$`)).click();
     helpers.submitForm();
     helpers.assertRowInTable(normalUsername);
 
@@ -130,6 +121,13 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
     cy.contains("Page not found").should("exist");
     cy.visit(`${Cypress.env("ADMIN_PANEL_URL")}/resources/Log`);
     cy.contains("Page not found").should("exist");
+
+    // Cleanup - delete created user
+    cy.logout();
+    cy.loginAs();
+    cy.navigateToResource("User");
+    helpers.clickShowRecord(normalUsername);
+    helpers.deleteUser();
   });
 });
 
