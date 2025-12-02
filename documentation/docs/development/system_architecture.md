@@ -1,48 +1,48 @@
 ---
 id: system-architecture
-title: System Architecture
-sidebar_label: System Architecture
+title: Systemarchitektur
+sidebar_label: Systemarchitektur
 sidebar_position: 3
 ---
-# System Architecture
+# Systemarchitektur
 
-## Overview
+## Überblick
 
-**Gentrain** is a browser-based web application. Below are the key components of its architecture.
+**Gentrain** ist eine browserbasierte Webanwendung. Nachfolgend sind die wichtigsten Komponenten der Anwendungsarchitektur aufgeführt.
 
-![System Components](/img/developers/system_architecture/system_components.jpg "System Components")
+![System Komponenten](/img/developers/system_architecture/system_components.jpg "System Komponenten")
 
-## Components
+## Komponenten
 ### Frontend
 
-#### User Interface
+#### Nutzeroberfläche
 
-:::info Technologies
+:::info Technologien
 React, Zustand
 :::
 
-Since only sequence analyses are performed on the server side, the majority of the business logic is located on the frontend. The application state at runtime is managed using the Zustand library for React. Data is persisted in a local browser database managed by IndexedDB.
+Da Sequenzanalysen nur auf der Serverseite durchgeführt werden, befindet sich die Mehrheit der Geschäftslogik im Frontend. Der Anwendungszustand zur Laufzeit wird mit der Zustand-Bibliothek für React verwaltet. Daten werden in einer lokalen Browser-Datenbank gespeichert, die von IndexedDB verwaltet wird.
 
-The React application is divided into separate domains to create a well-structured project. These domains correspond to the application's pages.
+Die React-Anwendung ist in separate Domains unterteilt. Diese Domains entsprechen den Seiten der Anwendung.
 
-| Domain            | Description                                                                                                                                                                                           |
+| Domain            | Beschreibung                                                                                                                                                                                           |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Core              | Basic functionalities like application bootstrapping, routing and browser database management.                                                                                                        |
-| Dashboard         | Functionalities and components associated with the dashboard page of the application inlcuding the dashboard graph canvas, additional information charts, case information table and distance matrix. |
-| Outbreak Analysis | Functionalities and components associated with the outbreak analysis module inlcuding analysis overview page, outbreak analysis graph canvas and settings panel and pdf export.                       |
-| Data Management   | Functionalities and components associated with the data management of the application including import section, cases overview table, outbreak management and automatic deletion configuration.       |
-| Help              | Functionalities and components associated with the help page of the application.                                                                                                                      |
-| Tutorial          | Functionalities and components associated with the tutorial module of the application.                                                                                                                |
+| Core              | Grundlegende Funktionen wie Anwendungsstart, Routing und Verwaltung der Browser-Datenbank.                                                                                                           |
+| Dashboard         | Funktionen und Komponenten, die mit der Dashboard-Seite der Anwendung verbunden sind, einschließlich Dashboard-Graph-Canvas, zusätzlichen Informationsdiagrammen, Fallinformationen-Tabelle und Distanzmatrix. |
+| Outbreak Analysis | Funktionen und Komponenten des Ausbruchsanalyse-Moduls, einschließlich Übersichtsseite der Analyse, Ausbruchsanalyse-Graph-Canvas, Einstellungsbereich und PDF-Export.                                 |
+| Data Management   | Funktionen und Komponenten zur Datenverwaltung der Anwendung, einschließlich Importbereich, Tabellenübersicht der Fälle, Ausbruchsverwaltung und Konfiguration automatischer Löschungen.              |
+| Help              | Funktionen und Komponenten der Hilfeseite der Anwendung.                                                                                                                                            |
+| Tutorial          | Funktionen und Komponenten des Tutorial-Moduls der Anwendung.                                                                                                                                        |
 
-The application uses IndexedDB to manage the local browser database. As the tutorial relies on a static dataset, two IndexedDB instances have been integrated: `gentrain` and `gentrain_example`. While the latter is only active during the tutorial, the former is active during productive usage of the application. Additionally state-management solution Zustand is used for data management during runtime. Zustand orchestrates the application state within so-called stores. In GENTRAIN, these stores mirror the domains of the React application, except for the Help domain, which does not have a corresponding store. The following graph illustrates the concrete data sources of the React application.
+Die Anwendung verwendet IndexedDB zur Verwaltung der lokalen Browser-Datenbank. Da das Tutorial auf einem statischen Datensatz basiert, wurden zwei IndexedDB-Instanzen integriert: `gentrain` und `gentrain_example`. Während letztere nur während des Tutorials aktiv ist, ist die erste während der produktiven Nutzung der Anwendung aktiv. Zusätzlich wird die State-Management-Lösung Zustand zur Datenverwaltung während der Laufzeit verwendet. Zustand orchestriert den Anwendungszustand innerhalb sogenannter Stores. In GENTRAIN spiegeln diese Stores die Domains der React-Anwendung wider, mit Ausnahme der Help-Domain, die keinen entsprechenden Store hat. Die folgende Grafik zeigt die konkreten Datenquellen der React-Anwendung.
 
 ![User Interface Data Sources](/img/developers/system_architecture/ui_data_sources.jpg "User Interface Data Sources")
 
 #### IndexedDB
 
-This low-level API offers powerful and efficient database functionality for client-side storage. Personal data is stored solely within the web browser's local database. As IndexedDB does not support automatic data deletion, the application provides two options: data can be deleted either after the 24-hour TTL has expired (only possible during productive usage or when the application is loaded again), or when the tab/browser is reloaded or closed (beforeunload event). The former is activated by default, but it is also possible to disable both options.
+Diese Low-Level-API bietet leistungsstarke und effiziente Datenbankfunktionen für die clientseitige Speicherung. Persönliche Daten werden ausschließlich in der lokalen Browser-Datenbank gespeichert. Da IndexedDB keine automatische Datenlöschung unterstützt, bietet die Anwendung zwei Optionen: Daten können entweder nach Ablauf der 24-Stunden-TTL gelöscht werden (nur während der produktiven Nutzung oder beim erneuten Laden der Anwendung) oder beim Neuladen bzw. Schließen des Tabs/Browsers (beforeunload-Ereignis). Erstere ist standardmäßig aktiviert, es ist jedoch möglich, beide Optionen zu deaktivieren.
 
-On page load, the pathogens in the client-side database are compared with the persisted pathogens in the Postgres database and synchronised. The data model of the client-side database is shown below.
+Beim Laden der Seite werden die Pathogene in der clientseitigen Datenbank mit den persistierten Pathogenen in der Postgres-Datenbank verglichen und synchronisiert. Das Datenmodell der clientseitigen Datenbank ist unten dargestellt.
 
 ![Entity Relationship Model (IndexedDB)](/img/developers/system_architecture/entity_relationship_indexed_db.jpg "Entity Relationship Model (IndexedDB)")
 
@@ -50,7 +50,7 @@ On page load, the pathogens in the client-side database are compared with the pe
     <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
         <div>
             <h4>Pathogen</h4>
-                | Type     | Name                       |
+                | Typ      | Name                       |
                 | -------- | -------------------------- |
                 | int      | id                         |
                 | string   | name                       |
@@ -62,7 +62,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Pathogen Type</h4>
-                | Type     | Name           |
+                | Typ      | Name           |
                 | -------- | -------------- |
                 | int      | id             |
                 | string   | name           |
@@ -72,7 +72,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Case</h4>
-                | Type     | Name          |
+                | Typ      | Name          |
                 | -------- | ------------- |
                 | int      | id            |
                 | string   | case_id       |
@@ -88,7 +88,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Outbreak</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | string   | name       |
@@ -97,7 +97,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Category</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | string   | name       |
@@ -106,7 +106,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Group</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | string   | name       |
@@ -115,7 +115,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Sequence Analysis</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | string   | hash       |
@@ -127,7 +127,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Distance Matrix</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | datetime | created_at |
@@ -135,7 +135,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Distance</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | int      | case_id_1  |
@@ -146,7 +146,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Contact</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | int      | case_id_1  |
@@ -158,7 +158,7 @@ On page load, the pathogens in the client-side database are compared with the pe
             </div>
             <div>
                 <h4>Analysis</h4>
-                | Type     | Name       |
+                | Typ      | Name       |
                 | -------- | ---------- |
                 | int      | id         |
                 | string   | name       |
@@ -173,37 +173,36 @@ On page load, the pathogens in the client-side database are compared with the pe
 
 #### API
 
-:::info Technologies
+:::info Technologien
 Python (Flask), Flask-SocketIO, RQ, Prisma
 :::
 
-This API facilitates communication with the backend and primarily offers pathogen resources and file downloads, including example data and pathogen schemes. To ensure tasks are processed reliably, long-running tasks are processed within Redis queues. This means that these tasks will be processed even in high-stress situations. A WebSocket server (SocketIO) is therefore integrated into the API to facilitate bidirectional, event-driven communication during sequence analysis. Redis queues for viral and bacterial sequence analyses are orchestrated using Supervisord and can be configured in the file `/backend/api/workers/supervisor.conf` according to current requirements and server specifications.
+Diese API erleichtert die Kommunikation mit dem Backend und bietet hauptsächlich Pathogen-Ressourcen und Dateidownloads, einschließlich Beispieldaten und Pathogen-Schemata. Um sicherzustellen, dass Aufgaben zuverlässig verarbeitet werden, werden langlaufende Aufgaben in Redis-Queues verarbeitet. Ein WebSocket-Server (SocketIO) ist daher in die API integriert, um eine bidirektionale, ereignisgesteuerte Kommunikation während der Sequenzanalyse zu ermöglichen. Redis-Queues für virale und bakterielle Sequenzanalysen werden mithilfe von Supervisord orchestriert und können in der Datei `/backend/api/workers/supervisor.conf` an aktuelle Anforderungen und Serverspezifikationen angepasst werden.
 
 ![API Structure](/img/developers/system_architecture/api_structure.jpg "API Structure")
 
-The Python application is divided into two domains, as shown in the following table.
+Die Python-Anwendung ist in zwei Domains unterteilt, wie in der folgenden Tabelle dargestellt.
 
-| Domain            | Description                                                                                                                                            |
+| Domain            | Beschreibung                                                                                                                                            |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Pathogen Registry | Operations related to pathogens. This includes retrieving information about persisted pathogens and downloading pathogen schemes and example data.     |
-| Sequence Analysis | Sequence analysis orchestration. This involves managing websocket events, executing sequence analysis jobs, and preparing sequence analysis responses. |
-
+| Pathogen Registry | Operationen im Zusammenhang mit Pathogenen. Dies umfasst das Abrufen von Informationen über persistierte Pathogene und das Herunterladen von Pathogen-Schemata und Beispieldaten. |
+| Sequence Analysis | Orchestrierung der Sequenzanalyse. Dies umfasst das Verwalten von WebSocket-Ereignissen, das Ausführen von Sequenzanalyse-Jobs und das Vorbereiten von Sequenzanalyse-Antworten. |
 
 #### Admin Panel
 
-:::info Technologies
+:::info Technologien
 NodeJS + React (AdminJS), Prisma
 :::
 
-A user interface for managing pathogen data, particularly schemes.
+Eine Benutzeroberfläche zur Verwaltung von Pathogen-Daten, insbesondere von Schemata.
 
 #### Redis Cache
 
-Long-running tasks, such as sequence analyses, are managed via Redis job queues and handled by workers. The Redis cache is also used to implement chunking of WebSocket message data by temporarily storing sequence chunks. Furthermore, sequence analyses are persisted for 30 minutes to prevent data loss if users leave the dashboard during processing.
+Langlaufende Aufgaben, wie Sequenzanalysen, werden über Redis-Job-Queues verwaltet und von Workern abgearbeitet. Der Redis-Cache wird außerdem verwendet, um WebSocket-Nachrichtendaten in Chunks zu speichern, indem Sequenzabschnitte temporär abgelegt werden. Zudem werden Sequenzanalysen 30 Minuten lang gespeichert, um Datenverlust zu vermeiden, falls Benutzer das Dashboard während der Verarbeitung verlassen.
 
 #### PostgreSQL
 
-Pathogens, admin users and roles are stored in a server-side PostgreSQL database, which can be accessed and managed via the Admin Panel.
+Pathogene, Admin-Benutzer und Rollen werden in einer serverseitigen PostgreSQL-Datenbank gespeichert, die über das Admin Panel zugänglich und verwaltbar ist.
 
 ![Entity Relationship Model (Postgres DB)](/img/developers/system_architecture/entity_relationship_postgres.jpg "Entity Relationship Model (Postgres DB)")
 
@@ -211,12 +210,10 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
     <div style={{display: "flex", flexWrap: "wrap", gap: "1em", fontSize: "0.8em"}}>
         <div>
             <h4>Pathogen</h4>
-            | Type     | Name                       |
+            | Typ      | Name                       |
             | -------- | -------------------------- |
             | int      | id                         |
             | string   | name                       |
-            | int      | genetic_distance_threshold |
-            | int      | pathogen_type_id           |
             | int      | genetic_distance_threshold |
             | int      | pathogen_type_id           |
             | string   | example_cases_key          |
@@ -233,7 +230,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
         </div>
         <div>
             <h4>User</h4>
-            | Type     | Name         |
+            | Typ      | Name         |
             | -------- | ------------ |
             | int      | id           |
             | string   | username     |
@@ -245,7 +242,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
         </div>
         <div>
             <h4>Role</h4>
-            | Type   | Name        |
+            | Typ    | Name        |
             | ------ | ----------- |
             | int    | id          |
             | string | name        |
@@ -253,7 +250,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
         </div>
         <div>
             <h4>Logs</h4>
-            | Type     | Name        |
+            | Typ      | Name        |
             | -------- | ----------- |
             | int      | id          |
             | int      | recordId    |
@@ -267,7 +264,7 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
         </div>
         <div>
             <h4>Session</h4>
-            | Type     | Name   |
+            | Typ      | Name   |
             | -------- | ------ |
             | int      | sid    |
             | json     | sess   |
@@ -278,21 +275,20 @@ Pathogens, admin users and roles are stored in a server-side PostgreSQL database
 
 ## Docker Deployment
 
-GENTRAIN is deployed in Docker containers. Some containers are used to deploy application components directly, while others are used to build production code or perform configuration tasks. The following graph illustrates the dependencies between the containers for a production environment. Dotted arrows indicate dependencies at system start, while solid arrows represent dependencies at runtime.
+GENTRAIN wird in Docker-Containern bereitgestellt. Einige Container werden verwendet, um Anwendungs-Komponenten direkt bereitzustellen, während andere zum Erstellen von Produktionscode oder für Konfigurationsaufgaben genutzt werden. Die folgende Grafik zeigt die Abhängigkeiten zwischen den Containern für eine Produktionsumgebung. Gepunktete Pfeile kennzeichnen Abhängigkeiten beim Systemstart, während durchgezogene Pfeile Abhängigkeiten zur Laufzeit darstellen.
 
 ![Docker Deployment](/img/developers/system_architecture/docker_deployment.jpg "Docker Deployment")
 
-Not all containers are also used for local development, as can be seen in the table below. The table also provides descriptions of the purpose of each container.
+Nicht alle Container werden auch für die lokale Entwicklung verwendet, wie in der folgenden Tabelle dargestellt. Die Tabelle enthält auch Beschreibungen der Funktion jedes Containers.
 
-| Container                | Purpose                                                                                                                                                                  | Used locally?      |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
-| `gentrain-init`          | A one-time initialization container to configure volume access permissions.                                                                                              |                    |
-| `gentrain-frontend`      | Builds and provides the compiled assets of the user interface for `gentrain-caddy` to serve.                                                                             |                    |
-| `gentrain-api`           | Runs a Flask server with API endpoints and WebSocket event handlers.                                                                                                     | <center>✅</center> |
-| `gentrain-worker`        | Executes background job workers using the same codebase as `gentrain-api` in Redis queues.                                                                               | <center>✅</center> |
-| `gentrain-db`            | Hosts a Postgres database for centralized server-side data persistence (pathogens, users, roles).                                                                        | <center>✅</center> |
-| `gentrain-redis`         | Provides the Redis in-memory cache used by `gentrain-api` and `gentrain-worker` to implement job queueing, as well as to persist and retrieve sequence analysis results. | <center>✅</center> |
-| `gentrain-admin`         | Runs a adminJS node application to manage pathogen information and files.                                                                                                |                    |
-| `gentrain-documentation` | Builds the Docusaurus documentation for `gentrain-caddy` to serve as static files.                                                                                       |                    |
-| `gentrain-caddy`         | Serves as the production reverse proxy and static file server for the `gentrain-api`, `gentrain-frontend`, and `gentrain-documentation`.                                 |                    |
-
+| Container                | Zweck                                                                                                                                                                  | Lokal verwendet?   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `gentrain-init`          | Ein einmaliger Initialisierungs-Container zur Konfiguration der Volume-Zugriffsrechte.                                                                                  |                   |
+| `gentrain-frontend`      | Erstellt und liefert die kompilierten Assets der Benutzeroberfläche, die von `gentrain-caddy` bereitgestellt werden.                                                   |                   |
+| `gentrain-api`           | Führt einen Flask-Server mit API-Endpunkten und WebSocket-Event-Handlern aus.                                                                                          | <center>✅</center> |
+| `gentrain-worker`        | Führt Hintergrund-Jobs über die gleiche Codebasis wie `gentrain-api` in Redis-Queues aus.                                                                               | <center>✅</center> |
+| `gentrain-db`            | Hält eine Postgres-Datenbank für die zentrale serverseitige Datenspeicherung (Pathogene, Benutzer, Rollen).                                                            | <center>✅</center> |
+| `gentrain-redis`         | Stellt den Redis-In-Memory-Cache bereit, der von `gentrain-api` und `gentrain-worker` zur Job-Queue-Verwaltung und zur Speicherung/Abruf von Sequenzanalyse-Ergebnissen genutzt wird. | <center>✅</center> |
+| `gentrain-admin`         | Führt eine AdminJS Node-Anwendung aus, um Pathogen-Informationen und Dateien zu verwalten.                                                                              |                   |
+| `gentrain-documentation` | Baut die Docusaurus-Dokumentation für `gentrain-caddy` zum Bereitstellen als statische Dateien.                                                                        |                   |
+| `gentrain-caddy`         | Dient als Produktions-Reverse-Proxy und statischer Dateiserver für `gentrain-api`, `gentrain-frontend` und `gentrain-documentation`.                                     |                   |
