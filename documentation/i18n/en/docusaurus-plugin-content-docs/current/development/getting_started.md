@@ -99,7 +99,7 @@ In this section, you will learn step by step how to run GENTRAIN locally.
 
    The admin dev server uses tsc and nodemon concurrently and will be available at the terminal output address (commonly `http://localhost:4001`).
 
-   When seeding, an admin user is created whose credentials can be customized in the `.env` file. You should now be able to log in to the admin panel with `admin:secretPassword`.
+   When seeding, an admin user is created whose credentials can be customized in the `.env` file. You should now be able to log in to the admin panel with `admin:SecretPassword123!`.
 
 5. Frontend
 

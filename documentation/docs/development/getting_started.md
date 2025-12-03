@@ -107,7 +107,7 @@ In diesem Abschnitt erfahren Sie Schritt für Schritt wie sie GENTRAIN lokal aus
 
    Der Admin-Entwicklungsserver verwendet TypeScript (`tsc`) und Nodemon gleichzeitig. Er ist unter der im Terminal angegebenen Adresse erreichbar, üblicherweise `http://localhost:4001`.
 
-   Beim Seeden wird ein Admin User erstellt, dessen Credentials in der `.env`-Datei angepasst werden können. Sie sollten sich nun mit `admin:secretPassword` im Admin-Panel anmelden können.
+   Beim Seeden wird ein Admin User erstellt, dessen Credentials in der `.env`-Datei angepasst werden können. Sie sollten sich nun mit `admin:SecretPassword123!` im Admin-Panel anmelden können.
 
 5. Frontend
 
