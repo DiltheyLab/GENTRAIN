@@ -2,10 +2,10 @@ name: Testing
 on:
   push:
     branches:
-      - dev
+      - e2e-testing
   pull_request:
     branches:
-      - dev
+      - e2e-testing
   workflow_dispatch:
 
 env:
@@ -77,15 +77,23 @@ jobs:
           echo "=== API Logs ==="
           docker compose logs api --tail=100
           echo "=== Admin Logs ==="
-          docker compose logs admin --tail=100
+          docker compose logs admin --tail=50
+          echo "=== Admin Supervisor Logs ==="
+          docker exec gentrain-admin sh -c "cat logs/admin.out.logs"
+          docker exec gentrain-admin sh -c "cat logs/admin.err.logs"
+          echo "=== Clamd Supervisor Logs ==="
+          docker exec gentrain-admin sh -c "cat logs/clamd.out.logs"
+          docker exec gentrain-admin sh -c "cat logs/clamd.err.logs"
           echo "=== Caddy Logs ==="
           docker compose logs caddy --tail=100
           echo "=== Worker Logs ==="
           docker compose logs worker --tail=100
+          echo "=== Worker Supervisor Logs Bacterial ==="
+          docker exec gentrain-worker sh -c "cat logs/bacterial.err.logs"
+          echo "=== Worker Supervisor Logs Viral ==="
+          docker exec gentrain-worker sh -c "cat logs/viral.err.logs"
           echo "=== Unit Test Frontend Logs ==="
           docker compose logs frontend-tests --tail=100
-          echo "=== Unit Test API Logs ==="
-          docker compose logs api-tests --tail=100
           echo "=== E2E Test Logs ==="
           docker compose logs e2e-tests --tail=100
           echo "=== Frontend Logs ==="
