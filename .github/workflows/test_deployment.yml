@@ -2,10 +2,10 @@ name: Testing
 on:
   push:
     branches:
-      - dev
+      - e2e-testing
   pull_request:
     branches:
-      - dev
+      - e2e-testing
   workflow_dispatch:
 
 env:
@@ -13,42 +13,10 @@ env:
   COMPOSE_ENV_FILES: .env.test
 
 jobs:
-  unit_tests:
-    name: Unit Tests
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Run frontend unit tests
-        run: |
-          cd frontend
-          npx vitest --coverage.enabled true
-
-      - name: Report Coverage
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          working-directory: frontend
-
-  build_and_e2e_test:
+  build_and_test:
     name: Build and E2E Test
     runs-on: ubuntu-24.04 # Server Version
     timeout-minutes: 30
-    needs: unit_tests
 
     steps:
       - name: Checkout repo
@@ -87,6 +55,15 @@ jobs:
 
           echo "All services are ready!"
           docker compose ps
+
+      - name: Run Unit tests for Frontend
+        run: |
+          docker compose --profile testing run --rm frontend-tests
+
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: "./frontend"
 
       - name: Run Cypress E2E tests
         run: |
@@ -135,7 +112,7 @@ jobs:
 
   notify:
     name: Notify
-    needs: [unit_tests, build_and_e2e_test]
+    needs: [build_and_test]
     if: always()
     runs-on: ubuntu-24.04
     steps:
@@ -144,7 +121,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         with:
-          status: ${{ (needs.unit_tests.result == 'success' && needs.build_and_e2e_test.result == 'success') && 'success' || 'failure' }}
+          status: ${{ (needs.build_and_test.result == 'success') && 'success' || 'failure' }}
           notify_when: "success,failure"
           notification_title: "Test Pipeline"
           icon_success: 🚀

@@ -214,6 +214,18 @@ services:
       - "admin.localhost:host-gateway"
       - "api.localhost:host-gateway"
       - "docs.localhost:host-gateway"
+  frontend-tests:
+    container_name: gentrain-frontend-tests
+    image: gentrain-frontend
+    profiles:
+      - testing
+    command: npx vitest run --coverage
+    volumes:
+      - type: bind
+        source: ./frontend/coverage
+        target: /app/coverage
+    networks:
+      - caddy
 
 volumes:
   caddy_data:
