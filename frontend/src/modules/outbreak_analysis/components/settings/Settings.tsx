@@ -18,12 +18,13 @@ import { safeAnalysis } from "../../helpers/safeAnalysis";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogTrigger } from "@/modules/core/components/ui/Dialog";
 import { CaseFilter } from "./case_filter/CaseFilter";
-
+import { useGetGeneticDistanceLinkCount } from "../../hooks/useGetGeneticDistanceLinkCount";
 const PdfExportConfiguration = lazy(() => import("../pdf_export/PdfExportConfiguration"));
 
 export const Settings = () => {
     const [showPdfExportDialog, setShowPdfExportDialog] = useState(false);
     const outbreakAnalysisStore = useOutbreakAnalysisStore();
+    const geneticDistanceLinkCount = useGetGeneticDistanceLinkCount();
     const navigate = useNavigate();
 
     return (
@@ -137,7 +138,7 @@ export const Settings = () => {
                                 className="text-wrap w-full"
                                 variant="outline"
                                 type="button"
-                                disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak}
+                                disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak || geneticDistanceLinkCount === 0}
                             >
                                 Ausbruchsanalyse-Report exportieren
                             </Button>

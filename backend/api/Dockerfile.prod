@@ -1,5 +1,7 @@
 # Use the official Miniconda3 image as the base image
-FROM continuumio/miniconda3:latest
+FROM mambaorg/micromamba
+
+USER root
 
 RUN apt-get update && apt-get install -y libatomic1
 
@@ -10,21 +12,23 @@ ARG GROUP_ID=1010
 WORKDIR /api
 
 # Copy the 'environment.yml' file into the container
-COPY environment.yaml /api
+COPY environment.yml /api
+COPY requirements.txt /api
 
 # Create a new Conda environment from the 'environment.yml' file
-RUN conda env create -f /api/environment.yaml
+RUN micromamba env create -f /api/environment.yml
+RUN micromamba clean -a -y
 
-RUN addgroup --gid $GROUP_ID gentrain
-RUN adduser --disabled-password --uid $USER_ID --gid $GROUP_ID gentrain
+RUN groupadd --gid $GROUP_ID gentrain
+RUN useradd --uid $USER_ID --gid $GROUP_ID --create-home --shell /bin/bash gentrain
 RUN chown gentrain:gentrain -R /api
 USER gentrain
 
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc
-ENV PATH /opt/conda/envs/gentrain/bin:$PATH
+ENV PATH=/opt/conda/envs/gentrain/bin:$PATH
 # We need to define the PYTHONPATH as workers are located at /workers and still need access to the src module
-ENV PYTHONPATH="$PYTHONPATH:/api"
+ENV PYTHONPATH="/api"
 
 # Copy the current directory contents into the container at the working directory
 COPY --chown=gentrain . .

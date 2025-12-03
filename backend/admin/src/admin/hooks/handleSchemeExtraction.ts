@@ -24,8 +24,7 @@ const extractSchemeUpload = async (context: ActionContext) => {
   const folderName = record.params.id.toString();
   const extractPath = path.join(process.env.API_DATA_DIRECTORY, 'pathogen_schemes', folderName);
   // Prevent excessive disk space usage by keeping a puffer of 10 GB
-  const availableDiskSpaceInGigabyte = await getAvailableDiskSpaceInGigabyte(record);
-  if (availableDiskSpaceInGigabyte < 10) {
+  if (process.env.APP_ENV === 'production' && (await getAvailableDiskSpaceInGigabyte(record)) < 10) {
     throw new Error('Disk does not have enough available space.');
   }
   if (fs.existsSync(extractPath)) {
@@ -37,7 +36,7 @@ const extractSchemeUpload = async (context: ActionContext) => {
   await fs
     .createReadStream(scheme.path)
     .pipe(unzipper.Extract({ path: extractPath }))
-    .on('error', (err) => {
+    .on('error', err => {
       throw err;
     })
     .promise();

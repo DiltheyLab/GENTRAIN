@@ -8,6 +8,7 @@ import { GentrainException } from "@/modules/core/exceptions/GentrainException";
 import { ValidationStrategy } from "../../services/data_import/validation/ValidationStrategy";
 import { Button } from "@/modules/core/components/ui/Button";
 import { useDataManagementStore } from "../../stores/dataManagement";
+import { useCoreStore } from "@/modules/core/stores/core";
 
 type FileDropzoneProps = {
     type: string;
@@ -20,6 +21,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
     const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
+    const setLoadingBlockerIsActive = useCoreStore((state) => state.setLoadingBlockerIsActive);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -36,8 +38,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
         if (!fileReadingStrategy) {
             return;
         }
-
         try {
+            setLoadingBlockerIsActive(true);
             const fileReaderResult = await fileReadingStrategy.execute(files, type);
             if (!fileReaderResult) return;
             // format the file content into a proper structure (fasta -> string[], csv -> object[])
@@ -69,6 +71,8 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                 });
             }
             console.log(error);
+        } finally {
+            setLoadingBlockerIsActive(false);
         }
     };
 
@@ -93,6 +97,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                     onChange={(e) => {
                         handleFileUpload(e.target.files);
                     }}
+                    data-testid={`file-dropzone-input-${type}`}
                 />
                 {!showImportAssistent && (
                     <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>

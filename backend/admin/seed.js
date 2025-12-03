@@ -5,26 +5,40 @@ const prisma = new PrismaClient();
 
 async function main() {
   const username = process.env.DEFAULT_ADMIN_USERNAME ?? 'admin';
-  const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'secretPassword';
-  const roleName = 'superuser';
+  const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'SecretPassword123!';
 
-  // If there isn't a role with the name "superuser", create it
-  let role = await prisma.role.findUnique({
-    where: { name: roleName },
+  const superUserRoleName = 'superuser';
+  const normalUserRoleName = 'user';
+
+  // --- Ensure superuser role exists ---
+  let superUserRole = await prisma.role.findUnique({
+    where: { name: superUserRoleName },
   });
 
-  if (!role) {
-    role = await prisma.role.create({
-      data: {
-        name: roleName,
-      },
+  if (!superUserRole) {
+    superUserRole = await prisma.role.create({
+      data: { name: superUserRoleName },
     });
-    console.log(`Role "${roleName}" created`);
+    console.log(`Role "${superUserRoleName}" created`);
   }
 
-  // Check if a user with the superuser role already exists
+  // --- Ensure normal user role exists ---
+  let normalUserRole = await prisma.role.findUnique({
+    where: { name: normalUserRoleName },
+  });
+
+  if (!normalUserRole) {
+    normalUserRole = await prisma.role.create({
+      data: { name: normalUserRoleName },
+    });
+    console.log(`Role "${normalUserRoleName}" created`);
+  }
+
+  console.log('SUPERUSERROLE', superUserRole);
+
+  // --- Ensure admin user exists ---
   const existingAdmin = await prisma.User.findFirst({
-    where: { roleId: role.id },
+    where: { roleId: superUserRole.id },
   });
 
   if (!existingAdmin) {
@@ -32,7 +46,7 @@ async function main() {
       data: {
         username,
         password: await hash(password),
-        roleId: role.id,
+        roleId: superUserRole.id,
         created_at: new Date(),
       },
     });

@@ -1,0 +1,166 @@
+Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;Nachname;Vorname;Ort;PLZ;Straße;Angesteckt bei;Kategorie:Geimpft
+GCVD-0;;08.08.21;;Müller;Dieter;Düsseldorf;40237;Musterstraße 1;;Nein
+GCVD-1;;11.08.21;;Maier;Lara;Düsseldorf;40237;Musterstraße 1;;Ja
+GCVD-2;;18.08.21;;Roth;Elisa;Düsseldorf;40476;Musterstraße 2;;Nein
+GCVD-3;;19.08.21;;Petrov;Sveta;Düsseldorf;40237;Musterstraße 1;;Ja
+GCVD-4;;21.08.21;;Roth;Nadja;Düsseldorf;40476;Musterstraße 2;;Ja
+GCVD-5;;22.08.21;;El-Masri;Omar;Düsseldorf;40215;Musterstraße 3;;Ja
+GCVD-6;G6;22.08.21;;El-Masri;Cara;Düsseldorf;40215;Musterstraße 3;;Nein
+GCVD-7;;24.08.21;;Nguyen;An;Düsseldorf;40627;Musterstraße 4;;Ja
+GCVD-8;;24.08.21;;Roth;Tessa;Düsseldorf;40476;Musterstraße 2;;Ja
+GCVD-9;;24.08.21;;Müller;Hannah;Düsseldorf;40227;Musterstraße 5;;Ja
+GCVD-10;;24.08.21;;Karl;Hanna;Düsseldorf;40227;Musterstraße 5;;Nein
+GCVD-11;;24.08.21;;Timm;Sven;Düsseldorf;40227;Musterstraße 5;;Ja
+GCVD-12;;24.08.21;;Meno;Manja;Düsseldorf;40227;Musterstraße 5;;Ja
+GCVD-13;;24.08.21;;Vito;Marc;Düsseldorf;40227;Musterstraße 5;;Ja
+GCVD-14;;25.08.21;Schule A;Becker;Laura;Düsseldorf;40549;Musterstraße 6;;Nein
+GCVD-15;;25.08.21;;Petrov;Natalja;Düsseldorf;40237;Musterstraße 1;;Ja
+GCVD-16;;25.08.21;;Petrov;Mara;Düsseldorf;40237;Musterstraße 1;GCVD-17;Ja
+GCVD-17;G17;25.08.21;;Petrov;Dimitri;Düsseldorf;40237;Musterstraße 1;;Ja
+GCVD-18;G18;25.08.21;;Kaya;Mehmet;Düsseldorf;40479;Musterstraße 7;GCVD-17;Nein
+GCVD-19;G19;25.08.21;;Petrov;Matthias;Düsseldorf;40237;Musterstraße 1;;Ja
+GCVD-20;;26.08.21;Kita B;Berger;Lena;Düsseldorf;40476;Musterstraße 8;;Ja
+GCVD-21;;26.08.21;;Zwirner;Leonard;Düsseldorf;40472;Musterstraße 9;;Ja
+GCVD-22;;26.08.21;;Zwirner;Tabea;Düsseldorf;40472;Musterstraße 9;;Nein
+GCVD-23;G23;28.08.21;Schule B;Berkel;Sandra;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-24;;28.08.21;Schule B;Al-Zaharani;Hassan;Düsseldorf;40476;Musterstraße 11;;Ja
+GCVD-25;;28.08.21;Schule A;Hoffmann;Elena;Düsseldorf;40210;Musterstraße 12;;Ja
+GCVD-26;;28.08.21;Schule A;Hoffmann;Sabrina;Düsseldorf;40210;Musterstraße 12;;Nein
+GCVD-27;;28.08.21;Schule B;Fuchs;Mara;Düsseldorf;40476;Musterstraße 13;;Ja
+GCVD-28;G28;28.08.21;Schule B;Volkov;Pavel;Düsseldorf;40239;Musterstraße 14;;Ja
+GCVD-29;G29;28.08.21;;Hoffmann;Britt;Düsseldorf;40210;Musterstraße 12;;Ja
+GCVD-30;G30;29.08.21;;Becker;Tim;Düsseldorf;40549;Musterstraße 6;;Nein
+GCVD-31;G31;29.08.21;Schule A;Becker;Nora;Düsseldorf;40549;Musterstraße 6;;Ja
+GCVD-32;;29.08.21;Schule A;Rodriguez;Dua;Düsseldorf;40223;Musterstraße 15;;Ja
+GCVD-33;;29.08.21;Schule A;Lehmann;Markus;Düsseldorf;40211;Musterstraße 16;;Ja
+GCVD-34;;29.08.21;Schule A;Zwirner;Ludwig;Düsseldorf;40472;Musterstraße 9;;Nein
+GCVD-35;;29.08.21;Kita B;Schröder;Roland;Düsseldorf;40221;Musterstraße 17;;Ja
+GCVD-36;;30.08.21;Schule A;Hassan;Diallo;Düsseldorf;40223;Musterstraße 18;;Ja
+GCVD-37;;30.08.21;Kita B;Keller;Jan;Düsseldorf;40477;Musterstraße 19;;Ja
+GCVD-38;;30.08.21;Kita B;Patel;Rajesh;Düsseldorf;40210;Musterstraße 20;;Nein
+GCVD-39;;30.08.21;;Schröder;Felix;Düsseldorf;40589;Musterstraße 21;;Ja
+GCVD-40;;30.08.21;Schule A;Santos;Maria;Düsseldorf;40477;Musterstraße 22;;Ja
+GCVD-41;;30.08.21;Schule A;Wolf;Thomas;Düsseldorf;40591;Musterstraße 23;;Ja
+GCVD-42;;30.08.21;Schule A;Khaan;Adeel;Düsseldorf;40223;Musterstraße 24;;Nein
+GCVD-43;G43;30.08.21;;Hiroshi;Saki;Düsseldorf;40233;Musterstraße 25;;Ja
+GCVD-44;;30.08.21;Schule A;Klein;Sebastian;Düsseldorf;40545;Musterstraße 26;;Ja
+GCVD-45;G45;30.08.21;;Nowak;Pavlov  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GCVD-46;G46;31.08.21;Schule A;Schmitz;Luca;Düsseldorf;40477;Musterstraße 28;;Nein
+GCVD-47;G47;31.08.21;Abschiedsparty;Hussein;Yasemin;Düsseldorf;40231;Musterstraße 29;;Ja
+GCVD-48;;31.08.21;Schule A;Fuchs;Tobias  ;Düsseldorf;40476;Musterstraße 13;;Ja
+GCVD-49;G49;31.08.21;Schule A;Youssef;Hakan;Düsseldorf;40474;Musterstraße 30;;Ja
+GCVD-50;G50;31.08.21;;Youssef;Leila Ben ;Düsseldorf;40474;Musterstraße 30;;Nein
+GCVD-51;;31.08.21;;Lehmann;Sarah;Düsseldorf;40211;Musterstraße 16;;Ja
+GCVD-52;;31.08.21;;Bauer;Svenja;Düsseldorf;40225;Musterstraße 31;;Ja
+GCVD-53;G53;31.08.21;;Schröder;Susanne;Düsseldorf;40221;Musterstraße 17;;Ja
+GCVD-54;;31.08.21;Schule A;Meurer;Lisa;Düsseldorf;40468;Musterstraße 32;;Nein
+GCVD-55;G55;31.08.21;Schule A;Nowak;Krzysztof;Düsseldorf;40219;Musterstraße 27;GCVD-73;Ja
+GCVD-56;;31.08.21;;Fischer;Lisa;Düsseldorf;40213;Musterstraße 33;;Ja
+GCVD-57;;31.08.21;Kita B;Fischer;Jens;Düsseldorf;40213;Musterstraße 33;;Ja
+GCVD-58;;31.08.21;Schule A;Rossi;Sandro;Düsseldorf;40479;Musterstraße 34;;Nein
+GCVD-59;;31.08.21;;Hussein;Tobias  ;Düsseldorf;40231;Musterstraße 29;;Ja
+GCVD-60;;01.09.21;Schule A;Keller;Svenja;Düsseldorf;40476;Musterstraße 35;;Ja
+GCVD-61;;01.09.21;Schule A;Keller;Christian;Düsseldorf;40476;Musterstraße 35;;Ja
+GCVD-62;;01.09.21;Schule A;Berkel;Peter;Düsseldorf;40237;Musterstraße 10;;Nein
+GCVD-63;G63;01.09.21;;Berkel;Marie;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-64;G64;01.09.21;;Berkel;Sebastian;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-65;;01.09.21;;Berkel;Nour;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-66;;01.09.21;Schule A;Meier;Tanja;Düsseldorf;40212;Musterstraße 36;;Nein
+GCVD-67;;01.09.21;Kita B;Haddad;Sarah;Düsseldorf;40211;Musterstraße 37;GCVD-38;Ja
+GCVD-68;;01.09.21;;Wagner;Alexander;Düsseldorf;40625;Musterstraße 38;;Ja
+GCVD-69;;01.09.21;Kita A;Winter;Lara;Düsseldorf;40476;Musterstraße 39;;Ja
+GCVD-70;;01.09.21;Abschiedsparty;Schneider;Philipp;Düsseldorf;40549;Musterstraße 40;;Nein
+GCVD-71;;01.09.21;Abschiedsparty;Marques;Rafael;Düsseldorf;40212;Musterstraße 41;;Ja
+GCVD-72;;01.09.21;;Nowak;Katya  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GCVD-73;G73;01.09.21;;Nowak;Tobias  ;Düsseldorf;40219;Musterstraße 27;;Ja
+GCVD-74;G74;01.09.21;Kita B;Bauer;Andreas;Düsseldorf;40225;Musterstraße 31;GCVD-75;Nein
+GCVD-75;G75;01.09.21;;Bauer;Niklas;Düsseldorf;40225;Musterstraße 31;;Ja
+GCVD-76;;01.09.21;Schule A;Popescu;Zana;Düsseldorf;40225;Musterstraße 42;;Ja
+GCVD-77;G77;01.09.21;;Zimmermann;Jakob;Düsseldorf;40476;Musterstraße 43;;Ja
+GCVD-78;;01.09.21;;Berger;Bruno;Düsseldorf;40476;Musterstraße 8;;Nein
+GCVD-79;;01.09.21;;Hoffmann;Mustafa;Düsseldorf;40210;Musterstraße 12;;Ja
+GCVD-80;;01.09.21;Kita B;Hoffmann;Claudia;Düsseldorf;40211;Musterstraße 44;;Ja
+GCVD-81;;01.09.21;Kita B;Patel;Subra;Düsseldorf;40210;Musterstraße 20;GCVD-38;Ja
+GCVD-82;;01.09.21;;Rodriguez;Miguel;Düsseldorf;40223;Musterstraße 15;;Nein
+GCVD-83;;01.09.21;;Schulte;Jörg;Düsseldorf;40210;Musterstraße 12;;Ja
+GCVD-84;;01.09.21;;Klein;Nora;Düsseldorf;40545;Musterstraße 26;;Ja
+GCVD-85;G85;02.09.21;Schule A;Neumann;Patrick;Düsseldorf;40227;Musterstraße 45;;Ja
+GCVD-86;G86;02.09.21;;Hiroshi;Takahashi;Düsseldorf;40233;Musterstraße 25;;Nein
+GCVD-87;G87;02.09.21;;Leskos;Nuri;Düsseldorf;40221;Musterstraße 46;;Ja
+GCVD-88;;02.09.21;;Schneider;Sabine;Düsseldorf;40549;Musterstraße 40;;Ja
+GCVD-89;;02.09.21;Schule A;Lehmann;Pascal;Düsseldorf;40211;Musterstraße 16;;Ja
+GCVD-90;G90;02.09.21;;Krüger;Piet;Düsseldorf;40221;Musterstraße 46;;Nein
+GCVD-91;;02.09.21;;Krüger;Lisa;Düsseldorf;40221;Musterstraße 46;;Ja
+GCVD-92;;02.09.21;;Krüger;Sigrun;Düsseldorf;40221;Musterstraße 46;;Ja
+GCVD-93;G93;02.09.21;;Arslan;Fatih;Düsseldorf;40470;Musterstraße 47;;Ja
+GCVD-94;G94;02.09.21;;Yildiz;Ahmed;Düsseldorf;40223;Musterstraße 48;;Nein
+GCVD-95;;02.09.21;;Hassan;Ali;Düsseldorf;40223;Musterstraße 18;;Ja
+GCVD-96;;02.09.21;;Hassan;Murat;Düsseldorf;40223;Musterstraße 18;;Ja
+GCVD-97;G97;02.09.21;;Ji-Hoon;Joong;Düsseldorf;40477;Musterstraße 49;;Ja
+GCVD-98;G98;02.09.21;;Ji-Hoon;Kim;Düsseldorf;40477;Musterstraße 49;;Nein
+GCVD-99;G99;02.09.21;;Schröder;Leon;Düsseldorf;40221;Musterstraße 17;;Ja
+GCVD-100;;02.09.21;;Gustavson;Lara;Düsseldorf;40227;Musterstraße 5;;Ja
+GCVD-101;;02.09.21;Kita A;Günther;Stefan;Düsseldorf;40468;Musterstraße 50;;Ja
+GCVD-102;;02.09.21;;Lehmann;Jeremy;Düsseldorf;40211;Musterstraße 16;;Nein
+GCVD-103;;03.09.21;;Mansour;Karim;Düsseldorf;40235;Musterstraße 51;;Ja
+GCVD-104;;03.09.21;Kita B;Subrama;Elif;Düsseldorf;40479;Musterstraße 7;;Ja
+GCVD-105;;03.09.21;;Weber;Svetlana;Düsseldorf;40474;Musterstraße 52;;Ja
+GCVD-106;;03.09.21;;König;Julia;Düsseldorf;40625;Musterstraße 53;;Nein
+GCVD-107;;03.09.21;;Maier;Jonas;Düsseldorf;40221;Musterstraße 54;;Ja
+GCVD-108;;03.09.21;Kita A;Moretti;Isabella;Düsseldorf;40474;Musterstraße 55;;Ja
+GCVD-109;;03.09.21;;Moretti;Luca;Düsseldorf;40474;Musterstraße 55;;Ja
+GCVD-110;;03.09.21;Kita A;Hamid;Marian;Düsseldorf;40227;Musterstraße 5;;Nein
+GCVD-111;;03.09.21;;Diallo;Aisha;Düsseldorf;40468;Musterstraße 32;;Ja
+GCVD-112;;03.09.21;;Hassan;Sara;Düsseldorf;40223;Musterstraße 18;;Ja
+GCVD-113;G113;04.09.21;;Ivanova;Olga;Düsseldorf;40545;Musterstraße 56;;Ja
+GCVD-114;G114;04.09.21;;Vogt;Melina;Düsseldorf;40210;Musterstraße 57;;Nein
+GCVD-115;;04.09.21;Kita A;Ndiaye;Mona;Düsseldorf;40211;Musterstraße 58;;Ja
+GCVD-116;G116;04.09.21;Kita A;Dupont;Jacque;Düsseldorf;40217;Musterstraße 59;;Ja
+GCVD-117;;04.09.21;;Wagner;Tessa;Düsseldorf;40217;Musterstraße 60;;Ja
+GCVD-118;G118;04.09.21;Kita A;Bakari;Samuel;Düsseldorf;40219;Musterstraße 61;;Nein
+GCVD-119;G119;04.09.21;Schule A;Berkel;Bao;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-120;;04.09.21;;√ñztürk;Fatima;Düsseldorf;40211;Musterstraße 62;;Ja
+GCVD-121;;04.09.21;;Hassan;Jo;Düsseldorf;40223;Musterstraße 18;;Ja
+GCVD-122;;04.09.21;;Rossi;Sandro;Düsseldorf;40479;Musterstraße 34;GCVD-58;Nein
+GCVD-123;;04.09.21;Kita A;Schulte;Diana;Düsseldorf;40215;Musterstraße 63;;Ja
+GCVD-124;G124;04.09.21;;Lehmann;Jeremy;Düsseldorf;40211;Musterstraße 16;;Ja
+GCVD-125;G125;05.09.21;;Ivanova;Svetlana;Düsseldorf;40545;Musterstraße 56;;Ja
+GCVD-126;G126;05.09.21;;Ivanova;Marc;Düsseldorf;40545;Musterstraße 56;;Nein
+GCVD-127;G127;05.09.21;;Meier;Jonas;Düsseldorf;40212;Musterstraße 36;;Ja
+GCVD-128;G128;05.09.21;;Weber;David;Düsseldorf;40474;Musterstraße 52;;Ja
+GCVD-129;G129;05.09.21;;Schneider;Tim;Düsseldorf;40549;Musterstraße 40;;Ja
+GCVD-130;G130;05.09.21;;Jansen;Nadine;Düsseldorf;40477;Musterstraße 64;;Nein
+GCVD-131;G131;05.09.21;;Nakamura;Takashi;Düsseldorf;40210;Musterstraße 65;;Ja
+GCVD-132;G132;05.09.21;;Ndiaye;Amara;Düsseldorf;40211;Musterstraße 58;;Ja
+GCVD-133;;05.09.21;;Klein;Peter;Düsseldorf;40545;Musterstraße 26;;Ja
+GCVD-134;G134;05.09.21;;Klein;Tim;Düsseldorf;40545;Musterstraße 26;;Nein
+GCVD-135;G135;05.09.21;;Klein;Dagmar;Düsseldorf;40545;Musterstraße 26;;Ja
+GCVD-136;G136;05.09.21;;Dingert;Nura;Düsseldorf;40211;Musterstraße 62;;Ja
+GCVD-137;G137;05.09.21;;Dingert;Sebo;Düsseldorf;40211;Musterstraße 62;;Ja
+GCVD-138;G138;05.09.21;;Ndiaye;Tom;Düsseldorf;40211;Musterstraße 58;;Nein
+GCVD-139;G139;06.09.21;;Popescu;Ivan;Düsseldorf;40225;Musterstraße 42;;Ja
+GCVD-140;;06.09.21;;Berkel;Marie;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-141;;06.09.21;;Berkel;Lucia;Düsseldorf;40237;Musterstraße 10;;Ja
+GCVD-142;;07.09.21;;Fischer;Sophie;Düsseldorf;40213;Musterstraße 33;;Nein
+GCVD-143;G143;07.09.21;;Ivanova;Nadja;Düsseldorf;40545;Musterstraße 56;;Ja
+GCVD-144;G144;07.09.21;;Ivanova;Tanja;Düsseldorf;40545;Musterstraße 56;;Ja
+GCVD-145;;07.09.21;;Lorer;Sakura;Düsseldorf;40468;Musterstraße 32;;Ja
+GCVD-146;G146;07.09.21;;Lopez;Sara;Düsseldorf;40545;Musterstraße 66;;Nein
+GCVD-147;G147;08.09.21;;Ivanova;Luca;Düsseldorf;40545;Musterstraße 56;;Ja
+GCVD-148;G148;08.09.21;;Dupont;Chloe;Düsseldorf;40217;Musterstraße 59;;Ja
+GCVD-149;G149;08.09.21;;Braun;Felicitas;Düsseldorf;40231;Musterstraße 67;;Ja
+GCVD-150;;09.09.21;;Rahman;Abdullah;Düsseldorf;40474;Musterstraße 67;;Nein
+GCVD-151;;10.09.21;;Schwarz;Michelle;Düsseldorf;40227;Musterstraße 68;;Ja
+GCVD-152;;11.09.21;;Lopez;Ben;Düsseldorf;40545;Musterstraße 66;;Ja
+GCVD-153;;11.09.21;;Lopez;Isabel;Düsseldorf;40545;Musterstraße 66;;Ja
+GCVD-154;;11.09.21;;Lopez;Rodrigo;Düsseldorf;40545;Musterstraße 66;;Nein
+GCVD-155;;11.09.21;;Schneider;Anna;Düsseldorf;40549;Musterstraße 40;;Ja
+GCVD-156;G156;11.09.21;;Moretti;Maria;Düsseldorf;40474;Musterstraße 55;;Ja
+GCVD-157;;11.09.21;;Patel;Ranjid;Düsseldorf;40210;Musterstraße 20;GCVD-81;Ja
+GCVD-158;G158;11.09.21;;Jansen;Nala;Düsseldorf;40477;Musterstraße 64;GCVD-162;Nein
+GCVD-159;G159;11.09.21;;Wagner;Clara;Düsseldorf;40217;Musterstraße 60;;Ja
+GCVD-160;;13.09.21;;Lopez;Fernando;Düsseldorf;40545;Musterstraße 66;;Ja
+GCVD-161;G161;16.09.21;;Krüger;Pascal;Düsseldorf;40221;Musterstraße 46;;Ja
+GCVD-162;G162;18.09.21;;Jansen;Isabell;Düsseldorf;40477;Musterstraße 64;;Nein
+GCVD-163;G163;19.09.21;;Jansen;Tom;Düsseldorf;40477;Musterstraße 64;GCVD-164;Ja
+GCVD-164;;24.09.21;;Jansen;Stefan;Düsseldorf;40477;Musterstraße 64;;Ja

@@ -1,0 +1,141 @@
+name: Testing
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+  workflow_dispatch:
+
+env:
+  COMPOSE_FILE: docker-compose.test.yaml
+  COMPOSE_ENV_FILES: .env.test
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-24.04 # Server Version
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: |
+          docker compose build --no-cache
+          docker compose --profile testing build e2e-tests frontend-tests
+
+      - name: Start services
+        run: |
+          docker compose up -d
+
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to be ready..."
+
+          echo "127.0.0.1 app.localhost admin.localhost api.localhost docs.localhost" | sudo tee -a /etc/hosts
+
+          echo "Checking frontend..."
+          timeout 240 bash -c 'until curl -sSf -k https://app.localhost > /dev/null 2>&1; do echo "Waiting for frontend..."; sleep 3; done'
+          echo "Frontend is ready"
+
+          echo "Checking documentation..."
+          timeout 240 bash -c 'until curl -sSf -k https://docs.localhost > /dev/null 2>&1; do echo "Waiting for documentation..."; sleep 3; done'
+          echo "Documentation is ready"
+
+          echo "Checking admin..."
+          timeout 240 bash -c 'until curl -sSf -k https://admin.localhost > /dev/null 2>&1; do echo "Waiting for admin..."; sleep 3; done'
+          echo "Admin is ready"
+
+          echo "Checking API..."
+          timeout 240 bash -c 'until curl -sSf -k https://api.localhost/pathogens > /dev/null 2>&1; do echo "Waiting for API..."; sleep 3; done'
+          echo "API is ready"
+
+          echo "All services are ready!"
+          docker compose ps
+
+      - name: Run Unit tests for Frontend
+        run: |
+          docker compose --profile testing run --rm frontend-tests
+        continue-on-error: false
+
+      - name: Run Unit tests for API
+        run: |
+          docker exec gentrain-api sh -c "pytest"
+        continue-on-error: false
+
+      - name: Run Cypress E2E tests
+        run: |
+          docker compose --profile testing run --rm e2e-tests
+        continue-on-error: false
+
+      - name: Show container logs on failure
+        if: failure()
+        run: |
+          echo "=== API Logs ==="
+          docker compose logs api --tail=100
+          echo "=== Admin Logs ==="
+          docker compose logs admin --tail=50
+          echo "=== Admin Supervisor Logs ==="
+          docker exec gentrain-admin sh -c "cat logs/admin.out.logs"
+          docker exec gentrain-admin sh -c "cat logs/admin.err.logs"
+          echo "=== Clamd Supervisor Logs ==="
+          docker exec gentrain-admin sh -c "cat logs/clamd.out.logs"
+          docker exec gentrain-admin sh -c "cat logs/clamd.err.logs"
+          echo "=== Caddy Logs ==="
+          docker compose logs caddy --tail=100
+          echo "=== Worker Logs ==="
+          docker compose logs worker --tail=100
+          echo "=== Worker Supervisor Logs Bacterial ==="
+          docker exec gentrain-worker sh -c "cat logs/worker_bacterial.err.logs"
+          echo "=== Worker Supervisor Logs Viral ==="
+          docker exec gentrain-worker sh -c "cat logs/worker_viral.err.logs"
+          echo "=== Unit Test Frontend Logs ==="
+          docker compose logs frontend-tests --tail=100
+          echo "=== E2E Test Logs ==="
+          docker compose logs e2e-tests --tail=100
+          echo "=== Frontend Logs ==="
+          docker compose logs frontend --tail=100
+          echo "=== Documentation Logs ==="
+          docker compose logs documentation --tail=100
+
+      - name: Upload Cypress videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: e2e-tests/cypress/videos/**/*
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Cypress screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: e2e-tests/cypress/screenshots/**/*
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Shut down containers
+        if: always()
+        run: docker compose down -v --remove-orphans
+
+  notify:
+    name: Notify
+    needs: [build_and_test]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Notify Slack
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ (needs.build_and_test.result == 'success') && 'success' || 'failure' }}
+          notify_when: "success,failure"
+          notification_title: "Test Pipeline"
+          icon_success: 🚀
+          icon_failure: 💥

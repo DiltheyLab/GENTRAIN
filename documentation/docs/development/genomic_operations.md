@@ -1,3 +1,10 @@
+---
+id: genomic-operations
+title: Genomic Operations
+sidebar_label: Genomic Operations
+sidebar_position: 6
+---
+
 # Genomic Operations
 
 ## Sequence Analysis

@@ -2,6 +2,7 @@ deploy.sh
 caddy
 .env*
 !.env.example
+!.env.test
 Caddyfile
 .vscode
 .idea

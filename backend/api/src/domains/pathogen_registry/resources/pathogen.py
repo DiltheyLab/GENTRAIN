@@ -15,8 +15,8 @@ class Pathogen(BaseModel):
     contacts_example: Optional[str] = None
     sequences_example: Optional[str] = None
 
-    @field_serializer("cases_example", "sequences_example", "contacts_example")
-    def get_cases_example_file(self, path):
+    @field_serializer('cases_example', 'sequences_example', 'contacts_example')
+    def get_example_file(self, path: str):
         return (
             (f"{environ.get('ADMIN_PANEL_URL')}/example_data/{path}") if path else None
         )

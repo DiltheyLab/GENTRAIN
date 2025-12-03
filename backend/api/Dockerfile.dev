@@ -1,5 +1,7 @@
 # Use the official Miniconda3 image as the base image
-FROM --platform=linux/amd64 continuumio/miniconda3:latest
+FROM --platform=linux/amd64 mambaorg/micromamba
+
+USER root
 
 RUN apt-get update && apt-get install -y libatomic1
 
@@ -7,10 +9,12 @@ RUN apt-get update && apt-get install -y libatomic1
 WORKDIR /api
 
 # Copy the 'environment.yml' file into the container
-COPY environment.yaml .
+COPY environment.yml .
+COPY requirements.txt .
 
 # Create a new Conda environment from the 'environment.yml' file
-RUN conda env create -f /api/environment.yaml
+RUN micromamba env create -f /api/environment.yml
+RUN micromamba clean -a -y
 
 # Ensure the Conda environment is activated
 RUN echo "source activate gentrain" > ~/.bashrc

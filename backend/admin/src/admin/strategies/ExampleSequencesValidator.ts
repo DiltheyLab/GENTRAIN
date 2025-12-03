@@ -11,13 +11,15 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
   protected file: UploadedFile;
   protected request: CustomActionRequest;
 
-  constructor(request: CustomActionRequest, pathogenType: 'bacterial' | 'viral') {
+  constructor (request: CustomActionRequest, pathogenType: 'bacterial' | 'viral') {
     super(request, 'example_sequences_file');
     this.pathogenType = pathogenType;
   }
 
   protected getValidMimetypes = () => {
-    return this.pathogenType === 'bacterial' ? ['application/zip'] : ['application/octet-stream'];
+    return this.pathogenType === 'bacterial'
+      ? ['application/zip']
+      : ['application/octet-stream', 'text/x-fasta', 'application/x-fasta', 'chemical/x-fasta'];
   };
 
   protected getValidExtensions = () => {
@@ -33,7 +35,9 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
       const validationErrors = await this.validateZipFile();
       if (Object.keys(validationErrors).length > 0) {
         this.throwException(
-          `${Object.keys(validationErrors).map((fileName: string) => `File "${fileName}" is invalid. ${validationErrors[fileName].join(', ')}.`)}`
+          `${Object.keys(validationErrors).map(
+            (fileName: string) => `File "${fileName}" is invalid. ${validationErrors[fileName].join(', ')}.`
+          )}`
         );
       }
     } else {
@@ -60,21 +64,19 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
     const files = zip.getEntries();
     // Only allow fasta files at root level of the zip archive
     const invalidEntries = files.filter(
-      (entry) =>
-        !['fa', 'mpfa', 'fna', 'fsa', 'fasta'].some((extension) => entry.entryName.includes(extension)) ||
+      entry =>
+        !['fa', 'mpfa', 'fna', 'fsa', 'fasta'].some(extension => entry.entryName.includes(extension)) ||
         entry.entryName.includes('/')
     );
     if (invalidEntries.length > 0) {
       this.throwException(
-        `Zip contains invalid entries: ${invalidEntries.map((invalidFile) => invalidFile.entryName).join(', ')}.`
+        `Zip contains invalid entries: ${invalidEntries.map(invalidFile => invalidFile.entryName).join(', ')}.`
       );
     }
 
     for (const fastaFile of files) {
       if (!validateFilename(fastaFile.entryName)) {
-        this.throwException(
-          `Invalid filename: ${fastaFile.entryName}`
-        );
+        this.throwException(`Invalid filename: ${fastaFile.entryName}`);
       }
       await this.scanForMalware(Readable.from(fastaFile.getData()));
 
