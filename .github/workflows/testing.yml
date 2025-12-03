@@ -89,9 +89,9 @@ jobs:
           echo "=== Worker Logs ==="
           docker compose logs worker --tail=100
           echo "=== Worker Supervisor Logs Bacterial ==="
-          docker exec gentrain-worker sh -c "cat logs/bacterial.err.logs"
+          docker exec gentrain-worker sh -c "cat logs/worker_bacterial.err.logs"
           echo "=== Worker Supervisor Logs Viral ==="
-          docker exec gentrain-worker sh -c "cat logs/viral.err.logs"
+          docker exec gentrain-worker sh -c "cat logs/worker_viral.err.logs"
           echo "=== Unit Test Frontend Logs ==="
           docker compose logs frontend-tests --tail=100
           echo "=== E2E Test Logs ==="
