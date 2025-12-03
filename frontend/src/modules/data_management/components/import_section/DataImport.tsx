@@ -177,7 +177,7 @@ export const DataImport = ({
                     href={`${import.meta.env.VITE_API_HOST}/pathogens/${activePathogen?.id}/example_data/${type}`}
                     target="_blank"
                     download
-                    className="font-medium align-center inline-block text-black mt-4"
+                    className="flex font-medium align-center text-black mt-4"
                 >
                     Exemplarische {t(`import:labels.${type}`)} herunterladen <FileDown className="h-5 w-5 ml-1" />
                 </a>
@@ -196,7 +196,7 @@ export const DataImport = ({
                                 activePathogen?.id
                             }/example_data/${type}`}
                             download
-                            className="inline-block text-black mt-4"
+                            className="flex text-black mt-4"
                         >
                             Exemplarische {t(`import:labels.${type}`)} herunterladen{" "}
                             <FileDown className="h-5 w-5 ml-1" />
