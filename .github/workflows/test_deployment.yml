@@ -25,7 +25,7 @@ jobs:
       - name: Build Docker images
         run: |
           docker compose build --no-cache
-          docker compose --profile testing build e2e-tests
+          docker compose --profile testing build e2e-tests frontend-tests
 
       - name: Start services
         run: |
@@ -59,11 +59,12 @@ jobs:
       - name: Run Unit tests for Frontend
         run: |
           docker compose --profile testing run --rm frontend-tests
+        continue-on-error: false
 
-      - name: Report Coverage
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          working-directory: "./frontend"
+      - name: Run Unit tests for API
+        run: |
+          docker exec gentrain-api sh -c "pytest"
+        continue-on-error: false
 
       - name: Run Cypress E2E tests
         run: |
@@ -81,6 +82,10 @@ jobs:
           docker compose logs caddy --tail=100
           echo "=== Worker Logs ==="
           docker compose logs worker --tail=100
+          echo "=== Unit Test Frontend Logs ==="
+          docker compose logs frontend-tests --tail=100
+          echo "=== Unit Test API Logs ==="
+          docker compose logs api-tests --tail=100
           echo "=== E2E Test Logs ==="
           docker compose logs e2e-tests --tail=100
           echo "=== Frontend Logs ==="
