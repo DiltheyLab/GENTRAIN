@@ -16,17 +16,7 @@ import * as helpers from "../../support/helpers";
 describe("User Management - CRUD Operations", () => {
   const testUser = `testuser-${Date.now()}`;
   const testPassword = "TestUserPass123!";
-  /**
-   * Create User (Superuser Only)
-   * Acceptance Criteria:
-   *   Given: Logged in as superuser
-   *   When: Navigate to Users resource
-   *   And: Click Create button
-   *   And: Fill form (username, password, role)
-   *   And: Click Save
-   *   Then: User is created and visible in list
-   *   And: Audit log shows creation event
-   */
+
   it("should create a new user as superuser", () => {
     cy.loginAs(); // Default login is superuser
     cy.navigateToResource("User");
@@ -37,27 +27,17 @@ describe("User Management - CRUD Operations", () => {
 
     // Cleanup - Delete created user for test isolation
     helpers.clickShowRecord(testUser);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 
-  /**
-   * Edit User (Superuser Role Change)
-   * Acceptance Criteria:
-   *   Given: A user record exists
-   *   When: Superuser opens user edit form
-   *   And: Changes role to "superuser"
-   *   And: Clicks Save
-   *   Then: Role is updated in database
-   */
   it("should edit user role as superuser", () => {
     cy.loginAs();
     cy.navigateToResource("User");
 
     const editTestUser = `edituser-${Date.now()}`;
+
     // Create a test user for test isolation
     helpers.createUser(editTestUser, testPassword, "user");
-
-    // Wait for list and find the user
     helpers.assertRowInTable(editTestUser);
 
     // Click to edit
@@ -80,18 +60,9 @@ describe("User Management - CRUD Operations", () => {
 
     // Cleanup - delete user
     helpers.clickShowRecord(editTestUser);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 
-  /**
-   * Edit User (Name Change)
-   * Acceptance Criteria:
-   *   Given: A user record exists
-   *   When: Superuser opens user edit form
-   *   And: Changes name
-   *   And: Clicks Save
-   *   Then: name is updated in database
-   */
   it("should edit user name as superuser", () => {
     cy.loginAs();
     cy.navigateToResource("User");
@@ -116,18 +87,9 @@ describe("User Management - CRUD Operations", () => {
 
     // Cleanup - delete user
     helpers.clickShowRecord(updatedName);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 
-  /**
-   * Edit User (Password Change)
-   * Acceptance Criteria:
-   *   Given: A user record exists
-   *   When: Superuser opens user edit form
-   *   And: Changes password
-   *   And: Clicks Save
-   *   Then: password is updated in database
-   */
   it("should edit user password as superuser", () => {
     cy.loginAs();
     cy.navigateToResource("User");
@@ -138,14 +100,18 @@ describe("User Management - CRUD Operations", () => {
     // Create a test user for test isolation
     helpers.createUser(passwordEditTestUser, testPassword, Cypress.env("SUPERUSER_ROLE"));
     helpers.assertRowInTable(passwordEditTestUser);
+
     // Click to edit
     helpers.clickShowRecord(passwordEditTestUser);
     cy.get('[data-testid="action-edit"]').click();
+
     // Change password
     cy.get('[data-testid="property-edit-password"] input').clear().type(newPassword).blur();
     helpers.submitForm();
+
     // Verify success
     helpers.assertRowInTable(passwordEditTestUser);
+
     // Logout and login with new password to verify
     cy.logout();
     cy.loginAs(passwordEditTestUser, newPassword);
@@ -154,18 +120,9 @@ describe("User Management - CRUD Operations", () => {
     // Cleanup - delete user
     cy.navigateToResource("User");
     helpers.clickShowRecord(passwordEditTestUser);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 
-  /**
-   * Delete User
-   * Acceptance Criteria:
-   *   Given: A non-superuser record exists
-   *   When: Superuser clicks delete action
-   *   And: Confirms deletion
-   *   Then: User is removed from database
-   *   And: List no longer shows user
-   */
   it("should delete a user", () => {
     cy.loginAs();
     cy.navigateToResource("User");
@@ -178,26 +135,20 @@ describe("User Management - CRUD Operations", () => {
 
     // Delete the user
     helpers.clickShowRecord(deleteTestUser);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
 
     // Verify removed from list
     cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
     helpers.assertRowNotInTable(deleteTestUser);
   });
 
-  /**
-   * Duplicate Username Prevention
-   * Acceptance Criteria:
-   *   Given: User "admin-e2e-test" exists
-   *   When: Attempt to create another with same username
-   *   Then: Validation error shows
-   */
   it("should prevent duplicate username creation", () => {
     cy.loginAs();
     cy.navigateToResource("User");
     const normalUsername = "admin-e2e-test";
     const normalPassword = "AnotherPass123!";
 
+    // Create initial user
     helpers.createUser(normalUsername, normalPassword, Cypress.env("USER_ROLE"));
     helpers.assertRowInTable(normalUsername);
 
@@ -212,6 +163,6 @@ describe("User Management - CRUD Operations", () => {
     // Cleanup - delete created user
     cy.navigateToResource("User");
     helpers.clickShowRecord(normalUsername);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 });
