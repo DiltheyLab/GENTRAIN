@@ -2,10 +2,10 @@ name: Testing
 on:
   push:
     branches:
-      - e2e-testing
+      - dev
   pull_request:
     branches:
-      - e2e-testing
+      - dev
   workflow_dispatch:
 
 env:
