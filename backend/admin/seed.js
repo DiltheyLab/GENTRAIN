@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const username = process.env.DEFAULT_ADMIN_USERNAME ?? 'admin';
-  const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'secretPassword';
+  const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'SecretPassword123!';
 
   const superUserRoleName = 'superuser';
   const normalUserRoleName = 'user';
@@ -34,8 +34,8 @@ async function main() {
     console.log(`Role "${normalUserRoleName}" created`);
   }
 
-  console.log("SUPERUSERROLE", superUserRole);
-  
+  console.log('SUPERUSERROLE', superUserRole);
+
   // --- Ensure admin user exists ---
   const existingAdmin = await prisma.User.findFirst({
     where: { roleId: superUserRole.id },

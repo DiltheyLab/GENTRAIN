@@ -13,7 +13,7 @@ export default defineConfig({
       SUPERUSER_ROLE: "superuser",
       USER_ROLE: "user",
       ADMIN_SUPERUSER: "admin",
-      ADMIN_PASSWORD: "secretPassword",
+      ADMIN_PASSWORD: "SecretPassword123!",
       ADMIN_PANEL_URL: "https://admin.localhost",
       APP_URL: "https://app.localhost",
       API_URL: "https://api.localhost",
