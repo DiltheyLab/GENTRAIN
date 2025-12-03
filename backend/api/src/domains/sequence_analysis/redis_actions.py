@@ -36,6 +36,7 @@ def get_merged_fasta_content_if_complete(socket_id, chunk_information):
              and the total amount of chunks relating to the current analysis
     """
     chunk_keys = get_persisted_fasta_chunk_keys(socket_id, chunk_information)
+
     if chunk_information["total"] > len(chunk_keys):
         return
     fasta_content = ""

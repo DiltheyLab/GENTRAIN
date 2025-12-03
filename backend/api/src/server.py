@@ -14,6 +14,7 @@ redis_connection = Redis(
     health_check_interval=30,
 )
 
+
 # Init redis queues for viral and bacterial sequences analysis jobs
 queue_viral = Queue(name="viral", connection=redis_connection)
 queue_bacterial = Queue(name="bacterial", connection=redis_connection)
@@ -35,6 +36,3 @@ else:
         message_queue=f"redis://{environ.get('REDIS_USERNAME')}:{environ.get('REDIS_PASSWORD')}@{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}",
         cors_allowed_origins=[],
     )
-
-if __name__ == "__main__":
-    app.run()
