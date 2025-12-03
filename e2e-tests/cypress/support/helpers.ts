@@ -158,6 +158,9 @@ export const checkIfCanvasHasContent = (selector: string, waitUntilRendering = 2
   });
 };
 
+/*
+ * Create a user with given username, password, and role
+ */
 export const createUser = (username: string, password: string, role: string): void => {
   cy.contains("Create new").click();
   cy.get("form").should("be.visible");
@@ -168,8 +171,28 @@ export const createUser = (username: string, password: string, role: string): vo
   submitForm();
 };
 
-export const deleteUser = (): void => {
+/**
+ * Delete the currently viewed user
+ */
+export const deleteRecord = (resource: Cypress.Resource): void => {
   cy.get("[data-testid=action-delete]").click();
   cy.get('button[label="Confirm"]').click();
-  cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/resources/User`);
+  cy.url().should("equal", `${Cypress.env("ADMIN_PANEL_URL")}/resources/${resource}`);
+};
+
+/**
+ * Validate password change error handling
+ */
+export const checkPasswordValidation = (
+  type: "ownPasswordChangeDialog" | "otherUserPasswordChange" = "ownPasswordChangeDialog"
+): void => {
+  if (type === "ownPasswordChangeDialog") {
+    cy.contains("Password was not changed", { matchCase: false }).should("exist");
+    cy.get("form").should("be.visible");
+    cy.url().should("include", "/resources/password");
+  } else {
+    cy.contains("User was not updated", { matchCase: false }).should("exist");
+    cy.get("form").should("be.visible");
+    cy.url().should("include", "/edit");
+  }
 };

@@ -147,8 +147,8 @@ Cypress.Commands.add("clearIndexedDB", (dbName: string) => {
 /**
  * Navigate to a resource list page
  */
-Cypress.Commands.add("navigateToResource", (resource: "User" | "Role" | "Pathogen" | "Log") => {
-  const resourceMap: Record<string, string> = {
+Cypress.Commands.add("navigateToResource", (resource: Cypress.Resource) => {
+  const resourceMap: Record<string, Cypress.Resource> = {
     users: "User",
     roles: "Role",
     pathogens: "Pathogen",

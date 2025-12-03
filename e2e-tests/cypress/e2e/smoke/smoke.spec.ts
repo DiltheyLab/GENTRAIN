@@ -45,7 +45,7 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
 
     // Delete user
     helpers.clickShowRecord(smokeUser);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
     helpers.assertRowNotInTable(smokeUser);
 
     // 4. PATHOGENS WORKFLOW
@@ -127,7 +127,7 @@ describe("Smoke Test - Admin Panel (Critical Workflows)", () => {
     cy.loginAs();
     cy.navigateToResource("User");
     helpers.clickShowRecord(normalUsername);
-    helpers.deleteUser();
+    helpers.deleteRecord("User");
   });
 });
 

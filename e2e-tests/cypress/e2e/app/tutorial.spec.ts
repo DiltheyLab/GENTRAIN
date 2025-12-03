@@ -30,25 +30,38 @@ describe("tutorial", () => {
   });
 
   it("does the turorial until the end without errors", () => {
+    // Go through the entire tutorial
     cy.contains("Schritt 1").should("be.visible");
     cy.contains("button", "Weiter").click();
     cy.contains("Schritt 2").should("be.visible");
     cy.contains("button", "Weiter").click();
     cy.contains("Schritt 3").should("be.visible");
+    // Check graph is rendered in step 3
     checkIfCanvasHasContent(".force-graph-container > canvas");
+
+    // Continue tutorial until data management page
     clickUntilNextPageOrEnd();
     cy.url().should("include", "/data-management");
+
+    // Continue tutorial until outbreak analysis overview page
     clickUntilNextPageOrEnd();
     cy.url().should("include", "/outbreak-analysis");
+
+    // Continue tutorial until next outbreak analysis page
     clickUntilNextPageOrEnd();
     cy.url().should("include", "/outbreak-analysis/1");
+
+    // Check if page rendered with Outbreak Schule A and graph is rendered
     cy.contains("button > span", "Schule A");
     checkIfCanvasHasContent(".force-graph-container > canvas");
+
+    // Continue tutorial until end and get back to dashboard
     clickUntilNextPageOrEnd();
     cy.url().should("equal", `${Cypress.env("APP_URL")}/`);
   });
 
   it("refreshes the page during the turorial and checks if the turorial step stays the same", () => {
+    // Go to step 2 and check if graph is rendered after reload
     cy.contains("button", "Weiter").click();
     cy.contains("Schritt 2").should("be.visible");
     checkIfCanvasHasContent(".force-graph-container > canvas");

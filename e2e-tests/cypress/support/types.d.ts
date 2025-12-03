@@ -3,6 +3,8 @@
  */
 
 declare namespace Cypress {
+  type Resource = "User" | "Role" | "Pathogen" | "Log";
+
   interface Chainable {
     /**
      * Login to admin panel as a specific user
@@ -71,7 +73,7 @@ declare namespace Cypress {
      * Navigate to a resource list page
      * @param resource - resource type (users, roles, pathogens, logs)
      */
-    navigateToResource(resource: "User" | "Role" | "Pathogen" | "Log"): Chainable<void>;
+    navigateToResource(resource: Resource): Chainable<void>;
 
     /**
      * Fill a form with given field values
