@@ -146,7 +146,7 @@ class BacterialSequenceAnalysis(SequenceAnalysisStrategy):
             to=f"{self.type}_{self.socket_id}",
         )
 
-    def get_response(self, result):
+    def get_response(self, result) -> dict:
         """Return a response model for bacterial analysises."""
         # retrieve the installed chewBBACA version (gentrain-worker and gentrain-api versions are synced)
         chewBBACCA_version = (

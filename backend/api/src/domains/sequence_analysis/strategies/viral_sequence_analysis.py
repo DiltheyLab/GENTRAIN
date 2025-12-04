@@ -38,7 +38,6 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 illegal_characters = illegal_characters + re.findall(
                     "[^ATGCRYSWKMBDHVNXU]+", sequence
                 )
-                print(illegal_characters)
             return illegal_characters
         except Exception as e:
             for fasta_hash in self.sequences.keys():
@@ -95,8 +94,8 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 pathlib.Path(self.output).unlink(missing_ok=True)
                 return content
 
-    def persist_and_emit_response(self, results):
-        for result_per_sequence in results:
+    def persist_and_emit_response(self, result):
+        for result_per_sequence in result:
             response = self.get_response(result_per_sequence)
             fasta_hash = response[0]
             sequence_analysis_result = response[1]
@@ -114,7 +113,7 @@ class ViralSequenceAnalysis(SequenceAnalysisStrategy):
                 to=f"{self.type}_{self.socket_id}",
             )
 
-    def get_response(self, result):
+    def get_response(self, result) -> tuple:
         """Return a response model for viral analysises."""
         # retrieve the installed nextclade version (gentrain-worker and gentrain-api versions are synced)
         # Nextclade_pango does only exist for sequences of SARS-CoV-2

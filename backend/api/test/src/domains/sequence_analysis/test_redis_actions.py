@@ -109,7 +109,6 @@ def test_get_merged_fasta_content_if_complete_returns_merged_strings_in_correct_
         "socket_id", {"id": 0, "index": 0, "total": 2}
     )
 
-    print("response:", response)
     assert response == ":first_sequence::second_sequence:"
     mock_keys.assert_called_once()
     mock_get.assert_any_call("chunks:socket_id:0:0")
@@ -143,7 +142,6 @@ def test_get_merged_fasta_content_if_complete_returns_none_if_a_fasta_chunk_is_n
         "socket_id", {"id": 0, "index": 0, "total": 2}
     )
 
-    print("response:", response)
     assert response == None
     mock_keys.assert_called_once()
     mock_get.assert_any_call("chunks:socket_id:0:0")

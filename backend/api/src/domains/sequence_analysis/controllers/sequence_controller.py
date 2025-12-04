@@ -1,8 +1,9 @@
 from Bio import Align
-from flask import Response, jsonify
+from flask import Response, jsonify, request
 
 
-def align_sequences_action(data):
+def align_sequences_action():
+    data = request.get_json()
     if "sequence_1" not in data or "sequence_2" not in data:
         return Response(
             "Invalid request body.", status=422, mimetype="application/json"

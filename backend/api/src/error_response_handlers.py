@@ -22,7 +22,7 @@ def unprocessable_entity(error):
 
 
 @app.errorhandler(500)
-def unprocessable_entity(error):
+def internal_server_error(error):
     response = {
         "error": "Internal Server Error",
     }
