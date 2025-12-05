@@ -1,99 +1,79 @@
 ---
 id: security-and-data-privacy
-title: Security and Data Privacy
-sidebar_label: Security and Data Privacy
+title: Informationssicherheit und Datenschutz
+sidebar_label: Informationssicherheit und Datenschutz
 sidebar_position: 5
 ---
 
-# Security and Data Privacy
+# Informationssicherheit und Datenschutz
 
-## Processed Data
+## Verarbeitete Daten
 
-Gentrain only processes personal data on the client side. Personal data is added via case imports and stored in the browser's IndexedDB. Data does not refer to the user, but to the persons associated with the cases registered with the health authorities.
+Gentrain verarbeitet personenbezogene Daten ausschließlich auf der Client-Seite. Personenbezogene Daten werden über Fallimporte hinzugefügt und im IndexedDB des Browsers gespeichert. Die Daten beziehen sich nicht auf den Benutzer selbst, sondern auf die Personen, die mit den bei den Gesundheitsämtern registrierten Fällen verknüpft sind.
 
+| Name                         | Beschreibung                                                                                                                                                                                                                                                                                          | Quelle          | Serverseitige Speicherung       | Serverseitige Verarbeitung | Clientseitige Speicherung | Clientseitige Verarbeitung |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------- | -------------------------- | ------------------------- | -------------------------- |
+| **Fall ID**                  | Eindeutige Kennung eines beim zuständigen Gesundheitsamt registrierten Falls. Wird verwendet, um Fälle zu identifizieren und Sequenzen den zugehörigen Fällen zuzuordnen.                                                                                                                              | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Vorname**                  | Vorname einer Person, die mit einem Fall verknüpft ist. Unterstützt die Fallzuordnung in Ausbruchsanalysen.                                                                                                                                                                                           | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Nachname**                 | Nachname einer Person, die mit einem Fall verknüpft ist. Unterstützt die Fallzuordnung in Ausbruchsanalysen.                                                                                                                                                                                          | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Adresse**                  | Adresse einer Person, die mit einem Fall verknüpft ist. Unterstützt die Fallzuordnung in Ausbruchsanalysen.                                                                                                                                                                                          | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Registrierungsdatum**      | Datum, an dem ein Fall beim zuständigen Gesundheitsamt registriert wurde. Unterstützt die Fallzuordnung in Ausbruchsanalysen und das Filtern der in Diagrammen dargestellten Fälle.                                                                                                                 | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Ausbruchsname**            | Mit einem importierten Fall verknüpfter Ausbruch. Dient der Darstellung in Diagrammen und zum Filtern.                                                                                                                                                                                               | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Kontaktinformationen**     | Verknüpfung zwischen zwei Fällen und deren Art des Kontakts. Unterstützt die Ausbruchsanalysen, indem sie zusätzliche Informationen über Infektionsvorkommen liefert.                                                                                                                                | SurvNet, Octoware, ISGA         | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Fasta ID**                 | Kennung einer Sequenz, die einem importierten Fall zugeordnet ist. Dient der Identifizierung von Sequenzen und der Zuordnung von Fällen zu importierten Sequenzen. Auf der Serverseite werden Sequenzen über Pseudonyme identifiziert, die zuerst auf der Client-Seite erstellt werden, um Pseudonyme und Fasta IDs kontinuierlich zuzuordnen. | Sequencing Labs | ❌                            | ❌                         | ✅                        | ✅                         |
+| **Genetische Sequenzen**     | Sequenzen, die mit importierten Fällen verknüpft sind. Sie dienen der Berechnung genetischer Abstände zwischen Fällen, die wiederum Ausbruchsanalysen unterstützen.                                                                                                                                | Sequencing Labs | ❌                            | ✅                         | ❌                        | ✅                         |
+| **Ergebnis der Sequenzanalyse** | Sequenzen werden auf Mutationen basierend auf dem entsprechenden Referenzgenom analysiert. Diese Ergebnisse werden serverseitig maximal 30 Minuten gespeichert, falls Benutzer die Websocket-Verbindung schließen (z. B. durch Schließen des Browser-Tabs) und die Ergebnisse nicht sofort abrufen können. | Intern          | ✅ <small>(temporär)</small> | ✅                         | ✅                        | ✅                         |
 
-| Name                         | Description                                                                                                                                                                                                                                                                                          | Source          | Server-side persistence       | Server-side processing | Client-side persistence | Client-side processing |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------- | ---------------------- | ----------------------- | ---------------------- |
-| **Case Id**                  | Unique identifier of a case registered at the relevant public health department. Used to identify cases and to map sequences to associated cases.                                                                                                                                                           | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **First Name**               | First name of a person associated with a case. Used to support case association in outbreak analyses.                                                                                                                                                                                                | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Last Name**                | Last name of a person associated with a case. Used to support case association in outbreak analyses.                                                                                                                                                                                                 | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Address**                  | Address of a person associated with a case. Used to support case association in outbreak analyses.                                                                                                                                                                                                   | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Registration Date**   | Date on which a case was registered at the relevant public health department. Used to support case association in outbreak analyses and to filter cases presented in graphs.                                                                                                                         | SurvNet, Octoware, ISGA        | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Outbreak Name**            | Outbreak associated with an imported case. Used to display outbreaks in graphs and for filtering.                                                                                                                                                                                                    | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Contact Information**      | Mapping between two cases and their type of contact. Used to support outbreak analysis by providing further understanding about the incidence of infection.                                                                                                                                          | SurvNet, Octoware, ISGA         | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Fasta Id**                 | Identifier of a sequence that is linked to an imported case. Used to identify sequences and to assign cases to imported sequences. On the server side, sequences are identified using pseudonyms that are first created on the client side in order to assign pseudonyms and fasta ids continuously. | Sequencing Labs | ❌                            | ❌                     | ✅                      | ✅                     |
-| **Genetic sequences**        | Sequences associated with imported cases. These are used to calculate the genetic distances between cases, which in turn are used to support outbreak analyses.                                                                                                                                      | Sequencing Labs | ❌                            | ✅                     | ❌                      | ✅                     |
-| **Sequence analysis result** | Sequences are analysed for mutations based on the corresponding reference genome. These results are stored on server side for a maximum of 30 minutes in case users close the websocket connection (e.g. by closing the browser tab) and therefore cannot retrieve these results immediately.        | Internal        | ✅ <small>(temporary)</small> | ✅                     | ✅                      | ✅                     |
+Genetische Daten, wie Virus- und Bakteriengenome, werden an den Server übertragen, und Analyseergebnisse werden temporär für maximal 30 Minuten gespeichert.  
+Diese enthalten Informationen über Mutationen basierend auf dem entsprechenden Referenzgenom.  
+Bei der Kommunikation mit dem Server werden Sequenzen aggregiert und anonymisiert, wobei nur ein Hash als Referenz dient. Die folgende Grafik illustriert dieses Verfahren:  
 
-Genetic data, such as viral and bacterial genomes, are transferred to the server and analysis results are temporarily stored for a maximum of 30 minutes.
-These contain information on mutations based on the corresponding reference genome.
-Whenever communicating with the server, sequences are aggregated and anonymised using only a hash as a reference. The following graphic illustrates this procedure.
-![Sequence Aggregation](/img/developers/security_and_data_privacy/sequence_aggregation.png "Sequence Aggregation")
+![Sequenzaggregation](/img/developers/security_and_data_privacy/sequence_aggregation.png "Sequenzaggregation")
 
-It is also possible to add flexible data columns to the case import. This data is used for filtering graphs and is only persisted and processed on the client side.
+Es ist auch möglich, flexible Daten-Spalten zum Fallimport hinzuzufügen. Diese Daten werden zum Filtern von Diagrammen genutzt und nur auf der Client-Seite gespeichert und verarbeitet.
 
-## Data Processing Operations
+## Datenverarbeitungsoperationen
 
-| Operation                                                | Decription                                                                                                             | Data                                              | Purpose                                                                            |
-| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Data import**                                          | Import of data from fasta / csv files                                                                                  | Cases, sequences, contacts                        | Data basis for outbreak analyses                                                   |
-| **Client side persistence of imported data**             | Persistence of data from fasta / csv files                                                                             | Cases, sequences, contacts                        | Data basis for outbreak analyses                                                   |
-| **Database export**                                      | Export of data stored in IndexedDB                                                                                     | Client side application state                     | Persistent data management, state sharing, backups                                 |
-| **Database import**                                      | Import of data stored in IndexedDB                                                                                     | Client side application state                     | Persistent data management, state sharing, backups                                 |
-| **Sequence analysis**                                    | Websocket messaging between client and server                                                                          | Pseudonymised sequence data, mutation information | Analysis for mutations to persist relevant sequence information in compressed form |
-| **Client side persistence of sequence analysis results** | Persistence in IndexedDB                                                                                               | Mutation information                              | Distance calculation between sequences                                             |
-| **Server side caching of sequence analysis results**     | Temporary persistence in Redis cache (max 30 minutes)                                                                  | Mutation information                              | Retaining the results if the user leaves the application during analysis           |
-| **Server side caching of sequence chunks**               | Temporary persistence in Redis cache (until all chunks have been transmitted or max 30 minutes)                        | Pseudonymised sequences, pseudonymised assemblies | Reliable web socket transmission despite large amounts of data                     |
-| **Outbreak analysis report export**                      | Export of an outbreak analysis containing case, sequence and contact tracing information in the form of a pdf document | Cases, sequences, contacts                        | Collectiong and exporting outbreak analysis information and conclusions            |
+| Operation                                                | Beschreibung                                                                                                       | Daten                                              | Zweck                                                                              |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Datenimport**                                          | Import von Daten aus Fasta- / CSV-Dateien                                                                          | Fälle, Sequenzen, Kontakte                        | Datenbasis für Ausbruchsanalysen                                                  |
+| **Clientseitige Speicherung importierter Daten**        | Speicherung von Daten aus Fasta- / CSV-Dateien                                                                    | Fälle, Sequenzen, Kontakte                        | Datenbasis für Ausbruchsanalysen                                                  |
+| **Datenbankexport**                                      | Export von in IndexedDB gespeicherten Daten                                                                       | Clientseitiger Anwendungszustand                  | Persistente Datenverwaltung, Zustandsfreigabe, Backups                             |
+| **Datenbankimport**                                      | Import von in IndexedDB gespeicherten Daten                                                                       | Clientseitiger Anwendungszustand                  | Persistente Datenverwaltung, Zustandsfreigabe, Backups                             |
+| **Sequenzanalyse**                                       | Websocket-Kommunikation zwischen Client und Server                                                                | Pseudonymisierte Sequenzdaten, Mutationsinformationen | Analyse von Mutationen, um relevante Sequenzinformationen komprimiert zu speichern |
+| **Clientseitige Speicherung der Analyseergebnisse**     | Speicherung in IndexedDB                                                                                           | Mutationsinformationen                             | Berechnung von Abständen zwischen Sequenzen                                        |
+| **Serverseitiges Caching der Analyseergebnisse**        | Temporäre Speicherung im Redis-Cache (max. 30 Minuten)                                                            | Mutationsinformationen                             | Ergebnisse bei Verlassen der Anwendung durch den Benutzer zwischenspeichern        |
+| **Serverseitiges Caching von Sequenzchunks**            | Temporäre Speicherung im Redis-Cache (bis alle Chunks übertragen wurden oder max. 30 Minuten)                      | Pseudonymisierte Sequenzen, pseudonymisierte Assemblies | Zuverlässige Websocket-Übertragung trotz großer Datenmengen                        |
+| **Export des Ausbruchsberichts**                         | Export einer Ausbruchsanalysen mit Fall-, Sequenz- und Kontaktinformationen in Form einer PDF-Datei                | Fälle, Sequenzen, Kontakte                        | Sammlung und Export von Ausbruchsanalysen und deren Ergebnissen                     |
 
-## Securing the Postgres Database
+## Absicherung der Postgres-Datenbank
 
-The docker container running the postgres instance is execute as non-root user. Accessing the database requires authentication.
+Der Docker-Container, der die Postgres-Instanz ausführt, läuft als Nicht-Root-Benutzer. Der Zugriff auf die Datenbank erfordert Authentifizierung.
 
-## Securing Redis
+## Absicherung von Redis
 
-<a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/" target="_blank">'Redis security' guideline</a> was followed conscientiously, with the exception of TLS encryption, as the `gentrain-redis` container is only accessible from the local Docker network.
-The docker container running the redis instance is execute as non-root user and the legacy authentication method is enabled. In addition, the local docker IP address is bound to prevent access from other origins. ACL rules were configured for vulnerable commands:
+Die offizielle <a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/" target="_blank">'Redis-Sicherheitsrichtlinie'</a> wurde konsequent befolgt, mit Ausnahme der TLS-Verschlüsselung, da der `gentrain-redis` Container nur vom lokalen Docker-Netzwerk aus zugänglich ist.  
+Der Docker-Container, der Redis ausführt, läuft als Nicht-Root-Benutzer, und die Legacy-Authentifizierung ist aktiviert. Außerdem ist die lokale Docker-IP-Adresse gebunden, um Zugriffe von anderen Quellen zu verhindern. ACL-Regeln wurden für gefährliche Befehle konfiguriert:
 
-- all commands except dangerous ones (-@dangerous) are allowed
-- commands `+client|list` and `+keys` are explicitly allowed, as python-rq makes use of them
+- alle Befehle außer gefährlichen (-@dangerous) sind erlaubt  
+- die Befehle `+client|list` und `+keys` sind explizit erlaubt, da python-rq diese nutzt
 
-## Securing the Admin Panel
+## Absicherung des Admin-Panels
 
-### Authentication
+### Authentifizierung
 
-To access the GENTRAIN Admin Panel, users must authenticate themselves. In addition, various roles have been implemented to grant authorisation for user administration only to certain users.
+Um auf das GENTRAIN Admin-Panel zuzugreifen, müssen sich Benutzer authentifizieren. Verschiedene Rollen wurden implementiert, um nur bestimmten Benutzern die Benutzerverwaltung zu erlauben.
 
-Admin passwords must be set on first login and follow following rules:
+Admin-Passwörter müssen beim ersten Login gesetzt werden und folgende Regeln erfüllen:
 
-- at least 8 characters
-- at least 1 number
-- at least 1 special character ($, #, @, !, \*, .)
+- mindestens 8 Zeichen  
+- mindestens 1 Zahl  
+- mindestens 1 Sonderzeichen ($, #, @, !, \*, .)  
 
-### Registration Process
+### Datei-Uploads
 
-The admin panel is not connected to a mail server. Therefore, users are created by users with the superuser role and passwords are changed at the first login, which also serves as account confirmation.
+Der Zugriff auf andere Verzeichnisse als die angegebenen Upload-Standorte ist für den Ubuntu-Benutzer, der das Admin-Panel ausführt, nicht erlaubt. Hochgeladene Dateien werden zudem strikt anhand der erwarteten Dateimuster überprüft.
 
-```mermaid
-sequenceDiagram
-    participant Super User
-    participant User
-    participant Admin Panel
-    Super User->>Admin Panel: create user with username and password
-    Super User->>User: send username and password to the user
-    User->>Admin Panel: login with provided password
-    Admin Panel->>Admin Panel: check if user is confirmed
-    alt user is not confirmed
-        Admin Panel->>User: redirect to password change form because user is not confirmed
-        User->>Admin Panel: change password
-    end
-    Admin Panel->>User: redirect to pathogen view
+## Absicherung der Websocket-Verbindung
 
-```
-
-### File uploads
-
-Access to directories other than the specified upload locations is not permitted for the Ubuntu user running the admin panel. Further uploaded files are checked strictly on the basis of the expected file patterns.
-
-## Securing the Websocket Connection
-WebSocket communication is TLS encrypted.
+Die WebSocket-Kommunikation ist TLS-verschlüsselt.
