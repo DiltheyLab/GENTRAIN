@@ -1,0 +1,120 @@
+name: Production Deployment
+on:
+  push:
+    branches:
+      - prod
+  pull_request:
+    branches:
+      - prod
+  workflow_dispatch:
+
+jobs:
+  #test_build:
+  #  name: Test Build
+  #  runs-on: ubuntu-24.04 # Server Version
+  #  timeout-minutes: 30
+
+  #  steps:
+  #    - name: Checkout repo
+  #      uses: actions/checkout@v4
+
+  #    - name: Build Docker images
+  #      run: |
+  #        docker compose -f docker-compose.prod.yaml build --no-cache
+
+  #    - name: Start services
+  #      run: |
+  #        docker compose -f docker-compose.prod.yaml up -d
+
+  pull_production_state:
+    name: Pull Production State
+  #  needs: test_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest version
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}
+            git checkout ${{ vars.PRODUCTION_BRANCH }}
+            git pull
+            exit
+
+  restart_docker_containers:
+    name: Restart Docker Containers
+    runs-on: ubuntu-latest
+    needs: pull_production_state
+
+    steps:
+      - name: Generate environment variables
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}
+            rm -f .env
+            touch .env
+            echo -e "VITE_API_HOST=${{vars.VITE_API_HOST}}" >> .env
+            echo -e "APP_ENV=${{vars.PROD_APP_ENV}}" >> .env
+            echo -e "APP_URL=${{vars.APP_URL}}" >> .env
+            echo -e "REDIS_HOST=${{vars.REDIS_HOST}}" >> .env
+            echo -e "REDIS_PORT=${{vars.REDIS_PORT}}" >> .env
+            echo -e "REDIS_USERNAME=${{vars.REDIS_USERNAME}}" >> .env
+            echo -e "REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}}" >> .env
+            echo -e "DATABASE_DRIVER=${{vars.DATABASE_DRIVER}}" >> .env
+            echo -e "DATABASE_NAME=${{vars.DATABASE_NAME}}" >> .env
+            echo -e "DATABASE_HOST=${{vars.DATABASE_HOST}}" >> .env
+            echo -e "DATABASE_PORT=${{vars.DATABASE_PORT}}" >> .env
+            echo -e "DATABASE_USER=${{vars.DATABASE_USER}}" >> .env
+            echo -e "DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}}" >> .env
+            echo -e "DEFAULT_ADMIN_USERNAME=${{vars.DEFAULT_ADMIN_USERNAME}}" >> .env
+            echo -e "DEFAULT_ADMIN_PASSWORD=${{secrets.DEFAULT_ADMIN_PASSWORD}}" >> .env
+            echo -e "COOKIE_SECRET=${{secrets.COOKIE_SECRET}}" >> .env
+            echo -e "SESSION_SECRET=${{secrets.SESSION_SECRET}}" >> .env
+            echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
+            echo -e "ADMIN_PANEL_URL=${{vars.ADMIN_PANEL_URL}}" >> .env
+            echo -e "API_DATA_DIRECTORY=${{vars.API_DATA_DIRECTORY}}" >> .env
+            echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
+            echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
+            exit
+      - name: Restart docker containers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd ${{ vars.GENTRAIN_DIR }}
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S bash -c 'ls -1t db_dumps/ | tail -n +5 | xargs -I {} rm -f db_dumps/{}'
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker exec -t gentrain-db pg_dump -d ${{vars.DATABASE_NAME}} -U ${{vars.DATABASE_USER}} > db_dumps/dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml down
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker system prune -f
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
+            echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
+            exit
+
+  notify:
+    name: Notify
+    needs: [pull_production_state, restart_docker_containers]
+    # needs: [test_build, pull_production_state, restart_docker_containers]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Notify Slack
+        uses: ravsamhq/notify-slack-action@2.3.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
+          notify_when: "success,failure"
+          notification_title: "Deployment Pipeline"
+          icon_success: 🚀
+          icon_failure: 💥

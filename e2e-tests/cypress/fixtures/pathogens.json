@@ -1,0 +1,20 @@
+{
+  "bacterial": {
+    "name": "Salmonella enteritidis",
+    "type": "bacterial",
+    "genetic_distance_threshold": 50,
+    "activated": false
+  },
+  "bacterialActive": {
+    "name": "Escherichia coli",
+    "type": "bacterial",
+    "genetic_distance_threshold": 15,
+    "activated": true
+  },
+  "viral": {
+    "name": "SARS-CoV-2",
+    "type": "viral",
+    "genetic_distance_threshold": 1,
+    "activated": true
+  }
+}

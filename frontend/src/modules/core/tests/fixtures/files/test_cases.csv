@@ -1,0 +1,6 @@
+Fall ID;Sequenz ID;Registrierungsdatum;Ausbruch;:category_1:;:category_2:;:category_3:
+:case_id_1:;:fasta_id_1:;01.01.2021;:outbreak_1:;:category_1_group_1:;:category_2_group_1:;:category_3_group_1:
+:case_id_2:;:fasta_id_2:;02.01.2021;:outbreak_1:;:category_1_group_2:;:category_2_group_2:;:category_3_group_2:
+:case_id_3:;:fasta_id_3:;03.01.2021;:outbreak_2:;:category_1_group_3:;:category_2_group_3:;:category_3_group_3:
+:case_id_4:;:fasta_id_4:;04.01.2021;:outbreak_2:;:category_1_group_4:;:category_2_group_4:;:category_3_group_4:
+:case_id_5:;;05.01.2021;;:category_1_group_5:;:category_2_group_5:;:category_3_group_5:

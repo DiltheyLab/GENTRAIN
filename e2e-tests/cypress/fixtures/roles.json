@@ -1,0 +1,20 @@
+{
+  "superuser": {
+    "id": 1,
+    "name": "superuser",
+    "description": "Administrator with full access"
+  },
+  "user": {
+    "id": 2,
+    "name": "user",
+    "description": "Regular user with limited access"
+  },
+  "analyst": {
+    "name": "analyst",
+    "description": "Data analyst role"
+  },
+  "manager": {
+    "name": "manager",
+    "description": "Manager role"
+  }
+}
