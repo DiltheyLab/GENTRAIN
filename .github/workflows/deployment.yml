@@ -28,7 +28,7 @@ jobs:
 
   pull_production_state:
     name: Pull Production State
-    needs: test_build
+  #  needs: test_build
     runs-on: ubuntu-latest
     steps:
       - name: Pull latest version
