@@ -1,27 +1,24 @@
 ---
 id: data-processing
-title: Datenverarbeitung
-sidebar_label: Datenverarbeitung
+title: Data Processing
+sidebar_label: Data Processing
 sidebar_position: 4
 ---
 
-# Datenverarbeitung
+# Data processing
 
-Ausbruchsanalysen basieren auf _Minimum Spanning Tree (MST)_-Visualisierungen von Infektionsfällen, die durch genetische
-Distanzen oder Kontaktverfolgungsereignisse verbunden sind. Diese MSTs sind auf einen importierten Datensatz angewiesen, der aus Fällen, sequenzierten
-Proben und
-Kontaktinformationen besteht.
+Outbreak analyses are based on _minimum spanning trees (MST)_ visualizations of infection cases linked by genetic distances or contact tracing events.
+These MSTs rely on an imported dataset consisting of cases, sequenced samples, and contact information.
+The MST visualizations are generated using a network graph, which represents the relationships between cases and samples. The graph is constructed by connecting cases and samples based on their genetic distances or contact tracing events.
 
-## Datei-Importe
+## File imports
 
-### Falldaten
+### Case data
 
-Fälle sind registrierte Infektionsmeldungen von den Gesundheitsbehörden.
-Diese werden mit der vom RKI entwickelten <a href="https://www.rki.de/DE/Content/Infekt/IfSG/Software/software_inhalt.html" target="_
-blank">SurvNet-Software</a> erfasst. Personenbezogene Daten werden ausschließlich clientseitig gehandhabt und gespeichert. Adressen und Namen werden verwendet, um Kontaktkanten zwischen Fällen zu erstellen, da es eine wertvolle Information ist, wenn Fälle an derselben Adresse leben (Wohngemeinschaften, Seniorenheime, ...) oder denselben Nachnamen haben (potenzielle Familienmitglieder).
+Cases are registered infection reports from health authorities.
+These are recorded using the <a href="https://www.rki.de/DE/Content/Infekt/IfSG/Software/software_inhalt.html" target="_blank">SurvNet software</a> developed by the RKI. Personal data is handled and stored exclusively on the client side. Addresses and names are used to create contact edges between cases, as it is valuable information if cases live at the same address (shared apartments, retirement homes, etc.) or have the same last name (potential family members).
 
-Für den Import von Falldaten aus SurvNet wurde eine CSV-Struktur mit relevanten
-Feldern erstellt:
+A CSV structure with relevant fields was created for importing case data from SurvNet:
 
 | Field             | Naming options                                                                                                                                                                                  | Description                                                       | Required |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------- |
@@ -37,28 +34,28 @@ Feldern erstellt:
 | Street            | `Straße`, `PersonStrasse`                                                                                                                                                                       | Street of the person associated with the case                     |          |
 | Flexible category | `Kategorie:{category_name}`                                                                                                                                                                     | Flexible category for further differentiation                     |          |
 
-#### Verarbeitung von Fällen
+#### Processing cases
 
-![Fallverarbeitung](/img/developers/data_processing/case_processing.jpg "Fallverarbeitung")
-
-
-### Sequenzdaten
-
-Zwischen allen importierten Sequenzen werden genetische Distanzen berechnet. Hierzu wird zunächst eine komprimierte Repräsentation der Sequenzen auf Basis der vorliegenden Mutationen erzeugt. Im Falle von Viren verwendet GENTRAIN [Nextclade](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/reference.html), während [chewBBACA](https://chewbbaca.readthedocs.io/en/latest/user/modules/AlleleCall.html) für die Bestimmung vorliegender Allele eingesetzt wird.
-Auf Basis der Mutationen können anschließend genetische Distanzen zwischen Genomsequenzen berechnet werden, die anschließend in einer Distanzmatrix zusammengefasst werden. Diese Distanzmatrix ermöglicht es, einen Minimum Spanning Tree für die Fälle auf Basis der genetischen Distanz zu erstellen.
-
-![Sequenzaggregation](/img/developers/data_processing/sequence_aggregation.jpg "Sequenzaggregation")
-
-![Sequenzverarbeitung](/img/developers/data_processing/sequence_processing.jpg "Sequenzverarbeitung")
+![Fallverarbeitung](/img/en/developers/data_processing/case_processing.jpg "Fallverarbeitung")
 
 
-### Kontaktpersonendaten
+### Sequence data
 
-Kontaktpersonen-Vorgänge liefern Informationen darüber, welche Fälle miteinander in Kontakt standen. Diese Informationen erweitern die Kontaktinformationen, die wir aus Adressen und Namen extrahieren. Der Import von Kontaktpersonen führt zu Kontaktkanten, die als 'Contact person' bezeichnet werden.
+Genetic distances are calculated between all imported sequences. To do this, a compressed representation of the sequences is first generated based on the available mutations. In the case of viruses, GENTRAIN uses [Nextclade](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/reference.html), while [chewBBACA](https://chewbbaca.readthedocs.io/en/latest/user/modules/AlleleCall.html) is used to determine the alleles present.
+Based on the mutations, genetic distances between genome sequences can then be calculated and summarized in a distance matrix. This distance matrix makes it possible to create a minimum spanning tree for the cases based on the genetic distance.
+
+![Sequence aggregation](/img/en/developers/data_processing/sequence_aggregation.jpg "Sequence aggregation")
+
+![Sequence processing](/img/en/developers/data_processing/sequence_processing.jpg "Sequence processing")
+
+
+### Contact person data
+
+Contact person events provide information about which cases were in contact with each other. This information supplements the contact information we extract from addresses and names. Importing contact persons results in contact edges labeled as ‘Contact person’.
 
 | Field     | Naming options | Description                                                 | Required |
 | --------- | -------------- | ----------------------------------------------------------- | -------- |
-| Fall-ID 1 | `Fall ID 1`    | Eindeutige ID des ersten Falls des Kontaktpersonen-Vorgangs | ✅       |
-| Fall-ID 2 | `Fall ID 2`    | Eindeutige ID des zweiten Falls des Kontaktpersonen-Vorgangs  | ✅       |
+| Case ID 1 | `Fall ID 1`    | Unique ID of the first case of the contact person process| ✅       |
+| Case ID 2 | `Fall ID 2`    | Unique ID of the second case of the contact person process  | ✅       |
 
-![Kontaktverarbeitung](/img/developers/data_processing/contact_processing.jpg "Kontaktverarbeitung")
+![Contact processing](/img/en/developers/data_processing/contact_processing.jpg "Contact processing")

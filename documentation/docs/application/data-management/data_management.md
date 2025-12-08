@@ -63,14 +63,15 @@ Die folgende Tabelle zeigt die verschiedenen Felder des Falldaten-Imports. Dabei
 
 ### Sequenzdaten 
 
+Genomsequenzen werden auf Mutationen untersucht, wodurch die Basis für eine gentische Distanzberechnung zwischen Fällen geschaffen wird. Es ist erwähnenswert, dass nicht für jeden Fall eine Genomsequenz, da Gentrain auch wertvolle Rückschlüsse auf der Grundlage von Kontaktverfolgungsinformationen liefern kann. Es sind jedoch die genetischen Informationen, die Gentrain zu dem machen, was es ist!
+
 #### Virales Fasta-Format
 
 Format: FASTA
 
 Beispieldatei: <a href="/example_data/sequenzdaten.fasta" download>sequenzdaten.fasta</a>
 
-
-Für den Import von Samples ist eine Fasta-Datei erforderlich, die die Sequenzen enthält, welche durch sogenannte Fasta-IDs identifiziert werden. Jede Fasta-Datei enthält mehrere Sequenzen, die gleichzeitig importiert werden können. Der Upload mehrerer Dateien wird für Virus-Samples nicht unterstützt.
+Für den Import von Genomsequenzen ist eine Fasta-Datei erforderlich, die die Sequenzen enthält, welche durch sogenannte Fasta-IDs identifiziert werden. Jede Fasta-Datei kann meherere Sequenzen enthalten, die so gleichzeitig importiert werden können. Der parallele Import mehrerer Dateien wird für Virus-Sequenzen nicht unterstützt.
 
 ```title="sequences.fasta"
     >{fasta_id_1}
@@ -88,7 +89,7 @@ Format: FASTA oder ZIP mit FASTA-Dateien
 
 Beispieldatei: <a href="/example_data/sequenzdaten.zip" download>sequenzdaten.zip</a>
 
-Bakterielle Genome werden in Form von Assemblies bereitgestellt, da sie sowohl aus einer Genomsequenz als auch aus einer Plasmidsequenz bestehen. Darüber hinaus ist es keine triviale Aufgabe, kohärente bakterielle Sequenzen zusammenzusetzen (Assemblierung), was zu mehreren Contigs führt, die sich zur Gesamtsequenz verbinden. Jedes Contig ist durch einen individuellen Header gekennzeichnet, dessen Informationen für unseren Anwendungsfall nicht von Interesse sind. Bei bakteriellen Samples muss die Fasta-ID durch den Namen der Fasta-Datei repräsentiert werden. Der Upload mehrerer Dateien wird für bakterielle Samples unterstützt.
+Bakterielle Genome werden in Form von Assemblies bereitgestellt, da sie sowohl aus einer Genomsequenz als auch aus einer Plasmidsequenz bestehen. Darüber hinaus ist es keine triviale Aufgabe, kohärente bakterielle Sequenzen zusammenzusetzen (Assemblierung), was zu mehreren Contigs führt, die sich zur Gesamtsequenz verbinden. Jedes Contig ist durch einen individuellen Header gekennzeichnet, dessen Informationen für unseren Anwendungsfall nicht von Interesse sind. Bei bakteriellen Sequenzen wird die Fasta-ID durch den Namen der Fasta-Datei repräsentiert. Der parallele Import mehrerer Dateien wird für bakterielle Samples unterstützt, es kann außerdem ein Zip-Archiv mit mehreren Fasta-Dateien importiert werden.
 
 ```title="{fasta_id}.fasta"
     >{assembly_contig_header_1}
