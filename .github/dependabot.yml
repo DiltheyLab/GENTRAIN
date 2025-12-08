@@ -11,11 +11,6 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps(frontend)"
-    ignore:
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"] # no automatic breaking updates
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
 
     # FRONTEND (Docker)
   - package-ecosystem: "docker"
