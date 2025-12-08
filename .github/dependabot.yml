@@ -108,3 +108,15 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps(github-actions)"
+
+  # E2E-Testing
+  - package-ecosystem: npm
+    directory: /e2e-tests
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(e2e-tests)"
