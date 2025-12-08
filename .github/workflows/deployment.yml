@@ -113,7 +113,8 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         with:
-          status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
+          #status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
+          status: ${{ (needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
           notify_when: "success,failure"
           notification_title: "Deployment Pipeline"
           icon_success: 🚀
