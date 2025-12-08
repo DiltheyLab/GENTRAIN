@@ -103,7 +103,8 @@ jobs:
 
   notify:
     name: Notify
-    needs: [test_build, pull_production_state, restart_docker_containers]
+    needs: [pull_production_state, restart_docker_containers]
+    # needs: [test_build, pull_production_state, restart_docker_containers]
     if: always()
     runs-on: ubuntu-24.04
     steps:
