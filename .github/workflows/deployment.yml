@@ -1,77 +1,35 @@
 name: Production Deployment
-
 on:
   push:
+    branches:
+      - prod
+  pull_request:
     branches:
       - prod
   workflow_dispatch:
 
 jobs:
-  frontend_build:
-    name: Frontend Build
-    runs-on: ubuntu-latest
+  test_build:
+    name: Test Build
+    runs-on: ubuntu-24.04 # Server Version
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
-      - name: Build
-        run: |
-          cd frontend
-          npm run build
-      - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-          notification_title: "Frontend Build"
-          icon_failure: 💥
-  documentation_build:
-    name: Documentation Build
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install dependencies
+      - name: Build Docker images
         run: |
-          cd documentation
-          npm ci
-      - name: Build
+          docker compose -f docker-compose.prod.yaml build --no-cache
+
+      - name: Start services
         run: |
-          cd documentation
-          npm run build
-      - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-          notification_title: "Frontend Build"
-          icon_failure: 💥
+          docker compose -f docker-compose.prod.yaml up -d
+
   pull_production_state:
     name: Pull Production State
+    needs: test_build
     runs-on: ubuntu-latest
-    needs:
-      - frontend_build
-      - documentation_build
-
     steps:
       - name: Pull latest version
         uses: appleboy/ssh-action@v1.0.3
@@ -85,16 +43,6 @@ jobs:
             git checkout ${{ vars.PRODUCTION_BRANCH }}
             git pull
             exit
-      - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-          notification_title: "Pull Production State"
-          icon_failure: 💥
 
   restart_docker_containers:
     name: Restart Docker Containers
@@ -152,23 +100,20 @@ jobs:
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
             echo ${{ secrets.GENTRAIN_PASSWORD }} | sudo -S docker compose -f docker-compose.prod.yaml up -d
             exit
-      - name: Notify Slack Action Success
+
+  notify:
+    name: Notify
+    needs: [test_build, pull_production_state, restart_docker_containers]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Notify Slack
         uses: ravsamhq/notify-slack-action@2.3.0
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
         with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-          notification_title: "Restart Docker Container"
-          icon_failure: 💥
-      - name: Notify Slack Action Success
-        uses: ravsamhq/notify-slack-action@2.3.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "success"
-          notification_title: "Production Deployment"
+          status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
+          notify_when: "success,failure"
+          notification_title: "Deployment Pipeline"
           icon_success: 🚀
+          icon_failure: 💥
