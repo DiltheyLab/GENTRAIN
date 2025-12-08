@@ -1,7 +1,7 @@
 ---
-id: data-processing
-title: Data Processing
-sidebar_label: Data Processing
+id: data-management
+title: Datenmanagement
+sidebar_label: Datenmanagement
 sidebar_position: 4
 ---
 

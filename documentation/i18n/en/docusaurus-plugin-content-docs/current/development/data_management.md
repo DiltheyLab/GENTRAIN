@@ -1,3 +1,10 @@
+---
+id: data-management
+title: data management
+sidebar_label: Data Management
+sidebar_position: 4
+---
+
 # Data Management
 
 Outbreak analysis are based on _Minimum Spanning Tree (MST)_ visualizations of infection cases, which are connected by
