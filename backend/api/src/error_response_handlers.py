@@ -7,20 +7,22 @@ from src.app import app
 def not_found(error):
     response = {
         "error": "Not Found",
-        "message": "The requested resource could not be found."
+        "message": "The requested resource could not be found.",
     }
     return jsonify(response), 404
+
 
 @app.errorhandler(422)
 def unprocessable_entity(error):
     response = {
         "error": "Unprocessable Entity",
-        "message": "The requested resource could not be processed."
+        "message": "The requested resource could not be processed.",
     }
     return jsonify(response), 422
 
+
 @app.errorhandler(500)
-def unprocessable_entity(error):
+def internal_server_error(error):
     response = {
         "error": "Internal Server Error",
     }

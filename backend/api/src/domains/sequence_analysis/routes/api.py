@@ -1,4 +1,3 @@
-from flask import request
 from src.app import app
 from src.domains.sequence_analysis.controllers.sequence_analysis_controller import get_sequence_analysis_result_action, \
     delete_sequence_analysis_result_action
@@ -23,4 +22,4 @@ def delete_sequence_analysis_result(fasta_hash: str):
 ### Sequences ###
 @app.route("/sequences/align", methods=["POST"])
 def align_sequences():
-    return align_sequences_action(request.get_json())
+    return align_sequences_action()

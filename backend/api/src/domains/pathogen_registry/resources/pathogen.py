@@ -7,7 +7,7 @@ from typing import Optional
 class Pathogen(BaseModel):
     id: int
     name: str
-    scheme_version: Optional[datetime]
+    scheme_version: Optional[datetime] = None
     type: str
     activated: bool
     genetic_distance_threshold: int
@@ -18,5 +18,5 @@ class Pathogen(BaseModel):
     @field_serializer('cases_example', 'sequences_example', 'contacts_example')
     def get_example_file(self, path: str):
         return (
-            f"{environ.get('ADMIN_PANEL_URL')}/example_data/{path}"
-        ) if path else None
+            (f"{environ.get('ADMIN_PANEL_URL')}/example_data/{path}") if path else None
+        )

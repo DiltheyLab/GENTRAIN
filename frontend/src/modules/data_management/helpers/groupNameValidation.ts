@@ -1,6 +1,6 @@
 import { GroupSchema } from "@/modules/core/models/groups";
 
-export const validatGroupName = (groups: GroupSchema[] | undefined, groupName: string) => {
+export const validateGroupName = (groups: GroupSchema[] | undefined, groupName: string) => {
     const isUniqueName = () => {
         return groups?.find((group) => group.name === groupName) === undefined;
     };

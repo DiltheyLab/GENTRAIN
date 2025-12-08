@@ -26,9 +26,7 @@ Gentrain verarbeitet personenbezogene Daten ausschließlich auf der Client-Seite
 
 Genetische Daten, wie Virus- und Bakteriengenome, werden an den Server übertragen, und Analyseergebnisse werden temporär für maximal 30 Minuten gespeichert.  
 Diese enthalten Informationen über Mutationen basierend auf dem entsprechenden Referenzgenom.  
-Bei der Kommunikation mit dem Server werden Sequenzen aggregiert und anonymisiert, wobei nur ein Hash als Referenz dient. Die folgende Grafik illustriert dieses Verfahren:  
-
-![Sequenzaggregation](/img/developers/security_and_data_privacy/sequence_aggregation.png "Sequenzaggregation")
+Bei der Kommunikation mit dem Server werden Sequenzen aggregiert und anonymisiert, wobei nur ein Hash als Referenz dient. 
 
 Es ist auch möglich, flexible Daten-Spalten zum Fallimport hinzuzufügen. Diese Daten werden zum Filtern von Diagrammen genutzt und nur auf der Client-Seite gespeichert und verarbeitet.
 

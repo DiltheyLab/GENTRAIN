@@ -18,7 +18,7 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { GroupSchema, updateGroupName } from "@/modules/core/models/groups";
 import { useGetGroupsForActivePathogen } from "@/modules/core/hooks/database/groups/useGetGroupsForActivePathogen";
-import { validatGroupName } from "../../helpers/groupNameValidation";
+import { validateGroupName } from "../../helpers/groupNameValidation";
 import { useCoreStore } from "@/modules/core/stores/core";
 
 type GroupEditDialogProps = {
@@ -30,7 +30,7 @@ export const GroupEditDialog = ({ row }: GroupEditDialogProps) => {
     const [groupName, setGroupName] = useState(row.original.name);
     const [isTouched, setIsTouched] = useState(false);
     const groups = useGetGroupsForActivePathogen();
-    const { groupNameNotValid, isUniqueName } = validatGroupName(
+    const { groupNameNotValid, isUniqueName } = validateGroupName(
         groups?.filter((group) => group.name !== row.original.name),
         groupName
     );

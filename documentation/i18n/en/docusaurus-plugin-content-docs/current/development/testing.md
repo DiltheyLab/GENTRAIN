@@ -1,159 +1,166 @@
 # Testing
 
-Gentrain employs a comprehensive testing strategy that includes a dedicated testing environment in the de.NBI cloud.
-This setup allows for thorough testing of new features and changes before they are deployed to the production
-environment.
+This chapter describes the testing strategy, setup, and execution for the GENTRAIN project. We employ multiple testing layers to ensure code quality and system reliability: unit tests, end-to-end (E2E) tests, and a production-like testing environment.
 
-## Testing Environment
+## Testing Strategy
 
-- A separate instance in the de.NBI cloud runs all Docker containers for testing purposes.
-- This testing instance is a copy of the production setup but is isolated for safety and stability.
+GENTRAIN follows a multi-layered testing approach:
 
-## Port Forwarding Configuration
+1. **Unit Tests**: Test individual components and functions in isolation
+2. **End-to-End (E2E) Tests**: Validate complete user workflows in a production-like environment
 
-!!! info "This section only applies when hosting in de.NBI Cloud."
+## Test Environment Setup
 
-To facilitate testing while maintaining security, we use a port forwarding mechanism from the main production instance
-to the testing instance. This setup allows us to access the testing environment through specific ports on the production
-server and save floating IP-Adresses.
+### Docker Compose for Testing
 
-### Port Forwarding Script
+We use Docker Compose and a Caddyfile.local file to simulate the production environment locally. This ensures tests run against realistic conditions with all required services.
 
-A custom script has to be run on the main production instance to configure iptables and enable port forwarding. This script
-performs the following tasks:
+#### Services
 
-1. Enables IP forwarding
-2. Sets up port mapping rules:
-3. Overrides Docker's default FORWARD policy to ACCEPT
+The test environment (`docker-compose.test.yaml`) extends the main `docker-compose.prod.yaml` with additional configurations for testing:
 
-```sh
-#!/bin/bash
-function check_service {
-  /bin/nc -z ${1} ${2} 2>/dev/null
-  while test $? -eq 1; do
-    echo "wait 10s for service available at ${1}:${2}"
-    sleep 10
-    /bin/nc -z ${1} ${2}  2>/dev/null
-  done
-}
+- **e2e-tests:**: Cypress test runner
+- **frontend-tests**: Frontend service with test configurations
 
-# redirect ouput to /var/log/userdata/log
-exec > /var/log/userdata.log
-exec 2>&1
+These services are using a testing profile to isolate them from production services.
 
-# wait until meta data server is available
-check_service 169.254.169.254 80
+#### Starting the Test Environment
 
-# get local ip from meta data server
-LOCALIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-LOCALNET=$( echo ${LOCALIP} | cut -f 1-3 -d".")
-
-#enable ip forwarding
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-# Map port number to local ip-address
-# 30000+x -> LOCALNET.0+x:22
-# 31000+x -> LOCALNET.0+x:80
-# 32000+x -> LOCALNET.0+x:443
-# x > 0 and x < 255
-
-#ip forwarding rules
-for ((n=1; n <=254; n++))
-        {
-        SSH_PORT=$((30000+$n))
-        HTTP_PORT=$((31000+$n))
-        HTTPS_PORT=$((32000+$n))
-
-        iptables -t nat -A PREROUTING -i ens3 -p tcp -m tcp --dport ${SSH_PORT} -j DNAT --to-destination ${LOCALNET}.${n}:22
-        iptables -t nat -A POSTROUTING -d ${LOCALNET}.${n}/32 -p tcp -m tcp --dport 22 -j SNAT --to-source ${LOCALIP}
-
-        iptables -t nat -A PREROUTING -i ens3 -p tcp -m tcp --dport ${HTTP_PORT} -j DNAT --to-destination ${LOCALNET}.${n}:80
-        iptables -t nat -A POSTROUTING -d ${LOCALNET}.${n}/32 -p tcp -m tcp --dport 80 -j SNAT --to-source ${LOCALIP}
-
-        iptables -t nat -A PREROUTING -i ens3 -p tcp -m tcp --dport ${HTTPS_PORT} -j DNAT --to-destination ${LOCALNET}.${n}:443
-        iptables -t nat -A POSTROUTING -d ${LOCALNET}.${n}/32 -p tcp -m tcp --dport 443 -j SNAT --to-source ${LOCALIP}
-        }
-
-# Override Dockers FORWARD Policy and set it back to default
-iptables -P FORWARD ACCEPT
+```bash
+docker compose -f docker-compose.test.yaml build --no-cache
+docker compose -f docker-compose.test.yaml --profile testing build e2e-tests frontend-tests
 ```
 
-In the next step you have to create this script in your instance and execute it:
+This commands build the necessary Docker images for the test environment.
 
-```sh
-sudo nano port_forwarding.sh
+```bash
+docker compose -f docker-compose.test.yaml up
 ```
 
-Zum Ausführen:
+This command starts all services defined in the test Docker Compose file. After starting the services, you can reach the services under following domains:
 
-```sh
-sudo bash port_forwarding.sh
+- API at `http://api.localhost`
+- Frontend at `https://app.localhost`
+- Admin-Panel at `https://admin.localhost`
+- Docs at `https://docs.localhost`
+
+More details about the routing can be found in the `Caddyfile.local`.
+
+#### Stopping the Test Environment
+
+```bash
+docker compose -f docker-compose.test.yaml down
 ```
 
-The script ensures that the testing environment is accessible through specific ports while maintaining isolation from
-the production environment.
-The setup of the test instance in de.NBI Cloud follows this tutorial:
-`https://cloud.denbi.de/wiki/Tutorials/SaveFloatingIPs/`
+### Environment Configuration
 
-## SSL Configuration for Test Server
+The `.env.test` file contains test-specific configuration and is used by the test services and the CI/CD pipeline.
 
-To ensure a secure, SSL-encrypted connection to the test server with a valid certificate, follow these steps:
+## Unit Testing
 
-1. The production instance automatically generates SSL certificates using Caddy.
-2. These certificates are stored in under /var/lib/docker/volumes/gentrain_caddy_data/\_data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/
-3. To use these certificates for the test server:
-   - Copy the certificate files (.crt and .key) from the production instance to the corresponding folders on the test
-     instance.
-   - The paths for these certificates are defined in the Caddyfile. We have created an example file (
-     `Caddyfile.test.example`) where you can see the structure:
-     - For the API: `/var/lib/docker/volumes/gentrain_caddy_data/_data/caddy/certificates/api.gentrain.bi.denbi.de/api.gentrain.bi.denbi.de.crt` and `.key`
-     - For the frontend: `/var/lib/docker/volumes/gentrain_caddy_data/_data/caddy/certificates/gentrain.bi.denbi.de/gentrain.bi.denbi.de.crt` and `.key`
+### Frontend Unit Tests
 
-By copying these certificates, you ensure that the test server uses the same valid SSL certificates as the production
-server, allowing for secure, encrypted connections during testing.
+Frontend unit tests are located in the `frontend/` directory and use Vitest as the testing framework.
 
-> Note: Remember to update these certificates periodically to maintain security and prevent expiration issues.
+#### Running Frontend Unit Tests
 
-## GitHub Actions Variables and Secrets for Testing
-
-In addition to the variables and secrets required for deployment, the testing pipeline needs some extra configuration.
-Make sure to add these to your GitHub repository settings under "Settings" > "Secrets and variables" > "Actions":
-
-### Additional Variables
-
-- `SSH_PORT_TEST_SERVER`: The SSH port for the test server
-- `HTTPS_PORT_TEST_SERVER`: The HTTPS port for the test server
-- `TESTING_BRANCH`: The branch name for testing deployments (e.g., "test")
-
-### Additional Secrets
-
-- `SSH_PRIVATE_KEY_TEST_SERVER`: The SSH private key for accessing the test server
-- `GENTRAIN_PASSWORD_TEST_SERVER`: The sudo password for the test server
-
-These additional variables and secrets are used in the `.github/workflows/test_deployment.yml` file to manage the test
-environment deployment.
-
-## Automated Testing Workflow
-
-**1. Trigger**:
-
-- The testing workflow is triggered by pushes to the `test` branch or manually through GitHub Actions.
-
-**2. Frontend Build and Test**:
-
-- The frontend is built and unit tests are run.
-- Test coverage reports are generated.
-
-**3. Deployment to Testing Environment**
-
-- The latest code is pulled to the testing server.
-- Environment variables are updated.
-- Docker containers are rebuilt and restarted.
-
-**4. Monitoring**:
-
-- Slack notifications are sent for both successful deployments and failures.
-
+```bash
+# From ./frontend
+npm run test
 ```
 
+### API Unit Tests
+
+API unit tests are located in the `backend/api/` directory and use pytest as the testing-framework.
+
+#### Running API Unit Tests in Docker
+
+```bash
+docker exec gentrain-api sh -c "pytest"
 ```
+
+## End-to-End (E2E) Testing with Cypress
+
+### Overview
+
+Cypress is used for E2E testing to validate complete user workflows from the UI perspective. Tests run in a real browser (chrome) against a live test environment.
+
+### Cypress Setup
+
+The E2E test suite is located in `e2e-tests/cypress/` with the following structure:
+
+```
+cypress/
+├── e2e/            # Test specifications
+│   └── smoke/      # Smoke tests for critical workflows
+│   └── admin/      # Admin panel tests
+│   └── app/        # Frontend tests
+│   └── docs/       # Documentation tests
+├── fixtures/       # Test data files
+├── support/        # Helper functions and utilities
+└── screenshots/    # Screenshots from test runs
+└── videos/         # Video recordings of test runs
+```
+
+### Running E2E Tests
+
+#### Prerequisites
+
+Start the test environment like described in the [Test Environment Setup](#test-environment-setup) section.
+
+#### Running Tests
+
+**Interactive Mode** (for development):
+
+```bash
+cd e2e-tests
+npx cypress open
+```
+
+This opens the Cypress Test Runner where you can:
+
+- View and debug individual tests
+- Run tests in specific browsers
+- View test video recordings
+- Inspect element selectors
+
+**Headless Mode**:
+
+```bash
+cd e2e-tests
+npx cypress run
+```
+
+This executes all tests in a headless browser and generates a test report.
+
+**In Docker** (for CI/CD):
+
+```bash
+docker compose -f docker-compose.test.yaml --profile testing run --rm e2e-tests
+```
+
+## Automated Testing with GitHub Actions
+
+### CI/CD Workflow
+
+The `.github/workflows/testing.yml` file defines automated testing on:
+
+- **Push to dev branch**: Full test suite execution
+- **Pull requests dev branch**: Test validation before merge
+
+### Workflow Stages
+
+1. **Setup**: Check out code and prepare environment
+2. **Build Docker Images**: Build all Docker images including test services
+3. **Start Services**: Launch test environment via Docker Compose
+4. **Wait for Services**: Health checks ensure all services are ready before testing
+5. **Run Unit Tests**: Execute frontend and API unit tests
+6. **Run E2E Tests**: Execute Cypress end-to-end tests
+7. **Upload Artifacts**: Save test videos and screenshots for debugging
+8. **Cleanup**: Tear down test environment and remove containers
+
+The workflow includes comprehensive error handling:
+
+- Container logs are captured on failure for debugging
+- Test artifacts (videos/screenshots) are uploaded in GitHub Artifacts regardless of test results
+- Services are always shut down, even if tests fail

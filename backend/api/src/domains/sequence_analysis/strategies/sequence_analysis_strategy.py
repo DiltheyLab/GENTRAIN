@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import json
 import logging
 from os import environ
+from typing import Union
 from flask_socketio import SocketIO
 from src.domains.sequence_analysis.exceptions import (
     GenomicErrorException,
@@ -12,6 +13,7 @@ from src.server import redis_connection
 sio = SocketIO(
     message_queue=f"redis://{environ.get('REDIS_USERNAME')}:{environ.get('REDIS_PASSWORD')}@{environ.get('REDIS_HOST')}:{environ.get('REDIS_PORT')}"
 )
+
 
 class SequenceAnalysisStrategy(ABC):
     """Sequence Analysis Strategy Class."""
@@ -45,7 +47,7 @@ class SequenceAnalysisStrategy(ABC):
         """Send failed event based on pathogen type. Viral strategy handles multiple sequences the bacterial strategy only send one event."""
 
     @abstractmethod
-    def get_response(self, result):
+    def get_response(self, result) -> Union[dict, tuple]:
         """Get pydantic response model based on strategy."""
 
     @abstractmethod
@@ -53,11 +55,11 @@ class SequenceAnalysisStrategy(ABC):
         """Send analysis results to client based on pathogen type and persist in redis cache."""
 
     @abstractmethod
-    def find_genomic_validation_errors(self):
+    def find_genomic_validation_errors(self) -> list:
         """Check if sequence contains genomic errors."""
 
     @abstractmethod
-    def run_analysis(self):
+    def run_analysis(self) -> dict:
         """Runs the sequence analysing script based on the pathogen."""
 
     def persist_result(self, fasta_hash, result_object):
