@@ -73,13 +73,6 @@ npm run test
 
 API unit tests are located in the `backend/api/` directory and use pytest as the testing-framework.
 
-#### Running API Unit Tests locally
-
-```bash
-# From ./backend/api
-pytest
-```
-
 #### Running API Unit Tests in Docker
 
 ```bash

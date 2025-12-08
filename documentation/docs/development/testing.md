@@ -69,7 +69,7 @@ Frontend Unit-Tests befinden sich im `frontend/`-Verzeichnis und verwenden Vites
 npm run test
 ```
 
-### Frontend Unit-Tests in Docker ausführen
+#### Frontend Unit-Tests in Docker ausführen
 
 ```bash
 docker compose -f docker-compose.test.yaml --profile testing run --rm frontend-tests
@@ -79,14 +79,7 @@ docker compose -f docker-compose.test.yaml --profile testing run --rm frontend-t
 
 API Unit-Tests befinden sich im `backend/api/`-Verzeichnis und verwenden pytest als Testing-Framework.
 
-#### API Unit-Tests lokal ausführen
-
-```bash
-# Von ./backend/api
-pytest
-```
-
-### API Unit-Tests in Docker ausführen
+#### API Unit-Tests in Docker ausführen
 
 ```bash
 docker exec gentrain-api sh -c "pytest"
