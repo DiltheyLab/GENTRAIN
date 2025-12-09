@@ -3,32 +3,55 @@ on:
   push:
     branches:
       - prod
-  pull_request:
-    branches:
-      - prod
+
   workflow_dispatch:
 
 jobs:
-  #test_build:
-  #  name: Test Build
-  #  runs-on: ubuntu-24.04 # Server Version
-  #  timeout-minutes: 30
+  test_build:
+    name: Test Build
+    runs-on: ubuntu-24.04 # Server Version
+    timeout-minutes: 30
 
-  #  steps:
-  #    - name: Checkout repo
-  #      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-  #    - name: Build Docker images
-  #      run: |
-  #        docker compose -f docker-compose.prod.yaml build --no-cache
+      - name: Prepare env file for compose
+        run: |
+          cat > .env <<EOF
+          VITE_API_HOST=${{ vars.VITE_API_HOST }}
+          APP_ENV=${{ vars.PROD_APP_ENV }}
+          APP_URL=${{ vars.APP_URL }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          REDIS_USERNAME=${{ vars.REDIS_USERNAME }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          DATABASE_DRIVER=${{ vars.DATABASE_DRIVER }}
+          DATABASE_NAME=${{ vars.DATABASE_NAME }}
+          DATABASE_HOST=${{ vars.DATABASE_HOST }}
+          DATABASE_PORT=${{ vars.DATABASE_PORT }}
+          DATABASE_USER=${{ vars.DATABASE_USER }}
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+          DEFAULT_ADMIN_USERNAME=${{ vars.DEFAULT_ADMIN_USERNAME }}
+          DEFAULT_ADMIN_PASSWORD=${{ secrets.DEFAULT_ADMIN_PASSWORD }}
+          COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
+          SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+          ADMIN_PANEL_PORT=${{ vars.ADMIN_PANEL_PORT }}
+          ADMIN_PANEL_URL=${{ vars.ADMIN_PANEL_URL }}
+          API_DATA_DIRECTORY=${{ vars.API_DATA_DIRECTORY }}
+          ADMIN_HTBASIC_USERNAME=${{ vars.ADMIN_HTBASIC_USERNAME }}
+          ADMIN_HTBASIC_PASSWORD=${{ secrets.PROD_ADMIN_HTBASIC_PASSWORD }}
+          EOF
+      - name: Prepare redis.prod.conf for compose
+        run: cp backend/redis/redis.dev.conf backend/redis/redis.prod.conf
 
-  #    - name: Start services
-  #      run: |
-  #        docker compose -f docker-compose.prod.yaml up -d
+      - name: Build Docker images
+        run: |
+          docker compose -f docker-compose.prod.yaml build --no-cache
 
   pull_production_state:
     name: Pull Production State
-  #  needs: test_build
+    needs: test_build
     runs-on: ubuntu-latest
     steps:
       - name: Pull latest version
@@ -103,8 +126,7 @@ jobs:
 
   notify:
     name: Notify
-    needs: [pull_production_state, restart_docker_containers]
-    # needs: [test_build, pull_production_state, restart_docker_containers]
+    needs: [test_build, pull_production_state, restart_docker_containers]
     if: always()
     runs-on: ubuntu-24.04
     steps:
@@ -113,8 +135,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
         with:
-          #status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
-          status: ${{ (needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
+          status: ${{ (needs.test_build.result == 'success' && needs.pull_production_state.result == 'success' && needs.restart_docker_containers.result == 'success') && 'success' || 'failure' }}
           notify_when: "success,failure"
           notification_title: "Deployment Pipeline"
           icon_success: 🚀
