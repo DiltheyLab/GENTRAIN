@@ -49,10 +49,6 @@ jobs:
         run: |
           docker compose -f docker-compose.prod.yaml build --no-cache
 
-      - name: Start services
-        run: |
-          docker compose -f docker-compose.prod.yaml up -d
-
   pull_production_state:
     name: Pull Production State
     needs: test_build
