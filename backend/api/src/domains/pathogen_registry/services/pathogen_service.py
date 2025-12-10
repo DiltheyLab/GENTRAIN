@@ -30,8 +30,8 @@ def create_zip_buffer_from_scheme_directory(scheme_path: str):
 
 def get_example_data_filename(pathogen: Pathogen, example_data_type: str):
     filename = ""
-    pathogen_slug = filename.lower()
-    pathogen_slug = re.sub(r"\s+", "-", pathogen_slug)        # replace whitespace with hyphens
+    pathogen_slug = pathogen.name.lower()
+    pathogen_slug = re.sub(r"\s+", "-", pathogen_slug)
     pathogen_slug = re.sub(r"[^\w-]", "", pathogen_slug) 
     match example_data_type:
         case "case":
