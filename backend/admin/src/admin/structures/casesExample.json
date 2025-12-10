@@ -15,7 +15,7 @@
     "label": "Sequenz ID",
     "required": false,
     "flexible": false,
-    "pattern": "^[A-Za-z0-9\\-\\_]*$"
+    "pattern": "^[A-Za-z0-9\\-\\_\\.]*$"
   },
   "outbreak": {
     "label": "Ausbruch",
