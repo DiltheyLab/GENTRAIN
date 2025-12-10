@@ -45,21 +45,37 @@ export const useCoreStore = create<CoreStore>()(
                 set({ loadingBlockerIsActive: loadingBlockerIsActive });
             },
             updateActivePathogen: (pathogen: PathogenWithRelationships | null) => {
-                if (!pathogen) {
-                    set({ activePathogen: pathogen });
-                    return;
+                try {
+                    if (!pathogen) {
+                        set({ activePathogen: pathogen });
+                        return;
+                    }
+                    const activePathogen = get().activePathogen;
+                    if (activePathogen && activePathogen?.id !== pathogen.id) {
+                        db.pathogens.update(activePathogen.id, { activated_at: null });
+                    }
+                    if (activePathogen?.id !== pathogen.id) {
+                        db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
+                    }
+                    // Create a clean pathogen without circular references 
+                    // as pathogens might have pathogen_types that might have pathogens again
+                    // e.g. when called PathogenSwitsch
+                    const pathogenWithoutCircularReferences: PathogenWithRelationships = {
+                        ...pathogen,
+                        pathogen_type: pathogen.pathogen_type
+                            ? {
+                                  ...pathogen.pathogen_type,
+                                  pathogens: undefined, // Remove circular reference
+                              }
+                            : undefined,
+                    };
+                    set({
+                        activePathogen: pathogenWithoutCircularReferences,
+                    });
+                    get().updateCasesWithRelationships();
+                } catch (e) {
+                    console.error("Error updating active pathogen in core store:", e);
                 }
-                const activePathogen = get().activePathogen;
-                if (activePathogen && activePathogen?.id !== pathogen.id) {
-                    db.pathogens.update(activePathogen.id, { activated_at: null });
-                }
-                if (activePathogen?.id !== pathogen.id) {
-                    db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
-                }
-                set({
-                    activePathogen: pathogen,
-                });
-                get().updateCasesWithRelationships();
             },
             setPathogenIsLoading: pathogenIsLoading => {
                 set({ pathogenIsLoading: pathogenIsLoading });

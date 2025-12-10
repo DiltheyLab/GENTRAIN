@@ -12,7 +12,6 @@ export const CaseSection = () => {
     const casesData = useCoreStore((state) => state.casesWithRelationships);
     const updateCasesWithRelationships = useCoreStore((state) => state.updateCasesWithRelationships);
     const sequenceMappingDialogCase = useDataManagementStore((state) => state.sequenceMappingDialogCase);
-
     if (!casesData) return null;
 
     const deleteSelectedCases = (selectedRows: Row<CaseWithRelationships>[]) => {

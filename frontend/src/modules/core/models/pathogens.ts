@@ -4,7 +4,7 @@ import { db } from "@/modules/core/services/database/DatabaseManager";
 import { getDistanceMatrixByPathogenId } from "./distance_matrices";
 import { deleteGroupsByPathogenId } from "./groups";
 import { deleteOutbreaksByPathogenId } from "./outbreaks";
-import { PathogenTypeName, PathogenTypeSchema } from "./pathogen_types";
+import { PathogenTypeName, PathogenTypeSchema, PathogenTypeWithRelationships } from "./pathogen_types";
 import { getSequenceAnalysis } from "./cases";
 
 export type Pathogen = {
@@ -32,7 +32,7 @@ export interface PathogenSchema {
 }
 
 export interface PathogenWithRelationships extends PathogenSchema {
-    pathogen_type?: PathogenTypeSchema | null;
+    pathogen_type?: PathogenTypeSchema | PathogenTypeWithRelationships | null;
 }
 
 export const getAllPathogensWithRelationships = async () => {
