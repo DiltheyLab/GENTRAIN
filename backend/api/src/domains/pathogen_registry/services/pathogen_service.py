@@ -1,4 +1,5 @@
 import os
+import re
 import zipfile
 import io
 
@@ -29,7 +30,9 @@ def create_zip_buffer_from_scheme_directory(scheme_path: str):
 
 def get_example_data_filename(pathogen: Pathogen, example_data_type: str):
     filename = ""
-    pathogen_slug = pathogen.name.lower().replace(' ', '-').replace(r'[^\w\-]', '-')
+    pathogen_slug = filename.lower()
+    pathogen_slug = re.sub(r"\s+", "-", pathogen_slug)        # replace whitespace with hyphens
+    pathogen_slug = re.sub(r"[^\w-]", "", pathogen_slug) 
     match example_data_type:
         case "case":
             filename = f"{pathogen_slug}_falldaten.csv"
