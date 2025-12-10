@@ -44,7 +44,7 @@ export const useCoreStore = create<CoreStore>()(
             setLoadingBlockerIsActive: (loadingBlockerIsActive: boolean) => {
                 set({ loadingBlockerIsActive: loadingBlockerIsActive });
             },
-            updateActivePathogen: async (pathogen: PathogenWithRelationships | null) => {
+            updateActivePathogen: (pathogen: PathogenWithRelationships | null) => {
                 if (!pathogen) {
                     set({ activePathogen: pathogen });
                     return;
@@ -56,11 +56,10 @@ export const useCoreStore = create<CoreStore>()(
                 if (activePathogen?.id !== pathogen.id) {
                     db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
                 }
-                const casesWithRelationships = await getAllCasesForPathogenWithRelationships(pathogen.id);
                 set({
-                    casesWithRelationships: casesWithRelationships,
                     activePathogen: pathogen,
                 });
+                get().updateCasesWithRelationships();
             },
             setPathogenIsLoading: pathogenIsLoading => {
                 set({ pathogenIsLoading: pathogenIsLoading });

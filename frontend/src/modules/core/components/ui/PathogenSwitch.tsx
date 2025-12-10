@@ -16,10 +16,10 @@ type PathogenSwitchProps = {
 export const PathogenSwitch = ({ className, classNamePopOverContent }: PathogenSwitchProps) => {
     const [open, setOpen] = useState(false);
     const pathogenTypes = useGetAllPathogenTypesWithPathogens();
-    const updateActivePathogen = useCoreStore((state) => state.updateActivePathogen);
-    const activePathogen = useCoreStore((state) => state.activePathogen);
-    const sequenceAnalysisRunning = useDataManagementStore((state) => state.sequenceAnalysisRunning);
-    const distanceCalculationRunning = useDataManagementStore((state) => state.distanceCalculationRunning);
+    const updateActivePathogen = useCoreStore(state => state.updateActivePathogen);
+    const activePathogen = useCoreStore(state => state.activePathogen);
+    const sequenceAnalysisRunning = useDataManagementStore(state => state.sequenceAnalysisRunning);
+    const distanceCalculationRunning = useDataManagementStore(state => state.distanceCalculationRunning);
     const { t } = useTranslation();
     const renderPathogenOptionsForPathogenType = (pathogenType: PathogenTypeWithRelationships) => {
         if (pathogenType.pathogens?.length === 0) {
@@ -27,15 +27,15 @@ export const PathogenSwitch = ({ className, classNamePopOverContent }: PathogenS
         }
         return (
             <div key={pathogenType.name}>
-                <div className="text-xs font-bold px-4 py-2">{t(`pathogen_type.${pathogenType.name}`)}</div>
-                {pathogenType.pathogens?.map((pathogen) => {
+                <div className='text-xs font-bold px-4 py-2'>{t(`pathogen_type.${pathogenType.name}`)}</div>
+                {pathogenType.pathogens?.map(pathogen => {
                     if (pathogen.pathogen_type_id !== pathogenType.id) {
                         return;
                     }
                     return (
                         <div
                             key={pathogen.name}
-                            className="text-sm font-light px-4 py-2 cursor-pointer hover:bg-muted"
+                            className='text-sm font-light px-4 py-2 cursor-pointer hover:bg-muted'
                             onClick={() => {
                                 setOpen(false);
                                 updateActivePathogen(pathogen);
@@ -53,23 +53,23 @@ export const PathogenSwitch = ({ className, classNamePopOverContent }: PathogenS
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant="outline"
-                    role="combobox"
+                    variant='outline'
+                    role='combobox'
                     aria-expanded={open}
                     className={cn("w-full sm:w-fit md:min-w-[200px] justify-between", className)}
-                    disabled={sequenceAnalysisRunning || distanceCalculationRunning}
+                    disabled={sequenceAnalysisRunning || distanceCalculationRunning}
                 >
-                    <span className="truncate pr-2">{activePathogen ? activePathogen.name : "Pathogen auswählen"}</span>
-                    <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+                    <span className='truncate pr-2'>{activePathogen ? activePathogen.name : "Pathogen auswählen"}</span>
+                    <ChevronsUpDown className='ml-auto h-4 w-4 shrink-0 opacity-50' />
                 </Button>
             </PopoverTrigger>
             <PopoverContent
                 className={cn("w-[var(--radix-popover-trigger-width)] p-0", classNamePopOverContent)}
-                align="start"
+                align='start'
                 sideOffset={5} // Distance between the trigger and the popover
             >
-                <div className="py-2">
-                    {pathogenTypes?.map((pathogenType) => renderPathogenOptionsForPathogenType(pathogenType))}
+                <div className='py-2'>
+                    {pathogenTypes?.map(pathogenType => renderPathogenOptionsForPathogenType(pathogenType))}
                 </div>
             </PopoverContent>
         </Popover>

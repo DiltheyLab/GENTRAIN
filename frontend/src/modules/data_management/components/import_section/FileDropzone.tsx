@@ -20,8 +20,8 @@ type FileDropzoneProps = {
 export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: FileDropzoneProps) => {
     const { t } = useTranslation();
     const fileReadingStrategy = useGetFileReadingStrategy(type);
-    const showImportAssistent = useDataManagementStore((state) => state.showImportAssistent);
-    const setLoadingBlockerIsActive = useCoreStore((state) => state.setLoadingBlockerIsActive);
+    const showImportAssistent = useDataManagementStore(state => state.showImportAssistent);
+    const setLoadingBlockerIsActive = useCoreStore(state => state.setLoadingBlockerIsActive);
 
     const showWarningToasts = (warnings: { title: string; description: string }[]) => {
         for (const warning of warnings) {
@@ -94,16 +94,16 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                     {...getInputProps()}
                     accept={fileReadingStrategy.getAcceptedMimeType(type).join(",")}
                     multiple={fileReadingStrategy.allowMultifile()}
-                    onChange={(e) => {
+                    onChange={e => {
                         handleFileUpload(e.target.files);
                     }}
                     data-testid={`file-dropzone-input-${type}`}
                 />
                 {!showImportAssistent && (
-                    <h3 className="font-bold tracking-tight text-lg mb-4">{t(`import:labels.${type}`)}</h3>
+                    <h3 className='font-bold tracking-tight text-lg mb-4'>{t(`import:labels.${type}`)}</h3>
                 )}
-                <div className="relative">
-                    <div className="relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full">
+                <div className='relative'>
+                    <div className='relative w-[50px] h-[50px] [&>*]:w-full [&>*]:h-full'>
                         {icon ? <>{icon}</> : <File />}
                     </div>
 
@@ -111,10 +111,10 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                         className={`absolute -bottom-2 -right-2 fill-black w-[30px] h-[30px] group-hover:scale-125 transition-all ease-in-out group-hover:fill-primary text-white ${
                             isDragActive ? "fill-primary scale-125" : " fill-black"
                         }`}
-                        fill="black"
+                        fill='black'
                     />
                 </div>
-                <div className="text-center mt-4 flex items-center justfy-center flex-1 lg:px-10">
+                <div className='text-center mt-4 flex items-center justfy-center flex-1 lg:px-10'>
                     {isDragActive ? (
                         <small>
                             Platzieren Sie die Dateien in der Fläche.
@@ -128,7 +128,7 @@ export const FileDropzone = ({ type, validationStrategy, icon, onFileUpload }: F
                         </small>
                     )}
                 </div>
-                <Button className="mt-4">{t(`import:labels.${type}`)} auswählen</Button>
+                <Button className='mt-4'>{t(`import:labels.${type}`)} auswählen</Button>
             </div>
         </>
     );
