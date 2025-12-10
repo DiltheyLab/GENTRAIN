@@ -56,20 +56,23 @@ export const useCoreStore = create<CoreStore>()(
                 if (activePathogen?.id !== pathogen.id) {
                     db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
                 }
-                set({ activePathogen: pathogen });
-                get().updateCasesWithRelationships();
+                const casesWithRelationships = await getAllCasesForPathogenWithRelationships(pathogen.id);
+                set({
+                    casesWithRelationships: casesWithRelationships,
+                    activePathogen: pathogen,
+                });
             },
-            setPathogenIsLoading: (pathogenIsLoading) => {
+            setPathogenIsLoading: pathogenIsLoading => {
                 set({ pathogenIsLoading: pathogenIsLoading });
             },
         }),
         {
             name: "core",
-            partialize: (state) => ({
+            partialize: state => ({
                 activePathogen: state.activePathogen,
                 sessionId: state.sessionId,
             }),
-            onRehydrateStorage: () => (state) => {
+            onRehydrateStorage: () => state => {
                 // When store is rehydrated, if there's an active pathogen, load its cases
                 if (state?.activePathogen) {
                     state.updateCasesWithRelationships();
