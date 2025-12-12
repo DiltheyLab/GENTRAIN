@@ -48,8 +48,8 @@ const PdfGraphLegend = ({ preview = false }: { preview?: boolean }) => {
                                 type === "node"
                                     ? "rounded-full w-[5px] h-[5px] ml-[2px] mr-[7px]"
                                     : type === "link"
-                                    ? "w-[9px] h-[2px] mr-[5px]"
-                                    : "w-[9px] h-[2px] border-b-[2px] border-dashed mr-[5px]"
+                                      ? "w-[9px] h-[2px] mr-[5px]"
+                                      : "w-[9px] h-[2px] border-b-[2px] border-dashed mr-[5px]"
                             }`}
                             style={{
                                 backgroundColor: type === "link-dashed" ? "" : color,

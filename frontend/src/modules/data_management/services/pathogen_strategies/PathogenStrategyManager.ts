@@ -27,8 +27,9 @@ export class PathogenStrategyManager {
     };
 
     // For strategy retrieval from worker files
-    public static getSequenceAnalysisStrategyWithoutZustand = (pathogen: PathogenWithRelationships):
-        BacterialSequenceAnalysis | ViralSequenceAnalysis => {
+    public static getSequenceAnalysisStrategyWithoutZustand = (
+        pathogen: PathogenWithRelationships
+    ): BacterialSequenceAnalysis | ViralSequenceAnalysis => {
         if (!pathogen.pathogen_type) {
             throw new GentrainException("InvalidPathogenType");
         }

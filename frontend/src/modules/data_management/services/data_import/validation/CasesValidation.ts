@@ -129,7 +129,7 @@ export class CasesValidation extends ValidationStrategy {
     private async collectCaseImports() {
         const activePathogen = useCoreStore.getState().activePathogen;
         if (!activePathogen) {
-            throw new GentrainException("InvalidPathogenSelection")
+            throw new GentrainException("InvalidPathogenSelection");
         }
 
         const caseIds = this.data.map((row) => {
@@ -149,9 +149,13 @@ export class CasesValidation extends ValidationStrategy {
         // We only import a case if the case_id does not exist for any other pathogen yet
         // Therefore we filter out case_ids that are already existing for other pathogens
         // However if a case_id exists for the active pathogen we want to check for changes
-        const existingCasesForOtherPathogens = existingCases.filter((existingCase) => existingCase.pathogen_id !== activePathogen.id).map((existingCase) => existingCase.case_id);
-        const caseIdsToImport = caseIds.filter(caseId => !existingCasesForOtherPathogens.includes(caseId));
-        const existingCasesToImport = existingCases.filter(existingCase => !existingCasesForOtherPathogens.includes(existingCase.case_id))
+        const existingCasesForOtherPathogens = existingCases
+            .filter((existingCase) => existingCase.pathogen_id !== activePathogen.id)
+            .map((existingCase) => existingCase.case_id);
+        const caseIdsToImport = caseIds.filter((caseId) => !existingCasesForOtherPathogens.includes(caseId));
+        const existingCasesToImport = existingCases.filter(
+            (existingCase) => !existingCasesForOtherPathogens.includes(existingCase.case_id)
+        );
         this.cases = ObjectRelationalMapper.arrayToMap(existingCasesToImport, "case_id");
         const outbreaks = await getOutbreaksForPathogenId(activePathogen.id);
         this.outbreaks = ObjectRelationalMapper.arrayToMap(outbreaks);
@@ -165,7 +169,7 @@ export class CasesValidation extends ValidationStrategy {
         for (let i = 0; i < this.data.length; i++) {
             const row = this.data[i];
             const caseId = this.getCellValueForColumn(row, COLUMNS.case_id);
-            // Skip the following steps if a case_id is not marked for import 
+            // Skip the following steps if a case_id is not marked for import
             // (the case_id already exists for another pathogen yet)
             if (!caseId || !caseIdsToImport.includes(caseId)) {
                 continue;
@@ -254,10 +258,10 @@ export class CasesValidation extends ValidationStrategy {
                 const groupName = row[`Kategorie:${categoryColumnName}`];
                 const remaining = existingCase
                     ? existingCase.groups?.some((existingGroup) => {
-                        return (
-                            existingGroup.category?.name === categoryColumnName && existingGroup.name === groupName
-                        );
-                    })
+                          return (
+                              existingGroup.category?.name === categoryColumnName && existingGroup.name === groupName
+                          );
+                      })
                     : false;
                 return { name: groupName, category: categoryColumnName, remaining: remaining };
             });

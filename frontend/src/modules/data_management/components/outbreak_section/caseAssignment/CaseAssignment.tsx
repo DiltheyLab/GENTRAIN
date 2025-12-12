@@ -205,8 +205,8 @@ const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentProps) =
                     hoveredTable === "table-1" && !hoveredTableIsForbidden
                         ? "2px dashed hsla(25,5%,45%,0.3)"
                         : hoveredTable === "table-1" && hoveredTableIsForbidden
-                        ? "2px dashed red"
-                        : "2px dashed hsla(25,5%,45%,0.1)",
+                          ? "2px dashed red"
+                          : "2px dashed hsla(25,5%,45%,0.1)",
                 width: "100%",
                 boxShadow: "none",
                 borderRadius: "0.5rem",
@@ -276,8 +276,8 @@ const CaseAssignment = ({ registerCaseForDatabaseUpdate }: CaseAssigmentProps) =
                     hoveredTable === "table-2" && !hoveredTableIsForbidden
                         ? "2px dashed hsla(25,5%,45%,0.3)"
                         : hoveredTable === "table-2" && hoveredTableIsForbidden
-                        ? "2px dashed red"
-                        : "2px dashed hsla(25,5%,45%,0.1)",
+                          ? "2px dashed red"
+                          : "2px dashed hsla(25,5%,45%,0.1)",
                 width: "100%",
                 boxShadow: "none",
                 borderRadius: "0.5rem",

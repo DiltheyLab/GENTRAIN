@@ -42559,9 +42559,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -42584,9 +42582,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -42609,9 +42605,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 2",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -42634,9 +42628,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -42659,9 +42651,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 2",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -42684,9 +42674,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 3",
                         "zip_code": "40215",
                         "city": "Düsseldorf",
@@ -42709,9 +42697,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 3",
                         "zip_code": "40215",
                         "city": "Düsseldorf",
@@ -42734,9 +42720,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 4",
                         "zip_code": "40627",
                         "city": "Düsseldorf",
@@ -42759,9 +42743,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 2",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -42784,9 +42766,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -42809,9 +42789,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -42834,9 +42812,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -42859,9 +42835,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -42884,9 +42858,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -42909,9 +42881,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 6",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -42934,9 +42904,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -42959,9 +42927,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-17",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -42984,9 +42950,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -43009,9 +42973,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-17",
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 7",
                         "zip_code": "40479",
                         "city": "Düsseldorf",
@@ -43034,9 +42996,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 1",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -43059,9 +43019,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 8",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -43084,9 +43042,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 9",
                         "zip_code": "40472",
                         "city": "Düsseldorf",
@@ -43109,9 +43065,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 9",
                         "zip_code": "40472",
                         "city": "Düsseldorf",
@@ -43134,9 +43088,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 3,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -43159,9 +43111,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 3,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 11",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -43184,9 +43134,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 12",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -43209,9 +43157,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 12",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -43234,9 +43180,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 3,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 13",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -43259,9 +43203,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 3,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 14",
                         "zip_code": "40239",
                         "city": "Düsseldorf",
@@ -43284,9 +43226,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 12",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -43309,9 +43249,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 6",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -43334,9 +43272,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 6",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -43359,9 +43295,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 15",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -43384,9 +43318,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 16",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -43409,9 +43341,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 9",
                         "zip_code": "40472",
                         "city": "Düsseldorf",
@@ -43434,9 +43364,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 17",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -43459,9 +43387,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 18",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -43484,9 +43410,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 19",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -43509,9 +43433,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 20",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -43534,9 +43456,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 21",
                         "zip_code": "40589",
                         "city": "Düsseldorf",
@@ -43559,9 +43479,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 22",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -43584,9 +43502,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 23",
                         "zip_code": "40591",
                         "city": "Düsseldorf",
@@ -43609,9 +43525,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 24",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -43634,9 +43548,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 25",
                         "zip_code": "40233",
                         "city": "Düsseldorf",
@@ -43659,9 +43571,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 26",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -43684,9 +43594,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 27",
                         "zip_code": "40219",
                         "city": "Düsseldorf",
@@ -43709,9 +43617,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 28",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -43734,9 +43640,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 4,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 29",
                         "zip_code": "40231",
                         "city": "Düsseldorf",
@@ -43759,9 +43663,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 13",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -43784,9 +43686,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 30",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -43809,9 +43709,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 30",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -43834,9 +43732,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 16",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -43859,9 +43755,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 31",
                         "zip_code": "40225",
                         "city": "Düsseldorf",
@@ -43884,9 +43778,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 17",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -43909,9 +43801,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 32",
                         "zip_code": "40468",
                         "city": "Düsseldorf",
@@ -43934,9 +43824,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": "GENTRAIN-73",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 27",
                         "zip_code": "40219",
                         "city": "Düsseldorf",
@@ -43959,9 +43847,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 33",
                         "zip_code": "40213",
                         "city": "Düsseldorf",
@@ -43984,9 +43870,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 33",
                         "zip_code": "40213",
                         "city": "Düsseldorf",
@@ -44009,9 +43893,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 34",
                         "zip_code": "40479",
                         "city": "Düsseldorf",
@@ -44034,9 +43916,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 29",
                         "zip_code": "40231",
                         "city": "Düsseldorf",
@@ -44059,9 +43939,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 35",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -44084,9 +43962,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 35",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -44109,9 +43985,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -44134,9 +44008,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -44159,9 +44031,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -44184,9 +44054,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -44209,9 +44077,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 36",
                         "zip_code": "40212",
                         "city": "Düsseldorf",
@@ -44234,9 +44100,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": "GENTRAIN-38",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 37",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -44259,9 +44123,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 38",
                         "zip_code": "40625",
                         "city": "Düsseldorf",
@@ -44284,9 +44146,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 39",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -44309,9 +44169,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 4,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 40",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -44334,9 +44192,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 4,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 41",
                         "zip_code": "40212",
                         "city": "Düsseldorf",
@@ -44359,9 +44215,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 27",
                         "zip_code": "40219",
                         "city": "Düsseldorf",
@@ -44384,9 +44238,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 27",
                         "zip_code": "40219",
                         "city": "Düsseldorf",
@@ -44409,9 +44261,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": "GENTRAIN-75",
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 31",
                         "zip_code": "40225",
                         "city": "Düsseldorf",
@@ -44434,9 +44284,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 31",
                         "zip_code": "40225",
                         "city": "Düsseldorf",
@@ -44459,9 +44307,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 42",
                         "zip_code": "40225",
                         "city": "Düsseldorf",
@@ -44484,9 +44330,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 43",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -44509,9 +44353,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 8",
                         "zip_code": "40476",
                         "city": "Düsseldorf",
@@ -44534,9 +44376,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 12",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -44559,9 +44399,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 44",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -44584,9 +44422,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": "GENTRAIN-38",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 20",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -44609,9 +44445,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 15",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -44634,9 +44468,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 12",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -44659,9 +44491,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 26",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -44684,9 +44514,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 45",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -44709,9 +44537,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 25",
                         "zip_code": "40233",
                         "city": "Düsseldorf",
@@ -44734,9 +44560,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 46",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -44759,9 +44583,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 40",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -44784,9 +44606,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 16",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -44809,9 +44629,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 46",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -44834,9 +44652,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 46",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -44859,9 +44675,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 46",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -44884,9 +44698,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 47",
                         "zip_code": "40470",
                         "city": "Düsseldorf",
@@ -44909,9 +44721,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 48",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -44934,9 +44744,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 18",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -44959,9 +44767,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 18",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -44984,9 +44790,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 49",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -45009,9 +44813,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 49",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -45034,9 +44836,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 17",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -45059,9 +44859,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -45084,9 +44882,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 50",
                         "zip_code": "40468",
                         "city": "Düsseldorf",
@@ -45109,9 +44905,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 16",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45134,9 +44928,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 51",
                         "zip_code": "40235",
                         "city": "Düsseldorf",
@@ -45159,9 +44951,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 2,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 7",
                         "zip_code": "40479",
                         "city": "Düsseldorf",
@@ -45184,9 +44974,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 52",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -45209,9 +44997,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 53",
                         "zip_code": "40625",
                         "city": "Düsseldorf",
@@ -45234,9 +45020,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 54",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -45259,9 +45043,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 55",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -45284,9 +45066,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 55",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -45309,9 +45089,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 5",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -45334,9 +45112,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 32",
                         "zip_code": "40468",
                         "city": "Düsseldorf",
@@ -45359,9 +45135,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 18",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -45384,9 +45158,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45409,9 +45181,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 57",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -45434,9 +45204,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 58",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45459,9 +45227,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 59",
                         "zip_code": "40217",
                         "city": "Düsseldorf",
@@ -45484,9 +45250,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 60",
                         "zip_code": "40217",
                         "city": "Düsseldorf",
@@ -45509,9 +45273,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 61",
                         "zip_code": "40219",
                         "city": "Düsseldorf",
@@ -45534,9 +45296,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 1,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -45559,9 +45319,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 62",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45584,9 +45342,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 18",
                         "zip_code": "40223",
                         "city": "Düsseldorf",
@@ -45609,9 +45365,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-58",
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 34",
                         "zip_code": "40479",
                         "city": "Düsseldorf",
@@ -45634,9 +45388,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": 5,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 63",
                         "zip_code": "40215",
                         "city": "Düsseldorf",
@@ -45659,9 +45411,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 16",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45684,9 +45434,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45709,9 +45457,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45734,9 +45480,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 36",
                         "zip_code": "40212",
                         "city": "Düsseldorf",
@@ -45759,9 +45503,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 52",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -45784,9 +45526,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 40",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -45809,9 +45549,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 64",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -45834,9 +45572,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 65",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -45859,9 +45595,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 58",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45884,9 +45618,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 26",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45909,9 +45641,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 26",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45934,9 +45664,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 26",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -45959,9 +45687,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 62",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -45984,9 +45710,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 62",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -46009,9 +45733,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 58",
                         "zip_code": "40211",
                         "city": "Düsseldorf",
@@ -46034,9 +45756,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 42",
                         "zip_code": "40225",
                         "city": "Düsseldorf",
@@ -46059,9 +45779,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -46084,9 +45802,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 10",
                         "zip_code": "40237",
                         "city": "Düsseldorf",
@@ -46109,9 +45825,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 33",
                         "zip_code": "40213",
                         "city": "Düsseldorf",
@@ -46134,9 +45848,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46159,9 +45871,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46184,9 +45894,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 32",
                         "zip_code": "40468",
                         "city": "Düsseldorf",
@@ -46209,9 +45917,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 66",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46234,9 +45940,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 56",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46259,9 +45963,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 59",
                         "zip_code": "40217",
                         "city": "Düsseldorf",
@@ -46284,9 +45986,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 67",
                         "zip_code": "40231",
                         "city": "Düsseldorf",
@@ -46309,9 +46009,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 67",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -46334,9 +46032,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 68",
                         "zip_code": "40227",
                         "city": "Düsseldorf",
@@ -46359,9 +46055,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 66",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46384,9 +46078,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 66",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46409,9 +46101,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 66",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46434,9 +46124,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 40",
                         "zip_code": "40549",
                         "city": "Düsseldorf",
@@ -46459,9 +46147,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 55",
                         "zip_code": "40474",
                         "city": "Düsseldorf",
@@ -46484,9 +46170,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-81",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 20",
                         "zip_code": "40210",
                         "city": "Düsseldorf",
@@ -46509,9 +46193,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-162",
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 64",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -46534,9 +46216,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 60",
                         "zip_code": "40217",
                         "city": "Düsseldorf",
@@ -46559,9 +46239,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 66",
                         "zip_code": "40545",
                         "city": "Düsseldorf",
@@ -46584,9 +46262,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 46",
                         "zip_code": "40221",
                         "city": "Düsseldorf",
@@ -46609,9 +46285,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            2
-                        ],
+                        "group_ids": [2],
                         "street": "Musterstraße 64",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -46634,9 +46308,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": "GENTRAIN-164",
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 64",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -46659,9 +46331,7 @@
                         "pathogen_id": 1,
                         "outbreak_id": null,
                         "infected_by": null,
-                        "group_ids": [
-                            1
-                        ],
+                        "group_ids": [1],
                         "street": "Musterstraße 64",
                         "zip_code": "40477",
                         "city": "Düsseldorf",
@@ -50936,32 +50606,11 @@
                                 "id": 1
                             },
                             "datesOfCasesInSelectedOutbreak": [
-                                1629842400000,
-                                1630101600000,
-                                1630101600000,
-                                1630188000000,
-                                1630188000000,
-                                1630188000000,
-                                1630188000000,
-                                1630274400000,
-                                1630274400000,
-                                1630274400000,
-                                1630274400000,
-                                1630274400000,
-                                1630360800000,
-                                1630360800000,
-                                1630360800000,
-                                1630360800000,
-                                1630360800000,
-                                1630360800000,
-                                1630447200000,
-                                1630447200000,
-                                1630447200000,
-                                1630447200000,
-                                1630447200000,
-                                1630533600000,
-                                1630533600000,
-                                1630706400000
+                                1629842400000, 1630101600000, 1630101600000, 1630188000000, 1630188000000,
+                                1630188000000, 1630188000000, 1630274400000, 1630274400000, 1630274400000,
+                                1630274400000, 1630274400000, 1630360800000, 1630360800000, 1630360800000,
+                                1630360800000, 1630360800000, 1630360800000, 1630447200000, 1630447200000,
+                                1630447200000, 1630447200000, 1630447200000, 1630533600000, 1630533600000, 1630706400000
                             ],
                             "selectedBackground": null,
                             "excludeCasesAboveGeneticDistanceThreshold": true,
@@ -51099,9 +50748,7 @@
                         },
                         "generalSettings": {
                             "autoSave": true,
-                            "openAccordionItems": [
-                                "outbreak-selection"
-                            ]
+                            "openAccordionItems": ["outbreak-selection"]
                         },
                         "pathogen_id": 1,
                         "created_at": 1760955651410,

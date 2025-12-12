@@ -44,7 +44,7 @@ export const readFileAsText = (file: File | Blob): Promise<string> => {
                 const uint8Array = new Uint8Array(arrayBuffer);
                 // Convert Uint8Array to binary string for encoding detection
                 const binaryString = Array.from(uint8Array)
-                    .map(byte => String.fromCharCode(byte))
+                    .map((byte) => String.fromCharCode(byte))
                     .join("");
                 // Detect encoding as export sources are not deterministic
                 const detected = jschardet.detect(binaryString);
@@ -69,7 +69,7 @@ export const readFileAsText = (file: File | Blob): Promise<string> => {
  * @returns a promise that resolves with an array of the files' text content
  */
 export const readFilesAsText = (files: File[]): Promise<string[]> => {
-    const filePromises = files.map(file => readFileAsText(file));
+    const filePromises = files.map((file) => readFileAsText(file));
     return Promise.all(filePromises);
 };
 
@@ -115,7 +115,7 @@ export const formatData = (
         } else {
             let rows = Object.values(fileReaderResult)[0].split("\n");
             // filter empty lines to prevent empty cells
-            rows = rows.filter(line => line !== "");
+            rows = rows.filter((line) => line !== "");
             const columns: string[] = rows[0]
                 .replace(/["'\n]/g, "")
                 .split(";")

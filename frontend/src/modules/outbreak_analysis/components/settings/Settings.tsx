@@ -138,7 +138,10 @@ export const Settings = () => {
                                 className="text-wrap w-full"
                                 variant="outline"
                                 type="button"
-                                disabled={!outbreakAnalysisStore.analysisSettings.selectedOutbreak || geneticDistanceLinkCount === 0}
+                                disabled={
+                                    !outbreakAnalysisStore.analysisSettings.selectedOutbreak ||
+                                    geneticDistanceLinkCount === 0
+                                }
                             >
                                 Ausbruchsanalyse-Report exportieren
                             </Button>
