@@ -35,24 +35,30 @@ export const downloadFileFromUrl = (url: string) => {
  * @param file - the file to read
  * @returns a promise that resolves with the file's text content
  */
-export const readFileAsText = (file: Blob): Promise<string> => {
-    return new Promise(async (resolve, reject) => {
+export const readFileAsText = (file: File | Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
         try {
-            const arrayBuffer = await file.arrayBuffer();
-            const uint8Array = new Uint8Array(arrayBuffer);
-            // Convert Uint8Array to binary string for encoding detection
-            const binaryString = Array.from(uint8Array)
-                .map(byte => String.fromCharCode(byte))
-                .join("");
-            // Detect encoding as export sources are not deterministic
-            const detected = jschardet.detect(binaryString);
             const reader = new FileReader();
-            // UTF-8 is default encoding
-            reader.readAsText(file, detected.encoding || "UTF-8");
-            reader.onloadend = () => resolve(reader.result as string);
+            reader.onload = () => {
+                const arrayBuffer = reader.result as ArrayBuffer;
+                const uint8Array = new Uint8Array(arrayBuffer);
+                // Convert Uint8Array to binary string for encoding detection
+                const binaryString = Array.from(uint8Array)
+                    .map(byte => String.fromCharCode(byte))
+                    .join("");
+                // Detect encoding as export sources are not deterministic
+                const detected = jschardet.detect(binaryString);
+                const encoding = detected.encoding || "UTF-8";
+                // Decode the ArrayBuffer using TextDecoder with detected encoding
+                const decoder = new TextDecoder(encoding);
+                const text = decoder.decode(uint8Array);
+                resolve(text);
+            };
             reader.onerror = reject;
+            reader.readAsArrayBuffer(file);
         } catch (error) {
             console.log(error);
+            reject(error);
         }
     });
 };

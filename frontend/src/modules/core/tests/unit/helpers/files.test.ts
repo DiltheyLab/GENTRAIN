@@ -146,7 +146,7 @@ describe("FilesHelper", () => {
             window.URL.createObjectURL = vi.fn(() => ":object_url:");
             // mock methods that are not yet supported by jsdom
             const spyOnCreateElement = vi.spyOn(document, "createElement").mockImplementation(() => link);
-            const spyOnLinkClick = vi.spyOn(link, "click");
+            const spyOnLinkClick = vi.spyOn(link, "click").mockImplementation(() => {}); // Prevent actual navigation
             downloadFile(blob, ":file_name:");
 
             expect(spyOnCreateElement).toHaveBeenCalledOnce();
