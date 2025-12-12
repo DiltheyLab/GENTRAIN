@@ -49,7 +49,7 @@ export const readFileAsText = (file: File | Blob): Promise<string> => {
                 // Detect encoding as export sources are not deterministic
                 const detected = jschardet.detect(binaryString);
                 const encoding = detected.encoding || "UTF-8";
-                // Decode the ArrayBuffer using TextDecoder with detected encoding
+                // Decode using TextDecoder with detected encoding
                 const decoder = new TextDecoder(encoding);
                 const text = decoder.decode(uint8Array);
                 resolve(text);
