@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import jschardet from "jschardet";
 
 export const FASTA_EXTENSIONS = [".fa", ".mpfa", ".fna", ".fsa", ".fasta"];
 
@@ -35,14 +36,23 @@ export const downloadFileFromUrl = (url: string) => {
  * @returns a promise that resolves with the file's text content
  */
 export const readFileAsText = (file: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
+            const arrayBuffer = await file.arrayBuffer();
+            const uint8Array = new Uint8Array(arrayBuffer);
+            // Convert Uint8Array to binary string for encoding detection
+            const binaryString = Array.from(uint8Array)
+                .map(byte => String.fromCharCode(byte))
+                .join("");
+            // Detect encoding as export sources are not deterministic
+            const detected = jschardet.detect(binaryString);
             const reader = new FileReader();
-            reader.readAsText(file);
+            // UTF-8 is default encoding
+            reader.readAsText(file, detected.encoding || "UTF-8");
             reader.onloadend = () => resolve(reader.result as string);
             reader.onerror = reject;
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     });
 };
@@ -53,7 +63,7 @@ export const readFileAsText = (file: Blob): Promise<string> => {
  * @returns a promise that resolves with an array of the files' text content
  */
 export const readFilesAsText = (files: File[]): Promise<string[]> => {
-    const filePromises = files.map((file) => readFileAsText(file));
+    const filePromises = files.map(file => readFileAsText(file));
     return Promise.all(filePromises);
 };
 
@@ -86,7 +96,7 @@ export const formatData = (
                 // for bacterial uploads:
                 // fasta file name contains fasta id
                 // content contains assembly
-                fastaSequencesArray.push({fastaId: file.filename.split(".")[0], sequence: file.content});
+                fastaSequencesArray.push({ fastaId: file.filename.split(".")[0], sequence: file.content });
             }
         }
         return fastaSequencesArray;
@@ -99,7 +109,7 @@ export const formatData = (
         } else {
             let rows = Object.values(fileReaderResult)[0].split("\n");
             // filter empty lines to prevent empty cells
-            rows = rows.filter((line) => line !== "");
+            rows = rows.filter(line => line !== "");
             const columns: string[] = rows[0]
                 .replace(/["'\n]/g, "")
                 .split(";")
@@ -118,7 +128,7 @@ export const formatData = (
                 });
                 rowData.push(rowObject);
             }
-            return {columns: columns, rows: rowData};
+            return { columns: columns, rows: rowData };
         }
     }
 };
@@ -143,7 +153,7 @@ export const collectFastaIdsAndSequences = (fastaSequences: Array<string>) => {
         }
 
         if (fastaId) {
-            fastaSequencesArray.push({fastaId: fastaId, sequence: genome});
+            fastaSequencesArray.push({ fastaId: fastaId, sequence: genome });
         }
     }
     return fastaSequencesArray;
