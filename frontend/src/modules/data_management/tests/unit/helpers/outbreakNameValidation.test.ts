@@ -315,9 +315,7 @@ describe("validateOutbreakName", () => {
         });
 
         it("should validate regional outbreak names", () => {
-            const outbreaks = [
-                createMockOutbreak({ id: 1, name: "Berlin Hospital Outbreak 2023" }),
-            ];
+            const outbreaks = [createMockOutbreak({ id: 1, name: "Berlin Hospital Outbreak 2023" })];
             const result = validateOutbreakName(outbreaks, "Munich Clinic Outbreak 2024");
 
             expect(result.isUniqueName()).toBe(true);

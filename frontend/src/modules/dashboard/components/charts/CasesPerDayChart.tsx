@@ -4,7 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/modules/cor
 import { useMemo } from "react";
 import { useDashboardStore } from "../../stores/dashboard";
 import { getUniqueClustersOfNodes, moveNoOutbreakAssignedToEnd } from "@/modules/core/helpers/graphs";
-import {formatDate} from "@/modules/core/helpers/dates.ts";
+import { formatDate } from "@/modules/core/helpers/dates.ts";
 
 type ChartData = {
     day: string;

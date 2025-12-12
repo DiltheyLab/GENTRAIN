@@ -6,7 +6,7 @@ onmessage = async (e) => {
     const sequenceImports = {};
     // We can not use Zustand states from within the worker file
     // so we use a static strategy retrieval method intead
-    const strategy = PathogenStrategyManager.getSequenceAnalysisStrategyWithoutZustand(e.data.activePathogen)
+    const strategy = PathogenStrategyManager.getSequenceAnalysisStrategyWithoutZustand(e.data.activePathogen);
     for (const item of data) {
         const hash = sha256(item.sequence);
 

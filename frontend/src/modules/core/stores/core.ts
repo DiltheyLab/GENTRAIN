@@ -57,7 +57,7 @@ export const useCoreStore = create<CoreStore>()(
                     if (activePathogen?.id !== pathogen.id) {
                         db.pathogens.update(pathogen.id, { activated_at: new Date().toISOString() });
                     }
-                    // Create a clean pathogen without circular references 
+                    // Create a clean pathogen without circular references
                     // as pathogens might have pathogen_types that might have pathogens again
                     // e.g. when called PathogenSwitsch
                     const pathogenWithoutCircularReferences: PathogenWithRelationships = {
@@ -77,17 +77,17 @@ export const useCoreStore = create<CoreStore>()(
                     console.error("Error updating active pathogen in core store:", e);
                 }
             },
-            setPathogenIsLoading: pathogenIsLoading => {
+            setPathogenIsLoading: (pathogenIsLoading) => {
                 set({ pathogenIsLoading: pathogenIsLoading });
             },
         }),
         {
             name: "core",
-            partialize: state => ({
+            partialize: (state) => ({
                 activePathogen: state.activePathogen,
                 sessionId: state.sessionId,
             }),
-            onRehydrateStorage: () => state => {
+            onRehydrateStorage: () => (state) => {
                 // When store is rehydrated, if there's an active pathogen, load its cases
                 if (state?.activePathogen) {
                     state.updateCasesWithRelationships();

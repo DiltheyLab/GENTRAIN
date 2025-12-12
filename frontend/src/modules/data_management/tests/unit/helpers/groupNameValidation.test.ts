@@ -13,20 +13,14 @@ describe("validateGroupName", () => {
 
     describe("isUniqueName", () => {
         it("should return true when group name is unique", () => {
-            const groups = [
-                createMockGroup({ id: 1, name: "Group A" }),
-                createMockGroup({ id: 2, name: "Group B" }),
-            ];
+            const groups = [createMockGroup({ id: 1, name: "Group A" }), createMockGroup({ id: 2, name: "Group B" })];
             const result = validateGroupName(groups, "Group C");
 
             expect(result.isUniqueName()).toBe(true);
         });
 
         it("should return false when group name already exists", () => {
-            const groups = [
-                createMockGroup({ id: 1, name: "Group A" }),
-                createMockGroup({ id: 2, name: "Group B" }),
-            ];
+            const groups = [createMockGroup({ id: 1, name: "Group A" }), createMockGroup({ id: 2, name: "Group B" })];
             const result = validateGroupName(groups, "Group A");
 
             expect(result.isUniqueName()).toBe(false);
