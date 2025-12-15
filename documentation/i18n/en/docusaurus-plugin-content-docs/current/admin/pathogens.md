@@ -48,4 +48,4 @@ Uploaded ZIP files must not exceed 300 MB, and the extracted data must not excee
 
 ## Example Data
 
-Example files can be provided for the various imports in the application. Regardless of pathogen type, case data and contact data must be uploaded in CSV format. The structure of these files can be found in the [Data Import](http://localhost:3001/docs/application/data-management/general#datenimport) section of the “Data Management” area of the application documentation. After saving the pathogen, the files are validated for correctness.
+Example files can be provided for the various imports in the application. Regardless of pathogen type, case data and contact data must be uploaded in CSV format. The structure of these files can be found in the [Data Import](http://localhost:3001/docs/application/data-management/general#datenimport) section of the “Data Management” area of the application documentation. After saving the pathogen, the files are checked for correctness and security vulnerabilities.

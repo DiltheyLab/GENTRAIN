@@ -48,4 +48,4 @@ Hochgeladene ZIP-Dateien dürfen 300 MB nicht überschreiten, die entpackten Dat
 
 
 ## Beispieldaten
-Für die verschiedenen Importe der Anwendung können Beispieldateien zur Verfügung gestellt werden. Unabhängig vom Pathogentyp sind Falldaten und Kontaktdaten im CSV-Format hochzuladen. Die Struktur dieser Dateien können Sie dem Abschnitt [Datenimport](http://localhost:3001/docs/application/data-management/general#datenimport) im Bereich „Datenverwaltung” der Anwendungsdokumentation entnehmen. Nach dem Speichern des Pathogens werden die Dateien auf ihre Korrektheit validiert.
+Für die verschiedenen Importe der Anwendung können Beispieldateien zur Verfügung gestellt werden. Unabhängig vom Pathogentyp sind Falldaten und Kontaktdaten im CSV-Format hochzuladen. Die Struktur dieser Dateien können Sie dem Abschnitt [Datenimport](http://localhost:3001/docs/application/data-management/general#datenimport) im Bereich „Datenverwaltung” der Anwendungsdokumentation entnehmen. Nach dem Speichern des Pathogens werden die Dateien auf ihre Korrektheit und Sicherheitslücken untersucht.

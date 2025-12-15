@@ -70,7 +70,7 @@ Admin-Passwörter müssen beim ersten Login gesetzt werden und folgende Regeln e
 
 ### Datei-Uploads
 
-Der Zugriff auf andere Verzeichnisse als die angegebenen Upload-Standorte ist für den Ubuntu-Benutzer, der das Admin-Panel ausführt, nicht erlaubt. Hochgeladene Dateien werden zudem strikt anhand der erwarteten Dateimuster überprüft.
+Der Zugriff auf andere Verzeichnisse als die angegebenen Upload-Standorte ist für den Ubuntu-Benutzer, der das Admin-Panel ausführt, nicht erlaubt. Hochgeladene Dateien werden zudem strikt anhand der erwarteten Dateimuster überprüft. Zusätzlich werden Dateien (auch einzelne Datein von Zip-Archiven) mittels ClamAV auf Sicherheitslücken überprüft. Wenn der durchgeführte ClamAV-Scan auf Sicherheitslücken hinweist, wird der Upload verhindert. Dies gilt für Schemata- und Beispieldaten-Uploads.
 
 ## Absicherung der Websocket-Verbindung
 
