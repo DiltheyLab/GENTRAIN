@@ -39,8 +39,6 @@ jobs:
           ADMIN_PANEL_PORT=${{ vars.ADMIN_PANEL_PORT }}
           ADMIN_PANEL_URL=${{ vars.ADMIN_PANEL_URL }}
           API_DATA_DIRECTORY=${{ vars.API_DATA_DIRECTORY }}
-          ADMIN_HTBASIC_USERNAME=${{ vars.ADMIN_HTBASIC_USERNAME }}
-          ADMIN_HTBASIC_PASSWORD=${{ secrets.PROD_ADMIN_HTBASIC_PASSWORD }}
           EOF
       - name: Prepare redis.prod.conf for compose
         run: cp backend/redis/redis.dev.conf backend/redis/redis.prod.conf
@@ -104,8 +102,6 @@ jobs:
             echo -e "ADMIN_PANEL_PORT=${{vars.ADMIN_PANEL_PORT}}" >> .env
             echo -e "ADMIN_PANEL_URL=${{vars.ADMIN_PANEL_URL}}" >> .env
             echo -e "API_DATA_DIRECTORY=${{vars.API_DATA_DIRECTORY}}" >> .env
-            echo -e "ADMIN_HTBASIC_USERNAME=${{vars.ADMIN_HTBASIC_USERNAME}}" >> .env
-            echo -e "ADMIN_HTBASIC_PASSWORD=${{secrets.PROD_ADMIN_HTBASIC_PASSWORD}}" >> .env
             exit
       - name: Restart docker containers
         uses: appleboy/ssh-action@v1.0.3

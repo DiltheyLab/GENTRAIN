@@ -192,8 +192,6 @@ Im Folgenden werden alle wichtigen Parameter erläutert.
 | `ADMIN_PANEL_URL`             | Variable | Öffentliche oder interne URL für den Admin-Zugang.                      |
 | `DEFAULT_ADMIN_USERNAME`      | Variable | Standard-Admin-Benutzername (bei der ersten Einrichtung).               |
 | `DEFAULT_ADMIN_PASSWORD`      | Secret   | Standard-Admin-Passwort (sollte nach dem ersten Login geändert werden). |
-| `ADMIN_HTBASIC_USERNAME`      | Variable | Benutzername für HTTP Basic Auth (Schutz der Admin-Route).              |
-| `PROD_ADMIN_HTBASIC_PASSWORD` | Secret   | Passwort für HTTP Basic Auth (niemals öffentlich machen).               |
 
 ### 🔹Sicherheit und Sitzungen
 

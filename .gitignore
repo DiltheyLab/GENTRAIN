@@ -11,6 +11,7 @@ backend/redis/redis.prod.conf
 **/.DS_Store
 certs/
 certs/*
+db_dumps/*
 backend/data/pathogen_schemes/*
 !backend/data/pathogen_schemes/.gitkeep
 backend/data/pathogen_example_data/*
