@@ -199,6 +199,7 @@ describe("dataTable filters", () => {
             outbreak: "Outbreak1",
             infected_by: null,
             street: null,
+            street_number: null,
             zip_code: null,
             city: null,
             first_name: null,
