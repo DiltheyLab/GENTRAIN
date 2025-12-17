@@ -187,6 +187,7 @@ export class CasesValidation extends ValidationStrategy {
                     city: this.getCellValueForColumn(row, COLUMNS.city),
                     zip_code: this.getCellValueForColumn(row, COLUMNS.zip_code),
                     street: this.getCellValueForColumn(row, COLUMNS.street),
+                    street_number: this.getCellValueForColumn(row, COLUMNS.street_number),
                     registered_at: parseGermanDateFormat(registeredAt!),
                 } satisfies CaseImport);
                 if (persistedCase) {
@@ -220,7 +221,7 @@ export class CasesValidation extends ValidationStrategy {
      */
     private importedCaseEqualsPersistedCase(caseImport: CaseImport, existingCase: CaseWithRelationships) {
         return (
-            this.fieldIsEqual(caseImport.street, existingCase.street) &&
+            this.fieldIsEqual(`${caseImport.street} ${caseImport.street_number ?? ""}`.trim(), existingCase.street) &&
             this.fieldIsEqual(caseImport.zip_code, existingCase.zip_code) &&
             this.fieldIsEqual(caseImport.city, existingCase.city) &&
             this.fieldIsEqual(caseImport.first_name, existingCase.first_name) &&

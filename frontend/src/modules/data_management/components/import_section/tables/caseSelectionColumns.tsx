@@ -242,10 +242,10 @@ export const caseSelectionColumns: ColumnDef<CaseImport & { existingCase: CaseWi
         },
         cell: ({ row }) => (
             <>
-                {row.original.existingCase && row.original.existingCase.street !== row.original.street && (
+                {row.original.existingCase && row.original.existingCase.street !== `${row.original.street} ${row.original.street_number ?? ""}`.trim() && (
                     <div className="line-through">{row.original.existingCase.street}</div>
                 )}
-                <div>{row.original.street}</div>
+                <div>{`${row.original.street} ${row.original.street_number ?? ""}`.trim()}</div>
             </>
         ),
     },

@@ -16,7 +16,6 @@ export function CaseSelection() {
     const [selectAll, setSelectAll] = useState(true);
     const [selectCasesWithSequence, setSelectCasesWithSequence] = useState(false);
     const [selectCasesWithOutbreak, setSelectCasesWithOutbreak] = useState(false);
-
     useEffect(() => {
         if (!table) return;
         const allRows = Object.keys(table.getRowModel().rowsById).map((key) => table.getRowModel().rowsById[key]);

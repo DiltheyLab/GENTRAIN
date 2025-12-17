@@ -82,7 +82,7 @@ export class CasesPersistence extends PersistenceStrategy {
                 : null,
             group_ids: await persistGroupsForCategories(importedCase, this.pathogen!.id),
             registered_at: importedCase.registered_at,
-            street: importedCase.street,
+            street: `${importedCase.street} ${importedCase.street_number ?? ""}`.trim(),
             zip_code: importedCase.zip_code,
             city: importedCase.city,
             first_name: importedCase.first_name,

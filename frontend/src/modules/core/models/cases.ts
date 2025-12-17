@@ -42,6 +42,7 @@ export type CaseImport = {
     outbreak: string | null;
     infected_by: string | null;
     street: string | null;
+    street_number: string | null;
     zip_code: string | null;
     city: string | null;
     first_name: string | null;
@@ -55,6 +56,7 @@ export const caseImportRules = z.object({
     infected_by: z.string().min(1).or(z.null()),
     groups: z.array(z.object({ name: z.string(), category: z.string(), remaining: z.boolean().or(z.undefined()) })),
     street: z.string().or(z.null()),
+    street_number: z.string().or(z.null()),
     zip_code: z.string().min(5).max(5).or(z.null()),
     city: z.string().or(z.null()),
     first_name: z.string().or(z.null()),
