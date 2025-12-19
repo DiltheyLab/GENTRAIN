@@ -121,7 +121,13 @@ const config: Config = {
     footer: {
       style: "dark",
       // justify: "space-between",
-      copyright: `<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;"><div>Copyright © ${new Date().getFullYear()} Universitätsklinikum Düsseldorf</div> <div><a href="https://gentrain.bi.denbi.de/impress" target="_blank">Impressum</a> · <a href="https://gentrain.bi.denbi.de/data-privacy" target="_blank">Datenschutz</a> · <a href="https://gentrain.bi.denbi.de/contact" target="_blank">Kontakt</a></div></div>`,
+      copyright: `<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;"><div>Copyright © ${new Date().getFullYear()} Universitätsklinikum Düsseldorf</div> <div><a href="https://${
+        process.env.VITE_APP_URL
+      }/impress" target="_blank">Impressum</a> · <a href="https://${
+        process.env.VITE_APP_URL
+      }/data-privacy" target="_blank">Datenschutz</a> · <a href="https://${
+        process.env.VITE_APP_URL
+      }/contact" target="_blank">Kontakt</a></div></div>`,
     },
     prism: {
       theme: prismThemes.github,
