@@ -190,6 +190,7 @@ services:
       - type: volume
         source: docs_files
         target: /documentation/build
+    env_file: ".env"
     networks:
       - caddy
 
