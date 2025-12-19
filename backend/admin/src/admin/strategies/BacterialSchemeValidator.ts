@@ -12,7 +12,7 @@ export class BacterialSchemeValidator extends SchemeValidator {
     // Accept only the very necessary files
     // pre_computed folder is also valid but hard to validate
     // and safely generated during first usage of the scheme
-    return ['.genes_list', '.schema_config', 'loci_modes', 'self_scores', 'short/self_scores'];
+    return ['.genes_list', '.schema_config', 'loci_modes', 'self_scores', 'short/self_scores', 'pre_computed'];
   };
 
   protected getValidFileExtensions = (): string[] => {

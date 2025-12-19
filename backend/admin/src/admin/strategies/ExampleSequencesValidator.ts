@@ -18,7 +18,7 @@ export class ExampleSequencesValidator extends ExampleDataValidator {
 
   protected getValidMimetypes = () => {
     return this.pathogenType === 'bacterial'
-      ? ['application/zip']
+      ? ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed']
       : ['application/octet-stream', 'text/x-fasta', 'application/x-fasta', 'chemical/x-fasta'];
   };
 
