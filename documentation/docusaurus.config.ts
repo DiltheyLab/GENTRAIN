@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import "dotenv/config";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -42,7 +43,9 @@ const config: Config = {
       },
     },
   },
-
+  customFields: {
+    appUrl: process.env.VITE_APP_URL,
+  },
   presets: [
     [
       "classic",
@@ -74,7 +77,6 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-
   themeConfig: {
     // Replace with your project's social card
     //image: "img/docusaurus-social-card.jpg",
@@ -120,14 +122,6 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      // justify: "space-between",
-      copyright: `<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;"><div>Copyright © ${new Date().getFullYear()} Universitätsklinikum Düsseldorf</div> <div><a href="https://${
-        process.env.VITE_APP_URL
-      }/impress" target="_blank">Impressum</a> · <a href="https://${
-        process.env.VITE_APP_URL
-      }/data-privacy" target="_blank">Datenschutz</a> · <a href="https://${
-        process.env.VITE_APP_URL
-      }/contact" target="_blank">Kontakt</a></div></div>`,
     },
     prism: {
       theme: prismThemes.github,

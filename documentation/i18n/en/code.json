@@ -357,5 +357,17 @@
   "home.section.admin.description": {
     "message": "For administrators: The Administration section documents user and role management, pathogen and schema configuration, operational settings and deployment guidance to run and maintain GENTRAIN in production.",
     "description": "Description of the Admin section on the home page"
+  },
+  "footer.impressum": {
+    "message": "Legal Notice",
+    "description": "The label for the Legal Notice link in the footer"
+  },
+  "footer.dataPrivacy": {
+    "message": "Data Privacy",
+    "description": "The label for the Data Privacy link in the footer"
+  },
+  "footer.contact": {
+    "message": "Contact",
+    "description": "The label for the contact link in the footer"
   }
 }
