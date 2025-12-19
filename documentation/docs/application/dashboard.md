@@ -10,8 +10,6 @@ sidebar_position: 2
 Das **Dashboard** ist die zentrale Ansicht Ihres gesamten Datenbestands in **GENTRAIN**.  
 Es bietet interaktive **Auswertungs- und Visualisierungsmöglichkeiten** für alle Daten. Darüber hinaus finden Sie dort Werkzeuge zur Anpassung der Visualisierung, einen interaktiven Graphen (Minimaler Spannbaum) zur Untersuchung von Kontakten und Ausbrüchen sowie Tabellen mit Detailinformationen.
 
-> 🌐 **Produktive Umgebung:** [https://gentrain.bi.denbi.de](https://gentrain.bi.denbi.de)
-
 ---
 
 ## Seitenaufbau

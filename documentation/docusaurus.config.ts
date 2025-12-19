@@ -15,7 +15,7 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: "https://gentrain.bi.denbi.de",
+  url: `https://${process.env.VITE_APP_URL}`,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
@@ -128,15 +128,15 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
     zoom: {
-      selector: '.markdown img',
+      selector: ".markdown img",
       background: {
-        light: 'rgb(255, 255, 255)',
-        dark: 'rgb(36, 37, 38)'
+        light: "rgb(255, 255, 255)",
+        dark: "rgb(36, 37, 38)",
       },
       config: {
-        margin: 80 // to compensate navbar height
-      }
-    }
+        margin: 80, // to compensate navbar height
+      },
+    },
   } satisfies Preset.ThemeConfig,
 
   // Mermoid support
@@ -144,7 +144,7 @@ const config: Config = {
     mermaid: true,
   },
   themes: ["@docusaurus/theme-mermaid"],
-  plugins: ['docusaurus-plugin-image-zoom',],
+  plugins: ["docusaurus-plugin-image-zoom"],
 };
 
 export default config;

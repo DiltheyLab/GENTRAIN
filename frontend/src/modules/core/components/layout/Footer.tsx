@@ -22,7 +22,11 @@ export const Footer = () => {
                         <a href="/impress" className="underline ml-4">
                             Impressum
                         </a>
-                        <a href="https://docs.gentrain.bi.denbi.de" className="underline ml-4" target="_blank">
+                        <a
+                            href={`https://docs.${import.meta.env.VITE_APP_URL}`}
+                            className="underline ml-4"
+                            target="_blank"
+                        >
                             Dokumentation
                         </a>
                     </div>

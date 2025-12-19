@@ -42,15 +42,15 @@ Then open the frontend at:
 
 Full setup, configuration, and architecture details are available in the documentation:
 
-👉 **[GENTRAIN Documentation](https://docs.gentrain.bi.denbi.de)**  
+👉 **[GENTRAIN Documentation](https://docs.public.gentrain.bi.denbi.de)**  
 or in the `/documentation` directory of this repository.
 
 Key sections include:
 
-- [Getting Started](https://docs.gentrain.bi.denbi.de/docs/development/getting-started)
-- [Deployment](https://docs.gentrain.bi.denbi.de/docs/development/deployment)
-- [Dashboard](https://docs.gentrain.bi.denbi.de/docs/application/dashboard)
-- [Admin Guide](https://docs.gentrain.bi.denbi.de/docs/admin/general)
+- [Getting Started](https://docs.public.gentrain.bi.denbi.de/docs/development/getting-started)
+- [Deployment](https://docs.public.gentrain.bi.denbi.de/docs/development/deployment)
+- [Dashboard](https://docs.public.gentrain.bi.denbi.de/docs/application/dashboard)
+- [Admin Guide](https://docs.public.gentrain.bi.denbi.de/docs/admin/general)
 
 ---
 
@@ -71,6 +71,6 @@ See [LICENSE](LICENSE) for details.
 
 ## 📫 Contact
 
-- **Website:** [https://gentrain.bi.denbi.de](https://gentrain.bi.denbi.de)
-- **Documentation:** [https://docs.gentrain.bi.denbi.de](https://docs.gentrain.bi.denbi.de)
+- **Website:** [https://public.gentrain.bi.denbi.de](https://public.gentrain.bi.denbi.de)
+- **Documentation:** [https://docs.public.gentrain.bi.denbi.de](https://docs.public.gentrain.bi.denbi.de)
 - **Developers:** Sebastian Fuchs, Ben Kräling, Nils Lüschow, Johannes Ptok, Philipp Vogel, Jonas Weber

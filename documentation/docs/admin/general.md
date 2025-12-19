@@ -14,7 +14,6 @@ Dieses Dokument beschreibt die grundlegenden Informationen zum **GENTRAIN Admin-
 Das Admin-Panel dient der **Verwaltung von Pathogenen, Benutzern, Rollen, Pathogen-Schemata** sowie **Beispieldatensätzen**.  
 Es ermöglicht Administratorinnen und Administratoren, zentrale Datenstrukturen zu pflegen und den Zugang zum Admin-Panel sicher zu steuern.
 
-- **Produktions-URL:** [https://admin.gentrain.bi.denbi.de](https://admin.gentrain.bi.denbi.de)
 - **Kernkomponenten:**
   - **User** – Verwaltung von Benutzerkonten und Zugriffsrechten
   - **Role** – Definition und Zuweisung von Rollen

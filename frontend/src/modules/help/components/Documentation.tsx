@@ -16,7 +16,7 @@ export const Documentation = () => {
                 </div>
             </div>
             <div className="flex space-x-3">
-                <Link to="https://docs.gentrain.bi.denbi.de" target="_blank" rel="noreferrer">
+                <Link to={`https://docs.${import.meta.env.VITE_APP_URL}`} target="_blank" rel="noreferrer">
                     <Button variant="primary">
                         Zur GENTRAIN Dokumentation <ExternalLink className="ml-2" size={20} />
                     </Button>

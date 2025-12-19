@@ -20,8 +20,8 @@ jobs:
         run: |
           cat > .env <<EOF
           VITE_API_HOST=${{ vars.VITE_API_HOST }}
+          VITE_APP_URL=${{ vars.APP_URL }}
           APP_ENV=${{ vars.PROD_APP_ENV }}
-          APP_URL=${{ vars.APP_URL }}
           REDIS_HOST=${{ vars.REDIS_HOST }}
           REDIS_PORT=${{ vars.REDIS_PORT }}
           REDIS_USERNAME=${{ vars.REDIS_USERNAME }}

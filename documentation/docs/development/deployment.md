@@ -165,7 +165,7 @@ Im Folgenden werden alle wichtigen Parameter erläutert.
 | Name                        | Typ      | Beschreibung                                                                                       |
 | --------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
 | `VITE_API_HOST`             | Variable | Öffentlicher API-Endpunkt (z. B. `https://api.deinedomain.org`). Wird im Frontend-Build verwendet. |
-| `APP_URL`                   | Variable | Basis-URL der Anwendung (für Weiterleitungen und Links).                                           |
+| `VITE_APP_URL`              | Variable | Basis-URL der Anwendung (für Weiterleitungen und Links).                                           |
 | `APP_ENV` or `PROD_APP_ENV` | Variable | Legt die Laufzeitumgebung fest (z. B. `production`).                                               |
 | `API_DATA_DIRECTORY`        | Variable | Pfad, in dem die API Dateien und Pathogen-Daten speichert.                                         |
 
@@ -186,12 +186,12 @@ Im Folgenden werden alle wichtigen Parameter erläutert.
 
 ### 🔹 Admin-Panel
 
-| Name                          | Typ      | Beschreibung                                                            |
-| ----------------------------- | -------- | ----------------------------------------------------------------------- |
-| `ADMIN_PANEL_PORT`            | Variable | Port, auf dem das Admin-Interface läuft (z. B. `5540`).                 |
-| `ADMIN_PANEL_URL`             | Variable | Öffentliche oder interne URL für den Admin-Zugang.                      |
-| `DEFAULT_ADMIN_USERNAME`      | Variable | Standard-Admin-Benutzername (bei der ersten Einrichtung).               |
-| `DEFAULT_ADMIN_PASSWORD`      | Secret   | Standard-Admin-Passwort (sollte nach dem ersten Login geändert werden). |
+| Name                     | Typ      | Beschreibung                                                            |
+| ------------------------ | -------- | ----------------------------------------------------------------------- |
+| `ADMIN_PANEL_PORT`       | Variable | Port, auf dem das Admin-Interface läuft (z. B. `5540`).                 |
+| `ADMIN_PANEL_URL`        | Variable | Öffentliche oder interne URL für den Admin-Zugang.                      |
+| `DEFAULT_ADMIN_USERNAME` | Variable | Standard-Admin-Benutzername (bei der ersten Einrichtung).               |
+| `DEFAULT_ADMIN_PASSWORD` | Secret   | Standard-Admin-Passwort (sollte nach dem ersten Login geändert werden). |
 
 ### 🔹Sicherheit und Sitzungen
 

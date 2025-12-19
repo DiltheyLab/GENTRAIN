@@ -155,7 +155,7 @@ Below is an explanation of each one and its purpose.
 | Name                        | Type     | Description                                                                       |
 | --------------------------- | -------- | --------------------------------------------------------------------------------- |
 | `VITE_API_HOST`             | Variable | Public API endpoint (e.g. `https://api.yourdomain.org`). Used in frontend builds. |
-| `APP_URL`                   | Variable | Base URL of your application (used for redirects and link generation).            |
+| `VITE_APP_URL`              | Variable | Base URL of your application (used for redirects and link generation).            |
 | `APP_ENV` or `PROD_APP_ENV` | Variable | Defines runtime environment (e.g. `production`).                                  |
 | `API_DATA_DIRECTORY`        | Variable | Directory path where API stores uploaded files and pathogen data.                 |
 
@@ -176,12 +176,12 @@ Below is an explanation of each one and its purpose.
 
 ### 🔹 Admin Panel
 
-| Name                          | Type     | Description                                                           |
-| ----------------------------- | -------- | --------------------------------------------------------------------- |
-| `ADMIN_PANEL_PORT`            | Variable | Port on which the admin interface runs (e.g. `5540`).                 |
-| `ADMIN_PANEL_URL`             | Variable | Public or internal URL for admin access.                              |
-| `DEFAULT_ADMIN_USERNAME`      | Variable | Default administrator username (used during first setup).             |
-| `DEFAULT_ADMIN_PASSWORD`      | Secret   | Default administrator password (should be changed after first login). |
+| Name                     | Type     | Description                                                           |
+| ------------------------ | -------- | --------------------------------------------------------------------- |
+| `ADMIN_PANEL_PORT`       | Variable | Port on which the admin interface runs (e.g. `5540`).                 |
+| `ADMIN_PANEL_URL`        | Variable | Public or internal URL for admin access.                              |
+| `DEFAULT_ADMIN_USERNAME` | Variable | Default administrator username (used during first setup).             |
+| `DEFAULT_ADMIN_PASSWORD` | Secret   | Default administrator password (should be changed after first login). |
 
 ### 🔹 Security and Sessions
 

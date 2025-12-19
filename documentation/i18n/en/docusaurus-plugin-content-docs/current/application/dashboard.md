@@ -10,8 +10,6 @@ sidebar_position: 2
 The **Dashboard** is the central view of your entire dataset in **GENTRAIN**.  
 It provides interactive **analysis and visualization tools** for all available data. In addition, it offers configuration options for visualization, an interactive graph (minimum spanning tree) for analyzing contacts and outbreaks, and tables with detailed information.
 
-> 🌐 **Production Environment:** [https://gentrain.bi.denbi.de](https://gentrain.bi.denbi.de)
-
 ---
 
 ## Page Layout

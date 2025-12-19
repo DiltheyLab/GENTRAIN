@@ -14,7 +14,6 @@ This document provides an overview of the **GENTRAIN Admin Panel**, a central to
 The Admin Panel is used for the **management of pathogens, users, roles, pathogen schemas**, and **example datasets**.  
 It enables administrators to maintain core data structures and securely control system access.
 
-- **Production URL:** [https://admin.gentrain.bi.denbi.de](https://admin.gentrain.bi.denbi.de)
 - **Core Components:**
   - **User** – Manage user accounts and access rights
   - **Role** – Define and assign user roles
