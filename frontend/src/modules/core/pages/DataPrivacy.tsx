@@ -13,7 +13,7 @@ export function DataPrivacy() {
                 <h2 className="font-bold text-lg mb-1">1. Verantwortlicher</h2>
                 <p>
                     Für die Datenverarbeitung im Zusammenhang mit der Bereitstellung der Webanwendung Dashboard
-                    „Gentrain“ (https://gentrain.bi.denbi.de) ist verantwortlich:
+                    „Gentrain“ (https://{import.meta.env.VITE_APP_URL}) ist verantwortlich:
                 </p>
                 <p>
                     <strong>Universitätsklinikum Düsseldorf</strong>
@@ -64,7 +64,7 @@ export function DataPrivacy() {
                 <p>
                     <u>
                         Beim Besuch und Nutzung der Web-Anwendung Dashboard „Gentrain“ werden folgende Metadaten
-                        verarbeitet:
+                        verarbeitet, die Personenbezug enthalten können:
                     </u>
                 </p>
                 <ul className="list-disc ml-6">
@@ -81,13 +81,11 @@ export function DataPrivacy() {
                     Dashboards.
                 </p>
                 <p>
-                    <u>Rechtsgrundlagen der Datenverarbeitung:</u> Sofern Sie als Mitarbeitende/r eines Gesundheitsamtes
-                    das Dashboard nutzen, um in Folgeschritten die Ausbruchsanalyse auf Basis von Infektionsketten
-                    durchzuführen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 S. 1 lit. b) DSGVO
-                    verarbeitet (Nutzungsvereinbarung). Sofern Sie als zufällige/r Besucherin/Besucher das Dashboard
-                    nutzen, werden Ihre Daten auf der Rechtsgrundlage Art. 6 Abs. 1 UAbs. 1 lit. f) DSGVO verarbeitet
-                    (legitimes Interesse des Verantwortlichen zur Bereitstellung der bestimmungsgemäßen Funktionalität
-                    des Dashboards).
+                    <u>Rechtsgrundlagen der Datenverarbeitung:</u> Die Verarbeitung personenbezogener Daten im Rahmen
+                    der Nutzung des Dashboards, um in Folgeschritten die Ausbruchsanalyse auf Basis von Infektionsketten
+                    durchzuführen, beruht auf Art. 6 Abs. 1 S. 1 lit. b) DSGVO. Im Falle eines Besuchs der Startseite
+                    des Dashboards durch Dritte erfolgt die Verarbeitung von personenbezogenen Daten im Rahmen der
+                    Zutrittsprüfung auf Basis von Art. 6 Abs. 1 lit. f) DSGVO.
                 </p>
                 <p>
                     <u>Pflicht zur Bereitstellung der Daten und Folgen, wenn die Daten nicht bereitgestellt werden:</u>{" "}
@@ -222,7 +220,7 @@ export function DataPrivacy() {
                 <h2 className="font-bold text-lg mb-1">8. Änderungen der Datenschutzhinweise</h2>
                 <p>
                     Wir behalten uns das Recht vor, diese Datenschutzhinweise jederzeit unter Beachtung der geltenden
-                    Datenschutzvorschriften zu ändern. Derzeitiger Stand ist Juli 2025.
+                    Datenschutzvorschriften zu ändern. Derzeitiger Stand ist Dezember 2025.
                 </p>
             </div>
         </div>
