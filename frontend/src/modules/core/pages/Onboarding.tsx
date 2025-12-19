@@ -13,7 +13,7 @@ export function Onboarding() {
     const activePathogen = useCoreStore((state) => state.activePathogen);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="min-h-screen flex flex-col items-center justify-center py-10">
             <div className="w-10/12 md:w-3/4 lg:w-3/4 flex flex-col items-center justify-center text-center">
                 <div className="flex items-center text-primary mb-10">
                     <img width={800} src={GentrainLogo} alt="GENTRAIN NRW" />
@@ -56,6 +56,32 @@ export function Onboarding() {
                             </Button>
                         </div>
                     </div>
+                    {import.meta.env.VITE_APP_URL === "public.gentrain.bi.denbi.de" && (
+                        <div className="p-6 rounded-lg border-2 border-yellow-500/30 bg-yellow-50/50 dark:bg-yellow-900/10 w-full">
+                            <h3 className="font-bold text-lg mb-3 text-yellow-800 dark:text-yellow-200 flex gap-2">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                    <line x1="12" y1="9" x2="12" y2="13" />
+                                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                                </svg>
+                                Hinweis zur Nutzung der öffentlichen Instanz
+                            </h3>
+                            <p className="text-sm text-left text-yellow-900 dark:text-yellow-100">
+                                Diese öffentliche Instanz von GENTRAIN dient zu Demonstrations- und Testzwecken. Das
+                                Importieren personenbezogener Daten erfolgt auf eigene Verantwortung.
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className="mt-20">
                     <PartnerLogos />
