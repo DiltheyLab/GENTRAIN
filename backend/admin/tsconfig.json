@@ -12,14 +12,11 @@
     "allowJs": true,
     "sourceMap": false,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "paths": {
-      "*": ["./*"]
-    }
+    "esModuleInterop": true
   },
   "exclude": ["node_modules"],
   "include": ["**/src/**/*"]
