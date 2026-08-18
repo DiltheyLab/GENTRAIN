@@ -6,7 +6,7 @@ ARG GROUP_ID=1010
 WORKDIR /admin
 RUN apk add --no-cache openssl clamav clamav-daemon supervisor
 
-RUN npm i -g typescript
+RUN npm i -g typescript@5.9.3
 
 ENV NODE_ENV="production"
 
