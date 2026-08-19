@@ -9,6 +9,7 @@ redis==5.0.8
 rq==2.6.1
 Werkzeug==3.1.4
 gunicorn==23.0.0
+setuptools==80.9.0
 supervisor==4.2.5
 pytest==8.4.2
 pytest-asyncio==1.2.0

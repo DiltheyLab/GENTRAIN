@@ -33,8 +33,8 @@
     "fast-csv": "^5.0.5",
     "fs-extra": "^11.3.1",
     "get-folder-size": "^5.0.0",
-    "pg": "latest",
     "p-limit": "^7.2.0",
+    "pg": "latest",
     "unzipper": "^0.12.3",
     "yazl": "^3.3.1"
   },
@@ -47,8 +47,8 @@
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "concurrently": "^9.2.0",
-    "eslint": "^8.38.0",
     "dotenv-cli": "^7.2.1",
+    "eslint": "^8.38.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -59,7 +59,7 @@
     "prettier": "^3.1.0",
     "prisma": "^5.6.0",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "5.9.3"
   },
   "name": "admin",
   "prisma": {
